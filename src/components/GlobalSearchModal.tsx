@@ -1,0 +1,250 @@
+import React, { useState, useMemo } from 'react';
+import { Search, X, BookOpen, Brain, Sparkles, User, GraduationCap, ChevronRight } from 'lucide-react';
+import {
+  Course,
+  ClassNote,
+  PsychologyAuthor,
+  PsychologyConcept,
+  PsychologyApproach,
+  ReadingItem,
+  NavTab
+} from '../types';
+
+interface GlobalSearchModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  courses: Course[];
+  classes: ClassNote[];
+  authors: PsychologyAuthor[];
+  concepts: PsychologyConcept[];
+  approaches: PsychologyApproach[];
+  readings: ReadingItem[];
+  onNavigate: (tab: NavTab, subTab?: string, targetId?: string) => void;
+}
+
+export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
+  isOpen,
+  onClose,
+  courses,
+  classes,
+  authors,
+  concepts,
+  approaches,
+  readings,
+  onNavigate,
+}) => {
+  const [query, setQuery] = useState('');
+
+  const searchResults = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+
+    const results: {
+      id: string;
+      title: string;
+      subtitle: string;
+      type: 'concept' | 'author' | 'course' | 'class' | 'reading' | 'approach';
+      badge: string;
+      tab: NavTab;
+      subTab: string;
+    }[] = [];
+
+    // Search Concepts
+    concepts.forEach((c) => {
+      if (c.name.toLowerCase().includes(q) || c.definition.toLowerCase().includes(q) || c.tags.some(t => t.toLowerCase().includes(q))) {
+        results.push({
+          id: c.id,
+          title: c.name,
+          subtitle: c.definition.slice(0, 70) + '...',
+          type: 'concept',
+          badge: 'Conceito',
+          tab: 'biblioteca',
+          subTab: 'conceitos'
+        });
+      }
+    });
+
+    // Search Authors
+    authors.forEach((a) => {
+      if (a.name.toLowerCase().includes(q) || a.bio.toLowerCase().includes(q) || a.keyConcepts.some(kc => kc.toLowerCase().includes(q))) {
+        results.push({
+          id: a.id,
+          title: a.name,
+          subtitle: a.bio.slice(0, 70) + '...',
+          type: 'author',
+          badge: 'Autor',
+          tab: 'biblioteca',
+          subTab: 'autores'
+        });
+      }
+    });
+
+    // Search Courses
+    courses.forEach((co) => {
+      if (co.name.toLowerCase().includes(q) || co.professor.toLowerCase().includes(q) || (co.description && co.description.toLowerCase().includes(q))) {
+        results.push({
+          id: co.id,
+          title: co.name,
+          subtitle: `Prof.ª ${co.professor} • ${co.semester}`,
+          type: 'course',
+          badge: 'Disciplina',
+          tab: 'faculdade',
+          subTab: 'disciplinas'
+        });
+      }
+    });
+
+    // Search Class Notes
+    classes.forEach((cl) => {
+      if (cl.title.toLowerCase().includes(q) || cl.summary.toLowerCase().includes(q) || (cl.fullNotes && cl.fullNotes.toLowerCase().includes(q))) {
+        results.push({
+          id: cl.id,
+          title: cl.title,
+          subtitle: `Aula ${cl.number} • ${cl.summary.slice(0, 60)}...`,
+          type: 'class',
+          badge: 'Aula',
+          tab: 'faculdade',
+          subTab: 'aulas'
+        });
+      }
+    });
+
+    // Search Readings
+    readings.forEach((r) => {
+      if (r.title.toLowerCase().includes(q) || r.author.toLowerCase().includes(q)) {
+        results.push({
+          id: r.id,
+          title: r.title,
+          subtitle: `Por ${r.author} • ${r.status === 'concluido' ? 'Concluído' : 'Em leitura'}`,
+          type: 'reading',
+          badge: 'Leitura',
+          tab: 'estudos',
+          subTab: 'leituras'
+        });
+      }
+    });
+
+    // Search Approaches
+    approaches.forEach((app) => {
+      if (app.name.toLowerCase().includes(q) || app.shortName.toLowerCase().includes(q) || app.description.toLowerCase().includes(q)) {
+        results.push({
+          id: app.id,
+          title: app.name,
+          subtitle: app.description.slice(0, 70) + '...',
+          type: 'approach',
+          badge: 'Abordagem',
+          tab: 'biblioteca',
+          subTab: 'abordagens'
+        });
+      }
+    });
+
+    return results;
+  }, [query, concepts, authors, courses, classes, readings, approaches]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-start justify-center p-3 sm:p-6 pt-12 sm:pt-20 bg-[rgba(40,30,30,0.18)] backdrop-blur-xs animate-in fade-in duration-200">
+      <div className="w-full max-w-2xl bg-[#FFFCF8] rounded-3xl border border-[#E8DEDB] shadow-2xl overflow-hidden text-[#40383A]">
+        
+        {/* Search Bar Input */}
+        <div className="p-4 border-b border-[#F1E9E6] flex items-center gap-3 bg-white">
+          <Search className="w-5 h-5 text-[#EA718F]" />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Digite para buscar (ex: ansiedade, Beck, Freud, TCC, psicopatologia...)"
+            className="w-full bg-transparent text-sm sm:text-base focus:outline-none placeholder:text-[#B0A6A8] text-[#40383A]"
+            autoFocus
+          />
+          {query && (
+            <button
+              onClick={() => setQuery('')}
+              className="touch-target p-1 rounded-full hover:bg-[#FAF7F2] text-[#B0A6A8]"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+          <button
+            onClick={onClose}
+            className="text-xs bg-[#F2ECE3] hover:bg-[#E7DDD1] text-[#40383A] px-3 py-1.5 rounded-xl font-medium transition-colors min-h-[36px]"
+          >
+            Fechar
+          </button>
+        </div>
+
+        {/* Quick Tag Suggestions if search is empty */}
+        {!query && (
+          <div className="p-5 text-center sm:text-left">
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#9A9195] mb-3">
+              Sugestões rápidas no cecistudy ♡
+            </p>
+            <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+              {['Ansiedade', 'Aaron Beck', 'Freud', 'TCC', 'Depressão', 'HTP', 'Acolhimento', 'Vygotsky'].map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => setQuery(tag)}
+                  className="px-3 py-1.5 rounded-full bg-white border border-[#DCCBB8]/60 text-xs text-[#3F3940] hover:bg-[#F4D7DF]/40 hover:border-[#E8AFC0] transition-colors"
+                >
+                  ✨ {tag}
+                </button>
+              ))}
+            </div>
+            <div className="mt-6 pt-4 border-t border-[#EFE5D8] text-center text-xs text-[#716A70]">
+              Pesquisa conectada em tempo real com conceitos, autores, leituras, aulas e disciplinas!
+            </div>
+          </div>
+        )}
+
+        {/* Results List */}
+        {query && (
+          <div className="max-h-[60vh] overflow-y-auto p-3 divide-y divide-[#EFE5D8]/50">
+            {searchResults.length === 0 ? (
+              <div className="p-8 text-center text-[#716A70]">
+                <p className="font-serif-display text-base text-[#3F3940] mb-1">Nenhum resultado encontrado para "{query}"</p>
+                <p className="text-xs">Tente pesquisar por autores (ex: Beck), transtornos ou técnicas.</p>
+              </div>
+            ) : (
+              searchResults.map((item) => (
+                <div
+                  key={item.id}
+                  onClick={() => {
+                    onNavigate(item.tab, item.subTab, item.id);
+                    onClose();
+                  }}
+                  className="flex items-center justify-between p-3 rounded-2xl hover:bg-white hover:shadow-2xs cursor-pointer transition-all group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-[#F4D7DF]/60 group-hover:bg-[#F4D7DF] flex items-center justify-center text-[#3F3940] transition-colors">
+                      {item.type === 'concept' && <Sparkles className="w-4 h-4 text-[#3F3940]" />}
+                      {item.type === 'author' && <User className="w-4 h-4 text-[#3F3940]" />}
+                      {item.type === 'course' && <GraduationCap className="w-4 h-4 text-[#3F3940]" />}
+                      {item.type === 'class' && <Brain className="w-4 h-4 text-[#3F3940]" />}
+                      {item.type === 'reading' && <BookOpen className="w-4 h-4 text-[#3F3940]" />}
+                      {item.type === 'approach' && <Sparkles className="w-4 h-4 text-[#3F3940]" />}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-sm text-[#3F3940] group-hover:text-[#E8AFC0] transition-colors">
+                          {item.title}
+                        </span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#E3F1F7] text-[#3F3940] font-medium border border-[#BFDDED]">
+                          {item.badge}
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#716A70] line-clamp-1">{item.subtitle}</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-[#9A9195] group-hover:text-[#3F3940] group-hover:translate-x-0.5 transition-all" />
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
+      </div>
+    </div>
+  );
+};

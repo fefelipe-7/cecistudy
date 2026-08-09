@@ -1,0 +1,17 @@
+{
+  "short_name": "CeciStudy",
+  "name": "cecistudy ♡ - Cantinho Acadêmico de Psicologia",
+  "description": "Seu espaço pessoal de organização de estudos de Psicologia",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#FFFDF9",
+  "theme_color": "#FFEAF0",
+  "display": "standalone",
+  "orientation": "portrait"
+}
