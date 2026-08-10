@@ -178,7 +178,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         {/* Quick Tag Suggestions if search is empty */}
         {!query && (
           <div className="p-5 text-center sm:text-left">
-            <p className="text-xs font-semibold uppercase tracking-wider text-[#9A9195] mb-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#918689] mb-3">
               Sugestões rápidas no cecistudy ♡
             </p>
             <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
@@ -186,13 +186,13 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                 <button
                   key={tag}
                   onClick={() => setQuery(tag)}
-                  className="px-3 py-1.5 rounded-full bg-white border border-[#DCCBB8]/60 text-xs text-[#3F3940] hover:bg-[#F4D7DF]/40 hover:border-[#E8AFC0] transition-colors"
+                  className="px-3 py-1.5 rounded-full bg-white border border-[#E9DFDC] text-xs text-[#40383A] hover:bg-[#FFF5F7] hover:border-[#FFD3DD] transition-colors cursor-pointer"
                 >
                   ✨ {tag}
                 </button>
               ))}
             </div>
-            <div className="mt-6 pt-4 border-t border-[#EFE5D8] text-center text-xs text-[#716A70]">
+            <div className="mt-6 pt-4 border-t border-[#F2EBE8] text-center text-xs text-[#6D6366]">
               Pesquisa conectada em tempo real com conceitos, autores, leituras, aulas e disciplinas!
             </div>
           </div>
@@ -200,10 +200,10 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
 
         {/* Results List */}
         {query && (
-          <div className="max-h-[60vh] overflow-y-auto p-3 divide-y divide-[#EFE5D8]/50">
+          <div className="max-h-[60vh] overflow-y-auto p-3 divide-y divide-[#F2EBE8]">
             {searchResults.length === 0 ? (
-              <div className="p-8 text-center text-[#716A70]">
-                <p className="font-serif-display text-base text-[#3F3940] mb-1">Nenhum resultado encontrado para "{query}"</p>
+              <div className="p-8 text-center text-[#6D6366]">
+                <p className="font-display text-base text-[#40383A] mb-1">Nenhum resultado encontrado para "{query}"</p>
                 <p className="text-xs">Tente pesquisar por autores (ex: Beck), transtornos ou técnicas.</p>
               </div>
             ) : (
@@ -214,30 +214,30 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                     onNavigate(item.tab, item.subTab, item.id);
                     onClose();
                   }}
-                  className="flex items-center justify-between p-3 rounded-2xl hover:bg-white hover:shadow-2xs cursor-pointer transition-all group"
+                  className="flex items-center justify-between p-3 rounded-2xl hover:bg-[#FFF5F7]/50 cursor-pointer transition-all group"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-[#F4D7DF]/60 group-hover:bg-[#F4D7DF] flex items-center justify-center text-[#3F3940] transition-colors">
-                      {item.type === 'concept' && <Sparkles className="w-4 h-4 text-[#3F3940]" />}
-                      {item.type === 'author' && <User className="w-4 h-4 text-[#3F3940]" />}
-                      {item.type === 'course' && <GraduationCap className="w-4 h-4 text-[#3F3940]" />}
-                      {item.type === 'class' && <Brain className="w-4 h-4 text-[#3F3940]" />}
-                      {item.type === 'reading' && <BookOpen className="w-4 h-4 text-[#3F3940]" />}
-                      {item.type === 'approach' && <Sparkles className="w-4 h-4 text-[#3F3940]" />}
+                    <div className="w-9 h-9 rounded-xl bg-[#FFF5F7] group-hover:bg-[#FFD3DD] flex items-center justify-center text-[#40383A] transition-colors">
+                      {item.type === 'concept' && <Sparkles className="w-4 h-4 text-[#40383A]" />}
+                      {item.type === 'author' && <User className="w-4 h-4 text-[#40383A]" />}
+                      {item.type === 'course' && <GraduationCap className="w-4 h-4 text-[#40383A]" />}
+                      {item.type === 'class' && <Brain className="w-4 h-4 text-[#40383A]" />}
+                      {item.type === 'reading' && <BookOpen className="w-4 h-4 text-[#40383A]" />}
+                      {item.type === 'approach' && <Sparkles className="w-4 h-4 text-[#40383A]" />}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-sm text-[#3F3940] group-hover:text-[#E8AFC0] transition-colors">
+                        <span className="font-semibold text-sm text-[#40383A] group-hover:text-[#B94862] transition-colors">
                           {item.title}
                         </span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#E3F1F7] text-[#3F3940] font-medium border border-[#BFDDED]">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F3F9FC] text-[#396D82] font-medium border border-[#CEE7F0]">
                           {item.badge}
                         </span>
                       </div>
-                      <p className="text-xs text-[#716A70] line-clamp-1">{item.subtitle}</p>
+                      <p className="text-xs text-[#6D6366] line-clamp-1">{item.subtitle}</p>
                     </div>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-[#9A9195] group-hover:text-[#3F3940] group-hover:translate-x-0.5 transition-all" />
+                  <ChevronRight className="w-4 h-4 text-[#918689] group-hover:text-[#40383A] group-hover:translate-x-0.5 transition-all" />
                 </div>
               ))
             )}

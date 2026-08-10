@@ -153,24 +153,24 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-[rgba(40,30,30,0.18)] backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="w-full max-w-lg bg-[#FFFCF8] rounded-t-[28px] sm:rounded-3xl border border-[#E8DEDB] shadow-xl overflow-hidden p-5 sm:p-6 text-[#40383A]">
+      <div className="w-full max-w-lg bg-[#FFFCF8] rounded-t-[28px] sm:rounded-[24px] border border-[#E9DFDC] shadow-xl overflow-hidden p-5 sm:p-6 text-[#40383A]">
         
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[#F1E9E6] pb-3 mb-4">
+        <div className="flex items-center justify-between border-b border-[#F2EBE8] pb-3 mb-4">
           <div className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-full bg-[#FFF4F7] flex items-center justify-center text-[#EA718F] text-sm font-bold border border-[#FFD1DC]">
+            <span className="w-8 h-8 rounded-full bg-[#FFF5F7] flex items-center justify-center text-[#D85F79] text-sm font-bold border border-[#FFD3DD]">
               ♡
             </span>
             <div>
-              <h3 className="font-serif-display font-bold text-lg text-[#40383A]">
+              <h3 className="font-display font-bold text-lg text-[#40383A]">
                 Novo Registro no Cantinho
               </h3>
-              <p className="text-xs text-[#6F6568]">O que você quer adicionar agora?</p>
+              <p className="text-xs text-[#6D6366]">O que você quer adicionar agora?</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="touch-target p-1.5 rounded-full hover:bg-[#FAF7F2] text-[#6F6568] transition-colors"
+            className="touch-target p-1.5 rounded-full hover:bg-[#FAF8F5] text-[#6D6366] transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -187,10 +187,10 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 key={opt.id}
                 type="button"
                 onClick={() => setActiveType(opt.id)}
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-all min-h-[36px] ${
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-all min-h-[36px] cursor-pointer ${
                   isSel
-                    ? 'bg-[#EA718F] text-white shadow-2xs'
-                    : 'bg-white text-[#6F6568] border border-[#E8DEDB] hover:bg-[#FFF4F7]'
+                    ? 'bg-[#E97891] text-white shadow-2xs'
+                    : 'bg-white text-[#6D6366] border border-[#E9DFDC] hover:bg-[#FFF5F7]'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -205,13 +205,13 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           {activeType === 'task' && (
             <>
               <div>
-                <label className="block text-xs font-medium text-[#716A70] mb-1">Título da Tarefa</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">Título da Tarefa</label>
                 <input
                   type="text"
                   placeholder="Ex: Ler capítulo 4 de Psicopatologia"
                   value={taskTitle}
                   onChange={(e) => setTaskTitle(e.target.value)}
-                  className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E8AFC0]"
+                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
                   required
                   autoFocus
                 />
@@ -219,11 +219,11 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-[#716A70] mb-1">Disciplina</label>
+                  <label className="block text-xs font-medium text-[#6D6366] mb-1">Disciplina</label>
                   <select
                     value={taskCourseId}
                     onChange={(e) => setTaskCourseId(e.target.value)}
-                    className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E8AFC0]"
+                    className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
                   >
                     {courses.map((c) => (
                       <option key={c.id} value={c.id}>
@@ -234,11 +234,11 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-[#716A70] mb-1">Categoria</label>
+                  <label className="block text-xs font-medium text-[#6D6366] mb-1">Categoria</label>
                   <select
                     value={taskCategory}
                     onChange={(e) => setTaskCategory(e.target.value as any)}
-                    className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E8AFC0]"
+                    className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
                   >
                     <option value="leitura">Leitura 📚</option>
                     <option value="trabalho">Trabalho / Trabalho Acadêmico 📝</option>
@@ -250,12 +250,12 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#716A70] mb-1">Data Limite (Prazo)</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">Data Limite (Prazo)</label>
                 <input
                   type="date"
                   value={taskDueDate}
                   onChange={(e) => setTaskDueDate(e.target.value)}
-                  className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E8AFC0]"
+                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
                 />
               </div>
             </>
@@ -264,23 +264,23 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           {activeType === 'class' && (
             <>
               <div>
-                <label className="block text-xs font-medium text-[#716A70] mb-1">Título da Aula</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">Título da Aula</label>
                 <input
                   type="text"
                   placeholder="Ex: Aula 09 - Transtornos de Ansiedade e Tag"
                   value={classTitle}
                   onChange={(e) => setClassTitle(e.target.value)}
-                  className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E8AFC0]"
+                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#716A70] mb-1">Disciplina</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">Disciplina</label>
                 <select
                   value={classCourseId}
                   onChange={(e) => setClassCourseId(e.target.value)}
-                  className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E8AFC0]"
+                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
                 >
                   {courses.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -291,13 +291,13 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#716A70] mb-1">Resumo / Principais Anotações</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">Resumo / Principais Anotações</label>
                 <textarea
                   rows={3}
                   placeholder="Escreva os pontos fundamentais discutidos em sala..."
                   value={classSummary}
                   onChange={(e) => setClassSummary(e.target.value)}
-                  className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E8AFC0]"
+                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
                 />
               </div>
             </>
@@ -306,35 +306,35 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           {activeType === 'reading' && (
             <>
               <div>
-                <label className="block text-xs font-medium text-[#716A70] mb-1">Título da Obra / Artigo</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">Título da Obra / Artigo</label>
                 <input
                   type="text"
                   placeholder="Ex: A Interpretação dos Sonhos ou Artigo sobre TCC"
                   value={readingTitle}
                   onChange={(e) => setReadingTitle(e.target.value)}
-                  className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E8AFC0]"
+                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-[#716A70] mb-1">Autor</label>
+                  <label className="block text-xs font-medium text-[#6D6366] mb-1">Autor</label>
                   <input
                     type="text"
                     placeholder="Ex: Aaron Beck, Freud"
                     value={readingAuthor}
                     onChange={(e) => setReadingAuthor(e.target.value)}
-                    className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E8AFC0]"
+                    className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#716A70] mb-1">Total de Páginas</label>
+                  <label className="block text-xs font-medium text-[#6D6366] mb-1">Total de Páginas</label>
                   <input
                     type="number"
                     value={readingPages}
                     onChange={(e) => setReadingPages(e.target.value)}
-                    className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E8AFC0]"
+                    className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
                   />
                 </div>
               </div>
@@ -344,25 +344,25 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           {activeType === 'flashcard' && (
             <>
               <div>
-                <label className="block text-xs font-medium text-[#716A70] mb-1">Pergunta / Frente do Card</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">Pergunta / Frente do Card</label>
                 <input
                   type="text"
                   placeholder="Ex: O que é a Tríade Cognitiva da Depressão?"
                   value={flashcardQuestion}
                   onChange={(e) => setFlashcardQuestion(e.target.value)}
-                  className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E8AFC0]"
+                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#716A70] mb-1">Resposta / Verso do Card</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">Resposta / Verso do Card</label>
                 <textarea
                   rows={3}
                   placeholder="Explique a resposta de forma simples e clara..."
                   value={flashcardAnswer}
                   onChange={(e) => setFlashcardAnswer(e.target.value)}
-                  className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E8AFC0]"
+                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
                   required
                 />
               </div>
@@ -372,25 +372,25 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           {activeType === 'concept' && (
             <>
               <div>
-                <label className="block text-xs font-medium text-[#716A70] mb-1">Nome do Conceito de Psicologia</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">Nome do Conceito de Psicologia</label>
                 <input
                   type="text"
                   placeholder="Ex: Pensamentos Automáticos ou Transferência"
                   value={conceptName}
                   onChange={(e) => setConceptName(e.target.value)}
-                  className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E8AFC0]"
+                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#716A70] mb-1">Definição Acadêmica / Pessoal</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">Definição Acadêmica / Pessoal</label>
                 <textarea
                   rows={3}
                   placeholder="Escreva a definição com suas palavras..."
                   value={conceptDef}
                   onChange={(e) => setConceptDef(e.target.value)}
-                  className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E8AFC0]"
+                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
                 />
               </div>
             </>
@@ -399,35 +399,35 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           {activeType === 'internship' && (
             <>
               <div>
-                <label className="block text-xs font-medium text-[#716A70] mb-1">Atividade de Estágio Realizada</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">Atividade de Estágio Realizada</label>
                 <input
                   type="text"
                   placeholder="Ex: Acolhimento na Triagem da Clínica Escola"
                   value={internshipActivity}
                   onChange={(e) => setInternshipActivity(e.target.value)}
-                  className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E8AFC0]"
+                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-3 gap-3">
                 <div className="col-span-1">
-                  <label className="block text-xs font-medium text-[#716A70] mb-1">Horas</label>
+                  <label className="block text-xs font-medium text-[#6D6366] mb-1">Horas</label>
                   <input
                     type="number"
                     value={internshipHours}
                     onChange={(e) => setInternshipHours(e.target.value)}
-                    className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E8AFC0]"
+                    className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
                   />
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-xs font-medium text-[#716A70] mb-1">Notas da Supervisão</label>
+                  <label className="block text-xs font-medium text-[#6D6366] mb-1">Notas da Supervisão</label>
                   <input
                     type="text"
                     placeholder="Orientação da supervisora..."
                     value={internshipNotes}
                     onChange={(e) => setInternshipNotes(e.target.value)}
-                    className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E8AFC0]"
+                    className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
                   />
                 </div>
               </div>
@@ -435,17 +435,17 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           )}
 
           {/* Submit Button */}
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F1E9E6]">
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F2EBE8]">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl text-xs text-[#6F6568] hover:bg-[#FAF7F2] transition-colors min-h-[44px]"
+              className="px-4 py-2.5 rounded-xl text-xs text-[#6D6366] hover:bg-[#FAF8F5] transition-colors min-h-[44px] cursor-pointer"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="flex items-center gap-1.5 bg-[#EA718F] hover:bg-[#D85B78] text-white px-5 py-2.5 rounded-[14px] text-xs font-medium shadow-2xs transition-transform active:scale-95 min-h-[48px]"
+              className="flex items-center gap-1.5 bg-[#E97891] hover:bg-[#B94862] text-white px-5 py-2.5 rounded-[14px] text-xs font-medium shadow-2xs transition-transform active:scale-95 min-h-[48px] cursor-pointer"
             >
               <Plus className="w-4 h-4 stroke-[2.5]" />
               <span>Salvar Registro</span>

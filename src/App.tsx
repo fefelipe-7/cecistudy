@@ -95,7 +95,7 @@ export default function App() {
     emoji: '🤓',
     label: 'Focada & Acadêmica',
     energyLevel: 4,
-    vibeColor: 'bg-[#FFEAF0] border-[#FFD4E0] text-[#CE5373]',
+    vibeColor: 'bg-[#FFF5F7] border-[#FFD3DD] text-[#B94862]',
     reflection: 'Dia focado nas aulas de psicopatologia e leituras curtas.',
     intention: 'Estudo leve e produtivo',
     updatedAt: '09:00'
@@ -205,7 +205,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFF9F0] text-[#3F3940] flex flex-col font-sans antialiased selection:bg-[#F4D7DF]">
+    <div className="min-h-screen bg-[#FFFCF8] text-[#40383A] flex flex-col font-sans antialiased selection:bg-[#FFE9EE] selection:text-[#B94862]">
       
       {/* Top Header */}
       <HeaderNav

@@ -82,40 +82,40 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
     <div className="space-y-6 pb-12 animate-in fade-in duration-300">
       
       {/* Header Banner */}
-      <div className="journal-card p-6 bg-gradient-to-r from-white via-[#FFF9F0] to-[#F4D7DF]/50 border-b-2 border-[#E8AFC0]">
+      <div className="rounded-[24px] p-6 bg-gradient-to-r from-white via-[#FAF8F5] to-[#FFF5F7]/80 border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-3xl bg-[#F4D7DF] border-2 border-[#E8AFC0] flex items-center justify-center font-serif-display font-bold text-3xl text-[#3F3940] shadow-md">
+            <div className="w-16 h-16 rounded-3xl bg-[#FFF5F7] border-2 border-[#FFD3DD] flex items-center justify-center font-display font-bold text-3xl text-[#40383A] shadow-2xs">
               C
             </div>
 
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="font-serif-display text-2xl sm:text-3xl font-bold text-[#3F3940]">
-                  Meu Espaço • {profile.name} <span className="text-[#E8AFC0] font-normal">♡</span>
+                <h1 className="font-display text-2xl sm:text-3xl font-bold text-[#40383A]">
+                  Meu Espaço • {profile.name} <span className="text-[#E97891] font-normal">♡</span>
                 </h1>
               </div>
 
-              <p className="text-xs text-[#716A70] mt-0.5">
+              <p className="text-xs text-[#6D6366] mt-0.5">
                 {profile.targetCareer} • {profile.university}
               </p>
 
-              <span className="inline-block text-[11px] bg-[#E3F1F7] text-[#3F3940] px-2.5 py-0.5 rounded-full font-medium border border-[#BFDDED] mt-2">
+              <span className="inline-block text-[11px] bg-[#F3F9FC] text-[#396D82] px-2.5 py-0.5 rounded-full font-medium border border-[#CEE7F0] mt-2">
                 {profile.avatarMood}
               </span>
             </div>
           </div>
 
           {/* Graduation Progress Pill */}
-          <div className="bg-white p-3.5 rounded-2xl border border-[#EFE5D8] text-right sm:self-center shadow-2xs">
-            <p className="text-[10px] uppercase font-bold text-[#9A9195]">Progresso da Graduação</p>
-            <p className="font-serif-display font-bold text-xl text-[#3F3940]">{percentDegree}% Concluído</p>
-            <p className="text-[11px] text-[#716A70]">{profile.semester}º de {profile.totalSemesters} semestres</p>
+          <div className="bg-white p-3.5 rounded-2xl border border-[#E9DFDC] text-right sm:self-center shadow-2xs">
+            <p className="text-[10px] uppercase font-bold text-[#918689]">Progresso da Graduação</p>
+            <p className="font-display font-bold text-xl text-[#40383A]">{percentDegree}% Concluído</p>
+            <p className="text-[11px] text-[#6D6366]">{profile.semester}º de {profile.totalSemesters} semestres</p>
           </div>
         </div>
 
         {/* Sub-Tabs Navigation */}
-        <div className="flex items-center gap-2 mt-5 pt-4 border-t border-[#EFE5D8] overflow-x-auto scrollbar-none">
+        <div className="flex items-center gap-2 mt-5 pt-4 border-t border-[#F2EBE8] overflow-x-auto scrollbar-none">
           {[
             { id: 'jornada', label: 'Minha Jornada', icon: GraduationCap },
             { id: 'stickers', label: 'Stickers & Conquistas', icon: Sparkles },
@@ -130,10 +130,10 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
               <button
                 key={tab.id}
                 onClick={() => setSubTab(tab.id as SubTabPerfil)}
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium transition-all ${
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium transition-all cursor-pointer ${
                   isSel
-                    ? 'bg-[#3F3940] text-white shadow-xs'
-                    : 'bg-white text-[#716A70] border border-[#EFE5D8] hover:bg-[#F4D7DF]/30'
+                    ? 'bg-[#40383A] text-white shadow-2xs'
+                    : 'bg-white text-[#6D6366] border border-[#E9DFDC] hover:bg-[#FFF5F7]/50 hover:border-[#FFD3DD]'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -149,17 +149,17 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
         <div className="space-y-6">
           <StudyStatsWidget />
 
-          <div className="journal-card p-6 space-y-6">
+          <div className="rounded-[24px] p-6 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="font-serif-display font-bold text-xl text-[#3F3940]">
+                <h2 className="font-display font-bold text-xl text-[#40383A]">
                   Linha do Tempo da Minha Graduação em Psicologia
                 </h2>
-                <p className="text-xs text-[#716A70]">
+                <p className="text-xs text-[#6D6366]">
                   Acompanhando a caminhada desde o primeiro dia até a formação clínica.
                 </p>
               </div>
-              <span className="text-xs bg-[#F4D7DF] text-[#3F3940] px-3 py-1 rounded-full font-medium">
+              <span className="text-xs bg-[#FFF5F7] text-[#B94862] border border-[#FFD3DD] px-3 py-1 rounded-full font-medium">
                 60% do Caminho Percorrido 🎓
               </span>
             </div>
@@ -175,14 +175,14 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
                     key={sem}
                     className={`p-4 rounded-2xl border text-center transition-all ${
                       isCurrent
-                        ? 'bg-[#F4D7DF] border-2 border-[#E8AFC0] shadow-sm font-bold scale-102'
+                        ? 'bg-[#FFF5F7] border-2 border-[#FFD3DD] text-[#B94862] shadow-2xs font-bold scale-102'
                         : isPast
-                        ? 'bg-[#E3F1F7]/60 border-[#BFDDED] text-[#3F3940]'
-                        : 'bg-white border-[#EFE5D8] opacity-60'
+                        ? 'bg-[#F3F9FC]/80 border-[#CEE7F0] text-[#396D82]'
+                        : 'bg-white border-[#E9DFDC] opacity-60 text-[#6D6366]'
                     }`}
                   >
-                    <p className="text-xs text-[#716A70]">Semestre</p>
-                    <p className="font-serif-display text-2xl font-bold my-1">{sem}º</p>
+                    <p className="text-xs opacity-80">Semestre</p>
+                    <p className="font-display text-2xl font-bold my-1">{sem}º</p>
                     <p className="text-[10px] font-medium">
                       {isCurrent ? '🌸 Em Andamento' : isPast ? '✓ Concluído' : 'Aguardando'}
                     </p>
@@ -191,9 +191,9 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
               })}
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#FFF9F0] border border-[#EFE5D8] text-xs space-y-2">
-              <p className="font-semibold text-[#3F3940]">💭 Reflexão de Jornada:</p>
-              <p className="text-[#716A70] leading-relaxed">
+            <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#E9DFDC] text-xs space-y-2">
+              <p className="font-semibold text-[#40383A]">💭 Reflexão de Jornada:</p>
+              <p className="text-[#6D6366] leading-relaxed">
                 "No 6º semestre, a teoria ganha vida na prática do Estágio e na estruturação do TCC. Cada aula de Psicopatologia e TCC é um tijolinho na construção da profissional que estou me tornando."
               </p>
             </div>
@@ -205,17 +205,17 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
 
       {/* SUBTAB 2: STICKERS & CONQUISTAS */}
       {subTab === 'stickers' && (
-        <div className="journal-card p-6 space-y-5">
+        <div className="rounded-[24px] p-6 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] space-y-5">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="font-serif-display font-bold text-xl text-[#3F3940]">
+              <h2 className="font-display font-bold text-xl text-[#40383A]">
                 Coleção de Stickers & Pequenas Conquistas
               </h2>
-              <p className="text-xs text-[#716A70]">
+              <p className="text-xs text-[#6D6366]">
                 Celebrando cada passo da faculdade sem pressão, apenas com carinho.
               </p>
             </div>
-            <span className="text-xs bg-[#E8AFC0] text-white px-3 py-1 rounded-full font-medium">
+            <span className="text-xs bg-[#E97891] text-white px-3 py-1 rounded-full font-medium shadow-2xs">
               {stickers.filter((s) => s.unlocked).length} Desbloqueados
             </span>
           </div>
@@ -226,24 +226,24 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
                 key={st.id}
                 className={`p-4 rounded-2xl border text-center transition-all ${
                   st.unlocked
-                    ? 'bg-white border-[#E8AFC0]/50 shadow-2xs hover:scale-105'
-                    : 'bg-[#EFE5D8]/30 border-dashed border-[#DCCBB8] opacity-50 grayscale'
+                    ? 'bg-white border-[#FFD3DD] shadow-2xs hover:scale-105'
+                    : 'bg-[#FAF8F5] border-dashed border-[#E9DFDC] opacity-50 grayscale'
                 }`}
               >
                 <span className="text-4xl block my-1">{st.emoji}</span>
-                <h3 className="font-serif-display font-bold text-sm text-[#3F3940] mt-1">
+                <h3 className="font-display font-bold text-sm text-[#40383A] mt-1">
                   {st.name}
                 </h3>
-                <p className="text-[11px] text-[#716A70] leading-tight mt-1">
+                <p className="text-[11px] text-[#6D6366] leading-tight mt-1">
                   {st.description}
                 </p>
 
                 {st.unlocked ? (
-                  <span className="inline-block text-[9px] bg-[#F4D7DF] text-[#3F3940] px-2 py-0.5 rounded-full font-medium mt-3">
+                  <span className="inline-block text-[9px] bg-[#FFF5F7] text-[#B94862] border border-[#FFD3DD] px-2 py-0.5 rounded-full font-medium mt-3">
                     Conquistado em {st.unlockedAt || 'Agosto'} ✨
                   </span>
                 ) : (
-                  <span className="inline-block text-[9px] bg-[#EFE5D8] text-[#9A9195] px-2 py-0.5 rounded-full font-medium mt-3">
+                  <span className="inline-block text-[9px] bg-[#FAF8F5] text-[#918689] px-2 py-0.5 rounded-full font-medium mt-3">
                     Bloqueado
                   </span>
                 )}
@@ -255,26 +255,26 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
 
       {/* SUBTAB 3: DIÁRIO DE ESTÁGIO */}
       {subTab === 'estagio' && (
-        <div className="journal-card p-6 space-y-5">
+        <div className="rounded-[24px] p-6 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] space-y-5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h2 className="font-serif-display font-bold text-xl text-[#3F3940]">
+              <h2 className="font-display font-bold text-xl text-[#40383A]">
                 Diário de Estágio Acadêmico & Supervisão
               </h2>
-              <p className="text-xs text-[#716A70]">
+              <p className="text-xs text-[#6D6366]">
                 Acompanhamento de horas, diário de campo e reflexões éticas na Clínica Escola.
               </p>
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="bg-[#E3F1F7] px-3.5 py-1.5 rounded-2xl border border-[#BFDDED] text-xs text-right">
-                <p className="text-[10px] uppercase font-bold text-[#716A70]">Total de Horas</p>
-                <p className="font-bold text-[#3F3940] text-sm">{totalInternshipHours} Horas Registradas</p>
+              <div className="bg-[#F3F9FC] px-3.5 py-1.5 rounded-2xl border border-[#CEE7F0] text-xs text-right">
+                <p className="text-[10px] uppercase font-bold text-[#6D6366]">Total de Horas</p>
+                <p className="font-bold text-[#396D82] text-sm">{totalInternshipHours} Horas Registradas</p>
               </div>
 
               <button
                 onClick={onOpenQuickAdd}
-                className="bg-[#E8AFC0] hover:bg-[#e09eb1] text-white px-3.5 py-2 rounded-xl text-xs font-medium"
+                className="bg-[#E97891] hover:bg-[#D85F79] text-white px-3.5 py-2 rounded-xl text-xs font-medium cursor-pointer shadow-2xs"
               >
                 + Novo Registro
               </button>
@@ -283,27 +283,27 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
 
           <div className="space-y-4 pt-2">
             {internshipLogs.map((log) => (
-              <div key={log.id} className="p-4 rounded-2xl bg-[#FFF9F0] border border-[#EFE5D8] space-y-2">
+              <div key={log.id} className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#E9DFDC] space-y-2">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#3F3940] bg-[#F4D7DF] px-2.5 py-0.5 rounded-full">
+                  <span className="font-bold text-[#B94862] bg-[#FFF5F7] border border-[#FFD3DD] px-2.5 py-0.5 rounded-full">
                     📅 {log.date} • {log.hours} Horas
                   </span>
-                  <span className="text-[#716A70]">Estágio Básico Supervisão I</span>
+                  <span className="text-[#6D6366]">Estágio Básico Supervisão I</span>
                 </div>
 
-                <h3 className="font-serif-display font-bold text-base text-[#3F3940] pt-1">
+                <h3 className="font-display font-bold text-base text-[#40383A] pt-1">
                   {log.activity}
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 text-xs">
-                  <div className="bg-white p-3 rounded-xl border border-[#EFE5D8]">
-                    <p className="font-semibold text-[#3F3940] mb-1">Supervisão / Orientações:</p>
-                    <p className="text-[#716A70] leading-relaxed">{log.supervisionNotes}</p>
+                  <div className="bg-white p-3 rounded-xl border border-[#E9DFDC]">
+                    <p className="font-semibold text-[#40383A] mb-1">Supervisão / Orientações:</p>
+                    <p className="text-[#6D6366] leading-relaxed">{log.supervisionNotes}</p>
                   </div>
 
-                  <div className="bg-white p-3 rounded-xl border border-[#EFE5D8]">
-                    <p className="font-semibold text-[#3F3940] mb-1">Reflexão Pessoal / Ética:</p>
-                    <p className="text-[#716A70] leading-relaxed">{log.reflections}</p>
+                  <div className="bg-white p-3 rounded-xl border border-[#E9DFDC]">
+                    <p className="font-semibold text-[#40383A] mb-1">Reflexão Pessoal / Ética:</p>
+                    <p className="text-[#6D6366] leading-relaxed">{log.reflections}</p>
                   </div>
                 </div>
               </div>
@@ -314,29 +314,29 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
 
       {/* SUBTAB 4: MEU TCC */}
       {subTab === 'tcc' && (
-        <div className="journal-card p-6 space-y-5">
-          <div className="border-b border-[#EFE5D8] pb-4">
-            <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#F4D7DF] text-[#3F3940]">
+        <div className="rounded-[24px] p-6 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] space-y-5">
+          <div className="border-b border-[#F2EBE8] pb-4">
+            <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#FFF5F7] text-[#B94862] border border-[#FFD3DD]">
               TCC I • Em Andamento
             </span>
-            <h2 className="font-serif-display font-bold text-xl sm:text-2xl text-[#3F3940] mt-1">
+            <h2 className="font-display font-bold text-xl sm:text-2xl text-[#40383A] mt-2">
               {tcc.title}
             </h2>
-            <p className="text-xs text-[#716A70] mt-1">
-              Orientadora: <span className="font-semibold text-[#3F3940]">{tcc.advisor}</span> • Área: {tcc.field}
+            <p className="text-xs text-[#6D6366] mt-1">
+              Orientadora: <span className="font-semibold text-[#40383A]">{tcc.advisor}</span> • Área: {tcc.field}
             </p>
           </div>
 
           {/* Problem statement & Objectives */}
-          <div className="bg-[#FFF9F0] p-4 rounded-2xl border border-[#EFE5D8] space-y-3 text-xs">
+          <div className="bg-[#FAF8F5] p-4 rounded-2xl border border-[#E9DFDC] space-y-3 text-xs">
             <div>
-              <p className="font-semibold text-[#3F3940] mb-1">Problema de Pesquisa:</p>
-              <p className="text-[#716A70] leading-relaxed">{tcc.problemStatement}</p>
+              <p className="font-semibold text-[#40383A] mb-1">Problema de Pesquisa:</p>
+              <p className="text-[#6D6366] leading-relaxed">{tcc.problemStatement}</p>
             </div>
 
             <div>
-              <p className="font-semibold text-[#3F3940] mb-1">Objetivos:</p>
-              <ul className="list-disc pl-4 space-y-1 text-[#716A70]">
+              <p className="font-semibold text-[#40383A] mb-1">Objetivos:</p>
+              <ul className="list-disc pl-4 space-y-1 text-[#6D6366]">
                 {tcc.objectives.map((obj, idx) => (
                   <li key={idx}>{obj}</li>
                 ))}
@@ -346,7 +346,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
 
           {/* Chapters Checklist */}
           <div>
-            <h3 className="font-serif-display font-bold text-base text-[#3F3940] mb-3">
+            <h3 className="font-display font-bold text-base text-[#40383A] mb-3">
               Cronograma de Capítulos
             </h3>
 
@@ -357,19 +357,19 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
                   onClick={() => handleToggleTccChapter(idx)}
                   className={`flex items-center justify-between p-3 rounded-2xl border cursor-pointer transition-all ${
                     ch.completed
-                      ? 'bg-[#E3F1F7]/50 border-[#BFDDED] text-[#3F3940]'
-                      : 'bg-white border-[#EFE5D8] hover:border-[#E8AFC0]'
+                      ? 'bg-[#F3F9FC]/60 border-[#CEE7F0] text-[#396D82]'
+                      : 'bg-white border-[#E9DFDC] hover:border-[#FFD3DD]'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <CheckCircle2 className={`w-5 h-5 ${ch.completed ? 'text-[#A8C9B0]' : 'text-[#DCCBB8]'}`} />
-                    <span className={`text-xs font-medium ${ch.completed ? 'line-through text-[#9A9195]' : 'text-[#3F3940]'}`}>
+                    <CheckCircle2 className={`w-5 h-5 ${ch.completed ? 'text-[#518265]' : 'text-[#BEB4B6]'}`} />
+                    <span className={`text-xs font-medium ${ch.completed ? 'line-through text-[#918689]' : 'text-[#40383A]'}`}>
                       {ch.title}
                     </span>
                   </div>
 
                   {ch.dueDate && (
-                    <span className="text-[10px] text-[#716A70]">Prazo: {ch.dueDate}</span>
+                    <span className="text-[10px] text-[#6D6366]">Prazo: {ch.dueDate}</span>
                   )}
                 </div>
               ))}
@@ -378,12 +378,12 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
 
           {/* References ABNT */}
           <div>
-            <h3 className="font-serif-display font-bold text-base text-[#3F3940] mb-2">
+            <h3 className="font-display font-bold text-base text-[#40383A] mb-2">
               Referências Utilizadas (ABNT)
             </h3>
-            <div className="space-y-1.5 text-xs text-[#716A70]">
+            <div className="space-y-1.5 text-xs text-[#6D6366]">
               {tcc.references.map((ref, idx) => (
-                <p key={idx} className="bg-white p-2.5 rounded-xl border border-[#EFE5D8] font-mono text-[11px]">
+                <p key={idx} className="bg-[#FAF8F5] p-2.5 rounded-xl border border-[#E9DFDC] font-mono text-[11px] text-[#40383A]">
                   {ref}
                 </p>
               ))}
@@ -394,67 +394,67 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
 
       {/* SUBTAB 5: PERSONALIZAÇÃO DO CANTINHO */}
       {subTab === 'configuracoes' && (
-        <div className="journal-card p-6 space-y-5">
-          <h2 className="font-serif-display font-bold text-xl text-[#3F3940]">
+        <div className="rounded-[24px] p-6 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] space-y-5">
+          <h2 className="font-display font-bold text-xl text-[#40383A]">
             Personalize Seu Cantinho no cecistudy
           </h2>
 
           <form onSubmit={handleSaveProfile} className="space-y-4 max-w-lg">
             <div>
-              <label className="block text-xs font-medium text-[#716A70] mb-1">Seu Nome</label>
+              <label className="block text-xs font-medium text-[#6D6366] mb-1">Seu Nome</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3.5 py-2 text-sm"
+                className="w-full bg-[#FAF8F5] border border-[#E9DFDC] focus:outline-none focus:border-[#E97891] rounded-xl px-3.5 py-2 text-sm text-[#40383A]"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium text-[#716A70] mb-1">Semestre Atual</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">Semestre Atual</label>
                 <input
                   type="number"
                   value={semester}
                   onChange={(e) => setSemester(Number(e.target.value))}
-                  className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3.5 py-2 text-sm"
+                  className="w-full bg-[#FAF8F5] border border-[#E9DFDC] focus:outline-none focus:border-[#E97891] rounded-xl px-3.5 py-2 text-sm text-[#40383A]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#716A70] mb-1">Universidade</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">Universidade</label>
                 <input
                   type="text"
                   value={university}
                   onChange={(e) => setUniversity(e.target.value)}
-                  className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3.5 py-2 text-sm"
+                  className="w-full bg-[#FAF8F5] border border-[#E9DFDC] focus:outline-none focus:border-[#E97891] rounded-xl px-3.5 py-2 text-sm text-[#40383A]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#716A70] mb-1">Status / Mood do Dia</label>
+              <label className="block text-xs font-medium text-[#6D6366] mb-1">Status / Mood do Dia</label>
               <input
                 type="text"
                 value={avatarMood}
                 onChange={(e) => setAvatarMood(e.target.value)}
-                className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3.5 py-2 text-sm"
+                className="w-full bg-[#FAF8F5] border border-[#E9DFDC] focus:outline-none focus:border-[#E97891] rounded-xl px-3.5 py-2 text-sm text-[#40383A]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#716A70] mb-1">Frase Motivacional de Entrada</label>
+              <label className="block text-xs font-medium text-[#6D6366] mb-1">Frase Motivacional de Entrada</label>
               <textarea
                 rows={2}
                 value={dailyQuote}
                 onChange={(e) => setDailyQuote(e.target.value)}
-                className="w-full bg-white border border-[#DCCBB8] rounded-xl px-3.5 py-2 text-xs"
+                className="w-full bg-[#FAF8F5] border border-[#E9DFDC] focus:outline-none focus:border-[#E97891] rounded-xl px-3.5 py-2 text-xs text-[#40383A]"
               />
             </div>
 
             <button
               type="submit"
-              className="bg-[#E8AFC0] hover:bg-[#e09eb1] text-white px-5 py-2.5 rounded-xl text-xs font-medium shadow-2xs"
+              className="bg-[#E97891] hover:bg-[#D85F79] text-white px-5 py-2.5 rounded-xl text-xs font-medium shadow-2xs cursor-pointer"
             >
               Salvar Configurações do Cantinho
             </button>

@@ -1,97 +1,181 @@
 @import "tailwindcss";
 
 @theme {
-  /* BALANCED COZY CUTE ACADEMIC PALETTE */
+  /* cecistudy DESIGN SYSTEM PRIMITIVE TOKENS */
+
+  /* ROSE (identity, action, personal afeto) */
   --color-rose-50: #FFF5F7;
-  --color-rose-100: #FFEAF0;
-  --color-rose-200: #FFD4E0;
-  --color-rose-300: #FFB3C5;
-  --color-rose-400: #F3819E;
-  --color-rose-500: #E26D8B;
-  --color-rose-600: #CE5373;
-  --color-rose-700: #A83A58;
+  --color-rose-100: #FFE9EE;
+  --color-rose-200: #FFD3DD;
+  --color-rose-300: #FFB8C7;
+  --color-rose-400: #F596AA;
+  --color-rose-500: #E97891;
+  --color-rose-600: #D85F79;
+  --color-rose-700: #B94862;
+  --color-rose-800: #963B51;
+  --color-rose-900: #71303F;
 
-  /* PASTEL SKY BLUE */
-  --color-sky-50: #F4F9FC;
-  --color-sky-100: #E6F0F7;
-  --color-sky-200: #CEE1EF;
-  --color-sky-500: #4B85A6;
-  --color-sky-700: #33627E;
+  /* BLUE (knowledge, academic context) */
+  --color-blue-50: #F3F9FC;
+  --color-blue-100: #E6F2F7;
+  --color-blue-200: #CEE7F0;
+  --color-blue-300: #ADD4E2;
+  --color-blue-400: #83BCD0;
+  --color-blue-500: #609FB8;
+  --color-blue-600: #4A879F;
+  --color-blue-700: #396D82;
+  --color-blue-800: #2F596A;
+  --color-blue-900: #284955;
 
-  /* PASTEL BUTTER CREAM */
+  /* CREAM (my space, main canvas atmosphere) */
   --color-cream-50: #FFFCF8;
-  --color-cream-100: #FFF7EC;
-  --color-cream-200: #FFF0DB;
-  --color-cream-500: #9E6B38;
+  --color-cream-100: #FFF8F1;
+  --color-cream-200: #FFF1E5;
+  --color-cream-300: #F9E7D5;
+  --color-cream-400: #EFD5BE;
+  --color-cream-500: #DEC0A4;
 
-  /* PASTEL SAGE GREEN */
-  --color-sage-50: #F5F9F6;
-  --color-sage-100: #E8F3EB;
-  --color-sage-200: #CEE4D5;
-  --color-sage-600: #487A5B;
+  /* BEIGE (support, editorial, context) */
+  --color-beige-50: #FAF8F5;
+  --color-beige-100: #F3EEE8;
+  --color-beige-200: #E8DFD5;
+  --color-beige-300: #D9CDC0;
+  --color-beige-400: #C6B6A5;
+  --color-beige-500: #AD9986;
+  --color-beige-600: #927D6B;
+  --color-beige-700: #756354;
 
-  /* NEUTRAL LINEN */
-  --color-linen-50: #FFFDF9;
-  --color-linen-100: #F7F2EC;
-  --color-linen-200: #EFE6DC;
-  --color-linen-300: #E2D6C8;
+  /* GREEN (conclusion, completion, success) */
+  --color-green-50: #F2FAF5;
+  --color-green-100: #DDF3E5;
+  --color-green-200: #C2E8D0;
+  --color-green-300: #A8D8B9;
+  --color-green-400: #8BC7A2;
+  --color-green-500: #72B98D;
+  --color-green-600: #5A9F76;
+  --color-green-700: #43805B;
+  --color-green-800: #356647;
+  --color-green-900: #2A513A;
 
-  /* TEXT TOKENS */
-  --color-text-primary: #3D3336;
-  --color-text-secondary: #6B5E62;
-  --color-text-tertiary: #96888C;
-  --color-text-muted: #B3A5A9;
+  /* YELLOW (attention, warning) */
+  --color-yellow-50: #FFF9ED;
+  --color-yellow-100: #FFF0CC;
+  --color-yellow-200: #FCE4A8;
+  --color-yellow-300: #F3D48B;
+  --color-yellow-400: #E8C36D;
+  --color-yellow-500: #DCAF55;
+  --color-yellow-600: #BD913C;
+  --color-yellow-700: #96702B;
+  --color-yellow-800: #765824;
+  --color-yellow-900: #5E471F;
+
+  /* RED (error, problem) */
+  --color-red-50: #FFF5F4;
+  --color-red-100: #FFE2DF;
+  --color-red-200: #FACCC8;
+  --color-red-300: #F1AAA4;
+  --color-red-400: #E89189;
+  --color-red-500: #D97A72;
+  --color-red-600: #C5665E;
+  --color-red-700: #A8514B;
+  --color-red-800: #843F3A;
+  --color-red-900: #68332F;
+
+  /* SEMANTIC SHORTCUT ALIASES FOR TAILWIND UTILITIES */
+  --color-canvas: #FFFCF8;
+  --color-surface-default: #FFFFFF;
+  --color-surface-subtle: #FFF8F1;
+  --color-surface-muted: #FAF8F5;
+  --color-surface-rose: #FFF5F7;
+  --color-surface-blue: #F3F9FC;
+
+  --color-ceci-primary: #40383A;
+  --color-ceci-secondary: #6D6366;
+  --color-ceci-tertiary: #918689;
+  --color-ceci-muted: #ADA3A5;
+  --color-ceci-brand: #D85F79;
+  --color-ceci-brand-strong: #B94862;
+  --color-ceci-academic: #4A879F;
+  --color-ceci-academic-strong: #396D82;
+
+  --color-ceci-border-subtle: #F2EBE8;
+  --color-ceci-border-default: #E9DFDC;
+  --color-ceci-border-strong: #DCCFCA;
+  --color-ceci-border-brand: #FFD3DD;
+  --color-ceci-border-academic: #CEE7F0;
 
   /* FONTS */
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-display: 'DM Sans', sans-serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, sans-serif;
   --font-serif: 'DM Serif Display', Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* RADIUS */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-3xl: 32px;
+
+  /* SHADOWS */
+  --shadow-xs: 0 1px 2px rgba(64, 56, 58, 0.04);
+  --shadow-sm: 0 2px 8px rgba(64, 56, 58, 0.05);
+  --shadow-md: 0 6px 18px rgba(64, 56, 58, 0.07);
+  --shadow-lg: 0 12px 32px rgba(64, 56, 58, 0.09);
+  --shadow-xl: 0 20px 48px rgba(64, 56, 58, 0.12);
+  --shadow-floating: 0 8px 28px rgba(64, 56, 58, 0.12);
 }
 
 @layer base {
   :root {
-    --bg-canvas: #FFFDF9;
-    --text-primary: #3D3336;
-    --text-secondary: #6B5E62;
-    --text-muted: #B3A5A9;
+    --color-bg-canvas: #FFFCF8;
+    --color-text-primary: #40383A;
+    --color-text-secondary: #6D6366;
+    --color-text-tertiary: #918689;
+    --color-text-muted: #ADA3A5;
+    --color-border-subtle: #F2EBE8;
+    --color-border-default: #E9DFDC;
   }
 
   body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background-color: #FFFDF9;
-    color: #3D3336;
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    background-color: #FFFCF8;
+    color: #40383A;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
   }
 
-  h1, h2, h3, .font-serif-display {
-    font-family: 'DM Serif Display', Georgia, serif;
+  h1, h2, h3, .font-display {
+    font-family: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, sans-serif;
     letter-spacing: -0.015em;
   }
 
-  .font-personality {
-    font-family: 'DM Sans', sans-serif;
+  .font-serif-academic {
+    font-family: 'DM Serif Display', Georgia, serif;
   }
 }
 
-/* Cozy Journal Card Styling */
+/* Cozy Academic Card Styling aligned with Design Tokens */
 .journal-card {
   background-color: #FFFFFF;
-  border-radius: 22px;
-  box-shadow: 0 2px 10px rgba(226, 109, 139, 0.05), 0 1px 3px rgba(61, 51, 54, 0.03);
-  border: 1px solid #F0E6E3;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(64, 56, 58, 0.05);
+  border: 1px solid #F2EBE8;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .journal-card:hover {
-  box-shadow: 0 6px 20px -4px rgba(226, 109, 139, 0.12);
-  border-color: #FFD4E0;
+  box-shadow: 0 6px 18px rgba(64, 56, 58, 0.07);
+  border-color: #E9DFDC;
 }
 
 /* Paper Texture Background */
 .paper-texture {
-  background-image: radial-gradient(#FFD4E0 0.6px, transparent 0.6px);
+  background-image: radial-gradient(#FFD3DD 0.6px, transparent 0.6px);
   background-size: 18px 18px;
-  background-color: #FFFDF9;
+  background-color: #FFFCF8;
 }
 
 /* Cute Badge Styling */
@@ -125,14 +209,15 @@
   height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #FFFDF9;
+  background: #FFFCF8;
 }
 ::-webkit-scrollbar-thumb {
-  background: #EFE6DC;
+  background: #E8DFD5;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #FFD4E0;
+  background: #FFD3DD;
 }
+
 
 

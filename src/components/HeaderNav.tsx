@@ -35,7 +35,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
 
   return (
     <header
-      className={`sticky top-0 z-30 bg-[#FFFCF8]/95 backdrop-blur-md border-b border-[#F1E9E6] px-4 transition-all duration-300 ease-in-out ${
+      className={`sticky top-0 z-30 bg-[#FFFCF8]/90 backdrop-blur-md border-b border-[#F2EBE8] px-4 transition-all duration-300 ease-in-out ${
         scrolled ? 'py-1.5 shadow-xs' : 'py-3 sm:py-3.5'
       }`}
     >
@@ -44,7 +44,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
         <div className="flex items-center gap-2.5">
           <div
             onClick={onNavigateToPerfil}
-            className={`rounded-full bg-[#FFE7ED] border-2 border-[#FFB3C4] flex items-center justify-center text-[#40383A] font-serif-display font-bold shadow-2xs cursor-pointer transition-all duration-300 ${
+            className={`rounded-full bg-[#FFF5F7] border-2 border-[#FFD3DD] flex items-center justify-center text-[#40383A] font-display font-bold shadow-2xs cursor-pointer transition-all duration-300 ${
               scrolled ? 'w-7 h-7 text-xs' : 'w-10 h-10 text-lg hover:scale-105'
             }`}
             title="Ver Meu Espaço"
@@ -54,15 +54,15 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
           <div>
             <div className="flex items-center gap-1.5">
               <span
-                className={`font-serif-display text-[#40383A] tracking-tight font-bold transition-all duration-300 ${
+                className={`font-display text-[#40383A] tracking-tight font-bold transition-all duration-300 ${
                   scrolled ? 'text-base sm:text-lg' : 'text-xl sm:text-2xl'
                 }`}
               >
                 cecistudy
               </span>
-              <span className="text-[#EA718F] text-xs sm:text-sm animate-pulse">♡</span>
+              <span className="text-[#D85F79] text-xs sm:text-sm animate-pulse">♡</span>
               <span
-                className={`bg-[#E4F1F8] text-[#32677F] rounded-full font-medium border border-[#CDE6F2] transition-all duration-300 ${
+                className={`bg-[#F3F9FC] text-[#396D82] rounded-full font-medium border border-[#CEE7F0] transition-all duration-300 ${
                   scrolled ? 'text-[9px] px-1.5 py-0.2' : 'text-[10px] px-2 py-0.5'
                 }`}
               >
@@ -70,7 +70,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               </span>
             </div>
             {!scrolled && (
-              <p className="text-xs text-[#6F6568] hidden sm:block transition-all duration-300 mt-0.5">
+              <p className="text-xs text-[#6D6366] hidden sm:block transition-all duration-300 mt-0.5">
                 {formattedDate} • {profile.university}
               </p>
             )}
@@ -80,23 +80,23 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
         {/* Center Search Trigger */}
         <button
           onClick={onOpenSearch}
-          className={`flex-1 max-w-sm hidden md:flex items-center gap-2 bg-white/90 hover:bg-white text-[#6F6568] px-3.5 rounded-full border border-[#E8DEDB] shadow-2xs transition-all duration-300 ${
+          className={`flex-1 max-w-sm hidden md:flex items-center gap-2 bg-white/90 hover:bg-white text-[#6D6366] px-3.5 rounded-full border border-[#E9DFDC] shadow-2xs transition-all duration-300 cursor-pointer ${
             scrolled ? 'py-1 text-[11px] min-h-[32px]' : 'py-2 text-xs min-h-[40px]'
           }`}
         >
-          <Search className="w-3.5 h-3.5 text-[#B0A6A8] shrink-0" />
+          <Search className="w-3.5 h-3.5 text-[#918689] shrink-0" />
           <span className="truncate">Buscar conceitos, autores (Freud, Beck...), aulas...</span>
-          <kbd className="ml-auto text-[10px] bg-[#FAF7F2] px-1.5 py-0.5 rounded text-[#958B8D] border border-[#E8DEDB]">
+          <kbd className="ml-auto text-[10px] bg-[#FAF8F5] px-1.5 py-0.5 rounded text-[#918689] border border-[#E9DFDC]">
             ⌘K
           </kbd>
         </button>
 
-        {/* Quick Actions (Plus button removed as requested) */}
+        {/* Quick Actions */}
         <div className="flex items-center gap-2">
           {/* Mobile Search Button */}
           <button
             onClick={onOpenSearch}
-            className={`md:hidden rounded-full text-[#40383A] bg-white border border-[#E8DEDB] hover:bg-[#FFF4F7] transition-all flex items-center justify-center ${
+            className={`md:hidden rounded-full text-[#40383A] bg-white border border-[#E9DFDC] hover:bg-[#FFF5F7] transition-all flex items-center justify-center cursor-pointer ${
               scrolled ? 'w-8 h-8' : 'w-10 h-10'
             }`}
             title="Buscar"
@@ -107,11 +107,11 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
           {/* Mood Badge */}
           <button
             onClick={onNavigateToPerfil}
-            className={`hidden sm:flex items-center gap-1.5 bg-[#FFF4F7] border border-[#FFD1DC] hover:border-[#F98FA8] text-[#B94763] px-3 rounded-full font-medium shadow-2xs transition-all duration-300 ${
+            className={`hidden sm:flex items-center gap-1.5 bg-[#FFF5F7] border border-[#FFD3DD] hover:border-[#FFB8C7] text-[#B94862] px-3 rounded-full font-medium shadow-2xs transition-all duration-300 cursor-pointer ${
               scrolled ? 'py-1 text-[11px] min-h-[32px]' : 'py-1.5 text-xs min-h-[40px]'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5 text-[#EA718F] shrink-0" />
+            <Sparkles className="w-3.5 h-3.5 text-[#E97891] shrink-0" />
             <span className="truncate max-w-[130px]">{profile.avatarMood}</span>
           </button>
         </div>

@@ -16,53 +16,53 @@ export const ContinueReadingWidget: React.FC<ContinueReadingWidgetProps> = ({
   const estMinutesLeft = Math.round(remainingPages * 1.5);
 
   return (
-    <div className="journal-card p-5 bg-white border border-[#EFE5D8] shadow-xs hover:border-[#E8AFC0] transition-all">
+    <div className="rounded-[24px] p-5 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] hover:border-[#FFD3DD] transition-all">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-[11px] font-semibold text-[#716A70] tracking-wide uppercase">
+        <span className="text-[11px] font-semibold text-[#6D6366] tracking-wide uppercase">
           Continuar de onde parou 📖
         </span>
-        <button className="text-[#9A9195] hover:text-[#3F3940]">
+        <button className="text-[#918689] hover:text-[#40383A] cursor-pointer">
           <MoreHorizontal className="w-4 h-4" />
         </button>
       </div>
 
       <div className="flex items-start gap-4">
         {/* Book Cover Mockup */}
-        <div className="w-20 h-28 rounded-xl bg-gradient-to-br from-[#F4D7DF] via-[#E8AFC0] to-[#DCCBB8] shadow-xs flex flex-col justify-between p-2.5 text-[#3F3940] shrink-0 relative overflow-hidden border border-[#E8AFC0]/40">
+        <div className="w-20 h-28 rounded-xl bg-gradient-to-br from-[#FFF5F7] via-[#FFD3DD] to-[#FAF8F5] shadow-2xs flex flex-col justify-between p-2.5 text-[#40383A] shrink-0 relative overflow-hidden border border-[#FFD3DD]">
           <div className="absolute -right-3 -bottom-3 opacity-20 pointer-events-none">
-            <BookOpen className="w-16 h-16 text-[#3F3940]" />
+            <BookOpen className="w-16 h-16 text-[#40383A]" />
           </div>
-          <span className="text-[9px] font-bold uppercase tracking-wider bg-white/80 px-1.5 py-0.5 rounded self-start">
+          <span className="text-[9px] font-bold uppercase tracking-wider bg-white/90 px-1.5 py-0.5 rounded self-start text-[#40383A]">
             {reading.type}
           </span>
           <div>
-            <p className="font-serif-display font-bold text-xs line-clamp-2 leading-tight">
+            <p className="font-display font-bold text-xs line-clamp-2 leading-tight text-[#40383A]">
               {reading.title}
             </p>
-            <p className="text-[9px] text-[#716A70] line-clamp-1 mt-0.5">{reading.author}</p>
+            <p className="text-[9px] text-[#6D6366] line-clamp-1 mt-0.5">{reading.author}</p>
           </div>
         </div>
 
         {/* Book Info & Progress */}
         <div className="flex-1 flex flex-col justify-between h-28">
           <div>
-            <h3 className="font-serif-display font-bold text-base text-[#3F3940] line-clamp-1">
+            <h3 className="font-display font-bold text-base text-[#40383A] line-clamp-1">
               {reading.title}
             </h3>
-            <p className="text-xs text-[#716A70] mt-0.5">{reading.author}</p>
+            <p className="text-xs text-[#6D6366] mt-0.5">{reading.author}</p>
           </div>
 
           <div className="space-y-1.5">
-            <div className="flex items-center justify-between text-xs text-[#716A70]">
+            <div className="flex items-center justify-between text-xs text-[#6D6366]">
               <span className="flex items-center gap-1 text-[11px]">
-                <Clock className="w-3 h-3 text-[#E8AFC0]" /> ~{estMinutesLeft} min restantes
+                <Clock className="w-3 h-3 text-[#E97891]" /> ~{estMinutesLeft} min restantes
               </span>
-              <span className="font-bold text-[#3F3940]">{percent}%</span>
+              <span className="font-bold text-[#40383A]">{percent}%</span>
             </div>
 
-            <div className="w-full h-1.5 bg-[#EFE5D8] rounded-full overflow-hidden">
+            <div className="w-full h-1.5 bg-[#FAF8F5] border border-[#E9DFDC] rounded-full overflow-hidden">
               <div
-                className="h-full bg-[#3F3940] rounded-full transition-all duration-300"
+                className="h-full bg-[#40383A] rounded-full transition-all duration-300"
                 style={{ width: `${percent}%` }}
               />
             </div>
@@ -70,7 +70,7 @@ export const ContinueReadingWidget: React.FC<ContinueReadingWidgetProps> = ({
 
           <button
             onClick={() => onContinue(reading)}
-            className="w-full bg-[#3F3940] hover:bg-[#2A252B] text-white py-2 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 shadow-2xs transition-transform active:scale-98 mt-1"
+            className="w-full bg-[#40383A] hover:bg-[#2D2728] text-white py-2 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 shadow-2xs transition-transform active:scale-98 mt-1 cursor-pointer"
           >
             <span>Continuar Leitura</span>
             <ChevronRight className="w-3.5 h-3.5" />
