@@ -1,52 +1,104 @@
 import React, { useState } from 'react';
 import {
-  GraduationCap,
   BookOpen,
   Calendar as CalendarIcon,
-  FileCheck2,
-  Clock,
-  Plus,
-  Sparkles,
-  User,
   ChevronRight,
+  FileCheck2,
+  AlertCircle,
   CheckCircle2,
-  AlertCircle
 } from 'lucide-react';
-import { Course, ClassNote, Exam, SubTabFaculdade } from '../../types';
+import {
+  Course,
+  ClassNote,
+  Exam,
+  Task,
+  SubTabFaculdade,
+  PsychologyConcept,
+  PsychologyAuthor,
+  ReadingItem,
+  MaterialItem,
+  InternshipLog,
+} from '../../types';
+import { CourseDetailView } from './CourseDetailView';
 
 interface FaculdadeViewProps {
   courses: Course[];
   classes: ClassNote[];
   exams: Exam[];
+  tasks: Task[];
+  concepts?: PsychologyConcept[];
+  authors?: PsychologyAuthor[];
+  readings?: ReadingItem[];
+  materials?: MaterialItem[];
+  internshipLogs?: InternshipLog[];
   initialSubTab?: SubTabFaculdade;
   selectedCourseId?: string;
+  focusedCourseId?: string | null;
+  onSelectCourse?: (courseId: string | null) => void;
   onOpenQuickAdd: () => void;
   onToggleExam: (examId: string) => void;
+  onToggleTask?: (taskId: string) => void;
 }
 
 export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
   courses,
   classes,
   exams,
+  tasks,
+  concepts = [],
+  authors = [],
+  readings = [],
+  materials = [],
+  internshipLogs = [],
   initialSubTab = 'disciplinas',
   selectedCourseId,
+  focusedCourseId,
+  onSelectCourse,
   onOpenQuickAdd,
   onToggleExam,
+  onToggleTask = () => {},
 }) => {
   const [subTab, setSubTab] = useState<SubTabFaculdade>(initialSubTab);
-  const [activeCourseFilter, setActiveCourseFilter] = useState<string | null>(selectedCourseId || null);
   const [selectedClass, setSelectedClass] = useState<ClassNote | null>(null);
+  const [internalFocusedCourseId, setInternalFocusedCourseId] = useState<string | null>(selectedCourseId || null);
 
-  const filteredClasses = activeCourseFilter
-    ? classes.filter((c) => c.courseId === activeCourseFilter)
-    : classes;
+  const activeFocusedId = focusedCourseId !== undefined ? focusedCourseId : internalFocusedCourseId;
 
-  const filteredExams = activeCourseFilter
-    ? exams.filter((e) => e.courseId === activeCourseFilter)
-    : exams;
+  const handleSetFocusedCourse = (id: string | null) => {
+    if (onSelectCourse) {
+      onSelectCourse(id);
+    }
+    setInternalFocusedCourseId(id);
+  };
+
+  const focusedCourse = courses.find((c) => c.id === activeFocusedId);
+
+  // If a course detail is active, render CourseDetailView
+  if (focusedCourse) {
+    return (
+      <CourseDetailView
+        course={focusedCourse}
+        classes={classes}
+        exams={exams}
+        tasks={tasks}
+        concepts={concepts}
+        authors={authors}
+        readings={readings}
+        materials={materials}
+        internshipLogs={internshipLogs}
+        onBack={() => handleSetFocusedCourse(null)}
+        onToggleExam={onToggleExam}
+        onToggleTask={onToggleTask}
+        onOpenQuickAdd={onOpenQuickAdd}
+      />
+    );
+  }
+
+  const filteredClasses = classes;
+  const filteredExams = exams;
 
   return (
-    <div className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-16 animate-in fade-in duration-300">
+    <div className="max-w-md sm:max-w-xl mx-auto space-y-6 pb-20 animate-in fade-in duration-300">
       
       {/* Top Header Label & Title */}
       <div className="flex items-center justify-between pt-1 px-1">
@@ -65,64 +117,17 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
         </button>
       </div>
 
-      {/* Hero Card: Seu semestre em um só lugar */}
-      <div className="rounded-[24px] p-6 bg-gradient-to-br from-[#FFF5F7]/90 via-white to-[#FFF8F1]/80 border border-[#FFD3DD] relative overflow-hidden space-y-4 shadow-[0_2px_8px_rgba(64,56,58,0.05)]">
-        <div>
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[#B94862] lowercase tracking-wider bg-white/90 px-3 py-1 rounded-full border border-[#FFD3DD] shadow-2xs">
-              semestre 2026.2 ♡
-            </span>
-            <span className="text-xs text-[#6D6366] font-semibold bg-white/80 px-2.5 py-1 rounded-full border border-[#E9DFDC]">psicologia</span>
-          </div>
-
-          <h2 className="font-display text-xl sm:text-2xl font-bold text-[#40383A] mt-2">
-            seu semestre em um só lugar
-          </h2>
-          <p className="text-xs text-[#6D6366] mt-1 leading-relaxed">
-            disciplinas, aulas, tarefas e provas organizados com leveza e carinho.
-          </p>
-        </div>
-
-        {/* Micro Pills Row */}
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs bg-white/90 text-[#40383A] px-3.5 py-1 rounded-full font-semibold border border-[#FFD3DD]">
-            5 disciplinas
-          </span>
-          <span className="text-xs bg-[#FFF5F7] text-[#B94862] px-3.5 py-1 rounded-full font-semibold border border-[#FFD3DD]">
-            2 provas próximas
-          </span>
-          <span className="text-xs bg-[#F3F9FC] text-[#396D82] px-3.5 py-1 rounded-full font-semibold border border-[#CEE7F0]">
-            3 tarefas da semana
-          </span>
-        </div>
-
-        {/* Circular Progress Box */}
-        <div className="p-4 rounded-2xl bg-white/90 border border-[#FFD3DD] flex items-center gap-4 shadow-2xs">
-          <div className="relative w-12 h-12 shrink-0 flex items-center justify-center">
-            <svg className="w-12 h-12 transform -rotate-90">
-              <circle cx="24" cy="24" r="19" stroke="#FFF5F7" strokeWidth="4" fill="transparent" />
-              <circle
-                cx="24"
-                cy="24"
-                r="19"
-                stroke="#E97891"
-                strokeWidth="4"
-                fill="transparent"
-                strokeDasharray={120}
-                strokeDashoffset={120 - (120 * 0.62)}
-                strokeLinecap="round"
-              />
-            </svg>
-            <span className="absolute font-display font-bold text-xs text-[#B94862]">62%</span>
-          </div>
-
-          <div>
-            <h3 className="font-display font-bold text-sm text-[#40383A]">ritmo bonito de estudo ✨</h3>
-            <p className="text-xs text-[#6D6366] mt-0.5 leading-relaxed">
-              psicopatologia e social conduzindo seu progresso com consistência.
-            </p>
-          </div>
-        </div>
+      {/* Inline Semester Summary Badges */}
+      <div className="flex flex-wrap items-center gap-2 px-1">
+        <span className="text-xs bg-[#FFF5F7] text-[#B94862] px-3 py-1 rounded-full font-semibold border border-[#FFD3DD]">
+          {courses.length} disciplinas
+        </span>
+        <span className="text-xs bg-white text-[#40383A] px-3 py-1 rounded-full font-semibold border border-[#E9DFDC]">
+          {exams.filter((e) => !e.completed).length} provas próximas
+        </span>
+        <span className="text-xs bg-[#F3F9FC] text-[#396D82] px-3 py-1 rounded-full font-semibold border border-[#CEE7F0]">
+          {tasks.filter((t) => !t.completed).length} tarefas pendentes
+        </span>
       </div>
 
       {/* Sub-Tabs Navigation */}
@@ -155,9 +160,9 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
 
       {/* SUBTAB 1: DISCIPLINAS */}
       {subTab === 'disciplinas' && (
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div className="flex items-center justify-between px-1">
-            <h2 className="font-display text-lg font-bold text-[#40383A]">grade de disciplinas</h2>
+            <h2 className="font-display text-base font-bold text-[#40383A]">grade de disciplinas</h2>
             <button
               onClick={() => setSubTab('calendario')}
               className="text-xs text-[#B94862] hover:underline font-semibold cursor-pointer"
@@ -167,166 +172,114 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
           </div>
 
           <div className="space-y-3">
-            {/* Course 1: Rose Border Accent */}
-            <div
-              onClick={() => {
-                setActiveCourseFilter('c1');
-                setSubTab('aulas');
-              }}
-              className="rounded-[24px] p-5 bg-white border border-[#E9DFDC] border-l-4 border-l-[#B94862] cursor-pointer hover:border-[#FFD3DD] transition-all space-y-3 shadow-[0_2px_8px_rgba(64,56,58,0.05)]"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="font-display text-lg font-bold text-[#40383A]">
-                    Psicopatologia
-                  </h3>
-                  <p className="text-xs text-[#6D6366] mt-0.5">Profa. Helena Matos • 7 de 12 aulas</p>
-                </div>
-                <span className="text-[10px] font-bold tracking-wider lowercase bg-[#FFF5F7] text-[#B94862] px-2.5 py-1 rounded-full border border-[#FFD3DD]">
-                  amanhã 09:00
-                </span>
-              </div>
+            {courses.map((course) => {
+              const courseClassCount = classes.filter((c) => c.courseId === course.id).length;
+              const nextExam = exams.find((e) => e.courseId === course.id && !e.completed);
 
-              <p className="text-xs text-[#6D6366]">1 leitura obrigatória • prova em 12/08</p>
+              return (
+                <div
+                  key={course.id}
+                  onClick={() => handleSetFocusedCourse(course.id)}
+                  className="rounded-[24px] p-5 bg-white border border-[#E9DFDC] cursor-pointer hover:border-[#FFD3DD] transition-all space-y-3 shadow-[0_2px_8px_rgba(64,56,58,0.04)] hover:shadow-md group"
+                  style={{ borderLeftWidth: '4px', borderLeftColor: course.color || '#B94862' }}
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-bold text-[#6D6366] uppercase tracking-wider bg-[#FAF8F5] px-2 py-0.5 rounded-md border border-[#E9DFDC]">
+                          {course.code || 'PSI-300'}
+                        </span>
+                        <h3 className="font-display text-lg font-bold text-[#40383A] group-hover:text-[#B94862] transition-colors">
+                          {course.name}
+                        </h3>
+                      </div>
+                      <p className="text-xs text-[#6D6366] mt-1">
+                        {course.professor} • {courseClassCount} aulas anotadas
+                      </p>
+                    </div>
 
-              {/* Progress */}
-              <div className="space-y-1 pt-1">
-                <div className="w-full h-1.5 bg-[#FAF8F5] rounded-full overflow-hidden border border-[#E9DFDC]">
-                  <div className="h-full bg-[#B94862] rounded-full" style={{ width: '70%' }} />
-                </div>
-                <div className="flex items-center justify-between text-[11px] text-[#6D6366] pt-1">
-                  <span>módulo atual: conceituação tcc</span>
-                  <span className="font-semibold text-[#B94862] flex items-center gap-0.5">
-                    acessar aulas <ChevronRight className="w-3 h-3" />
-                  </span>
-                </div>
-              </div>
-            </div>
+                    <span className="text-[10px] font-bold tracking-wider lowercase bg-[#FFF5F7] text-[#B94862] px-2.5 py-1 rounded-full border border-[#FFD3DD] shrink-0">
+                      {course.room || 'Bloco C'}
+                    </span>
+                  </div>
 
-            {/* Course 2: Blue Border Accent */}
-            <div
-              onClick={() => {
-                setActiveCourseFilter('c2');
-                setSubTab('aulas');
-              }}
-              className="rounded-[24px] p-5 bg-white border border-[#E9DFDC] border-l-4 border-l-[#396D82] cursor-pointer hover:border-[#CEE7F0] transition-all space-y-3 shadow-[0_2px_8px_rgba(64,56,58,0.05)]"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="font-display text-lg font-bold text-[#40383A]">
-                    Psicologia Social
-                  </h3>
-                  <p className="text-xs text-[#6D6366] mt-0.5">Prof. André Vidal • 6 de 10 aulas</p>
-                </div>
-                <span className="text-[10px] font-bold tracking-wider lowercase bg-[#F3F9FC] text-[#396D82] px-2.5 py-1 rounded-full border border-[#CEE7F0]">
-                  amanhã 14:00
-                </span>
-              </div>
+                  <p className="text-xs text-[#6D6366] line-clamp-1">
+                    {course.schedule || 'Semanal'} • {nextExam ? `Prova em ${nextExam.date}` : 'Sem provas pendentes'}
+                  </p>
 
-              <p className="text-xs text-[#6D6366]">seminário científico • grupo 03</p>
-
-              {/* Progress */}
-              <div className="space-y-1 pt-1">
-                <div className="w-full h-1.5 bg-[#FAF8F5] rounded-full overflow-hidden border border-[#E9DFDC]">
-                  <div className="h-full bg-[#396D82] rounded-full" style={{ width: '60%' }} />
+                  <div className="space-y-1 pt-1">
+                    <div className="w-full h-1.5 bg-[#FAF8F5] rounded-full overflow-hidden border border-[#E9DFDC]">
+                      <div
+                        className="h-full rounded-full transition-all"
+                        style={{ width: `${course.progress || 50}%`, backgroundColor: course.color || '#B94862' }}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] text-[#6D6366] pt-1">
+                      <span>progresso: {course.progress || 50}%</span>
+                      <span className="font-semibold text-[#B94862] flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
+                        abrir disciplina <ChevronRight className="w-3.5 h-3.5" />
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between text-[11px] text-[#6D6366] pt-1">
-                  <span>módulo atual: influência social</span>
-                  <span className="font-semibold text-[#396D82] flex items-center gap-0.5">
-                    acessar aulas <ChevronRight className="w-3 h-3" />
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Course 3: Beige Border Accent */}
-            <div
-              onClick={() => {
-                setActiveCourseFilter('c3');
-                setSubTab('aulas');
-              }}
-              className="rounded-[24px] p-5 bg-white border border-[#E9DFDC] border-l-4 border-l-[#756354] cursor-pointer hover:border-[#FFF1E5] transition-all space-y-3 shadow-[0_2px_8px_rgba(64,56,58,0.05)]"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="font-display text-lg font-bold text-[#40383A]">
-                    Avaliação Psicológica
-                  </h3>
-                  <p className="text-xs text-[#6D6366] mt-0.5">Profa. Camila Nogueira • 4 de 9 aulas</p>
-                </div>
-                <span className="text-[10px] font-bold tracking-wider lowercase bg-[#FFF8F1] text-[#756354] px-2.5 py-1 rounded-full border border-[#FFF1E5]">
-                  quinta-feira
-                </span>
-              </div>
-
-              <p className="text-xs text-[#6D6366]">2 materiais de estudo de casos</p>
-
-              {/* Progress */}
-              <div className="space-y-1 pt-1">
-                <div className="w-full h-1.5 bg-[#FAF8F5] rounded-full overflow-hidden border border-[#E9DFDC]">
-                  <div className="h-full bg-[#756354] rounded-full" style={{ width: '45%' }} />
-                </div>
-                <div className="flex items-center justify-between text-[11px] text-[#6D6366] pt-1">
-                  <span>módulo atual: testes de personalidade</span>
-                  <span className="font-semibold text-[#756354] flex items-center gap-0.5">
-                    acessar aulas <ChevronRight className="w-3 h-3" />
-                  </span>
-                </div>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
       )}
 
-      {/* SUBTAB 2: AULAS */}
+      {/* SUBTAB 2: AULAS (Inline divide-list directly on page background) */}
       {subTab === 'aulas' && (
-        <div className="space-y-3">
-          {filteredClasses.map((cl) => (
-            <div
-              key={cl.id}
-              onClick={() => setSelectedClass(cl)}
-              className="rounded-[24px] p-5 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] hover:border-[#FFD3DD] cursor-pointer transition-all space-y-2"
-            >
-              <div className="flex items-center justify-between text-xs text-[#918689]">
-                <span className="font-semibold text-[#E97891]">aula {cl.number}</span>
-                <span>{cl.date}</span>
+        <div className="space-y-2">
+          <h2 className="font-display text-base font-bold text-[#40383A] px-1">
+            diário de aulas registradas
+          </h2>
+          <div className="divide-y divide-[#E9DFDC] border-y border-[#E9DFDC] px-1">
+            {filteredClasses.map((cl) => (
+              <div
+                key={cl.id}
+                onClick={() => setSelectedClass(cl)}
+                className="py-3.5 space-y-1 cursor-pointer group hover:bg-[#FAF8F5]/50 rounded-lg px-1 transition-colors"
+              >
+                <div className="flex items-center justify-between text-xs text-[#918689]">
+                  <span className="font-bold text-[#B94862] text-[11px]">aula {cl.number}</span>
+                  <span>{cl.date}</span>
+                </div>
+
+                <h3 className="font-display font-bold text-sm text-[#40383A] group-hover:text-[#B94862] transition-colors">
+                  {cl.title}
+                </h3>
+
+                <p className="text-xs text-[#6D6366] line-clamp-2 leading-relaxed">
+                  {cl.summary}
+                </p>
               </div>
-
-              <h3 className="font-display font-bold text-base text-[#40383A]">
-                {cl.title}
-              </h3>
-
-              <p className="text-xs text-[#6D6366] line-clamp-2 leading-relaxed">
-                {cl.summary}
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
 
-      {/* SUBTAB 3: AVALIAÇÕES */}
+      {/* SUBTAB 3: AVALIAÇÕES (Inline divide-list directly on page background) */}
       {subTab === 'avaliacoes' && (
-        <div className="rounded-[24px] p-6 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] space-y-4">
-          <h2 className="font-display text-lg font-bold text-[#40383A]">
+        <div className="space-y-3 px-1">
+          <h2 className="font-display text-base font-bold text-[#40383A]">
             avaliações & provas
           </h2>
 
-          <div className="space-y-3">
+          <div className="divide-y divide-[#E9DFDC] border-y border-[#E9DFDC]">
             {filteredExams.map((ex) => (
               <div
                 key={ex.id}
                 onClick={() => onToggleExam(ex.id)}
-                className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
-                  ex.completed
-                    ? 'bg-[#FAF8F5] border-[#E9DFDC] text-[#918689] line-through'
-                    : 'bg-white border border-[#E9DFDC] hover:border-[#FFD3DD]'
+                className={`py-3 flex items-center justify-between cursor-pointer transition-colors ${
+                  ex.completed ? 'opacity-60 line-through' : ''
                 }`}
               >
                 <div>
-                  <h3 className="font-semibold text-sm text-[#40383A]">{ex.title}</h3>
-                  <p className="text-xs text-[#6D6366] mt-0.5">data: {ex.date} · peso {ex.weight}</p>
+                  <h3 className="font-bold text-xs text-[#40383A]">{ex.title}</h3>
+                  <p className="text-[11px] text-[#6D6366] mt-0.5">data: {ex.date} · peso {ex.weight}</p>
                 </div>
-                <CheckCircle2 className={`w-5 h-5 ${ex.completed ? 'text-[#518265]' : 'text-[#BEB4B6]'}`} />
+                <CheckCircle2 className={`w-5 h-5 ${ex.completed ? 'text-[#2D6A4F]' : 'text-[#BEB4B6]'}`} />
               </div>
             ))}
           </div>
@@ -335,12 +288,12 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
 
       {/* SUBTAB 4: CALENDÁRIO */}
       {subTab === 'calendario' && (
-        <div className="rounded-[24px] p-6 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] space-y-4">
-          <h2 className="font-display text-lg font-bold text-[#40383A]">
+        <div className="space-y-3 px-1">
+          <h2 className="font-display text-base font-bold text-[#40383A]">
             calendário acadêmico · 2026.2
           </h2>
 
-          <div className="grid grid-cols-7 gap-1.5 text-center text-xs font-semibold text-[#918689] py-2">
+          <div className="grid grid-cols-7 gap-1.5 text-center text-xs font-semibold text-[#918689] py-1 border-b border-[#E9DFDC]">
             <div>d</div><div>s</div><div>t</div><div>q</div><div>q</div><div>s</div><div>s</div>
           </div>
 
@@ -354,7 +307,7 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
                   key={day}
                   className={`p-2 rounded-xl flex flex-col items-center justify-center min-h-[40px] font-medium ${
                     isToday
-                      ? 'bg-[#E97891] text-white shadow-xs'
+                      ? 'bg-[#E97891] text-white shadow-2xs font-bold'
                       : hasEvent
                       ? 'bg-[#FFF5F7] text-[#B94862] font-bold border border-[#FFD3DD]'
                       : 'bg-[#FAF8F5] text-[#40383A]'
@@ -368,40 +321,76 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
         </div>
       )}
 
-      {/* Card 3: Sua semana acadêmica */}
-      <div className="rounded-[24px] p-6 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] space-y-3">
-        <span className="text-xs text-[#918689] font-semibold tracking-wide lowercase">próximos eventos</span>
-        
-        <h2 className="font-display text-lg sm:text-xl font-bold text-[#40383A]">
-          sua semana acadêmica
-        </h2>
-        
-        <p className="text-xs text-[#6D6366]">
-          o suficiente para você se localizar sem virar um dashboard corporativo.
-        </p>
+      {/* Sua semana acadêmica (Inline section) */}
+      <div className="space-y-2.5 pt-3 border-t border-[#E9DFDC] px-1">
+        <div className="flex items-center justify-between">
+          <h2 className="font-display text-base font-bold text-[#40383A]">
+            sua semana acadêmica
+          </h2>
+          <span className="text-[11px] text-[#918689] font-medium">próximos eventos</span>
+        </div>
 
-        <div className="space-y-3 pt-2">
-          <div className="flex items-center justify-between p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#E9DFDC]">
+        <div className="divide-y divide-[#E9DFDC] border-y border-[#E9DFDC]">
+          <div className="py-2.5 flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-xs text-[#40383A]">entrega de fichamento</h3>
+              <h3 className="font-bold text-xs text-[#40383A]">entrega de fichamento</h3>
               <p className="text-[11px] text-[#6D6366] mt-0.5">psicologia social · segunda-feira</p>
             </div>
-            <span className="text-xs font-semibold text-[#B94862] bg-white px-2.5 py-1 rounded-full border border-[#FFD3DD]">
+            <span className="text-[11px] font-bold text-[#B94862] bg-[#FFF5F7] px-2.5 py-0.5 rounded-full border border-[#FFD3DD]">
               11/08
             </span>
           </div>
 
-          <div className="flex items-center justify-between p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#E9DFDC]">
+          <div className="py-2.5 flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-xs text-[#40383A]">supervisão de estágio</h3>
+              <h3 className="font-bold text-xs text-[#40383A]">supervisão de estágio</h3>
               <p className="text-[11px] text-[#6D6366] mt-0.5">registrar aprendizados e dúvidas</p>
             </div>
-            <span className="text-xs font-semibold text-[#396D82] bg-white px-2.5 py-1 rounded-full border border-[#CEE7F0]">
+            <span className="text-[11px] font-bold text-[#396D82] bg-[#F3F9FC] px-2.5 py-0.5 rounded-full border border-[#CEE7F0]">
               13/08
             </span>
           </div>
         </div>
       </div>
+
+      {/* Modal View for Selected Class Note */}
+      {selectedClass && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="w-full max-w-sm bg-white rounded-[28px] border border-[#E9DFDC] shadow-2xl p-6 space-y-4 text-[#40383A] animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-[#E9DFDC] pb-3">
+              <span className="text-xs font-bold text-[#B94862] bg-[#FFF5F7] px-2.5 py-0.5 rounded-full border border-[#FFD3DD]">
+                Aula {selectedClass.number} • {selectedClass.date}
+              </span>
+              <button
+                onClick={() => setSelectedClass(null)}
+                className="text-xs text-[#918689] hover:text-[#40383A] font-bold cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div>
+              <h3 className="font-display font-bold text-lg text-[#40383A]">
+                {selectedClass.title}
+              </h3>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#918689]">Resumo</span>
+              <p className="text-xs text-[#6D6366] leading-relaxed bg-[#FAF8F5] p-3 rounded-2xl border border-[#F2EBE8]">
+                {selectedClass.summary}
+              </p>
+            </div>
+
+            <button
+              onClick={() => setSelectedClass(null)}
+              className="w-full bg-[#40383A] text-white py-2.5 rounded-2xl text-xs font-bold cursor-pointer"
+            >
+              fechar
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );

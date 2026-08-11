@@ -169,54 +169,21 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </motion.button>
       </div>
 
-      {/* Hero Featured Card */}
-      <motion.div
-        whileHover={{ y: -2 }}
-        transition={{ type: "spring", stiffness: 350, damping: 25 }}
-        className="bg-white rounded-[24px] p-5 border border-[#F2EBE8] shadow-[0_2px_8px_rgba(64,56,58,0.05)] space-y-4"
-      >
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold text-[#B94862] bg-[#FFF5F7] px-3 py-1 rounded-full border border-[#FFD3DD]">
-            meta do dia ♡
-          </span>
-          <span className="text-xs text-[#6D6366] font-medium">
-            4 de 5 dias com foco ativo
+      {/* Inline Daily Highlight */}
+      <div className="flex items-center justify-between py-1.5 px-1 border-y border-[#E9DFDC]">
+        <div className="flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-[#E97891]" />
+          <span className="text-xs font-semibold text-[#40383A]">
+            meta do dia: <span className="font-normal text-[#6D6366]">revisar psicopatologia</span>
           </span>
         </div>
-
-        <div>
-          <h2 className="text-base sm:text-lg font-semibold text-[#40383A] leading-snug font-display">
-            uma sessão de estudos leve hoje garantirá que você revise psicopatologia sem estresse.
-          </h2>
-          <p className="text-xs text-[#6D6366] mt-1">
-            recomendado para o seu momento de foco no fim da tarde.
-          </p>
-        </div>
-
-        <div className="flex items-center justify-between pt-1">
-          {/* Stacked mini badges */}
-          <div className="flex items-center gap-1.5">
-            <span className="text-[11px] font-medium text-[#396D82] bg-[#F3F9FC] px-2.5 py-1 rounded-full border border-[#CEE7F0]">
-              📖 cap. 4 beck
-            </span>
-            <span className="text-[11px] font-medium text-[#756354] bg-[#FFF8F1] px-2.5 py-1 rounded-full border border-[#FFF1E5]">
-              ⚡ 15 min flashcards
-            </span>
-          </div>
-
-          {/* Action Primary Button */}
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.96 }}
-            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            onClick={() => onNavigate('estudos', 'sessoes')}
-            className="bg-[#E97891] hover:bg-[#D85F79] text-white text-xs font-semibold px-4 py-2 rounded-full flex items-center gap-1.5 shadow-xs shrink-0 cursor-pointer"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-[#FFF5F7]" />
-            <span>começar</span>
-          </motion.button>
-        </div>
-      </motion.div>
+        <button
+          onClick={() => onNavigate('estudos', 'sessoes')}
+          className="text-xs font-bold text-[#B94862] hover:underline cursor-pointer"
+        >
+          estudar agora →
+        </button>
+      </div>
 
       {/* 2 Cards Separados Num Grid 2x1 (Aulas Hoje & Assuntos para Estudar) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">

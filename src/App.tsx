@@ -19,8 +19,10 @@ import {
   InternshipLog,
   TccData,
   Sticker,
-  StudySession
+  StudySession,
+  DynamicHeaderConfig
 } from './types';
+import { Plus } from 'lucide-react';
 
 import {
   initialProfile,
@@ -109,10 +111,70 @@ export default function App() {
   const [subTabBiblioteca, setSubTabBiblioteca] = useState<SubTabBiblioteca>('autores');
   const [subTabPerfil, setSubTabPerfil] = useState<SubTabPerfil>('jornada');
   const [targetId, setTargetId] = useState<string | undefined>(undefined);
+  const [focusedCourseId, setFocusedCourseId] = useState<string | null>(null);
+  const [bookmarkedCourseIds, setBookmarkedCourseIds] = useState<string[]>(['c1', 'c2']);
 
   // Modals
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  // Sync targetId if passed
+  useEffect(() => {
+    if (targetId && activeTab === 'faculdade') {
+      setFocusedCourseId(targetId);
+    }
+  }, [targetId, activeTab]);
+
+  const toggleBookmarkCourse = (courseId: string) => {
+    setBookmarkedCourseIds((prev) =>
+      prev.includes(courseId) ? prev.filter((id) => id !== courseId) : [...prev, courseId]
+    );
+  };
+
+  const focusedCourse = courses.find((c) => c.id === focusedCourseId);
+
+  // Dynamic Header Configuration
+  let headerConfig: DynamicHeaderConfig | null = null;
+
+  if (isMoodViewOpen) {
+    headerConfig = {
+      type: 'detail',
+      title: 'Estado de Espírito',
+      subtitle: 'Como você está se sentindo hoje?',
+      onBack: () => setIsMoodViewOpen(false),
+      rightActions: (
+        <span className="text-sm font-bold bg-[#FFF5F7] px-2.5 py-1 rounded-full border border-[#FFD3DD] text-[#B94862]">
+          {currentMood.emoji}
+        </span>
+      ),
+    };
+  } else if (activeTab === 'faculdade' && focusedCourse) {
+    const isBookmarked = bookmarkedCourseIds.includes(focusedCourse.id);
+    headerConfig = {
+      type: 'detail',
+      title: focusedCourse.name,
+      subtitle: `${focusedCourse.code || 'PSI-300'} • ${focusedCourse.professor}`,
+      code: focusedCourse.code || 'PSI-300',
+      icon: focusedCourse.icon,
+      color: focusedCourse.color,
+      onBack: () => {
+        setFocusedCourseId(null);
+        setTargetId(undefined);
+      },
+      isBookmarked,
+      onToggleBookmark: () => toggleBookmarkCourse(focusedCourse.id),
+      rightActions: (
+        <button
+          onClick={() => setIsQuickAddOpen(true)}
+          className="bg-[#40383A] hover:bg-[#2D2728] text-white px-2.5 sm:px-3 py-1.5 rounded-2xl font-display font-bold text-xs shadow-2xs flex items-center gap-1 transition-all active:scale-95 cursor-pointer border border-white/20"
+          title="Nova anotação ou tarefa"
+        >
+          <Plus className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Anotação</span>
+        </button>
+      ),
+    };
+  }
 
   // Keyboard shortcut (Cmd+K) for search
   useEffect(() => {
@@ -210,6 +272,7 @@ export default function App() {
       {/* Top Header */}
       <HeaderNav
         profile={profile}
+        headerConfig={headerConfig}
         onOpenSearch={() => setIsSearchOpen(true)}
         onOpenQuickAdd={() => setIsQuickAddOpen(true)}
         onNavigateToPerfil={() => handleNavigate('perfil', 'jornada')}
@@ -250,10 +313,19 @@ export default function App() {
                 courses={courses}
                 classes={classes}
                 exams={exams}
+                tasks={tasks}
+                concepts={concepts}
+                authors={authors}
+                readings={readings}
+                materials={materials}
+                internshipLogs={internshipLogs}
                 initialSubTab={subTabFaculdade}
                 selectedCourseId={targetId}
+                focusedCourseId={focusedCourseId}
+                onSelectCourse={(id) => setFocusedCourseId(id)}
                 onOpenQuickAdd={() => setIsQuickAddOpen(true)}
                 onToggleExam={handleToggleExam}
+                onToggleTask={handleToggleTask}
               />
             )}
 

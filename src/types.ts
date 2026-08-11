@@ -1,9 +1,26 @@
+import type { ReactNode } from 'react';
+
 export type NavTab = 'home' | 'faculdade' | 'estudos' | 'biblioteca' | 'perfil';
 
 export type SubTabFaculdade = 'disciplinas' | 'aulas' | 'avaliacoes' | 'calendario';
 export type SubTabEstudos = 'sessoes' | 'leituras' | 'flashcards' | 'questoes' | 'revisoes';
 export type SubTabBiblioteca = 'materiais' | 'autores' | 'conceitos' | 'abordagens' | 'mapa';
 export type SubTabPerfil = 'jornada' | 'stickers' | 'estagio' | 'tcc' | 'configuracoes';
+
+export interface DynamicHeaderConfig {
+  type?: 'default' | 'detail' | 'custom';
+  title?: string;
+  subtitle?: string;
+  code?: string;
+  badge?: string;
+  badgeColor?: string;
+  icon?: string;
+  color?: string;
+  onBack?: () => void;
+  isBookmarked?: boolean;
+  onToggleBookmark?: () => void;
+  rightActions?: ReactNode;
+}
 
 export interface Task {
   id: string;
