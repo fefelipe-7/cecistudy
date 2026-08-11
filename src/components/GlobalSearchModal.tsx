@@ -57,7 +57,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
           title: c.name,
           subtitle: c.definition.slice(0, 70) + '...',
           type: 'concept',
-          badge: 'Conceito',
+          badge: 'conceito',
           tab: 'biblioteca',
           subTab: 'conceitos'
         });
@@ -72,7 +72,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
           title: a.name,
           subtitle: a.bio.slice(0, 70) + '...',
           type: 'author',
-          badge: 'Autor',
+          badge: 'autor',
           tab: 'biblioteca',
           subTab: 'autores'
         });
@@ -85,9 +85,9 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         results.push({
           id: co.id,
           title: co.name,
-          subtitle: `Prof.ª ${co.professor} • ${co.semester}`,
+          subtitle: `prof.ª ${co.professor} • ${co.semester}`,
           type: 'course',
-          badge: 'Disciplina',
+          badge: 'disciplina',
           tab: 'faculdade',
           subTab: 'disciplinas'
         });
@@ -100,9 +100,9 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         results.push({
           id: cl.id,
           title: cl.title,
-          subtitle: `Aula ${cl.number} • ${cl.summary.slice(0, 60)}...`,
+          subtitle: `aula ${cl.number} • ${cl.summary.slice(0, 60)}...`,
           type: 'class',
-          badge: 'Aula',
+          badge: 'aula',
           tab: 'faculdade',
           subTab: 'aulas'
         });
@@ -115,9 +115,9 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         results.push({
           id: r.id,
           title: r.title,
-          subtitle: `Por ${r.author} • ${r.status === 'concluido' ? 'Concluído' : 'Em leitura'}`,
+          subtitle: `por ${r.author} • ${r.status === 'concluido' ? 'concluído' : 'em leitura'}`,
           type: 'reading',
-          badge: 'Leitura',
+          badge: 'leitura',
           tab: 'estudos',
           subTab: 'leituras'
         });
@@ -132,7 +132,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
           title: app.name,
           subtitle: app.description.slice(0, 70) + '...',
           type: 'approach',
-          badge: 'Abordagem',
+          badge: 'abordagem',
           tab: 'biblioteca',
           subTab: 'abordagens'
         });
@@ -155,7 +155,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Digite para buscar (ex: ansiedade, Beck, Freud, TCC, psicopatologia...)"
+            placeholder="digite para buscar (ex: ansiedade, beck, freud, tcc, psicopatologia...)"
             className="w-full bg-transparent text-sm sm:text-base focus:outline-none placeholder:text-[#B0A6A8] text-[#40383A]"
             autoFocus
           />
@@ -171,18 +171,18 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
             onClick={onClose}
             className="text-xs bg-[#F2ECE3] hover:bg-[#E7DDD1] text-[#40383A] px-3 py-1.5 rounded-xl font-medium transition-colors min-h-[36px]"
           >
-            Fechar
+            fechar
           </button>
         </div>
 
         {/* Quick Tag Suggestions if search is empty */}
         {!query && (
           <div className="p-5 text-center sm:text-left">
-            <p className="text-xs font-semibold uppercase tracking-wider text-[#918689] mb-3">
-              Sugestões rápidas no cecistudy ♡
+            <p className="text-xs font-semibold lowercase tracking-wider text-[#918689] mb-3">
+              sugestões rápidas no cecistudy ♡
             </p>
             <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-              {['Ansiedade', 'Aaron Beck', 'Freud', 'TCC', 'Depressão', 'HTP', 'Acolhimento', 'Vygotsky'].map((tag) => (
+              {['ansiedade', 'aaron beck', 'freud', 'tcc', 'depressão', 'htp', 'acolhimento', 'vygotsky'].map((tag) => (
                 <button
                   key={tag}
                   onClick={() => setQuery(tag)}
@@ -193,7 +193,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
               ))}
             </div>
             <div className="mt-6 pt-4 border-t border-[#F2EBE8] text-center text-xs text-[#6D6366]">
-              Pesquisa conectada em tempo real com conceitos, autores, leituras, aulas e disciplinas!
+              pesquisa conectada em tempo real com conceitos, autores, leituras, aulas e disciplinas!
             </div>
           </div>
         )}
@@ -203,8 +203,8 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
           <div className="max-h-[60vh] overflow-y-auto p-3 divide-y divide-[#F2EBE8]">
             {searchResults.length === 0 ? (
               <div className="p-8 text-center text-[#6D6366]">
-                <p className="font-display text-base text-[#40383A] mb-1">Nenhum resultado encontrado para "{query}"</p>
-                <p className="text-xs">Tente pesquisar por autores (ex: Beck), transtornos ou técnicas.</p>
+                <p className="font-display text-base text-[#40383A] mb-1">nenhum resultado encontrado para "{query}"</p>
+                <p className="text-xs">tente pesquisar por autores (ex: beck), transtornos ou técnicas.</p>
               </div>
             ) : (
               searchResults.map((item) => (

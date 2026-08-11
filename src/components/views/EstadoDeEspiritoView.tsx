@@ -34,48 +34,48 @@ export const MOOD_PRESETS = [
   {
     id: 'focada',
     emoji: '🤓',
-    label: 'Focada & Acadêmica',
-    description: 'Pronta para imergir nos livros e sintetizar teorias',
+    label: 'focada & acadêmica',
+    description: 'pronta para imergir nos livros e sintetizar teorias',
     vibeColor: 'bg-[#FFF5F7] border-[#FFD3DD] text-[#B94862]',
     accentBg: 'bg-[#B94862]'
   },
   {
     id: 'calma',
     emoji: '🧘',
-    label: 'Calma & Equilibrada',
-    description: 'Ritmo suave e leitura sem pressão com foco no essencial',
+    label: 'calma & equilibrada',
+    description: 'ritmo suave e leitura sem pressão com foco no essencial',
     vibeColor: 'bg-[#F3F9FC] border-[#CEE7F0] text-[#396D82]',
     accentBg: 'bg-[#396D82]'
   },
   {
     id: 'criativa',
     emoji: '✨',
-    label: 'Inspirada & Criativa',
-    description: 'Ideias fluindo para mapas mentais, TCC e artigos',
+    label: 'inspirada & criativa',
+    description: 'ideias fluindo para mapas mentais, tcc e artigos',
     vibeColor: 'bg-[#FFF8F1] border-[#FFF1E5] text-[#756354]',
     accentBg: 'bg-[#756354]'
   },
   {
     id: 'cafe',
     emoji: '☕',
-    label: 'Preciso de um Café',
-    description: 'Levemente cansada, avançando um passo de cada vez',
+    label: 'preciso de um café',
+    description: 'levemente cansada, avançando um passo de cada vez',
     vibeColor: 'bg-[#F2F8F4] border-[#D1E8D9] text-[#518265]',
     accentBg: 'bg-[#518265]'
   },
   {
     id: 'motivada',
     emoji: '⚡',
-    label: 'Super Motivada',
-    description: 'Energia máxima para dominar todos os tópicos de hoje',
+    label: 'super motivada',
+    description: 'energia máxima para dominar todos os tópicos de hoje',
     vibeColor: 'bg-[#FFFDF0] border-[#FFF8CC] text-[#8C7338]',
     accentBg: 'bg-[#8C7338]'
   },
   {
     id: 'reflexiva',
     emoji: '🧸',
-    label: 'Acolhida & Reflexiva',
-    description: 'Analisando conceitos de psicologia com escuta interna',
+    label: 'acolhida & reflexiva',
+    description: 'analisando conceitos de psicologia com escuta interna',
     vibeColor: 'bg-[#FAF8F5] border-[#E9DFDC] text-[#6D6366]',
     accentBg: 'bg-[#6D6366]'
   }
@@ -89,7 +89,7 @@ export const EstadoDeEspiritoView: React.FC<EstadoDeEspiritoViewProps> = ({
   const [selectedEmoji, setSelectedEmoji] = useState(currentMood.emoji || '🤓');
   const [energyLevel, setEnergyLevel] = useState(currentMood.energyLevel || 4);
   const [reflection, setReflection] = useState(currentMood.reflection || '');
-  const [intention, setIntention] = useState(currentMood.intention || 'Estudo leve e produtivo');
+  const [intention, setIntention] = useState(currentMood.intention || 'estudo leve e produtivo');
 
   const selectedPreset = MOOD_PRESETS.find((m) => m.emoji === selectedEmoji) || MOOD_PRESETS[0];
 
@@ -116,11 +116,11 @@ export const EstadoDeEspiritoView: React.FC<EstadoDeEspiritoViewProps> = ({
           className="flex items-center gap-2 text-xs font-semibold text-[#6D6366] hover:text-[#40383A] bg-white px-3 py-2 rounded-xl border border-[#E9DFDC] shadow-2xs transition-all cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Voltar para Hoje</span>
+          <span>voltar para hoje</span>
         </button>
 
-        <span className="text-[11px] font-bold text-[#B94862] uppercase tracking-wider bg-[#FFF5F7] px-3 py-1 rounded-full border border-[#FFD3DD]">
-          Estado de Espírito ♡
+        <span className="text-[11px] font-bold text-[#B94862] lowercase tracking-wider bg-[#FFF5F7] px-3 py-1 rounded-full border border-[#FFD3DD]">
+          estado de espírito ♡
         </span>
       </div>
 
@@ -132,10 +132,10 @@ export const EstadoDeEspiritoView: React.FC<EstadoDeEspiritoViewProps> = ({
 
         <div>
           <h1 className="font-display text-2xl sm:text-3xl font-bold text-[#40383A]">
-            Como você está se sentindo hoje?
+            como você está se sentindo hoje?
           </h1>
           <p className="text-xs sm:text-sm text-[#6D6366] mt-1 max-w-sm mx-auto leading-relaxed">
-            Registre seu estado de espírito do dia para adaptar seu ritmo de estudos de forma acolhedora.
+            registre seu estado de espírito do dia para adaptar seu ritmo de estudos de forma acolhedora.
           </p>
         </div>
       </div>
@@ -146,10 +146,10 @@ export const EstadoDeEspiritoView: React.FC<EstadoDeEspiritoViewProps> = ({
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-[#E97891]" />
             <h2 className="font-display text-lg font-bold text-[#40383A]">
-              Escolha seu Mood do Dia
+              escolha seu mood do dia
             </h2>
           </div>
-          <span className="text-[10px] font-semibold text-[#918689] uppercase">
+          <span className="text-[10px] font-semibold text-[#918689] lowercase">
             6 opções
           </span>
         </div>
@@ -193,7 +193,7 @@ export const EstadoDeEspiritoView: React.FC<EstadoDeEspiritoViewProps> = ({
         <div>
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-[#40383A] flex items-center gap-1.5">
-              <Zap className="w-4 h-4 text-[#B94862]" /> Nível de Energia de Hoje
+              <Zap className="w-4 h-4 text-[#B94862]" /> nível de energia de hoje
             </span>
             <span className="text-xs font-bold text-[#B94862] bg-[#FFF5F7] px-2.5 py-0.5 rounded-full border border-[#FFD3DD]">
               {energyLevel} / 5
@@ -221,15 +221,15 @@ export const EstadoDeEspiritoView: React.FC<EstadoDeEspiritoViewProps> = ({
         {/* Intention Chips */}
         <div className="pt-2 border-t border-[#F2EBE8]">
           <span className="text-xs font-bold text-[#40383A] flex items-center gap-1.5 mb-2.5">
-            <Sun className="w-4 h-4 text-[#756354]" /> Intenção para a Sessão
+            <Sun className="w-4 h-4 text-[#756354]" /> intenção para a sessão
           </span>
           <div className="flex flex-wrap gap-2">
             {[
-              'Estudo leve e produtivo',
-              'Foco total em exames',
-              'Avançar no TCC',
-              'Leitura sem pressa',
-              'Organizar cronograma'
+              'estudo leve e produtivo',
+              'foco total em exames',
+              'avançar no tcc',
+              'leitura sem pressa',
+              'organizar cronograma'
             ].map((tag) => (
               <button
                 key={tag}
@@ -249,12 +249,12 @@ export const EstadoDeEspiritoView: React.FC<EstadoDeEspiritoViewProps> = ({
         {/* Reflection Note */}
         <div className="pt-2 border-t border-[#F2EBE8]">
           <label className="text-xs font-bold text-[#40383A] flex items-center gap-1.5 mb-2">
-            <MessageSquare className="w-4 h-4 text-[#396D82]" /> Nota de Reflexão do Dia
+            <MessageSquare className="w-4 h-4 text-[#396D82]" /> nota de reflexão do dia
           </label>
           <textarea
             value={reflection}
             onChange={(e) => setReflection(e.target.value)}
-            placeholder="Como você está hoje? Escreva uma linha sobre seu dia, sentimentos ou foco..."
+            placeholder="como você está hoje? escreva uma linha sobre seu dia, sentimentos ou foco..."
             rows={2}
             className="w-full text-xs p-3 rounded-xl border border-[#E9DFDC] bg-[#FAF8F5] focus:outline-none focus:border-[#E97891] text-[#40383A] placeholder-[#BEB4B6]"
           />
@@ -267,7 +267,7 @@ export const EstadoDeEspiritoView: React.FC<EstadoDeEspiritoViewProps> = ({
         className="w-full bg-[#E97891] hover:bg-[#D85F79] text-white py-3.5 rounded-2xl font-bold text-sm shadow-2xs transition-all active:scale-[0.99] flex items-center justify-center gap-2 min-h-[48px] cursor-pointer"
       >
         <Check className="w-5 h-5 stroke-[2.5]" />
-        <span>Salvar e Voltar para Home</span>
+        <span>salvar e voltar para home</span>
       </button>
 
     </div>

@@ -18,8 +18,8 @@ export const ContinueReadingWidget: React.FC<ContinueReadingWidgetProps> = ({
   return (
     <div className="rounded-[24px] p-5 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] hover:border-[#FFD3DD] transition-all">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-[11px] font-semibold text-[#6D6366] tracking-wide uppercase">
-          Continuar de onde parou 📖
+        <span className="text-[11px] font-semibold text-[#6D6366] tracking-wide lowercase">
+          continuar de onde parou 📖
         </span>
         <button className="text-[#918689] hover:text-[#40383A] cursor-pointer">
           <MoreHorizontal className="w-4 h-4" />
@@ -32,7 +32,7 @@ export const ContinueReadingWidget: React.FC<ContinueReadingWidgetProps> = ({
           <div className="absolute -right-3 -bottom-3 opacity-20 pointer-events-none">
             <BookOpen className="w-16 h-16 text-[#40383A]" />
           </div>
-          <span className="text-[9px] font-bold uppercase tracking-wider bg-white/90 px-1.5 py-0.5 rounded self-start text-[#40383A]">
+          <span className="text-[9px] font-bold lowercase tracking-wider bg-white/90 px-1.5 py-0.5 rounded self-start text-[#40383A]">
             {reading.type}
           </span>
           <div>
@@ -72,7 +72,7 @@ export const ContinueReadingWidget: React.FC<ContinueReadingWidgetProps> = ({
             onClick={() => onContinue(reading)}
             className="w-full bg-[#40383A] hover:bg-[#2D2728] text-white py-2 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 shadow-2xs transition-transform active:scale-98 mt-1 cursor-pointer"
           >
-            <span>Continuar Leitura</span>
+            <span>continuar leitura</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>

@@ -30,8 +30,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
     month: 'long',
   });
 
-  // Capitalize first letter of weekday
-  const formattedDate = todayDateStr.charAt(0).toUpperCase() + todayDateStr.slice(1);
+  // Format date in lowercase
+  const formattedDate = todayDateStr.toLowerCase();
 
   return (
     <header
@@ -47,7 +47,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             className={`rounded-full bg-[#FFF5F7] border-2 border-[#FFD3DD] flex items-center justify-center text-[#40383A] font-display font-bold shadow-2xs cursor-pointer transition-all duration-300 ${
               scrolled ? 'w-7 h-7 text-xs' : 'w-10 h-10 text-lg hover:scale-105'
             }`}
-            title="Ver Meu Espaço"
+            title="ver meu espaço"
           >
             C
           </div>
@@ -85,7 +85,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
           }`}
         >
           <Search className="w-3.5 h-3.5 text-[#918689] shrink-0" />
-          <span className="truncate">Buscar conceitos, autores (Freud, Beck...), aulas...</span>
+          <span className="truncate">buscar conceitos, autores (freud, beck...), aulas...</span>
           <kbd className="ml-auto text-[10px] bg-[#FAF8F5] px-1.5 py-0.5 rounded text-[#918689] border border-[#E9DFDC]">
             ⌘K
           </kbd>
@@ -99,7 +99,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             className={`md:hidden rounded-full text-[#40383A] bg-white border border-[#E9DFDC] hover:bg-[#FFF5F7] transition-all flex items-center justify-center cursor-pointer ${
               scrolled ? 'w-8 h-8' : 'w-10 h-10'
             }`}
-            title="Buscar"
+            title="buscar"
           >
             <Search className="w-4 h-4" />
           </button>

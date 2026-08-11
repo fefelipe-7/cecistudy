@@ -58,9 +58,9 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({
       {/* Top Header Label & Title */}
       <div className="flex items-center justify-between pt-1 px-1">
         <div>
-          <p className="text-[11px] font-semibold tracking-wider text-[#918689] uppercase">Conhecimento Organizado</p>
+          <p className="text-[11px] font-semibold tracking-wider text-[#918689] lowercase">conhecimento organizado</p>
           <h1 className="font-display text-2xl sm:text-3xl text-[#40383A] font-bold mt-0.5 tracking-tight">
-            Biblioteca Ceci <span className="text-[#D85F79] font-normal">♡</span>
+            biblioteca ceci <span className="text-[#D85F79] font-normal">♡</span>
           </h1>
         </div>
         <div className="w-10 h-10 rounded-2xl bg-[#F3F9FC] border border-[#CEE7F0] flex items-center justify-center text-[#396D82] font-display font-bold text-lg shadow-2xs">
@@ -71,14 +71,14 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({
       {/* Hero Card: Sua estante viva */}
       <div className="rounded-[24px] p-6 bg-gradient-to-br from-[#F3F9FC]/90 via-white to-[#FFF5F7]/80 border border-[#CEE7F0] relative overflow-hidden space-y-4 shadow-[0_2px_8px_rgba(64,56,58,0.05)]">
         <div>
-          <span className="text-[11px] font-bold text-[#396D82] uppercase tracking-wider bg-white/90 px-3 py-1 rounded-full border border-[#CEE7F0] shadow-2xs">
-            Sua estante viva ♡
+          <span className="text-[11px] font-bold text-[#396D82] lowercase tracking-wider bg-white/90 px-3 py-1 rounded-full border border-[#CEE7F0] shadow-2xs">
+            sua estante viva ♡
           </span>
           <h2 className="font-display text-xl sm:text-2xl font-bold text-[#40383A] mt-2">
-            Aprenda com método, salve com afeto ✨
+            aprenda com método, salve com afeto ✨
           </h2>
           <p className="text-xs text-[#6D6366] mt-1.5 leading-relaxed">
-            Os conceitos das aulas ganham vida em fichas curtas, autores fundamentais e conexões visuais.
+            os conceitos das aulas ganham vida em fichas curtas, autores fundamentais e conexões visuais.
           </p>
         </div>
 
@@ -117,18 +117,18 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({
           className="w-full bg-[#396D82] hover:bg-[#2A5262] text-white py-3 rounded-2xl text-xs sm:text-sm font-semibold shadow-2xs transition-all active:scale-[0.99] flex items-center justify-center gap-2 min-h-[44px] cursor-pointer"
         >
           <Sparkles className="w-4 h-4 fill-white" />
-          <span>Explorar acervo completo</span>
+          <span>explorar acervo completo</span>
         </button>
       </div>
 
       {/* Sub-Tabs Navigation */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
         {[
-          { id: 'autores', label: 'Autores', icon: User },
-          { id: 'conceitos', label: 'Conceitos', icon: Sparkles },
-          { id: 'abordagens', label: 'Abordagens', icon: Bookmark },
-          { id: 'mapa', label: 'Mapa de Conexões', icon: Network },
-          { id: 'materiais', label: 'Materiais & PDFs', icon: BookOpen },
+          { id: 'autores', label: 'autores', icon: User },
+          { id: 'conceitos', label: 'conceitos', icon: Sparkles },
+          { id: 'abordagens', label: 'abordagens', icon: Bookmark },
+          { id: 'mapa', label: 'mapa de conexões', icon: Network },
+          { id: 'materiais', label: 'materiais & pdfs', icon: BookOpen },
         ].map((tab) => {
           const Icon = tab.icon;
           const isSel = subTab === tab.id;
@@ -159,7 +159,7 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Filtrar autores, conceitos..."
+            placeholder="filtrar autores, conceitos..."
             className="w-full bg-white border border-[#E9DFDC] rounded-2xl pl-10 pr-4 py-2.5 text-xs text-[#40383A] placeholder-[#BEB4B6] focus:outline-none focus:border-[#E97891]"
           />
         </div>
@@ -167,14 +167,14 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({
 
       {/* Card 2: Conexões em Destaque */}
       <div className="rounded-[24px] p-6 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] space-y-3">
-        <span className="text-xs text-[#918689] font-semibold tracking-wide uppercase">Pensadores que se cruzam</span>
+        <span className="text-xs text-[#918689] font-semibold tracking-wide lowercase">pensadores que se cruzam</span>
         
         <h2 className="font-display text-lg sm:text-xl font-bold text-[#40383A]">
-          Mapa de conceitos & autores
+          mapa de conceitos & autores
         </h2>
         
         <p className="text-xs text-[#6D6366]">
-          Veja como a TCC se conecta com a Psicopatologia e a Neurociência.
+          veja como a tcc se conecta com a psicopatologia e a neurociência.
         </p>
 
         <div className="space-y-3 pt-2">
@@ -208,7 +208,7 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({
               <p className="text-[11px] text-[#6D6366] mt-0.5">Conceito Chave · Ativação de Crenças</p>
             </div>
             <span className="text-xs font-semibold text-[#396D82] bg-white px-3 py-1.5 rounded-full border border-[#CEE7F0] shrink-0">
-              Ver ficha →
+              ver ficha →
             </span>
           </div>
 
@@ -222,7 +222,7 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({
               <p className="text-[11px] text-[#6D6366] mt-0.5">Catastrofização · Filtro Mental</p>
             </div>
             <span className="text-xs font-semibold text-[#756354] bg-white px-3 py-1.5 rounded-full border border-[#FFF1E5] shrink-0">
-              Ver ficha →
+              ver ficha →
             </span>
           </div>
         </div>
@@ -230,14 +230,14 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({
 
       {/* Card 3: Seu glossário afetivo */}
       <div className="rounded-[24px] p-6 bg-[#FFF5F7] border border-[#FFD3DD] shadow-[0_2px_8px_rgba(64,56,58,0.05)] space-y-3">
-        <span className="text-xs text-[#B94862] font-semibold tracking-wide uppercase">Fichas de Estudo</span>
+        <span className="text-xs text-[#B94862] font-semibold tracking-wide lowercase">fichas de estudo</span>
         
         <h2 className="font-display text-lg sm:text-xl font-bold text-[#40383A]">
-          Seu glossário afetivo
+          seu glossário afetivo
         </h2>
         
         <p className="text-xs text-[#6D6366]">
-          Fichamento simplificado para consultar antes das provas.
+          fichamento simplificado para consultar antes das provas.
         </p>
 
         {/* 3 Concept White Cards */}
@@ -247,7 +247,7 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({
               <p className="text-xs font-semibold text-[#40383A]">Desensibilização Sistemática</p>
               <p className="text-[10px] text-[#6D6366]">Comportamental · Wolpe</p>
             </div>
-            <span className="text-xs font-semibold text-[#B94862]">Ver →</span>
+            <span className="text-xs font-semibold text-[#B94862]">ver →</span>
           </div>
 
           <div className="p-3.5 bg-white rounded-2xl border border-[#FFD3DD] flex items-center justify-between">
@@ -255,7 +255,7 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({
               <p className="text-xs font-semibold text-[#40383A]">Inconsciente Estruturado</p>
               <p className="text-[10px] text-[#6D6366]">Psicanálise · Lacan</p>
             </div>
-            <span className="text-xs font-semibold text-[#B94862]">Ver →</span>
+            <span className="text-xs font-semibold text-[#B94862]">ver →</span>
           </div>
 
           <div className="p-3.5 bg-white rounded-2xl border border-[#FFD3DD] flex items-center justify-between">
@@ -263,7 +263,7 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({
               <p className="text-xs font-semibold text-[#40383A]">Aliança Terapêutica</p>
               <p className="text-[10px] text-[#6D6366]">Humanista · Carl Rogers</p>
             </div>
-            <span className="text-xs font-semibold text-[#B94862]">Ver →</span>
+            <span className="text-xs font-semibold text-[#B94862]">ver →</span>
           </div>
         </div>
       </div>

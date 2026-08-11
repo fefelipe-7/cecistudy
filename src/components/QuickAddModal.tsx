@@ -143,12 +143,12 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
   };
 
   const typeOptions: { id: QuickType; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-    { id: 'task', label: 'Tarefa', icon: Check },
-    { id: 'class', label: 'Aula / Nota', icon: FileText },
-    { id: 'reading', label: 'Leitura', icon: BookOpen },
-    { id: 'flashcard', label: 'Flashcard', icon: Brain },
-    { id: 'concept', label: 'Conceito', icon: Sparkles },
-    { id: 'internship', label: 'Estágio', icon: HeartHandshake },
+    { id: 'task', label: 'tarefa', icon: Check },
+    { id: 'class', label: 'aula / nota', icon: FileText },
+    { id: 'reading', label: 'leitura', icon: BookOpen },
+    { id: 'flashcard', label: 'flashcard', icon: Brain },
+    { id: 'concept', label: 'conceito', icon: Sparkles },
+    { id: 'internship', label: 'estágio', icon: HeartHandshake },
   ];
 
   return (
@@ -163,9 +163,9 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
             </span>
             <div>
               <h3 className="font-display font-bold text-lg text-[#40383A]">
-                Novo Registro no Cantinho
+                novo registro no cantinho
               </h3>
-              <p className="text-xs text-[#6D6366]">O que você quer adicionar agora?</p>
+              <p className="text-xs text-[#6D6366]">o que você quer adicionar agora?</p>
             </div>
           </div>
           <button
@@ -205,7 +205,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           {activeType === 'task' && (
             <>
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">Título da Tarefa</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">título da tarefa</label>
                 <input
                   type="text"
                   placeholder="Ex: Ler capítulo 4 de Psicopatologia"
@@ -219,7 +219,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-[#6D6366] mb-1">Disciplina</label>
+                  <label className="block text-xs font-medium text-[#6D6366] mb-1">disciplina</label>
                   <select
                     value={taskCourseId}
                     onChange={(e) => setTaskCourseId(e.target.value)}
@@ -234,23 +234,23 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-[#6D6366] mb-1">Categoria</label>
+                  <label className="block text-xs font-medium text-[#6D6366] mb-1">categoria</label>
                   <select
                     value={taskCategory}
                     onChange={(e) => setTaskCategory(e.target.value as any)}
                     className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
                   >
-                    <option value="leitura">Leitura 📚</option>
-                    <option value="trabalho">Trabalho / Trabalho Acadêmico 📝</option>
-                    <option value="revisao">Revisão 🧠</option>
-                    <option value="estagio">Estágio 🩺</option>
-                    <option value="outro">Outro ✨</option>
+                    <option value="leitura">leitura 📚</option>
+                    <option value="trabalho">trabalho / trabalho acadêmico 📝</option>
+                    <option value="revisao">revisão 🧠</option>
+                    <option value="estagio">estágio 🩺</option>
+                    <option value="outro">outro ✨</option>
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">Data Limite (Prazo)</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">data limite (prazo)</label>
                 <input
                   type="date"
                   value={taskDueDate}
@@ -264,7 +264,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           {activeType === 'class' && (
             <>
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">Título da Aula</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">título da aula</label>
                 <input
                   type="text"
                   placeholder="Ex: Aula 09 - Transtornos de Ansiedade e Tag"
@@ -276,7 +276,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">Disciplina</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">disciplina</label>
                 <select
                   value={classCourseId}
                   onChange={(e) => setClassCourseId(e.target.value)}
@@ -291,7 +291,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">Resumo / Principais Anotações</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">resumo / principais anotações</label>
                 <textarea
                   rows={3}
                   placeholder="Escreva os pontos fundamentais discutidos em sala..."
@@ -306,7 +306,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           {activeType === 'reading' && (
             <>
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">Título da Obra / Artigo</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">título da obra / artigo</label>
                 <input
                   type="text"
                   placeholder="Ex: A Interpretação dos Sonhos ou Artigo sobre TCC"
@@ -319,7 +319,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-[#6D6366] mb-1">Autor</label>
+                  <label className="block text-xs font-medium text-[#6D6366] mb-1">autor</label>
                   <input
                     type="text"
                     placeholder="Ex: Aaron Beck, Freud"
@@ -329,7 +329,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#6D6366] mb-1">Total de Páginas</label>
+                  <label className="block text-xs font-medium text-[#6D6366] mb-1">total de páginas</label>
                   <input
                     type="number"
                     value={readingPages}
@@ -344,7 +344,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           {activeType === 'flashcard' && (
             <>
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">Pergunta / Frente do Card</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">pergunta / frente do card</label>
                 <input
                   type="text"
                   placeholder="Ex: O que é a Tríade Cognitiva da Depressão?"
@@ -356,7 +356,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">Resposta / Verso do Card</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">resposta / verso do card</label>
                 <textarea
                   rows={3}
                   placeholder="Explique a resposta de forma simples e clara..."
@@ -372,7 +372,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           {activeType === 'concept' && (
             <>
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">Nome do Conceito de Psicologia</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">nome do conceito de psicologia</label>
                 <input
                   type="text"
                   placeholder="Ex: Pensamentos Automáticos ou Transferência"
@@ -384,7 +384,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">Definição Acadêmica / Pessoal</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">definição acadêmica / pessoal</label>
                 <textarea
                   rows={3}
                   placeholder="Escreva a definição com suas palavras..."
@@ -399,7 +399,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           {activeType === 'internship' && (
             <>
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">Atividade de Estágio Realizada</label>
+                <label className="block text-xs font-medium text-[#6D6366] mb-1">atividade de estágio realizada</label>
                 <input
                   type="text"
                   placeholder="Ex: Acolhimento na Triagem da Clínica Escola"
@@ -412,7 +412,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
 
               <div className="grid grid-cols-3 gap-3">
                 <div className="col-span-1">
-                  <label className="block text-xs font-medium text-[#6D6366] mb-1">Horas</label>
+                  <label className="block text-xs font-medium text-[#6D6366] mb-1">horas</label>
                   <input
                     type="number"
                     value={internshipHours}
@@ -421,7 +421,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                   />
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-xs font-medium text-[#6D6366] mb-1">Notas da Supervisão</label>
+                  <label className="block text-xs font-medium text-[#6D6366] mb-1">notas da supervisão</label>
                   <input
                     type="text"
                     placeholder="Orientação da supervisora..."
@@ -441,14 +441,14 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
               onClick={onClose}
               className="px-4 py-2.5 rounded-xl text-xs text-[#6D6366] hover:bg-[#FAF8F5] transition-colors min-h-[44px] cursor-pointer"
             >
-              Cancelar
+              cancelar
             </button>
             <button
               type="submit"
               className="flex items-center gap-1.5 bg-[#E97891] hover:bg-[#B94862] text-white px-5 py-2.5 rounded-[14px] text-xs font-medium shadow-2xs transition-transform active:scale-95 min-h-[48px] cursor-pointer"
             >
               <Plus className="w-4 h-4 stroke-[2.5]" />
-              <span>Salvar Registro</span>
+              <span>salvar registro</span>
             </button>
           </div>
         </form>

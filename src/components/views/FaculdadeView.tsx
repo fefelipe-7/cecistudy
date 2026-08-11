@@ -51,7 +51,7 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
       {/* Top Header Label & Title */}
       <div className="flex items-center justify-between pt-1 px-1">
         <div>
-          <p className="text-xs text-[#6D6366] font-medium uppercase tracking-wide">Faculdade</p>
+          <p className="text-xs text-[#6D6366] font-medium lowercase tracking-wide">faculdade</p>
           <h1 className="font-display text-2xl sm:text-3xl text-[#40383A] font-bold mt-0.5 tracking-tight">
             6º semestre
           </h1>
@@ -59,7 +59,7 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
         <button
           onClick={() => setSubTab('calendario')}
           className="w-10 h-10 rounded-2xl bg-white border border-[#E9DFDC] flex items-center justify-center text-[#6D6366] hover:bg-[#FAF8F5] transition-colors shadow-2xs cursor-pointer"
-          title="Ver calendário"
+          title="ver calendário"
         >
           <CalendarIcon className="w-5 h-5 text-[#6D6366]" />
         </button>
@@ -69,17 +69,17 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
       <div className="rounded-[24px] p-6 bg-gradient-to-br from-[#FFF5F7]/90 via-white to-[#FFF8F1]/80 border border-[#FFD3DD] relative overflow-hidden space-y-4 shadow-[0_2px_8px_rgba(64,56,58,0.05)]">
         <div>
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[#B94862] uppercase tracking-wider bg-white/90 px-3 py-1 rounded-full border border-[#FFD3DD] shadow-2xs">
-              Semestre 2026.2 ♡
+            <span className="text-[11px] font-bold text-[#B94862] lowercase tracking-wider bg-white/90 px-3 py-1 rounded-full border border-[#FFD3DD] shadow-2xs">
+              semestre 2026.2 ♡
             </span>
-            <span className="text-xs text-[#6D6366] font-semibold bg-white/80 px-2.5 py-1 rounded-full border border-[#E9DFDC]">Psicologia</span>
+            <span className="text-xs text-[#6D6366] font-semibold bg-white/80 px-2.5 py-1 rounded-full border border-[#E9DFDC]">psicologia</span>
           </div>
 
           <h2 className="font-display text-xl sm:text-2xl font-bold text-[#40383A] mt-2">
-            Seu semestre em um só lugar
+            seu semestre em um só lugar
           </h2>
           <p className="text-xs text-[#6D6366] mt-1 leading-relaxed">
-            Disciplinas, aulas, tarefas e provas organizados com leveza e carinho.
+            disciplinas, aulas, tarefas e provas organizados com leveza e carinho.
           </p>
         </div>
 
@@ -117,9 +117,9 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
           </div>
 
           <div>
-            <h3 className="font-display font-bold text-sm text-[#40383A]">Ritmo bonito de estudo ✨</h3>
+            <h3 className="font-display font-bold text-sm text-[#40383A]">ritmo bonito de estudo ✨</h3>
             <p className="text-xs text-[#6D6366] mt-0.5 leading-relaxed">
-              Psicopatologia e Social conduzindo seu progresso com consistência.
+              psicopatologia e social conduzindo seu progresso com consistência.
             </p>
           </div>
         </div>
@@ -128,10 +128,10 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
       {/* Sub-Tabs Navigation */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
         {[
-          { id: 'disciplinas', label: 'Disciplinas', icon: BookOpen },
-          { id: 'aulas', label: 'Diário de Aulas', icon: FileCheck2 },
-          { id: 'avaliacoes', label: 'Avaliações', icon: AlertCircle },
-          { id: 'calendario', label: 'Calendário', icon: CalendarIcon },
+          { id: 'disciplinas', label: 'disciplinas', icon: BookOpen },
+          { id: 'aulas', label: 'diário de aulas', icon: FileCheck2 },
+          { id: 'avaliacoes', label: 'avaliações', icon: AlertCircle },
+          { id: 'calendario', label: 'calendário', icon: CalendarIcon },
         ].map((tab) => {
           const Icon = tab.icon;
           const isSel = subTab === tab.id;
@@ -157,12 +157,12 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
       {subTab === 'disciplinas' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between px-1">
-            <h2 className="font-display text-lg font-bold text-[#40383A]">Grade de Disciplinas</h2>
+            <h2 className="font-display text-lg font-bold text-[#40383A]">grade de disciplinas</h2>
             <button
               onClick={() => setSubTab('calendario')}
               className="text-xs text-[#B94862] hover:underline font-semibold cursor-pointer"
             >
-              Ver calendário completo →
+              ver calendário completo →
             </button>
           </div>
 
@@ -182,12 +182,12 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
                   </h3>
                   <p className="text-xs text-[#6D6366] mt-0.5">Profa. Helena Matos • 7 de 12 aulas</p>
                 </div>
-                <span className="text-[10px] font-bold tracking-wider uppercase bg-[#FFF5F7] text-[#B94862] px-2.5 py-1 rounded-full border border-[#FFD3DD]">
-                  Amanhã 09:00
+                <span className="text-[10px] font-bold tracking-wider lowercase bg-[#FFF5F7] text-[#B94862] px-2.5 py-1 rounded-full border border-[#FFD3DD]">
+                  amanhã 09:00
                 </span>
               </div>
 
-              <p className="text-xs text-[#6D6366]">1 Leitura Obrigatória • Prova em 12/08</p>
+              <p className="text-xs text-[#6D6366]">1 leitura obrigatória • prova em 12/08</p>
 
               {/* Progress */}
               <div className="space-y-1 pt-1">
@@ -195,9 +195,9 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
                   <div className="h-full bg-[#B94862] rounded-full" style={{ width: '70%' }} />
                 </div>
                 <div className="flex items-center justify-between text-[11px] text-[#6D6366] pt-1">
-                  <span>Módulo Atual: Conceituação TCC</span>
+                  <span>módulo atual: conceituação tcc</span>
                   <span className="font-semibold text-[#B94862] flex items-center gap-0.5">
-                    Acessar aulas <ChevronRight className="w-3 h-3" />
+                    acessar aulas <ChevronRight className="w-3 h-3" />
                   </span>
                 </div>
               </div>
@@ -218,12 +218,12 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
                   </h3>
                   <p className="text-xs text-[#6D6366] mt-0.5">Prof. André Vidal • 6 de 10 aulas</p>
                 </div>
-                <span className="text-[10px] font-bold tracking-wider uppercase bg-[#F3F9FC] text-[#396D82] px-2.5 py-1 rounded-full border border-[#CEE7F0]">
-                  Amanhã 14:00
+                <span className="text-[10px] font-bold tracking-wider lowercase bg-[#F3F9FC] text-[#396D82] px-2.5 py-1 rounded-full border border-[#CEE7F0]">
+                  amanhã 14:00
                 </span>
               </div>
 
-              <p className="text-xs text-[#6D6366]">Seminário Científico • Grupo 03</p>
+              <p className="text-xs text-[#6D6366]">seminário científico • grupo 03</p>
 
               {/* Progress */}
               <div className="space-y-1 pt-1">
@@ -231,9 +231,9 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
                   <div className="h-full bg-[#396D82] rounded-full" style={{ width: '60%' }} />
                 </div>
                 <div className="flex items-center justify-between text-[11px] text-[#6D6366] pt-1">
-                  <span>Módulo Atual: Influência Social</span>
+                  <span>módulo atual: influência social</span>
                   <span className="font-semibold text-[#396D82] flex items-center gap-0.5">
-                    Acessar aulas <ChevronRight className="w-3 h-3" />
+                    acessar aulas <ChevronRight className="w-3 h-3" />
                   </span>
                 </div>
               </div>
@@ -254,12 +254,12 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
                   </h3>
                   <p className="text-xs text-[#6D6366] mt-0.5">Profa. Camila Nogueira • 4 de 9 aulas</p>
                 </div>
-                <span className="text-[10px] font-bold tracking-wider uppercase bg-[#FFF8F1] text-[#756354] px-2.5 py-1 rounded-full border border-[#FFF1E5]">
-                  Quinta-feira
+                <span className="text-[10px] font-bold tracking-wider lowercase bg-[#FFF8F1] text-[#756354] px-2.5 py-1 rounded-full border border-[#FFF1E5]">
+                  quinta-feira
                 </span>
               </div>
 
-              <p className="text-xs text-[#6D6366]">2 Materiais de Estudo de Casos</p>
+              <p className="text-xs text-[#6D6366]">2 materiais de estudo de casos</p>
 
               {/* Progress */}
               <div className="space-y-1 pt-1">
@@ -267,9 +267,9 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
                   <div className="h-full bg-[#756354] rounded-full" style={{ width: '45%' }} />
                 </div>
                 <div className="flex items-center justify-between text-[11px] text-[#6D6366] pt-1">
-                  <span>Módulo Atual: Testes de Personalidade</span>
+                  <span>módulo atual: testes de personalidade</span>
                   <span className="font-semibold text-[#756354] flex items-center gap-0.5">
-                    Acessar aulas <ChevronRight className="w-3 h-3" />
+                    acessar aulas <ChevronRight className="w-3 h-3" />
                   </span>
                 </div>
               </div>
@@ -288,7 +288,7 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
               className="rounded-[24px] p-5 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] hover:border-[#FFD3DD] cursor-pointer transition-all space-y-2"
             >
               <div className="flex items-center justify-between text-xs text-[#918689]">
-                <span className="font-semibold text-[#E97891]">Aula {cl.number}</span>
+                <span className="font-semibold text-[#E97891]">aula {cl.number}</span>
                 <span>{cl.date}</span>
               </div>
 
@@ -308,7 +308,7 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
       {subTab === 'avaliacoes' && (
         <div className="rounded-[24px] p-6 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] space-y-4">
           <h2 className="font-display text-lg font-bold text-[#40383A]">
-            Avaliações & Provas
+            avaliações & provas
           </h2>
 
           <div className="space-y-3">
@@ -324,7 +324,7 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
               >
                 <div>
                   <h3 className="font-semibold text-sm text-[#40383A]">{ex.title}</h3>
-                  <p className="text-xs text-[#6D6366] mt-0.5">Data: {ex.date} · Peso {ex.weight}</p>
+                  <p className="text-xs text-[#6D6366] mt-0.5">data: {ex.date} · peso {ex.weight}</p>
                 </div>
                 <CheckCircle2 className={`w-5 h-5 ${ex.completed ? 'text-[#518265]' : 'text-[#BEB4B6]'}`} />
               </div>
@@ -337,11 +337,11 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
       {subTab === 'calendario' && (
         <div className="rounded-[24px] p-6 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] space-y-4">
           <h2 className="font-display text-lg font-bold text-[#40383A]">
-            Calendário Acadêmico · 2026.2
+            calendário acadêmico · 2026.2
           </h2>
 
           <div className="grid grid-cols-7 gap-1.5 text-center text-xs font-semibold text-[#918689] py-2">
-            <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div>
+            <div>d</div><div>s</div><div>t</div><div>q</div><div>q</div><div>s</div><div>s</div>
           </div>
 
           <div className="grid grid-cols-7 gap-1.5 text-center text-xs">
@@ -370,21 +370,21 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
 
       {/* Card 3: Sua semana acadêmica */}
       <div className="rounded-[24px] p-6 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] space-y-3">
-        <span className="text-xs text-[#918689] font-semibold tracking-wide uppercase">Próximos eventos</span>
+        <span className="text-xs text-[#918689] font-semibold tracking-wide lowercase">próximos eventos</span>
         
         <h2 className="font-display text-lg sm:text-xl font-bold text-[#40383A]">
-          Sua semana acadêmica
+          sua semana acadêmica
         </h2>
         
         <p className="text-xs text-[#6D6366]">
-          O suficiente para você se localizar sem virar um dashboard corporativo.
+          o suficiente para você se localizar sem virar um dashboard corporativo.
         </p>
 
         <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#E9DFDC]">
             <div>
-              <h3 className="font-semibold text-xs text-[#40383A]">Entrega de fichamento</h3>
-              <p className="text-[11px] text-[#6D6366] mt-0.5">Psicologia Social · segunda-feira</p>
+              <h3 className="font-semibold text-xs text-[#40383A]">entrega de fichamento</h3>
+              <p className="text-[11px] text-[#6D6366] mt-0.5">psicologia social · segunda-feira</p>
             </div>
             <span className="text-xs font-semibold text-[#B94862] bg-white px-2.5 py-1 rounded-full border border-[#FFD3DD]">
               11/08
@@ -393,8 +393,8 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
 
           <div className="flex items-center justify-between p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#E9DFDC]">
             <div>
-              <h3 className="font-semibold text-xs text-[#40383A]">Supervisão de estágio</h3>
-              <p className="text-[11px] text-[#6D6366] mt-0.5">Registrar aprendizados e dúvidas</p>
+              <h3 className="font-semibold text-xs text-[#40383A]">supervisão de estágio</h3>
+              <p className="text-[11px] text-[#6D6366] mt-0.5">registrar aprendizados e dúvidas</p>
             </div>
             <span className="text-xs font-semibold text-[#396D82] bg-white px-2.5 py-1 rounded-full border border-[#CEE7F0]">
               13/08

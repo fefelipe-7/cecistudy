@@ -92,9 +92,9 @@ export const EstudosView: React.FC<EstudosViewProps> = ({
       {/* Top Header Label & Title */}
       <div className="flex items-center justify-between pt-1 px-1">
         <div>
-          <p className="text-xs text-[#6D6366] font-medium uppercase tracking-wide">Estudos</p>
+          <p className="text-xs text-[#6D6366] font-medium lowercase tracking-wide">estudos</p>
           <h1 className="font-display text-2xl sm:text-3xl text-[#40383A] font-bold mt-0.5 tracking-tight">
-            Seu study corner
+            seu study corner
           </h1>
         </div>
         <div className="w-8 h-8 rounded-full bg-[#FFF5F7] border border-[#FFD3DD]" />
@@ -103,11 +103,11 @@ export const EstudosView: React.FC<EstudosViewProps> = ({
       {/* Hero Card: Hoje dá para estudar com carinho */}
       <div className="rounded-[24px] p-6 bg-[#FFF5F7] border border-[#FFD3DD] shadow-[0_2px_8px_rgba(64,56,58,0.05)] relative overflow-hidden space-y-4">
         <div>
-          <span className="text-xs text-[#B94862] font-semibold tracking-wide uppercase">
-            Hoje dá para estudar com carinho
+          <span className="text-xs text-[#B94862] font-semibold tracking-wide lowercase">
+            hoje dá para estudar com carinho
           </span>
           <p className="text-xs text-[#6D6366] mt-1.5 leading-relaxed">
-            Tudo aqui nasce das suas aulas: revisão, leitura e questões já chegam conectadas.
+            tudo aqui nasce das suas aulas: revisão, leitura e questões já chegam conectadas.
           </p>
         </div>
 
@@ -120,7 +120,7 @@ export const EstudosView: React.FC<EstudosViewProps> = ({
             12 flashcards
           </span>
           <span className="text-xs bg-[#F3F9FC] text-[#396D82] px-3.5 py-1 rounded-full font-medium border border-[#CEE7F0]">
-            Leitura curta
+            leitura curta
           </span>
         </div>
 
@@ -146,17 +146,17 @@ export const EstudosView: React.FC<EstudosViewProps> = ({
           className="w-full bg-[#E97891] hover:bg-[#D85F79] text-white py-3 rounded-2xl text-xs sm:text-sm font-semibold shadow-xs transition-transform active:scale-[0.99] flex items-center justify-center gap-2 min-h-[44px] cursor-pointer"
         >
           <Sparkles className="w-4 h-4 fill-white" />
-          <span>Começar estudo leve</span>
+          <span>começar estudo leve</span>
         </button>
       </div>
 
       {/* Sub-Tabs Pill Navigation */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
         {[
-          { id: 'sessoes', label: 'Sessões de Foco', icon: Clock },
-          { id: 'leituras', label: 'Minhas Leituras', icon: BookOpen },
-          { id: 'flashcards', label: 'Flashcards', icon: Brain },
-          { id: 'questoes', label: 'Questões Práticas', icon: HelpCircle },
+          { id: 'sessoes', label: 'sessões de foco', icon: Clock },
+          { id: 'leituras', label: 'minhas leituras', icon: BookOpen },
+          { id: 'flashcards', label: 'flashcards', icon: Brain },
+          { id: 'questoes', label: 'questões práticas', icon: HelpCircle },
         ].map((tab) => {
           const Icon = tab.icon;
           const isSel = subTab === tab.id;
@@ -180,14 +180,14 @@ export const EstudosView: React.FC<EstudosViewProps> = ({
 
       {/* Card 2: Seu fluxo de estudo */}
       <div className="rounded-[24px] p-6 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] space-y-3">
-        <span className="text-xs text-[#918689] font-semibold tracking-wide uppercase">Continuar de onde você parou</span>
+        <span className="text-xs text-[#918689] font-semibold tracking-wide lowercase">continuar de onde você parou</span>
         
         <h2 className="font-display text-lg sm:text-xl font-bold text-[#40383A]">
-          Seu fluxo de estudo
+          seu fluxo de estudo
         </h2>
         
         <p className="text-xs text-[#6D6366]">
-          Mais bonitinho, mais pessoal, sem perder a clareza.
+          mais bonitinho, mais pessoal, sem perder a clareza.
         </p>
 
         <div className="space-y-3 pt-2">
@@ -215,7 +215,7 @@ export const EstudosView: React.FC<EstudosViewProps> = ({
               <p className="text-[11px] text-[#6D6366] mt-0.5">Teorias da personalidade · 2 notas salvas</p>
             </div>
             <span className="text-xs font-semibold text-[#396D82] bg-white px-3 py-1.5 rounded-full border border-[#CEE7F0] shrink-0">
-              Ler 15 min →
+              ler 15 min →
             </span>
           </div>
 
@@ -237,14 +237,14 @@ export const EstudosView: React.FC<EstudosViewProps> = ({
 
       {/* Card 3: Um plano fofinho e realista */}
       <div className="rounded-[24px] p-6 bg-[#FFF5F7] border border-[#FFD3DD] shadow-[0_2px_8px_rgba(64,56,58,0.05)] space-y-3">
-        <span className="text-xs text-[#B94862] font-semibold tracking-wide uppercase">Sessão sugerida</span>
+        <span className="text-xs text-[#B94862] font-semibold tracking-wide lowercase">sessão sugerida</span>
         
         <h2 className="font-display text-lg sm:text-xl font-bold text-[#40383A]">
-          Um plano fofinho e realista
+          um plano fofinho e realista
         </h2>
         
         <p className="text-xs text-[#6D6366]">
-          Nada rígido: só uma ordem boa para o seu cérebro entrar no ritmo.
+          nada rígido: só uma ordem boa para o seu cérebro entrar no ritmo.
         </p>
 
         {/* 3 Step White Boxes */}
@@ -272,7 +272,7 @@ export const EstudosView: React.FC<EstudosViewProps> = ({
         {/* Dica Box */}
         <div className="p-3.5 bg-white rounded-2xl border border-[#FFD3DD]">
           <p className="text-xs text-[#6D6366] leading-relaxed">
-            <strong className="text-[#B94862]">Dica da Ceci:</strong> Começa pelos cartões rápidos. Quando você sentir que entrou no clima, abre a leitura principal.
+            <strong className="text-[#B94862]">dica da ceci:</strong> começa pelos cartões rápidos. quando você sentir que entrou no clima, abre a leitura principal.
           </p>
         </div>
 
@@ -286,9 +286,9 @@ export const EstudosView: React.FC<EstudosViewProps> = ({
       {/* Card 4: Seu ritmo - Constante e bonito */}
       <div className="rounded-[24px] p-6 bg-[#FAF8F5] border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] flex items-center justify-between">
         <div>
-          <span className="text-xs text-[#918689] font-semibold tracking-wide uppercase">Seu ritmo</span>
+          <span className="text-xs text-[#918689] font-semibold tracking-wide lowercase">seu ritmo</span>
           <h2 className="font-display text-lg font-bold text-[#40383A] mt-0.5">
-            Constante e bonito
+            constante e bonito
           </h2>
         </div>
 
@@ -304,7 +304,7 @@ export const EstudosView: React.FC<EstudosViewProps> = ({
       {subTab === 'sessoes' && (
         <div className="rounded-[24px] p-6 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] text-center space-y-4">
           <h2 className="font-display text-xl font-bold text-[#40383A]">
-            Cantinho de Foco Ceci
+            cantinho de foco ceci
           </h2>
 
           <div className="relative w-48 h-48 mx-auto rounded-full border-4 border-[#FFD3DD] bg-[#FFF5F7] flex flex-col items-center justify-center shadow-inner">
@@ -312,7 +312,7 @@ export const EstudosView: React.FC<EstudosViewProps> = ({
               {formatTime(timeLeft)}
             </span>
             <span className="text-xs text-[#6D6366] mt-1">
-              {isRunning ? '✨ Em andamento...' : 'Pausado'}
+              {isRunning ? '✨ em andamento...' : 'pausado'}
             </span>
           </div>
 
@@ -322,7 +322,7 @@ export const EstudosView: React.FC<EstudosViewProps> = ({
               className="flex items-center gap-2 bg-[#E97891] hover:bg-[#D85F79] text-white px-6 py-2.5 rounded-full text-xs font-semibold shadow-xs cursor-pointer"
             >
               {isRunning ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 fill-white" />}
-              <span>{isRunning ? 'Pausar' : 'Iniciar'}</span>
+              <span>{isRunning ? 'pausar' : 'iniciar'}</span>
             </button>
 
             <button
@@ -339,7 +339,7 @@ export const EstudosView: React.FC<EstudosViewProps> = ({
       {subTab === 'flashcards' && activeCard && (
         <div className="rounded-[24px] p-6 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] text-center space-y-4">
           <span className="text-xs text-[#918689]">
-            Card {currentCardIndex + 1} de {flashcards.length}
+            card {currentCardIndex + 1} de {flashcards.length}
           </span>
 
           <div
@@ -347,7 +347,7 @@ export const EstudosView: React.FC<EstudosViewProps> = ({
             className="min-h-[180px] p-6 rounded-2xl bg-[#FFF5F7] border border-[#FFD3DD] flex flex-col items-center justify-center cursor-pointer"
           >
             <span className="text-xs font-semibold text-[#B94862] mb-2">
-              {isFlipped ? 'RESPOSTA ✨' : 'PERGUNTA ❓'}
+              {isFlipped ? 'resposta ✨' : 'pergunta ❓'}
             </span>
             <p className="font-display font-bold text-base text-[#40383A]">
               {isFlipped ? activeCard.answer : activeCard.question}
@@ -362,7 +362,7 @@ export const EstudosView: React.FC<EstudosViewProps> = ({
               }}
               className="px-4 py-2 bg-[#FAF8F5] border border-[#E9DFDC] rounded-xl text-xs font-medium text-[#40383A] cursor-pointer"
             >
-              ← Anterior
+              ← anterior
             </button>
 
             <button
@@ -372,7 +372,7 @@ export const EstudosView: React.FC<EstudosViewProps> = ({
               }}
               className="px-4 py-2 bg-[#E97891] hover:bg-[#D85F79] text-white rounded-xl text-xs font-semibold cursor-pointer"
             >
-              Próximo →
+              próximo →
             </button>
           </div>
         </div>

@@ -22,13 +22,13 @@ export const StudyStatsWidget: React.FC = () => {
             </div>
             <div>
               <h4 className="font-display font-bold text-sm text-[#40383A]">
-                Ofensiva de Estudos
+                ofensiva de estudos
               </h4>
-              <p className="text-[11px] text-[#6D6366]">À frente de 84% das colegas</p>
+              <p className="text-[11px] text-[#6D6366]">à frente de 84% das colegas</p>
             </div>
           </div>
           <span className="text-[10px] font-bold bg-[#FAF8F5] text-[#6D6366] px-2 py-1 rounded-full border border-[#E9DFDC]">
-            Ininterrupto 🔥
+            ininterrupto 🔥
           </span>
         </div>
 
@@ -37,7 +37,7 @@ export const StudyStatsWidget: React.FC = () => {
             <span className="text-3xl font-display font-bold text-[#40383A]">
               {streakDays} <span className="text-base font-normal text-[#6D6366]">dias</span>
             </span>
-            <p className="text-xs text-[#6D6366] mt-0.5">Seu hábito de estudo está consolidado!</p>
+            <p className="text-xs text-[#6D6366] mt-0.5">seu hábito de estudo está consolidado!</p>
           </div>
 
           {/* Semi-Arc Progress Circle SVG */}
@@ -71,7 +71,7 @@ export const StudyStatsWidget: React.FC = () => {
         <div className="pt-3 border-t border-[#F2EBE8] mt-2 space-y-1.5">
           <div className="flex justify-between items-center text-xs">
             <span className="font-medium text-[#40383A] flex items-center gap-1">
-              <Target className="w-3.5 h-3.5 text-[#E97891]" /> Meta Diária: {dailyGoalMins} min
+              <Target className="w-3.5 h-3.5 text-[#E97891]" /> meta diária: {dailyGoalMins} min
             </span>
             <span className="font-bold text-[#6D6366]">{currentDoneMins} / {dailyGoalMins} min</span>
           </div>
@@ -93,7 +93,7 @@ export const StudyStatsWidget: React.FC = () => {
             </div>
             <div>
               <h4 className="font-display font-bold text-sm text-[#40383A]">
-                Velocidade de Leitura
+                velocidade de leitura
               </h4>
               <p className="text-[11px] text-[#6D6366]">+8 ppm esta semana</p>
             </div>
@@ -111,7 +111,7 @@ export const StudyStatsWidget: React.FC = () => {
             <span className="text-xs text-[#6D6366]">palavras por minuto (ppm)</span>
           </div>
           <p className="text-[11px] text-[#6D6366] mt-1">
-            Seu tempo de leitura por capítulo diminuiu de 24 min para 18 min! ⚡
+            seu tempo de leitura por capítulo diminuiu de 24 min para 18 min! ⚡
           </p>
         </div>
 

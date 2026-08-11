@@ -10,11 +10,11 @@ interface BottomNavProps {
 
 export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onChangeTab }) => {
   const tabs: (NavItem & { id: NavTab })[] = [
-    { id: 'home', label: 'Home', icon: Home },
-    { id: 'faculdade', label: 'Faculdade', icon: GraduationCap },
-    { id: 'estudos', label: 'Estudos', icon: Brain },
-    { id: 'biblioteca', label: 'Biblioteca', icon: Library },
-    { id: 'perfil', label: 'Perfil', icon: User },
+    { id: 'home', label: 'home', icon: Home },
+    { id: 'faculdade', label: 'faculdade', icon: GraduationCap },
+    { id: 'estudos', label: 'estudos', icon: Brain },
+    { id: 'biblioteca', label: 'biblioteca', icon: Library },
+    { id: 'perfil', label: 'perfil', icon: User },
   ];
 
   const activeIndex = tabs.findIndex((t) => t.id === activeTab);

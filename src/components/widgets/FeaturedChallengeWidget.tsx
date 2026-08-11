@@ -18,28 +18,28 @@ export const FeaturedChallengeWidget: React.FC<FeaturedChallengeWidgetProps> = (
 
       <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-2 max-w-md">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-[#FFD3DD] text-[10px] font-bold tracking-wider uppercase backdrop-blur-xs">
-            <Sparkles className="w-3 h-3 text-[#E97891]" /> DESAFIO DE SAÚDE MENTAL CECI
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-[#FFD3DD] text-[10px] font-bold tracking-wider lowercase backdrop-blur-xs">
+            <Sparkles className="w-3 h-3 text-[#E97891]" /> desafio de saúde mental ceci
           </div>
           <h3 className="font-display text-xl sm:text-2xl font-bold leading-tight">
-            Pausa Reflexiva de 5 Minutos por 7 Dias
+            pausa reflexiva de 5 minutos por 7 dias
           </h3>
           <p className="text-xs text-[#E9DFDC]/80 leading-relaxed">
-            Reduza o estresse do semestre e melhore a concentração para as provas com nossa técnica de atenção plena diária.
+            reduza o estresse do semestre e melhore a concentração para as provas com nossa técnica de atenção plena diária.
           </p>
         </div>
 
         <div className="shrink-0 flex sm:flex-col items-start sm:items-end justify-between sm:justify-center gap-3 border-t sm:border-t-0 border-white/10 pt-3 sm:pt-0">
           <div className="text-left sm:text-right">
-            <span className="text-[10px] uppercase tracking-wider text-[#E97891] font-bold">Progresso</span>
-            <p className="text-sm font-bold text-white">3 / 7 Dias Concluídos</p>
+            <span className="text-[10px] lowercase tracking-wider text-[#E97891] font-bold">progresso</span>
+            <p className="text-sm font-bold text-white">3 / 7 dias concluídos</p>
           </div>
 
           <button
             onClick={onStartChallenge}
             className="px-5 py-2.5 rounded-2xl bg-white text-[#40383A] hover:bg-[#FFF5F7] transition-colors text-xs font-bold flex items-center gap-2 shadow-2xs active:scale-98 cursor-pointer"
           >
-            <span>Iniciar Prática</span>
+            <span>iniciar prática</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>

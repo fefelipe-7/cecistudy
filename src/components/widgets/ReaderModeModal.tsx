@@ -60,8 +60,8 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
           </button>
 
           <div className="text-center">
-            <span className="text-[10px] font-bold tracking-widest uppercase opacity-60">
-              PÁGINA {currentPage} DE {totalPages}
+            <span className="text-[10px] font-bold tracking-widest lowercase opacity-60">
+              páginas {currentPage} de {totalPages}
             </span>
             <p className="font-display text-xs font-semibold opacity-90 line-clamp-1">
               {reading.title}
@@ -94,8 +94,8 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
         {/* Reader Canvas Content */}
         <div className="flex-1 overflow-y-auto px-8 sm:px-14 py-8 space-y-6 select-text">
           <div className="text-center space-y-2 mb-8">
-            <span className="text-[11px] uppercase tracking-widest opacity-50">
-              Capítulo {Math.ceil(currentPage / 10)}
+            <span className="text-[11px] lowercase tracking-widest opacity-50">
+              capítulo {Math.ceil(currentPage / 10)}
             </span>
             <h2 className="font-display text-2xl sm:text-3xl font-bold leading-tight">
               A Equação da Mente e do Afeto
@@ -106,9 +106,9 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
           {/* Highlighted Key Text Box */}
           <div className="my-6 p-4 rounded-xl bg-[#FFFDF0] border-l-4 border-[#8C7338] text-sm leading-relaxed italic text-[#756354]">
             "A riqueza da mente não está apenas no acúmulo de dados, mas em como acolhemos o desconhecido e ressignificamos nossa história interpessoal."
-            <div className="mt-2 text-[10px] font-bold tracking-wider uppercase text-[#8C7338] flex items-center gap-1">
+            <div className="mt-2 text-[10px] font-bold tracking-wider lowercase text-[#8C7338] flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-[#8C7338] inline-block" />
-              Destaque do Leitor
+              destaque do leitor
             </div>
           </div>
 
@@ -135,8 +135,8 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
           {/* Progress Slider */}
           <div className="space-y-1">
             <div className="flex items-center justify-between text-[11px] opacity-70">
-              <span>{progressPercent}% Lido</span>
-              <span>Página {currentPage} de {totalPages}</span>
+              <span>{progressPercent}% lido</span>
+              <span>página {currentPage} de {totalPages}</span>
               <span>~{Math.round((totalPages - currentPage) * 1.2)} min restantes</span>
             </div>
             <input
@@ -158,7 +158,7 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
                   theme === 'paper' ? 'bg-white text-[#40383A] shadow-2xs' : 'opacity-70'
                 }`}
               >
-                Papel
+                papel
               </button>
               <button
                 onClick={() => setTheme('sepia')}
@@ -166,7 +166,7 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
                   theme === 'sepia' ? 'bg-[#FFFDF0] text-[#756354] shadow-2xs' : 'opacity-70'
                 }`}
               >
-                Sépia
+                sépia
               </button>
               <button
                 onClick={() => setTheme('dark')}
@@ -174,7 +174,7 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
                   theme === 'dark' ? 'bg-[#40383A] text-white shadow-2xs' : 'opacity-70'
                 }`}
               >
-                Noturno
+                noturno
               </button>
             </div>
 

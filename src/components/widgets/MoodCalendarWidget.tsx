@@ -8,7 +8,7 @@ interface MoodDot {
 }
 
 export const MoodCalendarWidget: React.FC = () => {
-  const [currentMonth, setCurrentMonth] = useState('Agosto 2026');
+  const [currentMonth, setCurrentMonth] = useState('agosto 2026');
 
   const moodColors = {
     alegre: 'bg-[#FFF5F7] border-[#FFD3DD] text-[#B94862]',
@@ -19,11 +19,11 @@ export const MoodCalendarWidget: React.FC = () => {
   };
 
   const moodLabels = [
-    { key: 'alegre', label: 'Alegre', color: 'bg-[#FFF5F7] border border-[#FFD3DD]' },
-    { key: 'focada', label: 'Focada', color: 'bg-[#F2F8F4] border border-[#D1E8D9]' },
-    { key: 'calma', label: 'Calma', color: 'bg-[#F3F9FC] border border-[#CEE7F0]' },
-    { key: 'cansada', label: 'Cansada', color: 'bg-[#FAF8F5] border border-[#E9DFDC]' },
-    { key: 'reflexiva', label: 'Reflexiva', color: 'bg-[#FFFDF0] border border-[#FFF8CC]' },
+    { key: 'alegre', label: 'alegre', color: 'bg-[#FFF5F7] border border-[#FFD3DD]' },
+    { key: 'focada', label: 'focada', color: 'bg-[#F2F8F4] border border-[#D1E8D9]' },
+    { key: 'calma', label: 'calma', color: 'bg-[#F3F9FC] border border-[#CEE7F0]' },
+    { key: 'cansada', label: 'cansada', color: 'bg-[#FAF8F5] border border-[#E9DFDC]' },
+    { key: 'reflexiva', label: 'reflexiva', color: 'bg-[#FFFDF0] border border-[#FFF8CC]' },
   ];
 
   // Dummy calendar matrix data for 31 days
@@ -36,21 +36,21 @@ export const MoodCalendarWidget: React.FC = () => {
     26: 'focada', 27: 'calma', 28: 'reflexiva'
   };
 
-  const daysOfWeek = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+  const daysOfWeek = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
 
   return (
     <div className="rounded-[24px] p-6 bg-[#FAF8F5] border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] font-sans">
       {/* Typewriter Title Header */}
       <div className="flex items-center justify-between pb-4 border-b border-[#F2EBE8] mb-5">
         <div>
-          <span className="text-[10px] font-bold tracking-widest text-[#918689] uppercase flex items-center gap-1">
-            <PenTool className="w-3 h-3 text-[#E97891]" /> MAPA EMOCIONAL & ESTUDOS
+          <span className="text-[10px] font-bold tracking-widest text-[#918689] lowercase flex items-center gap-1">
+            <PenTool className="w-3 h-3 text-[#E97891]" /> mapa emocional & estudos
           </span>
           <h3 className="font-display text-xl sm:text-2xl font-bold text-[#40383A] mt-0.5 tracking-tight">
-            Padrões de Humor do Mês
+            padrões de humor do mês
           </h3>
           <p className="text-xs text-[#6D6366]">
-            Mapeando a constância e o bem-estar ao longo das semanas de aula
+            mapeando a constância e o bem-estar ao longo das semanas de aula
           </p>
         </div>
 

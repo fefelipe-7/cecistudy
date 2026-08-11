@@ -19,8 +19,8 @@ export const MoodSelectorWidget: React.FC<MoodSelectorWidgetProps> = ({ onSelect
   const moods: MoodOption[] = [
     {
       id: 'focada',
-      label: 'Focada',
-      description: 'Pronta para imergir na matéria',
+      label: 'focada',
+      description: 'pronta para imergir na matéria',
       color: 'bg-[#FFF5F7] border-[#FFD3DD]',
       faceSvg: (
         <svg viewBox="0 0 64 64" className="w-10 h-10 stroke-[#40383A] fill-none stroke-[2.5] stroke-linecap-round">
@@ -39,8 +39,8 @@ export const MoodSelectorWidget: React.FC<MoodSelectorWidgetProps> = ({ onSelect
     },
     {
       id: 'relaxada',
-      label: 'Relaxando',
-      description: 'Ritmo leve e leitura sem pressa',
+      label: 'relaxando',
+      description: 'ritmo leve e leitura sem pressa',
       color: 'bg-[#F2F8F4] border-[#D1E8D9]',
       faceSvg: (
         <svg viewBox="0 0 64 64" className="w-10 h-10 stroke-[#40383A] fill-none stroke-[2.5] stroke-linecap-round">
@@ -55,8 +55,8 @@ export const MoodSelectorWidget: React.FC<MoodSelectorWidgetProps> = ({ onSelect
     },
     {
       id: 'criativa',
-      label: 'Criando',
-      description: 'Elaborando mapas mentais & TCC',
+      label: 'criando',
+      description: 'elaborando mapas mentais & tcc',
       color: 'bg-[#FFFDF0] border-[#FFF8CC]',
       faceSvg: (
         <svg viewBox="0 0 64 64" className="w-10 h-10 stroke-[#40383A] fill-none stroke-[2.5] stroke-linecap-round">
@@ -71,8 +71,8 @@ export const MoodSelectorWidget: React.FC<MoodSelectorWidgetProps> = ({ onSelect
     },
     {
       id: 'descanse',
-      label: 'Descomprimindo',
-      description: 'Pausa merecida após aula',
+      label: 'descomprimindo',
+      description: 'pausa merecida após aula',
       color: 'bg-[#F3F9FC] border-[#CEE7F0]',
       faceSvg: (
         <svg viewBox="0 0 64 64" className="w-10 h-10 stroke-[#40383A] fill-none stroke-[2.5] stroke-linecap-round">
@@ -95,14 +95,14 @@ export const MoodSelectorWidget: React.FC<MoodSelectorWidgetProps> = ({ onSelect
   return (
     <div className="rounded-[24px] p-6 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)]">
       <div className="text-center max-w-md mx-auto mb-6">
-        <span className="text-[10px] font-bold tracking-widest text-[#918689] uppercase flex items-center justify-center gap-1">
-          <Sparkles className="w-3 h-3 text-[#E97891]" /> Estado de Espírito do Dia
+        <span className="text-[10px] font-bold tracking-widest text-[#918689] lowercase flex items-center justify-center gap-1">
+          <Sparkles className="w-3 h-3 text-[#E97891]" /> estado de espírito do dia
         </span>
         <h3 className="font-display text-xl sm:text-2xl font-bold text-[#40383A] mt-1">
-          Como a Ceci pode te ajudar hoje?
+          como a ceci pode te ajudar hoje?
         </h3>
         <p className="text-xs text-[#6D6366] mt-1">
-          Escolha como quer direcionar sua sessão de estudos de Psicologia
+          escolha como quer direcionar sua sessão de estudos de psicologia
         </p>
       </div>
 
