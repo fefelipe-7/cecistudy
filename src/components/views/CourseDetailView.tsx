@@ -91,7 +91,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
   };
 
   return (
-    <div className="max-w-md sm:max-w-xl mx-auto space-y-6 pb-28 animate-in fade-in duration-300 relative">
+    <div className="max-w-md sm:max-w-xl mx-auto space-y-6 pb-1 animate-in fade-in duration-300 relative">
 
       {/* Top Navigation & Header directly on canvas */}
       <div className="space-y-3 px-1">

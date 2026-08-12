@@ -17,7 +17,8 @@ import {
   Check,
   Lightbulb,
   ChevronRight,
-  Smile
+  Smile,
+  FileText
 } from 'lucide-react';
 import {
   UserProfile,
@@ -26,7 +27,8 @@ import {
   ClassNote,
   ReadingItem,
   Sticker,
-  NavTab
+  NavTab,
+  Exam
 } from '../../types';
 import { DailyMoodData } from './EstadoDeEspiritoView';
 
@@ -38,6 +40,7 @@ interface HomeViewProps {
   readings: ReadingItem[];
   stickers: Sticker[];
   currentMood: DailyMoodData;
+  exams?: Exam[];
   onToggleTask: (taskId: string) => void;
   onAddTask: (task: Task) => void;
   onNavigate: (tab: NavTab, subTab?: string, targetId?: string) => void;
@@ -53,6 +56,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   readings,
   stickers,
   currentMood,
+  exams = [],
   onToggleTask,
   onAddTask,
   onNavigate,
@@ -60,6 +64,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
   onOpenMoodView,
 }) => {
   const [newTaskTitle, setNewTaskTitle] = useState('');
+
+  // Pending tasks and items calculations
+  const pendingTasks = tasks.filter((t) => !t.completed);
+  const pendingExamsIn14Days = exams.filter((e) => !e.completed);
 
   // Time-based Greeting
   const hour = new Date().getHours();
@@ -130,7 +138,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-      className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-24"
+      className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-1"
     >
       
       {/* Top Header Label & Greeting + Mood Button */}
@@ -169,20 +177,68 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </motion.button>
       </div>
 
-      {/* Inline Daily Highlight */}
-      <div className="flex items-center justify-between py-1.5 px-1 border-y border-[#E9DFDC]">
-        <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-[#E97891]" />
-          <span className="text-xs font-semibold text-[#40383A]">
-            meta do dia: <span className="font-normal text-[#6D6366]">revisar psicopatologia</span>
-          </span>
+      {/* Meta do Dia - Detailed & Large Inline Section */}
+      <div className="space-y-3 px-1 pt-1">
+        {/* Header Row */}
+        <div className="flex items-center justify-between border-b border-[#E9DFDC] pb-2">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-[#E97891]" />
+            <h2 className="text-xs font-bold text-[#40383A] font-display uppercase tracking-wider">
+              meta do dia
+            </h2>
+            <span className="text-[10px] font-semibold text-[#B94862] bg-[#FFF5F7] px-2.5 py-0.5 rounded-full border border-[#FFD3DD]">
+              hoje
+            </span>
+          </div>
+          <button
+            onClick={() => onNavigate('estudos', 'sessoes')}
+            className="text-xs font-bold text-[#B94862] hover:underline cursor-pointer flex items-center gap-1"
+          >
+            <span>estudar agora</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
         </div>
-        <button
-          onClick={() => onNavigate('estudos', 'sessoes')}
-          className="text-xs font-bold text-[#B94862] hover:underline cursor-pointer"
-        >
-          estudar agora →
-        </button>
+
+        {/* Detailed Descriptive Text */}
+        <p className="text-sm sm:text-base text-[#40383A] font-medium leading-relaxed font-display">
+          para concluir seu dia de hoje com sucesso, você ainda tem{' '}
+          <span className="font-bold text-[#B94862] underline decoration-[#FFD3DD] underline-offset-2">
+            {pendingTasks.length} {pendingTasks.length === 1 ? 'tarefa pendente' : 'tarefas pendentes'}
+          </span>
+          {pendingTasks.length > 0 && (
+            <span className="text-[#6D6366] font-normal text-xs sm:text-sm">
+              {' '}({pendingTasks.slice(0, 2).map((t) => t.title).join(', ')})
+            </span>
+          )}
+          {' '}e <span className="font-bold text-[#396D82]">revisão ativa de conteúdos</span>. mantenha seu ritmo com leveza e foco!
+        </p>
+
+        {/* 2 Simple Metric Blocks in a Single Row */}
+        <div className="grid grid-cols-2 gap-3 pt-1">
+          <button
+            onClick={() => onNavigate('faculdade', 'aulas')}
+            className="bg-white rounded-2xl p-3 border border-[#E9DFDC] hover:border-[#FFD3DD] transition-all text-center flex flex-col items-center justify-center space-y-0.5 shadow-2xs cursor-pointer group"
+          >
+            <span className="font-display font-bold text-2xl sm:text-3xl text-[#B94862] group-hover:scale-105 transition-transform">
+              {pendingTasks.length}
+            </span>
+            <span className="text-[11px] font-semibold text-[#6D6366] leading-tight">
+              tarefas pendentes
+            </span>
+          </button>
+
+          <button
+            onClick={() => onNavigate('faculdade', 'avaliacoes')}
+            className="bg-white rounded-2xl p-3 border border-[#E9DFDC] hover:border-[#CEE7F0] transition-all text-center flex flex-col items-center justify-center space-y-0.5 shadow-2xs cursor-pointer group"
+          >
+            <span className="font-display font-bold text-2xl sm:text-3xl text-[#396D82] group-hover:scale-105 transition-transform">
+              {pendingExamsIn14Days.length}
+            </span>
+            <span className="text-[11px] font-semibold text-[#6D6366] leading-tight">
+              provas nos próx. 14 dias
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* 2 Cards Separados Num Grid 2x1 (Aulas Hoje & Assuntos para Estudar) */}

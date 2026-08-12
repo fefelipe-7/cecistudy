@@ -87,7 +87,7 @@ export const EstudosView: React.FC<EstudosViewProps> = ({
   const activeCard = flashcards[currentCardIndex] || flashcards[0];
 
   return (
-    <div className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-16 animate-in fade-in duration-300">
+    <div className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-1 animate-in fade-in duration-300">
       
       {/* Top Header Label & Title */}
       <div className="flex items-center justify-between pt-1 px-1">

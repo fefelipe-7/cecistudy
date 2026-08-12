@@ -44,7 +44,7 @@ import {
 
 import { HeaderNav } from './components/HeaderNav';
 import { BottomNav } from './components/BottomNav';
-import { QuickAddModal } from './components/QuickAddModal';
+import { QuickAddModal, QuickType } from './components/QuickAddModal';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 
 import { HomeView } from './components/views/HomeView';
@@ -116,7 +116,13 @@ export default function App() {
 
   // Modals
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
+  const [quickAddType, setQuickAddType] = useState<QuickType>('task');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const handleOpenQuickAddWithType = (type: QuickType) => {
+    setQuickAddType(type);
+    setIsQuickAddOpen(true);
+  };
 
   // Sync targetId if passed
   useEffect(() => {
@@ -279,7 +285,7 @@ export default function App() {
       />
 
       {/* Main Screen Content (Mobile First App Frame Container) */}
-      <main className="flex-1 max-w-md sm:max-w-xl w-full mx-auto px-3.5 py-4 sm:px-5 mb-24 sm:mb-28">
+      <main className="flex-1 max-w-md sm:max-w-xl w-full mx-auto px-3.5 py-4 sm:px-5 pb-20">
         {isMoodViewOpen ? (
           <EstadoDeEspiritoView
             currentMood={currentMood}
@@ -300,6 +306,7 @@ export default function App() {
                 readings={readings}
                 stickers={stickers}
                 currentMood={currentMood}
+                exams={exams}
                 onToggleTask={handleToggleTask}
                 onAddTask={handleAddTask}
                 onNavigate={handleNavigate}
@@ -375,12 +382,14 @@ export default function App() {
       <BottomNav
         activeTab={activeTab}
         onChangeTab={(tab) => handleNavigate(tab)}
+        onOpenQuickAddWithType={handleOpenQuickAddWithType}
       />
 
       {/* Quick Add Modal (+ Novo) */}
       <QuickAddModal
         isOpen={isQuickAddOpen}
         onClose={() => setIsQuickAddOpen(false)}
+        initialType={quickAddType}
         courses={courses}
         onAddTask={handleAddTask}
         onAddClassNote={handleAddClassNote}

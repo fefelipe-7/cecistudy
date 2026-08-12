@@ -79,7 +79,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
   };
 
   return (
-    <div className="space-y-6 pb-12 animate-in fade-in duration-300">
+    <div className="space-y-6 pb-1 animate-in fade-in duration-300">
       
       {/* Header Banner */}
       <div className="rounded-[24px] p-6 bg-gradient-to-r from-white via-[#FAF8F5] to-[#FFF5F7]/80 border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)]">

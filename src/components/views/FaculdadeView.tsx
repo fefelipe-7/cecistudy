@@ -98,7 +98,7 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
   const filteredExams = exams;
 
   return (
-    <div className="max-w-md sm:max-w-xl mx-auto space-y-6 pb-20 animate-in fade-in duration-300">
+    <div className="max-w-md sm:max-w-xl mx-auto space-y-6 pb-1 animate-in fade-in duration-300">
       
       {/* Top Header Label & Title */}
       <div className="flex items-center justify-between pt-1 px-1">

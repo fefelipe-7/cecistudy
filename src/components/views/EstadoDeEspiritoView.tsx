@@ -107,7 +107,7 @@ export const EstadoDeEspiritoView: React.FC<EstadoDeEspiritoViewProps> = ({
   };
 
   return (
-    <div className="max-w-md sm:max-w-xl mx-auto space-y-6 pb-20 animate-in fade-in duration-300">
+    <div className="max-w-md sm:max-w-xl mx-auto space-y-6 pb-1 animate-in fade-in duration-300">
       
       {/* Header with Back Button */}
       <div className="flex items-center justify-between pt-2 px-1">
