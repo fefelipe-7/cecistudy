@@ -54,7 +54,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   ];
 
   return (
-    <div className="fixed inset-x-0 bottom-4 z-40 flex items-center justify-center gap-2 px-3 pointer-events-none">
+    <div className="fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] z-40 flex items-center justify-center gap-2 px-3 pointer-events-none">
       <div className="pointer-events-auto flex items-center gap-2">
         <BottomNavBar
           items={tabs}

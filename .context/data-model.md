@@ -59,13 +59,19 @@
 
 **Ao criar via QuickAdd:** os ids usam `Date.now()` com prefixo (`t-`, `cl-`, `r-`, `f-`, `con-`, `ilog-`).
 
-## 4. Persistência (localStorage)
+## 4. Persistência (dual)
 
-- Chaves com prefixo **`cecistudy_`** (ex.: `cecistudy_courses`, `cecistudy_tasks`).
-- Adicionadas via `usePersistentState(key, initialValue)` em `App.tsx` — a chave vai sem o prefixo
-  (o hook adiciona).
-- ⚠️ **Não persistidos** (estado local de view): `savedBookIds`, `looseNotes` (BibliotecaView),
-  `systemSuggestions`/progresso semanal (HomeView), `dotsData` (MoodCalendarWidget).
+- **Web/PWA** → `localStorage` (síncrono); **nativo** → `@capacitor/preferences` (assíncrono).
+  Camada única em `src/lib/storage.ts`; chaves com prefixo **`cecistudy_`**
+  (ex.: `cecistudy_courses`, `cecistudy_tasks`).
+- Adicionadas via `usePersistentState(key, initialValue)` em `AppContext.tsx` — a chave vai sem
+  o prefixo (o hook/storage adicionam).
+- Chaves usadas: `profile`, `courses`, `classes`, `tasks`, `exams`, `authors`, `concepts`,
+  `approaches`, `readings`, `flashcards`, `materials`, `internship`, `tcc`, `stickers`,
+  `sessions`, `currentMood`, `reminder` (`{enabled, time}` — lembrete diário),
+  `savedBookIds`, `looseNotes` (BibliotecaView).
+- ⚠️ **Não persistidos** (estado local de view): `systemSuggestions`/progresso semanal (HomeView),
+  `dotsData` (MoodCalendarWidget), catálogo `CollectionBook` (BibliotecaView).
 
 ## 5. Seeds (`initialData.ts`)
 
@@ -87,6 +93,6 @@
 ## 7. Boas práticas ao mexer em dados
 
 - Ao adicionar entidade nova, criar interface em `types.ts` + seed em `initialData.ts`
-  + estado persistido em `App.tsx` (se for global).
+  + estado persistido em `AppContext.tsx` (se for global).
 - Respeitar os prefixos de id e as chaves de relação existentes.
 - Não duplicar dados entre `ReadingItem` e `CollectionBook` sem documentar a intenção.

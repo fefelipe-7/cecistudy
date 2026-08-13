@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">cecistudy</string>
+    <string name="title_activity_main">cecistudy</string>
+    <string name="package_name">ceci.study.app</string>
+    <string name="custom_url_scheme">ceci.study.app</string>
+</resources>

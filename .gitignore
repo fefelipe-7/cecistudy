@@ -6,3 +6,13 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Capacitor / native (arquivos gerados pelo build, não versionar)
+android/.gradle/
+android/local.properties
+android/app/build/
+ios/App/App/public/
+ios/App/build/
+ios/DerivedData/
+*.keystore
+*.jks

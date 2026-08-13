@@ -134,6 +134,37 @@ e não persistidos. Unificar o modelo evita divergência.
 - Fallbacks literais (`'PSI-300'`, `'Bloco C'`, `progress || 50`) repetidos.
 - `lib/utils.ts` só com `cn()` → extrair helpers (data, progresso, ícones).
 
+### Fase 6 — Capacitor & patamar de app (implementada)
+> **Status: `[x]` implementada.** App de verdade: web/PWA (Vercel) + nativos Android/iOS (Capacitor 8).
+
+**O que foi feito**
+- [x] **6.1** Setup Capacitor: deps (`@capacitor/core/cli/android/ios` + status-bar, splash-screen,
+  keyboard, haptics, local-notifications, preferences), `capacitor.config.ts`
+  (`appId: "ceci.study.app"`, `webDir: "dist"`, splash/statusbar da marca), `cap add android` + `ios`
+  (projetos commitados), scripts npm (`cap:sync`, `cap:open:*`, `cap:assets`), `.gitignore` nativo.
+- [x] **6.2** Persistência dual: `src/lib/storage.ts` (web `localStorage` síncrono ↔ nativo
+  `@capacitor/preferences` assíncrono) + `usePersistentState` async-aware (web sem flash; nativo
+  hidrata pós-seed sem sobrescrever dados salvos).
+- [x] **6.3** Polimento nativo: safe areas (`env(safe-area-inset-*)` no header/bottom-nav/main),
+  `@capacitor/keyboard` (`resizeMode: native`), status bar escura, `src/lib/haptics.ts`
+  (toggles de tarefa/prova, salvar mood), splash da marca (`src/lib/native.ts`).
+- [x] **6.4** Lembrete diário de estudo via `@capacitor/local-notifications` (`src/lib/notifications.ts`),
+  estado `reminderSettings` persistido + UI em Perfil → personalização (toggle + horário, no-op no web).
+- [x] **6.5** Ícones/splash: arte-fonte `assets/*.svg` (ícone "C" provisório) → `@capacitor/assets`
+  (Android 123 res, iOS AppIcon/Splash, PWA `public/icons/*.webp`) + `public/icon.png`/`icon-192.png`
+  + `ic_stat_cecistudy.png` (notificação Android).
+- [x] **6.6** CI `.github/workflows/native-build.yml`: Android (ubuntu + JDK 21 + SDK → APK debug,
+  artifact) e iOS (macOS runner + Xcode → build unsigned p/ simulador).
+- [x] **6.7** Docs `.context/` (arquitetura, guia nativo, storage dual, CI).
+
+**Pendências / próximos passos**
+- [ ] **Assinatura para publicação:** Android keystore (`*.jks`, secrets no GH) e iOS
+  provisioning/signing (requer conta Apple + Mac). Pipeline de release assinado não configurado.
+- [ ] Rodar o workflow do CI pela 1ª vez e confirmar APK/IPA no GitHub Actions.
+- [ ] Fontes Google remotas: no nativo offline caem para fallback — bundlar fontes se quiser
+  fidelidade total offline.
+- [ ] Trocar o ícone/splash provisórios pelos definitivos da marca.
+
 ---
 
 ## Sugestão de ordem de execução
@@ -143,3 +174,4 @@ e não persistidos. Unificar o modelo evita divergência.
 3. **Fase 3** (estado/dados: contexto + persistência).
 4. **Fase 4** (higiene: dead code, tipagem, tokens, body bg, remoção do AI Studio).
 5. **Fase 5** (roteamento eficiente — implementado via `location.hash` + `hashchange`).
+6. **Fase 6** (Capacitor & patamar de app — implementada; ver pendências acima).

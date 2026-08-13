@@ -19,6 +19,7 @@ import { StudyStatsWidget } from '../widgets/StudyStatsWidget';
 import { MoodCalendarWidget } from '../widgets/MoodCalendarWidget';
 import { PillTabBar } from '../ui/PillTabBar';
 import { useApp } from '../../context/AppContext';
+import { isReminderSupported } from '../../lib/notifications';
 
 export const PerfilView: React.FC = () => {
   const {
@@ -30,6 +31,8 @@ export const PerfilView: React.FC = () => {
     handleUpdateProfile,
     handleUpdateTcc,
     openQuickAdd,
+    reminderSettings,
+    updateReminder,
   } = useApp();
   const [subTab, setSubTab] = useState<SubTabPerfil>(subTabPerfil);
 
@@ -370,6 +373,53 @@ export const PerfilView: React.FC = () => {
           <h2 className="font-display font-bold text-xl text-[#40383A]">
             personalize seu cantinho no cecistudy
           </h2>
+
+          {/* Lembrete diário de estudo (app nativo) */}
+          <div className={`rounded-2xl p-4 border ${isReminderSupported() ? 'bg-[#FFF5F7] border-[#FFD3DD]' : 'bg-[#FAF8F5] border-[#E9DFDC]'} space-y-3`}>
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h3 className="font-display font-bold text-sm text-[#40383A]">
+                  lembrete diário de estudo ♡
+                </h3>
+                <p className="text-[11px] text-[#6D6366] leading-tight mt-0.5">
+                  {isReminderSupported()
+                    ? 'um carinho do cecistudy na hora de estudar.'
+                    : 'ativável no aplicativo nativo (android/ios).'}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => updateReminder({ ...reminderSettings, enabled: !reminderSettings.enabled })}
+                disabled={!isReminderSupported()}
+                aria-pressed={reminderSettings.enabled}
+                className={`relative w-12 h-7 rounded-full transition-all cursor-pointer shrink-0 touch-target ${
+                  reminderSettings.enabled ? 'bg-[#E97891]' : 'bg-[#DCCFCA]'
+                } ${!isReminderSupported() ? 'opacity-50 cursor-not-allowed' : ''}`}
+                title={reminderSettings.enabled ? 'desativar lembrete' : 'ativar lembrete'}
+              >
+                <span
+                  className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow-xs transition-transform ${
+                    reminderSettings.enabled ? 'translate-x-5' : ''
+                  }`}
+                />
+              </button>
+            </div>
+
+            {isReminderSupported() && (
+              <div className="flex items-center gap-3">
+                <span className="text-[11px] font-medium text-[#6D6366]">horário:</span>
+                <input
+                  type="time"
+                  value={reminderSettings.time}
+                  onChange={(e) => updateReminder({ ...reminderSettings, time: e.target.value })}
+                  disabled={!reminderSettings.enabled}
+                  className="bg-white border border-[#E9DFDC] focus:outline-none focus:border-[#E97891] rounded-xl px-3 py-1.5 text-sm text-[#40383A] disabled:opacity-50"
+                />
+                <span className="text-[11px] text-[#918689]">todas as noites</span>
+              </div>
+            )}
+          </div>
 
           <form onSubmit={handleSaveProfile} className="space-y-4 max-w-lg">
             <div>

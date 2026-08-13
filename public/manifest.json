@@ -1,16 +1,53 @@
 {
-  "short_name": "CeciStudy",
+  "short_name": "cecistudy",
   "name": "cecistudy ♡ - Cantinho Acadêmico de Psicologia",
   "description": "Seu espaço pessoal de organização de estudos de Psicologia",
   "icons": [
     {
-      "src": "/icon.png",
-      "type": "image/png",
-      "sizes": "192x192"
+      "src": "/icons/icon-48.webp",
+      "type": "image/webp",
+      "sizes": "48x48",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-72.webp",
+      "type": "image/webp",
+      "sizes": "72x72",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-96.webp",
+      "type": "image/webp",
+      "sizes": "96x96",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-128.webp",
+      "type": "image/webp",
+      "sizes": "128x128",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-192.webp",
+      "type": "image/webp",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-256.webp",
+      "type": "image/webp",
+      "sizes": "256x256",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.webp",
+      "type": "image/webp",
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
   "start_url": "/",
-  "background_color": "#FFFDF9",
+  "background_color": "#FFFCF8",
   "theme_color": "#FFEAF0",
   "display": "standalone",
   "orientation": "portrait"

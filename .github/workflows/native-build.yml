@@ -1,0 +1,95 @@
+name: native build (apk + ipa)
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+concurrency:
+  group: native-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    name: android apk (debug)
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: setup java (temurin 21)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: setup android sdk
+        uses: android-actions/setup-android@v3
+
+      - name: install deps
+        run: npm ci
+
+      - name: typecheck
+        run: npm run lint
+
+      - name: build web
+        run: npm run build
+
+      - name: sync capacitor (android)
+        run: npx cap sync android
+
+      - name: build apk (assembleDebug)
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - name: upload apk
+        uses: actions/upload-artifact@v4
+        with:
+          name: cecistudy-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+  ios:
+    name: ios ipa (unsigned / simulator)
+    runs-on: macos-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: install deps
+        run: npm ci
+
+      - name: typecheck
+        run: npm run lint
+
+      - name: build web
+        run: npm run build
+
+      - name: sync capacitor (ios)
+        run: npx cap sync ios
+
+      - name: build (iphonesimulator, unsigned)
+        run: |
+          cd ios/App
+          xcodebuild \
+            -project App.xcodeproj \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO build

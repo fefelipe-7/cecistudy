@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
+import { setupNativeShell } from './lib/native';
 
 import { HeaderNav } from './components/HeaderNav';
 import { BottomNav } from './components/BottomNav';
@@ -15,6 +16,10 @@ import { EstadoDeEspiritoView } from './components/views/EstadoDeEspiritoView';
 
 function AppShell() {
   const app = useApp();
+
+  useEffect(() => {
+    setupNativeShell();
+  }, []);
 
   const {
     profile,
@@ -65,7 +70,7 @@ function AppShell() {
       />
 
       {/* Main Screen Content (Mobile First App Frame Container) */}
-      <main className="flex-1 max-w-md sm:max-w-xl w-full mx-auto px-3.5 py-4 sm:px-5 pb-20">
+      <main className="flex-1 max-w-md sm:max-w-xl w-full mx-auto px-3.5 py-4 sm:px-5 pb-[calc(5rem+env(safe-area-inset-bottom,0px))]">
         {isMoodViewOpen ? (
           <EstadoDeEspiritoView
             currentMood={currentMood}

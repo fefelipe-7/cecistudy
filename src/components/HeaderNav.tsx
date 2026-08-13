@@ -47,7 +47,9 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   return (
     <header
       className={`sticky top-0 z-40 bg-[#FFFCF8]/95 backdrop-blur-md border-b border-[#F2EBE8] px-3.5 sm:px-4 transition-all duration-300 ease-in-out ${
-        scrolled ? 'py-2 shadow-xs' : 'py-3 sm:py-3.5'
+        scrolled
+          ? 'pt-[calc(0.5rem+env(safe-area-inset-top,0px))] pb-2 shadow-xs'
+          : 'pt-[calc(0.75rem+env(safe-area-inset-top,0px))] sm:pt-[calc(0.875rem+env(safe-area-inset-top,0px))] pb-3 sm:pb-3.5'
       }`}
     >
       <div className="max-w-md sm:max-w-xl mx-auto flex items-center justify-between gap-2 sm:gap-3">

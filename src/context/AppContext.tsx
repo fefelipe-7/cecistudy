@@ -43,6 +43,8 @@ import {
   initialStudySessions
 } from '../data/initialData';
 import { usePersistentState } from '../lib/usePersistentState';
+import { hapticTap, hapticSuccess } from '../lib/haptics';
+import { scheduleDailyReminder, cancelDailyReminder } from '../lib/notifications';
 
 type Route = { tab?: NavTab; focusedCourseId?: string | null; mood?: boolean };
 
@@ -63,6 +65,11 @@ function parseRoute(hash: string): Route {
 }
 
 
+export interface ReminderSettings {
+  enabled: boolean;
+  time: string; // "HH:MM"
+}
+
 export interface AppContextValue {
   // data
   profile: UserProfile;
@@ -81,6 +88,8 @@ export interface AppContextValue {
   stickers: Sticker[];
   sessions: StudySession[];
   currentMood: DailyMoodData;
+  reminderSettings: ReminderSettings;
+  updateReminder: (settings: ReminderSettings) => void;
 
   // navigation state
   activeTab: NavTab;
@@ -163,6 +172,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     reflection: 'Dia focado nas aulas de psicopatologia e leituras curtas.',
     intention: 'Estudo leve e produtivo',
     updatedAt: '09:00'
+  });
+
+  // Lembrete diário de estudo (só efetivo no app nativo)
+  const [reminderSettings, setReminderSettings] = usePersistentState<ReminderSettings>('reminder', {
+    enabled: false,
+    time: '19:00'
   });
 
   // Navigation State
@@ -260,12 +275,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // Handlers
   const handleToggleTask = (taskId: string) => {
+    hapticTap();
     setTasks((prev) =>
       prev.map((t) => (t.id === taskId ? { ...t, completed: !t.completed } : t))
     );
   };
 
   const handleToggleExam = (examId: string) => {
+    hapticTap();
     setExams((prev) =>
       prev.map((e) => (e.id === examId ? { ...e, completed: !e.completed } : e))
     );
@@ -324,6 +341,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setTcc(updated);
   };
 
+  const updateReminder = (settings: ReminderSettings) => {
+    setReminderSettings(settings);
+    hapticTap();
+    if (settings.enabled) {
+      void scheduleDailyReminder(settings.time).then((scheduled) => {
+        if (scheduled) hapticSuccess();
+      });
+    } else {
+      void cancelDailyReminder();
+    }
+  };
+
   const handleNavigate = (tab: NavTab, subTab?: string, target?: string) => {
     setActiveTab(tab);
     setTargetId(target);
@@ -364,6 +393,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (location.hash !== '#/home') location.hash = '#/home';
   };
   const handleSaveMood = (mood: DailyMoodData) => {
+    hapticSuccess();
     setCurrentMood(mood);
     setIsMoodViewOpen(false);
     if (location.hash !== '#/home') location.hash = '#/home';
@@ -393,7 +423,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     tcc,
     stickers,
     sessions,
-    currentMood,
+currentMood,
+    reminderSettings,
+    updateReminder,
     activeTab,
     setActiveTab,
     subTabFaculdade,
