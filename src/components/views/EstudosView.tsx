@@ -24,6 +24,7 @@ import {
 
 import { ContinueReadingWidget } from '../widgets/ContinueReadingWidget';
 import { ReaderModeModal } from '../widgets/ReaderModeModal';
+import { PillTabBar } from '../ui/PillTabBar';
 
 interface EstudosViewProps {
   readings: ReadingItem[];
@@ -151,32 +152,16 @@ export const EstudosView: React.FC<EstudosViewProps> = ({
       </div>
 
       {/* Sub-Tabs Pill Navigation */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-        {[
-          { id: 'sessoes', label: 'sessões de foco', icon: Clock },
-          { id: 'leituras', label: 'minhas leituras', icon: BookOpen },
-          { id: 'flashcards', label: 'flashcards', icon: Brain },
-          { id: 'questoes', label: 'questões práticas', icon: HelpCircle },
-        ].map((tab) => {
-          const Icon = tab.icon;
-          const isSel = subTab === tab.id;
-
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setSubTab(tab.id as SubTabEstudos)}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                isSel
-                  ? 'bg-[#40383A] text-white shadow-xs'
-                  : 'bg-white text-[#6D6366] border border-[#E9DFDC] hover:bg-[#FAF8F5]'
-              }`}
-            >
-              <Icon className="w-3.5 h-3.5" />
-              <span>{tab.label}</span>
-            </button>
-          );
-        })}
-      </div>
+      <PillTabBar
+        tabs={[
+          { id: 'sessoes', label: 'sessões de foco', icon: <Clock className="w-3.5 h-3.5" /> },
+          { id: 'leituras', label: 'minhas leituras', icon: <BookOpen className="w-3.5 h-3.5" /> },
+          { id: 'flashcards', label: 'flashcards', icon: <Brain className="w-3.5 h-3.5" /> },
+          { id: 'questoes', label: 'questões práticas', icon: <HelpCircle className="w-3.5 h-3.5" /> },
+        ]}
+        active={subTab}
+        onChange={(id) => setSubTab(id as SubTabEstudos)}
+      />
 
       {/* Card 2: Seu fluxo de estudo */}
       <div className="rounded-[24px] p-6 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] space-y-3">

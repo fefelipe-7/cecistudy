@@ -20,6 +20,9 @@ import {
   InternshipLog,
 } from '../../types';
 import { CourseDetailView } from './CourseDetailView';
+import { ClassNoteModal } from '../courses/ClassNoteModal';
+import { ClassNoteListItem } from '../courses/ClassNoteListItem';
+import { PillTabBar } from '../ui/PillTabBar';
 
 interface FaculdadeViewProps {
   courses: Course[];
@@ -131,32 +134,16 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
       </div>
 
       {/* Sub-Tabs Navigation */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-        {[
-          { id: 'disciplinas', label: 'disciplinas', icon: BookOpen },
-          { id: 'aulas', label: 'diário de aulas', icon: FileCheck2 },
-          { id: 'avaliacoes', label: 'avaliações', icon: AlertCircle },
-          { id: 'calendario', label: 'calendário', icon: CalendarIcon },
-        ].map((tab) => {
-          const Icon = tab.icon;
-          const isSel = subTab === tab.id;
-
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setSubTab(tab.id as SubTabFaculdade)}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                isSel
-                  ? 'bg-[#40383A] text-white shadow-xs'
-                  : 'bg-white text-[#6D6366] border border-[#E9DFDC] hover:bg-[#FAF8F5]'
-              }`}
-            >
-              <Icon className="w-3.5 h-3.5" />
-              <span>{tab.label}</span>
-            </button>
-          );
-        })}
-      </div>
+      <PillTabBar
+        tabs={[
+          { id: 'disciplinas', label: 'disciplinas', icon: <BookOpen className="w-3.5 h-3.5" /> },
+          { id: 'aulas', label: 'diário de aulas', icon: <FileCheck2 className="w-3.5 h-3.5" /> },
+          { id: 'avaliacoes', label: 'avaliações', icon: <AlertCircle className="w-3.5 h-3.5" /> },
+          { id: 'calendario', label: 'calendário', icon: <CalendarIcon className="w-3.5 h-3.5" /> },
+        ]}
+        active={subTab}
+        onChange={(id) => setSubTab(id as SubTabFaculdade)}
+      />
 
       {/* SUBTAB 1: DISCIPLINAS */}
       {subTab === 'disciplinas' && (
@@ -236,24 +223,11 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
           </h2>
           <div className="divide-y divide-[#E9DFDC] border-y border-[#E9DFDC] px-1">
             {filteredClasses.map((cl) => (
-              <div
+              <ClassNoteListItem
                 key={cl.id}
+                note={cl}
                 onClick={() => setSelectedClass(cl)}
-                className="py-3.5 space-y-1 cursor-pointer group hover:bg-[#FAF8F5]/50 rounded-lg px-1 transition-colors"
-              >
-                <div className="flex items-center justify-between text-xs text-[#918689]">
-                  <span className="font-bold text-[#B94862] text-[11px]">aula {cl.number}</span>
-                  <span>{cl.date}</span>
-                </div>
-
-                <h3 className="font-display font-bold text-sm text-[#40383A] group-hover:text-[#B94862] transition-colors">
-                  {cl.title}
-                </h3>
-
-                <p className="text-xs text-[#6D6366] line-clamp-2 leading-relaxed">
-                  {cl.summary}
-                </p>
-              </div>
+              />
             ))}
           </div>
         </div>
@@ -354,43 +328,10 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
       </div>
 
       {/* Modal View for Selected Class Note */}
-      {selectedClass && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="w-full max-w-sm bg-white rounded-[28px] border border-[#E9DFDC] shadow-2xl p-6 space-y-4 text-[#40383A] animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between border-b border-[#E9DFDC] pb-3">
-              <span className="text-xs font-bold text-[#B94862] bg-[#FFF5F7] px-2.5 py-0.5 rounded-full border border-[#FFD3DD]">
-                Aula {selectedClass.number} • {selectedClass.date}
-              </span>
-              <button
-                onClick={() => setSelectedClass(null)}
-                className="text-xs text-[#918689] hover:text-[#40383A] font-bold cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div>
-              <h3 className="font-display font-bold text-lg text-[#40383A]">
-                {selectedClass.title}
-              </h3>
-            </div>
-
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#918689]">Resumo</span>
-              <p className="text-xs text-[#6D6366] leading-relaxed bg-[#FAF8F5] p-3 rounded-2xl border border-[#F2EBE8]">
-                {selectedClass.summary}
-              </p>
-            </div>
-
-            <button
-              onClick={() => setSelectedClass(null)}
-              className="w-full bg-[#40383A] text-white py-2.5 rounded-2xl text-xs font-bold cursor-pointer"
-            >
-              fechar
-            </button>
-          </div>
-        </div>
-      )}
+      <ClassNoteModal
+        note={selectedClass}
+        onClose={() => setSelectedClass(null)}
+      />
 
     </div>
   );

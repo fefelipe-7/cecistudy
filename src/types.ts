@@ -191,3 +191,21 @@ export interface UserProfile {
   dailyQuote: string;
   stickersCollected: number;
 }
+
+export interface DailyMoodData {
+  emoji: string;
+  label: string;
+  energyLevel: number; // 1-5
+  vibeColor: string;
+  reflection: string;
+  intention: string;
+  updatedAt: string;
+}
+
+export type QuickType =
+  | 'task'
+  | 'class'
+  | 'reading'
+  | 'flashcard'
+  | 'concept'
+  | 'internship';

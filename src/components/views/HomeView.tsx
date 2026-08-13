@@ -28,9 +28,9 @@ import {
   ReadingItem,
   Sticker,
   NavTab,
-  Exam
+  Exam,
+  DailyMoodData
 } from '../../types';
-import { DailyMoodData } from './EstadoDeEspiritoView';
 
 interface HomeViewProps {
   profile: UserProfile;

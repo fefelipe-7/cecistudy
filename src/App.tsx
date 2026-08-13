@@ -20,7 +20,9 @@ import {
   TccData,
   Sticker,
   StudySession,
-  DynamicHeaderConfig
+  DynamicHeaderConfig,
+  DailyMoodData,
+  QuickType
 } from './types';
 import { Plus } from 'lucide-react';
 
@@ -44,7 +46,7 @@ import {
 
 import { HeaderNav } from './components/HeaderNav';
 import { BottomNav } from './components/BottomNav';
-import { QuickAddModal, QuickType } from './components/QuickAddModal';
+import { QuickAddModal } from './components/QuickAddModal';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 
 import { HomeView } from './components/views/HomeView';
@@ -52,31 +54,10 @@ import { FaculdadeView } from './components/views/FaculdadeView';
 import { EstudosView } from './components/views/EstudosView';
 import { BibliotecaView } from './components/views/BibliotecaView';
 import { PerfilView } from './components/views/PerfilView';
-import { EstadoDeEspiritoView, DailyMoodData } from './components/views/EstadoDeEspiritoView';
+import { EstadoDeEspiritoView } from './components/views/EstadoDeEspiritoView';
+import { usePersistentState } from './lib/usePersistentState';
 
 export default function App() {
-  // Persistence Helper
-  const usePersistentState = <T,>(key: string, initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] => {
-    const [state, setState] = useState<T>(() => {
-      try {
-        const item = localStorage.getItem('cecistudy_' + key);
-        return item ? JSON.parse(item) : initialValue;
-      } catch {
-        return initialValue;
-      }
-    });
-
-    useEffect(() => {
-      try {
-        localStorage.setItem('cecistudy_' + key, JSON.stringify(state));
-      } catch (e) {
-        console.error('Storage error', e);
-      }
-    }, [key, state]);
-
-    return [state, setState];
-  };
-
   // State
   const [profile, setProfile] = usePersistentState<UserProfile>('profile', initialProfile);
   const [courses] = usePersistentState<Course[]>('courses', initialCourses);

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Check, BookOpen, FileText, Brain, HeartHandshake, Sparkles, Plus } from 'lucide-react';
-import { Course } from '../types';
-
-export type QuickType = 'task' | 'class' | 'reading' | 'flashcard' | 'concept' | 'internship';
+import { Course, QuickType } from '../types';
 
 interface QuickAddModalProps {
   isOpen: boolean;

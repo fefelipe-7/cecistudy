@@ -4,14 +4,10 @@ import {
   Sparkles,
   ArrowLeft,
   Bookmark,
-  Brain,
-  FileText,
-  Users,
-  HeartHandshake,
-  GraduationCap,
   Plus
 } from 'lucide-react';
 import { UserProfile, DynamicHeaderConfig } from '../types';
+import { CourseIcon } from './ui/CourseIcon';
 
 interface HeaderNavProps {
   profile: UserProfile;
@@ -46,24 +42,6 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
 
   const formattedDate = todayDateStr.toLowerCase();
 
-  // Icon Resolver
-  const renderIcon = (iconName?: string) => {
-    switch (iconName) {
-      case 'Brain':
-        return <Brain className="w-4 h-4 text-[#B94862]" />;
-      case 'FileText':
-        return <FileText className="w-4 h-4 text-[#396D82]" />;
-      case 'Sparkles':
-        return <Sparkles className="w-4 h-4 text-[#756354]" />;
-      case 'Users':
-        return <Users className="w-4 h-4 text-[#2D6A4F]" />;
-      case 'HeartHandshake':
-        return <HeartHandshake className="w-4 h-4 text-[#8C7338]" />;
-      default:
-        return <GraduationCap className="w-4 h-4 text-[#B94862]" />;
-    }
-  };
-
   const isDetailMode = !!(headerConfig && (headerConfig.title || headerConfig.onBack));
 
   return (
@@ -95,7 +73,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 border border-white/80 shadow-2xs"
                   style={{ backgroundColor: `${headerConfig.color || '#B94862'}20` }}
                 >
-                  {renderIcon(headerConfig.icon)}
+                  {headerConfig.icon && <CourseIcon icon={headerConfig.icon} />}
                 </div>
               )}
 

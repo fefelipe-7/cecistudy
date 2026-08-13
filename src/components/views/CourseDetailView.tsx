@@ -3,18 +3,18 @@ import {
   Building2,
   UserCheck,
   Clock,
-  GraduationCap,
   FileText,
   Sparkles,
   CheckCircle2,
   Plus,
   BookOpen,
-  Brain,
-  ChevronRight,
   ArrowLeft,
   AlertCircle,
   MessageSquare
 } from 'lucide-react';
+import { CourseIcon } from '../ui/CourseIcon';
+import { ClassNoteModal } from '../courses/ClassNoteModal';
+import { ClassNoteListItem } from '../courses/ClassNoteListItem';
 import {
   Course,
   ClassNote,
@@ -78,18 +78,6 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
   courseClasses.forEach((cl) => cl.authorIds?.forEach((a) => relatedAuthorIds.add(a)));
   const courseAuthors = authors.filter((a) => relatedAuthorIds.has(a.id));
 
-  // Course Icon Resolver
-  const renderCourseIcon = () => {
-    switch (course.icon) {
-      case 'Brain':
-        return <Brain className="w-7 h-7 text-[#B94862]" />;
-      case 'FileText':
-        return <FileText className="w-7 h-7 text-[#396D82]" />;
-      default:
-        return <GraduationCap className="w-7 h-7 text-[#B94862]" />;
-    }
-  };
-
   return (
     <div className="max-w-md sm:max-w-xl mx-auto space-y-6 pb-1 animate-in fade-in duration-300 relative">
 
@@ -108,7 +96,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
             className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border border-[#E9DFDC]"
             style={{ backgroundColor: `${course.color}20` }}
           >
-            {renderCourseIcon()}
+            <CourseIcon icon={course.icon} className="w-7 h-7" />
           </div>
 
           <div className="flex-1 space-y-1">
@@ -368,36 +356,12 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
             {courseClasses.length > 0 ? (
               <div className="divide-y divide-[#E9DFDC] border-y border-[#E9DFDC]">
                 {courseClasses.map((cl) => (
-                  <div
+                  <ClassNoteListItem
                     key={cl.id}
+                    note={cl}
                     onClick={() => setSelectedClassNote(cl)}
-                    className="py-3.5 space-y-1.5 cursor-pointer group hover:bg-[#FAF8F5]/50 px-1 rounded-lg transition-colors"
-                  >
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-[#B94862] text-[11px]">
-                        Aula {cl.number}
-                      </span>
-                      <span className="text-[11px] text-[#918689] font-medium">{cl.date}</span>
-                    </div>
-
-                    <h4 className="font-display font-bold text-sm text-[#40383A] group-hover:text-[#B94862] transition-colors leading-tight">
-                      {cl.title}
-                    </h4>
-
-                    <p className="text-xs text-[#6D6366] line-clamp-2 leading-relaxed">
-                      {cl.summary}
-                    </p>
-
-                    <div className="flex items-center justify-between text-[11px] pt-1">
-                      <span className="text-[#396D82] font-medium flex items-center gap-1">
-                        <BookOpen className="w-3 h-3" />
-                        <span>{cl.materials?.length || 1} material anexo</span>
-                      </span>
-                      <span className="font-semibold text-[#B94862] flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
-                        ver anotação <ChevronRight className="w-3 h-3" />
-                      </span>
-                    </div>
-                  </div>
+                    showExtras
+                  />
                 ))}
               </div>
             ) : (
@@ -575,52 +539,10 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
       </div>
 
       {/* Modal View for Selected Class Note */}
-      {selectedClassNote && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="w-full max-w-sm bg-white rounded-[28px] border border-[#E9DFDC] shadow-2xl p-6 space-y-4 text-[#40383A] animate-in zoom-in-95 duration-200 max-h-[85vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-[#E9DFDC] pb-3">
-              <span className="text-xs font-bold text-[#B94862] bg-[#FFF5F7] px-2.5 py-0.5 rounded-full border border-[#FFD3DD]">
-                Aula {selectedClassNote.number} • {selectedClassNote.date}
-              </span>
-              <button
-                onClick={() => setSelectedClassNote(null)}
-                className="text-xs text-[#918689] hover:text-[#40383A] font-bold cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div>
-              <h3 className="font-display font-bold text-lg text-[#40383A]">
-                {selectedClassNote.title}
-              </h3>
-            </div>
-
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#918689]">Resumo da Aula</span>
-              <p className="text-xs text-[#6D6366] leading-relaxed bg-[#FAF8F5] p-3 rounded-2xl border border-[#F2EBE8]">
-                {selectedClassNote.summary}
-              </p>
-            </div>
-
-            {selectedClassNote.fullNotes && (
-              <div className="space-y-1 pt-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#918689]">Anotações Detalhadas</span>
-                <div className="text-xs text-[#40383A] leading-relaxed whitespace-pre-line bg-[#FFF5F7] p-3 rounded-2xl border border-[#FFD3DD]/60">
-                  {selectedClassNote.fullNotes}
-                </div>
-              </div>
-            )}
-
-            <button
-              onClick={() => setSelectedClassNote(null)}
-              className="w-full bg-[#40383A] text-white py-2.5 rounded-2xl text-xs font-bold cursor-pointer"
-            >
-              fechar anotação
-            </button>
-          </div>
-        </div>
-      )}
+      <ClassNoteModal
+        note={selectedClassNote}
+        onClose={() => setSelectedClassNote(null)}
+      />
 
     </div>
   );

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "cecistudy",
+  "instructions": [
+    ".context/README.md",
+    ".context/architecture.md",
+    ".context/design-system.md",
+    ".context/components.md",
+    ".context/data-model.md",
+    ".context/copy-and-voice.md",
+    ".context/backlog.md"
+  ]
+}

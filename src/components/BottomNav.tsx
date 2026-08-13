@@ -1,9 +1,8 @@
 import React from 'react';
 import { Home, GraduationCap, Brain, Library, User, FileText, BookOpen, Check, Sparkles } from 'lucide-react';
-import { NavTab } from '../types';
+import { NavTab, QuickType } from '../types';
 import { BottomNavBar, NavItem } from '@/components/ui/bottom-nav-bar';
 import FloatingActionMenu from '@/components/ui/floating-action-menu';
-import { QuickType } from './QuickAddModal';
 
 interface BottomNavProps {
   activeTab: NavTab;

@@ -23,6 +23,7 @@ import {
 
 import { StudyStatsWidget } from '../widgets/StudyStatsWidget';
 import { MoodCalendarWidget } from '../widgets/MoodCalendarWidget';
+import { PillTabBar } from '../ui/PillTabBar';
 
 interface PerfilViewProps {
   profile: UserProfile;
@@ -115,32 +116,18 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
         </div>
 
         {/* Sub-Tabs Navigation */}
-        <div className="flex items-center gap-2 mt-5 pt-4 border-t border-[#F2EBE8] overflow-x-auto scrollbar-none">
-          {[
-            { id: 'jornada', label: 'minha jornada', icon: GraduationCap },
-            { id: 'stickers', label: 'stickers & conquistas', icon: Sparkles },
-            { id: 'estagio', label: 'diário de estágio', icon: HeartHandshake },
-            { id: 'tcc', label: 'meu tcc', icon: FileText },
-            { id: 'configuracoes', label: 'personalização', icon: Settings },
-          ].map((tab) => {
-            const Icon = tab.icon;
-            const isSel = subTab === tab.id;
-
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setSubTab(tab.id as SubTabPerfil)}
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium transition-all cursor-pointer ${
-                  isSel
-                    ? 'bg-[#40383A] text-white shadow-2xs'
-                    : 'bg-white text-[#6D6366] border border-[#E9DFDC] hover:bg-[#FFF5F7]/50 hover:border-[#FFD3DD]'
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5" />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
+        <div className="mt-5 pt-4 border-t border-[#F2EBE8] overflow-x-auto scrollbar-none">
+          <PillTabBar
+            tabs={[
+              { id: 'jornada', label: 'minha jornada', icon: <GraduationCap className="w-3.5 h-3.5" /> },
+              { id: 'stickers', label: 'stickers & conquistas', icon: <Sparkles className="w-3.5 h-3.5" /> },
+              { id: 'estagio', label: 'diário de estágio', icon: <HeartHandshake className="w-3.5 h-3.5" /> },
+              { id: 'tcc', label: 'meu tcc', icon: <FileText className="w-3.5 h-3.5" /> },
+              { id: 'configuracoes', label: 'personalização', icon: <Settings className="w-3.5 h-3.5" /> },
+            ]}
+            active={subTab}
+            onChange={(id) => setSubTab(id as SubTabPerfil)}
+          />
         </div>
       </div>
 

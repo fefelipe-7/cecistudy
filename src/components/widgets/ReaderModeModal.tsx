@@ -15,11 +15,12 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
   reading,
   onUpdateProgress,
 }) => {
-  if (!isOpen || !reading) return null;
-
   const [theme, setTheme] = useState<'paper' | 'dark' | 'sepia'>('paper');
   const [fontSize, setFontSize] = useState<number>(18);
-  const [currentPage, setCurrentPage] = useState<number>(reading.readPages || 12);
+  const [currentPage, setCurrentPage] = useState<number>(() => reading?.readPages || 12);
+
+  if (!isOpen || !reading) return null;
+
   const totalPages = reading.totalPages || 120;
   const progressPercent = Math.round((currentPage / totalPages) * 100);
 
