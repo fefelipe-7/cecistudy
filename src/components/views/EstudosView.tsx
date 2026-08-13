@@ -14,40 +14,16 @@ import {
   Eye,
   EyeOff
 } from 'lucide-react';
-import {
-  ReadingItem,
-  Flashcard,
-  StudySession,
-  Course,
-  SubTabEstudos
-} from '../../types';
+import { ReadingItem, SubTabEstudos } from '../../types';
 
 import { ContinueReadingWidget } from '../widgets/ContinueReadingWidget';
 import { ReaderModeModal } from '../widgets/ReaderModeModal';
 import { PillTabBar } from '../ui/PillTabBar';
+import { useApp } from '../../context/AppContext';
 
-interface EstudosViewProps {
-  readings: ReadingItem[];
-  flashcards: Flashcard[];
-  sessions: StudySession[];
-  courses: Course[];
-  initialSubTab?: SubTabEstudos;
-  onAddSession: (session: StudySession) => void;
-  onUpdateReadingPages: (readingId: string, newPages: number) => void;
-  onOpenQuickAdd: () => void;
-}
-
-export const EstudosView: React.FC<EstudosViewProps> = ({
-  readings,
-  flashcards,
-  sessions,
-  courses,
-  initialSubTab = 'sessoes',
-  onAddSession,
-  onUpdateReadingPages,
-  onOpenQuickAdd,
-}) => {
-  const [subTab, setSubTab] = useState<SubTabEstudos>(initialSubTab);
+export const EstudosView: React.FC = () => {
+  const { flashcards, subTabEstudos } = useApp();
+  const [subTab, setSubTab] = useState<SubTabEstudos>(subTabEstudos);
   const [readerModalReading, setReaderModalReading] = useState<ReadingItem | null>(null);
 
   // Timer state

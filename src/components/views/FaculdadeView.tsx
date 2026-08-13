@@ -7,74 +7,36 @@ import {
   AlertCircle,
   CheckCircle2,
 } from 'lucide-react';
-import {
-  Course,
-  ClassNote,
-  Exam,
-  Task,
-  SubTabFaculdade,
-  PsychologyConcept,
-  PsychologyAuthor,
-  ReadingItem,
-  MaterialItem,
-  InternshipLog,
-} from '../../types';
+import { SubTabFaculdade, ClassNote } from '../../types';
 import { CourseDetailView } from './CourseDetailView';
 import { ClassNoteModal } from '../courses/ClassNoteModal';
 import { ClassNoteListItem } from '../courses/ClassNoteListItem';
 import { PillTabBar } from '../ui/PillTabBar';
+import { useApp } from '../../context/AppContext';
 
-interface FaculdadeViewProps {
-  courses: Course[];
-  classes: ClassNote[];
-  exams: Exam[];
-  tasks: Task[];
-  concepts?: PsychologyConcept[];
-  authors?: PsychologyAuthor[];
-  readings?: ReadingItem[];
-  materials?: MaterialItem[];
-  internshipLogs?: InternshipLog[];
-  initialSubTab?: SubTabFaculdade;
-  selectedCourseId?: string;
-  focusedCourseId?: string | null;
-  onSelectCourse?: (courseId: string | null) => void;
-  onOpenQuickAdd: () => void;
-  onToggleExam: (examId: string) => void;
-  onToggleTask?: (taskId: string) => void;
-}
+export const FaculdadeView: React.FC = () => {
+  const {
+    courses,
+    classes,
+    exams,
+    tasks,
+    concepts,
+    authors,
+    readings,
+    materials,
+    internshipLogs,
+    subTabFaculdade,
+    focusedCourseId,
+    setFocusedCourseId,
+    openQuickAdd,
+    handleToggleExam,
+    handleToggleTask,
+  } = useApp();
 
-export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
-  courses,
-  classes,
-  exams,
-  tasks,
-  concepts = [],
-  authors = [],
-  readings = [],
-  materials = [],
-  internshipLogs = [],
-  initialSubTab = 'disciplinas',
-  selectedCourseId,
-  focusedCourseId,
-  onSelectCourse,
-  onOpenQuickAdd,
-  onToggleExam,
-  onToggleTask = () => {},
-}) => {
-  const [subTab, setSubTab] = useState<SubTabFaculdade>(initialSubTab);
+  const [subTab, setSubTab] = useState<SubTabFaculdade>(subTabFaculdade);
   const [selectedClass, setSelectedClass] = useState<ClassNote | null>(null);
-  const [internalFocusedCourseId, setInternalFocusedCourseId] = useState<string | null>(selectedCourseId || null);
 
-  const activeFocusedId = focusedCourseId !== undefined ? focusedCourseId : internalFocusedCourseId;
-
-  const handleSetFocusedCourse = (id: string | null) => {
-    if (onSelectCourse) {
-      onSelectCourse(id);
-    }
-    setInternalFocusedCourseId(id);
-  };
-
-  const focusedCourse = courses.find((c) => c.id === activeFocusedId);
+  const focusedCourse = courses.find((c) => c.id === focusedCourseId);
 
   // If a course detail is active, render CourseDetailView
   if (focusedCourse) {
@@ -89,10 +51,10 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
         readings={readings}
         materials={materials}
         internshipLogs={internshipLogs}
-        onBack={() => handleSetFocusedCourse(null)}
-        onToggleExam={onToggleExam}
-        onToggleTask={onToggleTask}
-        onOpenQuickAdd={onOpenQuickAdd}
+        onBack={() => setFocusedCourseId(null)}
+        onToggleExam={handleToggleExam}
+        onToggleTask={handleToggleTask}
+        onOpenQuickAdd={openQuickAdd}
       />
     );
   }
@@ -166,7 +128,7 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
               return (
                 <div
                   key={course.id}
-                  onClick={() => handleSetFocusedCourse(course.id)}
+                  onClick={() => setFocusedCourseId(course.id)}
                   className="rounded-[24px] p-5 bg-white border border-[#E9DFDC] cursor-pointer hover:border-[#FFD3DD] transition-all space-y-3 shadow-[0_2px_8px_rgba(64,56,58,0.04)] hover:shadow-md group"
                   style={{ borderLeftWidth: '4px', borderLeftColor: course.color || '#B94862' }}
                 >
@@ -244,7 +206,7 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({
             {filteredExams.map((ex) => (
               <div
                 key={ex.id}
-                onClick={() => onToggleExam(ex.id)}
+                onClick={() => handleToggleExam(ex.id)}
                 className={`py-3 flex items-center justify-between cursor-pointer transition-colors ${
                   ex.completed ? 'opacity-60 line-through' : ''
                 }`}

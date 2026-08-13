@@ -36,21 +36,10 @@ import { LibraryFilterModal } from '../library/LibraryFilterModal';
 import { NotesScreen } from '../library/NotesScreen';
 import { LooseNote, INITIAL_NOTES } from '../library/notes';
 import { usePersistentState } from '../../lib/usePersistentState';
+import { useApp } from '../../context/AppContext';
 
-interface BibliotecaViewProps {
-  authors?: PsychologyAuthor[];
-  concepts?: PsychologyConcept[];
-  approaches?: PsychologyApproach[];
-  materials?: MaterialItem[];
-  courses?: Course[];
-  initialSubTab?: SubTabBiblioteca;
-  initialSelectedId?: string;
-  onOpenQuickAdd: () => void;
-}
-
-export const BibliotecaView: React.FC<BibliotecaViewProps> = ({
-  onOpenQuickAdd,
-}) => {
+export const BibliotecaView: React.FC = () => {
+  const { openQuickAdd } = useApp();
   // Filter States
   const [activeCategory, setActiveCategory] = useState<string>('todos');
   const [activeStatus, setActiveStatus] = useState<string>('todos');
@@ -205,7 +194,7 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({
 
         <div className="flex items-center gap-2">
           <button
-            onClick={onOpenQuickAdd}
+            onClick={openQuickAdd}
             className="w-10 h-10 rounded-2xl bg-white border border-[#E9DFDC] hover:border-[#FFD3DD] flex items-center justify-center text-[#40383A] shadow-2xs transition-all active:scale-95 cursor-pointer"
             title="Adicionar obra ou fichamento"
           >
@@ -576,7 +565,7 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({
 
       {/* Floating Action Button (+) */}
       <button
-        onClick={onOpenQuickAdd}
+        onClick={openQuickAdd}
         className="fixed bottom-20 right-5 sm:right-8 z-30 w-12 h-12 rounded-full bg-[#40383A] hover:bg-[#2D2728] text-white shadow-lg flex items-center justify-center transition-transform active:scale-90 cursor-pointer border border-white/20"
         title="Novo registro na biblioteca"
       >

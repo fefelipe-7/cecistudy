@@ -20,54 +20,25 @@ import {
   Smile,
   FileText
 } from 'lucide-react';
-import {
-  UserProfile,
-  Course,
-  Task,
-  ClassNote,
-  ReadingItem,
-  Sticker,
-  NavTab,
-  Exam,
-  DailyMoodData
-} from '../../types';
+import { Task } from '../../types';
+import { useApp } from '../../context/AppContext';
 
-interface HomeViewProps {
-  profile: UserProfile;
-  courses: Course[];
-  tasks: Task[];
-  classes: ClassNote[];
-  readings: ReadingItem[];
-  stickers: Sticker[];
-  currentMood: DailyMoodData;
-  exams?: Exam[];
-  onToggleTask: (taskId: string) => void;
-  onAddTask: (task: Task) => void;
-  onNavigate: (tab: NavTab, subTab?: string, targetId?: string) => void;
-  onOpenQuickAdd: () => void;
-  onOpenMoodView: () => void;
-}
-
-export const HomeView: React.FC<HomeViewProps> = ({
-  profile,
-  courses,
-  tasks,
-  classes,
-  readings,
-  stickers,
-  currentMood,
-  exams = [],
-  onToggleTask,
-  onAddTask,
-  onNavigate,
-  onOpenQuickAdd,
-  onOpenMoodView,
-}) => {
+export const HomeView: React.FC = () => {
+  const {
+    profile,
+    tasks,
+    exams,
+    currentMood,
+    handleToggleTask,
+    handleAddTask,
+    handleNavigate,
+    openMoodView,
+  } = useApp();
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
   // Pending tasks and items calculations
   const pendingTasks = tasks.filter((t) => !t.completed);
-  const pendingExamsIn14Days = exams.filter((e) => !e.completed);
+  const pendingExamsIn14Days = (exams || []).filter((e) => !e.completed);
 
   // Time-based Greeting
   const hour = new Date().getHours();
@@ -118,7 +89,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
       dueDate: 'hoje'
     };
 
-    onAddTask(newTask);
+    handleAddTask(newTask);
     setNewTaskTitle('');
   };
 
@@ -160,7 +131,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.96 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          onClick={onOpenMoodView}
+          onClick={openMoodView}
           title="clique para definir/alterar seu estado de espírito do dia"
           className="group relative flex items-center gap-2 bg-white px-3 py-2 rounded-2xl border border-[#F2EBE8] shadow-[0_2px_8px_rgba(64,56,58,0.05)] cursor-pointer"
         >
@@ -191,7 +162,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             </span>
           </div>
           <button
-            onClick={() => onNavigate('estudos', 'sessoes')}
+            onClick={() => handleNavigate('estudos', 'sessoes')}
             className="text-xs font-bold text-[#B94862] hover:underline cursor-pointer flex items-center gap-1"
           >
             <span>estudar agora</span>
@@ -216,7 +187,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         {/* 2 Simple Metric Blocks in a Single Row */}
         <div className="grid grid-cols-2 gap-3 pt-1">
           <button
-            onClick={() => onNavigate('faculdade', 'aulas')}
+            onClick={() => handleNavigate('faculdade', 'aulas')}
             className="bg-white rounded-2xl p-3 border border-[#E9DFDC] hover:border-[#FFD3DD] transition-all text-center flex flex-col items-center justify-center space-y-0.5 shadow-2xs cursor-pointer group"
           >
             <span className="font-display font-bold text-2xl sm:text-3xl text-[#B94862] group-hover:scale-105 transition-transform">
@@ -228,7 +199,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           </button>
 
           <button
-            onClick={() => onNavigate('faculdade', 'avaliacoes')}
+            onClick={() => handleNavigate('faculdade', 'avaliacoes')}
             className="bg-white rounded-2xl p-3 border border-[#E9DFDC] hover:border-[#CEE7F0] transition-all text-center flex flex-col items-center justify-center space-y-0.5 shadow-2xs cursor-pointer group"
           >
             <span className="font-display font-bold text-2xl sm:text-3xl text-[#396D82] group-hover:scale-105 transition-transform">
@@ -290,7 +261,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
           <motion.button
             whileTap={{ scale: 0.97 }}
-            onClick={() => onNavigate('faculdade', 'aulas')}
+            onClick={() => handleNavigate('faculdade', 'aulas')}
             className="w-full mt-2 bg-[#40383A] hover:bg-[#282022] text-white py-2.5 rounded-full text-xs font-medium transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
           >
             <span>ver diário completo</span>
@@ -354,7 +325,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
           <motion.button
             whileTap={{ scale: 0.97 }}
-            onClick={() => onNavigate('estudos', 'sessoes')}
+            onClick={() => handleNavigate('estudos', 'sessoes')}
             className="w-full mt-2 bg-[#E97891] hover:bg-[#D85F79] text-white py-2.5 rounded-full text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
           >
             <span>iniciar sessão</span>
@@ -446,7 +417,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => onToggleTask(task.id)}
+                onClick={() => handleToggleTask(task.id)}
                 className={`p-3.5 rounded-[20px] bg-white border border-[#F2EBE8] shadow-[0_2px_8px_rgba(64,56,58,0.05)] hover:border-[#E9DFDC] transition-all cursor-pointer flex items-center justify-between gap-3 ${
                   task.completed ? 'opacity-60 bg-[#FAF8F5]' : ''
                 }`}

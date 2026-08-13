@@ -13,40 +13,25 @@ import {
   Clock,
   BookOpen
 } from 'lucide-react';
-import {
-  UserProfile,
-  Sticker,
-  InternshipLog,
-  TccData,
-  SubTabPerfil
-} from '../../types';
+import { SubTabPerfil } from '../../types';
 
 import { StudyStatsWidget } from '../widgets/StudyStatsWidget';
 import { MoodCalendarWidget } from '../widgets/MoodCalendarWidget';
 import { PillTabBar } from '../ui/PillTabBar';
+import { useApp } from '../../context/AppContext';
 
-interface PerfilViewProps {
-  profile: UserProfile;
-  stickers: Sticker[];
-  internshipLogs: InternshipLog[];
-  tcc: TccData;
-  initialSubTab?: SubTabPerfil;
-  onUpdateProfile: (updated: Partial<UserProfile>) => void;
-  onUpdateTcc: (updated: TccData) => void;
-  onOpenQuickAdd: () => void;
-}
-
-export const PerfilView: React.FC<PerfilViewProps> = ({
-  profile,
-  stickers,
-  internshipLogs,
-  tcc,
-  initialSubTab = 'jornada',
-  onUpdateProfile,
-  onUpdateTcc,
-  onOpenQuickAdd,
-}) => {
-  const [subTab, setSubTab] = useState<SubTabPerfil>(initialSubTab);
+export const PerfilView: React.FC = () => {
+  const {
+    profile,
+    stickers,
+    internshipLogs,
+    tcc,
+    subTabPerfil,
+    handleUpdateProfile,
+    handleUpdateTcc,
+    openQuickAdd,
+  } = useApp();
+  const [subTab, setSubTab] = useState<SubTabPerfil>(subTabPerfil);
 
   // Edit profile form state
   const [name, setName] = useState(profile.name);
@@ -60,7 +45,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
-    onUpdateProfile({
+    handleUpdateProfile({
       name,
       semester: Number(semester),
       university,
@@ -73,7 +58,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
   const handleToggleTccChapter = (index: number) => {
     const updatedChapters = [...tcc.chapters];
     updatedChapters[index].completed = !updatedChapters[index].completed;
-    onUpdateTcc({
+    handleUpdateTcc({
       ...tcc,
       chapters: updatedChapters
     });
@@ -260,7 +245,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({
               </div>
 
               <button
-                onClick={onOpenQuickAdd}
+                onClick={openQuickAdd}
                 className="bg-[#E97891] hover:bg-[#D85F79] text-white px-3.5 py-2 rounded-xl text-xs font-medium cursor-pointer shadow-2xs"
               >
                 + novo registro

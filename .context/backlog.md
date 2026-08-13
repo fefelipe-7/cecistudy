@@ -18,12 +18,13 @@ apesar de o design system (`src/index.css`) já definir aliases semânticos (`ce
 
 ## 🔴 2. `App.tsx` monolítico
 417 linhas com todo o estado global + handlers + persistência + modais.
-**Ação:** extrair `usePersistentState` para `src/lib/`, considerar Context/Provider
-(`DataContext`, `NavigationContext`) ou reducers por domínio para reduzir props drilling.
+**Resolvido (Fase 3.1):** `App.tsx` virou wrapper fino (`AppProvider` → `AppShell`); todo o
+estado + handlers + navegação + header dinâmico moram em `src/context/AppContext.tsx`.
 
 ## 🔴 3. Props drilling intenso
 Views recebem dezenas de props e callbacks em cascata.
-**Ação:** Context para dados globais + callbacks de ação comuns.
+**Resolvido (Fase 3.1):** as 5 views principais (`Home`, `Faculdade`, `Estudos`, `Biblioteca`,
+`Perfil`) consomem `useApp()` sem props. Modais/nav ainda recebem props do `AppShell` (1 nível).
 
 ## 🟡 4. Dead code
 - `ContinueReadingWidget` — importado em `EstudosView` mas **nunca renderizado**.
@@ -36,9 +37,9 @@ Views recebem dezenas de props e callbacks em cascata.
 **Ação:** implementar backend Gemini (ou remover deps); corrigir nome.
 
 ## 🟡 6. Estado não persistido inconsistente
-`savedBookIds` e `looseNotes` (BibliotecaView) e demais dados dummy ficam em `useState`
-local — sem `localStorage`, diferente das entidades globais.
-**Ação:** decidir e uniformizar persistência.
+`savedBookIds` e `looseNotes` (BibliotecaView) ficavam em `useState` local, sem `localStorage`.
+**Resolvido (Fase 3.2):** ambos persistidos via `usePersistentState`. Demais dados dummy das
+views (HomeView, MoodCalendar) ainda a derivar do estado/seeds.
 
 ## 🟡 7. Modais duplicados
 Overlay `fixed inset-0 z-50 bg-black/40 backdrop-blur-xs` repetido em ~4 lugares.
@@ -93,7 +94,7 @@ e não persistidos. Unificar o modelo evita divergência.
 - [ ] **2.5** Padronizar nomenclatura de arquivos (kebab-case vs PascalCase). **Deferido:** alto churn (renomear ~15 arquivos + imports) e baixo valor; decidir após as fases críticas. `ui/` mantém kebab-case, resto PascalCase.
 
 ### Fase 3 — Estado & dados
-- [ ] **3.1** Contexto de dados / reduzir props drilling (`DataContext`, `NavigationContext` ou reducers).
+- [x] **3.1** Contexto de dados / reduzir props drilling: criar `src/context/AppContext.tsx` (`AppProvider` + hook `useApp()`) com todo o estado persistente, handlers e navegação. Views principais (`Home`, `Faculdade`, `Estudos`, `Biblioteca`, `Perfil`) agora consomem `useApp()` sem props; `App.tsx` virou wrapper fino (`AppProvider` → `AppShell`). Modais/nav ainda recebem props do `AppShell` (1 nível).
 - [x] **3.2** Persistir `savedBookIds`/`looseNotes` via `usePersistentState` na `BibliotecaView` (chaves `cecistudy_savedBookIds`/`cecistudy_looseNotes`). Dados dummy restantes (HomeView, MoodCalendar) ainda a derivar do estado/seeds.
 
 ### Fase 4 — Higiene
@@ -101,6 +102,41 @@ e não persistidos. Unificar o modelo evita divergência.
 - [ ] **4.2** Tipar callbacks do `QuickAddModal` (eliminar `any`).
 - [ ] **4.3** Migrar hex → tokens semânticos (em andamento contínuo).
 - [ ] **4.4** Centralizar `body` bg (index.html/index.css/App.tsx).
+
+### Fase 5 — Roteamento eficiente (planejamento)
+> **Status: `[ ]` apenas planejado — ainda NÃO implementado.** O app hoje não tem router
+> (navegação 100% por estado em `App.tsx`: `activeTab`, sub-tabs por view, `focusedCourseId`,
+> `targetId`). Antes de implementar, decidir a abordagem. Rascunho de planejamento:
+
+**Problema atual**
+- Sem URL: sem deep-link para views/entidades, sem suporte ao botão voltar do navegador,
+  sem share/abrir "aula tal" diretamente.
+- `handleNavigate` + `targetId` + `focusedCourseId` espalham a lógica de "ir para X" no `App`.
+- Sem histórico: o botão voltar pode sair do app em vez de voltar à view anterior.
+
+**Objetivos ("roteamento eficiente")**
+- Deep-linking entre views e entidades (ex.: `#/faculdade/c3`, `#/estudos/sessao-2`).
+- Suporte ao botão voltar / avançar do navegador (histórico real).
+- Transição sem recarregar (SPA) e mantendo o header dinâmico atual.
+- Custo baixo de implementação e de migração das views existentes.
+
+**Opções em avaliação (trade-offs)**
+1. **react-router (BrowserRouter)** — padrão, histórico real, deep-link; porém applet no
+   Google AI Studio + PWA estática pode ter limitações de path (precisa testar; se precisar,
+   `HashRouter`). Adiciona dependência.
+2. **Hash-based (custom leve)** — `#/rota` via `hashchange`, sem dependência; funciona em
+   hospedagem estática/AI Studio; menos recursos (nested routes, params) mas suficiente.
+3. **Manter estado + sync de URL** — evoluir o `handleNavigate` atual para sincronizar um
+   "pathname virtual" no `location.hash`, com listener para back/forward. Menor mudança.
+
+**Pontos de atenção**
+- Integrar com o `DynamicHeaderConfig` (modo default/detail) que hoje é derivado no `App`.
+- Preservar o scroll-to-top em `handleNavigate` ao trocar de rota.
+- Compatibilidade com o deploy Vercel (fallback de path) e com o applet AI Studio.
+- Não quebrar o `GlobalSearchModal` (que usa `targetId`/`onNavigate`).
+
+**Próximo passo:** avaliar a opção 2 ou 3 (menor risco/zero dependência) num spike antes de
+escolher. Só implementar após validar em `npm run dev` + deploy Vercel.
 
 ### Itens detectados na análise estrutural (fora do backlog original)
 - `ReaderModeModal` — Regras de Hooks (ver 1.1).
@@ -116,4 +152,5 @@ e não persistidos. Unificar o modelo evita divergência.
 2. **Fase 2** (splits e desduplicação, reusando as primitivas da Fase 1).
 3. **Fase 3** (estado/dados: contexto + persistência).
 4. **Fase 4** (higiene: dead code, tipagem, tokens, body bg).
-5. Implementar backend Gemini e integrar (roadmap de produto).
+5. **Fase 5** (roteamento eficiente — primeiro planejar, depois implementar; decidir abordagem).
+6. Implementar backend Gemini e integrar (roadmap de produto).

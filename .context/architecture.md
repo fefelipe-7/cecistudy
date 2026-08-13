@@ -24,28 +24,33 @@ ainda usa `"name": "react-example"` (deveria ser `cecistudy`).
 ## 2. Hierarquia de componentes
 
 ```
-App  (raiz — possui TODO o estado global + persistência + modais)
-├── HeaderNav  (header dinâmico: modo default (brand) ou detail)
-├── main (container mobile-first, max-w-md / sm:max-w-xl)
-│   ├── (se moodView aberto) EstadoDeEspiritoView
-│   └── Views por activeTab:
-│       ├── HomeView
-│       ├── FaculdadeView ──► (se focusedCourse) CourseDetailView
-│       ├── EstudosView
-│       ├── BibliotecaView
-│       └── PerfilView
-├── BottomNav (barra inferior + FloatingActionMenu)
-├── QuickAddModal   (formulário "novo registro")
-└── GlobalSearchModal (busca global ⌘K)
+App  (wrapper fino: AppProvider → AppShell)
+└── AppProvider  (src/context/AppContext.tsx — TODO o estado global + persistência + handlers + navegação)
+    └── AppShell  (consome useApp(); renderiza HeaderNav, views, BottomNav, modais)
+        ├── HeaderNav  (header dinâmico: modo default (brand) ou detail)
+        ├── main (container mobile-first, max-w-md / sm:max-w-xl)
+        │   ├── (se moodView aberto) EstadoDeEspiritoView
+        │   └── Views por activeTab (consumem useApp(), sem props):
+        │       ├── HomeView
+        │       ├── FaculdadeView ──► (se focusedCourse) CourseDetailView
+        │       ├── EstudosView
+        │       ├── BibliotecaView
+        │       └── PerfilView
+        ├── BottomNav (barra inferior + FloatingActionMenu)
+        ├── QuickAddModal   (formulário "novo registro")
+        └── GlobalSearchModal (busca global ⌘K)
 ```
 
-- **Views** recebem tudo via **props** (drilling intenso de estado e callbacks).
+- **Views** principais consomem o estado via hook `useApp()` (sem props drilling).
+- **Modais/nav** (`QuickAddModal`, `GlobalSearchModal`, `HeaderNav`, `BottomNav`) ainda recebem
+  props do `AppShell` (apenas 1 nível de drilling).
 - **Widgets** (`components/widgets/`) são blocos reutilizáveis dentro das views.
 - **ui/** (`components/ui/`) são primitivas de baixo nível (button, bottom-nav-bar, FAB).
 
 ## 3. Estado e persistência
 
-Todo o estado global vive em `App.tsx` usando o hook custom `usePersistentState`:
+Todo o estado global vive em `src/context/AppContext.tsx` (provider `AppProvider`) usando o
+hook custom `usePersistentState` (em `src/lib/usePersistentState.ts`):
 
 ```ts
 const usePersistentState = <T,>(key, initialValue) => {
@@ -60,14 +65,12 @@ const usePersistentState = <T,>(key, initialValue) => {
 
 - Cada entidade tem seu próprio estado + setter (profile, courses, classes, tasks, exams,
   authors, concepts, approaches, readings, flashcards, materials, internshipLogs, tcc,
-  stickers, sessions, currentMood).
+  stickers, sessions, currentMood), todos expostos via hook `useApp()`.
 - Alguns estados **não** usam persistência e vivem em `useState` local da view:
-  - `savedBookIds`, `looseNotes` (BibliotecaView)
   - `systemSuggestions`, dados de dias da semana (HomeView — dummy)
   - `dotsData` do calendário de humor (MoodCalendarWidget — dummy)
 
-> ⚠️ **Inconsistência conhecida:** `savedBookIds` e `looseNotes` deveriam ser persistidos
-> como as demais entidades (ver `backlog.md`).
+> ✅ `savedBookIds` e `looseNotes` (BibliotecaView) já são persistidos via `usePersistentState`.
 
 ## 4. Modelo de navegação (sem router)
 
@@ -105,7 +108,7 @@ Detalhes completos em [`design-system.md`](./design-system.md).
 
 ## 7. Pontos de atenção arquitetural (resumo)
 
-- `App.tsx` é monolítico (417 linhas) — candidato a extração (context/provider, reducers, hooks).
-- Props drilling intenso em todas as views.
-- Modais e patterns duplicados.
+- `App.tsx` é wrapper fino (`AppProvider` → `AppShell`); estado centralizado em `AppContext`.
+- Views principais consomem `useApp()`; modais/nav ainda têm 1 nível de props (do `AppShell`).
+- Modais e patterns duplicados (em melhoria contínua).
 - Ver [`backlog.md`](./backlog.md) para o backlog completo.

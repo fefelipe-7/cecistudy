@@ -1,48 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import {
-  NavTab,
-  SubTabFaculdade,
-  SubTabEstudos,
-  SubTabBiblioteca,
-  SubTabPerfil,
-  UserProfile,
-  Course,
-  ClassNote,
-  Task,
-  Exam,
-  PsychologyAuthor,
-  PsychologyConcept,
-  PsychologyApproach,
-  ReadingItem,
-  Flashcard,
-  MaterialItem,
-  InternshipLog,
-  TccData,
-  Sticker,
-  StudySession,
-  DynamicHeaderConfig,
-  DailyMoodData,
-  QuickType
-} from './types';
-import { Plus } from 'lucide-react';
-
-import {
-  initialProfile,
-  initialCourses,
-  initialClasses,
-  initialTasks,
-  initialExams,
-  initialApproaches,
-  initialAuthors,
-  initialConcepts,
-  initialReadings,
-  initialFlashcards,
-  initialMaterials,
-  initialInternshipLogs,
-  initialTcc,
-  initialStickers,
-  initialStudySessions
-} from './data/initialData';
+import React, { useEffect } from 'react';
+import { AppProvider, useApp } from './context/AppContext';
 
 import { HeaderNav } from './components/HeaderNav';
 import { BottomNav } from './components/BottomNav';
@@ -55,213 +12,55 @@ import { EstudosView } from './components/views/EstudosView';
 import { BibliotecaView } from './components/views/BibliotecaView';
 import { PerfilView } from './components/views/PerfilView';
 import { EstadoDeEspiritoView } from './components/views/EstadoDeEspiritoView';
-import { usePersistentState } from './lib/usePersistentState';
 
-export default function App() {
-  // State
-  const [profile, setProfile] = usePersistentState<UserProfile>('profile', initialProfile);
-  const [courses] = usePersistentState<Course[]>('courses', initialCourses);
-  const [classes, setClasses] = usePersistentState<ClassNote[]>('classes', initialClasses);
-  const [tasks, setTasks] = usePersistentState<Task[]>('tasks', initialTasks);
-  const [exams, setExams] = usePersistentState<Exam[]>('exams', initialExams);
-  const [authors] = usePersistentState<PsychologyAuthor[]>('authors', initialAuthors);
-  const [concepts, setConcepts] = usePersistentState<PsychologyConcept[]>('concepts', initialConcepts);
-  const [approaches] = usePersistentState<PsychologyApproach[]>('approaches', initialApproaches);
-  const [readings, setReadings] = usePersistentState<ReadingItem[]>('readings', initialReadings);
-  const [flashcards, setFlashcards] = usePersistentState<Flashcard[]>('flashcards', initialFlashcards);
-  const [materials] = usePersistentState<MaterialItem[]>('materials', initialMaterials);
-  const [internshipLogs, setInternshipLogs] = usePersistentState<InternshipLog[]>('internship', initialInternshipLogs);
-  const [tcc, setTcc] = usePersistentState<TccData>('tcc', initialTcc);
-  const [stickers] = usePersistentState<Sticker[]>('stickers', initialStickers);
-  const [sessions, setSessions] = usePersistentState<StudySession[]>('sessions', initialStudySessions);
-  const [currentMood, setCurrentMood] = usePersistentState<DailyMoodData>('currentMood', {
-    emoji: '🤓',
-    label: 'Focada & Acadêmica',
-    energyLevel: 4,
-    vibeColor: 'bg-[#FFF5F7] border-[#FFD3DD] text-[#B94862]',
-    reflection: 'Dia focado nas aulas de psicopatologia e leituras curtas.',
-    intention: 'Estudo leve e produtivo',
-    updatedAt: '09:00'
-  });
+function AppShell() {
+  const app = useApp();
 
-  // Navigation State
-  const [activeTab, setActiveTab] = useState<NavTab>('home');
-  const [isMoodViewOpen, setIsMoodViewOpen] = useState(false);
-  const [subTabFaculdade, setSubTabFaculdade] = useState<SubTabFaculdade>('disciplinas');
-  const [subTabEstudos, setSubTabEstudos] = useState<SubTabEstudos>('sessoes');
-  const [subTabBiblioteca, setSubTabBiblioteca] = useState<SubTabBiblioteca>('autores');
-  const [subTabPerfil, setSubTabPerfil] = useState<SubTabPerfil>('jornada');
-  const [targetId, setTargetId] = useState<string | undefined>(undefined);
-  const [focusedCourseId, setFocusedCourseId] = useState<string | null>(null);
-  const [bookmarkedCourseIds, setBookmarkedCourseIds] = useState<string[]>(['c1', 'c2']);
-
-  // Modals
-  const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
-  const [quickAddType, setQuickAddType] = useState<QuickType>('task');
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-
-  const handleOpenQuickAddWithType = (type: QuickType) => {
-    setQuickAddType(type);
-    setIsQuickAddOpen(true);
-  };
-
-  // Sync targetId if passed
-  useEffect(() => {
-    if (targetId && activeTab === 'faculdade') {
-      setFocusedCourseId(targetId);
-    }
-  }, [targetId, activeTab]);
-
-  const toggleBookmarkCourse = (courseId: string) => {
-    setBookmarkedCourseIds((prev) =>
-      prev.includes(courseId) ? prev.filter((id) => id !== courseId) : [...prev, courseId]
-    );
-  };
-
-  const focusedCourse = courses.find((c) => c.id === focusedCourseId);
-
-  // Dynamic Header Configuration
-  let headerConfig: DynamicHeaderConfig | null = null;
-
-  if (isMoodViewOpen) {
-    headerConfig = {
-      type: 'detail',
-      title: 'Estado de Espírito',
-      subtitle: 'Como você está se sentindo hoje?',
-      onBack: () => setIsMoodViewOpen(false),
-      rightActions: (
-        <span className="text-sm font-bold bg-[#FFF5F7] px-2.5 py-1 rounded-full border border-[#FFD3DD] text-[#B94862]">
-          {currentMood.emoji}
-        </span>
-      ),
-    };
-  } else if (activeTab === 'faculdade' && focusedCourse) {
-    const isBookmarked = bookmarkedCourseIds.includes(focusedCourse.id);
-    headerConfig = {
-      type: 'detail',
-      title: focusedCourse.name,
-      subtitle: `${focusedCourse.code || 'PSI-300'} • ${focusedCourse.professor}`,
-      code: focusedCourse.code || 'PSI-300',
-      icon: focusedCourse.icon,
-      color: focusedCourse.color,
-      onBack: () => {
-        setFocusedCourseId(null);
-        setTargetId(undefined);
-      },
-      isBookmarked,
-      onToggleBookmark: () => toggleBookmarkCourse(focusedCourse.id),
-      rightActions: (
-        <button
-          onClick={() => setIsQuickAddOpen(true)}
-          className="bg-[#40383A] hover:bg-[#2D2728] text-white px-2.5 sm:px-3 py-1.5 rounded-2xl font-display font-bold text-xs shadow-2xs flex items-center gap-1 transition-all active:scale-95 cursor-pointer border border-white/20"
-          title="Nova anotação ou tarefa"
-        >
-          <Plus className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Anotação</span>
-        </button>
-      ),
-    };
-  }
+  const {
+    profile,
+    headerConfig,
+    activeTab,
+    isMoodViewOpen,
+    currentMood,
+    courses,
+    handleNavigate,
+    handleAddTask,
+    handleAddClassNote,
+    handleAddReading,
+    handleAddFlashcard,
+    handleAddConcept,
+    handleAddInternshipLog,
+    handleSaveMood,
+    openSearch,
+    openQuickAdd,
+    openQuickAddWithType,
+    closeMoodView,
+    closeQuickAdd,
+    closeSearch,
+    quickAddType
+  } = app;
 
   // Keyboard shortcut (Cmd+K) for search
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        setIsSearchOpen((prev) => !prev);
+        openSearch();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  // Handlers
-  const handleToggleTask = (taskId: string) => {
-    setTasks((prev) =>
-      prev.map((t) => (t.id === taskId ? { ...t, completed: !t.completed } : t))
-    );
-  };
-
-  const handleToggleExam = (examId: string) => {
-    setExams((prev) =>
-      prev.map((e) => (e.id === examId ? { ...e, completed: !e.completed } : e))
-    );
-  };
-
-  const handleAddTask = (task: Task) => {
-    setTasks((prev) => [task, ...prev]);
-  };
-
-  const handleAddClassNote = (note: ClassNote) => {
-    setClasses((prev) => [note, ...prev]);
-  };
-
-  const handleAddReading = (reading: ReadingItem) => {
-    setReadings((prev) => [reading, ...prev]);
-  };
-
-  const handleUpdateReadingPages = (readingId: string, newPages: number) => {
-    setReadings((prev) =>
-      prev.map((r) => {
-        if (r.id === readingId) {
-          const updatedPages = Math.min(newPages, r.totalPages || 999);
-          const isDone = updatedPages >= (r.totalPages || 100);
-          return {
-            ...r,
-            readPages: updatedPages,
-            status: isDone ? 'concluido' : 'lendo'
-          };
-        }
-        return r;
-      })
-    );
-  };
-
-  const handleAddFlashcard = (card: Flashcard) => {
-    setFlashcards((prev) => [card, ...prev]);
-  };
-
-  const handleAddConcept = (concept: PsychologyConcept) => {
-    setConcepts((prev) => [concept, ...prev]);
-  };
-
-  const handleAddInternshipLog = (log: InternshipLog) => {
-    setInternshipLogs((prev) => [log, ...prev]);
-  };
-
-  const handleAddSession = (session: StudySession) => {
-    setSessions((prev) => [session, ...prev]);
-  };
-
-  const handleUpdateProfile = (updated: Partial<UserProfile>) => {
-    setProfile((prev) => ({ ...prev, ...updated }));
-  };
-
-  const handleUpdateTcc = (updated: TccData) => {
-    setTcc(updated);
-  };
-
-  const handleNavigate = (tab: NavTab, subTab?: string, target?: string) => {
-    setActiveTab(tab);
-    setTargetId(target);
-
-    if (tab === 'faculdade' && subTab) setSubTabFaculdade(subTab as SubTabFaculdade);
-    if (tab === 'estudos' && subTab) setSubTabEstudos(subTab as SubTabEstudos);
-    if (tab === 'biblioteca' && subTab) setSubTabBiblioteca(subTab as SubTabBiblioteca);
-    if (tab === 'perfil' && subTab) setSubTabPerfil(subTab as SubTabPerfil);
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, [openSearch]);
 
   return (
     <div className="min-h-screen bg-[#FFFCF8] text-[#40383A] flex flex-col font-sans antialiased selection:bg-[#FFE9EE] selection:text-[#B94862]">
-      
+
       {/* Top Header */}
       <HeaderNav
         profile={profile}
         headerConfig={headerConfig}
-        onOpenSearch={() => setIsSearchOpen(true)}
-        onOpenQuickAdd={() => setIsQuickAddOpen(true)}
+        onOpenSearch={openSearch}
+        onOpenQuickAdd={openQuickAdd}
         onNavigateToPerfil={() => handleNavigate('perfil', 'jornada')}
       />
 
@@ -270,91 +69,16 @@ export default function App() {
         {isMoodViewOpen ? (
           <EstadoDeEspiritoView
             currentMood={currentMood}
-            onSaveMood={(newMood) => {
-              setCurrentMood(newMood);
-              setIsMoodViewOpen(false);
-            }}
-            onBackToHome={() => setIsMoodViewOpen(false)}
+            onSaveMood={handleSaveMood}
+            onBackToHome={closeMoodView}
           />
         ) : (
           <>
-            {activeTab === 'home' && (
-              <HomeView
-                profile={profile}
-                courses={courses}
-                tasks={tasks}
-                classes={classes}
-                readings={readings}
-                stickers={stickers}
-                currentMood={currentMood}
-                exams={exams}
-                onToggleTask={handleToggleTask}
-                onAddTask={handleAddTask}
-                onNavigate={handleNavigate}
-                onOpenQuickAdd={() => setIsQuickAddOpen(true)}
-                onOpenMoodView={() => setIsMoodViewOpen(true)}
-              />
-            )}
-
-            {activeTab === 'faculdade' && (
-              <FaculdadeView
-                courses={courses}
-                classes={classes}
-                exams={exams}
-                tasks={tasks}
-                concepts={concepts}
-                authors={authors}
-                readings={readings}
-                materials={materials}
-                internshipLogs={internshipLogs}
-                initialSubTab={subTabFaculdade}
-                selectedCourseId={targetId}
-                focusedCourseId={focusedCourseId}
-                onSelectCourse={(id) => setFocusedCourseId(id)}
-                onOpenQuickAdd={() => setIsQuickAddOpen(true)}
-                onToggleExam={handleToggleExam}
-                onToggleTask={handleToggleTask}
-              />
-            )}
-
-            {activeTab === 'estudos' && (
-              <EstudosView
-                readings={readings}
-                flashcards={flashcards}
-                sessions={sessions}
-                courses={courses}
-                initialSubTab={subTabEstudos}
-                onAddSession={handleAddSession}
-                onUpdateReadingPages={handleUpdateReadingPages}
-                onOpenQuickAdd={() => setIsQuickAddOpen(true)}
-              />
-            )}
-
-            {activeTab === 'biblioteca' && (
-              <BibliotecaView
-                authors={authors}
-                concepts={concepts}
-                approaches={approaches}
-                materials={materials}
-                courses={courses}
-                initialSubTab={subTabBiblioteca}
-                initialSelectedId={targetId}
-                onOpenQuickAdd={() => setIsQuickAddOpen(true)}
-              />
-            )}
-
-            {activeTab === 'perfil' && (
-              <PerfilView
-                profile={profile}
-                stickers={stickers}
-                internshipLogs={internshipLogs}
-                tcc={tcc}
-                initialSubTab={subTabPerfil}
-                onUpdateProfile={handleUpdateProfile}
-                onUpdateTcc={handleUpdateTcc}
-                onOpenQuickAdd={() => setIsQuickAddOpen(true)}
-              />
-            )}
+            {activeTab === 'home' && <HomeView />}
+            {activeTab === 'faculdade' && <FaculdadeView />}
+            {activeTab === 'estudos' && <EstudosView />}
+            {activeTab === 'biblioteca' && <BibliotecaView />}
+            {activeTab === 'perfil' && <PerfilView />}
           </>
         )}
       </main>
@@ -363,13 +87,13 @@ export default function App() {
       <BottomNav
         activeTab={activeTab}
         onChangeTab={(tab) => handleNavigate(tab)}
-        onOpenQuickAddWithType={handleOpenQuickAddWithType}
+        onOpenQuickAddWithType={openQuickAddWithType}
       />
 
       {/* Quick Add Modal (+ Novo) */}
       <QuickAddModal
-        isOpen={isQuickAddOpen}
-        onClose={() => setIsQuickAddOpen(false)}
+        isOpen={app.isQuickAddOpen}
+        onClose={closeQuickAdd}
         initialType={quickAddType}
         courses={courses}
         onAddTask={handleAddTask}
@@ -382,17 +106,25 @@ export default function App() {
 
       {/* Global Search Modal */}
       <GlobalSearchModal
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
+        isOpen={app.isSearchOpen}
+        onClose={closeSearch}
         courses={courses}
-        classes={classes}
-        authors={authors}
-        concepts={concepts}
-        approaches={approaches}
-        readings={readings}
+        classes={app.classes}
+        authors={app.authors}
+        concepts={app.concepts}
+        approaches={app.approaches}
+        readings={app.readings}
         onNavigate={handleNavigate}
       />
 
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AppProvider>
+      <AppShell />
+    </AppProvider>
   );
 }
