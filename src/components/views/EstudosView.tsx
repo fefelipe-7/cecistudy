@@ -16,7 +16,6 @@ import {
 } from 'lucide-react';
 import { ReadingItem, SubTabEstudos } from '../../types';
 
-import { ContinueReadingWidget } from '../widgets/ContinueReadingWidget';
 import { ReaderModeModal } from '../widgets/ReaderModeModal';
 import { PillTabBar } from '../ui/PillTabBar';
 import { useApp } from '../../context/AppContext';

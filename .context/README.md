@@ -25,8 +25,7 @@ Ele é carregado pelo opencode via `instructions` em `opencode.json`.
   ("cantinho", "carinho", "dica da ceci", emojis, tom afetuoso).
 - **Público:** a própria usuária (Ceci) — uso individual, mobile-first.
 - **Idioma da UI:** português do Brasil, com textos **minúsculos** e fofos.
-- **Plataforma:** React SPA (PWA), hospedada como applet no **Google AI Studio**
-  (declara `MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API`; a API Gemini ainda não está implementada).
+- **Plataforma:** React SPA (PWA) estática, deploy via Vercel.
 
 ### Stack técnica
 React 19 · TypeScript 5.8 · Vite 6 · Tailwind CSS 4 (`@theme`) · framer-motion ·

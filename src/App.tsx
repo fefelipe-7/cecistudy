@@ -53,7 +53,7 @@ function AppShell() {
   }, [openSearch]);
 
   return (
-    <div className="min-h-screen bg-[#FFFCF8] text-[#40383A] flex flex-col font-sans antialiased selection:bg-[#FFE9EE] selection:text-[#B94862]">
+    <div className="min-h-screen text-[#40383A] flex flex-col font-sans antialiased selection:bg-[#FFE9EE] selection:text-[#B94862]">
 
       {/* Top Header */}
       <HeaderNav

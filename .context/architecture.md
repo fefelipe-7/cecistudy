@@ -9,7 +9,7 @@
 |---|---|---|
 | Framework | React 19 | SPA, sem router |
 | Linguagem | TypeScript 5.8 | `tsc --noEmit` como lint/typecheck |
-| Build | Vite 6 | alias `@/` → `src/`; HMR desabilitável via `DISABLE_HMR` (AI Studio) |
+| Build | Vite 6 | alias `@/` → `src/` |
 | Estilos | Tailwind CSS 4 | tokens em `@theme` no `src/index.css` |
 | Animações | framer-motion 13 + motion 12 | entrada/saída de views, modais, nav |
 | Ícones | lucide-react | ícones nomeados (ex.: `Brain`, `FileText`) |
@@ -17,9 +17,8 @@
 | Slot | @radix-ui/react-slot | usado no `Button` (`asChild`) |
 | Persistência | `localStorage` | prefixo `cecistudy_` |
 
-**Dependências declaradas mas não usadas (dead):** `@google/genai`, `express`, `dotenv`.
-A intenção é um backend com a API Gemini do lado do servidor (ver seção 6). O `package.json`
-ainda usa `"name": "react-example"` (deveria ser `cecistudy`).
+> Sem dependências mortas: `@google/genai`, `express`, `dotenv` e `@types/express` foram
+> removidos (backend Gemini/AI Studio descartado). `package.json` usa `"name": "cecistudy"`.
 
 ## 2. Hierarquia de componentes
 
@@ -98,13 +97,6 @@ Navegação 100% por estado em `App.tsx`:
 - **Capa de livro:** bloco colorido com lombada (spine `w-2.5 bg-black/10`), usado na biblioteca.
 
 Detalhes completos em [`design-system.md`](./design-system.md).
-
-## 6. Backend / AI Studio (planejado)
-
-- `metadata.json` declara `MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API`.
-- `.env.example` prevê `GEMINI_API_KEY` e `APP_URL`, injetadas pelo AI Studio em runtime.
-- As deps `express`, `dotenv`, `@google/genai` estão presentes mas **sem código** —
-  há a intenção de um servidor (ex.: `server.js`) para recursos de IA que ainda não existe.
 
 ## 7. Pontos de atenção arquitetural (resumo)
 

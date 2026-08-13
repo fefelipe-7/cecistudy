@@ -1,18 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { X, Check, BookOpen, FileText, Brain, HeartHandshake, Sparkles, Plus } from 'lucide-react';
-import { Course, QuickType } from '../types';
+import {
+  Course,
+  QuickType,
+  Task,
+  ClassNote,
+  ReadingItem,
+  Flashcard,
+  PsychologyConcept,
+  InternshipLog
+} from '../types';
 
 interface QuickAddModalProps {
   isOpen: boolean;
   onClose: () => void;
   courses: Course[];
   initialType?: QuickType;
-  onAddTask: (task: any) => void;
-  onAddClassNote: (note: any) => void;
-  onAddReading: (reading: any) => void;
-  onAddFlashcard: (card: any) => void;
-  onAddConcept: (concept: any) => void;
-  onAddInternshipLog: (log: any) => void;
+  onAddTask: (task: Task) => void;
+  onAddClassNote: (note: ClassNote) => void;
+  onAddReading: (reading: ReadingItem) => void;
+  onAddFlashcard: (card: Flashcard) => void;
+  onAddConcept: (concept: PsychologyConcept) => void;
+  onAddInternshipLog: (log: InternshipLog) => void;
 }
 
 export const QuickAddModal: React.FC<QuickAddModalProps> = ({
@@ -243,7 +252,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                   <label className="block text-xs font-medium text-[#6D6366] mb-1">categoria</label>
                   <select
                     value={taskCategory}
-                    onChange={(e) => setTaskCategory(e.target.value as any)}
+                    onChange={(e) => setTaskCategory(e.target.value as Task['category'])}
                     className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
                   >
                     <option value="leitura">leitura 📚</option>

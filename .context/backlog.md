@@ -32,9 +32,10 @@ Views recebem dezenas de props e callbacks em cascata.
 **Ação:** usar, remover ou mover para um local claro.
 
 ## 🟡 5. Dependências mortas
-`@google/genai`, `express`, `dotenv` declaradas sem uso (backend Gemini planejado).
-`package.json` com `"name": "react-example"` (deveria ser `cecistudy`).
-**Ação:** implementar backend Gemini (ou remover deps); corrigir nome.
+`@google/genai`, `express`, `dotenv`, `@types/express` eram declaradas sem uso (backend
+Gemini/AI Studio planejado, **descartado**).
+**Resolvido (Fase 4.0):** deps removidas; `package.json` com `"name": "cecistudy"`; removidos
+`metadata.json`, `.env.example`, bloco `DISABLE_HMR` do `vite.config.ts` e `bun.lock`.
 
 ## 🟡 6. Estado não persistido inconsistente
 `savedBookIds` e `looseNotes` (BibliotecaView) ficavam em `useState` local, sem `localStorage`.
@@ -98,10 +99,13 @@ e não persistidos. Unificar o modelo evita divergência.
 - [x] **3.2** Persistir `savedBookIds`/`looseNotes` via `usePersistentState` na `BibliotecaView` (chaves `cecistudy_savedBookIds`/`cecistudy_looseNotes`). Dados dummy restantes (HomeView, MoodCalendar) ainda a derivar do estado/seeds.
 
 ### Fase 4 — Higiene
-- [ ] **4.1** Remover dead code (`ContinueReadingWidget`, `FeaturedChallengeWidget`, `MoodSelectorWidget`).
-- [ ] **4.2** Tipar callbacks do `QuickAddModal` (eliminar `any`).
+- [x] **4.0** Remover completamente o backend/AI Studio: apagar `metadata.json`, `.env.example`,
+  `bun.lock`; remover deps `@google/genai`, `express`, `dotenv`, `@types/express`; limpar
+  `vite.config.ts` (bloco `DISABLE_HMR`); `"name": "cecistudy"`; `clean` sem `server.js`.
+- [x] **4.1** Remover dead code (`ContinueReadingWidget`, `FeaturedChallengeWidget`, `MoodSelectorWidget`).
+- [x] **4.2** Tipar callbacks do `QuickAddModal` (eliminar `any`).
 - [ ] **4.3** Migrar hex → tokens semânticos (em andamento contínuo).
-- [ ] **4.4** Centralizar `body` bg (index.html/index.css/App.tsx).
+- [x] **4.4** Centralizar `body` bg (fonte única em `index.css`; removido de `index.html`/`App.tsx`).
 
 ### Fase 5 — Roteamento eficiente (planejamento)
 > **Status: `[ ]` apenas planejado — ainda NÃO implementado.** O app hoje não tem router
@@ -121,18 +125,18 @@ e não persistidos. Unificar o modelo evita divergência.
 - Custo baixo de implementação e de migração das views existentes.
 
 **Opções em avaliação (trade-offs)**
-1. **react-router (BrowserRouter)** — padrão, histórico real, deep-link; porém applet no
-   Google AI Studio + PWA estática pode ter limitações de path (precisa testar; se precisar,
-   `HashRouter`). Adiciona dependência.
+1. **react-router (BrowserRouter)** — padrão, histórico real, deep-link; porém PWA estática
+   pode ter limitações de path no deploy Vercel (precisa testar; se precisar, `HashRouter`).
+   Adiciona dependência.
 2. **Hash-based (custom leve)** — `#/rota` via `hashchange`, sem dependência; funciona em
-   hospedagem estática/AI Studio; menos recursos (nested routes, params) mas suficiente.
+   hospedagem estática; menos recursos (nested routes, params) mas suficiente.
 3. **Manter estado + sync de URL** — evoluir o `handleNavigate` atual para sincronizar um
    "pathname virtual" no `location.hash`, com listener para back/forward. Menor mudança.
 
 **Pontos de atenção**
 - Integrar com o `DynamicHeaderConfig` (modo default/detail) que hoje é derivado no `App`.
 - Preservar o scroll-to-top em `handleNavigate` ao trocar de rota.
-- Compatibilidade com o deploy Vercel (fallback de path) e com o applet AI Studio.
+- Compatibilidade com o deploy Vercel (fallback de path).
 - Não quebrar o `GlobalSearchModal` (que usa `targetId`/`onNavigate`).
 
 **Próximo passo:** avaliar a opção 2 ou 3 (menor risco/zero dependência) num spike antes de
@@ -153,4 +157,3 @@ escolher. Só implementar após validar em `npm run dev` + deploy Vercel.
 3. **Fase 3** (estado/dados: contexto + persistência).
 4. **Fase 4** (higiene: dead code, tipagem, tokens, body bg).
 5. **Fase 5** (roteamento eficiente — primeiro planejar, depois implementar; decidir abordagem).
-6. Implementar backend Gemini e integrar (roadmap de produto).

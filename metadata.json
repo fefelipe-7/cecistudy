@@ -1,6 +1,0 @@
-{
-  "name": "cecistudy",
-  "description": "Cantinho acadêmico pessoal para organizar a faculdade, estudar Psicologia e acompanhar a jornada até se tornar psicóloga.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
