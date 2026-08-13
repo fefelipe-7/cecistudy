@@ -71,19 +71,27 @@ const usePersistentState = <T,>(key, initialValue) => {
 
 > ✅ `savedBookIds` e `looseNotes` (BibliotecaView) já são persistidos via `usePersistentState`.
 
-## 4. Modelo de navegação (sem router)
+## 4. Modelo de navegação (roteamento hash)
 
-Navegação 100% por estado em `App.tsx`:
+Navegação por estado em `src/context/AppContext.tsx`, sincronizada com um "pathname virtual"
+no `location.hash` (sem router/dependência). Fase 5 do backlog.
+
+Rotas: `#/home`, `#/faculdade`, `#/faculdade/:courseId`, `#/estudos`, `#/biblioteca`,
+`#/perfil`, `#/mood`.
 
 - `activeTab: NavTab` → `'home' | 'faculdade' | 'estudos' | 'biblioteca' | 'perfil'`
-- Sub-tabs por tab (estado próprio das views): `SubTabFaculdade`, `SubTabEstudos`,
-  `SubTabBiblioteca`, `SubTabPerfil`.
+- Sub-tabs por tab (estado local das views): `SubTabFaculdade`, `SubTabEstudos`,
+  `SubTabBiblioteca`, `SubTabPerfil` (não codificadas na URL).
+- `AppContext` escuta `hashchange` (aplica a rota ao estado — deep-link + voltar/avançar).
+- Ações de navegação (`handleNavigate`, `openCourseDetail`, `closeCourseDetail`,
+  `openMoodView`, `closeMoodView`, `handleSaveMood`) sincronizam o `location.hash`.
 - `handleNavigate(tab, subTab?, targetId?)` centraliza a troca de tab + rolagem ao topo.
 - `targetId` → abre uma entidade específica (ex.: disciplina) vinda da busca global.
-- `focusedCourseId` → renderiza `CourseDetailView` (drill-down de disciplina).
+- `focusedCourseId` → renderiza `CourseDetailView` (drill-down de disciplina, rota
+  `#/faculdade/:courseId`).
 
 ### Header dinâmico (`DynamicHeaderConfig`)
-`App.tsx` constrói um `headerConfig` conforme o contexto:
+`AppContext` constrói um `headerConfig` conforme o contexto:
 - **default** — header de marca (logo "C", "cecistudy ♡", badge de semestre, busca, mood).
 - **detail** — botão voltar, ícone/`code` da disciplina, título/subtítulo, favorito
   (bookmark) e `rightActions` custom (ex.: botão "Anotação").

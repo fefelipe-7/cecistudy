@@ -107,40 +107,26 @@ e não persistidos. Unificar o modelo evita divergência.
 - [ ] **4.3** Migrar hex → tokens semânticos (em andamento contínuo).
 - [x] **4.4** Centralizar `body` bg (fonte única em `index.css`; removido de `index.html`/`App.tsx`).
 
-### Fase 5 — Roteamento eficiente (planejamento)
-> **Status: `[ ]` apenas planejado — ainda NÃO implementado.** O app hoje não tem router
-> (navegação 100% por estado em `App.tsx`: `activeTab`, sub-tabs por view, `focusedCourseId`,
-> `targetId`). Antes de implementar, decidir a abordagem. Rascunho de planejamento:
+### Fase 5 — Roteamento eficiente (implementado)
+> **Status: `[x]` implementado (opção 3).** Navegação agora sincroniza um "pathname virtual"
+> no `location.hash` com listener `hashchange`, sem adicionar dependência.
 
-**Problema atual**
-- Sem URL: sem deep-link para views/entidades, sem suporte ao botão voltar do navegador,
-  sem share/abrir "aula tal" diretamente.
-- `handleNavigate` + `targetId` + `focusedCourseId` espalham a lógica de "ir para X" no `App`.
-- Sem histórico: o botão voltar pode sair do app em vez de voltar à view anterior.
+**O que foi feito**
+- Rotas hash: `#/home`, `#/faculdade`, `#/faculdade/:courseId`, `#/estudos`, `#/biblioteca`,
+  `#/perfil`, `#/mood`.
+- `AppContext` escuta `hashchange` (aplica a rota ao estado) e as ações de navegação
+  (`handleNavigate`, `openCourseDetail`, `closeCourseDetail`, `openMoodView`,
+  `closeMoodView`, `handleSaveMood`) sincronizam o `location.hash`.
+- Ganhos: deep-link para views e disciplinas (ex.: `#/faculdade/c3`), suporte ao botão
+  voltar/avançar do navegador, sem recarregar e mantendo o header dinâmico.
+- Lógica `buildRoute`/`parseRoute` validada por teste isolado de roteiro.
 
-**Objetivos ("roteamento eficiente")**
-- Deep-linking entre views e entidades (ex.: `#/faculdade/c3`, `#/estudos/sessao-2`).
-- Suporte ao botão voltar / avançar do navegador (histórico real).
-- Transição sem recarregar (SPA) e mantendo o header dinâmico atual.
-- Custo baixo de implementação e de migração das views existentes.
-
-**Opções em avaliação (trade-offs)**
-1. **react-router (BrowserRouter)** — padrão, histórico real, deep-link; porém PWA estática
-   pode ter limitações de path no deploy Vercel (precisa testar; se precisar, `HashRouter`).
-   Adiciona dependência.
-2. **Hash-based (custom leve)** — `#/rota` via `hashchange`, sem dependência; funciona em
-   hospedagem estática; menos recursos (nested routes, params) mas suficiente.
-3. **Manter estado + sync de URL** — evoluir o `handleNavigate` atual para sincronizar um
-   "pathname virtual" no `location.hash`, com listener para back/forward. Menor mudança.
-
-**Pontos de atenção**
-- Integrar com o `DynamicHeaderConfig` (modo default/detail) que hoje é derivado no `App`.
-- Preservar o scroll-to-top em `handleNavigate` ao trocar de rota.
-- Compatibilidade com o deploy Vercel (fallback de path).
-- Não quebrar o `GlobalSearchModal` (que usa `targetId`/`onNavigate`).
-
-**Próximo passo:** avaliar a opção 2 ou 3 (menor risco/zero dependência) num spike antes de
-escolher. Só implementar após validar em `npm run dev` + deploy Vercel.
+**Observações / limites**
+- Sub-tabs por view continuam sendo estado local da view (não codificadas na URL). Para
+  deep-link a sub-tab granular, seria preciso transformar as views em sub-tab "controlada"
+  pelo contexto (trabalho futuro).
+- `react-router` (opção 1) não foi usado: adiciona dependência e tem limitações de path
+  em PWA estática no Vercel.
 
 ### Itens detectados na análise estrutural (fora do backlog original)
 - `ReaderModeModal` — Regras de Hooks (ver 1.1).
@@ -155,5 +141,5 @@ escolher. Só implementar após validar em `npm run dev` + deploy Vercel.
 1. **Fase 1** (correção de Hooks + fundações) → destrava as próximas fases.
 2. **Fase 2** (splits e desduplicação, reusando as primitivas da Fase 1).
 3. **Fase 3** (estado/dados: contexto + persistência).
-4. **Fase 4** (higiene: dead code, tipagem, tokens, body bg).
-5. **Fase 5** (roteamento eficiente — primeiro planejar, depois implementar; decidir abordagem).
+4. **Fase 4** (higiene: dead code, tipagem, tokens, body bg, remoção do AI Studio).
+5. **Fase 5** (roteamento eficiente — implementado via `location.hash` + `hashchange`).

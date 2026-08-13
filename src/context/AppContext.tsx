@@ -44,6 +44,25 @@ import {
 } from '../data/initialData';
 import { usePersistentState } from '../lib/usePersistentState';
 
+type Route = { tab?: NavTab; focusedCourseId?: string | null; mood?: boolean };
+
+function buildRoute(tab: NavTab, focusedCourseId: string | null, isMood: boolean): string {
+  if (isMood) return '#/mood';
+  if (tab === 'faculdade' && focusedCourseId) return `#/faculdade/${focusedCourseId}`;
+  return `#/${tab}`;
+}
+
+function parseRoute(hash: string): Route {
+  const h = hash.replace(/^#\/?/, '').split('/');
+  const seg = h[0];
+  if (seg === 'mood') return { mood: true };
+  if (!seg || seg === 'home') return { tab: 'home' };
+  if (seg === 'faculdade') return { tab: 'faculdade', focusedCourseId: h[1] || null };
+  if (seg === 'estudos' || seg === 'biblioteca' || seg === 'perfil') return { tab: seg };
+  return { tab: 'home' };
+}
+
+
 export interface AppContextValue {
   // data
   profile: UserProfile;
@@ -79,6 +98,8 @@ export interface AppContextValue {
   focusedCourseId: string | null;
   setFocusedCourseId: (id: string | null) => void;
   focusedCourse: Course | undefined;
+  openCourseDetail: (courseId: string) => void;
+  closeCourseDetail: () => void;
   bookmarkedCourseIds: string[];
   toggleBookmarkCourse: (id: string) => void;
 
@@ -167,6 +188,28 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   }, [targetId, activeTab]);
 
+  // Hash-based routing: deep-link + browser back/forward (no router dependency)
+  useEffect(() => {
+    const applyRoute = () => {
+      const route = parseRoute(location.hash);
+      if (route.mood) {
+        setIsMoodViewOpen(true);
+        return;
+      }
+      setIsMoodViewOpen(false);
+      if (route.tab) setActiveTab(route.tab);
+      if (route.tab === 'faculdade') {
+        setFocusedCourseId(route.focusedCourseId ?? null);
+        setTargetId(route.focusedCourseId ?? undefined);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    if (!location.hash) history.replaceState(null, '', '#/home');
+    applyRoute();
+    window.addEventListener('hashchange', applyRoute);
+    return () => window.removeEventListener('hashchange', applyRoute);
+  }, []);
+
   const toggleBookmarkCourse = (courseId: string) => {
     setBookmarkedCourseIds((prev) =>
       prev.includes(courseId) ? prev.filter((id) => id !== courseId) : [...prev, courseId]
@@ -183,7 +226,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       type: 'detail',
       title: 'Estado de Espírito',
       subtitle: 'Como você está se sentindo hoje?',
-      onBack: () => setIsMoodViewOpen(false),
+      onBack: () => closeMoodView(),
       rightActions: (
         <span className="text-sm font-bold bg-[#FFF5F7] px-2.5 py-1 rounded-full border border-[#FFD3DD] text-[#B94862]">
           {currentMood.emoji}
@@ -199,10 +242,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       code: focusedCourse.code || 'PSI-300',
       icon: focusedCourse.icon,
       color: focusedCourse.color,
-      onBack: () => {
-        setFocusedCourseId(null);
-        setTargetId(undefined);
-      },
+      onBack: () => closeCourseDetail(),
       isBookmarked,
       onToggleBookmark: () => toggleBookmarkCourse(focusedCourse.id),
       rightActions: (
@@ -293,14 +333,40 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (tab === 'biblioteca' && subTab) setSubTabBiblioteca(subTab as SubTabBiblioteca);
     if (tab === 'perfil' && subTab) setSubTabPerfil(subTab as SubTabPerfil);
 
+    const course = tab === 'faculdade' ? target ?? null : null;
+    const h = buildRoute(tab, course, false);
+    if (location.hash !== h) location.hash = h;
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const openMoodView = () => setIsMoodViewOpen(true);
-  const closeMoodView = () => setIsMoodViewOpen(false);
+  const openCourseDetail = (courseId: string) => {
+    setFocusedCourseId(courseId);
+    setTargetId(courseId);
+    const h = `#/faculdade/${courseId}`;
+    if (location.hash !== h) location.hash = h;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const closeCourseDetail = () => {
+    setFocusedCourseId(null);
+    setTargetId(undefined);
+    if (location.hash !== '#/faculdade') location.hash = '#/faculdade';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const openMoodView = () => {
+    setIsMoodViewOpen(true);
+    if (location.hash !== '#/mood') location.hash = '#/mood';
+  };
+  const closeMoodView = () => {
+    setIsMoodViewOpen(false);
+    if (location.hash !== '#/home') location.hash = '#/home';
+  };
   const handleSaveMood = (mood: DailyMoodData) => {
     setCurrentMood(mood);
     setIsMoodViewOpen(false);
+    if (location.hash !== '#/home') location.hash = '#/home';
   };
   const openQuickAdd = () => setIsQuickAddOpen(true);
   const closeQuickAdd = () => setIsQuickAddOpen(false);
@@ -343,6 +409,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     focusedCourseId,
     setFocusedCourseId,
     focusedCourse,
+    openCourseDetail,
+    closeCourseDetail,
     bookmarkedCourseIds,
     toggleBookmarkCourse,
     isMoodViewOpen,

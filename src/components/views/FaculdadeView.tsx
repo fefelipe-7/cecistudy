@@ -27,7 +27,8 @@ export const FaculdadeView: React.FC = () => {
     internshipLogs,
     subTabFaculdade,
     focusedCourseId,
-    setFocusedCourseId,
+    openCourseDetail,
+    closeCourseDetail,
     openQuickAdd,
     handleToggleExam,
     handleToggleTask,
@@ -51,7 +52,7 @@ export const FaculdadeView: React.FC = () => {
         readings={readings}
         materials={materials}
         internshipLogs={internshipLogs}
-        onBack={() => setFocusedCourseId(null)}
+        onBack={() => closeCourseDetail()}
         onToggleExam={handleToggleExam}
         onToggleTask={handleToggleTask}
         onOpenQuickAdd={openQuickAdd}
@@ -128,7 +129,7 @@ export const FaculdadeView: React.FC = () => {
               return (
                 <div
                   key={course.id}
-                  onClick={() => setFocusedCourseId(course.id)}
+                  onClick={() => openCourseDetail(course.id)}
                   className="rounded-[24px] p-5 bg-white border border-[#E9DFDC] cursor-pointer hover:border-[#FFD3DD] transition-all space-y-3 shadow-[0_2px_8px_rgba(64,56,58,0.04)] hover:shadow-md group"
                   style={{ borderLeftWidth: '4px', borderLeftColor: course.color || '#B94862' }}
                 >
