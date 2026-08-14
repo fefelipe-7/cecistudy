@@ -36,12 +36,13 @@ import { BookDetailModal } from '../library/BookDetailModal';
 import { LibraryFilterModal } from '../library/LibraryFilterModal';
 import { NotesScreen } from '../library/NotesScreen';
 import { TempleScreen } from '../library/TempleScreen';
+import { SwipeBack } from '../ui/SwipeBack';
 import { LooseNote, INITIAL_NOTES } from '../library/notes';
 import { usePersistentState } from '../../lib/usePersistentState';
 import { useApp } from '../../context/AppContext';
 
 export const BibliotecaView: React.FC = () => {
-  const { openQuickAdd, isNotesScreenOpen, openNotesScreen, isCreatingLooseNote, setIsCreatingLooseNote, isTempleScreenOpen, openTemple } = useApp();
+  const { openQuickAdd, isNotesScreenOpen, openNotesScreen, closeNotesScreen, isCreatingLooseNote, setIsCreatingLooseNote, isTempleScreenOpen, openTemple, closeTemple } = useApp();
   // Filter States
   const [activeCategory, setActiveCategory] = useState<string>('todos');
   const [activeStatus, setActiveStatus] = useState<string>('todos');
@@ -170,19 +171,25 @@ export const BibliotecaView: React.FC = () => {
   // Dedicated Screen View for "Suas Notas"
   if (isNotesScreenOpen) {
     return (
-      <NotesScreen
-        looseNotes={looseNotes}
-        onAddNote={(note) => setLooseNotes((prev) => [note, ...prev])}
-        onDeleteNote={(id) => setLooseNotes((prev) => prev.filter((n) => n.id !== id))}
-        isCreatingNote={isCreatingLooseNote}
-        setIsCreatingNote={setIsCreatingLooseNote}
-      />
+      <SwipeBack onClose={closeNotesScreen}>
+        <NotesScreen
+          looseNotes={looseNotes}
+          onAddNote={(note) => setLooseNotes((prev) => [note, ...prev])}
+          onDeleteNote={(id) => setLooseNotes((prev) => prev.filter((n) => n.id !== id))}
+          isCreatingNote={isCreatingLooseNote}
+          setIsCreatingNote={setIsCreatingLooseNote}
+        />
+      </SwipeBack>
     );
   }
 
   // Dedicated Screen View for "Templo de Conhecimento"
   if (isTempleScreenOpen) {
-    return <TempleScreen />;
+    return (
+      <SwipeBack onClose={closeTemple}>
+        <TempleScreen />
+      </SwipeBack>
+    );
   }
 
   return (
@@ -349,7 +356,7 @@ export const BibliotecaView: React.FC = () => {
           </p>
 
           {/* Horizontal Bookshelf directly on canvas */}
-          <div className="flex items-stretch gap-3 overflow-x-auto pb-2 scrollbar-none pt-1">
+          <div className="flex items-stretch gap-3 overflow-x-auto pb-2 scrollbar-none pt-1 data-swipe-lock">
             {filteredTrendingBooks.map((book) => {
               const isSaved = savedBookIds.includes(book.id);
               return (

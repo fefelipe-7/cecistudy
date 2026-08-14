@@ -266,7 +266,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
         </div>
 
         {/* Type Selector Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mb-4 scrollbar-none">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mb-4 scrollbar-none data-swipe-lock">
           {typeOptions.map((opt) => {
             const Icon = opt.icon;
             const isSel = activeType === opt.id;

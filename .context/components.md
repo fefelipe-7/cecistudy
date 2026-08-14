@@ -35,6 +35,8 @@ Dono de todo o estado global (`usePersistentState`) + navegação + modais. Orqu
 | `floating-action-menu.tsx` | Menu FAB "+" com opções animadas | ✅ (via BottomNav) |
 | `Card.tsx` · `Modal.tsx` · `PillTabBar.tsx` · `IconButton.tsx` · `ProgressBar.tsx` | Primitivas reutilizáveis | ✅ |
 | `CourseIcon.tsx` | Resolvedor de ícones de curso (Brain, FileText, Sparkles…) | ✅ |
+| `SwipeTabPager.tsx` | Pager horizontal estilo Instagram: trilho top-level entre as 5 abas (colunas `data-pager-scroll` com scroll próprio) ou aninhado nas sub-abas (`mode='nested'`, com `onEdgeOverscroll` que propaga para a aba principal nas bordas) | ✅ (App.tsx + Faculdade/Estudos/Perfil) |
+| `SwipeBack.tsx` | Swipe-back da borda esquerda (estilo iOS) em telas auxiliares: curso, notas/templo e mood; chama `onClose` ao passar do limiar | ✅ (Faculdade/Biblioteca/App) |
 | `HeaderActionMenu.tsx` | Menu "⋯" de ações contextuais do header detail | ✅ (HeaderNav) |
 | `Toast.tsx` | Feedback toast (ex.: salvar/copiar) | ✅ (AppShell) |
 | `ErrorBoundary.tsx` | Fallback acolhedor quando uma view quebra (voltar à home) | ✅ (App) |

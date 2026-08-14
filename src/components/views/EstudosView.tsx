@@ -21,8 +21,12 @@ import { Flashcard, ReadingItem, StudySession, SubTabEstudos } from '../../types
 
 import { ReaderModeModal } from '../widgets/ReaderModeModal';
 import { PillTabBar } from '../ui/PillTabBar';
+import { SwipeTabPager } from '../ui/SwipeTabPager';
 import { useApp } from '../../context/AppContext';
 import { hapticSuccess } from '../../lib/haptics';
+import { TAB_ORDER } from '../../lib/routing';
+
+const ESTUDOS_SUB_TABS = ['sessoes', 'flashcards', 'leituras', 'questoes', 'historico'] as const;
 
 /** Intervalo de revisão (dias) por nº de revisões — repetição espaçada simples. */
 const REVIEW_INTERVALS = [1, 3, 7, 14, 30];
@@ -56,6 +60,7 @@ export const EstudosView: React.FC = () => {
     courses,
     subTabEstudos: subTab,
     setSubTabEstudos: setSubTab,
+    handleNavigate,
     showToast,
     handleAddSession,
     handleUpdateReadingPages,
@@ -338,370 +343,381 @@ export const EstudosView: React.FC = () => {
         onChange={(id) => setSubTab(id as SubTabEstudos)}
       />
 
-      {/* SESSÃO DE FOCO (timer) */}
-      {subTab === 'sessoes' && (
-        <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4">
-          <h2 className="font-display text-xl font-bold text-ceci-primary">cantinho de foco ceci</h2>
+      {/* Sub-tab content (swipe horizontal entre sub-abas, propaga p/ abas na borda) */}
+      <SwipeTabPager
+        tabs={ESTUDOS_SUB_TABS}
+        activeIndex={Math.max(0, ESTUDOS_SUB_TABS.indexOf(subTab as (typeof ESTUDOS_SUB_TABS)[number]))}
+        mode="nested"
+        onChange={(i) => setSubTab(ESTUDOS_SUB_TABS[i] as SubTabEstudos)}
+        onEdgeOverscroll={(dir) =>
+          handleNavigate(TAB_ORDER[TAB_ORDER.indexOf('estudos') + dir])
+        }
+      >
+        {(id) => (
+          <>
+            {id === 'sessoes' && (
+              <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4">
+                <h2 className="font-display text-xl font-bold text-ceci-primary">cantinho de foco ceci</h2>
 
-          {/* Presets */}
-          <div className="flex items-center justify-center gap-2">
-            {PRESETS.map((mins) => (
-              <button
-                key={mins}
-                onClick={() => resetTimer(mins)}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer border ${
-                  preset === mins
-                    ? 'bg-ceci-primary text-white border-ceci-primary shadow-xs'
-                    : 'bg-white text-ceci-secondary border-ceci-border-default hover:bg-surface-muted'
-                }`}
-              >
-                {mins} min
-              </button>
-            ))}
-          </div>
-
-          <div className="relative w-48 h-48 mx-auto rounded-full border-4 border-ceci-border-brand bg-surface-rose flex flex-col items-center justify-center shadow-inner">
-            <span className="font-display font-bold text-4xl text-ceci-primary">{formatTime(timeLeft)}</span>
-            <span className="text-xs text-ceci-secondary mt-1">
-              {isRunning ? '✨ em andamento...' : timeLeft === 0 ? 'finalizada!' : 'pronto para começar'}
-            </span>
-          </div>
-
-          <div className="flex items-center justify-center gap-3 pt-2">
-            <button
-              onClick={toggleTimer}
-              className="flex items-center gap-2 bg-[#E97891] hover:bg-[#D85F79] text-white px-6 py-2.5 rounded-full text-xs font-semibold shadow-xs cursor-pointer"
-            >
-              {isRunning ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 fill-white" />}
-              <span>{isRunning ? 'pausar' : 'iniciar'}</span>
-            </button>
-
-            <button
-              onClick={() => resetTimer(preset)}
-              className="p-2.5 rounded-full bg-surface-muted border border-ceci-border-default text-ceci-primary cursor-pointer"
-            >
-              <RotateCcw className="w-4 h-4" />
-            </button>
-          </div>
-
-          {/* Registro da sessão concluída */}
-          {showSaveSession && (
-            <div className="p-4 rounded-2xl bg-surface-subtle border border-ceci-border-subtle text-left space-y-3">
-              <p className="text-xs font-semibold text-ceci-primary flex items-center gap-1.5">
-                <Timer className="w-4 h-4 text-[#E97891]" /> salvar sessão de {preset} min?
-              </p>
-              <div>
-                <label className="block text-xs font-medium text-ceci-secondary mb-1">o que você estudou?</label>
-                <input
-                  type="text"
-                  value={sessionTopic}
-                  onChange={(e) => setSessionTopic(e.target.value)}
-                  placeholder="Ex: revisar semiologia dos transtornos do humor"
-                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
-                  autoFocus
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-ceci-secondary mb-1">disciplina</label>
-                <select
-                  value={sessionCourseId}
-                  onChange={(e) => setSessionCourseId(e.target.value)}
-                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
-                >
-                  <option value="">geral</option>
-                  {courses.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
+                {/* Presets */}
+                <div className="flex items-center justify-center gap-2">
+                  {PRESETS.map((mins) => (
+                    <button
+                      key={mins}
+                      onClick={() => resetTimer(mins)}
+                      className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer border ${
+                        preset === mins
+                          ? 'bg-ceci-primary text-white border-ceci-primary shadow-xs'
+                          : 'bg-white text-ceci-secondary border-ceci-border-default hover:bg-surface-muted'
+                      }`}
+                    >
+                      {mins} min
+                    </button>
                   ))}
-                </select>
-              </div>
-              <div className="flex items-center justify-end gap-2 pt-1">
-                <button
-                  onClick={() => resetTimer()}
-                  className="px-4 py-2 rounded-xl text-xs text-ceci-secondary hover:bg-white transition-colors cursor-pointer"
-                >
-                  descartar
-                </button>
-                <button
-                  onClick={saveSession}
-                  className="flex items-center gap-1.5 bg-[#E97891] hover:bg-[#B94862] text-white px-5 py-2.5 rounded-[14px] text-xs font-medium shadow-2xs cursor-pointer"
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>salvar registro</span>
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* REVISÃO DE FLASHCARDS */}
-      {subTab === 'flashcards' && (
-        <div className="space-y-4">
-          <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4">
-            {reviewQueue.length === 0 && reviewedCount === 0 ? (
-              <div className="py-6 space-y-3">
-                <span className="w-14 h-14 mx-auto rounded-full bg-surface-rose border border-ceci-border-brand flex items-center justify-center">
-                  <Brain className="w-6 h-6 text-ceci-brand-strong" />
-                </span>
-                <div>
-                  <h3 className="font-display font-bold text-base text-ceci-primary">tudo em dia por aqui!</h3>
-                  <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
-                    nenhum flashcard precisa de revisão agora. pode dar uma volta ou revisar todos de novo.
-                  </p>
                 </div>
-                {flashcards.length > 0 && (
+
+                <div className="relative w-48 h-48 mx-auto rounded-full border-4 border-ceci-border-brand bg-surface-rose flex flex-col items-center justify-center shadow-inner">
+                  <span className="font-display font-bold text-4xl text-ceci-primary">{formatTime(timeLeft)}</span>
+                  <span className="text-xs text-ceci-secondary mt-1">
+                    {isRunning ? '✨ em andamento...' : timeLeft === 0 ? 'finalizada!' : 'pronto para começar'}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-center gap-3 pt-2">
                   <button
-                    onClick={() => buildReviewQueue(flashcards)}
-                    className="mx-auto bg-ceci-primary hover:bg-[#282022] text-white px-5 py-2.5 rounded-full text-xs font-semibold shadow-xs cursor-pointer"
+                    onClick={toggleTimer}
+                    className="flex items-center gap-2 bg-[#E97891] hover:bg-[#D85F79] text-white px-6 py-2.5 rounded-full text-xs font-semibold shadow-xs cursor-pointer"
                   >
-                    revisar todos ({flashcards.length})
+                    {isRunning ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 fill-white" />}
+                    <span>{isRunning ? 'pausar' : 'iniciar'}</span>
                   </button>
+
+                  <button
+                    onClick={() => resetTimer(preset)}
+                    className="p-2.5 rounded-full bg-surface-muted border border-ceci-border-default text-ceci-primary cursor-pointer"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* Registro da sessão concluída */}
+                {showSaveSession && (
+                  <div className="p-4 rounded-2xl bg-surface-subtle border border-ceci-border-subtle text-left space-y-3">
+                    <p className="text-xs font-semibold text-ceci-primary flex items-center gap-1.5">
+                      <Timer className="w-4 h-4 text-[#E97891]" /> salvar sessão de {preset} min?
+                    </p>
+                    <div>
+                      <label className="block text-xs font-medium text-ceci-secondary mb-1">o que você estudou?</label>
+                      <input
+                        type="text"
+                        value={sessionTopic}
+                        onChange={(e) => setSessionTopic(e.target.value)}
+                        placeholder="Ex: revisar semiologia dos transtornos do humor"
+                        className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
+                        autoFocus
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-ceci-secondary mb-1">disciplina</label>
+                      <select
+                        value={sessionCourseId}
+                        onChange={(e) => setSessionCourseId(e.target.value)}
+                        className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
+                      >
+                        <option value="">geral</option>
+                        {courses.map((c) => (
+                          <option key={c.id} value={c.id}>
+                            {c.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="flex items-center justify-end gap-2 pt-1">
+                      <button
+                        onClick={() => resetTimer()}
+                        className="px-4 py-2 rounded-xl text-xs text-ceci-secondary hover:bg-white transition-colors cursor-pointer"
+                      >
+                        descartar
+                      </button>
+                      <button
+                        onClick={saveSession}
+                        className="flex items-center gap-1.5 bg-[#E97891] hover:bg-[#B94862] text-white px-5 py-2.5 rounded-[14px] text-xs font-medium shadow-2xs cursor-pointer"
+                      >
+                        <CheckCircle2 className="w-4 h-4" />
+                        <span>salvar registro</span>
+                      </button>
+                    </div>
+                  </div>
                 )}
               </div>
-            ) : queueIndex >= reviewQueue.length ? (
-              <div className="py-6 space-y-3">
-                <span className="w-14 h-14 mx-auto rounded-full bg-[#F2FAF5] border border-[#C2E8D0] flex items-center justify-center">
-                  <CheckCircle2 className="w-6 h-6 text-[#43805B]" />
-                </span>
-                <div>
-                  <h3 className="font-display font-bold text-base text-ceci-primary">revisão concluída, parabéns Ceci! ♡</h3>
-                  <p className="text-xs text-ceci-secondary mt-1.5">
-                    você revisou {reviewedCount} {reviewedCount === 1 ? 'cartão' : 'cartões'} hoje.
-                  </p>
+            )}
+
+            {id === 'flashcards' && (
+              <div className="space-y-4">
+                <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4">
+                  {reviewQueue.length === 0 && reviewedCount === 0 ? (
+                    <div className="py-6 space-y-3">
+                      <span className="w-14 h-14 mx-auto rounded-full bg-surface-rose border border-ceci-border-brand flex items-center justify-center">
+                        <Brain className="w-6 h-6 text-ceci-brand-strong" />
+                      </span>
+                      <div>
+                        <h3 className="font-display font-bold text-base text-ceci-primary">tudo em dia por aqui!</h3>
+                        <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
+                          nenhum flashcard precisa de revisão agora. pode dar uma volta ou revisar todos de novo.
+                        </p>
+                      </div>
+                      {flashcards.length > 0 && (
+                        <button
+                          onClick={() => buildReviewQueue(flashcards)}
+                          className="mx-auto bg-ceci-primary hover:bg-[#282022] text-white px-5 py-2.5 rounded-full text-xs font-semibold shadow-xs cursor-pointer"
+                        >
+                          revisar todos ({flashcards.length})
+                        </button>
+                      )}
+                    </div>
+                  ) : queueIndex >= reviewQueue.length ? (
+                    <div className="py-6 space-y-3">
+                      <span className="w-14 h-14 mx-auto rounded-full bg-[#F2FAF5] border border-[#C2E8D0] flex items-center justify-center">
+                        <CheckCircle2 className="w-6 h-6 text-[#43805B]" />
+                      </span>
+                      <div>
+                        <h3 className="font-display font-bold text-base text-ceci-primary">revisão concluída, parabéns Ceci! ♡</h3>
+                        <p className="text-xs text-ceci-secondary mt-1.5">
+                          você revisou {reviewedCount} {reviewedCount === 1 ? 'cartão' : 'cartões'} hoje.
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => buildReviewQueue([])}
+                        className="mx-auto bg-ceci-primary hover:bg-[#282022] text-white px-5 py-2.5 rounded-full text-xs font-semibold shadow-xs cursor-pointer"
+                      >
+                        fechar revisão
+                      </button>
+                    </div>
+                  ) : activeCard ? (
+                    <>
+                      <span className="text-xs text-ceci-tertiary">
+                        card {queueIndex + 1} de {reviewQueue.length}
+                      </span>
+
+                      <motion.div
+                        key={activeCard.id}
+                        drag="x"
+                        dragConstraints={{ left: 0, right: 0 }}
+                        dragElastic={0.6}
+                        onDragEnd={handleCardDragEnd}
+                        style={{ x: dragX, rotate: cardRotate }}
+                        whileTap={{ scale: 0.99 }}
+                        onClick={() => setIsFlipped(!isFlipped)}
+                        data-swipe-lock
+                        className="min-h-[180px] p-6 rounded-2xl bg-surface-rose border border-ceci-border-brand flex flex-col items-center justify-center cursor-pointer touch-pan-y"
+                      >
+                        <span className="text-xs font-semibold text-ceci-brand-strong mb-2 select-none">
+                          {isFlipped ? 'resposta ✨' : 'pergunta ❓'}
+                        </span>
+                        <p className="font-display font-bold text-base text-ceci-primary select-none">
+                          {isFlipped ? activeCard.answer : activeCard.question}
+                        </p>
+                      </motion.div>
+
+                      {isFlipped ? (
+                        <div className="grid grid-cols-2 gap-3 pt-2">
+                          <button
+                            onClick={() => handleReview(false)}
+                            className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-[#A8514B] bg-[#FBEDEC] border border-[#F2C6C3] cursor-pointer"
+                          >
+                            <X className="w-4 h-4" /> errei
+                          </button>
+                          <button
+                            onClick={() => handleReview(true)}
+                            className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#43805B] hover:bg-green-700 cursor-pointer"
+                          >
+                            <CheckCircle2 className="w-4 h-4" /> acertei
+                          </button>
+                        </div>
+                      ) : (
+                        <p className="text-[10px] text-ceci-tertiary lowercase pt-1">toque no card para ver a resposta ♡</p>
+                      )}
+                    </>
+                  ) : null}
                 </div>
+
+                {reviewQueue.length > 0 && queueIndex < reviewQueue.length && (
+                  <div className="flex items-center justify-between px-1 text-xs text-ceci-muted">
+                    <span>{queueIndex + 1} de {reviewQueue.length}</span>
+                    <span>revisados: {reviewedCount}</span>
+                  </div>
+                )}
+
                 <button
-                  onClick={() => buildReviewQueue([])}
-                  className="mx-auto bg-ceci-primary hover:bg-[#282022] text-white px-5 py-2.5 rounded-full text-xs font-semibold shadow-xs cursor-pointer"
+                  onClick={() => openQuickAddWithType('flashcard')}
+                  className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-ceci-brand-strong bg-surface-rose border border-ceci-border-brand cursor-pointer"
                 >
-                  fechar revisão
+                  <Plus className="w-4 h-4" /> novo flashcard
                 </button>
               </div>
-            ) : activeCard ? (
-              <>
-                <span className="text-xs text-ceci-tertiary">
-                  card {queueIndex + 1} de {reviewQueue.length}
-                </span>
+            )}
 
-                <motion.div
-                  key={activeCard.id}
-                  drag="x"
-                  dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.6}
-                  onDragEnd={handleCardDragEnd}
-                  style={{ x: dragX, rotate: cardRotate }}
-                  whileTap={{ scale: 0.99 }}
-                  onClick={() => setIsFlipped(!isFlipped)}
-                  className="min-h-[180px] p-6 rounded-2xl bg-surface-rose border border-ceci-border-brand flex flex-col items-center justify-center cursor-pointer touch-pan-y"
+            {id === 'leituras' && (
+              <div className="space-y-3">
+                {readings.length === 0 ? (
+                  <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
+                    <span className="w-14 h-14 mx-auto rounded-full bg-[#F3F9FC] border border-ceci-border-academic flex items-center justify-center">
+                      <BookOpen className="w-6 h-6 text-ceci-academic-strong" />
+                    </span>
+                    <p className="text-xs text-ceci-secondary leading-relaxed">
+                      nenhuma leitura registrada ainda. adicione seu primeiro livro ou artigo ♡
+                    </p>
+                  </div>
+                ) : (
+                  [...readings]
+                    .sort((a, b) => {
+                      const order = { nao_iniciado: 0, lendo: 1, concluido: 2 } as const;
+                      return order[a.status] - order[b.status];
+                    })
+                    .map((r) => {
+                      const pct = r.totalPages
+                        ? Math.round(((r.readPages || 0) / r.totalPages) * 100)
+                        : r.status === 'concluido'
+                          ? 100
+                          : 0;
+                      const isDone = r.status === 'concluido';
+                      return (
+                        <div
+                          key={r.id}
+                          className={`rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-3 ${
+                            isDone ? 'opacity-70' : ''
+                          }`}
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="min-w-0">
+                              <h3 className="font-semibold text-xs text-ceci-primary leading-snug line-clamp-2">{r.title}</h3>
+                              <p className="text-[11px] text-ceci-secondary mt-0.5">
+                                {r.author} · {courseName(r.courseId)}
+                              </p>
+                            </div>
+                            <span
+                              className={`text-[10px] font-semibold px-2.5 py-1 rounded-full border shrink-0 ${
+                                isDone
+                                  ? 'bg-[#F2FAF5] text-[#43805B] border-[#C2E8D0]'
+                                  : r.status === 'lendo'
+                                    ? 'bg-[#F3F9FC] text-ceci-academic-strong border-ceci-border-academic'
+                                    : 'bg-surface-muted text-ceci-tertiary border-ceci-border-default'
+                              }`}
+                            >
+                              {READING_STATUS_LABEL[r.status]}
+                            </span>
+                          </div>
+
+                          {r.totalPages ? (
+                            <div className="space-y-1">
+                              <div className="flex items-center justify-between text-[10px] text-ceci-secondary">
+                                <span>{r.readPages || 0} de {r.totalPages} páginas</span>
+                                <span className="font-semibold text-ceci-brand-strong">{pct}%</span>
+                              </div>
+                              <div className="w-full h-2 bg-surface-muted border border-ceci-border-subtle rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-gradient-to-r from-[#E97891] to-ceci-brand-strong rounded-full transition-all"
+                                  style={{ width: `${pct}%` }}
+                                />
+                              </div>
+                            </div>
+                          ) : null}
+
+                          <button
+                            onClick={() => setReaderModalReading(r)}
+                            className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-2xl text-xs font-semibold text-white bg-ceci-primary hover:bg-[#282022] cursor-pointer"
+                          >
+                            <BookOpen className="w-4 h-4" />
+                            {isDone ? 'reler leitura' : r.status === 'lendo' ? 'continuar leitura' : 'iniciar leitura'}
+                          </button>
+                        </div>
+                      );
+                    })
+                )}
+
+                <button
+                  onClick={() => openQuickAddWithType('reading')}
+                  className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-ceci-academic-strong bg-[#F3F9FC] border border-ceci-border-academic cursor-pointer"
                 >
-                  <span className="text-xs font-semibold text-ceci-brand-strong mb-2 select-none">
-                    {isFlipped ? 'resposta ✨' : 'pergunta ❓'}
-                  </span>
-                  <p className="font-display font-bold text-base text-ceci-primary select-none">
-                    {isFlipped ? activeCard.answer : activeCard.question}
-                  </p>
-                </motion.div>
+                  <Plus className="w-4 h-4" /> nova leitura
+                </button>
+              </div>
+            )}
 
-                {isFlipped ? (
-                  <div className="grid grid-cols-2 gap-3 pt-2">
+            {id === 'questoes' && (
+              <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
+                <span className="w-14 h-14 mx-auto rounded-full bg-surface-rose border border-ceci-border-brand flex items-center justify-center">
+                  <HelpCircle className="w-6 h-6 text-ceci-brand-strong" />
+                </span>
+                <div>
+                  <h3 className="font-display font-bold text-base text-ceci-primary">questões práticas chegam em breve</h3>
+                  <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
+                    enquanto isso, revise seus flashcards e volte às anotações de aula para fixar o conteúdo ♡
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {id === 'historico' && (
+              <div className="space-y-3">
+                <div className="rounded-[24px] p-5 bg-[#FFF8F1] border border-[#FFF1E5] shadow-sm flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-9 h-9 rounded-full bg-white border border-[#FFE2CC] flex items-center justify-center">
+                      <Flame className="w-4 h-4 text-[#B94862] fill-[#E97891]" />
+                    </span>
+                    <div>
+                      <p className="text-xs font-semibold text-ceci-primary">foco nesta semana</p>
+                      <p className="text-[11px] text-ceci-secondary">{focusDaysCount} {focusDaysCount === 1 ? 'dia' : 'dias'} · {weekSessions.length} {weekSessions.length === 1 ? 'sessão' : 'sessões'}</p>
+                    </div>
+                  </div>
+                  <span className="font-display font-bold text-lg text-ceci-primary">{weekFocusMinutes} min</span>
+                </div>
+
+                {sortedSessions.length === 0 ? (
+                  <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
+                    <p className="text-xs text-ceci-secondary leading-relaxed">
+                      nenhuma sessão registrada ainda. quando concluir seu primeiro timer de foco, ela aparece aqui ♡
+                    </p>
                     <button
-                      onClick={() => handleReview(false)}
-                      className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-[#A8514B] bg-[#FBEDEC] border border-[#F2C6C3] cursor-pointer"
+                      onClick={() => setSubTab('sessoes')}
+                      className="mx-auto bg-[#E97891] hover:bg-[#D85F79] text-white px-5 py-2.5 rounded-full text-xs font-semibold shadow-xs cursor-pointer"
                     >
-                      <X className="w-4 h-4" /> errei
-                    </button>
-                    <button
-                      onClick={() => handleReview(true)}
-                      className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-[#43805B] hover:bg-green-700 cursor-pointer"
-                    >
-                      <CheckCircle2 className="w-4 h-4" /> acertei
+                      <span className="flex items-center gap-1.5"><Play className="w-3.5 h-3.5 fill-white" /> começar a estudar</span>
                     </button>
                   </div>
                 ) : (
-                  <p className="text-[10px] text-ceci-tertiary lowercase pt-1">toque no card para ver a resposta ♡</p>
-                )}
-              </>
-            ) : null}
-          </div>
-
-          {reviewQueue.length > 0 && queueIndex < reviewQueue.length && (
-            <div className="flex items-center justify-between px-1 text-xs text-ceci-muted">
-              <span>{queueIndex + 1} de {reviewQueue.length}</span>
-              <span>revisados: {reviewedCount}</span>
-            </div>
-          )}
-
-          <button
-            onClick={() => openQuickAddWithType('flashcard')}
-            className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-ceci-brand-strong bg-surface-rose border border-ceci-border-brand cursor-pointer"
-          >
-            <Plus className="w-4 h-4" /> novo flashcard
-          </button>
-        </div>
-      )}
-
-      {/* LEITURAS */}
-      {subTab === 'leituras' && (
-        <div className="space-y-3">
-          {readings.length === 0 ? (
-            <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
-              <span className="w-14 h-14 mx-auto rounded-full bg-[#F3F9FC] border border-ceci-border-academic flex items-center justify-center">
-                <BookOpen className="w-6 h-6 text-ceci-academic-strong" />
-              </span>
-              <p className="text-xs text-ceci-secondary leading-relaxed">
-                nenhuma leitura registrada ainda. adicione seu primeiro livro ou artigo ♡
-              </p>
-            </div>
-          ) : (
-            [...readings]
-              .sort((a, b) => {
-                const order = { nao_iniciado: 0, lendo: 1, concluido: 2 } as const;
-                return order[a.status] - order[b.status];
-              })
-              .map((r) => {
-                const pct = r.totalPages
-                  ? Math.round(((r.readPages || 0) / r.totalPages) * 100)
-                  : r.status === 'concluido'
-                    ? 100
-                    : 0;
-                const isDone = r.status === 'concluido';
-                return (
-                  <div
-                    key={r.id}
-                    className={`rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-3 ${
-                      isDone ? 'opacity-70' : ''
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-3">
+                  sortedSessions.map((s) => (
+                    <div
+                      key={s.id}
+                      className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm flex items-center justify-between gap-3"
+                    >
                       <div className="min-w-0">
-                        <h3 className="font-semibold text-xs text-ceci-primary leading-snug line-clamp-2">{r.title}</h3>
-                        <p className="text-[11px] text-ceci-secondary mt-0.5">
-                          {r.author} · {courseName(r.courseId)}
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-sm">{SESSION_MOOD_EMOJI[s.mood] || '✨'}</span>
+                          <h3 className="font-semibold text-xs text-ceci-primary truncate">{s.topic}</h3>
+                        </div>
+                        <p className="text-[11px] text-ceci-secondary mt-1">
+                          {courseName(s.courseId)} · {new Date(s.date + 'T00:00:00').toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).toLowerCase()}
                         </p>
                       </div>
-                      <span
-                        className={`text-[10px] font-semibold px-2.5 py-1 rounded-full border shrink-0 ${
-                          isDone
-                            ? 'bg-[#F2FAF5] text-[#43805B] border-[#C2E8D0]'
-                            : r.status === 'lendo'
-                              ? 'bg-[#F3F9FC] text-ceci-academic-strong border-ceci-border-academic'
-                              : 'bg-surface-muted text-ceci-tertiary border-ceci-border-default'
-                        }`}
-                      >
-                        {READING_STATUS_LABEL[r.status]}
+                      <span className="text-xs font-bold text-ceci-brand-strong bg-surface-rose px-3 py-1.5 rounded-full border border-ceci-border-brand shrink-0">
+                        {s.durationMinutes} min
                       </span>
                     </div>
+                  ))
+                )}
 
-                    {r.totalPages ? (
-                      <div className="space-y-1">
-                        <div className="flex items-center justify-between text-[10px] text-ceci-secondary">
-                          <span>{r.readPages || 0} de {r.totalPages} páginas</span>
-                          <span className="font-semibold text-ceci-brand-strong">{pct}%</span>
-                        </div>
-                        <div className="w-full h-2 bg-surface-muted border border-ceci-border-subtle rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-gradient-to-r from-[#E97891] to-ceci-brand-strong rounded-full transition-all"
-                            style={{ width: `${pct}%` }}
-                          />
-                        </div>
-                      </div>
-                    ) : null}
-
-                    <button
-                      onClick={() => setReaderModalReading(r)}
-                      className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-2xl text-xs font-semibold text-white bg-ceci-primary hover:bg-[#282022] cursor-pointer"
-                    >
-                      <BookOpen className="w-4 h-4" />
-                      {isDone ? 'reler leitura' : r.status === 'lendo' ? 'continuar leitura' : 'iniciar leitura'}
-                    </button>
-                  </div>
-                );
-              })
-          )}
-
-          <button
-            onClick={() => openQuickAddWithType('reading')}
-            className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-ceci-academic-strong bg-[#F3F9FC] border border-ceci-border-academic cursor-pointer"
-          >
-            <Plus className="w-4 h-4" /> nova leitura
-          </button>
-        </div>
-      )}
-
-      {/* QUESTÕES (stub) */}
-      {subTab === 'questoes' && (
-        <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
-          <span className="w-14 h-14 mx-auto rounded-full bg-surface-rose border border-ceci-border-brand flex items-center justify-center">
-            <HelpCircle className="w-6 h-6 text-ceci-brand-strong" />
-          </span>
-          <div>
-            <h3 className="font-display font-bold text-base text-ceci-primary">questões práticas chegam em breve</h3>
-            <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
-              enquanto isso, revise seus flashcards e volte às anotações de aula para fixar o conteúdo ♡
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* HISTÓRICO DE SESSÕES */}
-      {subTab === 'historico' && (
-        <div className="space-y-3">
-          <div className="rounded-[24px] p-5 bg-[#FFF8F1] border border-[#FFF1E5] shadow-sm flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="w-9 h-9 rounded-full bg-white border border-[#FFE2CC] flex items-center justify-center">
-                <Flame className="w-4 h-4 text-[#B94862] fill-[#E97891]" />
-              </span>
-              <div>
-                <p className="text-xs font-semibold text-ceci-primary">foco nesta semana</p>
-                <p className="text-[11px] text-ceci-secondary">{focusDaysCount} {focusDaysCount === 1 ? 'dia' : 'dias'} · {weekSessions.length} {weekSessions.length === 1 ? 'sessão' : 'sessões'}</p>
+                <button
+                  onClick={() => setSubTab('sessoes')}
+                  className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-white bg-[#E97891] hover:bg-[#D85F79] cursor-pointer"
+                >
+                  <ChevronRight className="w-4 h-4" /> nova sessão de foco
+                </button>
               </div>
-            </div>
-            <span className="font-display font-bold text-lg text-ceci-primary">{weekFocusMinutes} min</span>
-          </div>
-
-          {sortedSessions.length === 0 ? (
-            <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
-              <p className="text-xs text-ceci-secondary leading-relaxed">
-                nenhuma sessão registrada ainda. quando concluir seu primeiro timer de foco, ela aparece aqui ♡
-              </p>
-              <button
-                onClick={() => setSubTab('sessoes')}
-                className="mx-auto bg-[#E97891] hover:bg-[#D85F79] text-white px-5 py-2.5 rounded-full text-xs font-semibold shadow-xs cursor-pointer"
-              >
-                <span className="flex items-center gap-1.5"><Play className="w-3.5 h-3.5 fill-white" /> começar a estudar</span>
-              </button>
-            </div>
-          ) : (
-            sortedSessions.map((s) => (
-              <div
-                key={s.id}
-                className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm flex items-center justify-between gap-3"
-              >
-                <div className="min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-sm">{SESSION_MOOD_EMOJI[s.mood] || '✨'}</span>
-                    <h3 className="font-semibold text-xs text-ceci-primary truncate">{s.topic}</h3>
-                  </div>
-                  <p className="text-[11px] text-ceci-secondary mt-1">
-                    {courseName(s.courseId)} · {new Date(s.date + 'T00:00:00').toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).toLowerCase()}
-                  </p>
-                </div>
-                <span className="text-xs font-bold text-ceci-brand-strong bg-surface-rose px-3 py-1.5 rounded-full border border-ceci-border-brand shrink-0">
-                  {s.durationMinutes} min
-                </span>
-              </div>
-            ))
-          )}
-
-          <button
-            onClick={() => setSubTab('sessoes')}
-            className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-white bg-[#E97891] hover:bg-[#D85F79] cursor-pointer"
-          >
-            <ChevronRight className="w-4 h-4" /> nova sessão de foco
-          </button>
-        </div>
-      )}
+            )}
+          </>
+        )}
+      </SwipeTabPager>
 
       {/* Reader Mode Modal */}
       <ReaderModeModal

@@ -18,8 +18,12 @@ import { SubTabPerfil } from '../../types';
 import { StudyStatsWidget } from '../widgets/StudyStatsWidget';
 import { MoodCalendarWidget } from '../widgets/MoodCalendarWidget';
 import { PillTabBar } from '../ui/PillTabBar';
+import { SwipeTabPager } from '../ui/SwipeTabPager';
 import { useApp } from '../../context/AppContext';
 import { isReminderSupported } from '../../lib/notifications';
+import { TAB_ORDER } from '../../lib/routing';
+
+const PERFIL_SUB_TABS = ['jornada', 'stickers', 'estagio', 'tcc', 'configuracoes'] as const;
 
 export const PerfilView: React.FC = () => {
   const {
@@ -29,6 +33,7 @@ export const PerfilView: React.FC = () => {
     tcc,
     subTabPerfil: subTab,
     setSubTabPerfil: setSubTab,
+    handleNavigate,
     handleUpdateProfile,
     handleUpdateTcc,
     openQuickAdd,
@@ -103,7 +108,7 @@ export const PerfilView: React.FC = () => {
         </div>
 
         {/* Sub-Tabs Navigation */}
-        <div className="mt-5 pt-4 border-t border-ceci-border-subtle overflow-x-auto scrollbar-none">
+        <div className="mt-5 pt-4 border-t border-ceci-border-subtle overflow-x-auto scrollbar-none" data-swipe-lock>
           <PillTabBar
             tabs={[
               { id: 'jornada', label: 'minha jornada', icon: <GraduationCap className="w-3.5 h-3.5" /> },
@@ -118,370 +123,380 @@ export const PerfilView: React.FC = () => {
         </div>
       </div>
 
-      {/* SUBTAB 1: JORNADA ACADÊMICA */}
-      {subTab === 'jornada' && (
-        <div className="space-y-6">
-          <StudyStatsWidget />
+      {/* Sub-tab content (swipe horizontal entre sub-abas, propaga p/ abas na borda) */}
+      <SwipeTabPager
+        tabs={PERFIL_SUB_TABS}
+        activeIndex={Math.max(0, PERFIL_SUB_TABS.indexOf(subTab as (typeof PERFIL_SUB_TABS)[number]))}
+        mode="nested"
+        onChange={(i) => setSubTab(PERFIL_SUB_TABS[i] as SubTabPerfil)}
+        onEdgeOverscroll={(dir) =>
+          handleNavigate(TAB_ORDER[TAB_ORDER.indexOf('perfil') + dir])
+        }
+      >
+        {(id) => (
+          <>
+            {id === 'jornada' && (
+              <div className="space-y-6">
+                <StudyStatsWidget />
 
-          <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="font-display font-bold text-xl text-ceci-primary">
-                  linha do tempo da minha graduação em psicologia
-                </h2>
-                <p className="text-xs text-ceci-secondary">
-                  acompanhando a caminhada desde o primeiro dia até a formação clínica.
-                </p>
-              </div>
-              <span className="text-xs bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand px-3 py-1 rounded-full font-medium">
-                60% do caminho percorrido 🎓
-              </span>
-            </div>
-
-            {/* Timeline Steps Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2">
-              {Array.from({ length: 10 }, (_, i) => i + 1).map((sem) => {
-                const isPast = sem < profile.semester;
-                const isCurrent = sem === profile.semester;
-
-                return (
-                  <div
-                    key={sem}
-                    className={`p-4 rounded-2xl border text-center transition-all ${
-                      isCurrent
-                        ? 'bg-surface-rose border-2 border-ceci-border-brand text-ceci-brand-strong shadow-2xs font-bold scale-102'
-                        : isPast
-                        ? 'bg-surface-blue/80 border-ceci-border-academic text-ceci-academic-strong'
-                        : 'bg-white border-ceci-border-default opacity-60 text-ceci-secondary'
-                    }`}
-                  >
-                    <p className="text-xs opacity-80">semestre</p>
-                    <p className="font-display text-2xl font-bold my-1">{sem}º</p>
-                    <p className="text-[10px] font-medium">
-                      {isCurrent ? '🌸 em andamento' : isPast ? '✓ concluído' : 'aguardando'}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="p-4 rounded-2xl bg-surface-muted border border-ceci-border-default text-xs space-y-2">
-              <p className="font-semibold text-ceci-primary">💭 reflexão de jornada:</p>
-              <p className="text-ceci-secondary leading-relaxed">
-                "no 6º semestre, a teoria ganha vida na prática do estágio e na estruturação do tcc. cada aula de psicopatologia e tcc é um tijolinho na construção da profissional que estou me tornando."
-              </p>
-            </div>
-          </div>
-
-          <MoodCalendarWidget />
-        </div>
-      )}
-
-      {/* SUBTAB 2: STICKERS & CONQUISTAS */}
-      {subTab === 'stickers' && (
-        <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm space-y-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="font-display font-bold text-xl text-ceci-primary">
-                coleção de stickers & pequenas conquistas
-              </h2>
-              <p className="text-xs text-ceci-secondary">
-                celebrando cada passo da faculdade sem pressão, apenas com carinho.
-              </p>
-            </div>
-            <span className="text-xs bg-rose-500 text-white px-3 py-1 rounded-full font-medium shadow-2xs">
-              {stickers.filter((s) => s.unlocked).length} desbloqueados
-            </span>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
-            {stickers.map((st) => (
-              <div
-                key={st.id}
-                className={`p-4 rounded-2xl border text-center transition-all ${
-                  st.unlocked
-                    ? 'bg-white border-ceci-border-brand shadow-2xs hover:scale-105'
-                    : 'bg-surface-muted border-dashed border-ceci-border-default opacity-50 grayscale'
-                }`}
-              >
-                <span className="text-4xl block my-1">{st.emoji}</span>
-                <h3 className="font-display font-bold text-sm text-ceci-primary mt-1">
-                  {st.name}
-                </h3>
-                <p className="text-[11px] text-ceci-secondary leading-tight mt-1">
-                  {st.description}
-                </p>
-
-                {st.unlocked ? (
-                  <span className="inline-block text-[9px] bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand px-2 py-0.5 rounded-full font-medium mt-3">
-                    conquistado em {st.unlockedAt || 'agosto'} ✨
-                  </span>
-                ) : (
-                  <span className="inline-block text-[9px] bg-surface-muted text-ceci-tertiary px-2 py-0.5 rounded-full font-medium mt-3">
-                    bloqueado
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* SUBTAB 3: DIÁRIO DE ESTÁGIO */}
-      {subTab === 'estagio' && (
-        <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm space-y-5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <h2 className="font-display font-bold text-xl text-ceci-primary">
-                diário de estágio acadêmico & supervisão
-              </h2>
-              <p className="text-xs text-ceci-secondary">
-                acompanhamento de horas, diário de campo e reflexões éticas na clínica escola.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="bg-surface-blue px-3.5 py-1.5 rounded-2xl border border-ceci-border-academic text-xs text-right">
-                <p className="text-[10px] lowercase font-bold text-ceci-secondary">total de horas</p>
-                <p className="font-bold text-ceci-academic-strong text-sm">{totalInternshipHours} horas registradas</p>
-              </div>
-
-              <button
-                onClick={openQuickAdd}
-                className="bg-rose-500 hover:bg-ceci-brand text-white px-3.5 py-2 rounded-xl text-xs font-medium cursor-pointer shadow-2xs"
-              >
-                + novo registro
-              </button>
-            </div>
-          </div>
-
-          <div className="space-y-4 pt-2">
-            {internshipLogs.map((log) => (
-              <div key={log.id} className="p-4 rounded-2xl bg-surface-muted border border-ceci-border-default space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-ceci-brand-strong bg-surface-rose border border-ceci-border-brand px-2.5 py-0.5 rounded-full">
-                    📅 {log.date} • {log.hours} horas
-                  </span>
-                  <span className="text-ceci-secondary">Estágio Básico Supervisão I</span>
-                </div>
-
-                <h3 className="font-display font-bold text-base text-ceci-primary pt-1">
-                  {log.activity}
-                </h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 text-xs">
-                  <div className="bg-white p-3 rounded-xl border border-ceci-border-default">
-                    <p className="font-semibold text-ceci-primary mb-1">supervisão / orientações:</p>
-                    <p className="text-ceci-secondary leading-relaxed">{log.supervisionNotes}</p>
-                  </div>
-
-                  <div className="bg-white p-3 rounded-xl border border-ceci-border-default">
-                    <p className="font-semibold text-ceci-primary mb-1">reflexão pessoal / ética:</p>
-                    <p className="text-ceci-secondary leading-relaxed">{log.reflections}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* SUBTAB 4: MEU TCC */}
-      {subTab === 'tcc' && (
-        <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm space-y-5">
-          <div className="border-b border-ceci-border-subtle pb-4">
-            <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand">
-              tcc i • em andamento
-            </span>
-            <h2 className="font-display font-bold text-xl sm:text-2xl text-ceci-primary mt-2">
-              {tcc.title}
-            </h2>
-            <p className="text-xs text-ceci-secondary mt-1">
-              orientadora: <span className="font-semibold text-ceci-primary">{tcc.advisor}</span> • área: {tcc.field}
-            </p>
-          </div>
-
-          {/* Problem statement & Objectives */}
-          <div className="bg-surface-muted p-4 rounded-2xl border border-ceci-border-default space-y-3 text-xs">
-            <div>
-              <p className="font-semibold text-ceci-primary mb-1">problema de pesquisa:</p>
-              <p className="text-ceci-secondary leading-relaxed">{tcc.problemStatement}</p>
-            </div>
-
-            <div>
-              <p className="font-semibold text-ceci-primary mb-1">objetivos:</p>
-              <ul className="list-disc pl-4 space-y-1 text-ceci-secondary">
-                {tcc.objectives.map((obj, idx) => (
-                  <li key={idx}>{obj}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Chapters Checklist */}
-          <div>
-            <h3 className="font-display font-bold text-base text-ceci-primary mb-3">
-              cronograma de capítulos
-            </h3>
-
-            <div className="space-y-2">
-              {tcc.chapters.map((ch, idx) => (
-                <div
-                  key={idx}
-                  onClick={() => handleToggleTccChapter(idx)}
-                  className={`flex items-center justify-between p-3 rounded-2xl border cursor-pointer transition-all ${
-                    ch.completed
-                      ? 'bg-surface-blue/60 border-ceci-border-academic text-ceci-academic-strong'
-                      : 'bg-white border-ceci-border-default hover:border-ceci-border-brand'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <CheckCircle2 className={`w-5 h-5 ${ch.completed ? 'text-success-leaf' : 'text-ceci-faded'}`} />
-                    <span className={`text-xs font-medium ${ch.completed ? 'line-through text-ceci-tertiary' : 'text-ceci-primary'}`}>
-                      {ch.title}
+                <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 className="font-display font-bold text-xl text-ceci-primary">
+                        linha do tempo da minha graduação em psicologia
+                      </h2>
+                      <p className="text-xs text-ceci-secondary">
+                        acompanhando a caminhada desde o primeiro dia até a formação clínica.
+                      </p>
+                    </div>
+                    <span className="text-xs bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand px-3 py-1 rounded-full font-medium">
+                      60% do caminho percorrido 🎓
                     </span>
                   </div>
 
-                  {ch.dueDate && (
-                    <span className="text-[10px] text-ceci-secondary">prazo: {ch.dueDate}</span>
-                  )}
+                  {/* Timeline Steps Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2">
+                    {Array.from({ length: 10 }, (_, i) => i + 1).map((sem) => {
+                      const isPast = sem < profile.semester;
+                      const isCurrent = sem === profile.semester;
+
+                      return (
+                        <div
+                          key={sem}
+                          className={`p-4 rounded-2xl border text-center transition-all ${
+                            isCurrent
+                              ? 'bg-surface-rose border-2 border-ceci-border-brand text-ceci-brand-strong shadow-2xs font-bold scale-102'
+                              : isPast
+                              ? 'bg-surface-blue/80 border-ceci-border-academic text-ceci-academic-strong'
+                              : 'bg-white border-ceci-border-default opacity-60 text-ceci-secondary'
+                          }`}
+                        >
+                          <p className="text-xs opacity-80">semestre</p>
+                          <p className="font-display text-2xl font-bold my-1">{sem}º</p>
+                          <p className="text-[10px] font-medium">
+                            {isCurrent ? '🌸 em andamento' : isPast ? '✓ concluído' : 'aguardando'}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-surface-muted border border-ceci-border-default text-xs space-y-2">
+                    <p className="font-semibold text-ceci-primary">💭 reflexão de jornada:</p>
+                    <p className="text-ceci-secondary leading-relaxed">
+                      "no 6º semestre, a teoria ganha vida na prática do estágio e na estruturação do tcc. cada aula de psicopatologia e tcc é um tijolinho na construção da profissional que estou me tornando."
+                    </p>
+                  </div>
                 </div>
-              ))}
-            </div>
-          </div>
 
-          {/* References ABNT */}
-          <div>
-            <h3 className="font-display font-bold text-base text-ceci-primary mb-2">
-              referências utilizadas (abnt)
-            </h3>
-            <div className="space-y-1.5 text-xs text-ceci-secondary">
-              {tcc.references.map((ref, idx) => (
-                <p key={idx} className="bg-surface-muted p-2.5 rounded-xl border border-ceci-border-default font-mono text-[11px] text-ceci-primary">
-                  {ref}
-                </p>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* SUBTAB 5: PERSONALIZAÇÃO DO CANTINHO */}
-      {subTab === 'configuracoes' && (
-        <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm space-y-5">
-          <h2 className="font-display font-bold text-xl text-ceci-primary">
-            personalize seu cantinho no cecistudy
-          </h2>
-
-          {/* Lembrete diário de estudo (app nativo) */}
-          <div className={`rounded-2xl p-4 border ${isReminderSupported() ? 'bg-surface-rose border-ceci-border-brand' : 'bg-surface-muted border-ceci-border-default'} space-y-3`}>
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h3 className="font-display font-bold text-sm text-ceci-primary">
-                  lembrete diário de estudo ♡
-                </h3>
-                <p className="text-[11px] text-ceci-secondary leading-tight mt-0.5">
-                  {isReminderSupported()
-                    ? 'um carinho do cecistudy na hora de estudar.'
-                    : 'ativável no aplicativo nativo (android/ios).'}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => updateReminder({ ...reminderSettings, enabled: !reminderSettings.enabled })}
-                disabled={!isReminderSupported()}
-                aria-pressed={reminderSettings.enabled}
-                className={`relative w-12 h-7 rounded-full transition-all cursor-pointer shrink-0 touch-target ${
-                  reminderSettings.enabled ? 'bg-rose-500' : 'bg-ceci-border-strong'
-                } ${!isReminderSupported() ? 'opacity-50 cursor-not-allowed' : ''}`}
-                title={reminderSettings.enabled ? 'desativar lembrete' : 'ativar lembrete'}
-              >
-                <span
-                  className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow-xs transition-transform ${
-                    reminderSettings.enabled ? 'translate-x-5' : ''
-                  }`}
-                />
-              </button>
-            </div>
-
-            {isReminderSupported() && (
-              <div className="flex items-center gap-3">
-                <span className="text-[11px] font-medium text-ceci-secondary">horário:</span>
-                <input
-                  type="time"
-                  value={reminderSettings.time}
-                  onChange={(e) => updateReminder({ ...reminderSettings, time: e.target.value })}
-                  disabled={!reminderSettings.enabled}
-                  className="bg-white border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3 py-1.5 text-sm text-ceci-primary disabled:opacity-50"
-                />
-                <span className="text-[11px] text-ceci-tertiary">todas as noites</span>
+                <MoodCalendarWidget />
               </div>
             )}
-          </div>
 
-          <form onSubmit={handleSaveProfile} className="space-y-4 max-w-lg">
-            <div>
-              <label className="block text-xs font-medium text-ceci-secondary mb-1">seu nome</label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
-              />
-            </div>
+            {id === 'stickers' && (
+              <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm space-y-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="font-display font-bold text-xl text-ceci-primary">
+                      coleção de stickers & pequenas conquistas
+                    </h2>
+                    <p className="text-xs text-ceci-secondary">
+                      celebrando cada passo da faculdade sem pressão, apenas com carinho.
+                    </p>
+                  </div>
+                  <span className="text-xs bg-rose-500 text-white px-3 py-1 rounded-full font-medium shadow-2xs">
+                    {stickers.filter((s) => s.unlocked).length} desbloqueados
+                  </span>
+                </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-medium text-ceci-secondary mb-1">semestre atual</label>
-                <input
-                  type="number"
-                  value={semester}
-                  onChange={(e) => setSemester(Number(e.target.value))}
-                  className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
-                />
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
+                  {stickers.map((st) => (
+                    <div
+                      key={st.id}
+                      className={`p-4 rounded-2xl border text-center transition-all ${
+                        st.unlocked
+                          ? 'bg-white border-ceci-border-brand shadow-2xs hover:scale-105'
+                          : 'bg-surface-muted border-dashed border-ceci-border-default opacity-50 grayscale'
+                      }`}
+                    >
+                      <span className="text-4xl block my-1">{st.emoji}</span>
+                      <h3 className="font-display font-bold text-sm text-ceci-primary mt-1">
+                        {st.name}
+                      </h3>
+                      <p className="text-[11px] text-ceci-secondary leading-tight mt-1">
+                        {st.description}
+                      </p>
+
+                      {st.unlocked ? (
+                        <span className="inline-block text-[9px] bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand px-2 py-0.5 rounded-full font-medium mt-3">
+                          conquistado em {st.unlockedAt || 'agosto'} ✨
+                        </span>
+                      ) : (
+                        <span className="inline-block text-[9px] bg-surface-muted text-ceci-tertiary px-2 py-0.5 rounded-full font-medium mt-3">
+                          bloqueado
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
+            )}
 
-              <div>
-                <label className="block text-xs font-medium text-ceci-secondary mb-1">universidade</label>
-                <input
-                  type="text"
-                  value={university}
-                  onChange={(e) => setUniversity(e.target.value)}
-                  className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
-                />
+            {id === 'estagio' && (
+              <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm space-y-5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h2 className="font-display font-bold text-xl text-ceci-primary">
+                      diário de estágio acadêmico & supervisão
+                    </h2>
+                    <p className="text-xs text-ceci-secondary">
+                      acompanhamento de horas, diário de campo e reflexões éticas na clínica escola.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="bg-surface-blue px-3.5 py-1.5 rounded-2xl border border-ceci-border-academic text-xs text-right">
+                      <p className="text-[10px] lowercase font-bold text-ceci-secondary">total de horas</p>
+                      <p className="font-bold text-ceci-academic-strong text-sm">{totalInternshipHours} horas registradas</p>
+                    </div>
+
+                    <button
+                      onClick={openQuickAdd}
+                      className="bg-rose-500 hover:bg-ceci-brand text-white px-3.5 py-2 rounded-xl text-xs font-medium cursor-pointer shadow-2xs"
+                    >
+                      + novo registro
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-4 pt-2">
+                  {internshipLogs.map((log) => (
+                    <div key={log.id} className="p-4 rounded-2xl bg-surface-muted border border-ceci-border-default space-y-2">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-bold text-ceci-brand-strong bg-surface-rose border border-ceci-border-brand px-2.5 py-0.5 rounded-full">
+                          📅 {log.date} • {log.hours} horas
+                        </span>
+                        <span className="text-ceci-secondary">Estágio Básico Supervisão I</span>
+                      </div>
+
+                      <h3 className="font-display font-bold text-base text-ceci-primary pt-1">
+                        {log.activity}
+                      </h3>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 text-xs">
+                        <div className="bg-white p-3 rounded-xl border border-ceci-border-default">
+                          <p className="font-semibold text-ceci-primary mb-1">supervisão / orientações:</p>
+                          <p className="text-ceci-secondary leading-relaxed">{log.supervisionNotes}</p>
+                        </div>
+
+                        <div className="bg-white p-3 rounded-xl border border-ceci-border-default">
+                          <p className="font-semibold text-ceci-primary mb-1">reflexão pessoal / ética:</p>
+                          <p className="text-ceci-secondary leading-relaxed">{log.reflections}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
-            <div>
-              <label className="block text-xs font-medium text-ceci-secondary mb-1">status / mood do dia</label>
-              <input
-                type="text"
-                value={avatarMood}
-                onChange={(e) => setAvatarMood(e.target.value)}
-                className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
-              />
-            </div>
+            {id === 'tcc' && (
+              <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm space-y-5">
+                <div className="border-b border-ceci-border-subtle pb-4">
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand">
+                    tcc i • em andamento
+                  </span>
+                  <h2 className="font-display font-bold text-xl sm:text-2xl text-ceci-primary mt-2">
+                    {tcc.title}
+                  </h2>
+                  <p className="text-xs text-ceci-secondary mt-1">
+                    orientadora: <span className="font-semibold text-ceci-primary">{tcc.advisor}</span> • área: {tcc.field}
+                  </p>
+                </div>
 
-            <div>
-              <label className="block text-xs font-medium text-ceci-secondary mb-1">frase motivacional de entrada</label>
-              <textarea
-                rows={2}
-                value={dailyQuote}
-                onChange={(e) => setDailyQuote(e.target.value)}
-                className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3.5 py-2 text-xs text-ceci-primary"
-              />
-            </div>
+                {/* Problem statement & Objectives */}
+                <div className="bg-surface-muted p-4 rounded-2xl border border-ceci-border-default space-y-3 text-xs">
+                  <div>
+                    <p className="font-semibold text-ceci-primary mb-1">problema de pesquisa:</p>
+                    <p className="text-ceci-secondary leading-relaxed">{tcc.problemStatement}</p>
+                  </div>
 
-            <button
-              type="submit"
-              className="bg-rose-500 hover:bg-ceci-brand text-white px-5 py-2.5 rounded-xl text-xs font-medium shadow-2xs cursor-pointer"
-            >
-              salvar configurações do cantinho
-            </button>
-          </form>
-        </div>
-      )}
+                  <div>
+                    <p className="font-semibold text-ceci-primary mb-1">objetivos:</p>
+                    <ul className="list-disc pl-4 space-y-1 text-ceci-secondary">
+                      {tcc.objectives.map((obj, idx) => (
+                        <li key={idx}>{obj}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Chapters Checklist */}
+                <div>
+                  <h3 className="font-display font-bold text-base text-ceci-primary mb-3">
+                    cronograma de capítulos
+                  </h3>
+
+                  <div className="space-y-2">
+                    {tcc.chapters.map((ch, idx) => (
+                      <div
+                        key={idx}
+                        onClick={() => handleToggleTccChapter(idx)}
+                        className={`flex items-center justify-between p-3 rounded-2xl border cursor-pointer transition-all ${
+                          ch.completed
+                            ? 'bg-surface-blue/60 border-ceci-border-academic text-ceci-academic-strong'
+                            : 'bg-white border-ceci-border-default hover:border-ceci-border-brand'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <CheckCircle2 className={`w-5 h-5 ${ch.completed ? 'text-success-leaf' : 'text-ceci-faded'}`} />
+                          <span className={`text-xs font-medium ${ch.completed ? 'line-through text-ceci-tertiary' : 'text-ceci-primary'}`}>
+                            {ch.title}
+                          </span>
+                        </div>
+
+                        {ch.dueDate && (
+                          <span className="text-[10px] text-ceci-secondary">prazo: {ch.dueDate}</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* References ABNT */}
+                <div>
+                  <h3 className="font-display font-bold text-base text-ceci-primary mb-2">
+                    referências utilizadas (abnt)
+                  </h3>
+                  <div className="space-y-1.5 text-xs text-ceci-secondary">
+                    {tcc.references.map((ref, idx) => (
+                      <p key={idx} className="bg-surface-muted p-2.5 rounded-xl border border-ceci-border-default font-mono text-[11px] text-ceci-primary">
+                        {ref}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {id === 'configuracoes' && (
+              <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm space-y-5">
+                <h2 className="font-display font-bold text-xl text-ceci-primary">
+                  personalize seu cantinho no cecistudy
+                </h2>
+
+                {/* Lembrete diário de estudo (app nativo) */}
+                <div className={`rounded-2xl p-4 border ${isReminderSupported() ? 'bg-surface-rose border-ceci-border-brand' : 'bg-surface-muted border-ceci-border-default'} space-y-3`}>
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <h3 className="font-display font-bold text-sm text-ceci-primary">
+                        lembrete diário de estudo ♡
+                      </h3>
+                      <p className="text-[11px] text-ceci-secondary leading-tight mt-0.5">
+                        {isReminderSupported()
+                          ? 'um carinho do cecistudy na hora de estudar.'
+                          : 'ativável no aplicativo nativo (android/ios).'}
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => updateReminder({ ...reminderSettings, enabled: !reminderSettings.enabled })}
+                      disabled={!isReminderSupported()}
+                      aria-pressed={reminderSettings.enabled}
+                      className={`relative w-12 h-7 rounded-full transition-all cursor-pointer shrink-0 touch-target ${
+                        reminderSettings.enabled ? 'bg-rose-500' : 'bg-ceci-border-strong'
+                      } ${!isReminderSupported() ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      title={reminderSettings.enabled ? 'desativar lembrete' : 'ativar lembrete'}
+                    >
+                      <span
+                        className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow-xs transition-transform ${
+                          reminderSettings.enabled ? 'translate-x-5' : ''
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  {isReminderSupported() && (
+                    <div className="flex items-center gap-3">
+                      <span className="text-[11px] font-medium text-ceci-secondary">horário:</span>
+                      <input
+                        type="time"
+                        value={reminderSettings.time}
+                        onChange={(e) => updateReminder({ ...reminderSettings, time: e.target.value })}
+                        disabled={!reminderSettings.enabled}
+                        className="bg-white border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3 py-1.5 text-sm text-ceci-primary disabled:opacity-50"
+                      />
+                      <span className="text-[11px] text-ceci-tertiary">todas as noites</span>
+                    </div>
+                  )}
+                </div>
+
+                <form onSubmit={handleSaveProfile} className="space-y-4 max-w-lg">
+                  <div>
+                    <label className="block text-xs font-medium text-ceci-secondary mb-1">seu nome</label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-medium text-ceci-secondary mb-1">semestre atual</label>
+                      <input
+                        type="number"
+                        value={semester}
+                        onChange={(e) => setSemester(Number(e.target.value))}
+                        className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-ceci-secondary mb-1">universidade</label>
+                      <input
+                        type="text"
+                        value={university}
+                        onChange={(e) => setUniversity(e.target.value)}
+                        className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-ceci-secondary mb-1">status / mood do dia</label>
+                    <input
+                      type="text"
+                      value={avatarMood}
+                      onChange={(e) => setAvatarMood(e.target.value)}
+                      className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-ceci-secondary mb-1">frase motivacional de entrada</label>
+                    <textarea
+                      rows={2}
+                      value={dailyQuote}
+                      onChange={(e) => setDailyQuote(e.target.value)}
+                      className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3.5 py-2 text-xs text-ceci-primary"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="bg-rose-500 hover:bg-ceci-brand text-white px-5 py-2.5 rounded-xl text-xs font-medium shadow-2xs cursor-pointer"
+                  >
+                    salvar configurações do cantinho
+                  </button>
+                </form>
+              </div>
+            )}
+          </>
+        )}
+      </SwipeTabPager>
 
     </div>
   );

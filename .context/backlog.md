@@ -248,6 +248,32 @@ e não persistidos. Unificar o modelo evita divergência.
 - [x] **F.6** **Robustez:** `bookmarkedCourseIds` agora **persistido** via `usePersistentState`
   (favoritos de disciplinas não sumiam ao recarregar).
 
+### Fase 9 — Navegação por gestos (pager + swipe-back) (implementada)
+> **Status: `[x]` implementada.** Gestos estilo Instagram por cima da pilha/hash.
+
+**O que foi feito**
+- [x] **9.1** `SwipeTabPager` (`ui/SwipeTabPager.tsx`): pager top-level entre as 5 abas
+  (`TAB_ORDER` em `routing.ts`) com **colunas de scroll próprio** (`data-pager-scroll`,
+  scroll preservado por aba; janela não rola) e `mode='nested'` nas sub-abas de
+  Faculdade/Estudos/Perfil com `onEdgeOverscroll` (propaga para `handleNavigate(TAB_ORDER[±1])`
+  nas bordas). Animação por spring iOS (`iOS_SPRING`); pan manual com `touchAction: pan-y`.
+- [x] **9.2** `SwipeBack` (`ui/SwipeBack.tsx`): swipe-back iOS da borda esquerda (40px) nas
+  telas auxiliares — curso (FaculdadeView), notas/templo (BibliotecaView) e mood (AppShell);
+  chama `onClose` ao passar do limiar/velocidade.
+- [x] **9.3** `src/lib/swipe.ts` (lógica pura: `resolveSwipe`, `edgeOverscroll`,
+  `shouldIgnorePanTarget`, constantes `SWIPE_THRESHOLD=72`, `SWIPE_VELOCITY=450`, `EDGE_WIDTH=40`)
+  + 15 testes (`swipe.test.ts`) — suíte total **50 testes**.
+- [x] **9.4** Regras de alvo: `[data-swipe-lock]` em faixas horizontais (PillTabBar, coleções,
+  notas, quick-add, card flashcard); `button`/`a`/`[role=button]`/inputs ignorados; pager
+  top-level ignora `[data-subpager]`; `useReducedMotion` desativa gestos.
+- [x] **9.5** `BottomNav` passou a derivar as abas de `TAB_ORDER` (fonte única da ordem).
+
+**Observações / limites**
+- `window.scrollTo` (AppContext) virou no-op: o scroll agora é por coluna; telas auxiliares
+  abertas em colunas roladas não rolam ao topo (polimento futuro).
+- Todas as 5 abas ficam montadas no trilho (estado/scroll preservados entre trocas).
+- Validar gestos em device real (scroll vertical + pan horizontal no Capacitor).
+
 **Pendências p/ fases futuras**
 - EstudosView: sub-tabs `leituras`/`questoes` ainda não renderizam conteúdo (Tema C).
 - Dados dummy das views (HomeView, MoodCalendar) a derivar do estado/seeds.
@@ -266,3 +292,4 @@ e não persistidos. Unificar o modelo evita divergência.
 6. **Fase 6** (Capacitor & patamar de app — implementada; ver pendências acima).
 7. **Fase 7** (navegação native-first por pilha — implementada; ver acima).
 8. **Fase 8** (temas A/D/F: tokens, deep-link e testes — implementada; ver acima).
+9. **Fase 9** (navegação por gestos — pager + swipe-back — implementada; ver acima).

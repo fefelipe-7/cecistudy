@@ -102,7 +102,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
       </div>
 
       {/* Category Pills */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none px-1">
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none px-1 data-swipe-lock">
         {[
           { id: 'todas', label: 'todas' },
           { id: 'reflexão', label: 'reflexões' },

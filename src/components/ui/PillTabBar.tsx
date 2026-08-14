@@ -20,7 +20,7 @@ export const PillTabBar = <T extends string,>({
   onChange,
   className,
 }: PillTabBarProps<T>) => (
-  <div className={cn('flex gap-1.5 overflow-x-auto scrollbar-none', className)}>
+  <div className={cn('flex gap-1.5 overflow-x-auto scrollbar-none', className)} data-swipe-lock>
     {tabs.map((tab) => {
       const isActive = tab.id === active;
       return (

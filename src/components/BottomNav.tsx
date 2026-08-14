@@ -3,6 +3,7 @@ import { Home, GraduationCap, Brain, Library, User, FileText, BookOpen, Check, S
 import { NavTab, QuickType } from '../types';
 import { BottomNavBar, NavItem } from '@/components/ui/bottom-nav-bar';
 import FloatingActionMenu from '@/components/ui/floating-action-menu';
+import { TAB_ORDER } from '../lib/routing';
 
 interface BottomNavProps {
   activeTab: NavTab;
@@ -10,18 +11,24 @@ interface BottomNavProps {
   onOpenQuickAddWithType?: (type: QuickType) => void;
 }
 
+const TAB_META: Record<NavTab, { label: string; icon: typeof Home }> = {
+  home: { label: 'home', icon: Home },
+  faculdade: { label: 'faculdade', icon: GraduationCap },
+  estudos: { label: 'estudos', icon: Brain },
+  biblioteca: { label: 'biblioteca', icon: Library },
+  perfil: { label: 'perfil', icon: User },
+};
+
 export const BottomNav: React.FC<BottomNavProps> = ({
   activeTab,
   onChangeTab,
   onOpenQuickAddWithType,
 }) => {
-  const tabs: (NavItem & { id: NavTab })[] = [
-    { id: 'home', label: 'home', icon: Home },
-    { id: 'faculdade', label: 'faculdade', icon: GraduationCap },
-    { id: 'estudos', label: 'estudos', icon: Brain },
-    { id: 'biblioteca', label: 'biblioteca', icon: Library },
-    { id: 'perfil', label: 'perfil', icon: User },
-  ];
+  const tabs: (NavItem & { id: NavTab })[] = TAB_ORDER.map((id) => ({
+    id,
+    label: TAB_META[id].label,
+    icon: TAB_META[id].icon,
+  }));
 
   const activeIndex = tabs.findIndex((t) => t.id === activeTab);
 
