@@ -58,7 +58,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'info' | 'aulas' | 'repertorio'>('info');
   const [selectedClassNote, setSelectedClassNote] = useState<ClassNote | null>(null);
-  const { openQuickAddForCourse } = useApp();
+  const { openQuickAddForCourse, openCompose } = useApp();
 
   // Filter items specific to this course
   const courseClasses = classes.filter((c) => c.courseId === course.id);
@@ -116,7 +116,11 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
           return (
             <button
               key={btn.type}
-              onClick={() => openQuickAddForCourse(btn.type as QuickType, course.id)}
+              onClick={() =>
+                btn.type === 'class'
+                  ? openCompose(course.id)
+                  : openQuickAddForCourse(btn.type as QuickType, course.id)
+              }
               className="flex items-center gap-3 p-3.5 rounded-2xl bg-white border border-ceci-border-default hover:border-ceci-border-brand text-left tap-interactive hover:shadow-md active:scale-95 cursor-pointer shadow-sm"
             >
               <span className={`w-9 h-9 rounded-xl flex items-center justify-center border shrink-0 ${btn.accent}`}>
@@ -350,12 +354,12 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                 <FileText className="w-4 h-4 text-ceci-academic-strong" />
                 <span>diário de aulas</span>
               </h3>
-              <button
-                onClick={() => openQuickAddForCourse('class', course.id)}
+<button
+                onClick={() => openCompose(course.id)}
                 className="text-xs font-bold text-ceci-brand-strong hover:underline flex items-center gap-1 cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>anotar aula</span>
+                <span>nova aula</span>
               </button>
             </div>
 
@@ -375,7 +379,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                 <FileText className="w-6 h-6 text-ceci-faded mx-auto" />
                 <p className="text-xs font-semibold text-ceci-primary">ainda não tem aula anotada</p>
                 <button
-                  onClick={() => openQuickAddForCourse('class', course.id)}
+                  onClick={() => openCompose(course.id)}
                   className="px-3.5 py-1.5 bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong rounded-full text-xs font-bold cursor-pointer"
                 >
                   anotar primeira aula

@@ -20,6 +20,10 @@ import { EstudosView } from './components/views/EstudosView';
 import { BibliotecaView } from './components/views/BibliotecaView';
 import { PerfilView } from './components/views/PerfilView';
 import { EstadoDeEspiritoView } from './components/views/EstadoDeEspiritoView';
+import { ComposeNoteView } from './components/views/ComposeNoteView';
+import { ClassNoteDetailWizard } from './components/views/ClassNoteDetailWizard';
+import { Modal } from './components/ui/Modal';
+import { FileText } from 'lucide-react';
 
 function AppShell() {
   const app = useApp();
@@ -38,6 +42,12 @@ function AppShell() {
         app.closeSearch();
       } else if (app.isEditCourseOpen) {
         app.closeEditCourse();
+      } else if (app.isDetailPromptOpen) {
+        app.closeDetailPrompt();
+      } else if (app.isComposeDetailsOpen) {
+        app.closeComposeDetails();
+      } else if (app.isComposeScreenOpen) {
+        app.closeCompose();
       } else if (app.isMoodViewOpen) {
         app.closeMoodView();
       } else if (app.isNotesScreenOpen) {
@@ -64,7 +74,6 @@ function AppShell() {
     courses,
     handleNavigate,
     handleAddTask,
-    handleAddClassNote,
     handleAddReading,
     handleAddFlashcard,
     handleAddConcept,
@@ -76,11 +85,14 @@ function AppShell() {
     openSearch,
     openQuickAdd,
     openQuickAddWithType,
+    openCompose,
     closeMoodView,
     closeQuickAdd,
     closeSearch,
     quickAddType
   } = app;
+
+  const isComposeFlow = app.isComposeScreenOpen || app.isComposeDetailsOpen;
 
   // Keyboard shortcut (Cmd+K) for search
   useEffect(() => {
@@ -98,13 +110,15 @@ function AppShell() {
     <div className="min-h-screen text-ceci-primary flex flex-col font-sans antialiased selection:bg-rose-100 selection:text-ceci-brand-strong">
 
       {/* Top Header */}
-      <HeaderNav
-        profile={profile}
-        headerConfig={headerConfig}
-        onOpenSearch={openSearch}
-        onOpenQuickAdd={openQuickAdd}
-        onNavigateToPerfil={() => handleNavigate('perfil', 'jornada')}
-      />
+      {!isComposeFlow && (
+        <HeaderNav
+          profile={profile}
+          headerConfig={headerConfig}
+          onOpenSearch={openSearch}
+          onOpenQuickAdd={openQuickAdd}
+          onNavigateToPerfil={() => handleNavigate('perfil', 'jornada')}
+        />
+      )}
 
       {/* Main Screen Content (Mobile First App Frame Container) */}
       <main
@@ -123,7 +137,11 @@ function AppShell() {
             animate="animate"
             exit="exit"
           >
-            {app.isMoodViewOpen ? (
+            {app.isComposeScreenOpen ? (
+              <ComposeNoteView />
+            ) : app.isComposeDetailsOpen ? (
+              <ClassNoteDetailWizard />
+            ) : app.isMoodViewOpen ? (
               <EstadoDeEspiritoView
                 currentMood={currentMood}
                 onSaveMood={handleSaveMood}
@@ -148,6 +166,7 @@ function AppShell() {
           activeTab={activeTab}
           onChangeTab={(tab) => handleNavigate(tab)}
           onOpenQuickAddWithType={openQuickAddWithType}
+          onOpenCompose={() => openCompose()}
         />
       )}
 
@@ -159,7 +178,6 @@ function AppShell() {
         presetCourseId={app.quickAddCourseId}
         courses={courses}
         onAddTask={handleAddTask}
-        onAddClassNote={handleAddClassNote}
         onAddReading={handleAddReading}
         onAddFlashcard={handleAddFlashcard}
         onAddConcept={handleAddConcept}
@@ -189,6 +207,48 @@ function AppShell() {
         onClose={app.closeEditCourse}
         onSave={app.handleUpdateCourse}
       />
+
+      {/* Prompt "quer dar mais detalhes?" após salvar uma aula */}
+      <Modal
+        open={app.isDetailPromptOpen}
+        onClose={app.closeDetailPrompt}
+        className="w-full max-w-sm bg-white rounded-[28px] border border-ceci-border-default shadow-2xl p-6 space-y-4 text-ceci-primary animate-in zoom-in-95 duration-200"
+      >
+        <div className="flex items-center gap-3">
+          <span className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
+            <FileText className="w-5 h-5" />
+          </span>
+          <div>
+            <h3 className="font-display font-bold text-lg text-ceci-primary leading-tight">
+              aula registrada ♡
+            </h3>
+            <p className="text-xs text-ceci-secondary">
+              quer dar mais detalhes sobre essa anotação de aula?
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-2 pt-1">
+          <button
+            onClick={() => {
+              if (app.detailNoteId) app.openComposeDetails(app.detailNoteId);
+              app.closeDetailPrompt();
+            }}
+            className="w-full bg-ceci-primary hover:bg-ceci-primary-hover text-white py-2.5 rounded-2xl text-xs font-bold cursor-pointer transition-colors"
+          >
+            dar mais detalhes
+          </button>
+          <button
+            onClick={() => {
+              app.closeDetailPrompt();
+              app.showToast('aula registrada no diário ♡');
+            }}
+            className="w-full bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong py-2.5 rounded-2xl text-xs font-bold cursor-pointer transition-colors"
+          >
+            fazer depois
+          </button>
+        </div>
+      </Modal>
 
       {/* Toast de feedback */}
       <Toast message={app.toast} />

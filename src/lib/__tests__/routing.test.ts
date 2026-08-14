@@ -47,6 +47,11 @@ describe('parseRoute', () => {
     expect(parseRoute('#/mood')).toEqual({ mood: true });
   });
 
+  it('reconhece composição de nota e wizard de detalhes', () => {
+    expect(parseRoute('#/nota')).toEqual({ compose: true });
+    expect(parseRoute('#/nota/detalhes')).toEqual({ composeDetails: true });
+  });
+
   it('desconhecido cai em home', () => {
     expect(parseRoute('#/xyz')).toEqual({ tab: 'home' });
   });
@@ -77,6 +82,15 @@ describe('routeToStack', () => {
       { kind: 'tab', tab: 'biblioteca' },
       { kind: 'temple' },
     ]);
+    expect(routeToStack({ compose: true })).toEqual([
+      { kind: 'tab', tab: 'home' },
+      { kind: 'compose' },
+    ]);
+    expect(routeToStack({ composeDetails: true })).toEqual([
+      { kind: 'tab', tab: 'home' },
+      { kind: 'compose' },
+      { kind: 'composeDetails' },
+    ]);
   });
 });
 
@@ -97,12 +111,14 @@ describe('stackToHash', () => {
     expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c3' }], 'aulas')).toBe('#/faculdade/c3');
     expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'mood' }])).toBe('#/mood');
     expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }])).toBe('#/biblioteca/notas');
+    expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'compose' }])).toBe('#/nota');
+    expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'compose' }, { kind: 'composeDetails' }])).toBe('#/nota/detalhes');
   });
 });
 
 describe('round-trip hash ↔ rota', () => {
   it('reconstrói a rota a partir do hash serializado (abas + sub-tabs)', () => {
-    const cases = ['#/home', '#/faculdade', '#/faculdade/c3', '#/faculdade/aulas', '#/estudos/leituras', '#/biblioteca/conceitos', '#/perfil/stickers', '#/biblioteca/notas', '#/biblioteca/templo', '#/mood'];
+    const cases = ['#/home', '#/faculdade', '#/faculdade/c3', '#/faculdade/aulas', '#/estudos/leituras', '#/biblioteca/conceitos', '#/perfil/stickers', '#/biblioteca/notas', '#/biblioteca/templo', '#/mood', '#/nota', '#/nota/detalhes'];
     for (const h of cases) {
       const route = parseRoute(h);
       const stack = routeToStack(route);

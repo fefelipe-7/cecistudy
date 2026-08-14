@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { X, Check, BookOpen, FileText, Brain, HeartHandshake, Sparkles, Plus, Timer, ClipboardList, UserCheck } from 'lucide-react';
+import { X, Check, BookOpen, Brain, HeartHandshake, Sparkles, Plus, Timer, ClipboardList, UserCheck } from 'lucide-react';
 import { Modal } from './ui/Modal';
 import {
   Course,
   QuickType,
   Task,
-  ClassNote,
   ReadingItem,
   Flashcard,
   PsychologyConcept,
@@ -22,7 +21,6 @@ interface QuickAddModalProps {
   initialType?: QuickType;
   presetCourseId?: string;
   onAddTask: (task: Task) => void;
-  onAddClassNote: (note: ClassNote) => void;
   onAddReading: (reading: ReadingItem) => void;
   onAddFlashcard: (card: Flashcard) => void;
   onAddConcept: (concept: PsychologyConcept) => void;
@@ -39,7 +37,6 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
   initialType = 'task',
   presetCourseId,
   onAddTask,
-  onAddClassNote,
   onAddReading,
   onAddFlashcard,
   onAddConcept,
@@ -60,7 +57,6 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
   useEffect(() => {
     if (isOpen && presetCourseId) {
       setTaskCourseId(presetCourseId);
-      setClassCourseId(presetCourseId);
       setSessionCourseId(presetCourseId);
       setExamCourseId(presetCourseId);
     }
@@ -71,10 +67,6 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
   const [taskCourseId, setTaskCourseId] = useState(courses[0]?.id || '');
   const [taskCategory, setTaskCategory] = useState<'leitura' | 'trabalho' | 'revisao' | 'estagio' | 'outro'>('leitura');
   const [taskDueDate, setTaskDueDate] = useState('');
-
-  const [classTitle, setClassTitle] = useState('');
-  const [classCourseId, setClassCourseId] = useState(courses[0]?.id || '');
-  const [classSummary, setClassSummary] = useState('');
 
   const [readingTitle, setReadingTitle] = useState('');
   const [readingAuthor, setReadingAuthor] = useState('');
@@ -117,23 +109,6 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
         priority: 'media'
       });
       setTaskTitle('');
-    } else if (activeType === 'class') {
-      if (!classTitle.trim()) return;
-      onAddClassNote({
-        id: 'cl-' + Date.now(),
-        courseId: classCourseId,
-        title: classTitle.trim(),
-        number: Math.floor(Math.random() * 5) + 9,
-        date: new Date().toISOString().split('T')[0],
-        summary: classSummary.trim() || 'Anotações da aula.',
-        fullNotes: classSummary.trim() || 'Anotações registradas rapidamente no cecistudy ♡',
-        conceptIds: [],
-        authorIds: [],
-        materials: [],
-        hasQuestions: false
-      });
-      setClassTitle('');
-      setClassSummary('');
     } else if (activeType === 'reading') {
       if (!readingTitle.trim()) return;
       onAddReading({
@@ -226,7 +201,6 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
 
   const typeOptions: { id: QuickType; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
     { id: 'task', label: 'tarefa', icon: Check },
-    { id: 'class', label: 'aula / nota', icon: FileText },
     { id: 'reading', label: 'leitura', icon: BookOpen },
     { id: 'flashcard', label: 'flashcard', icon: Brain },
     { id: 'concept', label: 'conceito', icon: Sparkles },
@@ -344,48 +318,6 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                   type="date"
                   value={taskDueDate}
                   onChange={(e) => setTaskDueDate(e.target.value)}
-                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                />
-              </div>
-            </>
-          )}
-
-          {activeType === 'class' && (
-            <>
-              <div>
-                <label className="block text-xs font-medium text-ceci-secondary mb-1">título da aula</label>
-                <input
-                  type="text"
-                  placeholder="ex: aula 09 - transtornos de ansiedade e tag"
-                  value={classTitle}
-                  onChange={(e) => setClassTitle(e.target.value)}
-                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-ceci-secondary mb-1">disciplina</label>
-                <select
-                  value={classCourseId}
-                  onChange={(e) => setClassCourseId(e.target.value)}
-                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                >
-                  {courses.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-ceci-secondary mb-1">resumo / principais anotações</label>
-                <textarea
-                  rows={3}
-                  placeholder="escreva os pontos principais da aula..."
-                  value={classSummary}
-                  onChange={(e) => setClassSummary(e.target.value)}
                   className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
                 />
               </div>

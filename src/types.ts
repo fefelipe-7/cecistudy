@@ -16,7 +16,9 @@ export type NavScreen =
   | { kind: 'course'; courseId: string }
   | { kind: 'notes' }
   | { kind: 'temple' }
-  | { kind: 'mood' };
+  | { kind: 'mood' }
+  | { kind: 'compose' }
+  | { kind: 'composeDetails' };
 
 export interface HeaderAction {
   label: string;
@@ -77,6 +79,7 @@ export interface ClassNote {
   fullNotes?: string;
   conceptIds?: string[];
   authorIds?: string[];
+  approachIds?: string[];
   materials?: string[];
   hasQuestions?: boolean;
 }

@@ -53,6 +53,7 @@ import {
   routeToStack,
   stackToHash
 } from '../lib/routing';
+import { LooseNote, INITIAL_NOTES } from '../components/library/notes';
 
 
 export interface ReminderSettings {
@@ -111,6 +112,29 @@ export interface AppContextValue {
   bookmarkedCourseIds: string[];
   toggleBookmarkCourse: (id: string) => void;
 
+  // notas avulsas (persistidas globalmente)
+  looseNotes: LooseNote[];
+  addLooseNote: (note: LooseNote) => void;
+  deleteLooseNote: (id: string) => void;
+
+  // composição de nota (tela de captura rápida)
+  isComposeScreenOpen: boolean;
+  composeCourseId: string | undefined;
+  openCompose: (courseId?: string) => void;
+  closeCompose: () => void;
+
+  // wizard de detalhes da aula
+  isComposeDetailsOpen: boolean;
+  wizardNoteId: string | null;
+  openComposeDetails: (noteId: string) => void;
+  closeComposeDetails: () => void;
+
+  // prompt "quer dar mais detalhes?" após salvar uma aula
+  isDetailPromptOpen: boolean;
+  detailNoteId: string | null;
+  openDetailPrompt: (noteId: string) => void;
+  closeDetailPrompt: () => void;
+
   // modals / mood
   isMoodViewOpen: boolean;
   openMoodView: () => void;
@@ -140,6 +164,7 @@ export interface AppContextValue {
   handleToggleExam: (examId: string) => void;
   handleAddTask: (task: Task) => void;
   handleAddClassNote: (note: ClassNote) => void;
+  handleUpdateClassNote: (note: ClassNote) => void;
   handleAddReading: (reading: ReadingItem) => void;
   handleUpdateReadingPages: (readingId: string, newPages: number) => void;
   handleAddFlashcard: (card: Flashcard) => void;
@@ -221,6 +246,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [isCreatingLooseNote, setIsCreatingLooseNote] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
+  // Notas avulsas (global — a tela de composição salva fora da biblioteca)
+  const [looseNotes, setLooseNotes] = usePersistentState<LooseNote[]>('looseNotes', INITIAL_NOTES);
+
+  // Composição de nota (tela de captura rápida)
+  const [composeCourseId, setComposeCourseId] = useState<string | undefined>(undefined);
+
+  // Wizard de detalhes da aula
+  const [wizardNoteId, setWizardNoteId] = useState<string | null>(null);
+
+  // Prompt "quer dar mais detalhes?" após salvar uma aula
+  const [isDetailPromptOpen, setIsDetailPromptOpen] = useState(false);
+  const [detailNoteId, setDetailNoteId] = useState<string | null>(null);
+
   // Telas derivadas do topo da pilha
   const currentScreen = navigationStack[navigationStack.length - 1];
   const activeTab: NavTab =
@@ -229,6 +267,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const isNotesScreenOpen = currentScreen.kind === 'notes';
   const isTempleScreenOpen = currentScreen.kind === 'temple';
   const isBottomNavVisible = currentScreen.kind === 'tab';
+  const isComposeScreenOpen = currentScreen.kind === 'compose';
+  const isComposeDetailsOpen = currentScreen.kind === 'composeDetails';
   const focusedCourseId = currentScreen.kind === 'course' ? currentScreen.courseId : null;
   const focusedCourse = focusedCourseId ? courses.find((c) => c.id === focusedCourseId) : undefined;
   const screenKey =
@@ -240,7 +280,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           ? 'notes'
           : currentScreen.kind === 'temple'
             ? 'temple'
-            : 'mood';
+            : currentScreen.kind === 'compose'
+              ? 'compose'
+              : currentScreen.kind === 'composeDetails'
+                ? 'composeDetails'
+                : 'mood';
 
   // Roteamento hash como espelho (deep-link + voltar/avançar no browser; histórico do webview p/ swipe iOS)
   useEffect(() => {
@@ -314,7 +358,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   } else if (currentScreen.kind === 'course' && focusedCourse) {
     const isBookmarked = bookmarkedCourseIds.includes(focusedCourse.id);
     const courseActions: HeaderAction[] = [
-      { label: 'nova anotação de aula', Icon: FileText, onClick: () => openQuickAddForCourse('class', focusedCourse.id) },
+      { label: 'nova anotação de aula', Icon: FileText, onClick: () => openCompose(focusedCourse.id) },
       { label: 'nova prova / avaliação', Icon: CheckCircle2, onClick: () => openQuickAddForCourse('exam', focusedCourse.id) },
       { label: 'editar detalhes da matéria', Icon: Settings2, onClick: () => openEditCourse() },
     ];
@@ -353,6 +397,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const handleAddClassNote = (note: ClassNote) => {
     setClasses((prev) => [note, ...prev]);
+  };
+
+  const handleUpdateClassNote = (note: ClassNote) => {
+    setClasses((prev) => prev.map((c) => (c.id === note.id ? note : c)));
+  };
+
+  const addLooseNote = (note: LooseNote) => {
+    setLooseNotes((prev) => [note, ...prev]);
+  };
+
+  const deleteLooseNote = (id: string) => {
+    setLooseNotes((prev) => prev.filter((n) => n.id !== id));
   };
 
   const handleAddReading = (reading: ReadingItem) => {
@@ -572,6 +628,48 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const closeMoodView = () => goBack();
 
+  const openCompose = (courseId?: string) => {
+    setComposeCourseId(courseId);
+    const top = navigationStack[navigationStack.length - 1];
+    const next: NavScreen[] =
+      top.kind === 'compose' ? navigationStack : [...navigationStack, { kind: 'compose' }];
+    setStack(next);
+    syncHash(next);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const closeCompose = () => {
+    setComposeCourseId(undefined);
+    goBack();
+  };
+
+  const openComposeDetails = (noteId: string) => {
+    setWizardNoteId(noteId);
+    const top = navigationStack[navigationStack.length - 1];
+    const next: NavScreen[] =
+      top.kind === 'composeDetails'
+        ? navigationStack
+        : [...navigationStack, { kind: 'composeDetails' }];
+    setStack(next);
+    syncHash(next);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const closeComposeDetails = () => {
+    setWizardNoteId(null);
+    goBack();
+  };
+
+  const openDetailPrompt = (noteId: string) => {
+    setDetailNoteId(noteId);
+    setIsDetailPromptOpen(true);
+  };
+
+  const closeDetailPrompt = () => {
+    setDetailNoteId(null);
+    setIsDetailPromptOpen(false);
+  };
+
   const handleSaveMood = (mood: DailyMoodData) => {
     hapticSuccess();
     setCurrentMood(mood);
@@ -676,6 +774,21 @@ currentMood,
     closeTemple,
     bookmarkedCourseIds,
     toggleBookmarkCourse,
+    looseNotes,
+    addLooseNote,
+    deleteLooseNote,
+    isComposeScreenOpen,
+    composeCourseId,
+    openCompose,
+    closeCompose,
+    isComposeDetailsOpen,
+    wizardNoteId,
+    openComposeDetails,
+    closeComposeDetails,
+    isDetailPromptOpen,
+    detailNoteId,
+    openDetailPrompt,
+    closeDetailPrompt,
     isMoodViewOpen,
     openMoodView,
     closeMoodView,
@@ -702,6 +815,7 @@ currentMood,
     handleToggleExam,
     handleAddTask,
     handleAddClassNote,
+    handleUpdateClassNote,
     handleAddReading,
     handleUpdateReadingPages,
     handleAddFlashcard,

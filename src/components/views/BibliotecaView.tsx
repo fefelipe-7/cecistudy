@@ -36,12 +36,11 @@ import { BookDetailModal } from '../library/BookDetailModal';
 import { LibraryFilterModal } from '../library/LibraryFilterModal';
 import { NotesScreen } from '../library/NotesScreen';
 import { TempleScreen } from '../library/TempleScreen';
-import { LooseNote, INITIAL_NOTES } from '../library/notes';
 import { usePersistentState } from '../../lib/usePersistentState';
 import { useApp } from '../../context/AppContext';
 
 export const BibliotecaView: React.FC = () => {
-  const { openQuickAdd, isNotesScreenOpen, openNotesScreen, isCreatingLooseNote, setIsCreatingLooseNote, isTempleScreenOpen, openTemple } = useApp();
+  const { openQuickAdd, isNotesScreenOpen, openNotesScreen, isCreatingLooseNote, setIsCreatingLooseNote, isTempleScreenOpen, openTemple, looseNotes, addLooseNote, deleteLooseNote } = useApp();
   // Filter States
   const [activeCategory, setActiveCategory] = useState<string>('todos');
   const [activeStatus, setActiveStatus] = useState<string>('todos');
@@ -53,12 +52,10 @@ export const BibliotecaView: React.FC = () => {
   const [selectedBook, setSelectedBook] = useState<CollectionBook | null>(null);
   const [readerReading, setReaderReading] = useState<ReadingItem | null>(null);
   const [isReaderOpen, setIsReaderOpen] = useState(false);
+  // Dedicated Notes Screen (aberta via pilha de navegação — header detail)
   const [savedBookIds, setSavedBookIds] = usePersistentState<string[]>('savedBookIds', [
     'bk-1', 'bk-5', 'bk-9', 'tr-1', 'tr-3', 'bk-33'
   ]);
-
-  // Dedicated Notes Screen (aberta via pilha de navegação — header detail)
-  const [looseNotes, setLooseNotes] = usePersistentState<LooseNote[]>('looseNotes', INITIAL_NOTES);
 
   // Popular quick tags available in the filter modal or search
   const availableTags = [
@@ -172,8 +169,8 @@ export const BibliotecaView: React.FC = () => {
     return (
       <NotesScreen
         looseNotes={looseNotes}
-        onAddNote={(note) => setLooseNotes((prev) => [note, ...prev])}
-        onDeleteNote={(id) => setLooseNotes((prev) => prev.filter((n) => n.id !== id))}
+        onAddNote={addLooseNote}
+        onDeleteNote={deleteLooseNote}
         isCreatingNote={isCreatingLooseNote}
         setIsCreatingNote={setIsCreatingLooseNote}
       />

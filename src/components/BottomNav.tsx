@@ -8,12 +8,14 @@ interface BottomNavProps {
   activeTab: NavTab;
   onChangeTab: (tab: NavTab) => void;
   onOpenQuickAddWithType?: (type: QuickType) => void;
+  onOpenCompose?: () => void;
 }
 
 export const BottomNav: React.FC<BottomNavProps> = ({
   activeTab,
   onChangeTab,
   onOpenQuickAddWithType,
+  onOpenCompose,
 }) => {
   const tabs: (NavItem & { id: NavTab })[] = [
     { id: 'home', label: 'home', icon: Home },
@@ -27,29 +29,29 @@ export const BottomNav: React.FC<BottomNavProps> = ({
 
   const menuOptions = [
     {
-      label: 'anotar aula / nota',
-      Icon: <FileText className="w-4 h-4 text-ceci-border-brand" />,
-      onClick: () => onOpenQuickAddWithType?.('class'),
+      label: 'Novo conceito',
+      Icon: <Sparkles className="w-4 h-4 text-ceci-border-brand" />,
+      onClick: () => onOpenQuickAddWithType?.('concept'),
     },
     {
-      label: 'anotar leitura',
-      Icon: <BookOpen className="w-4 h-4 text-ceci-border-brand" />,
-      onClick: () => onOpenQuickAddWithType?.('reading'),
-    },
-    {
-      label: 'anotar prova / atividade',
-      Icon: <Check className="w-4 h-4 text-ceci-border-brand" />,
-      onClick: () => onOpenQuickAddWithType?.('task'),
-    },
-    {
-      label: 'anotar flashcard',
+      label: 'Novo flashcard',
       Icon: <Brain className="w-4 h-4 text-ceci-border-brand" />,
       onClick: () => onOpenQuickAddWithType?.('flashcard'),
     },
     {
-      label: 'anotar conceito',
-      Icon: <Sparkles className="w-4 h-4 text-ceci-border-brand" />,
-      onClick: () => onOpenQuickAddWithType?.('concept'),
+      label: 'Nova prova / atividade',
+      Icon: <Check className="w-4 h-4 text-ceci-border-brand" />,
+      onClick: () => onOpenQuickAddWithType?.('task'),
+    },
+    {
+      label: 'Novo livro / leitura',
+      Icon: <BookOpen className="w-4 h-4 text-ceci-border-brand" />,
+      onClick: () => onOpenQuickAddWithType?.('reading'),
+    },
+    {
+      label: 'Nova aula / nota',
+      Icon: <FileText className="w-4 h-4 text-ceci-border-brand" />,
+      onClick: () => onOpenCompose?.(),
     },
   ];
 

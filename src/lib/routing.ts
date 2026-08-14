@@ -11,6 +11,8 @@ export interface Route {
   notes?: boolean;
   temple?: boolean;
   mood?: boolean;
+  compose?: boolean;
+  composeDetails?: boolean;
   /** Sub-tab da aba base, codificada no hash (ex.: `#/estudos/leituras`). */
   subTab?: string;
 }
@@ -37,6 +39,8 @@ export function parseRoute(hash: string): Route {
   const seg = h[0];
 
   if (seg === 'mood') return { mood: true };
+  if (h[0] === 'nota' && h[1] === 'detalhes') return { composeDetails: true };
+  if (seg === 'nota') return { compose: true };
 
   const subtab = (tab: string): string | undefined => {
     if (!h[1]) return undefined;
@@ -66,6 +70,10 @@ export function parseRoute(hash: string): Route {
 
 /** Reconstrói a pilha de navegação a partir da rota hash. */
 export function routeToStack(route: Route): NavScreen[] {
+  if (route.composeDetails) {
+    return [{ kind: 'tab', tab: 'home' }, { kind: 'compose' }, { kind: 'composeDetails' }];
+  }
+  if (route.compose) return [{ kind: 'tab', tab: 'home' }, { kind: 'compose' }];
   if (route.mood) return [{ kind: 'tab', tab: 'home' }, { kind: 'mood' }];
   if (route.notes) return [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }];
   if (route.temple) return [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'temple' }];
@@ -81,6 +89,8 @@ export function routeToStack(route: Route): NavScreen[] {
  */
 export function stackToHash(stack: NavScreen[], subTab?: string): string {
   const top = stack[stack.length - 1];
+  if (top.kind === 'composeDetails') return '#/nota/detalhes';
+  if (top.kind === 'compose') return '#/nota';
   if (top.kind === 'mood') return '#/mood';
   if (top.kind === 'notes') return '#/biblioteca/notas';
   if (top.kind === 'temple') return '#/biblioteca/templo';
