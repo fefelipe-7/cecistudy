@@ -50,6 +50,7 @@ export const SwipeTabPager: React.FC<SwipeTabPagerProps> = ({
   const x = useMotionValue(0);
   const controls = useAnimation();
   const trackRef = useRef<HTMLDivElement>(null);
+  const activeSectionRef = useRef<HTMLDivElement | null>(null);
   const indexRef = useRef(activeIndex);
   indexRef.current = activeIndex;
   const panRef = useRef({ active: false, startX: 0 });
@@ -76,6 +77,26 @@ export const SwipeTabPager: React.FC<SwipeTabPagerProps> = ({
     const scrollable = trackRef.current?.closest('[data-pager-scroll]');
     scrollable?.scrollTo?.({ top: 0 });
   }, [activeIndex, mode]);
+
+  // aninhado: o trilho assume a altura da sub-aba ativa (sem vão de espaço
+  // vazio quando uma sub-aba é mais curta que a mais alta)
+  useEffect(() => {
+    if (mode !== 'nested') return;
+    const el = activeSectionRef.current;
+    if (!el) return;
+    const update = () => {
+      const h = el.offsetHeight;
+      if (reducedMotion) {
+        controls.set({ height: h });
+        return;
+      }
+      void controls.start({ height: h, transition: { type: 'spring', stiffness: 260, damping: 30 } });
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [activeIndex, mode, controls, reducedMotion]);
 
   const handlePanStart = useCallback(
     (event: PointerEvent, _info: PanInfo) => {
@@ -123,7 +144,7 @@ export const SwipeTabPager: React.FC<SwipeTabPagerProps> = ({
       <motion.div
         ref={trackRef}
         data-subpager={mode === 'nested' ? '' : undefined}
-        className={mode === 'top' ? 'flex h-full' : 'flex'}
+        className={mode === 'top' ? 'flex h-full items-start' : 'flex items-start'}
         style={{ x, touchAction: 'pan-y' }}
         onPanStart={handlePanStart}
         onPan={handlePan}
@@ -133,7 +154,8 @@ export const SwipeTabPager: React.FC<SwipeTabPagerProps> = ({
         {tabs.map((id, i) => (
           <div
             key={id}
-            className={mode === 'top' ? 'w-full shrink-0 h-full overflow-y-auto' : 'w-full shrink-0 min-h-full'}
+            ref={mode === 'nested' && i === activeIndex ? activeSectionRef : undefined}
+            className={mode === 'top' ? 'w-full shrink-0 max-h-full overflow-y-auto' : 'w-full shrink-0'}
             data-pager-scroll={mode === 'top' ? '' : undefined}
           >
             {children(id, i)}

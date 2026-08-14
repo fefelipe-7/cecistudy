@@ -98,7 +98,7 @@ function AppShell() {
   }, [openSearch]);
 
   return (
-    <div className="min-h-screen text-ceci-primary flex flex-col font-sans antialiased selection:bg-rose-100 selection:text-ceci-brand-strong">
+    <div className="h-dvh overflow-hidden text-ceci-primary flex flex-col font-sans antialiased selection:bg-rose-100 selection:text-ceci-brand-strong">
 
       {/* Top Header */}
       <HeaderNav
@@ -126,6 +126,7 @@ function AppShell() {
               initial="initial"
               animate="animate"
               exit="exit"
+              className="h-full overflow-y-auto"
             >
               <SwipeBack onClose={closeMoodView}>
                 <EstadoDeEspiritoView
