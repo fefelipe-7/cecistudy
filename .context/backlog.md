@@ -256,6 +256,32 @@ e não persistidos. Unificar o modelo evita divergência.
 
 ---
 
+## Fase 9 — Navegação por gestos (implementada e **revertida**)
+
+> **Status: `[x]` revertida.** O swipe entre abas/sub-abas e o swipe-back de borda
+> (`SwipeTabPager`/`SwipeBack` em `src/components/ui/`, `src/lib/swipe.ts` + 15 testes)
+> foram implementados e depois **removidos** a pedido da usuária (rollback para as fases 7-8).
+> Este registro existe para agentes futuros não reimplementarem swipe sem contexto.
+
+**O que foi feito na época**
+- Pager horizontal por gestos entre abas e sub-abas (framer-motion) + swipe-back de borda
+  para telas auxiliares (curso/notas/templo/mood).
+- Helper `isHorizontalPan`/`SWIPE_THRESHOLD`/`shouldIgnorePanTarget` em `src/lib/swipe.ts`.
+- `data-swipe-lock` em faixas com scroll horizontal próprio (pills, catálogo) e `TAB_ORDER`
+  em `src/lib/routing.ts`.
+
+**Por que foi revertido**
+- A usuária preferiu o comportamento anterior: conteúdo termina logo acima da barra inferior
+  e troca de tela por toque (sem scroll horizontal entre telas).
+- A navegação segue **por pilha nativa** (push/pop, fases 7-8) com hash como espelho.
+
+**Pontos observados (contexto para o futuro)**
+- O layout do pager criava vão vertical quando a aba ativa era mais curta que a mais alta
+  (corrigido na época com `h-dvh`/`max-h-full` + altura do trilho = sub-aba ativa).
+- Swipe-back precisava ignorar apenas faixas com scroll próprio/campos de texto (não botões).
+
+---
+
 ## Sugestão de ordem de execução
 
 1. **Fase 1** (correção de Hooks + fundações) → destrava as próximas fases.
