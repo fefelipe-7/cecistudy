@@ -1,605 +1,156 @@
-import React, { useState, useEffect } from 'react';
-import { X, Check, BookOpen, Brain, HeartHandshake, Sparkles, Plus, Timer, ClipboardList, UserCheck } from 'lucide-react';
-import { Modal } from './ui/Modal';
+import React from 'react';
 import {
-  Course,
-  QuickType,
-  Task,
-  ReadingItem,
-  Flashcard,
-  PsychologyConcept,
-  InternshipLog,
-  Exam,
-  StudySession,
-  PsychologyAuthor
-} from '../types';
+  X,
+  BookOpen,
+  Brain,
+  HeartHandshake,
+  Sparkles,
+  Timer,
+  ClipboardList,
+  UserCheck,
+  CheckCircle2,
+  FileText,
+} from 'lucide-react';
+import { Modal } from './ui/Modal';
+import { QuickType } from '../types';
+import { cn } from '../lib/utils';
 
 interface QuickAddModalProps {
   isOpen: boolean;
   onClose: () => void;
-  courses: Course[];
-  initialType?: QuickType;
-  presetCourseId?: string;
-  onAddTask: (task: Task) => void;
-  onAddReading: (reading: ReadingItem) => void;
-  onAddFlashcard: (card: Flashcard) => void;
-  onAddConcept: (concept: PsychologyConcept) => void;
-  onAddInternshipLog: (log: InternshipLog) => void;
-  onAddSession: (session: StudySession) => void;
-  onAddExam: (exam: Exam) => void;
-  onAddAuthor: (author: PsychologyAuthor) => void;
+  /** Chamado ao escolher um tipo — o AppShell empurra o wizard (ou a composição, no caso de aula). */
+  onPick: (type: QuickType) => void;
 }
 
-export const QuickAddModal: React.FC<QuickAddModalProps> = ({
-  isOpen,
-  onClose,
-  courses,
-  initialType = 'task',
-  presetCourseId,
-  onAddTask,
-  onAddReading,
-  onAddFlashcard,
-  onAddConcept,
-  onAddInternshipLog,
-  onAddSession,
-  onAddExam,
-  onAddAuthor,
-}) => {
-  const [activeType, setActiveType] = useState<QuickType>(initialType);
+const TYPE_OPTIONS: {
+  type: QuickType;
+  label: string;
+  caption: string;
+  Icon: React.ComponentType<{ className?: string }>;
+  accent: string;
+}[] = [
+  {
+    type: 'class',
+    label: 'aula / nota',
+    caption: 'anotação de aula',
+    Icon: FileText,
+    accent: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong',
+  },
+  {
+    type: 'task',
+    label: 'tarefa',
+    caption: 'prazo ou atividade',
+    Icon: CheckCircle2,
+    accent: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong',
+  },
+  {
+    type: 'exam',
+    label: 'prova / avaliação',
+    caption: 'vale nota',
+    Icon: ClipboardList,
+    accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong',
+  },
+  {
+    type: 'concept',
+    label: 'conceito',
+    caption: 'ideia de psicologia',
+    Icon: Sparkles,
+    accent: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong',
+  },
+  {
+    type: 'flashcard',
+    label: 'flashcard',
+    caption: 'pergunta & resposta',
+    Icon: Brain,
+    accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong',
+  },
+  {
+    type: 'reading',
+    label: 'livro / leitura',
+    caption: 'obra ou artigo',
+    Icon: BookOpen,
+    accent: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong',
+  },
+  {
+    type: 'session',
+    label: 'sessão de estudo',
+    caption: 'foco no cantinho',
+    Icon: Timer,
+    accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong',
+  },
+  {
+    type: 'internship',
+    label: 'estágio',
+    caption: 'registro de campo',
+    Icon: HeartHandshake,
+    accent: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong',
+  },
+  {
+    type: 'author',
+    label: 'autor',
+    caption: 'estudado na jornada',
+    Icon: UserCheck,
+    accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong',
+  },
+];
 
-  useEffect(() => {
-    if (isOpen && initialType) {
-      setActiveType(initialType);
-    }
-  }, [isOpen, initialType]);
+export const QuickAddModal: React.FC<QuickAddModalProps> = ({ isOpen, onClose, onPick }) => (
+  <Modal
+    open={isOpen}
+    onClose={onClose}
+    position="bottom"
+    className="w-full max-w-lg bg-canvas rounded-t-[28px] sm:rounded-[24px] border border-ceci-border-default shadow-xl overflow-hidden p-5 sm:p-6 text-ceci-primary"
+  >
+    {/* Header */}
+    <div className="flex items-center justify-between border-b border-ceci-border-subtle pb-3 mb-4">
+      <div className="flex items-center gap-2">
+        <span className="w-8 h-8 rounded-full bg-surface-rose flex items-center justify-center text-ceci-brand text-sm font-bold border border-ceci-border-brand">
+          ♡
+        </span>
+        <div>
+          <h3 className="font-display font-bold text-lg text-ceci-primary">
+            novo registro no cantinho
+          </h3>
+          <p className="text-xs text-ceci-secondary">escolhe o que você quer criar</p>
+        </div>
+      </div>
+      <button
+        onClick={onClose}
+        className="touch-target p-1.5 rounded-full hover:bg-surface-muted text-ceci-secondary transition-colors cursor-pointer"
+        aria-label="fechar"
+      >
+        <X className="w-5 h-5" />
+      </button>
+    </div>
 
-  // Pre-select the course when opened from a course detail screen
-  useEffect(() => {
-    if (isOpen && presetCourseId) {
-      setTaskCourseId(presetCourseId);
-      setSessionCourseId(presetCourseId);
-      setExamCourseId(presetCourseId);
-    }
-  }, [isOpen, presetCourseId]);
-
-  // Form states
-  const [taskTitle, setTaskTitle] = useState('');
-  const [taskCourseId, setTaskCourseId] = useState(courses[0]?.id || '');
-  const [taskCategory, setTaskCategory] = useState<'leitura' | 'trabalho' | 'revisao' | 'estagio' | 'outro'>('leitura');
-  const [taskDueDate, setTaskDueDate] = useState('');
-
-  const [readingTitle, setReadingTitle] = useState('');
-  const [readingAuthor, setReadingAuthor] = useState('');
-  const [readingPages, setReadingPages] = useState('200');
-
-  const [flashcardQuestion, setFlashcardQuestion] = useState('');
-  const [flashcardAnswer, setFlashcardAnswer] = useState('');
-
-  const [conceptName, setConceptName] = useState('');
-  const [conceptDef, setConceptDef] = useState('');
-
-  const [internshipActivity, setInternshipActivity] = useState('');
-  const [internshipHours, setInternshipHours] = useState('4');
-  const [internshipNotes, setInternshipNotes] = useState('');
-
-  const [sessionTopic, setSessionTopic] = useState('');
-  const [sessionMinutes, setSessionMinutes] = useState('25');
-  const [sessionCourseId, setSessionCourseId] = useState(presetCourseId || courses[0]?.id || '');
-
-  const [examTitle, setExamTitle] = useState('');
-  const [examDate, setExamDate] = useState('');
-  const [examWeight, setExamWeight] = useState('1,0');
-  const [examCourseId, setExamCourseId] = useState(presetCourseId || courses[0]?.id || '');
-
-  const [authorName, setAuthorName] = useState('');
-  const [authorBio, setAuthorBio] = useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (activeType === 'task') {
-      if (!taskTitle.trim()) return;
-      onAddTask({
-        id: 't-' + Date.now(),
-        title: taskTitle.trim(),
-        disciplineId: taskCourseId,
-        category: taskCategory,
-        dueDate: taskDueDate || new Date().toISOString().split('T')[0],
-        completed: false,
-        priority: 'media'
-      });
-      setTaskTitle('');
-    } else if (activeType === 'reading') {
-      if (!readingTitle.trim()) return;
-      onAddReading({
-        id: 'r-' + Date.now(),
-        title: readingTitle.trim(),
-        author: readingAuthor.trim() || 'Autor não informado',
-        courseId: presetCourseId ?? courses[0]?.id,
-        type: 'livro',
-        totalPages: parseInt(readingPages) || 200,
-        readPages: 0,
-        status: 'lendo',
-        highlights: []
-      });
-      setReadingTitle('');
-      setReadingAuthor('');
-    } else if (activeType === 'flashcard') {
-      if (!flashcardQuestion.trim() || !flashcardAnswer.trim()) return;
-      onAddFlashcard({
-        id: 'f-' + Date.now(),
-        courseId: presetCourseId ?? courses[0]?.id,
-        question: flashcardQuestion.trim(),
-        answer: flashcardAnswer.trim(),
-        timesReviewed: 0
-      });
-      setFlashcardQuestion('');
-      setFlashcardAnswer('');
-    } else if (activeType === 'concept') {
-      if (!conceptName.trim()) return;
-      onAddConcept({
-        id: 'con-' + Date.now(),
-        name: conceptName.trim(),
-        definition: conceptDef.trim() || 'Conceito de Psicologia registrado no meu caderno.',
-        authorIds: [],
-        courseIds: [presetCourseId || courses[0]?.id || 'c1'],
-        tags: ['Psicologia', 'Conceito']
-      });
-      setConceptName('');
-      setConceptDef('');
-    } else if (activeType === 'internship') {
-      if (!internshipActivity.trim()) return;
-      onAddInternshipLog({
-        id: 'ilog-' + Date.now(),
-        date: new Date().toISOString().split('T')[0],
-        hours: parseFloat(internshipHours) || 4,
-        activity: internshipActivity.trim(),
-        supervisionNotes: internshipNotes.trim() || 'Supervisão registrada com sucesso.',
-        reflections: 'Reflexão registrada no diário do cecistudy.'
-      });
-      setInternshipActivity('');
-      setInternshipNotes('');
-    } else if (activeType === 'session') {
-      if (!sessionTopic.trim()) return;
-      onAddSession({
-        id: 'ss-' + Date.now(),
-        courseId: sessionCourseId || undefined,
-        topic: sessionTopic.trim(),
-        date: new Date().toISOString().split('T')[0],
-        durationMinutes: parseInt(sessionMinutes) || 25,
-        mood: 'com_foco'
-      });
-      setSessionTopic('');
-    } else if (activeType === 'exam') {
-      if (!examTitle.trim()) return;
-      onAddExam({
-        id: 'e-' + Date.now(),
-        courseId: examCourseId || 'c1',
-        title: examTitle.trim(),
-        date: examDate || new Date().toISOString().split('T')[0],
-        weight: examWeight.trim() || '1,0',
-        topics: [],
-        completed: false
-      });
-      setExamTitle('');
-      setExamDate('');
-    } else if (activeType === 'author') {
-      if (!authorName.trim()) return;
-      onAddAuthor({
-        id: 'aut-' + Date.now(),
-        name: authorName.trim(),
-        bio: authorBio.trim() || 'Autor estudado na minha jornada de psicologia.',
-        keyConcepts: [],
-        majorWorks: []
-      });
-      setAuthorName('');
-      setAuthorBio('');
-    }
-
-    onClose();
-  };
-
-  const typeOptions: { id: QuickType; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-    { id: 'task', label: 'tarefa', icon: Check },
-    { id: 'reading', label: 'leitura', icon: BookOpen },
-    { id: 'flashcard', label: 'flashcard', icon: Brain },
-    { id: 'concept', label: 'conceito', icon: Sparkles },
-    { id: 'internship', label: 'estágio', icon: HeartHandshake },
-    { id: 'session', label: 'estudo', icon: Timer },
-    { id: 'exam', label: 'prova', icon: ClipboardList },
-    { id: 'author', label: 'autor', icon: UserCheck },
-  ];
-
-  return (
-    <Modal
-      open={isOpen}
-      onClose={onClose}
-      position="bottom"
-      className="w-full max-w-lg bg-canvas rounded-t-[28px] sm:rounded-[24px] border border-ceci-border-default shadow-xl overflow-hidden p-5 sm:p-6 text-ceci-primary"
-    >
-        
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-ceci-border-subtle pb-3 mb-4">
-          <div className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-full bg-surface-rose flex items-center justify-center text-ceci-brand text-sm font-bold border border-ceci-border-brand">
-              ♡
-            </span>
-            <div>
-              <h3 className="font-display font-bold text-lg text-ceci-primary">
-                novo registro no cantinho
-              </h3>
-              <p className="text-xs text-ceci-secondary">o que você quer adicionar agora?</p>
-            </div>
-          </div>
+    {/* Grade de tipos — cada toque abre o wizard em tela cheia */}
+    <div className="grid grid-cols-2 gap-2.5 max-h-[50vh] overflow-y-auto pr-1">
+      {TYPE_OPTIONS.map((opt) => {
+        const Icon = opt.Icon;
+        return (
           <button
-            onClick={onClose}
-            className="touch-target p-1.5 rounded-full hover:bg-surface-muted text-ceci-secondary transition-colors cursor-pointer"
+            key={opt.type}
+            type="button"
+            onClick={() => {
+              onPick(opt.type);
+              onClose();
+            }}
+            className="flex items-center gap-2.5 p-3 rounded-2xl bg-white border border-ceci-border-default hover:border-ceci-border-brand text-left tap-interactive active:scale-95 cursor-pointer shadow-2xs min-h-[64px]"
           >
-            <X className="w-5 h-5" />
+            <span className={cn('w-9 h-9 rounded-xl flex items-center justify-center border shrink-0', opt.accent)}>
+              <Icon className="w-4 h-4" />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-xs font-bold text-ceci-primary leading-tight">
+                {opt.label}
+              </span>
+              <span className="block text-[10px] text-ceci-tertiary leading-tight mt-0.5">
+                {opt.caption}
+              </span>
+            </span>
           </button>
-        </div>
-
-        {/* Type Selector Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mb-4 scrollbar-none">
-          {typeOptions.map((opt) => {
-            const Icon = opt.icon;
-            const isSel = activeType === opt.id;
-
-            return (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => setActiveType(opt.id)}
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium whitespace-nowrap tap-interactive min-h-[36px] cursor-pointer ${
-                  isSel
-                    ? 'bg-rose-500 text-white shadow-2xs'
-                    : 'bg-white text-ceci-secondary border border-ceci-border-default hover:bg-surface-rose'
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5" />
-                <span>{opt.label}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Form Body */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {activeType === 'task' && (
-            <>
-              <div>
-                <label className="block text-xs font-medium text-ceci-secondary mb-1">título da tarefa</label>
-                <input
-                  type="text"
-                  placeholder="ex: ler capítulo 4 de psicopatologia"
-                  value={taskTitle}
-                  onChange={(e) => setTaskTitle(e.target.value)}
-                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                  required
-                  autoFocus
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-medium text-ceci-secondary mb-1">disciplina</label>
-                  <select
-                    value={taskCourseId}
-                    onChange={(e) => setTaskCourseId(e.target.value)}
-                    className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                  >
-                    {courses.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-ceci-secondary mb-1">categoria</label>
-                  <select
-                    value={taskCategory}
-                    onChange={(e) => setTaskCategory(e.target.value as Task['category'])}
-                    className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                  >
-                    <option value="leitura">leitura 📚</option>
-                    <option value="trabalho">trabalho / trabalho acadêmico 📝</option>
-                    <option value="revisao">revisão 🧠</option>
-                    <option value="estagio">estágio 🩺</option>
-                    <option value="outro">outro ✨</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-ceci-secondary mb-1">data limite (prazo)</label>
-                <input
-                  type="date"
-                  value={taskDueDate}
-                  onChange={(e) => setTaskDueDate(e.target.value)}
-                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                />
-              </div>
-            </>
-          )}
-
-          {activeType === 'reading' && (
-            <>
-              <div>
-                <label className="block text-xs font-medium text-ceci-secondary mb-1">título da obra / artigo</label>
-                <input
-                  type="text"
-                  placeholder="ex: a interpretação dos sonhos ou artigo sobre tcc"
-                  value={readingTitle}
-                  onChange={(e) => setReadingTitle(e.target.value)}
-                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-medium text-ceci-secondary mb-1">autor</label>
-                  <input
-                    type="text"
-                    placeholder="ex: aaron beck, freud"
-                    value={readingAuthor}
-                    onChange={(e) => setReadingAuthor(e.target.value)}
-                    className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-ceci-secondary mb-1">total de páginas</label>
-                  <input
-                    type="number"
-                    value={readingPages}
-                    onChange={(e) => setReadingPages(e.target.value)}
-                    className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                  />
-                </div>
-              </div>
-            </>
-          )}
-
-          {activeType === 'flashcard' && (
-            <>
-              <div>
-                <label className="block text-xs font-medium text-ceci-secondary mb-1">pergunta / frente do card</label>
-                <input
-                  type="text"
-                  placeholder="ex: o que é a tríade cognitiva da depressão?"
-                  value={flashcardQuestion}
-                  onChange={(e) => setFlashcardQuestion(e.target.value)}
-                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-ceci-secondary mb-1">resposta / verso do card</label>
-                <textarea
-                  rows={3}
-                  placeholder="explique a resposta com suas palavras..."
-                  value={flashcardAnswer}
-                  onChange={(e) => setFlashcardAnswer(e.target.value)}
-                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                  required
-                />
-              </div>
-            </>
-          )}
-
-          {activeType === 'concept' && (
-            <>
-              <div>
-                <label className="block text-xs font-medium text-ceci-secondary mb-1">nome do conceito de psicologia</label>
-                <input
-                  type="text"
-                  placeholder="ex: pensamentos automáticos ou transferência"
-                  value={conceptName}
-                  onChange={(e) => setConceptName(e.target.value)}
-                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-ceci-secondary mb-1">definição acadêmica / pessoal</label>
-                <textarea
-                  rows={3}
-                  placeholder="escreva a definição com suas palavras..."
-                  value={conceptDef}
-                  onChange={(e) => setConceptDef(e.target.value)}
-                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                />
-              </div>
-            </>
-          )}
-
-          {activeType === 'internship' && (
-            <>
-              <div>
-                <label className="block text-xs font-medium text-ceci-secondary mb-1">atividade de estágio realizada</label>
-                <input
-                  type="text"
-                  placeholder="ex: acolhimento na triagem da clínica escola"
-                  value={internshipActivity}
-                  onChange={(e) => setInternshipActivity(e.target.value)}
-                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-3 gap-3">
-                <div className="col-span-1">
-                  <label className="block text-xs font-medium text-ceci-secondary mb-1">horas</label>
-                  <input
-                    type="number"
-                    value={internshipHours}
-                    onChange={(e) => setInternshipHours(e.target.value)}
-                    className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                  />
-                </div>
-                <div className="col-span-2">
-                  <label className="block text-xs font-medium text-ceci-secondary mb-1">notas da supervisão</label>
-                  <input
-                    type="text"
-                    placeholder="orientação da supervisora..."
-                    value={internshipNotes}
-                    onChange={(e) => setInternshipNotes(e.target.value)}
-                    className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                  />
-                </div>
-              </div>
-            </>
-          )}
-
-          {activeType === 'session' && (
-            <>
-              <div>
-                <label className="block text-xs font-medium text-ceci-secondary mb-1">o que você vai estudar?</label>
-                <input
-                  type="text"
-                  placeholder="ex: revisar semiologia dos transtornos do humor"
-                  value={sessionTopic}
-                  onChange={(e) => setSessionTopic(e.target.value)}
-                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                  required
-                  autoFocus
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-medium text-ceci-secondary mb-1">duração (min)</label>
-                  <input
-                    type="number"
-                    value={sessionMinutes}
-                    onChange={(e) => setSessionMinutes(e.target.value)}
-                    className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-ceci-secondary mb-1">disciplina</label>
-                  <select
-                    value={sessionCourseId}
-                    onChange={(e) => setSessionCourseId(e.target.value)}
-                    className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                  >
-                    {courses.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </>
-          )}
-
-          {activeType === 'exam' && (
-            <>
-              <div>
-                <label className="block text-xs font-medium text-ceci-secondary mb-1">título da prova / atividade</label>
-                <input
-                  type="text"
-                  placeholder="ex: prova teórica ii - transtornos de ansiedade"
-                  value={examTitle}
-                  onChange={(e) => setExamTitle(e.target.value)}
-                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                  required
-                  autoFocus
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-medium text-ceci-secondary mb-1">data</label>
-                  <input
-                    type="date"
-                    value={examDate}
-                    onChange={(e) => setExamDate(e.target.value)}
-                    className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-ceci-secondary mb-1">peso</label>
-                  <input
-                    type="text"
-                    placeholder="ex: 40%"
-                    value={examWeight}
-                    onChange={(e) => setExamWeight(e.target.value)}
-                    className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-ceci-secondary mb-1">disciplina</label>
-                <select
-                  value={examCourseId}
-                  onChange={(e) => setExamCourseId(e.target.value)}
-                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                >
-                  {courses.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </>
-          )}
-
-          {activeType === 'author' && (
-            <>
-              <div>
-                <label className="block text-xs font-medium text-ceci-secondary mb-1">nome do autor</label>
-                <input
-                  type="text"
-                  placeholder="ex: aaron beck, carl rogers, vygotsky"
-                  value={authorName}
-                  onChange={(e) => setAuthorName(e.target.value)}
-                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                  required
-                  autoFocus
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-ceci-secondary mb-1">biografia / contribuição</label>
-                <textarea
-                  rows={3}
-                  placeholder="conte um pouco sobre o autor e a obra dele..."
-                  value={authorBio}
-                  onChange={(e) => setAuthorBio(e.target.value)}
-                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
-                />
-              </div>
-            </>
-          )}
-
-          {/* Submit Button */}
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-ceci-border-subtle">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2.5 rounded-xl text-xs text-ceci-secondary hover:bg-surface-muted transition-colors min-h-[44px] cursor-pointer"
-            >
-              cancelar
-            </button>
-            <button
-              type="submit"
-              className="flex items-center gap-1.5 bg-rose-500 hover:bg-ceci-brand-strong text-white px-5 py-2.5 rounded-[14px] text-xs font-medium shadow-2xs transition-transform active:scale-95 min-h-[48px] cursor-pointer"
-            >
-              <Plus className="w-4 h-4 stroke-[2.5]" />
-              <span>guardar registro</span>
-            </button>
-          </div>
-        </form>
-      </Modal>
-  );
-};
+        );
+      })}
+    </div>
+  </Modal>
+);

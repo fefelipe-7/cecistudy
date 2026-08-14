@@ -47,9 +47,51 @@ describe('parseRoute', () => {
     expect(parseRoute('#/mood')).toEqual({ mood: true });
   });
 
-  it('reconhece composição de nota e wizard de detalhes', () => {
-    expect(parseRoute('#/nota')).toEqual({ compose: true });
-    expect(parseRoute('#/nota/detalhes')).toEqual({ composeDetails: true });
+  it('reconhece composição de nota e wizard de detalhes (com base)', () => {
+    expect(parseRoute('#/nota')).toEqual({ compose: true, baseTab: 'home' });
+    expect(parseRoute('#/nota/detalhes')).toEqual({ composeDetails: true, baseTab: 'home' });
+    expect(parseRoute('#/biblioteca/nota')).toEqual({ compose: true, baseTab: 'biblioteca' });
+    expect(parseRoute('#/estudos/nota/detalhes')).toEqual({
+      composeDetails: true,
+      baseTab: 'estudos',
+    });
+    expect(parseRoute('#/faculdade/c3/nota')).toEqual({
+      compose: true,
+      baseTab: 'faculdade',
+      baseCourseId: 'c3',
+    });
+    expect(parseRoute('#/faculdade/c3/nota/detalhes')).toEqual({
+      composeDetails: true,
+      baseTab: 'faculdade',
+      baseCourseId: 'c3',
+    });
+  });
+
+  it('reconhece wizards de criação (com base opcional)', () => {
+    expect(parseRoute('#/novo/conceito')).toEqual({ baseTab: 'home', wizard: 'concept' });
+    expect(parseRoute('#/novo/flashcard').wizard).toBe('flashcard');
+    expect(parseRoute('#/novo/prova').wizard).toBe('exam');
+    expect(parseRoute('#/novo/tarefa').wizard).toBe('task');
+    expect(parseRoute('#/novo/prova-atividade').wizard).toBe('task-exam');
+    expect(parseRoute('#/novo/leitura').wizard).toBe('reading');
+    expect(parseRoute('#/novo/estudo').wizard).toBe('session');
+    expect(parseRoute('#/novo/estagio').wizard).toBe('internship');
+    expect(parseRoute('#/novo/autor').wizard).toBe('author');
+    expect(parseRoute('#/biblioteca/novo/conceito')).toEqual({
+      baseTab: 'biblioteca',
+      wizard: 'concept',
+    });
+    expect(parseRoute('#/faculdade/c3/novo/prova')).toEqual({
+      baseTab: 'faculdade',
+      baseCourseId: 'c3',
+      wizard: 'exam',
+    });
+    expect(parseRoute('#/novo/xyz').wizard).toBeUndefined();
+  });
+
+  it('não confunde notas (plural) da biblioteca com composição', () => {
+    expect(parseRoute('#/biblioteca/notas')).toEqual({ tab: 'biblioteca', notes: true });
+    expect(parseRoute('#/faculdade/aulas')).toEqual({ tab: 'faculdade', subTab: 'aulas' });
   });
 
   it('desconhecido cai em home', () => {
@@ -86,10 +128,44 @@ describe('routeToStack', () => {
       { kind: 'tab', tab: 'home' },
       { kind: 'compose' },
     ]);
+    expect(routeToStack({ compose: true, baseTab: 'biblioteca' })).toEqual([
+      { kind: 'tab', tab: 'biblioteca' },
+      { kind: 'compose' },
+    ]);
+    expect(routeToStack({ compose: true, baseTab: 'faculdade', baseCourseId: 'c3' })).toEqual([
+      { kind: 'tab', tab: 'faculdade' },
+      { kind: 'course', courseId: 'c3' },
+      { kind: 'compose' },
+    ]);
+    // wizard NÃO ganha compose fantasma (é empilhado após o compose já fechado)
     expect(routeToStack({ composeDetails: true })).toEqual([
       { kind: 'tab', tab: 'home' },
-      { kind: 'compose' },
       { kind: 'composeDetails' },
+    ]);
+    expect(routeToStack({ composeDetails: true, baseTab: 'faculdade', baseCourseId: 'c3' })).toEqual([
+      { kind: 'tab', tab: 'faculdade' },
+      { kind: 'course', courseId: 'c3' },
+      { kind: 'composeDetails' },
+    ]);
+  });
+
+  it('monta pilha de wizard de criação', () => {
+    expect(routeToStack({ wizard: 'concept' })).toEqual([
+      { kind: 'tab', tab: 'home' },
+      { kind: 'wizard', type: 'concept' },
+    ]);
+    expect(routeToStack({ wizard: 'task-exam' })).toEqual([
+      { kind: 'tab', tab: 'home' },
+      { kind: 'wizard', type: 'task-exam' },
+    ]);
+    expect(routeToStack({ baseTab: 'biblioteca', wizard: 'concept' })).toEqual([
+      { kind: 'tab', tab: 'biblioteca' },
+      { kind: 'wizard', type: 'concept' },
+    ]);
+    expect(routeToStack({ baseTab: 'faculdade', baseCourseId: 'c3', wizard: 'exam' })).toEqual([
+      { kind: 'tab', tab: 'faculdade' },
+      { kind: 'course', courseId: 'c3' },
+      { kind: 'wizard', type: 'exam' },
     ]);
   });
 });
@@ -112,13 +188,27 @@ describe('stackToHash', () => {
     expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'mood' }])).toBe('#/mood');
     expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }])).toBe('#/biblioteca/notas');
     expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'compose' }])).toBe('#/nota');
-    expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'compose' }, { kind: 'composeDetails' }])).toBe('#/nota/detalhes');
+    expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'composeDetails' }])).toBe('#/nota/detalhes');
+  });
+
+  it('serializa composição com a base (aba/curso) preservada', () => {
+    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'compose' }])).toBe('#/biblioteca/nota');
+    expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c3' }, { kind: 'compose' }])).toBe('#/faculdade/c3/nota');
+    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'composeDetails' }])).toBe('#/biblioteca/nota/detalhes');
+    expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c3' }, { kind: 'composeDetails' }])).toBe('#/faculdade/c3/nota/detalhes');
+  });
+
+  it('serializa wizard de criação com a base preservada', () => {
+    expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'wizard', type: 'concept' }])).toBe('#/novo/conceito');
+    expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'wizard', type: 'task-exam' }])).toBe('#/novo/prova-atividade');
+    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'wizard', type: 'concept' }])).toBe('#/biblioteca/novo/conceito');
+    expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c3' }, { kind: 'wizard', type: 'exam' }])).toBe('#/faculdade/c3/novo/prova');
   });
 });
 
 describe('round-trip hash ↔ rota', () => {
   it('reconstrói a rota a partir do hash serializado (abas + sub-tabs)', () => {
-    const cases = ['#/home', '#/faculdade', '#/faculdade/c3', '#/faculdade/aulas', '#/estudos/leituras', '#/biblioteca/conceitos', '#/perfil/stickers', '#/biblioteca/notas', '#/biblioteca/templo', '#/mood', '#/nota', '#/nota/detalhes'];
+    const cases = ['#/home', '#/faculdade', '#/faculdade/c3', '#/faculdade/aulas', '#/estudos/leituras', '#/biblioteca/conceitos', '#/perfil/stickers', '#/biblioteca/notas', '#/biblioteca/templo', '#/mood', '#/nota', '#/nota/detalhes', '#/biblioteca/nota', '#/faculdade/c3/nota', '#/biblioteca/nota/detalhes', '#/faculdade/c3/nota/detalhes', '#/novo/conceito', '#/novo/prova-atividade', '#/biblioteca/novo/conceito', '#/faculdade/c3/novo/prova'];
     for (const h of cases) {
       const route = parseRoute(h);
       const stack = routeToStack(route);

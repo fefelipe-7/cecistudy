@@ -18,7 +18,23 @@ export type NavScreen =
   | { kind: 'temple' }
   | { kind: 'mood' }
   | { kind: 'compose' }
-  | { kind: 'composeDetails' };
+  | { kind: 'composeDetails' }
+  | { kind: 'wizard'; type: WizardFlow };
+
+/**
+ * Tipos de wizard de criação em tela cheia (substitui o quick add em modal).
+ * `task-exam` é o fluxo combinado do FAB: 1º passo escolhe entre tarefa e prova.
+ */
+export type WizardFlow =
+  | 'task'
+  | 'exam'
+  | 'task-exam'
+  | 'reading'
+  | 'flashcard'
+  | 'concept'
+  | 'internship'
+  | 'session'
+  | 'author';
 
 export interface HeaderAction {
   label: string;
@@ -82,6 +98,8 @@ export interface ClassNote {
   approachIds?: string[];
   materials?: string[];
   hasQuestions?: boolean;
+  /** Avaliação da aula de 1 a 5 estrelas (opcional — preenchida no wizard de detalhes). */
+  rating?: number;
 }
 
 export interface Exam {

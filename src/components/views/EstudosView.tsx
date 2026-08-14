@@ -23,6 +23,7 @@ import { ReaderModeModal } from '../widgets/ReaderModeModal';
 import { PillTabBar } from '../ui/PillTabBar';
 import { useApp } from '../../context/AppContext';
 import { hapticSuccess } from '../../lib/haptics';
+import { celebrate } from '../../lib/celebrate';
 
 /** Intervalo de revisão (dias) por nº de revisões — repetição espaçada simples. */
 const REVIEW_INTERVALS = [1, 3, 7, 14, 30];
@@ -60,7 +61,7 @@ export const EstudosView: React.FC = () => {
     handleAddSession,
     handleUpdateReadingPages,
     handleReviewFlashcard,
-    openQuickAddWithType,
+    openWizard,
   } = useApp();
 
   const courseName = (id?: string) => courses.find((c) => c.id === id)?.name || 'geral';
@@ -118,6 +119,8 @@ export const EstudosView: React.FC = () => {
     if (timeLeft === 0 && isRunning) {
       setIsRunning(false);
       setShowSaveSession(true);
+      celebrate('session-done');
+      hapticSuccess();
     }
   }, [isRunning, timeLeft]);
 
@@ -159,7 +162,12 @@ export const EstudosView: React.FC = () => {
     setIsFlipped(false);
     dragX.set(0);
     setReviewedCount((c) => c + 1);
+    const finished = queueIndex + 1 >= reviewQueue.length;
     setQueueIndex((i) => i + 1);
+    if (finished) {
+      celebrate('flashcards-done');
+      hapticSuccess();
+    }
   };
 
   const handleCardDragEnd = (_e: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
@@ -308,13 +316,13 @@ export const EstudosView: React.FC = () => {
               </p>
               <div className="flex items-center justify-center gap-2">
                 <button
-                  onClick={() => openQuickAddWithType('flashcard')}
+                  onClick={() => openWizard('flashcard')}
                   className="text-xs font-semibold text-ceci-brand-strong bg-white px-3 py-1.5 rounded-full border border-ceci-border-brand cursor-pointer"
                 >
                   + flashcard
                 </button>
                 <button
-                  onClick={() => openQuickAddWithType('reading')}
+                  onClick={() => openWizard('reading')}
                   className="text-xs font-semibold text-ceci-academic-strong bg-white px-3 py-1.5 rounded-full border border-ceci-border-academic cursor-pointer"
                 >
                   + leitura
@@ -533,7 +541,7 @@ export const EstudosView: React.FC = () => {
           )}
 
           <button
-            onClick={() => openQuickAddWithType('flashcard')}
+            onClick={() => openWizard('flashcard')}
             className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-ceci-brand-strong bg-surface-rose border border-ceci-border-brand cursor-pointer"
           >
             <Plus className="w-4 h-4" /> novo flashcard
@@ -621,7 +629,7 @@ export const EstudosView: React.FC = () => {
           )}
 
           <button
-            onClick={() => openQuickAddWithType('reading')}
+            onClick={() => openWizard('reading')}
             className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-ceci-academic-strong bg-[#F3F9FC] border border-ceci-border-academic cursor-pointer"
           >
             <Plus className="w-4 h-4" /> nova leitura

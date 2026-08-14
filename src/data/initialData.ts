@@ -115,7 +115,8 @@ export const initialClasses: ClassNote[] = [
     conceptIds: ['con-1', 'con-2'],
     authorIds: ['aut-1'],
     materials: ['Capítulo 4 - Dalgalarrondo (Psicopatologia e Semiologia dos Transtornos Mentais)'],
-    hasQuestions: true
+    hasQuestions: true,
+    rating: 5
   },
   {
     id: 'cl-2',
@@ -130,7 +131,8 @@ export const initialClasses: ClassNote[] = [
     conceptIds: ['con-1', 'con-3'],
     authorIds: ['aut-1'],
     materials: ['Beck, J. S. (2021) - Terapia Cognitivo-Comportamental: Teoria e Prática'],
-    hasQuestions: true
+    hasQuestions: true,
+    rating: 4
   },
   {
     id: 'cl-3',
@@ -144,7 +146,8 @@ export const initialClasses: ClassNote[] = [
     conceptIds: ['con-4'],
     authorIds: ['aut-2'],
     materials: ['Manual de Aplicação do HTP (Buck)'],
-    hasQuestions: false
+    hasQuestions: false,
+    rating: 4
   },
   {
     id: 'cl-4',
@@ -159,7 +162,8 @@ export const initialClasses: ClassNote[] = [
     conceptIds: ['con-5'],
     authorIds: ['aut-3'],
     materials: ['Código de Ética Profissional do Psicólogo (CFP)'],
-    hasQuestions: true
+    hasQuestions: true,
+    rating: 5
   }
 ];
 

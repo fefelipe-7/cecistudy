@@ -13,7 +13,7 @@
 |---|---|---|
 | `UserProfile` | name, semester, totalSemesters, university, targetCareer, avatarMood, dailyQuote, stickersCollected | — |
 | `Course` | id, name, code, professor, semester, schedule, room, color, icon, progress, description | — (pai de classes/exams/tasks/readings/materials) |
-| `ClassNote` | id, courseId, title, number, date, summary, fullNotes, conceptIds[], authorIds[], materials[], hasQuestions | `courseId`, `conceptIds`, `authorIds` |
+| `ClassNote` | id, courseId, title, number, date, summary, fullNotes, conceptIds[], authorIds[], materials[], hasQuestions, **rating** (1–5 estrelas, opcional) | `courseId`, `conceptIds`, `authorIds` |
 | `Task` | id, title, disciplineId, classId, dueDate, completed, priority, category | `disciplineId`→Course, `classId`→ClassNote |
 | `Exam` | id, courseId, title, date, weight, topics[], completed, grade | `courseId` |
 | `StudySession` | id, courseId, topic, date, durationMinutes, mood, notes | `courseId` |
@@ -69,7 +69,8 @@
 - Chaves usadas: `profile`, `courses`, `classes`, `tasks`, `exams`, `authors`, `concepts`,
   `approaches`, `readings`, `flashcards`, `materials`, `internship`, `tcc`, `stickers`,
   `sessions`, `currentMood`, `reminder` (`{enabled, time}` — lembrete diário),
-  `savedBookIds`, `looseNotes` (BibliotecaView), `bookmarkedCourseIds` (favoritos de disciplinas).
+  `savedBookIds`, `looseNotes` (BibliotecaView), `bookmarkedCourseIds` (favoritos de disciplinas),
+  `composePrefs` (`{mode, courseId}` — última escolha do quick capture: aula vs. avulsa).
 - ⚠️ **Não persistidos** (estado local de view): `systemSuggestions`/progresso semanal (HomeView),
   `dotsData` (MoodCalendarWidget), catálogo `CollectionBook` (BibliotecaView).
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { BookOpen, ChevronRight } from 'lucide-react';
 import { ClassNote } from '../../types';
+import { StarRating } from '../ui/StarRating';
 
 interface ClassNoteListItemProps {
   note: ClassNote;
@@ -19,7 +20,10 @@ export const ClassNoteListItem: React.FC<ClassNoteListItemProps> = ({
     className="py-3.5 space-y-1.5 cursor-pointer group hover:bg-surface-muted/50 px-1 rounded-lg transition-colors"
   >
     <div className="flex items-center justify-between text-xs">
-      <span className="font-bold text-ceci-brand-strong text-[11px]">aula {note.number}</span>
+      <div className="flex items-center gap-2">
+        <span className="font-bold text-ceci-brand-strong text-[11px]">aula {note.number}</span>
+        {note.rating ? <StarRating value={note.rating} size="sm" /> : null}
+      </div>
       <span className="text-[11px] text-ceci-tertiary font-medium">{note.date}</span>
     </div>
 

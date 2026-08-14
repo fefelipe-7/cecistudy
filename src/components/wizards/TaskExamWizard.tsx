@@ -1,0 +1,332 @@
+import React, { useState } from 'react';
+import { ClipboardList, CheckCircle2, Sparkles } from 'lucide-react';
+import { useApp } from '../../context/AppContext';
+import type { Task } from '../../types';
+import { hapticSuccess } from '../../lib/haptics';
+import { WizardScaffold, type WizardStep } from './WizardScaffold';
+import {
+  ChipPicker,
+  DateInput,
+  FieldLabel,
+  ReviewCard,
+  SelectField,
+  TagInput,
+  TextInput,
+} from './wizardFields';
+
+interface TaskExamWizardProps {
+  /** Quando definido, pula a escolha entre tarefa e prova (vindo do picker). */
+  preset?: 'task' | 'exam';
+}
+
+const TASK_CATEGORIES: { value: Task['category']; label: string; emoji?: string }[] = [
+  { value: 'leitura', label: 'leitura', emoji: '📚' },
+  { value: 'trabalho', label: 'trabalho', emoji: '📝' },
+  { value: 'revisao', label: 'revisão', emoji: '🧠' },
+  { value: 'estagio', label: 'estágio', emoji: '🩺' },
+  { value: 'outro', label: 'outro', emoji: '✨' },
+];
+
+const PRIORITIES: { value: Task['priority']; label: string; emoji?: string }[] = [
+  { value: 'baixa', label: 'baixa', emoji: '🌱' },
+  { value: 'media', label: 'média', emoji: '⚖️' },
+  { value: 'alta', label: 'alta', emoji: '🔥' },
+];
+
+const today = () => new Date().toISOString().split('T')[0];
+
+export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
+  const { courses, wizardCourseId, handleAddTask, handleAddExam, closeWizard, showToast } = useApp();
+  const [kind, setKind] = useState<'task' | 'exam' | null>(preset ?? null);
+  const [step, setStep] = useState(0);
+  const [courseId, setCourseId] = useState(wizardCourseId || courses[0]?.id || '');
+
+  // tarefa
+  const [taskTitle, setTaskTitle] = useState('');
+  const [taskCategory, setTaskCategory] = useState<Task['category']>('leitura');
+  const [taskDueDate, setTaskDueDate] = useState('');
+  const [taskPriority, setTaskPriority] = useState<Task['priority']>('media');
+
+  // prova
+  const [examTitle, setExamTitle] = useState('');
+  const [examDate, setExamDate] = useState('');
+  const [examWeight, setExamWeight] = useState('1,0');
+  const [examTopics, setExamTopics] = useState<string[]>([]);
+
+  const courseName = courses.find((c) => c.id === courseId)?.name ?? '';
+
+  const choiceStep: WizardStep = {
+    id: 'tipo',
+    title: 'tipo',
+    content: (
+      <div className="space-y-3 pt-1">
+        <p className="text-center text-sm text-ceci-secondary">
+          o que você quer registrar agora?
+        </p>
+        <button
+          onClick={() => {
+            setKind('task');
+            setStep(0);
+          }}
+          className="w-full flex items-center gap-4 p-5 rounded-[24px] bg-white border-2 border-ceci-border-default hover:border-ceci-border-brand text-left transition-all active:scale-[0.98] cursor-pointer shadow-sm"
+        >
+          <span className="w-12 h-12 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
+            <CheckCircle2 className="w-6 h-6" />
+          </span>
+          <span>
+            <span className="block font-display font-bold text-base text-ceci-primary">tarefa</span>
+            <span className="block text-xs text-ceci-secondary mt-0.5 leading-snug">
+              um compromisso, prazo ou atividade para fazer
+            </span>
+          </span>
+        </button>
+        <button
+          onClick={() => {
+            setKind('exam');
+            setStep(0);
+          }}
+          className="w-full flex items-center gap-4 p-5 rounded-[24px] bg-white border-2 border-ceci-border-default hover:border-ceci-border-academic text-left transition-all active:scale-[0.98] cursor-pointer shadow-sm"
+        >
+          <span className="w-12 h-12 rounded-2xl bg-surface-blue border border-ceci-border-academic flex items-center justify-center text-ceci-academic-strong shrink-0">
+            <ClipboardList className="w-6 h-6" />
+          </span>
+          <span>
+            <span className="block font-display font-bold text-base text-ceci-primary">
+              prova / avaliação pontuada
+            </span>
+            <span className="block text-xs text-ceci-secondary mt-0.5 leading-snug">
+              avaliação que vale nota, com data e peso
+            </span>
+          </span>
+        </button>
+      </div>
+    ),
+  };
+
+  const taskSteps: WizardStep[] = [
+    {
+      id: 'tarefa-titulo',
+      title: 'tarefa',
+      content: (
+        <div className="space-y-2">
+          <FieldLabel>o que você precisa fazer?</FieldLabel>
+          <TextInput
+            value={taskTitle}
+            onChange={(e) => setTaskTitle(e.target.value)}
+            placeholder="ex: ler capítulo 4 de psicopatologia"
+            autoFocus
+          />
+          <p className="text-[11px] text-ceci-tertiary">
+            dá para guardar sem prazo depois, se quiser ✨
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'tarefa-categoria',
+      title: 'categoria & foco',
+      content: (
+        <div className="space-y-5">
+          <ChipPicker
+            label="categoria"
+            options={TASK_CATEGORIES}
+            value={taskCategory}
+            onChange={setTaskCategory}
+          />
+          <ChipPicker
+            label="prioridade"
+            options={PRIORITIES}
+            value={taskPriority}
+            onChange={setTaskPriority}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'tarefa-prazo',
+      title: 'disciplina & prazo',
+      content: (
+        <div className="space-y-4">
+          <SelectField
+            label="disciplina"
+            value={courseId}
+            onChange={setCourseId}
+            options={courses.map((c) => ({ value: c.id, label: c.name }))}
+            emptyMessage="ainda não há disciplinas cadastradas."
+          />
+          <div>
+            <FieldLabel>data limite (prazo)</FieldLabel>
+            <DateInput value={taskDueDate} onChange={(e) => setTaskDueDate(e.target.value)} />
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'tarefa-revisar',
+      title: 'revisar',
+      content: (
+        <div className="space-y-3">
+          <p className="text-xs font-medium text-ceci-secondary">
+            confere se está tudo certinho antes de guardar:
+          </p>
+          <ReviewCard
+            rows={[
+              { label: 'tarefa', value: taskTitle.trim() },
+              { label: 'categoria', value: taskCategory },
+              { label: 'disciplina', value: courseName },
+              { label: 'prazo', value: taskDueDate ? new Date(taskDueDate).toLocaleDateString('pt-BR') : 'sem prazo definido' },
+              { label: 'prioridade', value: taskPriority },
+            ]}
+          />
+        </div>
+      ),
+    },
+  ];
+
+  const examSteps: WizardStep[] = [
+    {
+      id: 'prova-titulo',
+      title: 'prova',
+      content: (
+        <div className="space-y-4">
+          <div>
+            <FieldLabel>título da prova / avaliação</FieldLabel>
+            <TextInput
+              value={examTitle}
+              onChange={(e) => setExamTitle(e.target.value)}
+              placeholder="ex: prova teórica ii — transtornos de ansiedade"
+              autoFocus
+            />
+          </div>
+          <div>
+            <FieldLabel>data</FieldLabel>
+            <DateInput value={examDate} onChange={(e) => setExamDate(e.target.value)} />
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'prova-contexto',
+      title: 'disciplina & peso',
+      content: (
+        <div className="space-y-4">
+          <SelectField
+            label="disciplina"
+            value={courseId}
+            onChange={setCourseId}
+            options={courses.map((c) => ({ value: c.id, label: c.name }))}
+            emptyMessage="ainda não há disciplinas cadastradas."
+          />
+          <div>
+            <FieldLabel>peso</FieldLabel>
+            <TextInput
+              value={examWeight}
+              onChange={(e) => setExamWeight(e.target.value)}
+              placeholder="ex: 40% da nota"
+            />
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'prova-topicos',
+      title: 'tópicos',
+      content: (
+        <div className="space-y-2">
+          <TagInput
+            label="assuntos que vão cair"
+            tags={examTopics}
+            onChange={setExamTopics}
+            placeholder="ex: pensamentos automáticos"
+            emptyMessage="não precisa preencher tudo, pode deixar vazio ♡"
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'prova-revisar',
+      title: 'revisar',
+      content: (
+        <div className="space-y-3">
+          <p className="text-xs font-medium text-ceci-secondary">
+            confere se está tudo certinho antes de guardar:
+          </p>
+          <ReviewCard
+            rows={[
+              { label: 'prova', value: examTitle.trim() },
+              { label: 'disciplina', value: courseName },
+              { label: 'data', value: examDate ? new Date(examDate).toLocaleDateString('pt-BR') : 'a confirmar' },
+              { label: 'peso', value: examWeight.trim() || '1,0' },
+              { label: 'tópicos', value: examTopics.length ? examTopics.join(' · ') : 'ainda sem tópicos' },
+            ]}
+          />
+        </div>
+      ),
+    },
+  ];
+
+  const steps = kind === null ? [choiceStep] : kind === 'task' ? taskSteps : examSteps;
+
+  const canNext =
+    kind === null
+      ? false
+      : kind === 'task'
+        ? taskTitle.trim().length > 0
+        : examTitle.trim().length > 0;
+
+  const handleSave = () => {
+    if (kind === 'task') {
+      handleAddTask({
+        id: 't-' + Date.now(),
+        title: taskTitle.trim(),
+        disciplineId: courseId,
+        category: taskCategory,
+        dueDate: taskDueDate || today(),
+        completed: false,
+        priority: taskPriority,
+      });
+    } else {
+      handleAddExam({
+        id: 'e-' + Date.now(),
+        courseId: courseId || 'c1',
+        title: examTitle.trim(),
+        date: examDate || today(),
+        weight: examWeight.trim() || '1,0',
+        topics: examTopics,
+        completed: false,
+      });
+    }
+    hapticSuccess();
+    closeWizard();
+    showToast(kind === 'task' ? 'tarefa guardada no plano ♡' : 'prova anotada no cantinho ♡');
+  };
+
+  return (
+    <WizardScaffold
+      title={kind === null ? 'novo registro' : kind === 'exam' ? 'nova prova / avaliação' : 'nova tarefa'}
+      subtitle={kind === null ? 'prova ou atividade?' : undefined}
+      icon={
+        kind === 'exam' ? (
+          <ClipboardList className="w-3.5 h-3.5" />
+        ) : kind === 'task' ? (
+          <CheckCircle2 className="w-3.5 h-3.5" />
+        ) : (
+          <Sparkles className="w-3.5 h-3.5" />
+        )
+      }
+      iconClass={
+        kind === 'exam'
+          ? 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong'
+          : 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
+      }
+      steps={steps}
+      step={step}
+      onStepChange={setStep}
+      canNext={canNext}
+      hideNext={kind === null}
+      onSave={handleSave}
+      onClose={closeWizard}
+      saveLabel={kind === 'task' ? 'guardar tarefa ♡' : 'guardar prova ♡'}
+    />
+  );
+};

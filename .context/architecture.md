@@ -75,14 +75,20 @@ storage.getSync(key) // apenas web (inicialização do hook)
   - `systemSuggestions`, dados de dias da semana (HomeView — dummy)
   - `dotsData` do calendário de humor (MoodCalendarWidget — dummy)
 
-> ✅ `savedBookIds` e `looseNotes` (BibliotecaView) já são persistidos via `usePersistentState`.
+> ✅ Persistidos via `usePersistentState`: `savedBookIds` e `looseNotes` (BibliotecaView),
+> `bookmarkedCourseIds` (favoritos) e `composePrefs` (última escolha do quick capture).
 
 ## 3.1 Shell nativo (libs)
 
 - `src/lib/native.ts` — bootstrap do shell (no-op no web): `StatusBar` (escuro, sem overlay),
   `Keyboard` (`resizeMode: native` p/ não cobrir inputs) e `SplashScreen.hide()` no 1º frame.
-- `src/lib/haptics.ts` — `hapticTap()`/`hapticSuccess()`/`hapticWarning()` (no-op no web),
-  usados em ações-chave (toggle de tarefa/prova, salvar mood, lembrete).
+- `src/lib/haptics.ts` — `hapticTap()`/`hapticSuccess()` (no-op no web), **enxutos**:
+  `hapticTap` só em toggles diretos (tarefa/prova/flashcard); `hapticSuccess` em confirmações/
+  celebrações (salvar mood/sessão/nota, lembrete agendado). Sem vibração em navegação/modais.
+- `src/lib/celebrate.ts` — confetes via `canvas-confetti` (`celebrate(kind)`, presets por
+  momento, respeita `prefers-reduced-motion`). Gatilhos: todas as tarefas concluídas, leitura
+  concluída, mood salvo, pomodoro concluído, fim da fila de flashcards. Decisão de "tarefas 100%"
+  em `src/lib/taskLogic.ts` (`shouldCelebrateTasks`, testado).
 - `src/lib/notifications.ts` — lembrete diário via `@capacitor/local-notifications`
   (no-op no web). Estado `reminderSettings` (`{enabled, time}`) persistido no `AppContext`;
   UI em Perfil → personalização. Ícone pequeno Android: `ic_stat_cecistudy`.
@@ -103,22 +109,36 @@ voltar/avançar do browser e o histórico do webview (swipe-back do iOS).
 
 Rotas: `#/home`, `#/faculdade`, `#/faculdade/:courseId`, `#/faculdade/:subTab`, `#/estudos`,
 `#/estudos/:subTab`, `#/biblioteca`, `#/biblioteca/:subTab`, `#/biblioteca/notas`,
-`#/biblioteca/templo`, `#/perfil`, `#/perfil/:subTab`, `#/mood`.
+`#/biblioteca/templo`, `#/perfil`, `#/perfil/:subTab`, `#/mood`,
+`#/nota`, `#/<tab>/nota`, `#/faculdade/:courseId/nota` (+ sufixo `/detalhes`).
 
-- `NavScreen` = `{kind:'tab', tab} | {kind:'course', courseId} | {kind:'notes'} | {kind:'temple'} | {kind:'mood'}`
+- `NavScreen` = `{kind:'tab', tab} | {kind:'course', courseId} | {kind:'notes'} | {kind:'temple'} | {kind:'mood'} | {kind:'compose'} | {kind:'composeDetails'}`
   (em `src/types.ts`). Base = tab; telas auxiliares são **empurradas** por cima.
   Curso → sobre faculdade · notas/templo → sobre biblioteca · mood → sobre home.
+  Compose/composeDetails → **mantêm a base** (aba/curso de origem) — fechar retorna ao
+  contexto de onde abriu (a base é serializada na rota: `#/biblioteca/nota`, `#/faculdade/c3/nota`).
 - **Derivados do topo da pilha** (`currentScreen`): `activeTab` (base da pilha),
   `focusedCourseId`/`focusedCourse` (course), `isMoodViewOpen` (mood), `isNotesScreenOpen`
-  (notes), `isBottomNavVisible` (quando o topo é tab — bottom nav some em telas auxiliares).
+  (notes), `isComposeScreenOpen` (compose), `isComposeDetailsOpen` (composeDetails),
+  `isBottomNavVisible` (quando o topo é tab — bottom nav some em telas auxiliares).
 - `parseRoute(hash)` → `routeToStack(route)` reconstroem a pilha a partir da URL;
   `stackToHash(stack, subTab)` serializa de volta. `hashchange` + `popstate` aplicam a rota.
+  Rotas de compose têm base opcional (`baseTab`/`baseCourseId`): `#/nota` assume home,
+  `#/faculdade/c3/nota/detalhes` empilha `[faculdade, course c3, composeDetails]`.
 - **Sub-tabs codificadas na URL** quando diferentes da padrão (ex.: `#/faculdade/aulas`,
   `#/biblioteca/conceitos`). `parseRoute` distingue sub-tab de `courseId` por lista conhecida;
   a sub-tab padrão (`DEFAULT_SUB_TAB`) não é serializada (URLs limpas).
 - Ações de navegação (push/pop): `handleNavigate` (reseta a pilha numa tab; com `target`
-  de disciplina já empurra o curso), `openCourseDetail`, `openNotesScreen`, `openMoodView`
-  (push) e `goBack`/`closeCourseDetail`/`closeNotesScreen`/`closeMoodView` (pop).
+  de disciplina já empurra o curso), `openCourseDetail`, `openNotesScreen`, `openMoodView`,
+  `openCompose`/`openComposeDetails` (push sobre a base atual) e
+  `goBack`/`closeCourseDetail`/`closeNotesScreen`/`closeMoodView`/`closeCompose`/
+  `closeComposeDetails` (pop).
+- **Quick capture:** `ComposeNoteView` guarda a última escolha em `composePrefs`
+  (`{mode: 'aula'|'avulsa', courseId?}`, persistido) — o FAB reabre no último modo;
+  se aberto do contexto de um curso, força `aula` daquele curso. Depois de salvar uma aula,
+  abre o **wizard de detalhes** (`ClassNoteDetailWizard`, empilhado como `composeDetails`,
+  sem `compose` fantasma na rota) em fluxo linear de 5 passos (identificação → anotações →
+  teoria → referências → avaliação com estrelas 1–5 + dúvidas).
 - **Deep-link focado:** `handleNavigate(tab, subTab, targetId)` (vindo da busca global) define
   `targetId` + `targetSectionRef`; um efeito no `AppContext` rola (`scrollIntoView`) e destaca
   (box-shadow rosa temporário) o item com `data-target` (ex.: ClassNoteListItem) ou a seção

@@ -22,6 +22,7 @@ import { PerfilView } from './components/views/PerfilView';
 import { EstadoDeEspiritoView } from './components/views/EstadoDeEspiritoView';
 import { ComposeNoteView } from './components/views/ComposeNoteView';
 import { ClassNoteDetailWizard } from './components/views/ClassNoteDetailWizard';
+import { WizardRouter } from './components/wizards/WizardRouter';
 import { Modal } from './components/ui/Modal';
 import { FileText } from 'lucide-react';
 
@@ -48,6 +49,8 @@ function AppShell() {
         app.closeComposeDetails();
       } else if (app.isComposeScreenOpen) {
         app.closeCompose();
+      } else if (app.isWizardOpen) {
+        app.closeWizard();
       } else if (app.isMoodViewOpen) {
         app.closeMoodView();
       } else if (app.isNotesScreenOpen) {
@@ -73,27 +76,16 @@ function AppShell() {
     currentMood,
     courses,
     handleNavigate,
-    handleAddTask,
-    handleAddReading,
-    handleAddFlashcard,
-    handleAddConcept,
-    handleAddInternshipLog,
-    handleAddSession,
-    handleAddExam,
-    handleAddAuthor,
     handleSaveMood,
     openSearch,
     openQuickAdd,
-    openQuickAddWithType,
     openCompose,
     closeMoodView,
     closeQuickAdd,
     closeSearch,
-    quickAddType
   } = app;
 
-  const isComposeFlow = app.isComposeScreenOpen || app.isComposeDetailsOpen;
-
+  const isAuxFlow = app.isComposeScreenOpen || app.isComposeDetailsOpen || app.isWizardOpen;
   // Keyboard shortcut (Cmd+K) for search
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -110,7 +102,7 @@ function AppShell() {
     <div className="min-h-screen text-ceci-primary flex flex-col font-sans antialiased selection:bg-rose-100 selection:text-ceci-brand-strong">
 
       {/* Top Header */}
-      {!isComposeFlow && (
+      {!isAuxFlow && (
         <HeaderNav
           profile={profile}
           headerConfig={headerConfig}
@@ -141,6 +133,8 @@ function AppShell() {
               <ComposeNoteView />
             ) : app.isComposeDetailsOpen ? (
               <ClassNoteDetailWizard />
+            ) : app.isWizardOpen ? (
+              <WizardRouter />
             ) : app.isMoodViewOpen ? (
               <EstadoDeEspiritoView
                 currentMood={currentMood}
@@ -165,26 +159,20 @@ function AppShell() {
         <BottomNav
           activeTab={activeTab}
           onChangeTab={(tab) => handleNavigate(tab)}
-          onOpenQuickAddWithType={openQuickAddWithType}
+          onOpenWizard={app.openWizard}
+          onOpenTaskExamWizard={app.openTaskExamWizard}
           onOpenCompose={() => openCompose()}
         />
       )}
 
-      {/* Quick Add Modal (+ Novo) */}
+      {/* Quick Add (escolha de tipo → abre o wizard em tela cheia) */}
       <QuickAddModal
         isOpen={app.isQuickAddOpen}
         onClose={closeQuickAdd}
-        initialType={quickAddType}
-        presetCourseId={app.quickAddCourseId}
-        courses={courses}
-        onAddTask={handleAddTask}
-        onAddReading={handleAddReading}
-        onAddFlashcard={handleAddFlashcard}
-        onAddConcept={handleAddConcept}
-        onAddInternshipLog={handleAddInternshipLog}
-        onAddSession={handleAddSession}
-        onAddExam={handleAddExam}
-        onAddAuthor={handleAddAuthor}
+        onPick={(type) => {
+          if (type === 'class') openCompose();
+          else app.openWizard(type);
+        }}
       />
 
       {/* Global Search Modal */}

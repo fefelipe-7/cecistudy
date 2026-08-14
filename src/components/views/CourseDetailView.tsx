@@ -27,7 +27,7 @@ import {
   ReadingItem,
   MaterialItem,
   InternshipLog,
-  QuickType
+  WizardFlow
 } from '../../types';
 
 interface CourseDetailViewProps {
@@ -58,7 +58,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'info' | 'aulas' | 'repertorio'>('info');
   const [selectedClassNote, setSelectedClassNote] = useState<ClassNote | null>(null);
-  const { openQuickAddForCourse, openCompose } = useApp();
+  const { openWizard, openCompose } = useApp();
 
   // Filter items specific to this course
   const courseClasses = classes.filter((c) => c.courseId === course.id);
@@ -119,7 +119,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
               onClick={() =>
                 btn.type === 'class'
                   ? openCompose(course.id)
-                  : openQuickAddForCourse(btn.type as QuickType, course.id)
+                  : openWizard(btn.type as WizardFlow, course.id)
               }
               className="flex items-center gap-3 p-3.5 rounded-2xl bg-white border border-ceci-border-default hover:border-ceci-border-brand text-left tap-interactive hover:shadow-md active:scale-95 cursor-pointer shadow-sm"
             >

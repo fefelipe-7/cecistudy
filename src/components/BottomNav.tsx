@@ -1,20 +1,22 @@
 import React from 'react';
 import { Home, GraduationCap, Brain, Library, User, FileText, BookOpen, Check, Sparkles } from 'lucide-react';
-import { NavTab, QuickType } from '../types';
+import { NavTab, WizardFlow } from '../types';
 import { BottomNavBar, NavItem } from '@/components/ui/bottom-nav-bar';
 import FloatingActionMenu from '@/components/ui/floating-action-menu';
 
 interface BottomNavProps {
   activeTab: NavTab;
   onChangeTab: (tab: NavTab) => void;
-  onOpenQuickAddWithType?: (type: QuickType) => void;
+  onOpenWizard?: (type: WizardFlow) => void;
+  onOpenTaskExamWizard?: () => void;
   onOpenCompose?: () => void;
 }
 
 export const BottomNav: React.FC<BottomNavProps> = ({
   activeTab,
   onChangeTab,
-  onOpenQuickAddWithType,
+  onOpenWizard,
+  onOpenTaskExamWizard,
   onOpenCompose,
 }) => {
   const tabs: (NavItem & { id: NavTab })[] = [
@@ -31,22 +33,22 @@ export const BottomNav: React.FC<BottomNavProps> = ({
     {
       label: 'Novo conceito',
       Icon: <Sparkles className="w-4 h-4 text-ceci-border-brand" />,
-      onClick: () => onOpenQuickAddWithType?.('concept'),
+      onClick: () => onOpenWizard?.('concept'),
     },
     {
       label: 'Novo flashcard',
       Icon: <Brain className="w-4 h-4 text-ceci-border-brand" />,
-      onClick: () => onOpenQuickAddWithType?.('flashcard'),
+      onClick: () => onOpenWizard?.('flashcard'),
     },
     {
       label: 'Nova prova / atividade',
       Icon: <Check className="w-4 h-4 text-ceci-border-brand" />,
-      onClick: () => onOpenQuickAddWithType?.('task'),
+      onClick: () => onOpenTaskExamWizard?.(),
     },
     {
       label: 'Novo livro / leitura',
       Icon: <BookOpen className="w-4 h-4 text-ceci-border-brand" />,
-      onClick: () => onOpenQuickAddWithType?.('reading'),
+      onClick: () => onOpenWizard?.('reading'),
     },
     {
       label: 'Nova aula / nota',

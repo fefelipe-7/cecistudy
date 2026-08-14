@@ -25,7 +25,7 @@ import {
   StudySession,
   DynamicHeaderConfig,
   DailyMoodData,
-  QuickType
+  WizardFlow
 } from '../types';
 import {
   initialProfile,
@@ -46,6 +46,8 @@ import {
 } from '../data/initialData';
 import { usePersistentState } from '../lib/usePersistentState';
 import { hapticTap, hapticSuccess } from '../lib/haptics';
+import { celebrate } from '../lib/celebrate';
+import { shouldCelebrateTasks } from '../lib/taskLogic';
 import { scheduleDailyReminder, cancelDailyReminder } from '../lib/notifications';
 import {
   Route,
@@ -129,6 +131,14 @@ export interface AppContextValue {
   openComposeDetails: (noteId: string) => void;
   closeComposeDetails: () => void;
 
+  // wizards de criação em tela cheia (conceito, flashcard, prova, atividade…)
+  isWizardOpen: boolean;
+  currentWizardType: WizardFlow | null;
+  wizardCourseId: string | undefined;
+  openWizard: (type: WizardFlow, courseId?: string) => void;
+  openTaskExamWizard: () => void;
+  closeWizard: () => void;
+
   // prompt "quer dar mais detalhes?" após salvar uma aula
   isDetailPromptOpen: boolean;
   detailNoteId: string | null;
@@ -143,10 +153,6 @@ export interface AppContextValue {
   isQuickAddOpen: boolean;
   openQuickAdd: () => void;
   closeQuickAdd: () => void;
-  quickAddType: QuickType;
-  openQuickAddWithType: (type: QuickType, courseId?: string) => void;
-  quickAddCourseId: string | undefined;
-  openQuickAddForCourse: (type: QuickType, courseId: string) => void;
   isEditCourseOpen: boolean;
   openEditCourse: () => void;
   closeEditCourse: () => void;
@@ -239,8 +245,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // Modals
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
-  const [quickAddType, setQuickAddType] = useState<QuickType>('task');
-  const [quickAddCourseId, setQuickAddCourseId] = useState<string | undefined>(undefined);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isEditCourseOpen, setIsEditCourseOpen] = useState(false);
   const [isCreatingLooseNote, setIsCreatingLooseNote] = useState(false);
@@ -251,6 +255,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // Composição de nota (tela de captura rápida)
   const [composeCourseId, setComposeCourseId] = useState<string | undefined>(undefined);
+
+  // Curso pré-selecionado nos wizards (ex.: aberto a partir de uma disciplina)
+  const [wizardCourseId, setWizardCourseId] = useState<string | undefined>(undefined);
 
   // Wizard de detalhes da aula
   const [wizardNoteId, setWizardNoteId] = useState<string | null>(null);
@@ -269,6 +276,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const isBottomNavVisible = currentScreen.kind === 'tab';
   const isComposeScreenOpen = currentScreen.kind === 'compose';
   const isComposeDetailsOpen = currentScreen.kind === 'composeDetails';
+  const isWizardOpen = currentScreen.kind === 'wizard';
+  const currentWizardType: WizardFlow | null = currentScreen.kind === 'wizard' ? currentScreen.type : null;
   const focusedCourseId = currentScreen.kind === 'course' ? currentScreen.courseId : null;
   const focusedCourse = focusedCourseId ? courses.find((c) => c.id === focusedCourseId) : undefined;
   const screenKey =
@@ -284,7 +293,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
               ? 'compose'
               : currentScreen.kind === 'composeDetails'
                 ? 'composeDetails'
-                : 'mood';
+                : currentScreen.kind === 'wizard'
+                  ? `wizard-${currentScreen.type}`
+                  : 'mood';
 
   // Roteamento hash como espelho (deep-link + voltar/avançar no browser; histórico do webview p/ swipe iOS)
   useEffect(() => {
@@ -359,7 +370,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const isBookmarked = bookmarkedCourseIds.includes(focusedCourse.id);
     const courseActions: HeaderAction[] = [
       { label: 'nova anotação de aula', Icon: FileText, onClick: () => openCompose(focusedCourse.id) },
-      { label: 'nova prova / avaliação', Icon: CheckCircle2, onClick: () => openQuickAddForCourse('exam', focusedCourse.id) },
+      { label: 'nova prova / avaliação', Icon: CheckCircle2, onClick: () => openWizard('exam', focusedCourse.id) },
       { label: 'editar detalhes da matéria', Icon: Settings2, onClick: () => openEditCourse() },
     ];
     headerConfig = {
@@ -379,9 +390,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Handlers
   const handleToggleTask = (taskId: string) => {
     hapticTap();
-    setTasks((prev) =>
-      prev.map((t) => (t.id === taskId ? { ...t, completed: !t.completed } : t))
-    );
+    const nextTasks = tasks.map((t) => (t.id === taskId ? { ...t, completed: !t.completed } : t));
+    setTasks(nextTasks);
+    if (shouldCelebrateTasks(nextTasks, taskId)) {
+      hapticSuccess();
+      celebrate('tasks-done');
+      showToast('plano do dia completo! parabéns, Ceci 🎉');
+    }
   };
 
   const handleToggleExam = (examId: string) => {
@@ -416,20 +431,23 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const handleUpdateReadingPages = (readingId: string, newPages: number) => {
-    setReadings((prev) =>
-      prev.map((r) => {
-        if (r.id === readingId) {
-          const updatedPages = Math.min(newPages, r.totalPages || 999);
-          const isDone = updatedPages >= (r.totalPages || 100);
-          return {
-            ...r,
-            readPages: updatedPages,
-            status: isDone ? 'concluido' : 'lendo'
-          };
-        }
-        return r;
-      })
-    );
+    const prev = readings.find((r) => r.id === readingId);
+    const nextReadings = readings.map((r) => {
+      if (r.id === readingId) {
+        const updatedPages = Math.min(newPages, r.totalPages || 999);
+        const isDone = updatedPages >= (r.totalPages || 100);
+        const status: ReadingItem['status'] = isDone ? 'concluido' : 'lendo';
+        return { ...r, readPages: updatedPages, status };
+      }
+      return r;
+    });
+    setReadings(nextReadings);
+    const doneNow = nextReadings.find((r) => r.id === readingId);
+    if (doneNow?.status === 'concluido' && prev?.status !== 'concluido') {
+      hapticSuccess();
+      celebrate('reading-done');
+      showToast('leitura concluída! que orgulho de você ♡');
+    }
   };
 
   const handleAddFlashcard = (card: Flashcard) => {
@@ -486,7 +504,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const updateReminder = (settings: ReminderSettings) => {
     setReminderSettings(settings);
-    hapticTap();
     if (settings.enabled) {
       void scheduleDailyReminder(settings.time).then((scheduled) => {
         if (scheduled) hapticSuccess();
@@ -551,7 +568,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const goBack = () => {
     if (navigationStack.length <= 1) return;
-    hapticTap();
     const next = navigationStack.slice(0, -1);
     setStack(next);
     setTargetId(undefined);
@@ -560,7 +576,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const handleNavigate = (tab: NavTab, subTab?: string, target?: string) => {
-    hapticTap();
     if (tab === 'faculdade' && subTab) setSubTabFaculdade(subTab as SubTabFaculdade);
     if (tab === 'estudos' && subTab) setSubTabEstudos(subTab as SubTabEstudos);
     if (tab === 'biblioteca' && subTab) setSubTabBiblioteca(subTab as SubTabBiblioteca);
@@ -577,7 +592,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const openCourseDetail = (courseId: string) => {
-    hapticTap();
     const top = navigationStack[navigationStack.length - 1];
     const next: NavScreen[] =
       top.kind === 'course'
@@ -594,7 +608,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const closeCourseDetail = () => goBack();
 
   const openNotesScreen = () => {
-    hapticTap();
     const top = navigationStack[navigationStack.length - 1];
     const next: NavScreen[] =
       top.kind === 'notes' ? navigationStack : [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }];
@@ -606,7 +619,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const closeNotesScreen = () => goBack();
 
   const openTemple = () => {
-    hapticTap();
     const top = navigationStack[navigationStack.length - 1];
     const next: NavScreen[] =
       top.kind === 'temple' ? navigationStack : [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'temple' }];
@@ -618,7 +630,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const closeTemple = () => goBack();
 
   const openMoodView = () => {
-    hapticTap();
     const top = navigationStack[navigationStack.length - 1];
     const next: NavScreen[] =
       top.kind === 'mood' ? navigationStack : [{ kind: 'tab', tab: 'home' }, { kind: 'mood' }];
@@ -672,16 +683,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const handleSaveMood = (mood: DailyMoodData) => {
     hapticSuccess();
+    celebrate('mood-saved');
     setCurrentMood(mood);
     goBack();
   };
 
   const openEditCourse = () => {
-    hapticTap();
     setIsEditCourseOpen(true);
   };
   const closeEditCourse = () => {
-    hapticTap();
     setIsEditCourseOpen(false);
   };
 
@@ -691,33 +701,34 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const openQuickAdd = () => {
-    hapticTap();
-    setQuickAddCourseId(undefined);
     setIsQuickAddOpen(true);
   };
   const closeQuickAdd = () => {
-    hapticTap();
-    setQuickAddCourseId(undefined);
     setIsQuickAddOpen(false);
   };
-  const openQuickAddWithType = (type: QuickType, courseId?: string) => {
-    hapticTap();
-    setQuickAddType(type);
-    setQuickAddCourseId(courseId);
-    setIsQuickAddOpen(true);
+
+  const openWizard = (type: WizardFlow, courseId?: string) => {
+    setWizardCourseId(courseId);
+    const top = navigationStack[navigationStack.length - 1];
+    const next: NavScreen[] =
+      top.kind === 'wizard' && top.type === type
+        ? navigationStack
+        : [...navigationStack, { kind: 'wizard', type }];
+    setStack(next);
+    syncHash(next);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-  const openQuickAddForCourse = (type: QuickType, courseId: string) => {
-    hapticTap();
-    setQuickAddType(type);
-    setQuickAddCourseId(courseId);
-    setIsQuickAddOpen(true);
+
+  const openTaskExamWizard = () => openWizard('task-exam');
+
+  const closeWizard = () => {
+    setWizardCourseId(undefined);
+    goBack();
   };
   const openSearch = () => {
-    hapticTap();
     setIsSearchOpen(true);
   };
   const closeSearch = () => {
-    hapticTap();
     setIsSearchOpen(false);
   };
 
@@ -796,10 +807,12 @@ currentMood,
     isQuickAddOpen,
     openQuickAdd,
     closeQuickAdd,
-    quickAddType,
-    openQuickAddWithType,
-    quickAddCourseId,
-    openQuickAddForCourse,
+    isWizardOpen,
+    currentWizardType,
+    wizardCourseId,
+    openWizard,
+    openTaskExamWizard,
+    closeWizard,
     isEditCourseOpen,
     openEditCourse,
     closeEditCourse,

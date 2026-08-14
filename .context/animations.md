@@ -187,3 +187,31 @@ com "reduzir movimento" desativa animações automaticamente.
 
 **Verificação:** `npm run lint` ✅ · `npm run test` (35) ✅ · `npm run build` ✅ ·
 fluxos no headless (home→mood→voltar, FAB menu, tab, curso push/pop) sem erros de console.
+
+## 10. Celebrações (confete) — implementada
+
+> 2026-08: enxugue de haptics + celebrações data-driven com `canvas-confetti`.
+
+**Haptics enxutos:** `hapticTap` removido da navegação/modais (trocar aba, push/pop, voltar,
+abrir/fechar quick-add/busca/editar matéria, lembrete). Ficou apenas em interações diretas
+(toggle de tarefa/prova, revisão de flashcard) e `hapticSuccess` em confirmações/celebrações.
+
+**Motor:** `src/lib/celebrate.ts` — `celebrate(kind)` com presets por momento:
+- `tasks-done` (grande: burst central + canhões laterais) · `session-done`/`flashcards-done`
+  (médio) · `reading-done` (médio) · `mood-saved` (pequeno).
+- Cores da paleta (rose/green/blue/yellow), `z-index` 9999, no-op com `prefers-reduced-motion`.
+
+**Gatilhos (todos data-driven):**
+- **Todas as tarefas concluídas** → `AppContext.handleToggleTask`. A decisão de celebrar só na
+  transição para 100% vive em `src/lib/taskLogic.ts` (`shouldCelebrateTasks`, testado) + toast
+  "plano do dia completo! parabéns, Ceci 🎉" e `hapticSuccess`.
+- **Leitura concluída** → `handleUpdateReadingPages` (status passa a `concluido`).
+- **Mood salvo** → `handleSaveMood` (já tinha `hapticSuccess`).
+- **Pomodoro concluído** → `EstudosView` (timer atinge 0).
+- **Fim da fila de flashcards** → `EstudosView.handleReview` (último cartão).
+
+**Arquivos:** `src/lib/celebrate.ts` (novo) · `src/lib/taskLogic.ts` (novo) ·
+`src/context/AppContext.tsx` · `src/components/views/EstudosView.tsx`.
+Dependência nova: `canvas-confetti` (+ `@types/canvas-confetti`).
+
+**Verificação:** `npm run lint` ✅ · `npm run test` (41) ✅ · `npm run build` ✅.

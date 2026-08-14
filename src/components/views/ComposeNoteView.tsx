@@ -4,8 +4,16 @@ import { useApp } from '../../context/AppContext';
 import { ClassNote } from '../../types';
 import { LooseNote } from '../library/notes';
 import { hapticSuccess } from '../../lib/haptics';
+import { usePersistentState } from '../../lib/usePersistentState';
+import { StarRating } from '../ui/StarRating';
 
 const LOOSE_CATEGORIES: LooseNote['category'][] = ['reflexão', 'estudo', 'ideia', 'lembrete'];
+
+/** Última escolha do quick capture (abre no último modo/disciplina). */
+interface ComposePrefs {
+  mode: 'aula' | 'avulsa';
+  courseId?: string;
+}
 
 export const ComposeNoteView: React.FC = () => {
   const {
@@ -19,10 +27,13 @@ export const ComposeNoteView: React.FC = () => {
     openDetailPrompt,
   } = useApp();
 
+  const [lastPrefs, setLastPrefs] = usePersistentState<ComposePrefs>('composePrefs', { mode: 'avulsa' });
+
   const [text, setText] = useState('');
-  const [isClassNote, setIsClassNote] = useState<boolean>(!!composeCourseId);
-  const [courseId, setCourseId] = useState<string>(composeCourseId || courses[0]?.id || '');
+  const [isClassNote, setIsClassNote] = useState<boolean>(!!composeCourseId || lastPrefs.mode === 'aula');
+  const [courseId, setCourseId] = useState<string>(composeCourseId || lastPrefs.courseId || courses[0]?.id || '');
   const [tag, setTag] = useState('');
+  const [rating, setRating] = useState(0);
   const [category, setCategory] = useState<LooseNote['category']>('reflexão');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -55,12 +66,15 @@ export const ComposeNoteView: React.FC = () => {
         approachIds: [],
         materials: [],
         hasQuestions: false,
+        rating: rating || undefined,
       };
+      setLastPrefs({ mode: 'aula', courseId });
       hapticSuccess();
       handleAddClassNote(note);
       closeCompose();
       openDetailPrompt(note.id);
     } else {
+      setLastPrefs({ mode: 'avulsa' });
       hapticSuccess();
       addLooseNote({
         id: 'note-' + Date.now(),
@@ -170,6 +184,13 @@ export const ComposeNoteView: React.FC = () => {
                 {cat}
               </button>
             ))}
+          </div>
+        )}
+
+        {isClassNote && (
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-[11px] font-medium text-ceci-tertiary">avaliação:</span>
+            <StarRating value={rating} onChange={setRating} showLabel />
           </div>
         )}
       </div>
