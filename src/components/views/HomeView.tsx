@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { Task } from '../../types';
 import { useApp } from '../../context/AppContext';
+import { AnimatedNumber } from '../ui/AnimatedNumber';
 
 export const HomeView: React.FC = () => {
   const {
@@ -116,12 +117,12 @@ export const HomeView: React.FC = () => {
       <div className="flex items-center justify-between pt-1 px-0.5">
         <div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#E97891] animate-pulse" />
-            <p className="text-xs font-medium text-[#6D6366] lowercase">
+            <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+            <p className="text-xs font-medium text-ceci-secondary lowercase">
               {formattedDate}
             </p>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#40383A] mt-0.5 tracking-tight font-display">
+          <h1 className="text-2xl sm:text-3xl font-bold text-ceci-primary mt-0.5 tracking-tight font-display">
             {greeting}, {profile.name} <span className="font-normal text-xl">✨</span>
           </h1>
         </div>
@@ -133,37 +134,37 @@ export const HomeView: React.FC = () => {
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
           onClick={openMoodView}
           title="clique para definir/alterar seu estado de espírito do dia"
-          className="group relative flex items-center gap-2 bg-white px-3 py-2 rounded-2xl border border-[#F2EBE8] shadow-[0_2px_8px_rgba(64,56,58,0.05)] cursor-pointer"
+          className="group relative flex items-center gap-2 bg-white px-3 py-2 rounded-2xl border border-ceci-border-subtle shadow-sm cursor-pointer"
         >
-          <div className="w-8 h-8 rounded-xl bg-[#FFF5F7] flex items-center justify-center text-lg border border-[#FFD3DD] group-hover:scale-105 transition-transform">
+          <div className="w-8 h-8 rounded-xl bg-surface-rose flex items-center justify-center text-lg border border-ceci-border-brand group-hover:scale-105 transition-transform">
             {currentMood.emoji || '🤓'}
           </div>
           <div className="hidden sm:block text-left pr-1">
-            <p className="text-[10px] font-bold text-[#B94862] lowercase tracking-wider">estado de espírito</p>
-            <p className="text-xs font-medium text-[#40383A] truncate max-w-[90px] lowercase">
+            <p className="text-[10px] font-bold text-ceci-brand-strong lowercase tracking-wider">estado de espírito</p>
+            <p className="text-xs font-medium text-ceci-primary truncate max-w-[90px] lowercase">
               {currentMood.label || 'focada'}
             </p>
           </div>
-          <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#E97891] border-2 border-white" />
+          <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-rose-500 border-2 border-white" />
         </motion.button>
       </div>
 
       {/* Meta do Dia - Detailed & Large Inline Section */}
       <div className="space-y-3 px-1 pt-1">
         {/* Header Row */}
-        <div className="flex items-center justify-between border-b border-[#E9DFDC] pb-2">
+        <div className="flex items-center justify-between border-b border-ceci-border-default pb-2">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[#E97891]" />
-            <h2 className="text-xs font-bold text-[#40383A] font-display uppercase tracking-wider">
+            <Sparkles className="w-4 h-4 text-rose-500" />
+            <h2 className="text-xs font-bold text-ceci-primary font-display uppercase tracking-wider">
               meta do dia
             </h2>
-            <span className="text-[10px] font-semibold text-[#B94862] bg-[#FFF5F7] px-2.5 py-0.5 rounded-full border border-[#FFD3DD]">
+            <span className="text-[10px] font-semibold text-ceci-brand-strong bg-surface-rose px-2.5 py-0.5 rounded-full border border-ceci-border-brand">
               hoje
             </span>
           </div>
           <button
             onClick={() => handleNavigate('estudos', 'sessoes')}
-            className="text-xs font-bold text-[#B94862] hover:underline cursor-pointer flex items-center gap-1"
+            className="text-xs font-bold text-ceci-brand-strong hover:underline cursor-pointer flex items-center gap-1"
           >
             <span>estudar agora</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -171,41 +172,41 @@ export const HomeView: React.FC = () => {
         </div>
 
         {/* Detailed Descriptive Text */}
-        <p className="text-sm sm:text-base text-[#40383A] font-medium leading-relaxed font-display">
+        <p className="text-sm sm:text-base text-ceci-primary font-medium leading-relaxed font-display">
           para concluir seu dia de hoje com sucesso, você ainda tem{' '}
-          <span className="font-bold text-[#B94862] underline decoration-[#FFD3DD] underline-offset-2">
+          <span className="font-bold text-ceci-brand-strong underline decoration-ceci-border-brand underline-offset-2">
             {pendingTasks.length} {pendingTasks.length === 1 ? 'tarefa pendente' : 'tarefas pendentes'}
           </span>
           {pendingTasks.length > 0 && (
-            <span className="text-[#6D6366] font-normal text-xs sm:text-sm">
+            <span className="text-ceci-secondary font-normal text-xs sm:text-sm">
               {' '}({pendingTasks.slice(0, 2).map((t) => t.title).join(', ')})
             </span>
           )}
-          {' '}e <span className="font-bold text-[#396D82]">revisão ativa de conteúdos</span>. mantenha seu ritmo com leveza e foco!
+          {' '}e <span className="font-bold text-ceci-academic-strong">revisão ativa de conteúdos</span>. mantenha seu ritmo com leveza e foco!
         </p>
 
         {/* 2 Simple Metric Blocks in a Single Row */}
         <div className="grid grid-cols-2 gap-3 pt-1">
           <button
             onClick={() => handleNavigate('faculdade', 'aulas')}
-            className="bg-white rounded-2xl p-3 border border-[#E9DFDC] hover:border-[#FFD3DD] transition-all text-center flex flex-col items-center justify-center space-y-0.5 shadow-2xs cursor-pointer group"
+            className="bg-white rounded-2xl p-3 border border-ceci-border-default hover:border-ceci-border-brand transition-all text-center flex flex-col items-center justify-center space-y-0.5 shadow-2xs cursor-pointer group"
           >
-            <span className="font-display font-bold text-2xl sm:text-3xl text-[#B94862] group-hover:scale-105 transition-transform">
-              {pendingTasks.length}
+            <span className="font-display font-bold text-2xl sm:text-3xl text-ceci-brand-strong group-hover:scale-105 transition-transform">
+              <AnimatedNumber value={pendingTasks.length} />
             </span>
-            <span className="text-[11px] font-semibold text-[#6D6366] leading-tight">
+            <span className="text-[11px] font-semibold text-ceci-secondary leading-tight">
               tarefas pendentes
             </span>
           </button>
 
           <button
             onClick={() => handleNavigate('faculdade', 'avaliacoes')}
-            className="bg-white rounded-2xl p-3 border border-[#E9DFDC] hover:border-[#CEE7F0] transition-all text-center flex flex-col items-center justify-center space-y-0.5 shadow-2xs cursor-pointer group"
+            className="bg-white rounded-2xl p-3 border border-ceci-border-default hover:border-ceci-border-academic transition-all text-center flex flex-col items-center justify-center space-y-0.5 shadow-2xs cursor-pointer group"
           >
-            <span className="font-display font-bold text-2xl sm:text-3xl text-[#396D82] group-hover:scale-105 transition-transform">
-              {pendingExamsIn14Days.length}
+            <span className="font-display font-bold text-2xl sm:text-3xl text-ceci-academic-strong group-hover:scale-105 transition-transform">
+              <AnimatedNumber value={pendingExamsIn14Days.length} />
             </span>
-            <span className="text-[11px] font-semibold text-[#6D6366] leading-tight">
+            <span className="text-[11px] font-semibold text-ceci-secondary leading-tight">
               provas nos próx. 14 dias
             </span>
           </button>
@@ -219,40 +220,40 @@ export const HomeView: React.FC = () => {
         <motion.div
           whileHover={{ y: -2 }}
           transition={{ type: "spring", stiffness: 350, damping: 25 }}
-          className="bg-white rounded-[24px] p-4 sm:p-5 border border-[#F2EBE8] shadow-[0_2px_8px_rgba(64,56,58,0.05)] space-y-3.5 flex flex-col justify-between"
+          className="bg-white rounded-[24px] p-4 sm:p-5 border border-ceci-border-subtle shadow-sm space-y-3.5 flex flex-col justify-between"
         >
           <div>
-            <div className="flex items-center justify-between pb-2 border-b border-[#F2EBE8]">
-              <span className="text-xs font-semibold text-[#40383A] font-display">
+            <div className="flex items-center justify-between pb-2 border-b border-ceci-border-subtle">
+              <span className="text-xs font-semibold text-ceci-primary font-display">
                 aulas hoje
               </span>
-              <span className="text-xs font-bold text-[#B94862] bg-[#FFF5F7] px-2.5 py-0.5 rounded-full border border-[#FFD3DD]">
+              <span className="text-xs font-bold text-ceci-brand-strong bg-surface-rose px-2.5 py-0.5 rounded-full border border-ceci-border-brand">
                 02 aulas
               </span>
             </div>
 
-            <p className="text-xs text-[#6D6366] mt-2">
+            <p className="text-xs text-ceci-secondary mt-2">
               seu cronograma acadêmico de hoje:
             </p>
 
             {/* List of Today's Classes */}
             <div className="space-y-2 mt-3">
-              <div className="p-3 rounded-[18px] bg-[#FAF8F5] border border-[#F2EBE8] flex items-center justify-between text-xs">
+              <div className="p-3 rounded-[18px] bg-surface-muted border border-ceci-border-subtle flex items-center justify-between text-xs">
                 <div>
-                  <p className="font-semibold text-[#40383A]">Psicopatologia</p>
-                  <p className="text-[11px] text-[#6D6366] mt-0.5">09:00 • Sala 204</p>
+                  <p className="font-semibold text-ceci-primary">Psicopatologia</p>
+                  <p className="text-[11px] text-ceci-secondary mt-0.5">09:00 • Sala 204</p>
                 </div>
-                <span className="text-[10px] font-medium text-[#B94862] bg-[#FFF5F7] px-2.5 py-1 rounded-full border border-[#FFD3DD]">
+                <span className="text-[10px] font-medium text-ceci-brand-strong bg-surface-rose px-2.5 py-1 rounded-full border border-ceci-border-brand">
                   presencial
                 </span>
               </div>
 
-              <div className="p-3 rounded-[18px] bg-[#FAF8F5] border border-[#F2EBE8] flex items-center justify-between text-xs">
+              <div className="p-3 rounded-[18px] bg-surface-muted border border-ceci-border-subtle flex items-center justify-between text-xs">
                 <div>
-                  <p className="font-semibold text-[#40383A]">Psicologia Social</p>
-                  <p className="text-[11px] text-[#6D6366] mt-0.5">14:00 • Bloco B</p>
+                  <p className="font-semibold text-ceci-primary">Psicologia Social</p>
+                  <p className="text-[11px] text-ceci-secondary mt-0.5">14:00 • Bloco B</p>
                 </div>
-                <span className="text-[10px] font-medium text-[#396D82] bg-[#F3F9FC] px-2.5 py-1 rounded-full border border-[#CEE7F0]">
+                <span className="text-[10px] font-medium text-ceci-academic-strong bg-surface-blue px-2.5 py-1 rounded-full border border-ceci-border-academic">
                   seminário
                 </span>
               </div>
@@ -262,7 +263,7 @@ export const HomeView: React.FC = () => {
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={() => handleNavigate('faculdade', 'aulas')}
-            className="w-full mt-2 bg-[#40383A] hover:bg-[#282022] text-white py-2.5 rounded-full text-xs font-medium transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+            className="w-full mt-2 bg-ceci-primary hover:bg-ceci-ink text-white py-2.5 rounded-full text-xs font-medium transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
           >
             <span>ver diário completo</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -273,50 +274,50 @@ export const HomeView: React.FC = () => {
         <motion.div
           whileHover={{ y: -2 }}
           transition={{ type: "spring", stiffness: 350, damping: 25 }}
-          className="bg-white rounded-[24px] p-4 sm:p-5 border border-[#F2EBE8] shadow-[0_2px_8px_rgba(64,56,58,0.05)] space-y-3.5 flex flex-col justify-between"
+          className="bg-white rounded-[24px] p-4 sm:p-5 border border-ceci-border-subtle shadow-sm space-y-3.5 flex flex-col justify-between"
         >
           <div>
-            <div className="flex items-center justify-between pb-2 border-b border-[#F2EBE8]">
-              <span className="text-xs font-semibold text-[#40383A] font-display">
+            <div className="flex items-center justify-between pb-2 border-b border-ceci-border-subtle">
+              <span className="text-xs font-semibold text-ceci-primary font-display">
                 assuntos a estudar
               </span>
-              <span className="text-xs font-bold text-[#396D82] bg-[#F3F9FC] px-2.5 py-0.5 rounded-full border border-[#CEE7F0]">
+              <span className="text-xs font-bold text-ceci-academic-strong bg-surface-blue px-2.5 py-0.5 rounded-full border border-ceci-border-academic">
                 03 tópicos
               </span>
             </div>
 
-            <p className="text-xs text-[#6D6366] mt-2">
+            <p className="text-xs text-ceci-secondary mt-2">
               conteúdos priorizados do dia:
             </p>
 
             {/* List of Study Topics */}
             <div className="space-y-2 mt-3">
-              <div className="p-2.5 rounded-[18px] bg-[#FAF8F5] border border-[#F2EBE8] flex items-center justify-between text-xs">
+              <div className="p-2.5 rounded-[18px] bg-surface-muted border border-ceci-border-subtle flex items-center justify-between text-xs">
                 <div className="min-w-0 pr-2">
-                  <p className="font-semibold text-[#40383A] truncate">Pensamentos Automáticos</p>
-                  <p className="text-[11px] text-[#6D6366] mt-0.5">Psicopatologia • 30m</p>
+                  <p className="font-semibold text-ceci-primary truncate">Pensamentos Automáticos</p>
+                  <p className="text-[11px] text-ceci-secondary mt-0.5">Psicopatologia • 30m</p>
                 </div>
-                <span className="text-[10px] font-medium text-[#396D82] bg-[#F3F9FC] px-2 py-0.5 rounded-full border border-[#CEE7F0] shrink-0">
+                <span className="text-[10px] font-medium text-ceci-academic-strong bg-surface-blue px-2 py-0.5 rounded-full border border-ceci-border-academic shrink-0">
                   tcc
                 </span>
               </div>
 
-              <div className="p-2.5 rounded-[18px] bg-[#FAF8F5] border border-[#F2EBE8] flex items-center justify-between text-xs">
+              <div className="p-2.5 rounded-[18px] bg-surface-muted border border-ceci-border-subtle flex items-center justify-between text-xs">
                 <div className="min-w-0 pr-2">
-                  <p className="font-semibold text-[#40383A] truncate">Influência Social</p>
-                  <p className="text-[11px] text-[#6D6366] mt-0.5">Psicologia Social • 45m</p>
+                  <p className="font-semibold text-ceci-primary truncate">Influência Social</p>
+                  <p className="text-[11px] text-ceci-secondary mt-0.5">Psicologia Social • 45m</p>
                 </div>
-                <span className="text-[10px] font-medium text-[#756354] bg-[#FFF8F1] px-2 py-0.5 rounded-full border border-[#FFF1E5] shrink-0">
+                <span className="text-[10px] font-medium text-beige-700 bg-surface-subtle px-2 py-0.5 rounded-full border border-cream-200 shrink-0">
                   leitura
                 </span>
               </div>
 
-              <div className="p-2.5 rounded-[18px] bg-[#FAF8F5] border border-[#F2EBE8] flex items-center justify-between text-xs">
+              <div className="p-2.5 rounded-[18px] bg-surface-muted border border-ceci-border-subtle flex items-center justify-between text-xs">
                 <div className="min-w-0 pr-2">
-                  <p className="font-semibold text-[#40383A] truncate">Fobia Específica</p>
-                  <p className="text-[11px] text-[#6D6366] mt-0.5">Cap. 4 Beck • 20m</p>
+                  <p className="font-semibold text-ceci-primary truncate">Fobia Específica</p>
+                  <p className="text-[11px] text-ceci-secondary mt-0.5">Cap. 4 Beck • 20m</p>
                 </div>
-                <span className="text-[10px] font-medium text-[#43805B] bg-[#F2FAF5] px-2 py-0.5 rounded-full border border-[#C2E8D0] shrink-0">
+                <span className="text-[10px] font-medium text-green-700 bg-green-50 px-2 py-0.5 rounded-full border border-green-200 shrink-0">
                   ficha
                 </span>
               </div>
@@ -326,7 +327,7 @@ export const HomeView: React.FC = () => {
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={() => handleNavigate('estudos', 'sessoes')}
-            className="w-full mt-2 bg-[#E97891] hover:bg-[#D85F79] text-white py-2.5 rounded-full text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+            className="w-full mt-2 bg-rose-500 hover:bg-ceci-brand text-white py-2.5 rounded-full text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
           >
             <span>iniciar sessão</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -339,13 +340,13 @@ export const HomeView: React.FC = () => {
       <motion.div
         whileHover={{ y: -2 }}
         transition={{ type: "spring", stiffness: 350, damping: 25 }}
-        className="bg-white rounded-[24px] p-5 border border-[#F2EBE8] shadow-[0_2px_8px_rgba(64,56,58,0.05)] space-y-3.5"
+        className="bg-white rounded-[24px] p-5 border border-ceci-border-subtle shadow-sm space-y-3.5"
       >
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-[#40383A] font-display">
+          <h2 className="text-sm font-semibold text-ceci-primary font-display">
             seu progresso semanal
           </h2>
-          <span className="text-xs text-[#6D6366] font-medium cursor-pointer hover:text-[#40383A] transition-colors">
+          <span className="text-xs text-ceci-secondary font-medium cursor-pointer hover:text-ceci-primary transition-colors">
             ver estatísticas &gt;
           </span>
         </div>
@@ -360,33 +361,33 @@ export const HomeView: React.FC = () => {
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
               className={`p-2 rounded-[18px] border text-center flex flex-col items-center justify-between cursor-pointer ${
                 item.completed
-                  ? 'bg-[#FFF5F7] border-[#FFD3DD] text-[#40383A]'
+                  ? 'bg-surface-rose border-ceci-border-brand text-ceci-primary'
                   : item.isToday
-                  ? 'bg-white border-[#E97891] shadow-2xs'
-                  : 'bg-[#FAF8F5] border-[#F2EBE8] text-[#6D6366]'
+                  ? 'bg-white border-rose-500 shadow-2xs'
+                  : 'bg-surface-muted border-ceci-border-subtle text-ceci-secondary'
               }`}
             >
-              <span className="text-[10px] font-medium lowercase text-[#6D6366]">
+              <span className="text-[10px] font-medium lowercase text-ceci-secondary">
                 {item.day}
               </span>
 
               <div className="my-1">
                 {item.completed ? (
-                  <span className="w-6 h-6 rounded-full bg-[#E97891] text-white font-bold text-[10px] flex items-center justify-center shadow-2xs">
+                  <span className="w-6 h-6 rounded-full bg-rose-500 text-white font-bold text-[10px] flex items-center justify-center shadow-2xs">
                     ✓
                   </span>
                 ) : item.isToday ? (
-                  <span className="w-6 h-6 rounded-full bg-[#E97891] text-white font-bold text-[10px] flex items-center justify-center">
+                  <span className="w-6 h-6 rounded-full bg-rose-500 text-white font-bold text-[10px] flex items-center justify-center">
                     ✨
                   </span>
                 ) : (
-                  <span className="w-6 h-6 rounded-full bg-[#FAF8F5] text-[#ADA3A5] font-bold text-[10px] flex items-center justify-center">
+                  <span className="w-6 h-6 rounded-full bg-surface-muted text-ceci-muted font-bold text-[10px] flex items-center justify-center">
                     •
                   </span>
                 )}
               </div>
 
-              <span className="text-[9px] font-medium text-[#6D6366] truncate w-full">
+              <span className="text-[9px] font-medium text-ceci-secondary truncate w-full">
                 {item.status}
               </span>
             </motion.div>
@@ -397,10 +398,10 @@ export const HomeView: React.FC = () => {
       {/* Section Header: Recent Tasks & Action Plan */}
       <div className="space-y-3 pt-1">
         <div className="flex items-center justify-between px-1">
-          <h2 className="text-sm font-semibold text-[#40383A] font-display">
+          <h2 className="text-sm font-semibold text-ceci-primary font-display">
             plano de ação
           </h2>
-          <span className="text-xs text-[#6D6366] font-medium">
+          <span className="text-xs text-ceci-secondary font-medium">
             {tasks.filter((t) => t.completed).length} de {tasks.length} concluídas
           </span>
         </div>
@@ -418,29 +419,37 @@ export const HomeView: React.FC = () => {
                 transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => handleToggleTask(task.id)}
-                className={`p-3.5 rounded-[20px] bg-white border border-[#F2EBE8] shadow-[0_2px_8px_rgba(64,56,58,0.05)] hover:border-[#E9DFDC] transition-all cursor-pointer flex items-center justify-between gap-3 ${
-                  task.completed ? 'opacity-60 bg-[#FAF8F5]' : ''
+                className={`p-3.5 rounded-[20px] bg-white border border-ceci-border-subtle shadow-sm hover:border-ceci-border-default transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                  task.completed ? 'opacity-60 bg-surface-muted' : ''
                 }`}
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <button className="text-[#40383A] cursor-pointer">
+                  <button className="text-ceci-primary cursor-pointer">
                     {task.completed ? (
-                      <CheckCircle2 className="w-5 h-5 text-[#43805B] fill-[#C2E8D0]/40" />
+                      <motion.span
+                        key={`done-${task.id}`}
+                        initial={{ scale: 0.4 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: 'spring', stiffness: 500, damping: 18 }}
+                        className="inline-flex"
+                      >
+                        <CheckCircle2 className="w-5 h-5 text-green-700 fill-green-200/40" />
+                      </motion.span>
                     ) : (
-                      <Circle className="w-5 h-5 text-[#ADA3A5]" />
+                      <Circle className="w-5 h-5 text-ceci-muted" />
                     )}
                   </button>
                   <div className="min-w-0">
-                    <p className={`text-xs sm:text-sm font-medium ${task.completed ? 'line-through text-[#ADA3A5]' : 'text-[#40383A]'}`}>
+                    <p className={`text-xs sm:text-sm font-medium ${task.completed ? 'line-through text-ceci-muted' : 'text-ceci-primary'}`}>
                       {task.title}
                     </p>
-                    <p className="text-[11px] text-[#6D6366] mt-0.5">
+                    <p className="text-[11px] text-ceci-secondary mt-0.5">
                       prazo: {task.dueDate || 'hoje'} • Psicopatologia
                     </p>
                   </div>
                 </div>
 
-                <div className="w-8 h-8 rounded-xl bg-[#FFF5F7] border border-[#FFD3DD] flex items-center justify-center text-xs font-bold text-[#B94862] shrink-0">
+                <div className="w-8 h-8 rounded-xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-xs font-bold text-ceci-brand-strong shrink-0">
                   ♡
                 </div>
               </motion.div>
@@ -454,12 +463,12 @@ export const HomeView: React.FC = () => {
               value={newTaskTitle}
               onChange={(e) => setNewTaskTitle(e.target.value)}
               placeholder="adicionar nova tarefa obrigatória..."
-              className="flex-1 text-xs px-4 py-2.5 rounded-full border border-[#E9DFDC] bg-white focus:outline-none focus:border-[#E97891] text-[#40383A] placeholder-[#BEB4B6] shadow-2xs"
+              className="flex-1 text-xs px-4 py-2.5 rounded-full border border-ceci-border-default bg-white focus:outline-none focus:border-rose-500 text-ceci-primary placeholder-ceci-faded shadow-2xs"
             />
             <motion.button
               whileTap={{ scale: 0.95 }}
               type="submit"
-              className="bg-[#E97891] hover:bg-[#D85F79] text-white px-4 py-2.5 rounded-full text-xs font-semibold transition-all flex items-center gap-1 shrink-0 cursor-pointer"
+              className="bg-rose-500 hover:bg-ceci-brand text-white px-4 py-2.5 rounded-full text-xs font-semibold transition-all flex items-center gap-1 shrink-0 cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>criar</span>
@@ -469,7 +478,7 @@ export const HomeView: React.FC = () => {
 
         {/* Sugestões do Sistema (Opcionais) */}
         <div className="pt-3 space-y-2">
-          <p className="text-xs font-medium text-[#6D6366] px-1">
+          <p className="text-xs font-medium text-ceci-secondary px-1">
             sugestões recomendadas
           </p>
 
@@ -484,29 +493,29 @@ export const HomeView: React.FC = () => {
                 transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => toggleSuggestion(sug.id)}
-                className={`p-3 rounded-[20px] bg-white border border-[#F2EBE8] shadow-[0_2px_8px_rgba(64,56,58,0.05)] hover:border-[#E9DFDC] transition-all cursor-pointer flex items-center justify-between gap-3 ${
-                  sug.completed ? 'opacity-60 bg-[#FAF8F5]' : ''
+                className={`p-3 rounded-[20px] bg-white border border-ceci-border-subtle shadow-sm hover:border-ceci-border-default transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                  sug.completed ? 'opacity-60 bg-surface-muted' : ''
                 }`}
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <button className="text-[#40383A] cursor-pointer">
+                  <button className="text-ceci-primary cursor-pointer">
                     {sug.completed ? (
-                      <CheckCircle2 className="w-4 h-4 text-[#396D82]" />
+                      <CheckCircle2 className="w-4 h-4 text-ceci-academic-strong" />
                     ) : (
-                      <Circle className="w-4 h-4 text-[#ADA3A5]" />
+                      <Circle className="w-4 h-4 text-ceci-muted" />
                     )}
                   </button>
                   <div className="min-w-0">
-                    <p className={`text-xs font-medium ${sug.completed ? 'line-through text-[#ADA3A5]' : 'text-[#40383A]'}`}>
+                    <p className={`text-xs font-medium ${sug.completed ? 'line-through text-ceci-muted' : 'text-ceci-primary'}`}>
                       {sug.title}
                     </p>
-                    <p className="text-[10px] text-[#6D6366] mt-0.5">
+                    <p className="text-[10px] text-ceci-secondary mt-0.5">
                       estimativa: {sug.time}
                     </p>
                   </div>
                 </div>
 
-                <span className="text-[10px] font-medium text-[#396D82] bg-[#F3F9FC] border border-[#CEE7F0] px-2.5 py-1 rounded-full shrink-0">
+                <span className="text-[10px] font-medium text-ceci-academic-strong bg-surface-blue border border-ceci-border-academic px-2.5 py-1 rounded-full shrink-0">
                   opcional
                 </span>
               </motion.div>
@@ -514,12 +523,12 @@ export const HomeView: React.FC = () => {
           </AnimatePresence>
 
           {/* Dica da Ceci */}
-          <div className="p-4 rounded-[22px] bg-white border border-[#F2EBE8] shadow-[0_2px_8px_rgba(64,56,58,0.05)] mt-3">
-            <div className="flex items-center gap-2 text-xs font-semibold text-[#40383A] font-display">
-              <Sparkles className="w-4 h-4 text-[#E97891]" />
+          <div className="p-4 rounded-[22px] bg-white border border-ceci-border-subtle shadow-sm mt-3">
+            <div className="flex items-center gap-2 text-xs font-semibold text-ceci-primary font-display">
+              <Sparkles className="w-4 h-4 text-rose-500" />
               <span>dica da ceci ✨</span>
             </div>
-            <p className="text-xs text-[#6D6366] mt-1.5 leading-relaxed">
+            <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
               suas obrigações vêm em primeiro lugar! as sugestões foram pensadas para acelerar suas revisões caso tenha tempo extra no final da tarde.
             </p>
           </div>

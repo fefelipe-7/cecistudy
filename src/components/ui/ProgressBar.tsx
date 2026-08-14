@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 interface ProgressBarProps {
@@ -21,9 +22,11 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
       aria-valuemin={0}
       aria-valuemax={100}
     >
-      <div
-        className={cn('h-full rounded-full bg-ceci-brand transition-all', barClassName)}
-        style={{ width: `${clamped}%` }}
+      <motion.div
+        className={cn('h-full rounded-full bg-ceci-brand', barClassName)}
+        initial={false}
+        animate={{ width: `${clamped}%` }}
+        transition={{ type: 'spring', stiffness: 120, damping: 22 }}
       />
     </div>
   );

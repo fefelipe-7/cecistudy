@@ -14,7 +14,7 @@ export const Card: React.FC<CardProps> = ({
 }) => (
   <div
     className={cn(
-      'bg-white border border-ceci-border-default shadow-[0_2px_8px_rgba(64,56,58,0.05)]',
+      'bg-white border border-ceci-border-default shadow-sm',
       padded && 'p-6',
       hoverable && 'hover:shadow-md transition-shadow',
       className

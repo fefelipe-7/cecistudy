@@ -29,7 +29,9 @@ const FloatingActionMenu = ({
     <div className={cn("fixed bottom-8 right-8 z-50", className)}>
       <Button
         onClick={toggleMenu}
-        className="w-10 h-10 rounded-full bg-[#B94862] hover:bg-[#A03B52] active:scale-95 shadow-[0_4px_16px_rgba(185,72,98,0.4)] transition-all cursor-pointer border border-[#FFD3DD]/30"
+        aria-label={isOpen ? 'fechar menu de atalhos' : 'abrir menu de atalhos'}
+        aria-expanded={isOpen}
+        className="w-10 h-10 rounded-full bg-ceci-brand-strong hover:bg-ceci-brand-hover active:scale-95 shadow-brand transition-all cursor-pointer border border-ceci-border-brand/30"
       >
         <motion.div
           animate={{ rotate: isOpen ? 45 : 0 }}
@@ -78,7 +80,7 @@ const FloatingActionMenu = ({
                       setIsOpen(false);
                     }}
                     size="sm"
-                    className="flex items-center gap-2 bg-[#B94862] hover:bg-[#A03B52] text-white shadow-[0_4px_14px_rgba(185,72,98,0.3)] border border-[#FFD3DD]/30 rounded-xl backdrop-blur-md cursor-pointer whitespace-nowrap font-medium text-xs"
+                    className="flex items-center gap-2 bg-ceci-brand-strong hover:bg-ceci-brand-hover text-white shadow-brand-soft border border-ceci-border-brand/30 rounded-xl backdrop-blur-md cursor-pointer whitespace-nowrap font-medium text-xs"
                   >
                     {option.Icon}
                     <span>{option.label}</span>

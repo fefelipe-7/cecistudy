@@ -69,7 +69,7 @@
 - Chaves usadas: `profile`, `courses`, `classes`, `tasks`, `exams`, `authors`, `concepts`,
   `approaches`, `readings`, `flashcards`, `materials`, `internship`, `tcc`, `stickers`,
   `sessions`, `currentMood`, `reminder` (`{enabled, time}` — lembrete diário),
-  `savedBookIds`, `looseNotes` (BibliotecaView).
+  `savedBookIds`, `looseNotes` (BibliotecaView), `bookmarkedCourseIds` (favoritos de disciplinas).
 - ⚠️ **Não persistidos** (estado local de view): `systemSuggestions`/progresso semanal (HomeView),
   `dotsData` (MoodCalendarWidget), catálogo `CollectionBook` (BibliotecaView).
 

@@ -33,18 +33,18 @@ export const LibraryFilterModal: React.FC<LibraryFilterModalProps> = ({
     <Modal
       open
       onClose={onClose}
-      className="w-full max-w-md bg-white rounded-[28px] border border-[#E9DFDC] shadow-2xl p-6 space-y-5 text-[#40383A] animate-in zoom-in-95 duration-200 max-h-[88vh] overflow-y-auto"
+      className="w-full max-w-md bg-white rounded-[28px] border border-ceci-border-default shadow-2xl p-6 space-y-5 text-ceci-primary animate-in zoom-in-95 duration-200 max-h-[88vh] overflow-y-auto"
     >
-        <div className="flex items-center justify-between border-b border-[#E9DFDC] pb-3">
+        <div className="flex items-center justify-between border-b border-ceci-border-default pb-3">
           <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-[#B94862]" />
-            <h3 className="font-display font-bold text-base text-[#40383A]">
+            <Filter className="w-4 h-4 text-ceci-brand-strong" />
+            <h3 className="font-display font-bold text-base text-ceci-primary">
               filtrar acervo & coleções
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[#FAF8F5] hover:bg-[#E9DFDC] text-[#6D6366] flex items-center justify-center cursor-pointer font-bold text-xs"
+            className="w-8 h-8 rounded-full bg-surface-muted hover:bg-ceci-border-default text-ceci-secondary flex items-center justify-center cursor-pointer font-bold text-xs"
           >
             ✕
           </button>
@@ -52,7 +52,7 @@ export const LibraryFilterModal: React.FC<LibraryFilterModalProps> = ({
 
         {/* Section 1: Categoria da Coleção */}
         <div className="space-y-2">
-          <span className="text-[11px] font-bold text-[#918689] uppercase tracking-wider block">
+          <span className="text-[11px] font-bold text-ceci-tertiary uppercase tracking-wider block">
             categoria da obra / coleção
           </span>
           <div className="grid grid-cols-2 gap-2">
@@ -73,12 +73,12 @@ export const LibraryFilterModal: React.FC<LibraryFilterModalProps> = ({
                   onClick={() => onCategoryChange(cat.id)}
                   className={`p-2.5 rounded-xl border text-xs font-semibold text-left transition-all cursor-pointer flex items-center justify-between ${
                     isSel
-                      ? 'bg-[#FFF5F7] border-[#FFD3DD] text-[#B94862] font-bold'
-                      : 'bg-[#FAF8F5] border-[#E9DFDC] text-[#40383A] hover:bg-white'
+                      ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong font-bold'
+                      : 'bg-surface-muted border-ceci-border-default text-ceci-primary hover:bg-white'
                   }`}
                 >
                   <span className="line-clamp-1">{cat.label}</span>
-                  {isSel && <Check className="w-3.5 h-3.5 text-[#B94862] shrink-0" />}
+                  {isSel && <Check className="w-3.5 h-3.5 text-ceci-brand-strong shrink-0" />}
                 </button>
               );
             })}
@@ -86,8 +86,8 @@ export const LibraryFilterModal: React.FC<LibraryFilterModalProps> = ({
         </div>
 
         {/* Section 2: Status de Leitura */}
-        <div className="space-y-2 pt-2 border-t border-[#E9DFDC]/70">
-          <span className="text-[11px] font-bold text-[#918689] uppercase tracking-wider block">
+        <div className="space-y-2 pt-2 border-t border-ceci-border-default/70">
+          <span className="text-[11px] font-bold text-ceci-tertiary uppercase tracking-wider block">
             status de leitura
           </span>
           <div className="flex flex-wrap gap-2">
@@ -104,8 +104,8 @@ export const LibraryFilterModal: React.FC<LibraryFilterModalProps> = ({
                   onClick={() => onStatusChange(st.id)}
                   className={`px-3 py-1.5 rounded-full border text-xs font-semibold transition-all cursor-pointer ${
                     isSel
-                      ? 'bg-[#40383A] text-white border-[#40383A]'
-                      : 'bg-white border-[#E9DFDC] text-[#6D6366] hover:bg-[#FAF8F5]'
+                      ? 'bg-ceci-primary text-white border-ceci-primary'
+                      : 'bg-white border-ceci-border-default text-ceci-secondary hover:bg-surface-muted'
                   }`}
                 >
                   {st.label}
@@ -116,8 +116,8 @@ export const LibraryFilterModal: React.FC<LibraryFilterModalProps> = ({
         </div>
 
         {/* Section 3: Tags / Temas Rápidos */}
-        <div className="space-y-2 pt-2 border-t border-[#E9DFDC]/70">
-          <span className="text-[11px] font-bold text-[#918689] uppercase tracking-wider block">
+        <div className="space-y-2 pt-2 border-t border-ceci-border-default/70">
+          <span className="text-[11px] font-bold text-ceci-tertiary uppercase tracking-wider block">
             filtrar por tema / autor específico
           </span>
           <div className="flex flex-wrap gap-1.5">
@@ -129,8 +129,8 @@ export const LibraryFilterModal: React.FC<LibraryFilterModalProps> = ({
                   onClick={() => onTagChange(isSel ? null : tag)}
                   className={`px-3 py-1 rounded-full text-[11px] font-medium border transition-all cursor-pointer ${
                     isSel
-                      ? 'bg-[#B94862] text-white border-[#B94862]'
-                      : 'bg-[#FAF8F5] text-[#40383A] border-[#E9DFDC] hover:bg-white'
+                      ? 'bg-ceci-brand-strong text-white border-ceci-brand-strong'
+                      : 'bg-surface-muted text-ceci-primary border-ceci-border-default hover:bg-white'
                   }`}
                 >
                   {tag} {isSel && '✕'}
@@ -141,16 +141,16 @@ export const LibraryFilterModal: React.FC<LibraryFilterModalProps> = ({
         </div>
 
         {/* Footer buttons */}
-        <div className="pt-3 border-t border-[#E9DFDC] flex items-center gap-2">
+        <div className="pt-3 border-t border-ceci-border-default flex items-center gap-2">
           <button
             onClick={onReset}
-            className="px-4 py-2.5 rounded-2xl border border-[#E9DFDC] text-[#6D6366] text-xs font-bold hover:bg-[#FAF8F5] cursor-pointer"
+            className="px-4 py-2.5 rounded-2xl border border-ceci-border-default text-ceci-secondary text-xs font-bold hover:bg-surface-muted cursor-pointer"
           >
             limpar tudo
           </button>
           <button
             onClick={onClose}
-            className="flex-1 bg-[#40383A] text-white py-2.5 rounded-2xl text-xs font-bold shadow-2xs hover:bg-[#2D2728] cursor-pointer"
+            className="flex-1 bg-ceci-primary text-white py-2.5 rounded-2xl text-xs font-bold shadow-2xs hover:bg-ceci-primary-hover cursor-pointer"
           >
             aplicar filtros
           </button>

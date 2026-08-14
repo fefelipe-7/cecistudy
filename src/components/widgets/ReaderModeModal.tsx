@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Bookmark, Share2, Sun, Moon, Type, ChevronLeft, ChevronRight, Highlighter } from 'lucide-react';
 import { ReadingItem } from '../../types';
+import { Modal } from '../ui/Modal';
 
 interface ReaderModeModalProps {
   isOpen: boolean;
@@ -21,13 +22,13 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
 
   if (!isOpen || !reading) return null;
 
-  const totalPages = reading.totalPages || 120;
+  const totalPages = reading?.totalPages || 120;
   const progressPercent = Math.round((currentPage / totalPages) * 100);
 
   const themeClasses = {
-    paper: 'bg-[#FAF8F5] text-[#40383A]',
-    sepia: 'bg-[#FFFDF0] text-[#756354]',
-    dark: 'bg-[#40383A] text-[#FAF8F5]',
+    paper: 'bg-surface-muted text-ceci-primary',
+    sepia: 'bg-surface-paper text-beige-700',
+    dark: 'bg-ceci-primary text-surface-muted',
   };
 
   const sampleExcerpt = [
@@ -46,10 +47,14 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 animate-fade-in">
-      <div
-        className={`w-full max-w-2xl h-[92vh] rounded-[24px] shadow-2xl flex flex-col overflow-hidden transition-colors duration-200 border border-[#E9DFDC] ${themeClasses[theme]}`}
-      >
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      position="center"
+      closeOnBackdrop={false}
+      className={`w-full max-w-2xl h-[92vh] rounded-[24px] shadow-2xl flex flex-col overflow-hidden transition-colors duration-200 border border-ceci-border-default ${themeClasses[theme]}`}
+    >
+      <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Controls Bar */}
         <div className="px-6 py-4 flex items-center justify-between border-b border-black/5">
           <button
@@ -81,7 +86,7 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
               className="p-2 rounded-full hover:bg-black/5 transition-colors cursor-pointer"
               title="Salvar Marcador"
             >
-              <Bookmark className="w-4 h-4 text-[#E97891]" />
+              <Bookmark className="w-4 h-4 text-rose-500" />
             </button>
             <button
               onClick={onClose}
@@ -101,14 +106,14 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
             <h2 className="font-display text-2xl sm:text-3xl font-bold leading-tight">
               A Equação da Mente e do Afeto
             </h2>
-            <div className="w-8 h-0.5 bg-[#E97891] mx-auto opacity-70 mt-3" />
+            <div className="w-8 h-0.5 bg-rose-500 mx-auto opacity-70 mt-3" />
           </div>
 
           {/* Highlighted Key Text Box */}
-          <div className="my-6 p-4 rounded-xl bg-[#FFFDF0] border-l-4 border-[#8C7338] text-sm leading-relaxed italic text-[#756354]">
+          <div className="my-6 p-4 rounded-xl bg-surface-paper border-l-4 ceci-border-gold text-sm leading-relaxed italic text-beige-700">
             "A riqueza da mente não está apenas no acúmulo de dados, mas em como acolhemos o desconhecido e ressignificamos nossa história interpessoal."
-            <div className="mt-2 text-[10px] font-bold tracking-wider lowercase text-[#8C7338] flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-[#8C7338] inline-block" />
+            <div className="mt-2 text-[10px] font-bold tracking-wider lowercase text-gold flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-gold inline-block" />
               destaque do leitor
             </div>
           </div>
@@ -127,7 +132,7 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
             className="leading-relaxed text-justify"
             style={{ fontSize: `${fontSize}px` }}
           >
-            {reading.notes || "Em seus estudos em Psicologia, o acompanhamento regular e a síntese diária de leituras fortalecem a base teórico-prática para estágios e atendimentos."}
+            Em seus estudos em Psicologia, o acompanhamento regular e a síntese diária de leituras fortalecem a base teórico-prática para estágios e atendimentos.
           </p>
         </div>
 
@@ -146,7 +151,7 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
               max={totalPages}
               value={currentPage}
               onChange={(e) => handlePageChange(Number(e.target.value))}
-              className="w-full accent-[#E97891] cursor-pointer"
+              className="w-full accent-rose-500 cursor-pointer"
             />
           </div>
 
@@ -156,7 +161,7 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
               <button
                 onClick={() => setTheme('paper')}
                 className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
-                  theme === 'paper' ? 'bg-white text-[#40383A] shadow-2xs' : 'opacity-70'
+                  theme === 'paper' ? 'bg-white text-ceci-primary shadow-2xs' : 'opacity-70'
                 }`}
               >
                 papel
@@ -164,7 +169,7 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
               <button
                 onClick={() => setTheme('sepia')}
                 className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
-                  theme === 'sepia' ? 'bg-[#FFFDF0] text-[#756354] shadow-2xs' : 'opacity-70'
+                  theme === 'sepia' ? 'bg-surface-paper text-beige-700 shadow-2xs' : 'opacity-70'
                 }`}
               >
                 sépia
@@ -172,7 +177,7 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
               <button
                 onClick={() => setTheme('dark')}
                 className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
-                  theme === 'dark' ? 'bg-[#40383A] text-white shadow-2xs' : 'opacity-70'
+                  theme === 'dark' ? 'bg-ceci-primary text-white shadow-2xs' : 'opacity-70'
                 }`}
               >
                 noturno
@@ -198,6 +203,6 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  Building2,
   UserCheck,
   Clock,
   FileText,
@@ -8,13 +7,16 @@ import {
   CheckCircle2,
   Plus,
   BookOpen,
-  ArrowLeft,
   AlertCircle,
-  MessageSquare
+  MessageSquare,
+  Timer,
+  ClipboardList,
+  BookMarked
 } from 'lucide-react';
 import { CourseIcon } from '../ui/CourseIcon';
 import { ClassNoteModal } from '../courses/ClassNoteModal';
 import { ClassNoteListItem } from '../courses/ClassNoteListItem';
+import { useApp } from '../../context/AppContext';
 import {
   Course,
   ClassNote,
@@ -24,7 +26,8 @@ import {
   PsychologyAuthor,
   ReadingItem,
   MaterialItem,
-  InternshipLog
+  InternshipLog,
+  QuickType
 } from '../../types';
 
 interface CourseDetailViewProps {
@@ -37,10 +40,8 @@ interface CourseDetailViewProps {
   readings: ReadingItem[];
   materials: MaterialItem[];
   internshipLogs?: InternshipLog[];
-  onBack: () => void;
   onToggleExam: (examId: string) => void;
   onToggleTask: (taskId: string) => void;
-  onOpenQuickAdd: () => void;
 }
 
 export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
@@ -52,13 +53,12 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
   authors,
   readings,
   materials,
-  onBack,
   onToggleExam,
   onToggleTask,
-  onOpenQuickAdd,
 }) => {
   const [activeTab, setActiveTab] = useState<'info' | 'aulas' | 'repertorio'>('info');
   const [selectedClassNote, setSelectedClassNote] = useState<ClassNote | null>(null);
+  const { openQuickAddForCourse } = useApp();
 
   // Filter items specific to this course
   const courseClasses = classes.filter((c) => c.courseId === course.id);
@@ -79,67 +79,57 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
   const courseAuthors = authors.filter((a) => relatedAuthorIds.has(a.id));
 
   return (
-    <div className="max-w-md sm:max-w-xl mx-auto space-y-6 pb-1 animate-in fade-in duration-300 relative">
+    <div className="max-w-md sm:max-w-xl mx-auto space-y-6 pb-1 relative">
 
       {/* Top Navigation & Header directly on canvas */}
       <div className="space-y-3 px-1">
-        <button
-          onClick={onBack}
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#B94862] hover:underline cursor-pointer"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          <span>voltar às disciplinas</span>
-        </button>
-
         <div className="flex items-start gap-3.5">
           <div
-            className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border border-[#E9DFDC]"
+            className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border border-ceci-border-default"
             style={{ backgroundColor: `${course.color}20` }}
           >
             <CourseIcon icon={course.icon} className="w-7 h-7" />
           </div>
 
-          <div className="flex-1 space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider bg-white px-2.5 py-0.5 rounded-full border border-[#E9DFDC] text-[#40383A]">
-                {course.code || 'PSI-300'}
-              </span>
-              <span className="text-[11px] font-semibold text-[#B94862]">
-                {course.semester || '6º Semestre'}
-              </span>
-            </div>
-
-            <h1 className="font-display text-2xl font-bold text-[#40383A] leading-tight">
+          <div className="flex-1 min-w-0 space-y-1">
+            <h1 className="font-display text-2xl font-bold text-ceci-primary leading-tight">
               {course.name}
             </h1>
 
-            <p className="text-xs font-semibold text-[#6D6366] flex items-center gap-1.5">
-              <UserCheck className="w-3.5 h-3.5 text-[#B94862]" />
+            <p className="text-xs font-semibold text-ceci-secondary flex items-center gap-1.5">
+              <UserCheck className="w-3.5 h-3.5 text-ceci-brand-strong" />
               <span>{course.professor}</span>
             </p>
           </div>
         </div>
+      </div>
 
-        {/* Pill Badges Row */}
-        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-[#E9DFDC]">
-          <span className="inline-flex items-center gap-1 px-3 py-1 bg-white rounded-full text-[11px] font-semibold text-[#40383A] border border-[#E9DFDC]">
-            <Building2 className="w-3 h-3 text-[#B94862]" />
-            <span>{course.room || 'Bloco C - Sala 204'}</span>
-          </span>
-
-          <span className="inline-flex items-center gap-1 px-3 py-1 bg-white rounded-full text-[11px] font-semibold text-[#40383A] border border-[#E9DFDC]">
-            <Clock className="w-3 h-3 text-[#396D82]" />
-            <span>{course.schedule || 'Segunda 08:00'}</span>
-          </span>
-
-          <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#FFF5F7] text-[#B94862] rounded-full text-[11px] font-semibold border border-[#FFD3DD]">
-            <span>Obrigatória • 72h</span>
-          </span>
-        </div>
+      {/* Quick Add Grid 2x2 */}
+      <div className="grid grid-cols-2 gap-3.5 px-1">
+        {[
+          { type: 'session', icon: Timer, label: 'novo estudo', accent: 'bg-surface-blue text-ceci-academic-strong border-ceci-border-academic' },
+          { type: 'exam', icon: ClipboardList, label: 'nova prova ou atividade', accent: 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand' },
+          { type: 'concept', icon: BookMarked, label: 'novo conceito, obra ou autor', accent: 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand' },
+          { type: 'class', icon: FileText, label: 'nova aula', accent: 'bg-surface-muted text-ceci-primary border-ceci-border-default' },
+        ].map((btn) => {
+          const Icon = btn.icon;
+          return (
+            <button
+              key={btn.type}
+              onClick={() => openQuickAddForCourse(btn.type as QuickType, course.id)}
+              className="flex items-center gap-3 p-3.5 rounded-2xl bg-white border border-ceci-border-default hover:border-ceci-border-brand text-left transition-all hover:shadow-md active:scale-95 cursor-pointer shadow-sm"
+            >
+              <span className={`w-9 h-9 rounded-xl flex items-center justify-center border shrink-0 ${btn.accent}`}>
+                <Icon className="w-4.5 h-4.5" />
+              </span>
+              <span className="text-xs font-semibold text-ceci-primary leading-snug">{btn.label}</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* 2. Sub-Tabs Bar */}
-      <div className="border-b border-[#E9DFDC] px-1">
+      <div className="border-b border-ceci-border-default px-1">
         <div className="flex items-center justify-between gap-2">
           {[
             { id: 'info', label: 'Informações', badge: null },
@@ -153,20 +143,20 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                 onClick={() => setActiveTab(tab.id as 'info' | 'aulas' | 'repertorio')}
                 className={`pb-3 text-xs font-semibold relative transition-all cursor-pointer flex items-center gap-1.5 ${
                   isSel
-                    ? 'text-[#40383A] font-bold'
-                    : 'text-[#918689] hover:text-[#40383A]'
+                    ? 'text-ceci-primary font-bold'
+                    : 'text-ceci-tertiary hover:text-ceci-primary'
                 }`}
               >
                 <span>{tab.label}</span>
                 {tab.badge !== null && tab.badge > 0 && (
                   <span className={`text-[9px] px-1.5 py-0.2 rounded-full font-bold ${
-                    isSel ? 'bg-[#FFF5F7] text-[#B94862] border border-[#FFD3DD]' : 'bg-[#FAF8F5] text-[#918689]'
+                    isSel ? 'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand' : 'bg-surface-muted text-ceci-tertiary'
                   }`}>
                     {tab.badge}
                   </span>
                 )}
                 {isSel && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#40383A] rounded-full animate-in fade-in duration-200" />
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-ceci-primary rounded-full animate-in fade-in duration-200" />
                 )}
               </button>
             );
@@ -179,14 +169,30 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
       {/* ==================================================================== */}
       {activeTab === 'info' && (
         <div className="space-y-6 animate-in fade-in duration-200 px-1">
-          
+
+          {/* Badges: código, dias de aula, obrigatória/complementar */}
+          <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+            <span className="text-[10px] font-extrabold uppercase tracking-wider bg-white px-2.5 py-0.5 rounded-full border border-ceci-border-default text-ceci-primary">
+              {course.code || 'PSI-300'}
+            </span>
+
+            <span className="inline-flex items-center gap-1 px-3 py-1 bg-white rounded-full text-[11px] font-semibold text-ceci-primary border border-ceci-border-default">
+              <Clock className="w-3 h-3 text-ceci-academic-strong" />
+              <span>{course.schedule || 'Semanal'}</span>
+            </span>
+
+            <span className="inline-flex items-center gap-1 px-3 py-1 bg-surface-rose text-ceci-brand-strong rounded-full text-[11px] font-semibold border border-ceci-border-brand">
+              <span>{course.category === 'complementar' ? 'complementar' : 'obrigatória'}</span>
+            </span>
+          </div>
+
           {/* Ementa / Descrição (Inline Accent Block) */}
           <div className="space-y-2">
-            <h3 className="font-display font-bold text-sm text-[#40383A] flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-[#B94862]" />
+            <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-ceci-brand-strong" />
               <span>Ementa & Objetivos da Disciplina</span>
             </h3>
-            <div className="border-l-3 border-[#B94862] pl-3.5 py-1 text-xs text-[#524B4D] leading-relaxed font-medium bg-gradient-to-r from-[#FFF5F7]/70 to-transparent rounded-r-xl">
+            <div className="border-l-3 border-ceci-brand-strong pl-3.5 py-1 text-xs text-ceci-text-soft leading-relaxed font-medium bg-gradient-to-r from-surface-rose/70 to-transparent rounded-r-xl">
               {course.description ||
                 'Estudo detalhado das estruturas clínicas, semiologia psiquiátrica, modelo de compreensão comportamental e práticas de diagnóstico em Psicologia.'}
             </div>
@@ -194,29 +200,29 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
 
           {/* Dados Universitários Grid (Inline divided section) */}
           <div className="space-y-2.5">
-            <h3 className="font-display font-bold text-sm text-[#40383A]">
+            <h3 className="font-display font-bold text-sm text-ceci-primary">
               Detalhes Acadêmicos
             </h3>
 
-            <div className="border-y border-[#E9DFDC] py-3 grid grid-cols-2 gap-y-3.5 gap-x-4">
+            <div className="border-y border-ceci-border-default py-3 grid grid-cols-2 gap-y-3.5 gap-x-4">
               <div>
-                <span className="text-[10px] font-bold text-[#918689] uppercase tracking-wider block">Sala & Local</span>
-                <p className="font-semibold text-xs text-[#40383A] mt-0.5">{course.room || 'Bloco C - Sala 204'}</p>
+                <span className="text-[10px] font-bold text-ceci-tertiary uppercase tracking-wider block">Sala & Local</span>
+                <p className="font-semibold text-xs text-ceci-primary mt-0.5">{course.room || 'Bloco C - Sala 204'}</p>
               </div>
 
               <div>
-                <span className="text-[10px] font-bold text-[#918689] uppercase tracking-wider block">Horário Semanal</span>
-                <p className="font-semibold text-xs text-[#40383A] mt-0.5">{course.schedule || 'Segunda 08:00 - 11:30'}</p>
+                <span className="text-[10px] font-bold text-ceci-tertiary uppercase tracking-wider block">Horário Semanal</span>
+                <p className="font-semibold text-xs text-ceci-primary mt-0.5">{course.schedule || 'Segunda 08:00 - 11:30'}</p>
               </div>
 
               <div>
-                <span className="text-[10px] font-bold text-[#918689] uppercase tracking-wider block">Docente Responsável</span>
-                <p className="font-semibold text-xs text-[#40383A] mt-0.5">{course.professor}</p>
+                <span className="text-[10px] font-bold text-ceci-tertiary uppercase tracking-wider block">Docente Responsável</span>
+                <p className="font-semibold text-xs text-ceci-primary mt-0.5">{course.professor}</p>
               </div>
 
               <div>
-                <span className="text-[10px] font-bold text-[#918689] uppercase tracking-wider block">Frequência Registrada</span>
-                <p className="font-bold text-xs text-[#2D6A4F] mt-0.5">92% (2 ausências)</p>
+                <span className="text-[10px] font-bold text-ceci-tertiary uppercase tracking-wider block">Frequência Registrada</span>
+                <p className="font-bold text-xs text-success-deep mt-0.5">92% (2 ausências)</p>
               </div>
             </div>
           </div>
@@ -224,48 +230,48 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
           {/* Fórmulas de Avaliação / Pesos (Inline divided list) */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="font-display font-bold text-sm text-[#40383A]">
+              <h3 className="font-display font-bold text-sm text-ceci-primary">
                 Critérios de Avaliação
               </h3>
-              <span className="text-[11px] font-semibold text-[#B94862] bg-[#FFF5F7] px-2.5 py-0.5 rounded-full border border-[#FFD3DD]">
+              <span className="text-[11px] font-semibold text-ceci-brand-strong bg-surface-rose px-2.5 py-0.5 rounded-full border border-ceci-border-brand">
                 Média Mínima: 7,0
               </span>
             </div>
 
-            <div className="divide-y divide-[#E9DFDC]/70 border-t border-[#E9DFDC]">
+            <div className="divide-y divide-ceci-border-default/70 border-t border-ceci-border-default">
               <div className="flex items-center justify-between py-2.5 text-xs">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#B94862]" />
-                  <span className="font-semibold text-[#40383A]">Prova Teórica I (P1)</span>
+                  <span className="w-2 h-2 rounded-full bg-ceci-brand-strong" />
+                  <span className="font-semibold text-ceci-primary">Prova Teórica I (P1)</span>
                 </div>
-                <span className="font-bold text-[#40383A] bg-[#FAF8F5] px-2 py-0.5 rounded border border-[#E9DFDC]">Peso 35%</span>
+                <span className="font-bold text-ceci-primary bg-surface-muted px-2 py-0.5 rounded border border-ceci-border-default">Peso 35%</span>
               </div>
 
               <div className="flex items-center justify-between py-2.5 text-xs">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#396D82]" />
-                  <span className="font-semibold text-[#40383A]">Estudo de Caso / Trabalho (P2)</span>
+                  <span className="w-2 h-2 rounded-full bg-ceci-academic-strong" />
+                  <span className="font-semibold text-ceci-primary">Estudo de Caso / Trabalho (P2)</span>
                 </div>
-                <span className="font-bold text-[#40383A] bg-[#FAF8F5] px-2 py-0.5 rounded border border-[#E9DFDC]">Peso 40%</span>
+                <span className="font-bold text-ceci-primary bg-surface-muted px-2 py-0.5 rounded border border-ceci-border-default">Peso 40%</span>
               </div>
 
               <div className="flex items-center justify-between py-2.5 text-xs">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#2D6A4F]" />
-                  <span className="font-semibold text-[#40383A]">Atividades Práticas / Fichamentos</span>
+                  <span className="w-2 h-2 rounded-full bg-success-deep" />
+                  <span className="font-semibold text-ceci-primary">Atividades Práticas / Fichamentos</span>
                 </div>
-                <span className="font-bold text-[#40383A] bg-[#FAF8F5] px-2 py-0.5 rounded border border-[#E9DFDC]">Peso 25%</span>
+                <span className="font-bold text-ceci-primary bg-surface-muted px-2 py-0.5 rounded border border-ceci-border-default">Peso 25%</span>
               </div>
             </div>
           </div>
 
           {/* Horário de Atendimento e Monitoria (Inline callout) */}
-          <div className="pl-3.5 py-2.5 border-l-2 border-[#396D82] space-y-1">
-            <h4 className="font-display font-bold text-xs text-[#396D82] flex items-center gap-1.5">
-              <MessageSquare className="w-3.5 h-3.5 text-[#396D82]" />
+          <div className="pl-3.5 py-2.5 border-l-2 border-ceci-academic-strong space-y-1">
+            <h4 className="font-display font-bold text-xs text-ceci-academic-strong flex items-center gap-1.5">
+              <MessageSquare className="w-3.5 h-3.5 text-ceci-academic-strong" />
               <span>atendimento & monitoria</span>
             </h4>
-            <p className="text-xs text-[#6D6366] leading-relaxed">
+            <p className="text-xs text-ceci-secondary leading-relaxed">
               Quartas-feiras das 14:00 às 15:30 na Sala dos Professores (Bloco C). Dúvidas sobre seminários podem ser enviadas por e-mail institucional.
             </p>
           </div>
@@ -282,17 +288,17 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
           {/* Section A: Próximas Avaliações */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="font-display font-bold text-sm text-[#40383A] flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-[#B94862]" />
+              <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-ceci-brand-strong" />
                 <span>Próximas Avaliações & Provas</span>
               </h3>
-              <span className="text-[11px] font-semibold text-[#918689]">
+              <span className="text-[11px] font-semibold text-ceci-tertiary">
                 {courseExams.length} cadastradas
               </span>
             </div>
 
             {courseExams.length > 0 ? (
-              <div className="divide-y divide-[#E9DFDC]/70 border-y border-[#E9DFDC]">
+              <div className="divide-y divide-ceci-border-default/70 border-y border-ceci-border-default">
                 {courseExams.map((exam) => (
                   <div
                     key={exam.id}
@@ -301,22 +307,22 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                   >
                     <div className="space-y-1 flex-1 pr-2">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold text-[#B94862] bg-[#FFF5F7] px-2 py-0.5 rounded-full border border-[#FFD3DD]">
+                        <span className="text-[10px] font-bold text-ceci-brand-strong bg-surface-rose px-2 py-0.5 rounded-full border border-ceci-border-brand">
                           {exam.date}
                         </span>
-                        <span className="text-[10px] font-semibold text-[#6D6366]">
+                        <span className="text-[10px] font-semibold text-ceci-secondary">
                           {exam.weight}
                         </span>
                       </div>
 
-                      <h4 className={`font-display font-bold text-sm text-[#40383A] ${exam.completed ? 'line-through text-[#918689]' : ''}`}>
+                      <h4 className={`font-display font-bold text-sm text-ceci-primary ${exam.completed ? 'line-through text-ceci-tertiary' : ''}`}>
                         {exam.title}
                       </h4>
 
                       {exam.topics && exam.topics.length > 0 && (
                         <div className="flex flex-wrap gap-1 pt-0.5">
                           {exam.topics.map((tp, idx) => (
-                            <span key={idx} className="text-[9px] text-[#6D6366] bg-[#FAF8F5] px-2 py-0.2 rounded border border-[#E9DFDC]">
+                            <span key={idx} className="text-[9px] text-ceci-secondary bg-surface-muted px-2 py-0.2 rounded border border-ceci-border-default">
                               {tp}
                             </span>
                           ))}
@@ -325,13 +331,13 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                     </div>
 
                     <div className="pt-1">
-                      <CheckCircle2 className={`w-5 h-5 ${exam.completed ? 'text-[#2D6A4F] fill-[#2D6A4F]/10' : 'text-[#BEB4B6]'}`} />
+                      <CheckCircle2 className={`w-5 h-5 ${exam.completed ? 'text-success-deep fill-success-deep/10' : 'text-ceci-faded'}`} />
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-[#918689] py-2">
+              <p className="text-xs text-ceci-tertiary py-2">
                 Nenhuma avaliação cadastrada para esta disciplina ainda.
               </p>
             )}
@@ -340,13 +346,13 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
           {/* Section B: Diário de Aulas / Registros (Editorial list with dividers) */}
           <div className="space-y-3 pt-2">
             <div className="flex items-center justify-between">
-              <h3 className="font-display font-bold text-sm text-[#40383A] flex items-center gap-2">
-                <FileText className="w-4 h-4 text-[#396D82]" />
+              <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
+                <FileText className="w-4 h-4 text-ceci-academic-strong" />
                 <span>Diário de Aulas Registradas</span>
               </h3>
               <button
-                onClick={onOpenQuickAdd}
-                className="text-xs font-bold text-[#B94862] hover:underline flex items-center gap-1 cursor-pointer"
+                onClick={() => openQuickAddForCourse('class', course.id)}
+                className="text-xs font-bold text-ceci-brand-strong hover:underline flex items-center gap-1 cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>nova aula</span>
@@ -354,7 +360,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
             </div>
 
             {courseClasses.length > 0 ? (
-              <div className="divide-y divide-[#E9DFDC] border-y border-[#E9DFDC]">
+              <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
                 {courseClasses.map((cl) => (
                   <ClassNoteListItem
                     key={cl.id}
@@ -366,11 +372,11 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
               </div>
             ) : (
               <div className="py-6 text-center space-y-2">
-                <FileText className="w-6 h-6 text-[#BEB4B6] mx-auto" />
-                <p className="text-xs font-semibold text-[#40383A]">Ainda não há registros de aula</p>
+                <FileText className="w-6 h-6 text-ceci-faded mx-auto" />
+                <p className="text-xs font-semibold text-ceci-primary">Ainda não há registros de aula</p>
                 <button
-                  onClick={onOpenQuickAdd}
-                  className="px-3.5 py-1.5 bg-[#FFF5F7] border border-[#FFD3DD] text-[#B94862] rounded-full text-xs font-bold cursor-pointer"
+                  onClick={() => openQuickAddForCourse('class', course.id)}
+                  className="px-3.5 py-1.5 bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong rounded-full text-xs font-bold cursor-pointer"
                 >
                   anotar primeira aula
                 </button>
@@ -381,12 +387,12 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
           {/* Section C: Tarefas & Trabalhos */}
           {courseTasks.length > 0 && (
             <div className="space-y-3 pt-2">
-              <h3 className="font-display font-bold text-sm text-[#40383A] flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#2D6A4F]" />
+              <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-success-deep" />
                 <span>Tarefas e Entregas Pendentes</span>
               </h3>
 
-              <div className="divide-y divide-[#E9DFDC] border-y border-[#E9DFDC]">
+              <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
                 {courseTasks.map((t) => (
                   <div
                     key={t.id}
@@ -394,14 +400,14 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                     className="py-2.5 flex items-center justify-between text-xs cursor-pointer"
                   >
                     <div className="space-y-0.5 pr-2">
-                      <p className={`font-semibold text-[#40383A] ${t.completed ? 'line-through text-[#918689]' : ''}`}>
+                      <p className={`font-semibold text-ceci-primary ${t.completed ? 'line-through text-ceci-tertiary' : ''}`}>
                         {t.title}
                       </p>
                       {t.dueDate && (
-                        <span className="text-[10px] text-[#918689]">prazo: {t.dueDate}</span>
+                        <span className="text-[10px] text-ceci-tertiary">prazo: {t.dueDate}</span>
                       )}
                     </div>
-                    <CheckCircle2 className={`w-4 h-4 shrink-0 ${t.completed ? 'text-[#2D6A4F]' : 'text-[#BEB4B6]'}`} />
+                    <CheckCircle2 className={`w-4 h-4 shrink-0 ${t.completed ? 'text-success-deep' : 'text-ceci-faded'}`} />
                   </div>
                 ))}
               </div>
@@ -419,33 +425,33 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
           
           {/* Section A: Conceitos Relacionados */}
           <div className="space-y-3">
-            <h3 className="font-display font-bold text-sm text-[#40383A] flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#B94862]" />
+            <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-ceci-brand-strong" />
               <span>Conceitos-Chave da Disciplina</span>
             </h3>
 
             {courseConcepts.length > 0 ? (
-              <div className="divide-y divide-[#E9DFDC] border-y border-[#E9DFDC]">
+              <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
                 {courseConcepts.map((concept) => (
                   <div key={concept.id} className="py-3 space-y-1">
                     <div className="flex items-center justify-between">
-                      <h4 className="font-display font-bold text-sm text-[#40383A]">
+                      <h4 className="font-display font-bold text-sm text-ceci-primary">
                         {concept.name}
                       </h4>
                       {concept.tags?.[0] && (
-                        <span className="text-[9px] font-bold bg-[#FFF5F7] text-[#B94862] px-2 py-0.5 rounded-full border border-[#FFD3DD]">
+                        <span className="text-[9px] font-bold bg-surface-rose text-ceci-brand-strong px-2 py-0.5 rounded-full border border-ceci-border-brand">
                           {concept.tags[0]}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-[#6D6366] leading-relaxed">
+                    <p className="text-xs text-ceci-secondary leading-relaxed">
                       {concept.definition}
                     </p>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-[#918689] py-2">
+              <p className="text-xs text-ceci-tertiary py-2">
                 Nenhum conceito associado diretamente ainda.
               </p>
             )}
@@ -454,25 +460,25 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
           {/* Section B: Autores Fundamentais */}
           {courseAuthors.length > 0 && (
             <div className="space-y-3 pt-2">
-              <h3 className="font-display font-bold text-sm text-[#40383A] flex items-center gap-2">
-                <UserCheck className="w-4 h-4 text-[#396D82]" />
+              <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
+                <UserCheck className="w-4 h-4 text-ceci-academic-strong" />
                 <span>Autores Fundamentais</span>
               </h3>
 
-              <div className="divide-y divide-[#E9DFDC] border-y border-[#E9DFDC]">
+              <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
                 {courseAuthors.map((author) => (
                   <div key={author.id} className="py-3 flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-full bg-[#BFDDED] text-[#396D82] font-display font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-9 h-9 rounded-full bg-blue-200 text-ceci-academic-strong font-display font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
                       {author.name.charAt(0)}
                     </div>
                     <div className="space-y-0.5">
                       <div className="flex items-center gap-2">
-                        <h4 className="font-display font-bold text-sm text-[#40383A]">
+                        <h4 className="font-display font-bold text-sm text-ceci-primary">
                           {author.name}
                         </h4>
-                        <span className="text-[10px] text-[#918689]">{author.lifespan}</span>
+                        <span className="text-[10px] text-ceci-tertiary">{author.lifespan}</span>
                       </div>
-                      <p className="text-xs text-[#6D6366] leading-relaxed">
+                      <p className="text-xs text-ceci-secondary leading-relaxed">
                         {author.bio}
                       </p>
                     </div>
@@ -484,20 +490,20 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
 
           {/* Section C: Leituras & Bibliografia Recomendada */}
           <div className="space-y-3 pt-2">
-            <h3 className="font-display font-bold text-sm text-[#40383A] flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-[#756354]" />
+            <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-beige-700" />
               <span>Leituras & Bibliografia Recomendada</span>
             </h3>
 
             {courseReadings.length > 0 || courseMaterials.length > 0 ? (
-              <div className="divide-y divide-[#E9DFDC] border-y border-[#E9DFDC]">
+              <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
                 {courseReadings.map((reading) => (
                   <div key={reading.id} className="py-2.5 flex items-center justify-between text-xs">
                     <div className="space-y-0.5">
-                      <h5 className="font-bold text-[#40383A]">{reading.title}</h5>
-                      <p className="text-[11px] text-[#918689]">Autor: {reading.author}</p>
+                      <h5 className="font-bold text-ceci-primary">{reading.title}</h5>
+                      <p className="text-[11px] text-ceci-tertiary">Autor: {reading.author}</p>
                     </div>
-                    <span className="text-[10px] font-semibold text-[#2D6A4F] bg-[#EAF5ED] px-2.5 py-1 rounded-full border border-[#CEE7F0]">
+                    <span className="text-[10px] font-semibold text-success-deep bg-surface-mint-soft px-2.5 py-1 rounded-full border border-ceci-border-academic">
                       {reading.readPages || 0} / {reading.totalPages || 100} pág
                     </span>
                   </div>
@@ -506,17 +512,17 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                 {courseMaterials.map((mat) => (
                   <div key={mat.id} className="py-2.5 flex items-center justify-between text-xs">
                     <div className="space-y-0.5">
-                      <h5 className="font-semibold text-[#40383A]">{mat.title}</h5>
-                      <p className="text-[10px] text-[#918689] uppercase">{mat.type} • {mat.author}</p>
+                      <h5 className="font-semibold text-ceci-primary">{mat.title}</h5>
+                      <p className="text-[10px] text-ceci-tertiary uppercase">{mat.type} • {mat.author}</p>
                     </div>
-                    <span className="text-[10px] font-bold text-[#396D82] bg-[#F3F9FC] px-2 py-0.5 rounded border border-[#CEE7F0]">
+                    <span className="text-[10px] font-bold text-ceci-academic-strong bg-surface-blue px-2 py-0.5 rounded border border-ceci-border-academic">
                       PDF
                     </span>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-[#918689] py-2">
+              <p className="text-xs text-ceci-tertiary py-2">
                 Nenhuma leitura vinculada a esta disciplina.
               </p>
             )}
@@ -524,19 +530,6 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
 
         </div>
       )}
-
-      {/* 4. Bottom Action Bar */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-[#FFFCF8] via-[#FFFCF8]/95 to-transparent z-30 pointer-events-none">
-        <div className="max-w-md sm:max-w-xl mx-auto pointer-events-auto">
-          <button
-            onClick={onOpenQuickAdd}
-            className="w-full bg-[#40383A] hover:bg-[#2D2728] text-white py-3.5 rounded-2xl font-display font-bold text-sm shadow-xl flex items-center justify-center gap-2 transition-transform active:scale-98 cursor-pointer border border-white/20"
-          >
-            <Plus className="w-4 h-4 stroke-[2.5]" />
-            <span>Registrar Anotação ou Tarefa da Matéria</span>
-          </button>
-        </div>
-      </div>
 
       {/* Modal View for Selected Class Note */}
       <ClassNoteModal

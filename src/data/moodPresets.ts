@@ -13,47 +13,47 @@ export const MOOD_PRESETS: MoodPreset[] = [
     emoji: '🤓',
     label: 'focada & acadêmica',
     description: 'pronta para imergir nos livros e sintetizar teorias',
-    vibeColor: 'bg-[#FFF5F7] border-[#FFD3DD] text-[#B94862]',
-    accentBg: 'bg-[#B94862]'
+    vibeColor: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong',
+    accentBg: 'bg-ceci-brand-strong'
   },
   {
     id: 'calma',
     emoji: '🧘',
     label: 'calma & equilibrada',
     description: 'ritmo suave e leitura sem pressão com foco no essencial',
-    vibeColor: 'bg-[#F3F9FC] border-[#CEE7F0] text-[#396D82]',
-    accentBg: 'bg-[#396D82]'
+    vibeColor: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong',
+    accentBg: 'bg-ceci-academic-strong'
   },
   {
     id: 'criativa',
     emoji: '✨',
     label: 'inspirada & criativa',
     description: 'ideias fluindo para mapas mentais, tcc e artigos',
-    vibeColor: 'bg-[#FFF8F1] border-[#FFF1E5] text-[#756354]',
-    accentBg: 'bg-[#756354]'
+    vibeColor: 'bg-surface-subtle border-cream-200 text-beige-700',
+    accentBg: 'bg-beige-700'
   },
   {
     id: 'cafe',
     emoji: '☕',
     label: 'preciso de um café',
     description: 'levemente cansada, avançando um passo de cada vez',
-    vibeColor: 'bg-[#F2F8F4] border-[#D1E8D9] text-[#518265]',
-    accentBg: 'bg-[#518265]'
+    vibeColor: 'bg-surface-mint border-ceci-border-mint text-success-leaf',
+    accentBg: 'bg-success-leaf'
   },
   {
     id: 'motivada',
     emoji: '⚡',
     label: 'super motivada',
     description: 'energia máxima para dominar todos os tópicos de hoje',
-    vibeColor: 'bg-[#FFFDF0] border-[#FFF8CC] text-[#8C7338]',
-    accentBg: 'bg-[#8C7338]'
+    vibeColor: 'bg-surface-paper border-surface-sun text-gold',
+    accentBg: 'bg-gold'
   },
   {
     id: 'reflexiva',
     emoji: '🧸',
     label: 'acolhida & reflexiva',
     description: 'analisando conceitos de psicologia com escuta interna',
-    vibeColor: 'bg-[#FAF8F5] border-[#E9DFDC] text-[#6D6366]',
-    accentBg: 'bg-[#6D6366]'
+    vibeColor: 'bg-surface-muted border-ceci-border-default text-ceci-secondary',
+    accentBg: 'bg-ceci-secondary'
   }
 ];

@@ -14,30 +14,30 @@ export const StudyStatsWidget: React.FC = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {/* Left Card: Streak Arc & Goal */}
-      <div className="rounded-[24px] p-5 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] flex flex-col justify-between">
+      <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm flex flex-col justify-between">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-[#FFF5F7] flex items-center justify-center text-[#40383A]">
-              <Flame className="w-4 h-4 fill-[#E97891] text-[#E97891]" />
+            <div className="w-8 h-8 rounded-full bg-surface-rose flex items-center justify-center text-ceci-primary">
+              <Flame className="w-4 h-4 fill-rose-500 text-rose-500" />
             </div>
             <div>
-              <h4 className="font-display font-bold text-sm text-[#40383A]">
+              <h4 className="font-display font-bold text-sm text-ceci-primary">
                 ofensiva de estudos
               </h4>
-              <p className="text-[11px] text-[#6D6366]">à frente de 84% das colegas</p>
+              <p className="text-[11px] text-ceci-secondary">à frente de 84% das colegas</p>
             </div>
           </div>
-          <span className="text-[10px] font-bold bg-[#FAF8F5] text-[#6D6366] px-2 py-1 rounded-full border border-[#E9DFDC]">
+          <span className="text-[10px] font-bold bg-surface-muted text-ceci-secondary px-2 py-1 rounded-full border border-ceci-border-default">
             ininterrupto 🔥
           </span>
         </div>
 
         <div className="flex items-center justify-between my-2">
           <div>
-            <span className="text-3xl font-display font-bold text-[#40383A]">
-              {streakDays} <span className="text-base font-normal text-[#6D6366]">dias</span>
+            <span className="text-3xl font-display font-bold text-ceci-primary">
+              {streakDays} <span className="text-base font-normal text-ceci-secondary">dias</span>
             </span>
-            <p className="text-xs text-[#6D6366] mt-0.5">seu hábito de estudo está consolidado!</p>
+            <p className="text-xs text-ceci-secondary mt-0.5">seu hábito de estudo está consolidado!</p>
           </div>
 
           {/* Semi-Arc Progress Circle SVG */}
@@ -47,7 +47,7 @@ export const StudyStatsWidget: React.FC = () => {
                 cx="40"
                 cy="40"
                 r="32"
-                className="stroke-[#E9DFDC]"
+                className="stroke-ceci-border-default"
                 strokeWidth="8"
                 fill="transparent"
               />
@@ -55,7 +55,7 @@ export const StudyStatsWidget: React.FC = () => {
                 cx="40"
                 cy="40"
                 r="32"
-                className="stroke-[#40383A] transition-all duration-500"
+                className="stroke-ceci-primary transition-all duration-500"
                 strokeWidth="8"
                 strokeDasharray="200"
                 strokeDashoffset="35"
@@ -63,21 +63,21 @@ export const StudyStatsWidget: React.FC = () => {
                 fill="transparent"
               />
             </svg>
-            <Award className="w-6 h-6 text-[#E97891] absolute" />
+            <Award className="w-6 h-6 text-rose-500 absolute" />
           </div>
         </div>
 
         {/* Meta Diária Bar */}
-        <div className="pt-3 border-t border-[#F2EBE8] mt-2 space-y-1.5">
+        <div className="pt-3 border-t border-ceci-border-subtle mt-2 space-y-1.5">
           <div className="flex justify-between items-center text-xs">
-            <span className="font-medium text-[#40383A] flex items-center gap-1">
-              <Target className="w-3.5 h-3.5 text-[#E97891]" /> meta diária: {dailyGoalMins} min
+            <span className="font-medium text-ceci-primary flex items-center gap-1">
+              <Target className="w-3.5 h-3.5 text-rose-500" /> meta diária: {dailyGoalMins} min
             </span>
-            <span className="font-bold text-[#6D6366]">{currentDoneMins} / {dailyGoalMins} min</span>
+            <span className="font-bold text-ceci-secondary">{currentDoneMins} / {dailyGoalMins} min</span>
           </div>
-          <div className="w-full h-2 bg-[#FAF8F5] border border-[#E9DFDC] rounded-full overflow-hidden">
+          <div className="w-full h-2 bg-surface-muted border border-ceci-border-default rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-[#E97891] to-[#40383A] rounded-full"
+              className="h-full bg-gradient-to-r from-rose-500 to-ceci-primary rounded-full"
               style={{ width: `${(currentDoneMins / dailyGoalMins) * 100}%` }}
             />
           </div>
@@ -85,50 +85,50 @@ export const StudyStatsWidget: React.FC = () => {
       </div>
 
       {/* Right Card: Speed & Sparkline Analytics */}
-      <div className="rounded-[24px] p-5 bg-white border border-[#E9DFDC] shadow-[0_2px_8px_rgba(64,56,58,0.05)] flex flex-col justify-between">
+      <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm flex flex-col justify-between">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-[#F2F8F4] flex items-center justify-center text-[#40383A]">
-              <Zap className="w-4 h-4 text-[#518265]" />
+            <div className="w-8 h-8 rounded-full bg-surface-mint flex items-center justify-center text-ceci-primary">
+              <Zap className="w-4 h-4 text-success-leaf" />
             </div>
             <div>
-              <h4 className="font-display font-bold text-sm text-[#40383A]">
+              <h4 className="font-display font-bold text-sm text-ceci-primary">
                 velocidade de leitura
               </h4>
-              <p className="text-[11px] text-[#6D6366]">+8 ppm esta semana</p>
+              <p className="text-[11px] text-ceci-secondary">+8 ppm esta semana</p>
             </div>
           </div>
-          <span className="text-xs font-bold text-[#518265] bg-[#F2F8F4] border border-[#D1E8D9] px-2 py-0.5 rounded-full">
+          <span className="text-xs font-bold text-success-leaf bg-surface-mint border border-ceci-border-mint px-2 py-0.5 rounded-full">
             104 - 112 wpm
           </span>
         </div>
 
         <div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-display font-bold text-[#40383A]">
+            <span className="text-3xl font-display font-bold text-ceci-primary">
               {readingSpeedWpm}
             </span>
-            <span className="text-xs text-[#6D6366]">palavras por minuto (ppm)</span>
+            <span className="text-xs text-ceci-secondary">palavras por minuto (ppm)</span>
           </div>
-          <p className="text-[11px] text-[#6D6366] mt-1">
+          <p className="text-[11px] text-ceci-secondary mt-1">
             seu tempo de leitura por capítulo diminuiu de 24 min para 18 min! ⚡
           </p>
         </div>
 
         {/* Sparkline Graph */}
-        <div className="pt-3 border-t border-[#F2EBE8] mt-3">
+        <div className="pt-3 border-t border-ceci-border-subtle mt-3">
           <div className="flex items-end justify-between h-14 px-2 pt-2 gap-2">
             {sparklineData.map((val, idx) => {
               const heightPercent = Math.round((val / 120) * 100);
               return (
                 <div key={idx} className="flex-1 flex flex-col items-center gap-1 group">
-                  <div className="w-full bg-[#FAF8F5] border border-[#E9DFDC] rounded-t-md h-full flex items-end overflow-hidden">
+                  <div className="w-full bg-surface-muted border border-ceci-border-default rounded-t-md h-full flex items-end overflow-hidden">
                     <div
-                      className="w-full bg-[#40383A] group-hover:bg-[#E97891] transition-colors rounded-t-sm"
+                      className="w-full bg-ceci-primary group-hover:bg-rose-500 transition-colors rounded-t-sm"
                       style={{ height: `${heightPercent}%` }}
                     />
                   </div>
-                  <span className="text-[9px] text-[#918689] font-bold">{days[idx]}</span>
+                  <span className="text-[9px] text-ceci-tertiary font-bold">{days[idx]}</span>
                 </div>
               );
             })}

@@ -67,7 +67,7 @@ export function BottomNavBar({
       role="navigation"
       aria-label="Bottom Navigation"
       className={cn(
-        "bg-white/95 dark:bg-card border border-[#E9DFDC] dark:border-sidebar-border rounded-full flex items-center p-1.5 shadow-[0_8px_28px_rgba(64,56,58,0.12)] space-x-1 min-w-[300px] max-w-[95vw] h-[52px]",
+        "bg-white/95 dark:bg-card border border-ceci-border-default dark:border-sidebar-border rounded-full flex items-center p-1.5 shadow-floating space-x-1 min-w-[300px] max-w-[95vw] h-[52px]",
         stickyBottom && "fixed inset-x-0 bottom-4 mx-auto z-50 w-fit",
         className,
       )}
@@ -79,23 +79,32 @@ export function BottomNavBar({
         return (
           <motion.button
             key={item.id || item.label}
-            whileTap={{ scale: 0.97 }}
+            whileTap={{ scale: 0.94 }}
             className={cn(
               "flex items-center gap-0 px-3 py-2 rounded-full transition-colors duration-200 relative h-10 min-w-[44px] min-h-[40px] max-h-[44px] cursor-pointer",
-              isActive
-                ? "bg-[#FFF5F7] text-[#B94862] gap-2 border border-[#FFD3DD]"
-                : "bg-transparent text-[#918689] hover:bg-[#FAF8F5]",
+              isActive ? "text-ceci-brand-strong gap-2" : "bg-transparent text-ceci-tertiary hover:bg-surface-muted",
               "focus:outline-none focus-visible:ring-0",
             )}
             onClick={() => handleSelect(idx)}
             aria-label={item.label}
             type="button"
           >
+            {isActive && (
+              <motion.span
+                layoutId="bottomnav-active-pill"
+                className="absolute inset-0 rounded-full bg-surface-rose border border-ceci-border-brand"
+                transition={{ type: "spring", stiffness: 400, damping: 34 }}
+              />
+            )}
+
             <Icon
               size={20}
               strokeWidth={isActive ? 2.2 : 1.8}
               aria-hidden
-              className={cn("transition-colors duration-200 shrink-0", isActive ? "text-[#B94862]" : "text-[#918689]")}
+              className={cn(
+                "relative z-10 transition-colors duration-200 shrink-0",
+                isActive ? "text-ceci-brand-strong" : "text-ceci-tertiary",
+              )}
             />
 
             <motion.div
@@ -110,11 +119,11 @@ export function BottomNavBar({
                 stiffness: 380,
                 damping: 30,
               }}
-              className="overflow-hidden flex items-center whitespace-nowrap"
+              className="relative z-10 overflow-hidden flex items-center whitespace-nowrap"
             >
               <span
                 className={cn(
-                  "font-semibold text-xs sm:text-xs text-[#B94862] whitespace-nowrap select-none tracking-tight",
+                  "font-semibold text-xs sm:text-xs text-ceci-brand-strong whitespace-nowrap select-none tracking-tight",
                 )}
                 title={item.label}
               >

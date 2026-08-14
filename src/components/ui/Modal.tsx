@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
+import { AnimatePresence, motion, useDragControls } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { sheetVariants, OVERLAY_FADE } from '@/lib/motion';
 
 interface ModalProps {
   open: boolean;
@@ -8,6 +10,8 @@ interface ModalProps {
   className?: string;
   position?: 'center' | 'top' | 'bottom';
   closeOnBackdrop?: boolean;
+  /** Mostra o "handle" de arrastar (apenas em sheets inferiores). */
+  showGrabber?: boolean;
 }
 
 const POSITION_CLASSES = {
@@ -16,6 +20,9 @@ const POSITION_CLASSES = {
   bottom: 'items-end justify-center sm:items-center',
 };
 
+const HANDLE_DRAG_THRESHOLD = 90;
+const HANDLE_VELOCITY_THRESHOLD = 600;
+
 export const Modal: React.FC<ModalProps> = ({
   open,
   onClose,
@@ -23,7 +30,12 @@ export const Modal: React.FC<ModalProps> = ({
   className,
   position = 'center',
   closeOnBackdrop = true,
+  showGrabber,
 }) => {
+  const dragControls = useDragControls();
+  const isBottom = position === 'bottom';
+  const withGrabber = isBottom && (showGrabber ?? true);
+
   useEffect(() => {
     if (!open) return;
     const handleKey = (e: KeyboardEvent) => {
@@ -33,21 +45,58 @@ export const Modal: React.FC<ModalProps> = ({
     return () => document.removeEventListener('keydown', handleKey);
   }, [open, onClose]);
 
-  if (!open) return null;
-
   return (
-    <div
-      className={cn(
-        'fixed inset-0 z-50 flex bg-black/40 backdrop-blur-xs animate-in fade-in duration-200',
-        POSITION_CLASSES[position]
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          key="modal-overlay"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={OVERLAY_FADE}
+          className={cn(
+            'fixed inset-0 z-50 flex bg-black/40 backdrop-blur-xs',
+            POSITION_CLASSES[position]
+          )}
+          onClick={closeOnBackdrop ? onClose : undefined}
+          role="dialog"
+          aria-modal="true"
+        >
+          <motion.div
+            key="modal-panel"
+            variants={sheetVariants[position]}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            drag={isBottom ? 'y' : false}
+            dragListener={false}
+            dragControls={isBottom ? dragControls : undefined}
+            dragConstraints={{ top: 0, bottom: 0 }}
+            dragElastic={{ top: 0, bottom: 0.5 }}
+            onDragEnd={(_, info) => {
+              if (
+                isBottom &&
+                (info.offset.y > HANDLE_DRAG_THRESHOLD || info.velocity.y > HANDLE_VELOCITY_THRESHOLD)
+              ) {
+                onClose();
+              }
+            }}
+            className={cn('relative', isBottom && 'w-full sm:w-auto', className)}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {withGrabber && (
+              <div
+                onPointerDown={(e) => dragControls.start(e)}
+                className="flex items-center justify-center py-2.5 -mb-1 cursor-grab active:cursor-grabbing touch-none"
+                aria-hidden
+              >
+                <span className="w-10 h-1.5 rounded-full bg-ceci-border-strong" />
+              </div>
+            )}
+            {children}
+          </motion.div>
+        </motion.div>
       )}
-      onClick={closeOnBackdrop ? onClose : undefined}
-      role="dialog"
-      aria-modal="true"
-    >
-      <div className={cn('relative', className)} onClick={(e) => e.stopPropagation()}>
-        {children}
-      </div>
-    </div>
+    </AnimatePresence>
   );
 };

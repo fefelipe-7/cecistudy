@@ -104,6 +104,28 @@
   --color-ceci-border-brand: #FFD3DD;
   --color-ceci-border-academic: #CEE7F0;
 
+  /* ORPHAN HEX → SEMANTIC TOKENS (migração A.2) */
+  --color-surface-paper: #FFFDF0;
+  --color-surface-sun: #FFF8CC;
+  --color-surface-mint: #F2F8F4;
+  --color-surface-mint-soft: #EAF5ED;
+  --color-surface-gold: #FFF8E9;
+  --color-ceci-border-mint: #D1E8D9;
+  --color-ceci-border-peach: #FFE2CC;
+  --color-ceci-border-gold: #F1DFB3;
+  --color-amber-bg: #FEF3C7;
+  --color-amber-border: #FDE68A;
+  --color-amber-text: #D97706;
+  --color-gold: #8C7338;
+  --color-success-deep: #2D6A4F;
+  --color-success-leaf: #518265;
+  --color-ceci-faded: #BEB4B6;
+  --color-ceci-primary-hover: #2D2728;
+  --color-ceci-ink: #282022;
+  --color-ceci-brand-hover: #A03B52;
+  --color-ceci-brand-soft: #EA718F;
+  --color-ceci-text-soft: #524B4D;
+
   /* FONTS */
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, sans-serif;
@@ -126,6 +148,9 @@
   --shadow-lg: 0 12px 32px rgba(64, 56, 58, 0.09);
   --shadow-xl: 0 20px 48px rgba(64, 56, 58, 0.12);
   --shadow-floating: 0 8px 28px rgba(64, 56, 58, 0.12);
+  --shadow-floating-strong: 0 8px 28px rgba(64, 56, 58, 0.25);
+  --shadow-brand: 0 4px 16px rgba(185, 72, 98, 0.4);
+  --shadow-brand-soft: 0 4px 14px rgba(185, 72, 98, 0.3);
 }
 
 @layer base {
@@ -141,8 +166,8 @@
 
   body {
     font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-    background-color: #FFFCF8;
-    color: #40383A;
+    background-color: var(--color-canvas);
+    color: var(--color-ceci-primary);
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
   }
@@ -159,23 +184,23 @@
 
 /* Cozy Academic Card Styling aligned with Design Tokens */
 .journal-card {
-  background-color: #FFFFFF;
+  background-color: var(--color-surface-default);
   border-radius: 20px;
-  box-shadow: 0 2px 8px rgba(64, 56, 58, 0.05);
-  border: 1px solid #F2EBE8;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-ceci-border-subtle);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .journal-card:hover {
-  box-shadow: 0 6px 18px rgba(64, 56, 58, 0.07);
-  border-color: #E9DFDC;
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-ceci-border-default);
 }
 
 /* Paper Texture Background */
 .paper-texture {
-  background-image: radial-gradient(#FFD3DD 0.6px, transparent 0.6px);
+  background-image: radial-gradient(var(--color-ceci-border-brand) 0.6px, transparent 0.6px);
   background-size: 18px 18px;
-  background-color: #FFFCF8;
+  background-color: var(--color-canvas);
 }
 
 /* Cute Badge Styling */
@@ -209,14 +234,14 @@
   height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #FFFCF8;
+  background: var(--color-canvas);
 }
 ::-webkit-scrollbar-thumb {
-  background: #E8DFD5;
+  background: var(--color-beige-200);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #FFD3DD;
+  background: var(--color-ceci-border-brand);
 }
 
 

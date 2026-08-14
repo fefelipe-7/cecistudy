@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { X, Check, BookOpen, FileText, Brain, HeartHandshake, Sparkles, Plus } from 'lucide-react';
+import { X, Check, BookOpen, FileText, Brain, HeartHandshake, Sparkles, Plus, Timer, ClipboardList, UserCheck } from 'lucide-react';
+import { Modal } from './ui/Modal';
 import {
   Course,
   QuickType,
@@ -8,7 +9,10 @@ import {
   ReadingItem,
   Flashcard,
   PsychologyConcept,
-  InternshipLog
+  InternshipLog,
+  Exam,
+  StudySession,
+  PsychologyAuthor
 } from '../types';
 
 interface QuickAddModalProps {
@@ -16,12 +20,16 @@ interface QuickAddModalProps {
   onClose: () => void;
   courses: Course[];
   initialType?: QuickType;
+  presetCourseId?: string;
   onAddTask: (task: Task) => void;
   onAddClassNote: (note: ClassNote) => void;
   onAddReading: (reading: ReadingItem) => void;
   onAddFlashcard: (card: Flashcard) => void;
   onAddConcept: (concept: PsychologyConcept) => void;
   onAddInternshipLog: (log: InternshipLog) => void;
+  onAddSession: (session: StudySession) => void;
+  onAddExam: (exam: Exam) => void;
+  onAddAuthor: (author: PsychologyAuthor) => void;
 }
 
 export const QuickAddModal: React.FC<QuickAddModalProps> = ({
@@ -29,12 +37,16 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
   onClose,
   courses,
   initialType = 'task',
+  presetCourseId,
   onAddTask,
   onAddClassNote,
   onAddReading,
   onAddFlashcard,
   onAddConcept,
   onAddInternshipLog,
+  onAddSession,
+  onAddExam,
+  onAddAuthor,
 }) => {
   const [activeType, setActiveType] = useState<QuickType>(initialType);
 
@@ -43,6 +55,16 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
       setActiveType(initialType);
     }
   }, [isOpen, initialType]);
+
+  // Pre-select the course when opened from a course detail screen
+  useEffect(() => {
+    if (isOpen && presetCourseId) {
+      setTaskCourseId(presetCourseId);
+      setClassCourseId(presetCourseId);
+      setSessionCourseId(presetCourseId);
+      setExamCourseId(presetCourseId);
+    }
+  }, [isOpen, presetCourseId]);
 
   // Form states
   const [taskTitle, setTaskTitle] = useState('');
@@ -68,7 +90,17 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
   const [internshipHours, setInternshipHours] = useState('4');
   const [internshipNotes, setInternshipNotes] = useState('');
 
-  if (!isOpen) return null;
+  const [sessionTopic, setSessionTopic] = useState('');
+  const [sessionMinutes, setSessionMinutes] = useState('25');
+  const [sessionCourseId, setSessionCourseId] = useState(presetCourseId || courses[0]?.id || '');
+
+  const [examTitle, setExamTitle] = useState('');
+  const [examDate, setExamDate] = useState('');
+  const [examWeight, setExamWeight] = useState('1,0');
+  const [examCourseId, setExamCourseId] = useState(presetCourseId || courses[0]?.id || '');
+
+  const [authorName, setAuthorName] = useState('');
+  const [authorBio, setAuthorBio] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,7 +140,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
         id: 'r-' + Date.now(),
         title: readingTitle.trim(),
         author: readingAuthor.trim() || 'Autor não informado',
-        courseId: courses[0]?.id,
+        courseId: presetCourseId ?? courses[0]?.id,
         type: 'livro',
         totalPages: parseInt(readingPages) || 200,
         readPages: 0,
@@ -121,7 +153,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
       if (!flashcardQuestion.trim() || !flashcardAnswer.trim()) return;
       onAddFlashcard({
         id: 'f-' + Date.now(),
-        courseId: courses[0]?.id,
+        courseId: presetCourseId ?? courses[0]?.id,
         question: flashcardQuestion.trim(),
         answer: flashcardAnswer.trim(),
         timesReviewed: 0
@@ -135,7 +167,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
         name: conceptName.trim(),
         definition: conceptDef.trim() || 'Conceito de Psicologia registrado no meu caderno.',
         authorIds: [],
-        courseIds: [courses[0]?.id || 'c1'],
+        courseIds: [presetCourseId || courses[0]?.id || 'c1'],
         tags: ['Psicologia', 'Conceito']
       });
       setConceptName('');
@@ -152,6 +184,41 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
       });
       setInternshipActivity('');
       setInternshipNotes('');
+    } else if (activeType === 'session') {
+      if (!sessionTopic.trim()) return;
+      onAddSession({
+        id: 'ss-' + Date.now(),
+        courseId: sessionCourseId || undefined,
+        topic: sessionTopic.trim(),
+        date: new Date().toISOString().split('T')[0],
+        durationMinutes: parseInt(sessionMinutes) || 25,
+        mood: 'com_foco'
+      });
+      setSessionTopic('');
+    } else if (activeType === 'exam') {
+      if (!examTitle.trim()) return;
+      onAddExam({
+        id: 'e-' + Date.now(),
+        courseId: examCourseId || 'c1',
+        title: examTitle.trim(),
+        date: examDate || new Date().toISOString().split('T')[0],
+        weight: examWeight.trim() || '1,0',
+        topics: [],
+        completed: false
+      });
+      setExamTitle('');
+      setExamDate('');
+    } else if (activeType === 'author') {
+      if (!authorName.trim()) return;
+      onAddAuthor({
+        id: 'aut-' + Date.now(),
+        name: authorName.trim(),
+        bio: authorBio.trim() || 'Autor estudado na minha jornada de psicologia.',
+        keyConcepts: [],
+        majorWorks: []
+      });
+      setAuthorName('');
+      setAuthorBio('');
     }
 
     onClose();
@@ -164,28 +231,35 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
     { id: 'flashcard', label: 'flashcard', icon: Brain },
     { id: 'concept', label: 'conceito', icon: Sparkles },
     { id: 'internship', label: 'estágio', icon: HeartHandshake },
+    { id: 'session', label: 'estudo', icon: Timer },
+    { id: 'exam', label: 'prova', icon: ClipboardList },
+    { id: 'author', label: 'autor', icon: UserCheck },
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-[rgba(40,30,30,0.18)] backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="w-full max-w-lg bg-[#FFFCF8] rounded-t-[28px] sm:rounded-[24px] border border-[#E9DFDC] shadow-xl overflow-hidden p-5 sm:p-6 text-[#40383A]">
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      position="bottom"
+      className="w-full max-w-lg bg-canvas rounded-t-[28px] sm:rounded-[24px] border border-ceci-border-default shadow-xl overflow-hidden p-5 sm:p-6 text-ceci-primary"
+    >
         
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[#F2EBE8] pb-3 mb-4">
+        <div className="flex items-center justify-between border-b border-ceci-border-subtle pb-3 mb-4">
           <div className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-full bg-[#FFF5F7] flex items-center justify-center text-[#D85F79] text-sm font-bold border border-[#FFD3DD]">
+            <span className="w-8 h-8 rounded-full bg-surface-rose flex items-center justify-center text-ceci-brand text-sm font-bold border border-ceci-border-brand">
               ♡
             </span>
             <div>
-              <h3 className="font-display font-bold text-lg text-[#40383A]">
+              <h3 className="font-display font-bold text-lg text-ceci-primary">
                 novo registro no cantinho
               </h3>
-              <p className="text-xs text-[#6D6366]">o que você quer adicionar agora?</p>
+              <p className="text-xs text-ceci-secondary">o que você quer adicionar agora?</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="touch-target p-1.5 rounded-full hover:bg-[#FAF8F5] text-[#6D6366] transition-colors cursor-pointer"
+            className="touch-target p-1.5 rounded-full hover:bg-surface-muted text-ceci-secondary transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -204,8 +278,8 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 onClick={() => setActiveType(opt.id)}
                 className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-all min-h-[36px] cursor-pointer ${
                   isSel
-                    ? 'bg-[#E97891] text-white shadow-2xs'
-                    : 'bg-white text-[#6D6366] border border-[#E9DFDC] hover:bg-[#FFF5F7]'
+                    ? 'bg-rose-500 text-white shadow-2xs'
+                    : 'bg-white text-ceci-secondary border border-ceci-border-default hover:bg-surface-rose'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -220,13 +294,13 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           {activeType === 'task' && (
             <>
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">título da tarefa</label>
+                <label className="block text-xs font-medium text-ceci-secondary mb-1">título da tarefa</label>
                 <input
                   type="text"
                   placeholder="Ex: Ler capítulo 4 de Psicopatologia"
                   value={taskTitle}
                   onChange={(e) => setTaskTitle(e.target.value)}
-                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
+                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
                   required
                   autoFocus
                 />
@@ -234,11 +308,11 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-[#6D6366] mb-1">disciplina</label>
+                  <label className="block text-xs font-medium text-ceci-secondary mb-1">disciplina</label>
                   <select
                     value={taskCourseId}
                     onChange={(e) => setTaskCourseId(e.target.value)}
-                    className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
+                    className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
                   >
                     {courses.map((c) => (
                       <option key={c.id} value={c.id}>
@@ -249,11 +323,11 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-[#6D6366] mb-1">categoria</label>
+                  <label className="block text-xs font-medium text-ceci-secondary mb-1">categoria</label>
                   <select
                     value={taskCategory}
                     onChange={(e) => setTaskCategory(e.target.value as Task['category'])}
-                    className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
+                    className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
                   >
                     <option value="leitura">leitura 📚</option>
                     <option value="trabalho">trabalho / trabalho acadêmico 📝</option>
@@ -265,12 +339,12 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">data limite (prazo)</label>
+                <label className="block text-xs font-medium text-ceci-secondary mb-1">data limite (prazo)</label>
                 <input
                   type="date"
                   value={taskDueDate}
                   onChange={(e) => setTaskDueDate(e.target.value)}
-                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
+                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
                 />
               </div>
             </>
@@ -279,23 +353,23 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           {activeType === 'class' && (
             <>
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">título da aula</label>
+                <label className="block text-xs font-medium text-ceci-secondary mb-1">título da aula</label>
                 <input
                   type="text"
                   placeholder="Ex: Aula 09 - Transtornos de Ansiedade e Tag"
                   value={classTitle}
                   onChange={(e) => setClassTitle(e.target.value)}
-                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
+                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">disciplina</label>
+                <label className="block text-xs font-medium text-ceci-secondary mb-1">disciplina</label>
                 <select
                   value={classCourseId}
                   onChange={(e) => setClassCourseId(e.target.value)}
-                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
+                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
                 >
                   {courses.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -306,13 +380,13 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">resumo / principais anotações</label>
+                <label className="block text-xs font-medium text-ceci-secondary mb-1">resumo / principais anotações</label>
                 <textarea
                   rows={3}
                   placeholder="Escreva os pontos fundamentais discutidos em sala..."
                   value={classSummary}
                   onChange={(e) => setClassSummary(e.target.value)}
-                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
+                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
                 />
               </div>
             </>
@@ -321,35 +395,35 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           {activeType === 'reading' && (
             <>
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">título da obra / artigo</label>
+                <label className="block text-xs font-medium text-ceci-secondary mb-1">título da obra / artigo</label>
                 <input
                   type="text"
                   placeholder="Ex: A Interpretação dos Sonhos ou Artigo sobre TCC"
                   value={readingTitle}
                   onChange={(e) => setReadingTitle(e.target.value)}
-                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
+                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-[#6D6366] mb-1">autor</label>
+                  <label className="block text-xs font-medium text-ceci-secondary mb-1">autor</label>
                   <input
                     type="text"
                     placeholder="Ex: Aaron Beck, Freud"
                     value={readingAuthor}
                     onChange={(e) => setReadingAuthor(e.target.value)}
-                    className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
+                    className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#6D6366] mb-1">total de páginas</label>
+                  <label className="block text-xs font-medium text-ceci-secondary mb-1">total de páginas</label>
                   <input
                     type="number"
                     value={readingPages}
                     onChange={(e) => setReadingPages(e.target.value)}
-                    className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
+                    className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
                   />
                 </div>
               </div>
@@ -359,25 +433,25 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           {activeType === 'flashcard' && (
             <>
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">pergunta / frente do card</label>
+                <label className="block text-xs font-medium text-ceci-secondary mb-1">pergunta / frente do card</label>
                 <input
                   type="text"
                   placeholder="Ex: O que é a Tríade Cognitiva da Depressão?"
                   value={flashcardQuestion}
                   onChange={(e) => setFlashcardQuestion(e.target.value)}
-                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
+                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">resposta / verso do card</label>
+                <label className="block text-xs font-medium text-ceci-secondary mb-1">resposta / verso do card</label>
                 <textarea
                   rows={3}
                   placeholder="Explique a resposta de forma simples e clara..."
                   value={flashcardAnswer}
                   onChange={(e) => setFlashcardAnswer(e.target.value)}
-                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
+                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
                   required
                 />
               </div>
@@ -387,25 +461,25 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           {activeType === 'concept' && (
             <>
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">nome do conceito de psicologia</label>
+                <label className="block text-xs font-medium text-ceci-secondary mb-1">nome do conceito de psicologia</label>
                 <input
                   type="text"
                   placeholder="Ex: Pensamentos Automáticos ou Transferência"
                   value={conceptName}
                   onChange={(e) => setConceptName(e.target.value)}
-                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
+                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">definição acadêmica / pessoal</label>
+                <label className="block text-xs font-medium text-ceci-secondary mb-1">definição acadêmica / pessoal</label>
                 <textarea
                   rows={3}
                   placeholder="Escreva a definição com suas palavras..."
                   value={conceptDef}
                   onChange={(e) => setConceptDef(e.target.value)}
-                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
+                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
                 />
               </div>
             </>
@@ -414,61 +488,186 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
           {activeType === 'internship' && (
             <>
               <div>
-                <label className="block text-xs font-medium text-[#6D6366] mb-1">atividade de estágio realizada</label>
+                <label className="block text-xs font-medium text-ceci-secondary mb-1">atividade de estágio realizada</label>
                 <input
                   type="text"
                   placeholder="Ex: Acolhimento na Triagem da Clínica Escola"
                   value={internshipActivity}
                   onChange={(e) => setInternshipActivity(e.target.value)}
-                  className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
+                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-3 gap-3">
                 <div className="col-span-1">
-                  <label className="block text-xs font-medium text-[#6D6366] mb-1">horas</label>
+                  <label className="block text-xs font-medium text-ceci-secondary mb-1">horas</label>
                   <input
                     type="number"
                     value={internshipHours}
                     onChange={(e) => setInternshipHours(e.target.value)}
-                    className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
+                    className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
                   />
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-xs font-medium text-[#6D6366] mb-1">notas da supervisão</label>
+                  <label className="block text-xs font-medium text-ceci-secondary mb-1">notas da supervisão</label>
                   <input
                     type="text"
                     placeholder="Orientação da supervisora..."
                     value={internshipNotes}
                     onChange={(e) => setInternshipNotes(e.target.value)}
-                    className="w-full bg-white border border-[#E9DFDC] rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
+                    className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
                   />
                 </div>
               </div>
             </>
           )}
 
+          {activeType === 'session' && (
+            <>
+              <div>
+                <label className="block text-xs font-medium text-ceci-secondary mb-1">o que você vai estudar?</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Revisar semiologia dos transtornos do humor"
+                  value={sessionTopic}
+                  onChange={(e) => setSessionTopic(e.target.value)}
+                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
+                  required
+                  autoFocus
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-ceci-secondary mb-1">duração (min)</label>
+                  <input
+                    type="number"
+                    value={sessionMinutes}
+                    onChange={(e) => setSessionMinutes(e.target.value)}
+                    className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-ceci-secondary mb-1">disciplina</label>
+                  <select
+                    value={sessionCourseId}
+                    onChange={(e) => setSessionCourseId(e.target.value)}
+                    className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
+                  >
+                    {courses.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </>
+          )}
+
+          {activeType === 'exam' && (
+            <>
+              <div>
+                <label className="block text-xs font-medium text-ceci-secondary mb-1">título da prova / atividade</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Prova Teórica II - Transtornos de Ansiedade"
+                  value={examTitle}
+                  onChange={(e) => setExamTitle(e.target.value)}
+                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
+                  required
+                  autoFocus
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-ceci-secondary mb-1">data</label>
+                  <input
+                    type="date"
+                    value={examDate}
+                    onChange={(e) => setExamDate(e.target.value)}
+                    className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-ceci-secondary mb-1">peso</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: 40%"
+                    value={examWeight}
+                    onChange={(e) => setExamWeight(e.target.value)}
+                    className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-ceci-secondary mb-1">disciplina</label>
+                <select
+                  value={examCourseId}
+                  onChange={(e) => setExamCourseId(e.target.value)}
+                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
+                >
+                  {courses.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </>
+          )}
+
+          {activeType === 'author' && (
+            <>
+              <div>
+                <label className="block text-xs font-medium text-ceci-secondary mb-1">nome do autor</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Aaron Beck, Carl Rogers, Vygotsky"
+                  value={authorName}
+                  onChange={(e) => setAuthorName(e.target.value)}
+                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
+                  required
+                  autoFocus
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-ceci-secondary mb-1">biografia / contribuição</label>
+                <textarea
+                  rows={3}
+                  placeholder="Conte um pouco sobre o autor e sua obra..."
+                  value={authorBio}
+                  onChange={(e) => setAuthorBio(e.target.value)}
+                  className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
+                />
+              </div>
+            </>
+          )}
+
           {/* Submit Button */}
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#F2EBE8]">
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-ceci-border-subtle">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl text-xs text-[#6D6366] hover:bg-[#FAF8F5] transition-colors min-h-[44px] cursor-pointer"
+              className="px-4 py-2.5 rounded-xl text-xs text-ceci-secondary hover:bg-surface-muted transition-colors min-h-[44px] cursor-pointer"
             >
               cancelar
             </button>
             <button
               type="submit"
-              className="flex items-center gap-1.5 bg-[#E97891] hover:bg-[#B94862] text-white px-5 py-2.5 rounded-[14px] text-xs font-medium shadow-2xs transition-transform active:scale-95 min-h-[48px] cursor-pointer"
+              className="flex items-center gap-1.5 bg-rose-500 hover:bg-ceci-brand-strong text-white px-5 py-2.5 rounded-[14px] text-xs font-medium shadow-2xs transition-transform active:scale-95 min-h-[48px] cursor-pointer"
             >
               <Plus className="w-4 h-4 stroke-[2.5]" />
               <span>salvar registro</span>
             </button>
           </div>
         </form>
-
-      </div>
-    </div>
+      </Modal>
   );
 };

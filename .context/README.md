@@ -18,6 +18,7 @@ Ele é carregado pelo opencode via `instructions` em `opencode.json`.
 | [`data-model.md`](./data-model.md) | Entidades de `types.ts`, relações, prefixos de id, chaves localStorage, seeds |
 | [`copy-and-voice.md`](./copy-and-voice.md) | Voz/tom pt-BR, lowercase, branding `cecistudy ♡`, emojis |
 | [`backlog.md`](./backlog.md) | Pontos de melhoria e débito técnico priorizados |
+| [`animations.md`](./animations.md) | Plano de animações/transições iOS-like, diagnóstico e progresso |
 
 ## Visão geral (resumo de 1 minuto)
 

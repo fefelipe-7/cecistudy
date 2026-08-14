@@ -1,11 +1,28 @@
-import type { ReactNode } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 
 export type NavTab = 'home' | 'faculdade' | 'estudos' | 'biblioteca' | 'perfil';
 
 export type SubTabFaculdade = 'disciplinas' | 'aulas' | 'avaliacoes' | 'calendario';
-export type SubTabEstudos = 'sessoes' | 'leituras' | 'flashcards' | 'questoes' | 'revisoes';
+export type SubTabEstudos = 'sessoes' | 'leituras' | 'flashcards' | 'questoes' | 'historico';
 export type SubTabBiblioteca = 'materiais' | 'autores' | 'conceitos' | 'abordagens' | 'mapa';
 export type SubTabPerfil = 'jornada' | 'stickers' | 'estagio' | 'tcc' | 'configuracoes';
+
+/**
+ * Tela da pilha de navegação nativa (push/pop).
+ * Base = tab; telas auxiliares são empurradas por cima da base.
+ */
+export type NavScreen =
+  | { kind: 'tab'; tab: NavTab }
+  | { kind: 'course'; courseId: string }
+  | { kind: 'notes' }
+  | { kind: 'temple' }
+  | { kind: 'mood' };
+
+export interface HeaderAction {
+  label: string;
+  Icon?: ComponentType<{ className?: string }>;
+  onClick: () => void;
+}
 
 export interface DynamicHeaderConfig {
   type?: 'default' | 'detail' | 'custom';
@@ -20,6 +37,8 @@ export interface DynamicHeaderConfig {
   isBookmarked?: boolean;
   onToggleBookmark?: () => void;
   rightActions?: ReactNode;
+  /** Menu de ações contextuais renderizado no lado direito do header (padrão de telas auxiliares). */
+  actions?: HeaderAction[];
 }
 
 export interface Task {
@@ -41,6 +60,7 @@ export interface Course {
   semester: string; // e.g. "6º Semestre"
   schedule: string; // e.g. "Segunda 09:00 - 12:00"
   room?: string;
+  category?: 'obrigatoria' | 'complementar';
   color: string; // hex code or style class
   icon: string; // Lucide icon name
   progress: number; // 0-100%
@@ -208,4 +228,7 @@ export type QuickType =
   | 'reading'
   | 'flashcard'
   | 'concept'
-  | 'internship';
+  | 'internship'
+  | 'session'
+  | 'exam'
+  | 'author';

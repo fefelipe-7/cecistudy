@@ -46,7 +46,8 @@ App  (wrapper fino: AppProvider → AppShell)
 - **Modais/nav** (`QuickAddModal`, `GlobalSearchModal`, `HeaderNav`, `BottomNav`) ainda recebem
   props do `AppShell` (apenas 1 nível de drilling).
 - **Widgets** (`components/widgets/`) são blocos reutilizáveis dentro das views.
-- **ui/** (`components/ui/`) são primitivas de baixo nível (button, bottom-nav-bar, FAB).
+- **ui/** (`components/ui/`) são primitivas de baixo nível (button, bottom-nav-bar, FAB,
+  ErrorBoundary).
 
 ## 3. Estado e persistência
 
@@ -85,32 +86,54 @@ storage.getSync(key) // apenas web (inicialização do hook)
 - `src/lib/notifications.ts` — lembrete diário via `@capacitor/local-notifications`
   (no-op no web). Estado `reminderSettings` (`{enabled, time}`) persistido no `AppContext`;
   UI em Perfil → personalização. Ícone pequeno Android: `ic_stat_cecistudy`.
+- **Back do Android** — `@capacitor/app` registrado no `AppShell` (`src/App.tsx`):
+  fechar modal → pop da pilha (mood/notes/course) → `App.exitApp()` na raiz.
 - **Safe areas:** header e bottom-nav usam `env(safe-area-inset-*)` no padding (`viewport-fit=cover`).
+- **Fontes offline:** Google Fonts substituídas por `@fontsource/*` importadas no `src/main.tsx`
+  (bundladas no `dist/` — nativo offline sem fallback).
 
-## 4. Modelo de navegação (roteamento hash)
+## 4. Modelo de navegação (pilha nativa + hash como espelho)
 
-Navegação por estado em `src/context/AppContext.tsx`, sincronizada com um "pathname virtual"
-no `location.hash` (sem router/dependência). Fase 5 do backlog.
+Navegação **por pilha** (`navigationStack: NavScreen[]`) em `src/context/AppContext.tsx`,
+sincronizada com um "pathname virtual" no `location.hash` (sem router/dependência).
+As funções de roteamento vivem em **`src/lib/routing.ts`** (`parseRoute`, `routeToStack`,
+`stackToHash`, `DEFAULT_SUB_TAB`) e são testadas por `vitest`.
+O hash é **espelho**: a pilha é a fonte da verdade; o hash permite deep-link, o botão
+voltar/avançar do browser e o histórico do webview (swipe-back do iOS).
 
-Rotas: `#/home`, `#/faculdade`, `#/faculdade/:courseId`, `#/estudos`, `#/biblioteca`,
-`#/perfil`, `#/mood`.
+Rotas: `#/home`, `#/faculdade`, `#/faculdade/:courseId`, `#/faculdade/:subTab`, `#/estudos`,
+`#/estudos/:subTab`, `#/biblioteca`, `#/biblioteca/:subTab`, `#/biblioteca/notas`,
+`#/biblioteca/templo`, `#/perfil`, `#/perfil/:subTab`, `#/mood`.
 
-- `activeTab: NavTab` → `'home' | 'faculdade' | 'estudos' | 'biblioteca' | 'perfil'`
-- Sub-tabs por tab (estado local das views): `SubTabFaculdade`, `SubTabEstudos`,
-  `SubTabBiblioteca`, `SubTabPerfil` (não codificadas na URL).
-- `AppContext` escuta `hashchange` (aplica a rota ao estado — deep-link + voltar/avançar).
-- Ações de navegação (`handleNavigate`, `openCourseDetail`, `closeCourseDetail`,
-  `openMoodView`, `closeMoodView`, `handleSaveMood`) sincronizam o `location.hash`.
-- `handleNavigate(tab, subTab?, targetId?)` centraliza a troca de tab + rolagem ao topo.
-- `targetId` → abre uma entidade específica (ex.: disciplina) vinda da busca global.
-- `focusedCourseId` → renderiza `CourseDetailView` (drill-down de disciplina, rota
-  `#/faculdade/:courseId`).
+- `NavScreen` = `{kind:'tab', tab} | {kind:'course', courseId} | {kind:'notes'} | {kind:'temple'} | {kind:'mood'}`
+  (em `src/types.ts`). Base = tab; telas auxiliares são **empurradas** por cima.
+  Curso → sobre faculdade · notas/templo → sobre biblioteca · mood → sobre home.
+- **Derivados do topo da pilha** (`currentScreen`): `activeTab` (base da pilha),
+  `focusedCourseId`/`focusedCourse` (course), `isMoodViewOpen` (mood), `isNotesScreenOpen`
+  (notes), `isBottomNavVisible` (quando o topo é tab — bottom nav some em telas auxiliares).
+- `parseRoute(hash)` → `routeToStack(route)` reconstroem a pilha a partir da URL;
+  `stackToHash(stack, subTab)` serializa de volta. `hashchange` + `popstate` aplicam a rota.
+- **Sub-tabs codificadas na URL** quando diferentes da padrão (ex.: `#/faculdade/aulas`,
+  `#/biblioteca/conceitos`). `parseRoute` distingue sub-tab de `courseId` por lista conhecida;
+  a sub-tab padrão (`DEFAULT_SUB_TAB`) não é serializada (URLs limpas).
+- Ações de navegação (push/pop): `handleNavigate` (reseta a pilha numa tab; com `target`
+  de disciplina já empurra o curso), `openCourseDetail`, `openNotesScreen`, `openMoodView`
+  (push) e `goBack`/`closeCourseDetail`/`closeNotesScreen`/`closeMoodView` (pop).
+- **Deep-link focado:** `handleNavigate(tab, subTab, targetId)` (vindo da busca global) define
+  `targetId` + `targetSectionRef`; um efeito no `AppContext` rola (`scrollIntoView`) e destaca
+  (box-shadow rosa temporário) o item com `data-target` (ex.: ClassNoteListItem) ou a seção
+  com `data-section` (BibliotecaView: testes/autores/conceitos/abordagens/multidisciplinar).
+- Sub-tabs por tab agora vivem no **contexto** (`subTabFaculdade`, `subTabEstudos`,
+  `subTabBiblioteca`, `subTabPerfil`) e são codificadas na URL quando não padrão.
 
 ### Header dinâmico (`DynamicHeaderConfig`)
 `AppContext` constrói um `headerConfig` conforme o contexto:
 - **default** — header de marca (logo "C", "cecistudy ♡", badge de semestre, busca, mood).
-- **detail** — botão voltar, ícone/`code` da disciplina, título/subtítulo, favorito
-  (bookmark) e `rightActions` custom (ex.: botão "Anotação").
+- **detail** — botão voltar, ícone/`code`, título/subtítulo, favorito (bookmark) e um menu
+  de ações **`actions?: HeaderAction[]`** (`label`, `Icon`, `onClick`) renderizado pelo
+  `HeaderActionMenu` (padrão de telas auxiliares: voltar à esquerda, ação contextual à direita).
+  - **Disciplina:** nova anotação de aula · nova prova/avaliação · editar detalhes da matéria.
+  - **Notas avulsas:** nova nota avulsa.
 
 ## 5. Padrões de UI recorrentes
 
@@ -131,8 +154,11 @@ O cecistudy é **dois produtos em uma base de código**:
 
 ### Configuração
 - `capacitor.config.ts`: `appId: "ceci.study.app"`, `appName: "cecistudy"`, `webDir: "dist"`,
-  `backgroundColor: #FFFCF8`; plugins `SplashScreen` (fundo da marca, auto-hide),
-  `StatusBar` (DARK, sem overlay).
+  `backgroundColor: #FFFCF8`, `ios.scrollEnabled`; plugins `SplashScreen` (fundo da marca,
+  auto-hide), `StatusBar` (DARK, sem overlay) e `App` (`@capacitor/app` — back do Android).
+- Plugins nativos: `@capacitor/{core,app,status-bar,splash-screen,keyboard,haptics,local-notifications,preferences}`.
+- Fontes via `@fontsource/*` bundladas no `dist/` (Inter, Plus Jakarta Sans, DM Serif Display,
+  JetBrains Mono) — sem Google Fonts remota, nativo funciona offline.
 - `android/` e `ios/` são **commitados** (projetos gerados por `cap add`), exceto
   artefatos de build (`android/app/build/`, `ios/App/App/public/`, `*.jks`).
 

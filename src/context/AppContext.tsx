@@ -1,7 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Plus } from 'lucide-react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import { FileText, CheckCircle2, Settings2, StickyNote } from 'lucide-react';
 import {
   NavTab,
+  NavScreen,
+  HeaderAction,
   SubTabFaculdade,
   SubTabEstudos,
   SubTabBiblioteca,
@@ -45,24 +47,12 @@ import {
 import { usePersistentState } from '../lib/usePersistentState';
 import { hapticTap, hapticSuccess } from '../lib/haptics';
 import { scheduleDailyReminder, cancelDailyReminder } from '../lib/notifications';
-
-type Route = { tab?: NavTab; focusedCourseId?: string | null; mood?: boolean };
-
-function buildRoute(tab: NavTab, focusedCourseId: string | null, isMood: boolean): string {
-  if (isMood) return '#/mood';
-  if (tab === 'faculdade' && focusedCourseId) return `#/faculdade/${focusedCourseId}`;
-  return `#/${tab}`;
-}
-
-function parseRoute(hash: string): Route {
-  const h = hash.replace(/^#\/?/, '').split('/');
-  const seg = h[0];
-  if (seg === 'mood') return { mood: true };
-  if (!seg || seg === 'home') return { tab: 'home' };
-  if (seg === 'faculdade') return { tab: 'faculdade', focusedCourseId: h[1] || null };
-  if (seg === 'estudos' || seg === 'biblioteca' || seg === 'perfil') return { tab: seg };
-  return { tab: 'home' };
-}
+import {
+  Route,
+  parseRoute,
+  routeToStack,
+  stackToHash
+} from '../lib/routing';
 
 
 export interface ReminderSettings {
@@ -93,6 +83,8 @@ export interface AppContextValue {
 
   // navigation state
   activeTab: NavTab;
+  screenKey: string;
+  navDirection: 0 | 1 | -1;
   setActiveTab: (tab: NavTab) => void;
   subTabFaculdade: SubTabFaculdade;
   setSubTabFaculdade: (t: SubTabFaculdade) => void;
@@ -109,6 +101,13 @@ export interface AppContextValue {
   focusedCourse: Course | undefined;
   openCourseDetail: (courseId: string) => void;
   closeCourseDetail: () => void;
+  isBottomNavVisible: boolean;
+  isNotesScreenOpen: boolean;
+  openNotesScreen: () => void;
+  closeNotesScreen: () => void;
+  isTempleScreenOpen: boolean;
+  openTemple: () => void;
+  closeTemple: () => void;
   bookmarkedCourseIds: string[];
   toggleBookmarkCourse: (id: string) => void;
 
@@ -121,10 +120,19 @@ export interface AppContextValue {
   openQuickAdd: () => void;
   closeQuickAdd: () => void;
   quickAddType: QuickType;
-  openQuickAddWithType: (type: QuickType) => void;
+  openQuickAddWithType: (type: QuickType, courseId?: string) => void;
+  quickAddCourseId: string | undefined;
+  openQuickAddForCourse: (type: QuickType, courseId: string) => void;
+  isEditCourseOpen: boolean;
+  openEditCourse: () => void;
+  closeEditCourse: () => void;
+  isCreatingLooseNote: boolean;
+  setIsCreatingLooseNote: (v: boolean) => void;
   isSearchOpen: boolean;
   openSearch: () => void;
   closeSearch: () => void;
+  toast: string | null;
+  showToast: (message: string) => void;
 
   // actions
   handleNavigate: (tab: NavTab, subTab?: string, target?: string) => void;
@@ -135,11 +143,15 @@ export interface AppContextValue {
   handleAddReading: (reading: ReadingItem) => void;
   handleUpdateReadingPages: (readingId: string, newPages: number) => void;
   handleAddFlashcard: (card: Flashcard) => void;
+  handleReviewFlashcard: (id: string, correct: boolean) => void;
   handleAddConcept: (concept: PsychologyConcept) => void;
   handleAddInternshipLog: (log: InternshipLog) => void;
+  handleAddExam: (exam: Exam) => void;
+  handleAddAuthor: (author: PsychologyAuthor) => void;
   handleAddSession: (session: StudySession) => void;
   handleUpdateProfile: (updated: Partial<UserProfile>) => void;
   handleUpdateTcc: (updated: TccData) => void;
+  handleUpdateCourse: (updated: Course) => void;
 
   // header
   headerConfig: DynamicHeaderConfig | null;
@@ -150,11 +162,11 @@ const AppContext = createContext<AppContextValue | undefined>(undefined);
 export function AppProvider({ children }: { children: React.ReactNode }) {
   // State
   const [profile, setProfile] = usePersistentState<UserProfile>('profile', initialProfile);
-  const [courses] = usePersistentState<Course[]>('courses', initialCourses);
+  const [courses, setCourses] = usePersistentState<Course[]>('courses', initialCourses);
   const [classes, setClasses] = usePersistentState<ClassNote[]>('classes', initialClasses);
   const [tasks, setTasks] = usePersistentState<Task[]>('tasks', initialTasks);
   const [exams, setExams] = usePersistentState<Exam[]>('exams', initialExams);
-  const [authors] = usePersistentState<PsychologyAuthor[]>('authors', initialAuthors);
+  const [authors, setAuthors] = usePersistentState<PsychologyAuthor[]>('authors', initialAuthors);
   const [concepts, setConcepts] = usePersistentState<PsychologyConcept[]>('concepts', initialConcepts);
   const [approaches] = usePersistentState<PsychologyApproach[]>('approaches', initialApproaches);
   const [readings, setReadings] = usePersistentState<ReadingItem[]>('readings', initialReadings);
@@ -168,7 +180,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     emoji: '🤓',
     label: 'Focada & Acadêmica',
     energyLevel: 4,
-    vibeColor: 'bg-[#FFF5F7] border-[#FFD3DD] text-[#B94862]',
+    vibeColor: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong',
     reflection: 'Dia focado nas aulas de psicopatologia e leituras curtas.',
     intention: 'Estudo leve e produtivo',
     updatedAt: '09:00'
@@ -180,49 +192,81 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     time: '19:00'
   });
 
-  // Navigation State
-  const [activeTab, setActiveTab] = useState<NavTab>('home');
-  const [isMoodViewOpen, setIsMoodViewOpen] = useState(false);
+  // Navigation state — pilha nativa (push/pop)
+  const [navigationStack, setNavigationStack] = useState<NavScreen[]>([{ kind: 'tab', tab: 'home' }]);
+  const [navDirection, setNavDirection] = useState<0 | 1 | -1>(0);
+  const navigationStackRef = useRef<NavScreen[]>(navigationStack);
+
+  /** Atualiza a pilha e deriva a direção da transição (push=1, pop=-1, troca=0). */
+  const setStack = (next: NavScreen[]) => {
+    const prev = navigationStackRef.current;
+    const dir = next.length > prev.length ? 1 : next.length < prev.length ? -1 : 0;
+    setNavDirection(dir);
+    setNavigationStack(next);
+    navigationStackRef.current = next;
+  };
   const [subTabFaculdade, setSubTabFaculdade] = useState<SubTabFaculdade>('disciplinas');
   const [subTabEstudos, setSubTabEstudos] = useState<SubTabEstudos>('sessoes');
   const [subTabBiblioteca, setSubTabBiblioteca] = useState<SubTabBiblioteca>('autores');
   const [subTabPerfil, setSubTabPerfil] = useState<SubTabPerfil>('jornada');
   const [targetId, setTargetId] = useState<string | undefined>(undefined);
-  const [focusedCourseId, setFocusedCourseId] = useState<string | null>(null);
-  const [bookmarkedCourseIds, setBookmarkedCourseIds] = useState<string[]>(['c1', 'c2']);
+  const [bookmarkedCourseIds, setBookmarkedCourseIds] = usePersistentState<string[]>('bookmarkedCourseIds', ['c1', 'c2']);
 
   // Modals
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
   const [quickAddType, setQuickAddType] = useState<QuickType>('task');
+  const [quickAddCourseId, setQuickAddCourseId] = useState<string | undefined>(undefined);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isEditCourseOpen, setIsEditCourseOpen] = useState(false);
+  const [isCreatingLooseNote, setIsCreatingLooseNote] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
 
-  // Sync targetId if passed
-  useEffect(() => {
-    if (targetId && activeTab === 'faculdade') {
-      setFocusedCourseId(targetId);
-    }
-  }, [targetId, activeTab]);
+  // Telas derivadas do topo da pilha
+  const currentScreen = navigationStack[navigationStack.length - 1];
+  const activeTab: NavTab =
+    currentScreen.kind === 'tab' ? currentScreen.tab : navigationStack[0].kind === 'tab' ? navigationStack[0].tab : 'home';
+  const isMoodViewOpen = currentScreen.kind === 'mood';
+  const isNotesScreenOpen = currentScreen.kind === 'notes';
+  const isTempleScreenOpen = currentScreen.kind === 'temple';
+  const isBottomNavVisible = currentScreen.kind === 'tab';
+  const focusedCourseId = currentScreen.kind === 'course' ? currentScreen.courseId : null;
+  const focusedCourse = focusedCourseId ? courses.find((c) => c.id === focusedCourseId) : undefined;
+  const screenKey =
+    currentScreen.kind === 'tab'
+      ? `tab-${currentScreen.tab}`
+      : currentScreen.kind === 'course'
+        ? `course-${currentScreen.courseId}`
+        : currentScreen.kind === 'notes'
+          ? 'notes'
+          : currentScreen.kind === 'temple'
+            ? 'temple'
+            : 'mood';
 
-  // Hash-based routing: deep-link + browser back/forward (no router dependency)
+  // Roteamento hash como espelho (deep-link + voltar/avançar no browser; histórico do webview p/ swipe iOS)
   useEffect(() => {
     const applyRoute = () => {
       const route = parseRoute(location.hash);
-      if (route.mood) {
-        setIsMoodViewOpen(true);
-        return;
+      setStack(routeToStack(route));
+      // Sub-tabs codificadas na URL são aplicadas à aba base (deep-link granular)
+      if (route.subTab) {
+        const t = route.tab;
+        if (t === 'faculdade') setSubTabFaculdade(route.subTab as SubTabFaculdade);
+        else if (t === 'estudos') setSubTabEstudos(route.subTab as SubTabEstudos);
+        else if (t === 'biblioteca') setSubTabBiblioteca(route.subTab as SubTabBiblioteca);
+        else if (t === 'perfil') setSubTabPerfil(route.subTab as SubTabPerfil);
       }
-      setIsMoodViewOpen(false);
-      if (route.tab) setActiveTab(route.tab);
-      if (route.tab === 'faculdade') {
-        setFocusedCourseId(route.focusedCourseId ?? null);
-        setTargetId(route.focusedCourseId ?? undefined);
-      }
+      setTargetId(route.tab === 'faculdade' ? route.focusedCourseId ?? undefined : undefined);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
     if (!location.hash) history.replaceState(null, '', '#/home');
     applyRoute();
     window.addEventListener('hashchange', applyRoute);
-    return () => window.removeEventListener('hashchange', applyRoute);
+    window.addEventListener('popstate', applyRoute);
+    return () => {
+      window.removeEventListener('hashchange', applyRoute);
+      window.removeEventListener('popstate', applyRoute);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggleBookmarkCourse = (courseId: string) => {
@@ -230,8 +274,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       prev.includes(courseId) ? prev.filter((id) => id !== courseId) : [...prev, courseId]
     );
   };
-
-  const focusedCourse = courses.find((c) => c.id === focusedCourseId);
 
   // Dynamic Header Configuration
   let headerConfig: DynamicHeaderConfig | null = null;
@@ -241,15 +283,41 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       type: 'detail',
       title: 'Estado de Espírito',
       subtitle: 'Como você está se sentindo hoje?',
-      onBack: () => closeMoodView(),
+      onBack: () => goBack(),
       rightActions: (
-        <span className="text-sm font-bold bg-[#FFF5F7] px-2.5 py-1 rounded-full border border-[#FFD3DD] text-[#B94862]">
+        <span className="text-sm font-bold bg-surface-rose px-2.5 py-1 rounded-full border border-ceci-border-brand text-ceci-brand-strong">
           {currentMood.emoji}
         </span>
       ),
     };
-  } else if (activeTab === 'faculdade' && focusedCourse) {
+  } else if (currentScreen.kind === 'notes') {
+    headerConfig = {
+      type: 'detail',
+      title: 'suas notas avulsas',
+      subtitle: 'anotações rápidas e pensamentos soltos',
+      icon: 'FileText',
+      color: '#D85F79',
+      onBack: () => goBack(),
+      actions: [
+        { label: 'nova nota avulsa', Icon: StickyNote, onClick: () => setIsCreatingLooseNote(true) },
+      ],
+    };
+  } else if (currentScreen.kind === 'temple') {
+    headerConfig = {
+      type: 'detail',
+      title: 'templo de conhecimento',
+      subtitle: 'mapa de famílias, conceitos, autores e técnicas',
+      icon: 'Landmark',
+      color: '#B94862',
+      onBack: () => goBack(),
+    };
+  } else if (currentScreen.kind === 'course' && focusedCourse) {
     const isBookmarked = bookmarkedCourseIds.includes(focusedCourse.id);
+    const courseActions: HeaderAction[] = [
+      { label: 'nova anotação de aula', Icon: FileText, onClick: () => openQuickAddForCourse('class', focusedCourse.id) },
+      { label: 'nova prova / avaliação', Icon: CheckCircle2, onClick: () => openQuickAddForCourse('exam', focusedCourse.id) },
+      { label: 'editar detalhes da matéria', Icon: Settings2, onClick: () => openEditCourse() },
+    ];
     headerConfig = {
       type: 'detail',
       title: focusedCourse.name,
@@ -257,19 +325,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       code: focusedCourse.code || 'PSI-300',
       icon: focusedCourse.icon,
       color: focusedCourse.color,
-      onBack: () => closeCourseDetail(),
+      onBack: () => goBack(),
       isBookmarked,
       onToggleBookmark: () => toggleBookmarkCourse(focusedCourse.id),
-      rightActions: (
-        <button
-          onClick={() => setIsQuickAddOpen(true)}
-          className="bg-[#40383A] hover:bg-[#2D2728] text-white px-2.5 sm:px-3 py-1.5 rounded-2xl font-display font-bold text-xs shadow-2xs flex items-center gap-1 transition-all active:scale-95 cursor-pointer border border-white/20"
-          title="Nova anotação ou tarefa"
-        >
-          <Plus className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Anotação</span>
-        </button>
-      ),
+      actions: courseActions,
     };
   }
 
@@ -321,12 +380,40 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setFlashcards((prev) => [card, ...prev]);
   };
 
+  const handleReviewFlashcard = (id: string, correct: boolean) => {
+    hapticTap();
+    const today = new Date().toISOString().split('T')[0];
+    setFlashcards((prev) =>
+      prev.map((c) => {
+        if (c.id !== id) return c;
+        const reviewed = (c.timesReviewed || 0) + 1;
+        const easeFactor = correct
+          ? Math.min(3, (c.easeFactor || 1.5) + 0.2)
+          : Math.max(1, (c.easeFactor || 1.5) - 0.15);
+        return {
+          ...c,
+          timesReviewed: reviewed,
+          lastReviewed: today,
+          easeFactor: Math.round(easeFactor * 100) / 100
+        };
+      })
+    );
+  };
+
   const handleAddConcept = (concept: PsychologyConcept) => {
     setConcepts((prev) => [concept, ...prev]);
   };
 
   const handleAddInternshipLog = (log: InternshipLog) => {
     setInternshipLogs((prev) => [log, ...prev]);
+  };
+
+  const handleAddExam = (exam: Exam) => {
+    setExams((prev) => [exam, ...prev]);
+  };
+
+  const handleAddAuthor = (author: PsychologyAuthor) => {
+    setAuthors((prev) => [author, ...prev]);
   };
 
   const handleAddSession = (session: StudySession) => {
@@ -353,59 +440,172 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const handleNavigate = (tab: NavTab, subTab?: string, target?: string) => {
-    setActiveTab(tab);
-    setTargetId(target);
+  const handleUpdateCourse = (updated: Course) => {
+    setCourses((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
+  };
 
+  /** Sub-tab atual da aba base (para codificar no hash quando não for a padrão). */
+  const currentSubTabFor = (tab: NavTab): string | undefined => {
+    switch (tab) {
+      case 'faculdade':
+        return subTabFaculdade;
+      case 'estudos':
+        return subTabEstudos;
+      case 'biblioteca':
+        return subTabBiblioteca;
+      case 'perfil':
+        return subTabPerfil;
+      default:
+        return undefined;
+    }
+  };
+
+  /** Sincroniza o `location.hash` (espelho) com a pilha, incluindo a sub-tab da aba base. */
+  const syncHash = (next: NavScreen[]) => {
+    const top = next[next.length - 1];
+    const baseTab = top.kind === 'tab' ? top.tab : next[0]?.kind === 'tab' ? next[0].tab : undefined;
+    const h = stackToHash(next, baseTab ? currentSubTabFor(baseTab) : undefined);
+    if (location.hash !== h) location.hash = h;
+  };
+
+  // Deep-link focado: ao navegar com targetId (busca global), rola e destaca o item
+  const lastTargetRef = useRef<string | undefined>(undefined);
+  const targetSectionRef = useRef<string | undefined>(undefined);
+  useEffect(() => {
+    if (!targetId || targetId === lastTargetRef.current) return;
+    lastTargetRef.current = targetId;
+    const t = setTimeout(() => {
+      const el =
+        document.querySelector<HTMLElement>(`[data-target="${targetId}"]`) ??
+        (targetSectionRef.current
+          ? document.querySelector<HTMLElement>(`[data-section="${targetSectionRef.current}"]`)
+          : null);
+      if (!el) return;
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const original = el.style.boxShadow;
+      el.style.boxShadow = '0 0 0 3px rgba(255,184,199,0.9)';
+      el.style.transition = 'box-shadow 0.3s ease';
+      setTimeout(() => {
+        el.style.boxShadow = original;
+        el.style.transition = '';
+      }, 2400);
+    }, 250);
+    return () => clearTimeout(t);
+  }, [targetId]);
+
+  const goBack = () => {
+    if (navigationStack.length <= 1) return;
+    const next = navigationStack.slice(0, -1);
+    setStack(next);
+    setTargetId(undefined);
+    syncHash(next);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleNavigate = (tab: NavTab, subTab?: string, target?: string) => {
     if (tab === 'faculdade' && subTab) setSubTabFaculdade(subTab as SubTabFaculdade);
     if (tab === 'estudos' && subTab) setSubTabEstudos(subTab as SubTabEstudos);
     if (tab === 'biblioteca' && subTab) setSubTabBiblioteca(subTab as SubTabBiblioteca);
     if (tab === 'perfil' && subTab) setSubTabPerfil(subTab as SubTabPerfil);
+    targetSectionRef.current = subTab;
 
-    const course = tab === 'faculdade' ? target ?? null : null;
-    const h = buildRoute(tab, course, false);
-    if (location.hash !== h) location.hash = h;
-
+    const base: NavScreen = { kind: 'tab', tab };
+    const next: NavScreen[] =
+      tab === 'faculdade' && target ? [base, { kind: 'course', courseId: target }] : [base];
+    setStack(next);
+    setTargetId(target);
+    syncHash(next);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const openCourseDetail = (courseId: string) => {
-    setFocusedCourseId(courseId);
+    const top = navigationStack[navigationStack.length - 1];
+    const next: NavScreen[] =
+      top.kind === 'course'
+        ? top.courseId === courseId
+          ? navigationStack
+          : [...navigationStack.slice(0, -1), { kind: 'course', courseId }]
+        : [{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId }];
+    setStack(next);
     setTargetId(courseId);
-    const h = `#/faculdade/${courseId}`;
-    if (location.hash !== h) location.hash = h;
+    syncHash(next);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const closeCourseDetail = () => {
-    setFocusedCourseId(null);
-    setTargetId(undefined);
-    if (location.hash !== '#/faculdade') location.hash = '#/faculdade';
+  const closeCourseDetail = () => goBack();
+
+  const openNotesScreen = () => {
+    const top = navigationStack[navigationStack.length - 1];
+    const next: NavScreen[] =
+      top.kind === 'notes' ? navigationStack : [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }];
+    setStack(next);
+    syncHash(next);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  const closeNotesScreen = () => goBack();
+
+  const openTemple = () => {
+    const top = navigationStack[navigationStack.length - 1];
+    const next: NavScreen[] =
+      top.kind === 'temple' ? navigationStack : [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'temple' }];
+    setStack(next);
+    syncHash(next);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const closeTemple = () => goBack();
 
   const openMoodView = () => {
-    setIsMoodViewOpen(true);
+    const top = navigationStack[navigationStack.length - 1];
+    const next: NavScreen[] =
+      top.kind === 'mood' ? navigationStack : [{ kind: 'tab', tab: 'home' }, { kind: 'mood' }];
+    setStack(next);
     if (location.hash !== '#/mood') location.hash = '#/mood';
   };
-  const closeMoodView = () => {
-    setIsMoodViewOpen(false);
-    if (location.hash !== '#/home') location.hash = '#/home';
-  };
+
+  const closeMoodView = () => goBack();
+
   const handleSaveMood = (mood: DailyMoodData) => {
     hapticSuccess();
     setCurrentMood(mood);
-    setIsMoodViewOpen(false);
-    if (location.hash !== '#/home') location.hash = '#/home';
+    goBack();
   };
-  const openQuickAdd = () => setIsQuickAddOpen(true);
-  const closeQuickAdd = () => setIsQuickAddOpen(false);
-  const openQuickAddWithType = (type: QuickType) => {
+
+  const openEditCourse = () => setIsEditCourseOpen(true);
+  const closeEditCourse = () => setIsEditCourseOpen(false);
+
+  const showToast = (message: string) => {
+    setToast(message);
+    window.setTimeout(() => setToast(null), 2600);
+  };
+
+  const openQuickAdd = () => {
+    setQuickAddCourseId(undefined);
+    setIsQuickAddOpen(true);
+  };
+  const closeQuickAdd = () => {
+    setQuickAddCourseId(undefined);
+    setIsQuickAddOpen(false);
+  };
+  const openQuickAddWithType = (type: QuickType, courseId?: string) => {
     setQuickAddType(type);
+    setQuickAddCourseId(courseId);
+    setIsQuickAddOpen(true);
+  };
+  const openQuickAddForCourse = (type: QuickType, courseId: string) => {
+    setQuickAddType(type);
+    setQuickAddCourseId(courseId);
     setIsQuickAddOpen(true);
   };
   const openSearch = () => setIsSearchOpen(true);
   const closeSearch = () => setIsSearchOpen(false);
+
+  const setActiveTab = (tab: NavTab) => handleNavigate(tab);
+  const setFocusedCourseId = (id: string | null) => {
+    if (id) openCourseDetail(id);
+    else if (currentScreen.kind === 'course') goBack();
+  };
 
   const value: AppContextValue = {
     profile,
@@ -427,6 +627,8 @@ currentMood,
     reminderSettings,
     updateReminder,
     activeTab,
+    screenKey,
+    navDirection,
     setActiveTab,
     subTabFaculdade,
     setSubTabFaculdade,
@@ -443,6 +645,13 @@ currentMood,
     focusedCourse,
     openCourseDetail,
     closeCourseDetail,
+    isBottomNavVisible,
+    isNotesScreenOpen,
+    openNotesScreen,
+    closeNotesScreen,
+    isTempleScreenOpen,
+    openTemple,
+    closeTemple,
     bookmarkedCourseIds,
     toggleBookmarkCourse,
     isMoodViewOpen,
@@ -454,9 +663,18 @@ currentMood,
     closeQuickAdd,
     quickAddType,
     openQuickAddWithType,
+    quickAddCourseId,
+    openQuickAddForCourse,
+    isEditCourseOpen,
+    openEditCourse,
+    closeEditCourse,
+    isCreatingLooseNote,
+    setIsCreatingLooseNote,
     isSearchOpen,
     openSearch,
     closeSearch,
+    toast,
+    showToast,
     handleNavigate,
     handleToggleTask,
     handleToggleExam,
@@ -465,11 +683,15 @@ currentMood,
     handleAddReading,
     handleUpdateReadingPages,
     handleAddFlashcard,
+    handleReviewFlashcard,
     handleAddConcept,
     handleAddInternshipLog,
+    handleAddExam,
+    handleAddAuthor,
     handleAddSession,
     handleUpdateProfile,
     handleUpdateTcc,
+    handleUpdateCourse,
     headerConfig
   };
 

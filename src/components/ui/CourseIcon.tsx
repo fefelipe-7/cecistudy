@@ -4,6 +4,7 @@ import {
   FileText,
   GraduationCap,
   HeartHandshake,
+  Landmark,
   Sparkles,
   Users,
   type LucideIcon,
@@ -16,15 +17,17 @@ const COURSE_ICON_MAP: Record<string, LucideIcon> = {
   Users,
   HeartHandshake,
   GraduationCap,
+  Landmark,
 };
 
 const COURSE_ICON_COLOR: Record<string, string> = {
-  Brain: 'text-[#B94862]',
-  FileText: 'text-[#396D82]',
-  Sparkles: 'text-[#756354]',
-  Users: 'text-[#2D6A4F]',
-  HeartHandshake: 'text-[#8C7338]',
-  GraduationCap: 'text-[#B94862]',
+  Brain: 'text-ceci-brand-strong',
+  FileText: 'text-ceci-academic-strong',
+  Sparkles: 'text-beige-700',
+  Users: 'text-success-deep',
+  HeartHandshake: 'text-gold',
+  GraduationCap: 'text-ceci-brand-strong',
+  Landmark: 'text-ceci-brand-strong',
 };
 
 interface CourseIconProps {
