@@ -5,9 +5,6 @@ import { AnimatePresence, MotionConfig, motion } from 'framer-motion';
 import { AppProvider, useApp } from './context/AppContext';
 import { setupNativeShell } from './lib/native';
 import { screenVariants } from './lib/motion';
-import { TAB_ORDER } from './lib/routing';
-import { SwipeTabPager } from './components/ui/SwipeTabPager';
-import { SwipeBack } from './components/ui/SwipeBack';
 
 import { HeaderNav } from './components/HeaderNav';
 import { BottomNav } from './components/BottomNav';
@@ -111,47 +108,38 @@ function AppShell() {
 
       {/* Main Screen Content (Mobile First App Frame Container) */}
       <main
-        className={`flex-1 min-h-0 max-w-md sm:max-w-xl w-full mx-auto px-3.5 py-4 sm:px-5 ${
+        className={`flex-1 max-w-md sm:max-w-xl w-full mx-auto px-3.5 py-4 sm:px-5 ${
           app.isBottomNavVisible
             ? 'pb-[calc(5rem+env(safe-area-inset-bottom,0px))]'
             : 'pb-6'
         }`}
       >
-        {app.isMoodViewOpen ? (
-          <AnimatePresence mode="popLayout" custom={app.navDirection} initial={false}>
-            <motion.div
-              key="mood"
-              custom={app.navDirection}
-              variants={screenVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-            >
-              <SwipeBack onClose={closeMoodView}>
-                <EstadoDeEspiritoView
-                  currentMood={currentMood}
-                  onSaveMood={handleSaveMood}
-                  onBackToHome={closeMoodView}
-                />
-              </SwipeBack>
-            </motion.div>
-          </AnimatePresence>
-        ) : (
-          <SwipeTabPager
-            tabs={TAB_ORDER}
-            activeIndex={TAB_ORDER.indexOf(activeTab)}
-            enabled={app.isBottomNavVisible}
-            onChange={(i) => handleNavigate(TAB_ORDER[i])}
+        <AnimatePresence mode="popLayout" custom={app.navDirection} initial={false}>
+          <motion.div
+            key={app.screenKey}
+            custom={app.navDirection}
+            variants={screenVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
           >
-            {(tab) => {
-              if (tab === 'home') return <HomeView />;
-              if (tab === 'faculdade') return <FaculdadeView />;
-              if (tab === 'estudos') return <EstudosView />;
-              if (tab === 'biblioteca') return <BibliotecaView />;
-              return <PerfilView />;
-            }}
-          </SwipeTabPager>
-        )}
+            {app.isMoodViewOpen ? (
+              <EstadoDeEspiritoView
+                currentMood={currentMood}
+                onSaveMood={handleSaveMood}
+                onBackToHome={closeMoodView}
+              />
+            ) : (
+              <>
+                {activeTab === 'home' && <HomeView />}
+                {activeTab === 'faculdade' && <FaculdadeView />}
+                {activeTab === 'estudos' && <EstudosView />}
+                {activeTab === 'biblioteca' && <BibliotecaView />}
+                {activeTab === 'perfil' && <PerfilView />}
+              </>
+            )}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {/* Fixed Bottom Navigation Bar (escondida em telas auxiliares) */}

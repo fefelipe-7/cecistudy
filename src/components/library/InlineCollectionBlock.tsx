@@ -31,7 +31,7 @@ export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = ({
       </div>
 
       {/* Books horizontal shelf */}
-      <div className="flex items-stretch gap-3 overflow-x-auto pb-2 scrollbar-none pt-1 data-swipe-lock">
+      <div className="flex items-stretch gap-3 overflow-x-auto pb-2 scrollbar-none pt-1">
         {collection.books.map((book) => {
           const isSaved = savedBookIds.includes(book.id);
           const progressPercent = Math.round((book.readPages / book.totalPages) * 100);

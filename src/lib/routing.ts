@@ -23,9 +23,6 @@ const SUB_TAB_BY_TAB: Record<string, string[]> = {
   perfil: ['jornada', 'stickers', 'estagio', 'tcc', 'configuracoes'],
 };
 
-/** Ordem das abas principais (fonte única p/ bottom nav e pager de gestos). */
-export const TAB_ORDER: NavTab[] = ['home', 'faculdade', 'estudos', 'biblioteca', 'perfil'];
-
 /** Sub-tab padrão de cada aba (não é codificada no hash — mantém URLs limpas). */
 export const DEFAULT_SUB_TAB: Record<NavTab, string> = {
   home: 'home',

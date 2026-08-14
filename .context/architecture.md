@@ -126,30 +126,6 @@ Rotas: `#/home`, `#/faculdade`, `#/faculdade/:courseId`, `#/faculdade/:subTab`, 
 - Sub-tabs por tab agora vivem no **contexto** (`subTabFaculdade`, `subTabEstudos`,
   `subTabBiblioteca`, `subTabPerfil`) e são codificadas na URL quando não padrão.
 
-### Gestos (pager horizontal + swipe-back) — `src/lib/swipe.ts` + `ui/SwipeTabPager`/`SwipeBack`
-Navegação por gestos estilo Instagram, camadas sobre a pilha/hash:
-- **Pager top-level** (`SwipeTabPager` em `App.tsx`): trilho horizontal entre as 5 abas
-  (`TAB_ORDER` em `src/lib/routing.ts`: home/faculdade/estudos/biblioteca/perfil). Cada aba é
-  uma **coluna com scroll próprio** (`data-pager-scroll`, `overflow-y-auto`) — o scroll é
-  **preservado por aba** (a janela não rola). `enabled` desativa quando uma tela auxiliar está
-  empurrada (`isBottomNavVisible === false`).
-- **Pager aninhado** (`mode='nested'`) nas sub-abas de Faculdade/Estudos/Perfil: as seções
-  compartilham o scroll da coluna pai; ao trocar de sub-aba o pager rola a coluna ao topo.
-  Nas **bordas** (1ª/última sub-aba) o overscroll **propaga** para a aba principal
-  (`onEdgeOverscroll` → `handleNavigate(TAB_ORDER[±1])`), igual a apps nativos.
-- **Swipe-back** (`SwipeBack`) nas telas auxiliares: curso (Faculdade), notas/templo
-  (Biblioteca) e mood (AppShell) — arrastar da **borda esquerda** (40px) translada o conteúdo e
-  fecha a tela passado o limiar.
-- **Lógica pura testável** em `src/lib/swipe.ts` (`resolveSwipe`, `edgeOverscroll`,
-  `shouldIgnorePanTarget`, constantes `SWIPE_THRESHOLD=72`, `SWIPE_VELOCITY=450`, `EDGE_WIDTH=40`),
-  coberta por `src/lib/__tests__/swipe.test.ts`.
-- **Regras de alvo:** gestos iniciados em `[data-swipe-lock]` (faixas com scroll horizontal:
-  PillTabBar, faixas de coleções/notas/quick-add), `button`/`a`/`[role=button]` e inputs são
-  **ignorados**; o pager top-level também ignora `[data-subpager]` (o aninhado é dono do gesto).
-  `useReducedMotion` desativa os gestos (anima direto).
-- **Animação:** trilho com `x` em `%` animado por spring iOS (`iOS_SPRING` de `lib/motion.ts`);
-  pan manual com `touchAction: pan-y` (scroll vertical nativo intacto).
-
 ### Header dinâmico (`DynamicHeaderConfig`)
 `AppContext` constrói um `headerConfig` conforme o contexto:
 - **default** — header de marca (logo "C", "cecistudy ♡", badge de semestre, busca, mood).
