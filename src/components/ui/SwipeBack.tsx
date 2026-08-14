@@ -6,7 +6,7 @@ import {
   useReducedMotion,
   type PanInfo,
 } from 'framer-motion';
-import { EDGE_WIDTH, SWIPE_THRESHOLD, SWIPE_VELOCITY, isHorizontalPan } from '../../lib/swipe';
+import { EDGE_WIDTH, SWIPE_THRESHOLD, SWIPE_VELOCITY, isHorizontalPan, shouldIgnorePanTarget } from '../../lib/swipe';
 import { iOS_SPRING } from '../../lib/motion';
 
 interface SwipeBackProps {
@@ -37,13 +37,7 @@ export const SwipeBack: React.FC<SwipeBackProps> = ({ onClose, children }) => {
 
   const handlePanStart = useCallback(
     (event: PointerEvent, info: PanInfo) => {
-      // swipe-back de borda funciona até sobre botões/links (tap continua ok);
-      // só ignora faixas com scroll horizontal próprio e campos de texto
-      const target = event.target as Element | null;
-      const locked =
-        target instanceof Element &&
-        target.closest('[data-swipe-lock], input, textarea, select, [contenteditable="true"]') !== null;
-      if (reducedMotion || locked || info.point.x > EDGE_WIDTH) {
+      if (reducedMotion || shouldIgnorePanTarget(event.target) || info.point.x > EDGE_WIDTH) {
         panRef.current.active = false;
         return;
       }
