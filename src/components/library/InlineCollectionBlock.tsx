@@ -40,11 +40,11 @@ export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = ({
             <div
               key={book.id}
               onClick={() => onSelectBook(book)}
-              className="group/book relative w-[105px] sm:w-[115px] h-[145px] sm:h-[155px] rounded-2xl p-2.5 flex flex-col justify-between shrink-0 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer overflow-hidden border border-black/5 select-none"
+              className="group/book card-lift relative w-[105px] sm:w-[115px] h-[145px] sm:h-[155px] rounded-2xl p-2.5 flex flex-col justify-between shrink-0 shadow-xs cursor-pointer overflow-hidden border border-black/5 select-none"
               style={{ backgroundColor: book.coverColor }}
             >
               {/* Realistic Spine Line */}
-              <div className="absolute left-0 top-0 bottom-0 w-2.5 bg-black/10 border-r border-black/10 backdrop-blur-3xs" />
+              <div className="absolute left-0 top-0 bottom-0 w-2.5 bg-black/10 border-r border-black/10" />
 
               <div className="pl-2 flex items-center justify-between">
                 <span className="text-[8px] font-extrabold uppercase tracking-wider bg-white/90 text-ceci-primary px-1.5 py-0.5 rounded shadow-2xs line-clamp-1 max-w-[70px]">

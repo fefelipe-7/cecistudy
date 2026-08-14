@@ -178,11 +178,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [sessions, setSessions] = usePersistentState<StudySession[]>('sessions', initialStudySessions);
   const [currentMood, setCurrentMood] = usePersistentState<DailyMoodData>('currentMood', {
     emoji: '🤓',
-    label: 'Focada & Acadêmica',
+    label: 'focada & acadêmica',
     energyLevel: 4,
     vibeColor: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong',
-    reflection: 'Dia focado nas aulas de psicopatologia e leituras curtas.',
-    intention: 'Estudo leve e produtivo',
+    reflection: 'dia focado nas aulas de psicopatologia e leituras curtas.',
+    intention: 'estudo leve e produtivo',
     updatedAt: '09:00'
   });
 
@@ -281,8 +281,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   if (isMoodViewOpen) {
     headerConfig = {
       type: 'detail',
-      title: 'Estado de Espírito',
-      subtitle: 'Como você está se sentindo hoje?',
+      title: 'estado de espírito',
+      subtitle: 'como você está se sentindo hoje?',
       onBack: () => goBack(),
       rightActions: (
         <span className="text-sm font-bold bg-surface-rose px-2.5 py-1 rounded-full border border-ceci-border-brand text-ceci-brand-strong">
@@ -495,6 +495,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const goBack = () => {
     if (navigationStack.length <= 1) return;
+    hapticTap();
     const next = navigationStack.slice(0, -1);
     setStack(next);
     setTargetId(undefined);
@@ -503,6 +504,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const handleNavigate = (tab: NavTab, subTab?: string, target?: string) => {
+    hapticTap();
     if (tab === 'faculdade' && subTab) setSubTabFaculdade(subTab as SubTabFaculdade);
     if (tab === 'estudos' && subTab) setSubTabEstudos(subTab as SubTabEstudos);
     if (tab === 'biblioteca' && subTab) setSubTabBiblioteca(subTab as SubTabBiblioteca);
@@ -519,6 +521,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const openCourseDetail = (courseId: string) => {
+    hapticTap();
     const top = navigationStack[navigationStack.length - 1];
     const next: NavScreen[] =
       top.kind === 'course'
@@ -535,6 +538,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const closeCourseDetail = () => goBack();
 
   const openNotesScreen = () => {
+    hapticTap();
     const top = navigationStack[navigationStack.length - 1];
     const next: NavScreen[] =
       top.kind === 'notes' ? navigationStack : [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }];
@@ -546,6 +550,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const closeNotesScreen = () => goBack();
 
   const openTemple = () => {
+    hapticTap();
     const top = navigationStack[navigationStack.length - 1];
     const next: NavScreen[] =
       top.kind === 'temple' ? navigationStack : [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'temple' }];
@@ -557,6 +562,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const closeTemple = () => goBack();
 
   const openMoodView = () => {
+    hapticTap();
     const top = navigationStack[navigationStack.length - 1];
     const next: NavScreen[] =
       top.kind === 'mood' ? navigationStack : [{ kind: 'tab', tab: 'home' }, { kind: 'mood' }];
@@ -572,8 +578,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     goBack();
   };
 
-  const openEditCourse = () => setIsEditCourseOpen(true);
-  const closeEditCourse = () => setIsEditCourseOpen(false);
+  const openEditCourse = () => {
+    hapticTap();
+    setIsEditCourseOpen(true);
+  };
+  const closeEditCourse = () => {
+    hapticTap();
+    setIsEditCourseOpen(false);
+  };
 
   const showToast = (message: string) => {
     setToast(message);
@@ -581,25 +593,35 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const openQuickAdd = () => {
+    hapticTap();
     setQuickAddCourseId(undefined);
     setIsQuickAddOpen(true);
   };
   const closeQuickAdd = () => {
+    hapticTap();
     setQuickAddCourseId(undefined);
     setIsQuickAddOpen(false);
   };
   const openQuickAddWithType = (type: QuickType, courseId?: string) => {
+    hapticTap();
     setQuickAddType(type);
     setQuickAddCourseId(courseId);
     setIsQuickAddOpen(true);
   };
   const openQuickAddForCourse = (type: QuickType, courseId: string) => {
+    hapticTap();
     setQuickAddType(type);
     setQuickAddCourseId(courseId);
     setIsQuickAddOpen(true);
   };
-  const openSearch = () => setIsSearchOpen(true);
-  const closeSearch = () => setIsSearchOpen(false);
+  const openSearch = () => {
+    hapticTap();
+    setIsSearchOpen(true);
+  };
+  const closeSearch = () => {
+    hapticTap();
+    setIsSearchOpen(false);
+  };
 
   const setActiveTab = (tab: NavTab) => handleNavigate(tab);
   const setFocusedCourseId = (id: string | null) => {

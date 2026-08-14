@@ -57,21 +57,21 @@ export const LibraryFilterModal: React.FC<LibraryFilterModalProps> = ({
           </span>
           <div className="grid grid-cols-2 gap-2">
             {[
-              { id: 'todos', label: 'Todas as categorias' },
-              { id: 'autores', label: 'Autores & Obras' },
-              { id: 'conceitos', label: 'Conceitos-Chave' },
-              { id: 'abordagens', label: 'Abordagens Terapêuticas' },
-              { id: 'testes', label: 'Testes & Escalas' },
-              { id: 'multidisciplinar', label: 'Bagagem Complementar' },
-              { id: 'salvos', label: 'Salvos ♡' },
-              { id: 'em_leitura', label: 'Em Leitura 📖' },
+              { id: 'todos', label: 'todas as categorias' },
+              { id: 'autores', label: 'autores & obras' },
+              { id: 'conceitos', label: 'conceitos-chave' },
+              { id: 'abordagens', label: 'abordagens terapêuticas' },
+              { id: 'testes', label: 'testes & escalas' },
+              { id: 'multidisciplinar', label: 'bagagem complementar' },
+              { id: 'salvos', label: 'salvos ♡' },
+              { id: 'em_leitura', label: 'em leitura 📖' },
             ].map((cat) => {
               const isSel = activeCategory === cat.id;
               return (
                 <button
                   key={cat.id}
                   onClick={() => onCategoryChange(cat.id)}
-                  className={`p-2.5 rounded-xl border text-xs font-semibold text-left transition-all cursor-pointer flex items-center justify-between ${
+                  className={`p-2.5 rounded-xl border text-xs font-semibold text-left tap-interactive cursor-pointer flex items-center justify-between ${
                     isSel
                       ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong font-bold'
                       : 'bg-surface-muted border-ceci-border-default text-ceci-primary hover:bg-white'
@@ -92,17 +92,17 @@ export const LibraryFilterModal: React.FC<LibraryFilterModalProps> = ({
           </span>
           <div className="flex flex-wrap gap-2">
             {[
-              { id: 'todos', label: 'Todos' },
-              { id: 'lendo', label: 'Lendo atualmente' },
-              { id: 'concluido', label: 'Lidos' },
-              { id: 'para_ler', label: 'Não iniciados' },
+              { id: 'todos', label: 'todos' },
+              { id: 'lendo', label: 'lendo' },
+              { id: 'concluido', label: 'lidos' },
+              { id: 'para_ler', label: 'não iniciados' },
             ].map((st) => {
               const isSel = activeStatus === st.id;
               return (
                 <button
                   key={st.id}
                   onClick={() => onStatusChange(st.id)}
-                  className={`px-3 py-1.5 rounded-full border text-xs font-semibold transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-full border text-xs font-semibold tap-interactive cursor-pointer ${
                     isSel
                       ? 'bg-ceci-primary text-white border-ceci-primary'
                       : 'bg-white border-ceci-border-default text-ceci-secondary hover:bg-surface-muted'
@@ -127,7 +127,7 @@ export const LibraryFilterModal: React.FC<LibraryFilterModalProps> = ({
                 <button
                   key={tag}
                   onClick={() => onTagChange(isSel ? null : tag)}
-                  className={`px-3 py-1 rounded-full text-[11px] font-medium border transition-all cursor-pointer ${
+                  className={`px-3 py-1 rounded-full text-[11px] font-medium border tap-interactive cursor-pointer ${
                     isSel
                       ? 'bg-ceci-brand-strong text-white border-ceci-brand-strong'
                       : 'bg-surface-muted text-ceci-primary border-ceci-border-default hover:bg-white'
@@ -146,7 +146,7 @@ export const LibraryFilterModal: React.FC<LibraryFilterModalProps> = ({
             onClick={onReset}
             className="px-4 py-2.5 rounded-2xl border border-ceci-border-default text-ceci-secondary text-xs font-bold hover:bg-surface-muted cursor-pointer"
           >
-            limpar tudo
+            esquecer filtros
           </button>
           <button
             onClick={onClose}

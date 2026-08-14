@@ -197,7 +197,7 @@ export const EstudosView: React.FC = () => {
             hoje dá para estudar com carinho
           </span>
           <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
-            tudo aqui nasce do que você já registrou: revisão, leitura e foco sempre conectados aos seus dados.
+            tudo aqui nasce do que você anota: revisão, leitura e foco sempre conectados entre si ♡
           </p>
         </div>
 
@@ -248,7 +248,7 @@ export const EstudosView: React.FC = () => {
           {lastSession && (
             <div
               onClick={() => setSubTab('historico')}
-              className="flex items-center justify-between p-4 rounded-2xl bg-surface-rose border border-ceci-border-brand hover:border-rose-300 cursor-pointer transition-all"
+              className="flex items-center justify-between p-4 rounded-2xl bg-surface-rose border border-ceci-border-brand hover:border-rose-300 cursor-pointer tap-interactive"
             >
               <div className="min-w-0 pr-2">
                 <h3 className="font-semibold text-xs text-ceci-primary truncate">última sessão: {lastSession.topic}</h3>
@@ -265,7 +265,7 @@ export const EstudosView: React.FC = () => {
           {dueCards.length > 0 && (
             <div
               onClick={() => setSubTab('flashcards')}
-              className="flex items-center justify-between p-4 rounded-2xl bg-[#FFF8F1] border border-[#FFF1E5] hover:border-[#FFE2CC] cursor-pointer transition-all"
+              className="flex items-center justify-between p-4 rounded-2xl bg-[#FFF8F1] border border-[#FFF1E5] hover:border-[#FFE2CC] cursor-pointer tap-interactive"
             >
               <div className="min-w-0 pr-2">
                 <h3 className="font-semibold text-xs text-ceci-primary truncate">
@@ -284,7 +284,7 @@ export const EstudosView: React.FC = () => {
           {continueReading && (
             <div
               onClick={() => setSubTab('leituras')}
-              className="flex items-center justify-between p-4 rounded-2xl bg-[#F3F9FC] border border-ceci-border-academic hover:border-[#A4D4E3] cursor-pointer transition-all"
+              className="flex items-center justify-between p-4 rounded-2xl bg-[#F3F9FC] border border-ceci-border-academic hover:border-[#A4D4E3] cursor-pointer tap-interactive"
             >
               <div className="min-w-0 pr-2">
                 <h3 className="font-semibold text-xs text-ceci-primary truncate">{continueReading.title}</h3>
@@ -349,7 +349,7 @@ export const EstudosView: React.FC = () => {
               <button
                 key={mins}
                 onClick={() => resetTimer(mins)}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer border ${
+                className={`px-4 py-1.5 rounded-full text-xs font-semibold tap-interactive cursor-pointer border ${
                   preset === mins
                     ? 'bg-ceci-primary text-white border-ceci-primary shadow-xs'
                     : 'bg-white text-ceci-secondary border-ceci-border-default hover:bg-surface-muted'
@@ -388,7 +388,7 @@ export const EstudosView: React.FC = () => {
           {showSaveSession && (
             <div className="p-4 rounded-2xl bg-surface-subtle border border-ceci-border-subtle text-left space-y-3">
               <p className="text-xs font-semibold text-ceci-primary flex items-center gap-1.5">
-                <Timer className="w-4 h-4 text-[#E97891]" /> salvar sessão de {preset} min?
+                <Timer className="w-4 h-4 text-[#E97891]" /> guardar sessão de {preset} min?
               </p>
               <div>
                 <label className="block text-xs font-medium text-ceci-secondary mb-1">o que você estudou?</label>
@@ -396,7 +396,7 @@ export const EstudosView: React.FC = () => {
                   type="text"
                   value={sessionTopic}
                   onChange={(e) => setSessionTopic(e.target.value)}
-                  placeholder="Ex: revisar semiologia dos transtornos do humor"
+                  placeholder="ex: revisar semiologia dos transtornos do humor"
                   className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E97891]/30 focus:border-[#E97891]"
                   autoFocus
                 />
@@ -428,7 +428,7 @@ export const EstudosView: React.FC = () => {
                   className="flex items-center gap-1.5 bg-[#E97891] hover:bg-[#B94862] text-white px-5 py-2.5 rounded-[14px] text-xs font-medium shadow-2xs cursor-pointer"
                 >
                   <CheckCircle2 className="w-4 h-4" />
-                  <span>salvar registro</span>
+                  <span>guardar sessão</span>
                 </button>
               </div>
             </div>
@@ -550,7 +550,7 @@ export const EstudosView: React.FC = () => {
                 <BookOpen className="w-6 h-6 text-ceci-academic-strong" />
               </span>
               <p className="text-xs text-ceci-secondary leading-relaxed">
-                nenhuma leitura registrada ainda. adicione seu primeiro livro ou artigo ♡
+                nenhuma leitura anotada ainda. que tal adicionar seu primeiro livro ou artigo ♡
               </p>
             </div>
           ) : (
@@ -663,7 +663,7 @@ export const EstudosView: React.FC = () => {
           {sortedSessions.length === 0 ? (
             <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
               <p className="text-xs text-ceci-secondary leading-relaxed">
-                nenhuma sessão registrada ainda. quando concluir seu primeiro timer de foco, ela aparece aqui ♡
+                nenhuma sessão anotada ainda. quando você concluir seu primeiro foco, ela aparece aqui ♡
               </p>
               <button
                 onClick={() => setSubTab('sessoes')}

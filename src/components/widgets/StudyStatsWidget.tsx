@@ -55,7 +55,7 @@ export const StudyStatsWidget: React.FC = () => {
                 cx="40"
                 cy="40"
                 r="32"
-                className="stroke-ceci-primary transition-all duration-500"
+                className="stroke-ceci-primary transition-colors duration-500"
                 strokeWidth="8"
                 strokeDasharray="200"
                 strokeDashoffset="35"

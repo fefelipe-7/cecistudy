@@ -55,7 +55,7 @@ export const EstadoDeEspiritoView: React.FC<EstadoDeEspiritoViewProps> = ({
       <div className="flex items-center justify-between pt-2 px-1">
         <button
           onClick={onBackToHome}
-          className="flex items-center gap-2 text-xs font-semibold text-ceci-secondary hover:text-ceci-primary bg-white px-3 py-2 rounded-xl border border-ceci-border-default shadow-2xs transition-all cursor-pointer"
+          className="flex items-center gap-2 text-xs font-semibold text-ceci-secondary hover:text-ceci-primary bg-white px-3 py-2 rounded-xl border border-ceci-border-default shadow-2xs tap-interactive cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>voltar para hoje</span>
@@ -83,7 +83,7 @@ export const EstadoDeEspiritoView: React.FC<EstadoDeEspiritoViewProps> = ({
             como você está se sentindo hoje?
           </h1>
           <p className="text-xs sm:text-sm text-ceci-secondary mt-1 max-w-sm mx-auto leading-relaxed">
-            registre seu estado de espírito do dia para adaptar seu ritmo de estudos de forma acolhedora.
+            conta como você está se sentindo para eu ajustar seu ritmo de estudos com carinho.
           </p>
         </div>
       </div>
@@ -109,7 +109,7 @@ export const EstadoDeEspiritoView: React.FC<EstadoDeEspiritoViewProps> = ({
               <button
                 key={preset.id}
                 onClick={() => setSelectedEmoji(preset.emoji)}
-                className={`p-4 rounded-2xl border text-left transition-all duration-200 flex flex-col justify-between relative cursor-pointer ${
+                className={`p-4 rounded-2xl border text-left tap-interactive duration-200 flex flex-col justify-between relative cursor-pointer ${
                   isSelected
                     ? `${preset.vibeColor} ring-2 ring-rose-500/30 shadow-2xs scale-[1.02]`
                     : 'bg-surface-muted border-ceci-border-default hover:border-ceci-border-brand hover:bg-white'
@@ -153,7 +153,7 @@ export const EstadoDeEspiritoView: React.FC<EstadoDeEspiritoViewProps> = ({
               <button
                 key={level}
                 onClick={() => setEnergyLevel(level)}
-                className={`flex-1 py-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-1 transition-all cursor-pointer ${
+                className={`flex-1 py-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-1 tap-interactive cursor-pointer ${
                   level <= energyLevel
                     ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong shadow-2xs'
                     : 'bg-surface-muted border-ceci-border-default text-ceci-faded hover:border-ceci-border-brand'
@@ -182,7 +182,7 @@ export const EstadoDeEspiritoView: React.FC<EstadoDeEspiritoViewProps> = ({
               <button
                 key={tag}
                 onClick={() => setIntention(tag)}
-                className={`text-xs px-3 py-1.5 rounded-xl border font-medium transition-all cursor-pointer ${
+                className={`text-xs px-3 py-1.5 rounded-xl border font-medium tap-interactive cursor-pointer ${
                   intention === tag
                     ? 'bg-ceci-primary text-white border-ceci-primary'
                     : 'bg-surface-muted text-ceci-secondary border-ceci-border-default hover:border-ceci-border-brand'
@@ -212,10 +212,10 @@ export const EstadoDeEspiritoView: React.FC<EstadoDeEspiritoViewProps> = ({
       {/* Save Button */}
       <button
         onClick={handleSave}
-        className="w-full bg-rose-500 hover:bg-ceci-brand text-white py-3.5 rounded-2xl font-bold text-sm shadow-2xs transition-all active:scale-[0.99] flex items-center justify-center gap-2 min-h-[48px] cursor-pointer"
+        className="w-full bg-rose-500 hover:bg-ceci-brand text-white py-3.5 rounded-2xl font-bold text-sm shadow-2xs tap-interactive active:scale-[0.99] flex items-center justify-center gap-2 min-h-[48px] cursor-pointer"
       >
         <Check className="w-5 h-5 stroke-[2.5]" />
-        <span>salvar e voltar para home</span>
+        <span>guardar e voltar para home</span>
       </button>
 
     </div>

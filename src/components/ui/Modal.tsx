@@ -55,7 +55,7 @@ export const Modal: React.FC<ModalProps> = ({
           exit={{ opacity: 0 }}
           transition={OVERLAY_FADE}
           className={cn(
-            'fixed inset-0 z-50 flex bg-black/40 backdrop-blur-xs',
+            'fixed inset-0 z-50 flex bg-black/40',
             POSITION_CLASSES[position]
           )}
           onClick={closeOnBackdrop ? onClose : undefined}

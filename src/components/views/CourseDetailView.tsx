@@ -107,17 +107,17 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
       {/* Quick Add Grid 2x2 */}
       <div className="grid grid-cols-2 gap-3.5 px-1">
         {[
-          { type: 'session', icon: Timer, label: 'novo estudo', accent: 'bg-surface-blue text-ceci-academic-strong border-ceci-border-academic' },
-          { type: 'exam', icon: ClipboardList, label: 'nova prova ou atividade', accent: 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand' },
-          { type: 'concept', icon: BookMarked, label: 'novo conceito, obra ou autor', accent: 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand' },
-          { type: 'class', icon: FileText, label: 'nova aula', accent: 'bg-surface-muted text-ceci-primary border-ceci-border-default' },
+          { type: 'session', icon: Timer, label: 'anotar estudo', accent: 'bg-surface-blue text-ceci-academic-strong border-ceci-border-academic' },
+          { type: 'exam', icon: ClipboardList, label: 'anotar prova', accent: 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand' },
+          { type: 'concept', icon: BookMarked, label: 'anotar conceito', accent: 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand' },
+          { type: 'class', icon: FileText, label: 'anotar aula', accent: 'bg-surface-muted text-ceci-primary border-ceci-border-default' },
         ].map((btn) => {
           const Icon = btn.icon;
           return (
             <button
               key={btn.type}
               onClick={() => openQuickAddForCourse(btn.type as QuickType, course.id)}
-              className="flex items-center gap-3 p-3.5 rounded-2xl bg-white border border-ceci-border-default hover:border-ceci-border-brand text-left transition-all hover:shadow-md active:scale-95 cursor-pointer shadow-sm"
+              className="flex items-center gap-3 p-3.5 rounded-2xl bg-white border border-ceci-border-default hover:border-ceci-border-brand text-left tap-interactive hover:shadow-md active:scale-95 cursor-pointer shadow-sm"
             >
               <span className={`w-9 h-9 rounded-xl flex items-center justify-center border shrink-0 ${btn.accent}`}>
                 <Icon className="w-4.5 h-4.5" />
@@ -132,16 +132,16 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
       <div className="border-b border-ceci-border-default px-1">
         <div className="flex items-center justify-between gap-2">
           {[
-            { id: 'info', label: 'Informações', badge: null },
-            { id: 'aulas', label: 'Aulas & Avaliações', badge: courseClasses.length + courseExams.length },
-            { id: 'repertorio', label: 'Repertório & Conteúdo', badge: courseConcepts.length + courseReadings.length },
+            { id: 'info', label: 'informações', badge: null },
+            { id: 'aulas', label: 'aulas & avaliações', badge: courseClasses.length + courseExams.length },
+            { id: 'repertorio', label: 'repertório & conteúdo', badge: courseConcepts.length + courseReadings.length },
           ].map((tab) => {
             const isSel = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as 'info' | 'aulas' | 'repertorio')}
-                className={`pb-3 text-xs font-semibold relative transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`pb-3 text-xs font-semibold relative tap-interactive cursor-pointer flex items-center gap-1.5 ${
                   isSel
                     ? 'text-ceci-primary font-bold'
                     : 'text-ceci-tertiary hover:text-ceci-primary'
@@ -190,18 +190,18 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
           <div className="space-y-2">
             <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-ceci-brand-strong" />
-              <span>Ementa & Objetivos da Disciplina</span>
+              <span>o que essa disciplina ensina</span>
             </h3>
             <div className="border-l-3 border-ceci-brand-strong pl-3.5 py-1 text-xs text-ceci-text-soft leading-relaxed font-medium bg-gradient-to-r from-surface-rose/70 to-transparent rounded-r-xl">
               {course.description ||
-                'Estudo detalhado das estruturas clínicas, semiologia psiquiátrica, modelo de compreensão comportamental e práticas de diagnóstico em Psicologia.'}
+                'estudo detalhado das estruturas clínicas, semiologia psiquiátrica, modelo de compreensão comportamental e práticas de diagnóstico em psicologia.'}
             </div>
           </div>
 
           {/* Dados Universitários Grid (Inline divided section) */}
           <div className="space-y-2.5">
             <h3 className="font-display font-bold text-sm text-ceci-primary">
-              Detalhes Acadêmicos
+              detalhes acadêmicos
             </h3>
 
             <div className="border-y border-ceci-border-default py-3 grid grid-cols-2 gap-y-3.5 gap-x-4">
@@ -231,10 +231,10 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="font-display font-bold text-sm text-ceci-primary">
-                Critérios de Avaliação
+                como você é avaliada
               </h3>
               <span className="text-[11px] font-semibold text-ceci-brand-strong bg-surface-rose px-2.5 py-0.5 rounded-full border border-ceci-border-brand">
-                Média Mínima: 7,0
+                média mínima: 7,0
               </span>
             </div>
 
@@ -242,25 +242,25 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
               <div className="flex items-center justify-between py-2.5 text-xs">
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-ceci-brand-strong" />
-                  <span className="font-semibold text-ceci-primary">Prova Teórica I (P1)</span>
+                  <span className="font-semibold text-ceci-primary">prova teórica i (p1)</span>
                 </div>
-                <span className="font-bold text-ceci-primary bg-surface-muted px-2 py-0.5 rounded border border-ceci-border-default">Peso 35%</span>
+                <span className="font-bold text-ceci-primary bg-surface-muted px-2 py-0.5 rounded border border-ceci-border-default">peso 35%</span>
               </div>
 
               <div className="flex items-center justify-between py-2.5 text-xs">
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-ceci-academic-strong" />
-                  <span className="font-semibold text-ceci-primary">Estudo de Caso / Trabalho (P2)</span>
+                  <span className="font-semibold text-ceci-primary">estudo de caso / trabalho (p2)</span>
                 </div>
-                <span className="font-bold text-ceci-primary bg-surface-muted px-2 py-0.5 rounded border border-ceci-border-default">Peso 40%</span>
+                <span className="font-bold text-ceci-primary bg-surface-muted px-2 py-0.5 rounded border border-ceci-border-default">peso 40%</span>
               </div>
 
               <div className="flex items-center justify-between py-2.5 text-xs">
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-success-deep" />
-                  <span className="font-semibold text-ceci-primary">Atividades Práticas / Fichamentos</span>
+                  <span className="font-semibold text-ceci-primary">atividades práticas / fichamentos</span>
                 </div>
-                <span className="font-bold text-ceci-primary bg-surface-muted px-2 py-0.5 rounded border border-ceci-border-default">Peso 25%</span>
+                <span className="font-bold text-ceci-primary bg-surface-muted px-2 py-0.5 rounded border border-ceci-border-default">peso 25%</span>
               </div>
             </div>
           </div>
@@ -290,10 +290,10 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
             <div className="flex items-center justify-between">
               <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 text-ceci-brand-strong" />
-                <span>Próximas Avaliações & Provas</span>
+                <span>próximas avaliações & provas</span>
               </h3>
               <span className="text-[11px] font-semibold text-ceci-tertiary">
-                {courseExams.length} cadastradas
+                {courseExams.length} anotadas
               </span>
             </div>
 
@@ -338,7 +338,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
               </div>
             ) : (
               <p className="text-xs text-ceci-tertiary py-2">
-                Nenhuma avaliação cadastrada para esta disciplina ainda.
+                ainda não tem prova anotada para esta disciplina.
               </p>
             )}
           </div>
@@ -348,14 +348,14 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
             <div className="flex items-center justify-between">
               <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
                 <FileText className="w-4 h-4 text-ceci-academic-strong" />
-                <span>Diário de Aulas Registradas</span>
+                <span>diário de aulas</span>
               </h3>
               <button
                 onClick={() => openQuickAddForCourse('class', course.id)}
                 className="text-xs font-bold text-ceci-brand-strong hover:underline flex items-center gap-1 cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>nova aula</span>
+                <span>anotar aula</span>
               </button>
             </div>
 
@@ -373,7 +373,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
             ) : (
               <div className="py-6 text-center space-y-2">
                 <FileText className="w-6 h-6 text-ceci-faded mx-auto" />
-                <p className="text-xs font-semibold text-ceci-primary">Ainda não há registros de aula</p>
+                <p className="text-xs font-semibold text-ceci-primary">ainda não tem aula anotada</p>
                 <button
                   onClick={() => openQuickAddForCourse('class', course.id)}
                   className="px-3.5 py-1.5 bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong rounded-full text-xs font-bold cursor-pointer"
@@ -389,7 +389,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
             <div className="space-y-3 pt-2">
               <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-success-deep" />
-                <span>Tarefas e Entregas Pendentes</span>
+                <span>tarefas & entregas pendentes</span>
               </h3>
 
               <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
@@ -427,7 +427,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
           <div className="space-y-3">
             <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-ceci-brand-strong" />
-              <span>Conceitos-Chave da Disciplina</span>
+              <span>conceitos-chave da disciplina</span>
             </h3>
 
             {courseConcepts.length > 0 ? (
@@ -452,7 +452,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
               </div>
             ) : (
               <p className="text-xs text-ceci-tertiary py-2">
-                Nenhum conceito associado diretamente ainda.
+                ainda não tem conceito ligado a esta disciplina.
               </p>
             )}
           </div>
@@ -462,7 +462,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
             <div className="space-y-3 pt-2">
               <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
                 <UserCheck className="w-4 h-4 text-ceci-academic-strong" />
-                <span>Autores Fundamentais</span>
+                <span>autores fundamentais</span>
               </h3>
 
               <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
@@ -492,7 +492,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
           <div className="space-y-3 pt-2">
             <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-beige-700" />
-              <span>Leituras & Bibliografia Recomendada</span>
+              <span>leituras & bibliografia recomendada</span>
             </h3>
 
             {courseReadings.length > 0 || courseMaterials.length > 0 ? (
@@ -501,7 +501,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                   <div key={reading.id} className="py-2.5 flex items-center justify-between text-xs">
                     <div className="space-y-0.5">
                       <h5 className="font-bold text-ceci-primary">{reading.title}</h5>
-                      <p className="text-[11px] text-ceci-tertiary">Autor: {reading.author}</p>
+                      <p className="text-[11px] text-ceci-tertiary">por {reading.author}</p>
                     </div>
                     <span className="text-[10px] font-semibold text-success-deep bg-surface-mint-soft px-2.5 py-1 rounded-full border border-ceci-border-academic">
                       {reading.readPages || 0} / {reading.totalPages || 100} pág
@@ -523,7 +523,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
               </div>
             ) : (
               <p className="text-xs text-ceci-tertiary py-2">
-                Nenhuma leitura vinculada a esta disciplina.
+                ainda não tem leitura vinculada a esta disciplina.
               </p>
             )}
           </div>

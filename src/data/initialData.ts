@@ -22,8 +22,8 @@ export const initialProfile: UserProfile = {
   totalSemesters: 10,
   university: 'Universidade de Psicologia',
   targetCareer: 'Psicóloga Clínica & Pesquisadora',
-  avatarMood: '🌸 Estudando com foco e amor',
-  dailyQuote: 'Compreender o ser humano é a forma mais bonita de cuidado.',
+  avatarMood: '🌸 estudando com foco e amor',
+  dailyQuote: 'compreender o ser humano é a forma mais bonita de cuidado.',
   stickersCollected: 6
 };
 
@@ -40,7 +40,7 @@ export const initialCourses: Course[] = [
     color: '#E8AFC0',
     icon: 'Brain',
     progress: 68,
-    description: 'Estudo das manifestações psíquicas, semiologia e critérios diagnósticos do DSM-5-TR e CID-11.'
+    description: 'estudo das manifestações psíquicas, semiologia e critérios diagnósticos do DSM-5-TR e CID-11.'
   },
   {
     id: 'c2',
@@ -54,7 +54,7 @@ export const initialCourses: Course[] = [
     color: '#BFDDED',
     icon: 'FileText',
     progress: 55,
-    description: 'Aplicação e interpretação de testes de personalidade, projetivos e psicométricos (HTP, BFP, WAIS).'
+    description: 'aplicação e interpretação de testes de personalidade, projetivos e psicométricos (HTP, BFP, WAIS).'
   },
   {
     id: 'c3',
@@ -68,7 +68,7 @@ export const initialCourses: Course[] = [
     color: '#DCCBB8',
     icon: 'Sparkles',
     progress: 80,
-    description: 'Princípios conceituais, formulação de caso e intervenções estruturadas na abordagem da TCC.'
+    description: 'princípios conceituais, formulação de caso e intervenções estruturadas na abordagem da TCC.'
   },
   {
     id: 'c4',
@@ -82,7 +82,7 @@ export const initialCourses: Course[] = [
     color: '#A8C9B0',
     icon: 'Users',
     progress: 40,
-    description: 'Processos psicossociais, relações interpessoais, subjetividades contemporâneas e Políticas Públicas de Saúde.'
+    description: 'processos psicossociais, relações interpessoais, subjetividades contemporâneas e Políticas Públicas de Saúde.'
   },
   {
     id: 'c5',
@@ -96,7 +96,7 @@ export const initialCourses: Course[] = [
     color: '#E8C98C',
     icon: 'HeartHandshake',
     progress: 75,
-    description: 'Observação, escuta analítica, ética do acolhimento e escuta qualificada na Clínica Escola.'
+    description: 'observação, escuta analítica, ética do acolhimento e escuta qualificada na Clínica Escola.'
   }
 ];
 
@@ -533,71 +533,71 @@ export const initialTcc: TccData = {
 export const initialStickers: Sticker[] = [
   {
     id: 'st-1',
-    name: 'Primeira Leitura Concluída',
+    name: 'primeira leitura concluída',
     emoji: '📚',
-    description: 'Terminou de ler um livro ou capítulo acadêmico importante!',
+    description: 'você terminou de ler um livro ou capítulo acadêmico importante!',
     unlocked: true,
     unlockedAt: '2026-08-02',
     category: 'leituras'
   },
   {
     id: 'st-2',
-    name: 'Cantinho Organizado',
+    name: 'cantinho organizado',
     emoji: '🌷',
-    description: 'Completou a organização do plano de estudos semanal no cecistudy.',
+    description: 'você completou a organização do plano de estudos semanal no cecistudy.',
     unlocked: true,
     unlockedAt: '2026-08-03',
     category: 'faculdade'
   },
   {
     id: 'st-3',
-    name: 'Mestre dos Flashcards',
+    name: 'mestre dos flashcards',
     emoji: '🧠',
-    description: 'Revisou mais de 10 conceitos fundamentais de Psicologia.',
+    description: 'você revisou mais de 10 conceitos fundamentais de psicologia.',
     unlocked: true,
     unlockedAt: '2026-08-04',
     category: 'estudo'
   },
   {
     id: 'st-4',
-    name: 'Primeiro Dia de Estágio',
+    name: 'primeiro dia de estágio',
     emoji: '🩺',
-    description: 'Registrou o primeiro relatório de supervisão no diário de campo.',
+    description: 'você registrou o primeiro relatório de supervisão no diário de campo.',
     unlocked: true,
     unlockedAt: '2026-08-05',
     category: 'jornada'
   },
   {
     id: 'st-5',
-    name: 'Semana do Café & Livros',
+    name: 'semana do café & livros',
     emoji: '☕',
-    description: 'Manteve constância de 5 dias seguidos estudando.',
+    description: 'você manteve constância de 5 dias seguidos estudando.',
     unlocked: true,
     unlockedAt: '2026-08-06',
     category: 'estudo'
   },
   {
     id: 'st-6',
-    name: 'Rumo ao CRM/CRP!',
+    name: 'rumo ao CRP!',
     emoji: '🎓',
-    description: 'Alcançou mais da metade da graduação em Psicologia.',
+    description: 'você alcançou mais da metade da graduação em psicologia.',
     unlocked: true,
     unlockedAt: '2026-08-07',
     category: 'jornada'
   },
   {
     id: 'st-7',
-    name: 'Análise de Autor',
+    name: 'análise de autor',
     emoji: '✨',
-    description: 'Conectou 3 obras e conceitos no seu Mapa de Conhecimento.',
+    description: 'você conectou 3 obras e conceitos no seu mapa de conhecimento.',
     unlocked: false,
     category: 'faculdade'
   },
   {
     id: 'st-8',
-    name: 'Defesa do TCC',
+    name: 'defesa do tcc',
     emoji: '🏆',
-    description: 'Concluiu a revisão final e apresentação do seu TCC de Psicologia.',
+    description: 'você concluiu a revisão final e apresentação do seu tcc de psicologia.',
     unlocked: false,
     category: 'jornada'
   }

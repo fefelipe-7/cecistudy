@@ -49,7 +49,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
 
   return (
     <header
-      className={`sticky top-0 z-40 bg-canvas/95 backdrop-blur-md border-b border-ceci-border-subtle px-3.5 sm:px-4 transition-all duration-300 ease-in-out ${
+      className={`sticky top-0 z-40 bg-canvas/95 border-b border-ceci-border-subtle px-3.5 sm:px-4 transition-[padding,box-shadow,background-color,border-color] duration-300 ease-in-out ${
         scrolled
           ? 'pt-[calc(0.5rem+env(safe-area-inset-top,0px))] pb-2 shadow-xs'
           : 'pt-[calc(0.75rem+env(safe-area-inset-top,0px))] sm:pt-[calc(0.875rem+env(safe-area-inset-top,0px))] pb-3 sm:pb-3.5'
@@ -74,8 +74,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               {headerConfig.onBack && (
                 <button
                   onClick={headerConfig.onBack}
-                  className="w-9 h-9 rounded-2xl bg-white border border-ceci-border-default hover:border-ceci-border-brand flex items-center justify-center text-ceci-primary shadow-2xs hover:bg-surface-rose transition-all cursor-pointer shrink-0 active:scale-95"
-                  title="Voltar"
+                  className="w-9 h-9 rounded-2xl bg-white border border-ceci-border-default hover:border-ceci-border-brand flex items-center justify-center text-ceci-primary shadow-2xs hover:bg-surface-rose tap-interactive cursor-pointer shrink-0 active:scale-95"
+                  title="voltar"
                   aria-label="voltar"
                 >
                   <ArrowLeft className="w-4 h-4 text-ceci-primary" />
@@ -117,12 +117,12 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               {headerConfig.onToggleBookmark && (
                 <button
                   onClick={headerConfig.onToggleBookmark}
-                  className={`w-9 h-9 rounded-2xl border flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95 ${
+                  className={`w-9 h-9 rounded-2xl border flex items-center justify-center tap-interactive cursor-pointer shadow-2xs active:scale-95 ${
                     headerConfig.isBookmarked
                       ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
                       : 'bg-white border-ceci-border-default text-ceci-secondary hover:bg-surface-muted'
                   }`}
-                  title={headerConfig.isBookmarked ? 'Remover dos favoritos' : 'Favoritar disciplina'}
+                  title={headerConfig.isBookmarked ? 'remover dos favoritos' : 'favoritar disciplina'}
                   aria-label={headerConfig.isBookmarked ? 'remover dos favoritos' : 'favoritar disciplina'}
                 >
                   <Bookmark
@@ -141,19 +141,19 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               {!headerConfig.rightActions && !headerConfig.actions && onOpenQuickAdd && (
                 <button
                   onClick={onOpenQuickAdd}
-                  className="bg-ceci-primary hover:bg-ceci-primary-hover text-white px-3 py-1.5 rounded-2xl font-display font-bold text-xs shadow-xs flex items-center gap-1 transition-all active:scale-95 cursor-pointer"
-                  title="Nova anotação ou tarefa"
+                  className="bg-ceci-primary hover:bg-ceci-primary-hover text-white px-3 py-1.5 rounded-2xl font-display font-bold text-xs shadow-xs flex items-center gap-1 tap-interactive active:scale-95 cursor-pointer"
+                  title="nova anotação ou tarefa"
                 >
                   <Plus className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">Anotação</span>
+                  <span className="hidden sm:inline">anotação</span>
                 </button>
               )}
 
               {/* Quick Search */}
               <button
                 onClick={onOpenSearch}
-                className="w-9 h-9 rounded-2xl bg-white border border-ceci-border-default hover:border-ceci-border-brand flex items-center justify-center text-ceci-primary shadow-2xs transition-all cursor-pointer active:scale-95"
-                title="Buscar no curso"
+                className="w-9 h-9 rounded-2xl bg-white border border-ceci-border-default hover:border-ceci-border-brand flex items-center justify-center text-ceci-primary shadow-2xs tap-interactive cursor-pointer active:scale-95"
+                title="buscar no cantinho"
                 aria-label="buscar no cantinho"
               >
                 <Search className="w-4 h-4 text-ceci-secondary" />
@@ -185,7 +185,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   }
                 }}
                 aria-label="ver meu espaço"
-                className={`rounded-full bg-surface-rose border-2 border-ceci-border-brand flex items-center justify-center text-ceci-primary font-display font-bold shadow-2xs cursor-pointer transition-all duration-300 ${
+                className={`rounded-full bg-surface-rose border-2 border-ceci-border-brand flex items-center justify-center text-ceci-primary font-display font-bold shadow-2xs cursor-pointer transition-colors duration-300 ${
                   scrolled ? 'w-7 h-7 text-xs' : 'w-10 h-10 text-lg hover:scale-105'
                 }`}
                 title="ver meu espaço"
@@ -195,7 +195,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               <div>
                 <div className="flex items-center gap-1.5">
                   <span
-                    className={`font-display text-ceci-primary tracking-tight font-bold transition-all duration-300 ${
+                    className={`font-display text-ceci-primary tracking-tight font-bold transition-colors duration-300 ${
                       scrolled ? 'text-base sm:text-lg' : 'text-xl sm:text-2xl'
                     }`}
                   >
@@ -203,7 +203,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   </span>
                   <span className="text-ceci-brand text-xs sm:text-sm animate-pulse">♡</span>
                   <span
-                    className={`bg-surface-blue text-ceci-academic-strong rounded-full font-medium border border-ceci-border-academic transition-all duration-300 ${
+                    className={`bg-surface-blue text-ceci-academic-strong rounded-full font-medium border border-ceci-border-academic transition-colors duration-300 ${
                       scrolled ? 'text-[9px] px-1.5 py-0.2' : 'text-[10px] px-2 py-0.5'
                     }`}
                   >
@@ -211,7 +211,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   </span>
                 </div>
                 {!scrolled && (
-                  <p className="text-xs text-ceci-secondary hidden sm:block transition-all duration-300 mt-0.5">
+                  <p className="text-xs text-ceci-secondary hidden sm:block transition-colors duration-300 mt-0.5">
                     {formattedDate} • {profile.university}
                   </p>
                 )}
@@ -221,7 +221,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             {/* Center Search Trigger */}
             <button
               onClick={onOpenSearch}
-              className={`flex-1 max-w-sm hidden md:flex items-center gap-2 bg-white/90 hover:bg-white text-ceci-secondary px-3.5 rounded-full border border-ceci-border-default shadow-2xs transition-all duration-300 cursor-pointer ${
+              className={`flex-1 max-w-sm hidden md:flex items-center gap-2 bg-white/90 hover:bg-white text-ceci-secondary px-3.5 rounded-full border border-ceci-border-default shadow-2xs transition-colors duration-300 cursor-pointer ${
                 scrolled ? 'py-1 text-[11px] min-h-[32px]' : 'py-2 text-xs min-h-[40px]'
               }`}
             >
@@ -237,7 +237,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               {/* Mobile Search Button */}
               <button
                 onClick={onOpenSearch}
-                className={`md:hidden rounded-full text-ceci-primary bg-white border border-ceci-border-default hover:bg-surface-rose transition-all flex items-center justify-center cursor-pointer ${
+                className={`md:hidden rounded-full text-ceci-primary bg-white border border-ceci-border-default hover:bg-surface-rose tap-interactive flex items-center justify-center cursor-pointer ${
                   scrolled ? 'w-8 h-8' : 'w-10 h-10'
                 }`}
                 title="buscar"
@@ -249,7 +249,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               {/* Mood Badge */}
               <button
                 onClick={onNavigateToPerfil}
-                className={`hidden sm:flex items-center gap-1.5 bg-surface-rose border border-ceci-border-brand hover:border-rose-300 text-ceci-brand-strong px-3 rounded-full font-medium shadow-2xs transition-all duration-300 cursor-pointer ${
+                className={`hidden sm:flex items-center gap-1.5 bg-surface-rose border border-ceci-border-brand hover:border-rose-300 text-ceci-brand-strong px-3 rounded-full font-medium shadow-2xs transition-colors duration-300 cursor-pointer ${
                   scrolled ? 'py-1 text-[11px] min-h-[32px]' : 'py-1.5 text-xs min-h-[40px]'
                 }`}
               >

@@ -196,7 +196,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
               ))}
             </div>
             <div className="mt-6 pt-4 border-t border-ceci-border-subtle text-center text-xs text-ceci-secondary">
-              pesquisa conectada em tempo real com conceitos, autores, leituras, aulas e disciplinas!
+              busca tudo que você anota: conceitos, autores, leituras, aulas e disciplinas ♡
             </div>
           </div>
         )}
@@ -217,7 +217,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                     onNavigate(item.tab, item.subTab, item.id);
                     onClose();
                   }}
-                  className="flex items-center justify-between p-3 rounded-2xl hover:bg-surface-rose/50 cursor-pointer transition-all group"
+                  className="flex items-center justify-between p-3 rounded-2xl hover:bg-surface-rose/50 cursor-pointer tap-interactive group"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-xl bg-surface-rose group-hover:bg-ceci-border-brand flex items-center justify-center text-ceci-primary transition-colors">
@@ -240,7 +240,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                       <p className="text-xs text-ceci-secondary line-clamp-1">{item.subtitle}</p>
                     </div>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-ceci-tertiary group-hover:text-ceci-primary group-hover:translate-x-0.5 transition-all" />
+                  <ChevronRight className="w-4 h-4 text-ceci-tertiary group-hover:text-ceci-primary group-hover:translate-x-0.5 tap-interactive" />
                 </div>
               ))
             )}

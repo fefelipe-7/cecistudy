@@ -19,7 +19,7 @@ export const ClassNoteListItem: React.FC<ClassNoteListItemProps> = ({
     className="py-3.5 space-y-1.5 cursor-pointer group hover:bg-surface-muted/50 px-1 rounded-lg transition-colors"
   >
     <div className="flex items-center justify-between text-xs">
-      <span className="font-bold text-ceci-brand-strong text-[11px]">Aula {note.number}</span>
+      <span className="font-bold text-ceci-brand-strong text-[11px]">aula {note.number}</span>
       <span className="text-[11px] text-ceci-tertiary font-medium">{note.date}</span>
     </div>
 

@@ -60,7 +60,8 @@ Tokens e variants compartilhados, fonte única para todas as transições:
 - `screenVariants(direction)` — variants direcionais (1 = push, -1 = pop, 0 = fade sutil para
   troca de aba). Entry da direita/esquerda + parallax na saída.
 - `sheetVariants` — por posição (`center` scale+fade, `top` slide-down, `bottom` slide-up).
-- `staggerContainer` / `staggerItem` — entrada escalonada de listas/cards.
+- `staggerContainer` / `staggerItem` — entrada escalonada de listas/cards (removidos na
+  passada premium — nunca usados).
 - `fadeSlide` — fade + slide para headers/toasts.
 
 ### `MotionConfig reducedMotion="user"`
@@ -155,3 +156,34 @@ com "reduzir movimento" desativa animações automaticamente.
 - [x] F4 micro-interações (toggle check pop + mood emoji bounce + AnimatedNumber nos stats)
 - [x] F4 flashcards swipeable
 - [x] Verificação final (tsc --noEmit limpo + build Vite OK)
+
+## 9. Passada "premium iOS" (perf & fluidez — implementada)
+
+> Foco em mobile: transições mais rápidas/limpas, sem blur pesado de GPU e com
+> micro-interações consistentes. Aprovada com o usuário (fade p/ abas + slide p/ push;
+> hover só com mouse; haptics sutis; polimento visual).
+
+**Mudanças**
+- **`lib/motion.ts`:** tokens `IOS_EASE` (`cubic-bezier(0.32, 0.72, 0, 1)`) e `IOS_EASE_OUT`.
+  `screenVariants` agora usa **ease** (sem spring): abas = fade+rise 0.22s; push/pop = slide
+  `x ±28` 0.26s; exit rápido. `iOS_SPRING` damping 32→36 (cauda menor). Removidos
+  `staggerContainer`/`staggerItem` (nunca usados).
+- **`HomeView`:** removido o `motion.div` raiz próprio (animação dupla com o wrapper do App);
+  cards grandes ganharam `.card-lift` + `.press-card`; `whileHover` removidos.
+- **Blur removido** (custo de composição no mobile): header sticky, overlay `Modal`, botões
+  FAB e lombada de livro — mantidos fundos translúcidos/sólidos.
+- **`index.css`:** utilities novas `.tap-interactive` (transição de propriedades específicas),
+  `.press-card` (scale 0.97), `.press-btn` (scale 0.96) e `.hover-lift`/`.card-lift` gated por
+  `@media (hover:hover) and (pointer: fine)` (sem sticky-hover no toque). `.journal-card`
+  migrado de `transition: all` para transform/box-shadow/border-color.
+- **`transition-all` → específico:** ~50 elementos interativos migraram para
+  `.tap-interactive`/`transition-colors`; barras de progresso (largura) mantêm `transition-all`.
+- **Haptics sutis** (`hapticTap`): troca de aba, push/pop, abrir/fechar modais, busca,
+  editar matéria (no-op no web).
+- **FAB menu:** animação sem `filter: blur()`, timings iOS (0.22s, delay 0.05, stagger 0.03).
+- **BottomNav:** entrada em fade 0.18s (antes spring scale 0.9); pill `layoutId` mantida.
+- **Visual:** cards grandes (disciplinas, home, capas) com `card-lift` (sombra+lift só no mouse);
+  hairlines/bordas consistentes; header colapsável com `transition-[padding,box-shadow,…]`.
+
+**Verificação:** `npm run lint` ✅ · `npm run test` (35) ✅ · `npm run build` ✅ ·
+fluxos no headless (home→mood→voltar, FAB menu, tab, curso push/pop) sem erros de console.

@@ -202,8 +202,8 @@ export const BibliotecaView: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={openTemple}
-            className="w-10 h-10 rounded-2xl bg-white border border-ceci-border-default hover:border-ceci-border-brand flex items-center justify-center text-ceci-primary shadow-2xs transition-all active:scale-95 cursor-pointer"
-            title="Templo de conhecimento"
+            className="w-10 h-10 rounded-2xl bg-white border border-ceci-border-default hover:border-ceci-border-brand flex items-center justify-center text-ceci-primary shadow-2xs tap-interactive active:scale-95 cursor-pointer"
+            title="templo de conhecimento"
           >
             <Landmark className="w-5 h-5" />
           </button>
@@ -213,7 +213,7 @@ export const BibliotecaView: React.FC = () => {
       {/* Simple Navigation Card "suas notas" */}
       <button
         onClick={openNotesScreen}
-        className="w-full text-left bg-white rounded-[22px] p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs transition-all hover:shadow-xs active:scale-[0.99] cursor-pointer group flex items-center justify-between"
+        className="w-full text-left bg-white rounded-[22px] p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs tap-interactive hover:shadow-xs active:scale-[0.99] cursor-pointer group flex items-center justify-between"
       >
         <div className="flex items-center gap-3 min-w-0 pr-2">
           <div className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong group-hover:bg-ceci-brand-strong group-hover:text-white transition-colors shrink-0">
@@ -260,12 +260,12 @@ export const BibliotecaView: React.FC = () => {
 
           <button
             onClick={() => setIsFilterModalOpen(true)}
-            className={`px-3.5 py-3 rounded-2xl border flex items-center gap-2 transition-all cursor-pointer shadow-2xs text-xs font-bold ${
+            className={`px-3.5 py-3 rounded-2xl border flex items-center gap-2 tap-interactive cursor-pointer shadow-2xs text-xs font-bold ${
               hasActiveFilters
                 ? 'bg-ceci-primary text-white border-ceci-primary'
                 : 'bg-white text-ceci-secondary border-ceci-border-default hover:bg-surface-muted'
             }`}
-            title="Abrir filtros"
+            title="abrir filtros"
           >
             <SlidersHorizontal className="w-4 h-4" />
             <span>filtros</span>
@@ -278,7 +278,7 @@ export const BibliotecaView: React.FC = () => {
         {/* Active Filter Badges */}
         {hasActiveFilters && (
           <div className="flex flex-wrap items-center gap-1.5 pt-1 animate-in fade-in duration-200">
-            <span className="text-[11px] font-bold text-ceci-tertiary mr-1">filtros ativos:</span>
+            <span className="text-[11px] font-bold text-ceci-tertiary mr-1">filtros aplicados:</span>
 
             {activeCategory !== 'todos' && (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand rounded-full text-[11px] font-semibold">
@@ -321,7 +321,7 @@ export const BibliotecaView: React.FC = () => {
               className="text-[11px] font-bold text-ceci-brand-strong hover:underline ml-1 cursor-pointer flex items-center gap-0.5"
             >
               <RotateCcw className="w-3 h-3" />
-              limpar tudo
+              esquecer filtros
             </button>
           </div>
         )}
@@ -359,14 +359,14 @@ export const BibliotecaView: React.FC = () => {
                   className="w-[145px] sm:w-[160px] cursor-pointer group shrink-0 space-y-2"
                 >
                   <div
-                    className="w-full h-[145px] sm:h-[155px] rounded-2xl p-3 flex flex-col justify-between relative overflow-hidden shadow-xs border border-black/5 group-hover:shadow-md group-hover:-translate-y-1 transition-all"
+                    className="w-full h-[145px] sm:h-[155px] rounded-2xl p-3 flex flex-col justify-between relative overflow-hidden shadow-xs border border-black/5 card-lift"
                     style={{ backgroundColor: book.coverColor }}
                   >
                     <div className="absolute left-0 top-0 bottom-0 w-2.5 bg-black/10 border-r border-black/10" />
 
                     <div className="pl-1.5 flex items-center justify-between">
                       <span className="text-[8px] font-extrabold uppercase bg-white/90 text-ceci-primary px-1.5 py-0.5 rounded shadow-2xs line-clamp-1">
-                        {book.badge || 'Livro'}
+                        {book.badge || 'livro'}
                       </span>
                       {isSaved && (
                         <Bookmark className="w-3.5 h-3.5 fill-ceci-primary text-ceci-primary" />
@@ -559,7 +559,7 @@ export const BibliotecaView: React.FC = () => {
             nenhuma coleção ou obra encontrada
           </h3>
           <p className="text-xs text-ceci-secondary max-w-xs mx-auto">
-            nenhum resultado para a combinação de filtros selecionada.
+            nenhum resultado com esses filtros. que tal afrouxar um pouco?
           </p>
           <button
             onClick={resetAllFilters}
@@ -574,7 +574,7 @@ export const BibliotecaView: React.FC = () => {
       <button
         onClick={openQuickAdd}
         className="fixed bottom-20 right-5 sm:right-8 z-30 w-12 h-12 rounded-full bg-ceci-primary hover:bg-ceci-primary-hover text-white shadow-lg flex items-center justify-center transition-transform active:scale-90 cursor-pointer border border-white/20"
-        title="Novo registro na biblioteca"
+        title="novo registro na biblioteca"
       >
         <Plus className="w-6 h-6 stroke-[2.5]" />
       </button>

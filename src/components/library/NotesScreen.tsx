@@ -94,7 +94,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
 
         <button
           onClick={() => setIsCreatingNote(!isCreatingNote)}
-          className="bg-ceci-brand-strong hover:bg-ceci-brand-hover text-white px-3.5 py-2.5 rounded-2xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-2xs transition-all active:scale-95 cursor-pointer shrink-0"
+          className="bg-ceci-brand-strong hover:bg-ceci-brand-hover text-white px-3.5 py-2.5 rounded-2xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-2xs tap-interactive active:scale-95 cursor-pointer shrink-0"
         >
           <Plus className="w-4 h-4" />
           <span>{isCreatingNote ? 'fechar' : 'nova nota'}</span>
@@ -113,7 +113,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
           <button
             key={cat.id}
             onClick={() => setNoteCategoryFilter(cat.id)}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap tap-interactive cursor-pointer ${
               noteCategoryFilter === cat.id
                 ? 'bg-ceci-brand-strong text-white shadow-2xs'
                 : 'bg-white text-ceci-secondary border border-ceci-border-default hover:border-ceci-border-brand'
@@ -144,7 +144,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
               type="text"
               value={newNoteTitle}
               onChange={(e) => setNewNoteTitle(e.target.value)}
-              placeholder="título da nota (ex: Reflexão sobre acolhimento)"
+              placeholder="título da nota (ex: reflexão sobre acolhimento)"
               className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs font-semibold text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500"
             />
 
@@ -156,7 +156,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
                     key={cat}
                     type="button"
                     onClick={() => setNewNoteCategory(cat)}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold capitalize cursor-pointer transition-all ${
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold capitalize cursor-pointer tap-interactive ${
                       newNoteCategory === cat
                         ? 'bg-ceci-brand-strong text-white'
                         : 'bg-white text-ceci-secondary border border-ceci-border-default'
@@ -206,7 +206,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
               }}
               className="px-4 py-1.5 text-xs font-bold bg-ceci-brand-strong text-white rounded-xl hover:bg-ceci-brand-hover cursor-pointer shadow-2xs"
             >
-              salvar nota
+              guardar nota
             </button>
           </div>
         </div>
@@ -217,7 +217,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
         {filteredNotes.map((note) => (
           <div
             key={note.id}
-            className="bg-white rounded-[20px] p-4 border border-ceci-border-default hover:border-ceci-border-brand transition-all space-y-2.5 shadow-2xs flex flex-col justify-between group"
+            className="bg-white rounded-[20px] p-4 border border-ceci-border-default hover:border-ceci-border-brand tap-interactive space-y-2.5 shadow-2xs flex flex-col justify-between group"
           >
             <div className="space-y-2">
               <div className="flex items-center justify-between gap-2 border-b border-ceci-border-subtle pb-2">
@@ -251,7 +251,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
                   });
                 }}
                 className="text-[11px] text-ceci-secondary hover:text-ceci-brand-strong flex items-center gap-1 px-2.5 py-1 rounded-lg hover:bg-surface-rose transition-colors cursor-pointer"
-                title="Copiar texto da nota"
+                title="copiar texto da nota"
               >
                 {copiedNoteId === note.id ? (
                   <>
@@ -269,7 +269,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
               <button
                 onClick={() => onDeleteNote(note.id)}
                 className="text-[11px] text-ceci-tertiary hover:text-ceci-brand-strong flex items-center gap-1 px-2.5 py-1 rounded-lg hover:bg-surface-rose transition-colors cursor-pointer"
-                title="Excluir nota"
+                title="excluir nota"
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 <span>excluir</span>
@@ -285,7 +285,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
             <p className="text-xs text-ceci-secondary">
               {noteSearchTerm || noteCategoryFilter !== 'todas'
                 ? 'tente ajustar seus filtros de busca.'
-                : 'clique em "+ nova nota" acima para registrar sua primeira nota avulsa.'}
+                : 'clique em "+ nova nota" acima para guardar sua primeira nota avulsa.'}
             </p>
           </div>
         )}

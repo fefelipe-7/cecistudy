@@ -54,7 +54,7 @@ export const PerfilView: React.FC = () => {
       dailyQuote,
       avatarMood
     });
-    showToast('cantinho de estudos atualizado com sucesso! ♡');
+    showToast('guardei suas configurações com carinho ♡');
   };
 
   const handleToggleTccChapter = (index: number) => {
@@ -147,7 +147,7 @@ export const PerfilView: React.FC = () => {
                 return (
                   <div
                     key={sem}
-                    className={`p-4 rounded-2xl border text-center transition-all ${
+                    className={`p-4 rounded-2xl border text-center tap-interactive ${
                       isCurrent
                         ? 'bg-surface-rose border-2 border-ceci-border-brand text-ceci-brand-strong shadow-2xs font-bold scale-102'
                         : isPast
@@ -198,7 +198,7 @@ export const PerfilView: React.FC = () => {
             {stickers.map((st) => (
               <div
                 key={st.id}
-                className={`p-4 rounded-2xl border text-center transition-all ${
+                className={`p-4 rounded-2xl border text-center tap-interactive ${
                   st.unlocked
                     ? 'bg-white border-ceci-border-brand shadow-2xs hover:scale-105'
                     : 'bg-surface-muted border-dashed border-ceci-border-default opacity-50 grayscale'
@@ -243,14 +243,14 @@ export const PerfilView: React.FC = () => {
             <div className="flex items-center gap-3">
               <div className="bg-surface-blue px-3.5 py-1.5 rounded-2xl border border-ceci-border-academic text-xs text-right">
                 <p className="text-[10px] lowercase font-bold text-ceci-secondary">total de horas</p>
-                <p className="font-bold text-ceci-academic-strong text-sm">{totalInternshipHours} horas registradas</p>
+                <p className="font-bold text-ceci-academic-strong text-sm">{totalInternshipHours} horas anotadas</p>
               </div>
 
               <button
                 onClick={openQuickAdd}
                 className="bg-rose-500 hover:bg-ceci-brand text-white px-3.5 py-2 rounded-xl text-xs font-medium cursor-pointer shadow-2xs"
               >
-                + novo registro
+                + nova anotação
               </button>
             </div>
           </div>
@@ -329,7 +329,7 @@ export const PerfilView: React.FC = () => {
                 <div
                   key={idx}
                   onClick={() => handleToggleTccChapter(idx)}
-                  className={`flex items-center justify-between p-3 rounded-2xl border cursor-pointer transition-all ${
+                  className={`flex items-center justify-between p-3 rounded-2xl border cursor-pointer tap-interactive ${
                     ch.completed
                       ? 'bg-surface-blue/60 border-ceci-border-academic text-ceci-academic-strong'
                       : 'bg-white border-ceci-border-default hover:border-ceci-border-brand'
@@ -392,7 +392,7 @@ export const PerfilView: React.FC = () => {
                 onClick={() => updateReminder({ ...reminderSettings, enabled: !reminderSettings.enabled })}
                 disabled={!isReminderSupported()}
                 aria-pressed={reminderSettings.enabled}
-                className={`relative w-12 h-7 rounded-full transition-all cursor-pointer shrink-0 touch-target ${
+                className={`relative w-12 h-7 rounded-full tap-interactive cursor-pointer shrink-0 touch-target ${
                   reminderSettings.enabled ? 'bg-rose-500' : 'bg-ceci-border-strong'
                 } ${!isReminderSupported() ? 'opacity-50 cursor-not-allowed' : ''}`}
                 title={reminderSettings.enabled ? 'desativar lembrete' : 'ativar lembrete'}
@@ -454,7 +454,7 @@ export const PerfilView: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-ceci-secondary mb-1">status / mood do dia</label>
+              <label className="block text-xs font-medium text-ceci-secondary mb-1">seu estado de espírito do dia</label>
               <input
                 type="text"
                 value={avatarMood}
@@ -477,7 +477,7 @@ export const PerfilView: React.FC = () => {
               type="submit"
               className="bg-rose-500 hover:bg-ceci-brand text-white px-5 py-2.5 rounded-xl text-xs font-medium shadow-2xs cursor-pointer"
             >
-              salvar configurações do cantinho
+              guardar configurações do cantinho
             </button>
           </form>
         </div>

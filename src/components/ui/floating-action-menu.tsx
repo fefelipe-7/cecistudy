@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { IOS_EASE } from "@/lib/motion";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -31,7 +32,7 @@ const FloatingActionMenu = ({
         onClick={toggleMenu}
         aria-label={isOpen ? 'fechar menu de atalhos' : 'abrir menu de atalhos'}
         aria-expanded={isOpen}
-        className="w-10 h-10 rounded-full bg-ceci-brand-strong hover:bg-ceci-brand-hover active:scale-95 shadow-brand transition-all cursor-pointer border border-ceci-border-brand/30"
+        className="w-10 h-10 rounded-full bg-ceci-brand-strong hover:bg-ceci-brand-hover active:scale-95 shadow-brand tap-interactive cursor-pointer border border-ceci-border-brand/30"
       >
         <motion.div
           animate={{ rotate: isOpen ? 45 : 0 }}
@@ -50,16 +51,10 @@ const FloatingActionMenu = ({
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, x: 10, y: 10, filter: "blur(10px)" }}
-            animate={{ opacity: 1, x: 0, y: 0, filter: "blur(0px)" }}
-            exit={{ opacity: 0, x: 10, y: 10, filter: "blur(10px)" }}
-            transition={{
-              duration: 0.6,
-              type: "spring",
-              stiffness: 300,
-              damping: 20,
-              delay: 0.1,
-            }}
+            initial={{ opacity: 0, x: 10, y: 10 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            exit={{ opacity: 0, x: 10, y: 10 }}
+            transition={{ duration: 0.22, ease: IOS_EASE, delay: 0.05 }}
             className="absolute bottom-12 right-0 mb-2"
           >
             <div className="flex flex-col items-end gap-2">
@@ -70,8 +65,9 @@ const FloatingActionMenu = ({
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
                   transition={{
-                    duration: 0.3,
-                    delay: index * 0.05,
+                    duration: 0.2,
+                    ease: IOS_EASE,
+                    delay: index * 0.03,
                   }}
                 >
                   <Button
@@ -80,7 +76,7 @@ const FloatingActionMenu = ({
                       setIsOpen(false);
                     }}
                     size="sm"
-                    className="flex items-center gap-2 bg-ceci-brand-strong hover:bg-ceci-brand-hover text-white shadow-brand-soft border border-ceci-border-brand/30 rounded-xl backdrop-blur-md cursor-pointer whitespace-nowrap font-medium text-xs"
+                    className="flex items-center gap-2 bg-ceci-brand-strong hover:bg-ceci-brand-hover text-white shadow-brand-soft border border-ceci-border-brand/30 rounded-xl cursor-pointer whitespace-nowrap font-medium text-xs"
                   >
                     {option.Icon}
                     <span>{option.label}</span>

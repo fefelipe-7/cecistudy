@@ -61,11 +61,11 @@ export function BottomNavBar({
 
   return (
     <motion.nav
-      initial={{ scale: 0.9, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ type: "spring", stiffness: 300, damping: 26 }}
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
       role="navigation"
-      aria-label="Bottom Navigation"
+      aria-label="bottom navigation"
       className={cn(
         "bg-white/95 dark:bg-card border border-ceci-border-default dark:border-sidebar-border rounded-full flex items-center p-1.5 shadow-floating space-x-1 min-w-[300px] max-w-[95vw] h-[52px]",
         stickyBottom && "fixed inset-x-0 bottom-4 mx-auto z-50 w-fit",

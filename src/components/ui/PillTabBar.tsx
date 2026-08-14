@@ -29,7 +29,7 @@ export const PillTabBar = <T extends string,>({
           onClick={() => onChange(tab.id)}
           aria-pressed={isActive}
           className={cn(
-            'flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer',
+            'flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap tap-interactive cursor-pointer',
             isActive
               ? 'bg-ceci-primary text-white shadow-xs'
               : 'bg-white text-ceci-secondary border border-ceci-border-default hover:bg-surface-muted'

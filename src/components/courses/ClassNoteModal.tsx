@@ -18,7 +18,7 @@ export const ClassNoteModal: React.FC<ClassNoteModalProps> = ({ note, onClose })
     >
       <div className="flex items-center justify-between border-b border-ceci-border-default pb-3">
         <span className="text-xs font-bold text-ceci-brand-strong bg-surface-rose px-2.5 py-0.5 rounded-full border border-ceci-border-brand">
-          Aula {note.number} • {note.date}
+          aula {note.number} • {note.date}
         </span>
         <button
           onClick={onClose}
@@ -35,7 +35,7 @@ export const ClassNoteModal: React.FC<ClassNoteModalProps> = ({ note, onClose })
       </div>
 
       <div className="space-y-1">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-ceci-tertiary">Resumo da Aula</span>
+        <span className="text-[10px] font-bold uppercase tracking-wider text-ceci-tertiary">resumo da aula</span>
         <p className="text-xs text-ceci-secondary leading-relaxed bg-surface-muted p-3 rounded-2xl border border-ceci-border-subtle">
           {note.summary}
         </p>
@@ -43,7 +43,7 @@ export const ClassNoteModal: React.FC<ClassNoteModalProps> = ({ note, onClose })
 
       {note.fullNotes && (
         <div className="space-y-1 pt-1">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-ceci-tertiary">Anotações Detalhadas</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-ceci-tertiary">anotações detalhadas</span>
           <div className="text-xs text-ceci-primary leading-relaxed whitespace-pre-line bg-surface-rose p-3 rounded-2xl border border-ceci-border-brand/60">
             {note.fullNotes}
           </div>

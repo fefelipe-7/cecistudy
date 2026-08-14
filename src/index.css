@@ -188,12 +188,59 @@
   border-radius: 20px;
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--color-ceci-border-subtle);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.2s ease;
 }
 
 .journal-card:hover {
   box-shadow: var(--shadow-md);
   border-color: var(--color-ceci-border-default);
+}
+
+/* Transição de propriedades específicas p/ elementos interativos (iOS-like, sem jank) */
+.tap-interactive {
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+/* Press states iOS-like: feedback de toque consistente */
+.press-card {
+  transition: transform 0.15s ease;
+}
+.press-card:active {
+  transform: scale(0.97);
+}
+
+.press-btn {
+  transition: transform 0.15s ease;
+}
+.press-btn:active {
+  transform: scale(0.96);
+}
+
+/* Lift de cards/capas apenas com mouse — evita sticky-hover e animação no toque */
+@media (hover: hover) and (pointer: fine) {
+  .hover-lift,
+  .card-lift {
+    transition:
+      transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.2s ease,
+      background-color 0.2s ease;
+  }
+  .hover-lift:hover {
+    transform: translateY(-2px) scale(1.01);
+  }
+  .card-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
 }
 
 /* Paper Texture Background */

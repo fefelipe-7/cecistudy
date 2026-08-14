@@ -27,27 +27,27 @@ export const BottomNav: React.FC<BottomNavProps> = ({
 
   const menuOptions = [
     {
-      label: 'Nova aula / nota',
+      label: 'anotar aula / nota',
       Icon: <FileText className="w-4 h-4 text-ceci-border-brand" />,
       onClick: () => onOpenQuickAddWithType?.('class'),
     },
     {
-      label: 'Novo livro / leitura',
+      label: 'anotar leitura',
       Icon: <BookOpen className="w-4 h-4 text-ceci-border-brand" />,
       onClick: () => onOpenQuickAddWithType?.('reading'),
     },
     {
-      label: 'Nova prova / atividade',
+      label: 'anotar prova / atividade',
       Icon: <Check className="w-4 h-4 text-ceci-border-brand" />,
       onClick: () => onOpenQuickAddWithType?.('task'),
     },
     {
-      label: 'Novo flashcard',
+      label: 'anotar flashcard',
       Icon: <Brain className="w-4 h-4 text-ceci-border-brand" />,
       onClick: () => onOpenQuickAddWithType?.('flashcard'),
     },
     {
-      label: 'Novo conceito',
+      label: 'anotar conceito',
       Icon: <Sparkles className="w-4 h-4 text-ceci-border-brand" />,
       onClick: () => onOpenQuickAddWithType?.('concept'),
     },

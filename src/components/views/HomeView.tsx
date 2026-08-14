@@ -106,12 +106,7 @@ export const HomeView: React.FC = () => {
   ];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-      className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-1"
-    >
+    <div className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-1">
       
       {/* Top Header Label & Greeting + Mood Button */}
       <div className="flex items-center justify-between pt-1 px-0.5">
@@ -129,11 +124,10 @@ export const HomeView: React.FC = () => {
 
         {/* Daily Mood Face Button */}
         <motion.button
-          whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.96 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
           onClick={openMoodView}
-          title="clique para definir/alterar seu estado de espírito do dia"
+          title="conta como você está se sentindo hoje?"
           className="group relative flex items-center gap-2 bg-white px-3 py-2 rounded-2xl border border-ceci-border-subtle shadow-sm cursor-pointer"
         >
           <div className="w-8 h-8 rounded-xl bg-surface-rose flex items-center justify-center text-lg border border-ceci-border-brand group-hover:scale-105 transition-transform">
@@ -166,14 +160,14 @@ export const HomeView: React.FC = () => {
             onClick={() => handleNavigate('estudos', 'sessoes')}
             className="text-xs font-bold text-ceci-brand-strong hover:underline cursor-pointer flex items-center gap-1"
           >
-            <span>estudar agora</span>
+            <span>bora estudar?</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
         {/* Detailed Descriptive Text */}
         <p className="text-sm sm:text-base text-ceci-primary font-medium leading-relaxed font-display">
-          para concluir seu dia de hoje com sucesso, você ainda tem{' '}
+          para dar conta do dia com carinho, ainda temos{' '}
           <span className="font-bold text-ceci-brand-strong underline decoration-ceci-border-brand underline-offset-2">
             {pendingTasks.length} {pendingTasks.length === 1 ? 'tarefa pendente' : 'tarefas pendentes'}
           </span>
@@ -182,14 +176,14 @@ export const HomeView: React.FC = () => {
               {' '}({pendingTasks.slice(0, 2).map((t) => t.title).join(', ')})
             </span>
           )}
-          {' '}e <span className="font-bold text-ceci-academic-strong">revisão ativa de conteúdos</span>. mantenha seu ritmo com leveza e foco!
+          {' '}e <span className="font-bold text-ceci-academic-strong">revisão ativa de conteúdos</span>. vamos manter o ritmo com leveza e foco! ♡
         </p>
 
         {/* 2 Simple Metric Blocks in a Single Row */}
         <div className="grid grid-cols-2 gap-3 pt-1">
           <button
             onClick={() => handleNavigate('faculdade', 'aulas')}
-            className="bg-white rounded-2xl p-3 border border-ceci-border-default hover:border-ceci-border-brand transition-all text-center flex flex-col items-center justify-center space-y-0.5 shadow-2xs cursor-pointer group"
+            className="bg-white rounded-2xl p-3 border border-ceci-border-default hover:border-ceci-border-brand tap-interactive text-center flex flex-col items-center justify-center space-y-0.5 shadow-2xs cursor-pointer group"
           >
             <span className="font-display font-bold text-2xl sm:text-3xl text-ceci-brand-strong group-hover:scale-105 transition-transform">
               <AnimatedNumber value={pendingTasks.length} />
@@ -201,7 +195,7 @@ export const HomeView: React.FC = () => {
 
           <button
             onClick={() => handleNavigate('faculdade', 'avaliacoes')}
-            className="bg-white rounded-2xl p-3 border border-ceci-border-default hover:border-ceci-border-academic transition-all text-center flex flex-col items-center justify-center space-y-0.5 shadow-2xs cursor-pointer group"
+            className="bg-white rounded-2xl p-3 border border-ceci-border-default hover:border-ceci-border-academic tap-interactive text-center flex flex-col items-center justify-center space-y-0.5 shadow-2xs cursor-pointer group"
           >
             <span className="font-display font-bold text-2xl sm:text-3xl text-ceci-academic-strong group-hover:scale-105 transition-transform">
               <AnimatedNumber value={pendingExamsIn14Days.length} />
@@ -217,10 +211,8 @@ export const HomeView: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
         
         {/* Card 1: Quantidade de Aulas Hoje */}
-        <motion.div
-          whileHover={{ y: -2 }}
-          transition={{ type: "spring", stiffness: 350, damping: 25 }}
-          className="bg-white rounded-[24px] p-4 sm:p-5 border border-ceci-border-subtle shadow-sm space-y-3.5 flex flex-col justify-between"
+        <div
+          className="card-lift press-card bg-white rounded-[24px] p-4 sm:p-5 border border-ceci-border-subtle shadow-sm space-y-3.5 flex flex-col justify-between"
         >
           <div>
             <div className="flex items-center justify-between pb-2 border-b border-ceci-border-subtle">
@@ -228,12 +220,12 @@ export const HomeView: React.FC = () => {
                 aulas hoje
               </span>
               <span className="text-xs font-bold text-ceci-brand-strong bg-surface-rose px-2.5 py-0.5 rounded-full border border-ceci-border-brand">
-                02 aulas
+                2 aulas
               </span>
             </div>
 
             <p className="text-xs text-ceci-secondary mt-2">
-              seu cronograma acadêmico de hoje:
+              hoje tem aula para você:
             </p>
 
             {/* List of Today's Classes */}
@@ -268,13 +260,11 @@ export const HomeView: React.FC = () => {
             <span>ver diário completo</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </motion.button>
-        </motion.div>
+        </div>
 
         {/* Card 2: Quantidade de Assuntos que Tem que Estudar */}
-        <motion.div
-          whileHover={{ y: -2 }}
-          transition={{ type: "spring", stiffness: 350, damping: 25 }}
-          className="bg-white rounded-[24px] p-4 sm:p-5 border border-ceci-border-subtle shadow-sm space-y-3.5 flex flex-col justify-between"
+        <div
+          className="card-lift press-card bg-white rounded-[24px] p-4 sm:p-5 border border-ceci-border-subtle shadow-sm space-y-3.5 flex flex-col justify-between"
         >
           <div>
             <div className="flex items-center justify-between pb-2 border-b border-ceci-border-subtle">
@@ -282,12 +272,12 @@ export const HomeView: React.FC = () => {
                 assuntos a estudar
               </span>
               <span className="text-xs font-bold text-ceci-academic-strong bg-surface-blue px-2.5 py-0.5 rounded-full border border-ceci-border-academic">
-                03 tópicos
+                3 tópicos
               </span>
             </div>
 
             <p className="text-xs text-ceci-secondary mt-2">
-              conteúdos priorizados do dia:
+              conteúdos para priorizar hoje:
             </p>
 
             {/* List of Study Topics */}
@@ -329,18 +319,16 @@ export const HomeView: React.FC = () => {
             onClick={() => handleNavigate('estudos', 'sessoes')}
             className="w-full mt-2 bg-rose-500 hover:bg-ceci-brand text-white py-2.5 rounded-full text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
           >
-            <span>iniciar sessão</span>
+            <span>bora focar?</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </motion.button>
-        </motion.div>
+        </div>
 
       </div>
 
       {/* Card: Seu Progresso (Dias da Semana) */}
-      <motion.div
-        whileHover={{ y: -2 }}
-        transition={{ type: "spring", stiffness: 350, damping: 25 }}
-        className="bg-white rounded-[24px] p-5 border border-ceci-border-subtle shadow-sm space-y-3.5"
+      <div
+        className="card-lift press-card bg-white rounded-[24px] p-5 border border-ceci-border-subtle shadow-sm space-y-3.5"
       >
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-ceci-primary font-display">
@@ -356,7 +344,6 @@ export const HomeView: React.FC = () => {
           {weekDaysProgress.map((item) => (
             <motion.div
               key={item.day}
-              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
               className={`p-2 rounded-[18px] border text-center flex flex-col items-center justify-between cursor-pointer ${
@@ -393,7 +380,7 @@ export const HomeView: React.FC = () => {
             </motion.div>
           ))}
         </div>
-      </motion.div>
+      </div>
 
       {/* Section Header: Recent Tasks & Action Plan */}
       <div className="space-y-3 pt-1">
@@ -419,7 +406,7 @@ export const HomeView: React.FC = () => {
                 transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => handleToggleTask(task.id)}
-                className={`p-3.5 rounded-[20px] bg-white border border-ceci-border-subtle shadow-sm hover:border-ceci-border-default transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                className={`p-3.5 rounded-[20px] bg-white border border-ceci-border-subtle shadow-sm hover:border-ceci-border-default tap-interactive cursor-pointer flex items-center justify-between gap-3 ${
                   task.completed ? 'opacity-60 bg-surface-muted' : ''
                 }`}
               >
@@ -462,16 +449,16 @@ export const HomeView: React.FC = () => {
               type="text"
               value={newTaskTitle}
               onChange={(e) => setNewTaskTitle(e.target.value)}
-              placeholder="adicionar nova tarefa obrigatória..."
+              placeholder="adicionar uma tarefa para hoje..."
               className="flex-1 text-xs px-4 py-2.5 rounded-full border border-ceci-border-default bg-white focus:outline-none focus:border-rose-500 text-ceci-primary placeholder-ceci-faded shadow-2xs"
             />
             <motion.button
               whileTap={{ scale: 0.95 }}
               type="submit"
-              className="bg-rose-500 hover:bg-ceci-brand text-white px-4 py-2.5 rounded-full text-xs font-semibold transition-all flex items-center gap-1 shrink-0 cursor-pointer"
+              className="bg-rose-500 hover:bg-ceci-brand text-white px-4 py-2.5 rounded-full text-xs font-semibold tap-interactive flex items-center gap-1 shrink-0 cursor-pointer"
             >
               <Plus className="w-4 h-4" />
-              <span>criar</span>
+              <span>adicionar</span>
             </motion.button>
           </form>
         </div>
@@ -479,7 +466,7 @@ export const HomeView: React.FC = () => {
         {/* Sugestões do Sistema (Opcionais) */}
         <div className="pt-3 space-y-2">
           <p className="text-xs font-medium text-ceci-secondary px-1">
-            sugestões recomendadas
+            sugestões para o seu dia
           </p>
 
           <AnimatePresence mode="popLayout">
@@ -493,7 +480,7 @@ export const HomeView: React.FC = () => {
                 transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => toggleSuggestion(sug.id)}
-                className={`p-3 rounded-[20px] bg-white border border-ceci-border-subtle shadow-sm hover:border-ceci-border-default transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                className={`p-3 rounded-[20px] bg-white border border-ceci-border-subtle shadow-sm hover:border-ceci-border-default tap-interactive cursor-pointer flex items-center justify-between gap-3 ${
                   sug.completed ? 'opacity-60 bg-surface-muted' : ''
                 }`}
               >
@@ -510,7 +497,7 @@ export const HomeView: React.FC = () => {
                       {sug.title}
                     </p>
                     <p className="text-[10px] text-ceci-secondary mt-0.5">
-                      estimativa: {sug.time}
+                      tempo estimado: {sug.time}
                     </p>
                   </div>
                 </div>
@@ -529,14 +516,14 @@ export const HomeView: React.FC = () => {
               <span>dica da ceci ✨</span>
             </div>
             <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
-              suas obrigações vêm em primeiro lugar! as sugestões foram pensadas para acelerar suas revisões caso tenha tempo extra no final da tarde.
+              suas obrigações vêm primeiro, sempre! mas se sobrar um tempinho no fim da tarde, essas sugestões ajudam a adiantar as revisões ♡
             </p>
           </div>
         </div>
 
       </div>
 
-    </motion.div>
+    </div>
   );
 };
 

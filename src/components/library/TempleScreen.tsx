@@ -103,7 +103,7 @@ export const TempleScreen: React.FC = () => {
           <button
             key={card.id}
             onClick={() => showToast(card.toast)}
-            className="w-full text-left bg-white rounded-[22px] p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs transition-all hover:shadow-xs active:scale-[0.99] cursor-pointer group flex items-center justify-between"
+            className="w-full text-left bg-white rounded-[22px] p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs tap-interactive hover:shadow-xs active:scale-[0.99] cursor-pointer group flex items-center justify-between"
           >
             <div className="flex items-center gap-3 min-w-0 pr-2">
               <div

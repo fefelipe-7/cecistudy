@@ -60,7 +60,7 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
           <button
             onClick={onClose}
             className="p-2 rounded-full hover:bg-black/5 transition-colors cursor-pointer"
-            title="Voltar"
+            title="voltar"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
@@ -78,13 +78,13 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
             <button
               onClick={() => setFontSize((s) => (s >= 22 ? 14 : s + 2))}
               className="p-2 rounded-full hover:bg-black/5 transition-colors text-xs font-bold cursor-pointer"
-              title="Ajustar Tamanho do Texto"
+              title="ajustar tamanho do texto"
             >
               <Type className="w-4 h-4" />
             </button>
             <button
               className="p-2 rounded-full hover:bg-black/5 transition-colors cursor-pointer"
-              title="Salvar Marcador"
+              title="guardar marcador"
             >
               <Bookmark className="w-4 h-4 text-rose-500" />
             </button>
@@ -160,7 +160,7 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
             <div className="flex items-center gap-1 bg-black/5 p-1 rounded-full">
               <button
                 onClick={() => setTheme('paper')}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-full text-xs font-medium tap-interactive cursor-pointer ${
                   theme === 'paper' ? 'bg-white text-ceci-primary shadow-2xs' : 'opacity-70'
                 }`}
               >
@@ -168,7 +168,7 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
               </button>
               <button
                 onClick={() => setTheme('sepia')}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-full text-xs font-medium tap-interactive cursor-pointer ${
                   theme === 'sepia' ? 'bg-surface-paper text-beige-700 shadow-2xs' : 'opacity-70'
                 }`}
               >
@@ -176,7 +176,7 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
               </button>
               <button
                 onClick={() => setTheme('dark')}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-full text-xs font-medium tap-interactive cursor-pointer ${
                   theme === 'dark' ? 'bg-ceci-primary text-white shadow-2xs' : 'opacity-70'
                 }`}
               >

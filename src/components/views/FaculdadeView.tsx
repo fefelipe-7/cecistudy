@@ -126,7 +126,7 @@ export const FaculdadeView: React.FC = () => {
                 <div
                   key={course.id}
                   onClick={() => openCourseDetail(course.id)}
-                  className="rounded-[24px] p-5 bg-white border border-ceci-border-default cursor-pointer hover:border-ceci-border-brand transition-all space-y-3 shadow-sm hover:shadow-md group"
+                  className="rounded-[24px] p-5 bg-white border border-ceci-border-default cursor-pointer hover:border-ceci-border-brand card-lift press-card space-y-3 shadow-sm group"
                   style={{ borderLeftWidth: '4px', borderLeftColor: course.color || '#B94862' }}
                 >
                   <div className="flex items-start justify-between">
@@ -146,7 +146,7 @@ export const FaculdadeView: React.FC = () => {
                   </div>
 
                   <p className="text-xs text-ceci-secondary line-clamp-1">
-                    {course.schedule || 'Semanal'} • {nextExam ? `Prova em ${nextExam.date}` : 'Sem provas pendentes'}
+                    {course.schedule || 'semanal'} • {nextExam ? `prova em ${nextExam.date}` : 'sem provas pendentes'}
                   </p>
 
                   <div className="space-y-1 pt-1">
@@ -174,7 +174,7 @@ export const FaculdadeView: React.FC = () => {
       {subTab === 'aulas' && (
         <div className="space-y-2">
           <h2 className="font-display text-base font-bold text-ceci-primary px-1">
-            diário de aulas registradas
+            diário de aulas
           </h2>
           <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default px-1">
             {filteredClasses.map((cl) => (
@@ -273,7 +273,7 @@ export const FaculdadeView: React.FC = () => {
           <div className="py-2.5 flex items-center justify-between">
             <div>
               <h3 className="font-bold text-xs text-ceci-primary">supervisão de estágio</h3>
-              <p className="text-[11px] text-ceci-secondary mt-0.5">registrar aprendizados e dúvidas</p>
+              <p className="text-[11px] text-ceci-secondary mt-0.5">anotar aprendizados e dúvidas</p>
             </div>
             <span className="text-[11px] font-bold text-ceci-academic-strong bg-surface-blue px-2.5 py-0.5 rounded-full border border-ceci-border-academic">
               13/08

@@ -9,22 +9,22 @@ export interface LooseNote {
 export const INITIAL_NOTES: LooseNote[] = [
   {
     id: 'note-1',
-    title: 'Reflexão sobre TCC',
-    content: 'Considerações sobre o vínculo terapêutico na clínica comportamental. Importante enfatizar a empatia e escuta ativa no primeiro acolhimento.',
+    title: 'reflexão sobre o tcc',
+    content: 'considerações sobre o vínculo terapêutico na clínica comportamental. importante enfatizar a empatia e escuta ativa no primeiro acolhimento.',
     category: 'reflexão',
     date: 'Hoje, 11:30',
   },
   {
     id: 'note-2',
-    title: 'Anotação de estudo sobre Skinner',
-    content: 'Diferença conceitual entre reforço negativo (remoção de estresse/aversivo) e punição positiva (apresentação de aversivo).',
+    title: 'anotação de estudo sobre skinner',
+    content: 'diferença conceitual entre reforço negativo (remoção de estresse/aversivo) e punição positiva (apresentação de aversivo).',
     category: 'estudo',
     date: 'Ontem, 16:45',
   },
   {
     id: 'note-3',
-    title: 'Ideia para mapa conceitual',
-    content: 'Mapear autores da Psicanálise x Gestalt x TCC em uma linha do tempo comparativa.',
+    title: 'ideia para mapa conceitual',
+    content: 'mapear autores da psicanálise x gestalt x tcc em uma linha do tempo comparativa.',
     category: 'ideia',
     date: '10 de Ago',
   },

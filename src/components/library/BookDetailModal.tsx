@@ -43,7 +43,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
           <div className="w-24 h-32 rounded-xl p-3 bg-white/90 shadow-lg border border-black/10 flex flex-col justify-between text-left relative">
             <div className="absolute left-0 top-0 bottom-0 w-2 bg-black/10 rounded-l-xl" />
             <span className="pl-1 text-[8px] font-bold uppercase text-ceci-tertiary">
-              {book.badge || 'Livro'}
+              {book.badge || 'livro'}
             </span>
             <p className="pl-1 font-display font-bold text-xs leading-tight text-ceci-primary line-clamp-3">
               {book.title}
@@ -54,7 +54,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
           </div>
 
           <span className="text-[10px] font-bold uppercase tracking-wider bg-white/90 text-ceci-primary px-2.5 py-0.5 rounded-full shadow-2xs">
-            {book.courseName || 'Psicologia'}
+            {book.courseName || 'psicologia'}
           </span>
         </div>
 
@@ -64,14 +64,14 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
             <h3 className="font-display font-bold text-lg text-ceci-primary leading-tight">
               {book.title}
             </h3>
-            <p className="text-xs text-ceci-tertiary mt-0.5 font-medium">Por {book.author}</p>
+            <p className="text-xs text-ceci-tertiary mt-0.5 font-medium">por {book.author}</p>
           </div>
 
           {/* Progress Bar */}
           <div className="p-3 rounded-2xl bg-surface-muted border border-ceci-border-default space-y-1.5">
             <div className="flex items-center justify-between text-xs">
               <span className="font-semibold text-ceci-primary">
-                Progresso: {book.readPages} / {book.totalPages} págs
+                progresso: {book.readPages} / {book.totalPages} págs
               </span>
               <span className="font-bold text-ceci-brand-strong">{progressPercent}%</span>
             </div>
@@ -107,7 +107,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
                   ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
                   : 'bg-white border-ceci-border-default text-ceci-secondary hover:bg-surface-muted'
               }`}
-              title="Salvar citação/livro"
+              title="guardar livro nos favoritos"
             >
               <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-ceci-brand-strong' : ''}`} />
             </button>

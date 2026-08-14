@@ -276,7 +276,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 key={opt.id}
                 type="button"
                 onClick={() => setActiveType(opt.id)}
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-all min-h-[36px] cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium whitespace-nowrap tap-interactive min-h-[36px] cursor-pointer ${
                   isSel
                     ? 'bg-rose-500 text-white shadow-2xs'
                     : 'bg-white text-ceci-secondary border border-ceci-border-default hover:bg-surface-rose'
@@ -297,7 +297,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 <label className="block text-xs font-medium text-ceci-secondary mb-1">título da tarefa</label>
                 <input
                   type="text"
-                  placeholder="Ex: Ler capítulo 4 de Psicopatologia"
+                  placeholder="ex: ler capítulo 4 de psicopatologia"
                   value={taskTitle}
                   onChange={(e) => setTaskTitle(e.target.value)}
                   className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
@@ -356,7 +356,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 <label className="block text-xs font-medium text-ceci-secondary mb-1">título da aula</label>
                 <input
                   type="text"
-                  placeholder="Ex: Aula 09 - Transtornos de Ansiedade e Tag"
+                  placeholder="ex: aula 09 - transtornos de ansiedade e tag"
                   value={classTitle}
                   onChange={(e) => setClassTitle(e.target.value)}
                   className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
@@ -383,7 +383,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 <label className="block text-xs font-medium text-ceci-secondary mb-1">resumo / principais anotações</label>
                 <textarea
                   rows={3}
-                  placeholder="Escreva os pontos fundamentais discutidos em sala..."
+                  placeholder="escreva os pontos principais da aula..."
                   value={classSummary}
                   onChange={(e) => setClassSummary(e.target.value)}
                   className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
@@ -398,7 +398,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 <label className="block text-xs font-medium text-ceci-secondary mb-1">título da obra / artigo</label>
                 <input
                   type="text"
-                  placeholder="Ex: A Interpretação dos Sonhos ou Artigo sobre TCC"
+                  placeholder="ex: a interpretação dos sonhos ou artigo sobre tcc"
                   value={readingTitle}
                   onChange={(e) => setReadingTitle(e.target.value)}
                   className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
@@ -411,7 +411,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                   <label className="block text-xs font-medium text-ceci-secondary mb-1">autor</label>
                   <input
                     type="text"
-                    placeholder="Ex: Aaron Beck, Freud"
+                    placeholder="ex: aaron beck, freud"
                     value={readingAuthor}
                     onChange={(e) => setReadingAuthor(e.target.value)}
                     className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
@@ -436,7 +436,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 <label className="block text-xs font-medium text-ceci-secondary mb-1">pergunta / frente do card</label>
                 <input
                   type="text"
-                  placeholder="Ex: O que é a Tríade Cognitiva da Depressão?"
+                  placeholder="ex: o que é a tríade cognitiva da depressão?"
                   value={flashcardQuestion}
                   onChange={(e) => setFlashcardQuestion(e.target.value)}
                   className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
@@ -448,7 +448,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 <label className="block text-xs font-medium text-ceci-secondary mb-1">resposta / verso do card</label>
                 <textarea
                   rows={3}
-                  placeholder="Explique a resposta de forma simples e clara..."
+                  placeholder="explique a resposta com suas palavras..."
                   value={flashcardAnswer}
                   onChange={(e) => setFlashcardAnswer(e.target.value)}
                   className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
@@ -464,7 +464,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 <label className="block text-xs font-medium text-ceci-secondary mb-1">nome do conceito de psicologia</label>
                 <input
                   type="text"
-                  placeholder="Ex: Pensamentos Automáticos ou Transferência"
+                  placeholder="ex: pensamentos automáticos ou transferência"
                   value={conceptName}
                   onChange={(e) => setConceptName(e.target.value)}
                   className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
@@ -476,7 +476,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 <label className="block text-xs font-medium text-ceci-secondary mb-1">definição acadêmica / pessoal</label>
                 <textarea
                   rows={3}
-                  placeholder="Escreva a definição com suas palavras..."
+                  placeholder="escreva a definição com suas palavras..."
                   value={conceptDef}
                   onChange={(e) => setConceptDef(e.target.value)}
                   className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
@@ -491,7 +491,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 <label className="block text-xs font-medium text-ceci-secondary mb-1">atividade de estágio realizada</label>
                 <input
                   type="text"
-                  placeholder="Ex: Acolhimento na Triagem da Clínica Escola"
+                  placeholder="ex: acolhimento na triagem da clínica escola"
                   value={internshipActivity}
                   onChange={(e) => setInternshipActivity(e.target.value)}
                   className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
@@ -513,7 +513,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                   <label className="block text-xs font-medium text-ceci-secondary mb-1">notas da supervisão</label>
                   <input
                     type="text"
-                    placeholder="Orientação da supervisora..."
+                    placeholder="orientação da supervisora..."
                     value={internshipNotes}
                     onChange={(e) => setInternshipNotes(e.target.value)}
                     className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
@@ -529,7 +529,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 <label className="block text-xs font-medium text-ceci-secondary mb-1">o que você vai estudar?</label>
                 <input
                   type="text"
-                  placeholder="Ex: Revisar semiologia dos transtornos do humor"
+                  placeholder="ex: revisar semiologia dos transtornos do humor"
                   value={sessionTopic}
                   onChange={(e) => setSessionTopic(e.target.value)}
                   className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
@@ -573,7 +573,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 <label className="block text-xs font-medium text-ceci-secondary mb-1">título da prova / atividade</label>
                 <input
                   type="text"
-                  placeholder="Ex: Prova Teórica II - Transtornos de Ansiedade"
+                  placeholder="ex: prova teórica ii - transtornos de ansiedade"
                   value={examTitle}
                   onChange={(e) => setExamTitle(e.target.value)}
                   className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
@@ -597,7 +597,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                   <label className="block text-xs font-medium text-ceci-secondary mb-1">peso</label>
                   <input
                     type="text"
-                    placeholder="Ex: 40%"
+                    placeholder="ex: 40%"
                     value={examWeight}
                     onChange={(e) => setExamWeight(e.target.value)}
                     className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
@@ -628,7 +628,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 <label className="block text-xs font-medium text-ceci-secondary mb-1">nome do autor</label>
                 <input
                   type="text"
-                  placeholder="Ex: Aaron Beck, Carl Rogers, Vygotsky"
+                  placeholder="ex: aaron beck, carl rogers, vygotsky"
                   value={authorName}
                   onChange={(e) => setAuthorName(e.target.value)}
                   className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
@@ -641,7 +641,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                 <label className="block text-xs font-medium text-ceci-secondary mb-1">biografia / contribuição</label>
                 <textarea
                   rows={3}
-                  placeholder="Conte um pouco sobre o autor e sua obra..."
+                  placeholder="conte um pouco sobre o autor e a obra dele..."
                   value={authorBio}
                   onChange={(e) => setAuthorBio(e.target.value)}
                   className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
@@ -664,7 +664,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
               className="flex items-center gap-1.5 bg-rose-500 hover:bg-ceci-brand-strong text-white px-5 py-2.5 rounded-[14px] text-xs font-medium shadow-2xs transition-transform active:scale-95 min-h-[48px] cursor-pointer"
             >
               <Plus className="w-4 h-4 stroke-[2.5]" />
-              <span>salvar registro</span>
+              <span>guardar registro</span>
             </button>
           </div>
         </form>
