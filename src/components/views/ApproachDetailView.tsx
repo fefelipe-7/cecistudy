@@ -21,6 +21,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { Modal } from '../ui/Modal';
 import { PsicoterapiaFieldKey } from '../../types';
 
 interface SectionProps {
@@ -264,25 +265,25 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
       </div>
 
       {/* Modal de autor — contexto de origem da abordagem */}
-      {selectedAuthor && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded-[24px] p-5 max-w-md w-full space-y-3 shadow-floating">
-            <div className="flex items-center justify-between">
-              <h2 className="font-display font-bold text-base text-ceci-primary">{selectedAuthor}</h2>
-              <button
-                onClick={() => setSelectedAuthor(null)}
-                className="w-9 h-9 rounded-2xl border border-ceci-border-default flex items-center justify-center text-ceci-tertiary hover:text-ceci-primary tap-interactive cursor-pointer"
-                aria-label="fechar"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <p className="text-sm text-ceci-secondary leading-relaxed">
-              {d.origem || 'referência fundamental para a construção desta abordagem.'}
-            </p>
-          </div>
+      <Modal
+        open={Boolean(selectedAuthor)}
+        onClose={() => setSelectedAuthor(null)}
+        className="w-full max-w-md bg-white rounded-[24px] p-5 space-y-3 shadow-floating"
+      >
+        <div className="flex items-center justify-between">
+          <h2 className="font-display font-bold text-base text-ceci-primary">{selectedAuthor}</h2>
+          <button
+            onClick={() => setSelectedAuthor(null)}
+            className="w-9 h-9 rounded-2xl border border-ceci-border-default flex items-center justify-center text-ceci-tertiary hover:text-ceci-primary tap-interactive cursor-pointer"
+            aria-label="fechar"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
-      )}
+        <p className="text-sm text-ceci-secondary leading-relaxed">
+          {d.origem || 'referência fundamental para a construção desta abordagem.'}
+        </p>
+      </Modal>
     </div>
   );
 };

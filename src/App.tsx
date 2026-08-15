@@ -146,8 +146,6 @@ function AppShell() {
             initial="initial"
             animate="animate"
             exit="exit"
-            layout="position"
-            style={{ willChange: 'transform, opacity' }}
           >
             {app.isMoodViewOpen ? (
               <EstadoDeEspiritoView
@@ -178,8 +176,7 @@ function AppShell() {
               initial="initial"
               animate="animate"
               exit="exit"
-              style={{ willChange: 'transform, opacity' }}
-              className="absolute inset-0 px-3.5 py-4 sm:px-5 bg-canvas"
+              className="fixed inset-0 z-40 overflow-y-auto px-3.5 py-4 sm:px-5 bg-canvas"
             >
               {app.isComposeScreenOpen ? (
                 <ComposeNoteView />
