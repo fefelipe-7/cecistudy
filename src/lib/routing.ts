@@ -11,6 +11,9 @@ export interface Route {
   notes?: boolean;
   temple?: boolean;
   mood?: boolean;
+  streak?: boolean;
+  /** Diário de estágio (tela cheia de todos os registros, empilhada sobre o perfil). */
+  internshipDiary?: boolean;
   compose?: boolean;
   composeDetails?: boolean;
   /** Wizard de criação em tela cheia (ex.: `#/novo/conceito`, `#/faculdade/c3/novo/prova`). */
@@ -21,6 +24,12 @@ export interface Route {
   baseTab?: NavTab;
   /** Curso sob o qual a composição/wizard foi empilhada (ex.: `faculdade/c3`). */
   baseCourseId?: string;
+  /** Detalhe de abordagem (ex.: `#/biblioteca/abordagens/:id`). */
+  approachId?: string;
+  /** Tela de famílias de psicoterapias (ex.: `#/biblioteca/familias`). */
+  families?: boolean;
+  /** Detalhe de uma família (ex.: `#/biblioteca/familias/:famId`). */
+  familyId?: string;
 }
 
 /** Valores de sub-tab conhecidos por aba (usados para distinguir sub-tab de courseId na rota). */
@@ -28,7 +37,6 @@ const SUB_TAB_BY_TAB: Record<string, string[]> = {
   faculdade: ['disciplinas', 'aulas', 'avaliacoes', 'calendario'],
   estudos: ['sessoes', 'leituras', 'flashcards', 'questoes', 'historico'],
   biblioteca: ['materiais', 'autores', 'conceitos', 'abordagens', 'mapa'],
-  perfil: ['jornada', 'stickers', 'estagio', 'tcc', 'configuracoes'],
 };
 
 /** Sub-tab padrão de cada aba (não é codificada no hash — mantém URLs limpas). */
@@ -49,10 +57,10 @@ const WIZARD_SLUGS: Record<string, WizardFlow> = {
   'prova-atividade': 'task-exam',
   leitura: 'reading',
   flashcard: 'flashcard',
-  conceito: 'concept',
   estagio: 'internship',
   estudo: 'session',
   autor: 'author',
+  questao: 'question',
 };
 const WIZARD_SLUG_TO_TYPE: Record<WizardFlow, string> = {
   task: 'tarefa',
@@ -60,10 +68,10 @@ const WIZARD_SLUG_TO_TYPE: Record<WizardFlow, string> = {
   'task-exam': 'prova-atividade',
   reading: 'leitura',
   flashcard: 'flashcard',
-  concept: 'conceito',
   internship: 'estagio',
   session: 'estudo',
   author: 'autor',
+  question: 'questao',
 };
 
 export function parseRoute(hash: string): Route {
@@ -71,6 +79,7 @@ export function parseRoute(hash: string): Route {
   const seg = h[0];
 
   if (seg === 'mood') return { mood: true };
+  if (seg === 'streak') return { tab: 'home', streak: true };
 
   // Telas de composição: "nota" (e "detalhes") pode aparecer em qualquer nível,
   // com base opcional codificada antes — ex.: `#/biblioteca/nota`, `#/faculdade/c3/nota/detalhes`.
@@ -115,6 +124,17 @@ export function parseRoute(hash: string): Route {
     return { baseTab, baseCourseId, wizard: type };
   }
 
+  // Abordagem detalhe: `#/biblioteca/abordagens/:id`
+  if (seg === 'biblioteca' && h[1] === 'abordagens' && h[2]) {
+    return { tab: 'biblioteca', approachId: h[2] };
+  }
+
+  // Famílias de psicoterapias: `#/biblioteca/familias` e `#/biblioteca/familias/:famId`
+  if (seg === 'biblioteca' && h[1] === 'familias') {
+    if (h[2]) return { tab: 'biblioteca', familyId: h[2] };
+    return { tab: 'biblioteca', families: true };
+  }
+
   const subtab = (tab: string): string | undefined => {
     if (!h[1]) return undefined;
     return SUB_TAB_BY_TAB[tab]?.includes(h[1]) ? h[1] : undefined;
@@ -134,6 +154,10 @@ export function parseRoute(hash: string): Route {
     return { tab: 'biblioteca' };
   }
   if (seg === 'estudos' || seg === 'perfil') {
+    if (seg === 'perfil' && h[1] === 'estagio') {
+      return { tab: 'perfil', internshipDiary: true };
+    }
+    if (h[1] === 'streak') return { tab: seg as NavTab, streak: true };
     const s = subtab(seg);
     if (s) return { tab: seg as NavTab, subTab: s };
     return { tab: seg as NavTab };
@@ -161,8 +185,19 @@ export function routeToStack(route: Route): NavScreen[] {
     return [...baseStackFor(route.baseTab ?? 'home', route.baseCourseId), { kind: 'wizard', type: route.wizard }];
   }
   if (route.mood) return [{ kind: 'tab', tab: 'home' }, { kind: 'mood' }];
+  if (route.streak) return [...baseStackFor(route.tab ?? 'home'), { kind: 'streak' }];
+  if (route.internshipDiary) return [{ kind: 'tab', tab: 'perfil' }, { kind: 'internshipDiary' }];
   if (route.notes) return [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }];
   if (route.temple) return [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'temple' }];
+  if (route.approachId) {
+    return [...baseStackFor('biblioteca'), { kind: 'approach', approachId: route.approachId }];
+  }
+  if (route.familyId) {
+    return [...baseStackFor('biblioteca'), { kind: 'family', familyId: route.familyId }];
+  }
+  if (route.families) {
+    return [...baseStackFor('biblioteca'), { kind: 'families' }];
+  }
   if (route.tab === 'faculdade' && route.focusedCourseId) {
     return [{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: route.focusedCourseId }];
   }
@@ -198,9 +233,20 @@ export function stackToHash(stack: NavScreen[], subTab?: string): string {
     return `#/novo/${suffix}`;
   }
   if (top.kind === 'mood') return '#/mood';
+  if (top.kind === 'streak') {
+    const base = stack[0];
+    const tab = base?.kind === 'tab' ? base.tab : 'home';
+    return tab === 'home' ? '#/streak' : `#/${tab}/streak`;
+  }
+  if (top.kind === 'internshipDiary') return '#/perfil/estagio';
   if (top.kind === 'notes') return '#/biblioteca/notas';
   if (top.kind === 'temple') return '#/biblioteca/templo';
   if (top.kind === 'course') return `#/faculdade/${top.courseId}`;
+  if (top.kind === 'approach') {
+    return `#/biblioteca/abordagens/${top.approachId}`;
+  }
+  if (top.kind === 'families') return '#/biblioteca/familias';
+  if (top.kind === 'family') return `#/biblioteca/familias/${top.familyId}`;
   const base = `#/${top.tab}`;
   const subtab = subTab && subTab !== DEFAULT_SUB_TAB[top.tab] ? subTab : undefined;
   return subtab ? `${base}/${subtab}` : base;

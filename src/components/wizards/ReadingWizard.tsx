@@ -41,31 +41,27 @@ export const ReadingWizard: React.FC = () => {
     {
       id: 'leitura-obra',
       title: 'obra',
+      headline: 'qual obra você vai ler?',
       content: (
         <div className="space-y-4">
-          <div>
-            <FieldLabel>título da obra / artigo</FieldLabel>
-            <TextInput
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="ex: a interpretação dos sonhos"
-              autoFocus
-            />
-          </div>
-          <div>
-            <FieldLabel>autor</FieldLabel>
-            <TextInput
-              value={author}
-              onChange={(e) => setAuthor(e.target.value)}
-              placeholder="ex: freud"
-            />
-          </div>
+          <TextInput
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="título da obra ou artigo — ex: a interpretação dos sonhos"
+            autoFocus
+          />
+          <TextInput
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
+            placeholder="autor — ex: freud"
+          />
         </div>
       ),
     },
     {
       id: 'leitura-formato',
       title: 'formato',
+      headline: 'qual o formato e o tamanho?',
       content: (
         <div className="space-y-5">
           <ChipPicker
@@ -89,6 +85,7 @@ export const ReadingWizard: React.FC = () => {
     {
       id: 'leitura-contexto',
       title: 'contexto',
+      headline: 'onde essa leitura se encaixa?',
       content: (
         <div className="space-y-5">
           <SelectField
@@ -110,22 +107,18 @@ export const ReadingWizard: React.FC = () => {
     {
       id: 'leitura-revisar',
       title: 'revisar',
+      headline: 'confere se está tudo certinho ♡',
       content: (
-        <div className="space-y-3">
-          <p className="text-xs font-medium text-ceci-secondary">
-            confere se está tudo certinho antes de guardar:
-          </p>
-          <ReviewCard
-            rows={[
-              { label: 'obra', value: title.trim() },
-              { label: 'autor', value: author.trim() || 'autor não informado' },
-              { label: 'tipo', value: type },
-              { label: 'páginas', value: `${totalPages || '200'} páginas` },
-              { label: 'disciplina', value: courseName || 'sem disciplina' },
-              { label: 'status', value: status },
-            ]}
-          />
-        </div>
+        <ReviewCard
+          rows={[
+            { label: 'obra', value: title.trim() },
+            { label: 'autor', value: author.trim() || 'autor não informado' },
+            { label: 'tipo', value: type },
+            { label: 'páginas', value: `${totalPages || '200'} páginas` },
+            { label: 'disciplina', value: courseName || 'sem disciplina' },
+            { label: 'status', value: status },
+          ]}
+        />
       ),
     },
   ];

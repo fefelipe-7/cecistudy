@@ -18,7 +18,7 @@ import {
   Flame
 } from 'lucide-react';
 import { Flashcard, ReadingItem, StudySession, SubTabEstudos } from '../../types';
-
+import { cn } from '../../lib/utils';
 import { ReaderModeModal } from '../widgets/ReaderModeModal';
 import { PillTabBar } from '../ui/PillTabBar';
 import { useApp } from '../../context/AppContext';
@@ -62,6 +62,7 @@ export const EstudosView: React.FC = () => {
     handleUpdateReadingPages,
     handleReviewFlashcard,
     openWizard,
+    questions
   } = useApp();
 
   const courseName = (id?: string) => courses.find((c) => c.id === id)?.name || 'geral';
@@ -78,14 +79,15 @@ export const EstudosView: React.FC = () => {
   const lastSession = sortedSessions[0];
   const continueReading = inProgressReadings[0];
 
-  // Timer (sessão de foco)
+// Timer (sessão de foco)
   const PRESETS = [25, 45, 15];
   const [preset, setPreset] = useState(25);
   const [timeLeft, setTimeLeft] = useState(25 * 60);
   const [isRunning, setIsRunning] = useState(false);
-  const [showSaveSession, setShowSaveSession] = useState(false);
   const [sessionTopic, setSessionTopic] = useState('');
-  const [sessionCourseId, setSessionCourseId] = useState(courses[0]?.id || '');
+  const [sessionCourseId, setSessionCourseId] = useState('');
+  const [selectedMood, setSelectedMood] = useState<'com_foco' | 'tranquilo' | 'cansado' | 'produtivo'>('com_foco');
+  const [showSaveSession, setShowSaveSession] = useState(false);
 
   // Revisão de flashcards (fila da sessão)
   const [reviewQueue, setReviewQueue] = useState<Flashcard[]>([]);
@@ -146,7 +148,7 @@ export const EstudosView: React.FC = () => {
       topic: sessionTopic.trim() || 'sessão de foco',
       date: toISODate(new Date()),
       durationMinutes: preset,
-      mood: 'com_foco'
+      mood: selectedMood
     });
     hapticSuccess();
     showToast('sessão de estudo registrada com carinho ♡');
@@ -422,8 +424,27 @@ export const EstudosView: React.FC = () => {
                       {c.name}
                     </option>
                   ))}
-                </select>
-              </div>
+</select>
+               </div>
+               <div>
+                 <label className="block text-xs font-medium text-ceci-secondary mb-1">humor da sessão</label>
+                 <div className="flex flex-wrap gap-1">
+                   {Object.entries(SESSION_MOOD_EMOJI).map(([mood, emoji]) => (
+                     <button
+                       key={mood}
+                       onClick={() => setSelectedMood(mood as any)}
+                       className={cn(
+                         'flex items-center gap-1 rounded-full border px-2 py-1 text-xs font-semibold transition-colors cursor-pointer',
+                         selectedMood === mood
+                           ? 'bg-ceci-primary text-white border-ceci-primary shadow-xs'
+                           : 'bg-white text-ceci-secondary border-ceci-border-default hover:bg-surface-muted'
+                       )}
+                     >
+                       {emoji} {mood}
+                     </button>
+                   ))}
+                 </div>
+               </div>
               <div className="flex items-center justify-end gap-2 pt-1">
                 <button
                   onClick={() => resetTimer()}
@@ -637,20 +658,52 @@ export const EstudosView: React.FC = () => {
         </div>
       )}
 
-      {/* QUESTÕES (stub) */}
-      {subTab === 'questoes' && (
-        <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
-          <span className="w-14 h-14 mx-auto rounded-full bg-surface-rose border border-ceci-border-brand flex items-center justify-center">
-            <HelpCircle className="w-6 h-6 text-ceci-brand-strong" />
-          </span>
-          <div>
-            <h3 className="font-display font-bold text-base text-ceci-primary">questões práticas chegam em breve</h3>
-            <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
-              enquanto isso, revise seus flashcards e volte às anotações de aula para fixar o conteúdo ♡
-            </p>
-          </div>
-        </div>
-      )}
+{/* QUESTÕES */}
+       {subTab === 'questoes' && (
+         <div className="space-y-3">
+           {questions.length === 0 ? (
+             <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4">
+               <span className="w-14 h-14 mx-auto rounded-full bg-surface-rose border border-ceci-border-brand flex items-center justify-center">
+                 <HelpCircle className="w-6 h-6 text-ceci-brand-strong" />
+               </span>
+               <div>
+                 <h3 className="font-display font-bold text-base text-ceci-primary">ainda não tem questões salvas</h3>
+                 <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
+                   registre suas questões de estudo para revisá-las aqui ♡
+                 </p>
+               </div>
+               <button
+                 onClick={() => openWizard('question')}
+                 className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-ceci-academic-strong bg-[#F3F9FC] border border-ceci-border-academic cursor-pointer"
+               >
+                 <Plus className="w-4 h-4" /> nova questão
+               </button>
+             </div>
+           ) : (
+             <div className="space-y-2">
+               <h3 className="font-display font-bold text-sm text-ceci-primary">
+                 suas questões de estudo
+               </h3>
+               <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
+                 {questions.map((q) => (
+                   <div key={q.id} className="p-3 flex items-start justify-between">
+                     <div className="min-w-0">
+                       <h4 className="font-display font-bold text-sm text-ceci-primary truncate">{q.question}</h4>
+                       <p className="text-[11px] text-ceci-secondary mt-0.5">
+                         {q.courseId ? courses.find((c) => c.id === q.courseId)?.name ?? 'geral' : 'geral'}
+                         {q.conceptIds?.length ? ` · ${q.conceptIds.length} conceito${q.conceptIds.length > 1 ? 's' : ''}` : ''}
+                       </p>
+                     </div>
+                     <span className="text-[10px] font-semibold text-ceci-academic-strong bg-surface-blue px-2 py-1 rounded-full border border-ceci-border-academic">
+                       {q.answer}
+                     </span>
+                   </div>
+                 ))}
+               </div>
+             </div>
+           )}
+         </div>
+       )}
 
       {/* HISTÓRICO DE SESSÕES */}
       {subTab === 'historico' && (

@@ -1,0 +1,2884 @@
+{
+  "expected_total": 97,
+  "found_total": 97,
+  "missing": [],
+  "duplicated_source_matches": [
+    {
+      "family": "02_existencial_humanista",
+      "canonical": "Terapia Existencial-Humanista",
+      "hits": [
+        {
+          "name": "Terapia Existencial‑Humanista",
+          "norm": "terapia existencial humanista",
+          "file": "02_existencial_humanista_registros.md",
+          "line": 222,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Existencial‑Humanista",
+          "norm": "terapia existencial humanista",
+          "file": "02_existencial_humanista_lote1.md",
+          "line": 2,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "02_existencial_humanista",
+      "canonical": "Terapia Focada nas Emoções",
+      "hits": [
+        {
+          "name": "Terapia Focada nas Emoções (Emotion‑Focused Therapy — EFT, vertente de Leslie Greenberg)",
+          "norm": "terapia focada nas emocoes",
+          "file": "02_existencial_humanista_registros.md",
+          "line": 291,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Focada nas Emoções (Emotion‑Focused Therapy — EFT, vertente de Leslie Greenberg)",
+          "norm": "terapia focada nas emocoes",
+          "file": "02_existencial_humanista_lote1.md",
+          "line": 71,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "02_existencial_humanista",
+      "canonical": "Logoterapia",
+      "hits": [
+        {
+          "name": "Logoterapia",
+          "norm": "logoterapia",
+          "file": "02_existencial_humanista_registros.md",
+          "line": 360,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Logoterapia",
+          "norm": "logoterapia",
+          "file": "02_existencial_humanista_lote2.md",
+          "line": 2,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "02_existencial_humanista",
+      "canonical": "Terapia Experiencial",
+      "hits": [
+        {
+          "name": "Terapia Experiencial",
+          "norm": "terapia experiencial",
+          "file": "02_existencial_humanista_registros.md",
+          "line": 427,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Experiencial",
+          "norm": "terapia experiencial",
+          "file": "02_existencial_humanista_lote2.md",
+          "line": 69,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "02_existencial_humanista",
+      "canonical": "Terapia Existencial Britânica",
+      "hits": [
+        {
+          "name": "Terapia Existencial Britânica (vertente clínica contemporânea)",
+          "norm": "terapia existencial britanica",
+          "file": "02_existencial_humanista_registros.md",
+          "line": 558,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Existencial Britânica (vertente clínica contemporânea)",
+          "norm": "terapia existencial britanica",
+          "file": "02_existencial_humanista_lote3.md",
+          "line": 69,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "02_existencial_humanista",
+      "canonical": "Psicologia Humanista",
+      "hits": [
+        {
+          "name": "Psicologia Humanista (movimento amplo)",
+          "norm": "psicologia humanista",
+          "file": "02_existencial_humanista_registros.md",
+          "line": 625,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Psicologia Humanista (movimento amplo)",
+          "norm": "psicologia humanista",
+          "file": "02_existencial_humanista_lote3.md",
+          "line": 136,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "02_existencial_humanista",
+      "canonical": "Terapia Transpessoal",
+      "hits": [
+        {
+          "name": "Terapia Transpessoal",
+          "norm": "terapia transpessoal",
+          "file": "02_existencial_humanista_registros.md",
+          "line": 692,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Transpessoal",
+          "norm": "terapia transpessoal",
+          "file": "02_existencial_humanista_lote3.md",
+          "line": 203,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "03_comportamental",
+      "canonical": "Behaviorismo Metodológico/Radical",
+      "hits": [
+        {
+          "name": "Behaviorismo Metodológico/Radical (base teórica)",
+          "norm": "behaviorismo metodologico radical",
+          "file": "03_comportamental_registros.md",
+          "line": 24,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Behaviorismo Metodológico/Radical (base teórica)",
+          "norm": "behaviorismo metodologico radical",
+          "file": "03_comportamental_lote1.md",
+          "line": 2,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "03_comportamental",
+      "canonical": "Terapia Comportamental Clássica",
+      "hits": [
+        {
+          "name": "Terapia Comportamental Clássica",
+          "norm": "terapia comportamental classica",
+          "file": "03_comportamental_registros.md",
+          "line": 92,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Comportamental Clássica",
+          "norm": "terapia comportamental classica",
+          "file": "03_comportamental_lote1.md",
+          "line": 70,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "03_comportamental",
+      "canonical": "Análise do Comportamento Aplicada (ABA)",
+      "hits": [
+        {
+          "name": "Análise do Comportamento Aplicada (ABA)",
+          "norm": "analise do comportamento aplicada",
+          "file": "03_comportamental_registros.md",
+          "line": 160,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Análise do Comportamento Aplicada (ABA)",
+          "norm": "analise do comportamento aplicada",
+          "file": "03_comportamental_lote1.md",
+          "line": 138,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "03_comportamental",
+      "canonical": "Terapia de Exposição",
+      "hits": [
+        {
+          "name": "Terapia de Exposição",
+          "norm": "terapia de exposicao",
+          "file": "03_comportamental_registros.md",
+          "line": 293,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia de Exposição",
+          "norm": "terapia de exposicao",
+          "file": "03_comportamental_lote2.md",
+          "line": 69,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "03_comportamental",
+      "canonical": "Terapia Comportamental Dialética (DBT)",
+      "hits": [
+        {
+          "name": "Terapia Comportamental Dialética (DBT)",
+          "norm": "terapia comportamental dialetica",
+          "file": "03_comportamental_registros.md",
+          "line": 360,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Comportamental Dialética (DBT)",
+          "norm": "terapia comportamental dialetica",
+          "file": "03_comportamental_lote2.md",
+          "line": 136,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "03_comportamental",
+      "canonical": "Ativação Comportamental",
+      "hits": [
+        {
+          "name": "Ativação Comportamental",
+          "norm": "ativacao comportamental",
+          "file": "03_comportamental_registros.md",
+          "line": 427,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Ativação Comportamental",
+          "norm": "ativacao comportamental",
+          "file": "03_comportamental_lote2.md",
+          "line": 203,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "03_comportamental",
+      "canonical": "Modificação de Comportamento Infantil",
+      "hits": [
+        {
+          "name": "Modificação de Comportamento Infantil",
+          "norm": "modificacao de comportamento infantil",
+          "file": "03_comportamental_registros.md",
+          "line": 558,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Modificação de Comportamento Infantil",
+          "norm": "modificacao de comportamento infantil",
+          "file": "03_comportamental_lote3.md",
+          "line": 69,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "03_comportamental",
+      "canonical": "Terapia Comportamental de Casais",
+      "hits": [
+        {
+          "name": "Terapia Comportamental de Casais",
+          "norm": "terapia comportamental de casais",
+          "file": "03_comportamental_registros.md",
+          "line": 625,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Comportamental de Casais",
+          "norm": "terapia comportamental de casais",
+          "file": "03_comportamental_lote3.md",
+          "line": 136,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "04_cognitiva_tcc",
+      "canonical": "Terapia Cognitiva (Beck)",
+      "hits": [
+        {
+          "name": "Terapia Cognitiva (Beck)",
+          "norm": "terapia cognitiva",
+          "file": "04_cognitiva_tcc_registros.md",
+          "line": 24,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Cognitiva (Beck)",
+          "norm": "terapia cognitiva",
+          "file": "04_cognitiva_tcc_lote1.md",
+          "line": 2,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Cognitiva Baseada em Mindfulness (MBCT)",
+          "norm": "terapia cognitiva baseada em mindfulness",
+          "file": "04_cognitiva_tcc_lote2.md",
+          "line": 2,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "04_cognitiva_tcc",
+      "canonical": "Terapia Racional-Emotiva Comportamental (REBT)",
+      "hits": [
+        {
+          "name": "Terapia Racional-Emotiva Comportamental (REBT)",
+          "norm": "terapia racional emotiva comportamental",
+          "file": "04_cognitiva_tcc_registros.md",
+          "line": 90,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Racional-Emotiva Comportamental (REBT)",
+          "norm": "terapia racional emotiva comportamental",
+          "file": "04_cognitiva_tcc_lote1.md",
+          "line": 68,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "04_cognitiva_tcc",
+      "canonical": "TCC Integrada/Geral",
+      "hits": [
+        {
+          "name": "TCC Integrada/Geral",
+          "norm": "tcc integrada geral",
+          "file": "04_cognitiva_tcc_registros.md",
+          "line": 156,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "TCC Integrada/Geral",
+          "norm": "tcc integrada geral",
+          "file": "04_cognitiva_tcc_lote1.md",
+          "line": 134,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "04_cognitiva_tcc",
+      "canonical": "Terapia do Esquema",
+      "hits": [
+        {
+          "name": "Terapia do Esquema",
+          "norm": "terapia do esquema",
+          "file": "04_cognitiva_tcc_registros.md",
+          "line": 222,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia do Esquema",
+          "norm": "terapia do esquema",
+          "file": "04_cognitiva_tcc_lote1.md",
+          "line": 200,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "04_cognitiva_tcc",
+      "canonical": "Terapia Cognitiva Baseada em Mindfulness (MBCT)",
+      "hits": [
+        {
+          "name": "Terapia Cognitiva (Beck)",
+          "norm": "terapia cognitiva",
+          "file": "04_cognitiva_tcc_registros.md",
+          "line": 24,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Cognitiva (Beck)",
+          "norm": "terapia cognitiva",
+          "file": "04_cognitiva_tcc_lote1.md",
+          "line": 2,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Cognitiva Baseada em Mindfulness (MBCT)",
+          "norm": "terapia cognitiva baseada em mindfulness",
+          "file": "04_cognitiva_tcc_lote2.md",
+          "line": 2,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "04_cognitiva_tcc",
+      "canonical": "Terapia de Aceitação e Compromisso (ACT)",
+      "hits": [
+        {
+          "name": "Terapia de Aceitação e Compromisso (ACT)",
+          "norm": "terapia de aceitacao e compromisso",
+          "file": "04_cognitiva_tcc_registros.md",
+          "line": 353,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia de Aceitação e Compromisso (ACT)",
+          "norm": "terapia de aceitacao e compromisso",
+          "file": "04_cognitiva_tcc_lote2.md",
+          "line": 69,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "04_cognitiva_tcc",
+      "canonical": "Terapia Focada na Compaixão",
+      "hits": [
+        {
+          "name": "Terapia Focada na Compaixão (CFT)",
+          "norm": "terapia focada na compaixao",
+          "file": "04_cognitiva_tcc_registros.md",
+          "line": 420,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Focada na Compaixão (CFT)",
+          "norm": "terapia focada na compaixao",
+          "file": "04_cognitiva_tcc_lote2.md",
+          "line": 136,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "04_cognitiva_tcc",
+      "canonical": "Terapia Metacognitiva",
+      "hits": [
+        {
+          "name": "Terapia Metacognitiva de Wells (MCT)",
+          "norm": "terapia metacognitiva de wells",
+          "file": "04_cognitiva_tcc_registros.md",
+          "line": 487,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Metacognitiva de Wells (MCT)",
+          "norm": "terapia metacognitiva de wells",
+          "file": "04_cognitiva_tcc_lote2.md",
+          "line": 203,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "04_cognitiva_tcc",
+      "canonical": "Terapia Cognitivo-Comportamental Baseada em Protocolo Transdiagnóstico",
+      "hits": [
+        {
+          "name": "Terapia Cognitivo‑Comportamental Baseada em Protocolo Transdiagnóstico",
+          "norm": "terapia cognitivo comportamental baseada em protocolo transdiagnostico",
+          "file": "04_cognitiva_tcc_registros.md",
+          "line": 658,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Cognitivo‑Comportamental Baseada em Protocolo Transdiagnóstico",
+          "norm": "terapia cognitivo comportamental baseada em protocolo transdiagnostico",
+          "file": "04_cognitiva_tcc_lote3.md",
+          "line": 109,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical": "Terapia Narrativa",
+      "hits": [
+        {
+          "name": "Terapia Narrativa",
+          "norm": "terapia narrativa",
+          "file": "06_construtivista_narrativa_registros.md",
+          "line": 21,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Narrativa",
+          "norm": "terapia narrativa",
+          "file": "06_construtivista_narrativa_lote1.md",
+          "line": 2,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical": "Psicoterapias Construtivas",
+      "hits": [
+        {
+          "name": "Psicoterapias Construtivas",
+          "norm": "psicoterapias construtivas",
+          "file": "06_construtivista_narrativa_registros.md",
+          "line": 89,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Psicoterapias Construtivas",
+          "norm": "psicoterapias construtivas",
+          "file": "06_construtivista_narrativa_lote1.md",
+          "line": 70,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical": "Terapia de Construção Pessoal",
+      "hits": [
+        {
+          "name": "Terapia de Construção Pessoal (Psicologia dos Construtos Pessoais)",
+          "norm": "terapia de construcao pessoal",
+          "file": "06_construtivista_narrativa_registros.md",
+          "line": 158,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia de Construção Pessoal (Psicologia dos Construtos Pessoais)",
+          "norm": "terapia de construcao pessoal",
+          "file": "06_construtivista_narrativa_lote1.md",
+          "line": 139,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical": "Terapia Colaborativa",
+      "hits": [
+        {
+          "name": "Terapia Colaborativa (Diálica/Colaborativa)",
+          "norm": "terapia colaborativa",
+          "file": "06_construtivista_narrativa_registros.md",
+          "line": 226,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Colaborativa (Diálica/Colaborativa)",
+          "norm": "terapia colaborativa",
+          "file": "06_construtivista_narrativa_lote1.md",
+          "line": 207,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical": "Terapia Pós-moderna",
+      "hits": [
+        {
+          "name": "Terapia Pós-moderna",
+          "norm": "terapia pos moderna",
+          "file": "06_construtivista_narrativa_registros.md",
+          "line": 294,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Pós-moderna",
+          "norm": "terapia pos moderna",
+          "file": "06_construtivista_narrativa_lote1.md",
+          "line": 275,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical": "Construcionismo Social",
+      "hits": [
+        {
+          "name": "Construcionismo Social",
+          "norm": "construcionismo social",
+          "file": "06_construtivista_narrativa_registros.md",
+          "line": 361,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Construcionismo Social",
+          "norm": "construcionismo social",
+          "file": "06_construtivista_narrativa_lote1.md",
+          "line": 342,
+          "kind": "campo_nome"
+        }
+      ]
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical": "Coherence Therapy",
+      "hits": [
+        {
+          "name": "Coherence Therapy",
+          "norm": "coherence therapy",
+          "file": "06_construtivista_narrativa_registros.md",
+          "line": 429,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Coherence Therapy",
+          "norm": "coherence therapy",
+          "file": "06_construtivista_narrativa_lote2.md",
+          "line": 3,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Coherence Therapy",
+          "norm": "coherence therapy",
+          "file": "06_construtivista_narrativa_lote2.md",
+          "line": 1,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical": "Terapia Ericksoniana",
+      "hits": [
+        {
+          "name": "Terapia Ericksoniana",
+          "norm": "terapia ericksoniana",
+          "file": "06_construtivista_narrativa_registros.md",
+          "line": 496,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Ericksoniana",
+          "norm": "terapia ericksoniana",
+          "file": "06_construtivista_narrativa_registros.md",
+          "line": 494,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia Ericksoniana",
+          "norm": "terapia ericksoniana",
+          "file": "06_construtivista_narrativa_lote2.md",
+          "line": 28,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Ericksoniana",
+          "norm": "terapia ericksoniana",
+          "file": "06_construtivista_narrativa_lote2.md",
+          "line": 26,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical": "Terapia Centrada em Soluções",
+      "hits": [
+        {
+          "name": "Terapia Centrada em Soluções (TCS)",
+          "norm": "terapia centrada em solucoes",
+          "file": "06_construtivista_narrativa_registros.md",
+          "line": 563,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Centrada em Soluções (enquadramento construtivista-narrativo)",
+          "norm": "terapia centrada em solucoes",
+          "file": "06_construtivista_narrativa_registros.md",
+          "line": 561,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia Centrada em Soluções (TCS)",
+          "norm": "terapia centrada em solucoes",
+          "file": "06_construtivista_narrativa_lote2.md",
+          "line": 53,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Centrada em Soluções (enquadramento construtivista-narrativo)",
+          "norm": "terapia centrada em solucoes",
+          "file": "06_construtivista_narrativa_lote2.md",
+          "line": 51,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical": "Prática Baseada em Resposta",
+      "hits": [
+        {
+          "name": "Prática Baseada em Resposta",
+          "norm": "pratica baseada em resposta",
+          "file": "06_construtivista_narrativa_registros.md",
+          "line": 630,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Prática Baseada em Resposta",
+          "norm": "pratica baseada em resposta",
+          "file": "06_construtivista_narrativa_registros.md",
+          "line": 628,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Prática Baseada em Resposta",
+          "norm": "pratica baseada em resposta",
+          "file": "06_construtivista_narrativa_lote2.md",
+          "line": 78,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Prática Baseada em Resposta",
+          "norm": "pratica baseada em resposta",
+          "file": "06_construtivista_narrativa_lote2.md",
+          "line": 76,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical": "Terapia de Renegociação de Identidade",
+      "hits": [
+        {
+          "name": "Terapia de Renegociação de Identidade",
+          "norm": "terapia de renegociacao de identidade",
+          "file": "06_construtivista_narrativa_registros.md",
+          "line": 697,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia de Renegociação de Identidade",
+          "norm": "terapia de renegociacao de identidade",
+          "file": "06_construtivista_narrativa_registros.md",
+          "line": 695,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia de Renegociação de Identidade",
+          "norm": "terapia de renegociacao de identidade",
+          "file": "06_construtivista_narrativa_lote2.md",
+          "line": 103,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia de Renegociação de Identidade",
+          "norm": "terapia de renegociacao de identidade",
+          "file": "06_construtivista_narrativa_lote2.md",
+          "line": 101,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "07_interpessoal_relacional",
+      "canonical": "Psicoterapia Interpessoal (IPT)",
+      "hits": [
+        {
+          "name": "Psicoterapia Interpessoal (IPT)",
+          "norm": "psicoterapia interpessoal",
+          "file": "07_interpessoal_relacional_registros.md",
+          "line": 20,
+          "kind": "registro_abordagem"
+        },
+        {
+          "name": "Psicoterapia Interpessoal (IPT)",
+          "norm": "psicoterapia interpessoal",
+          "file": "07_interpessoal_relacional_registros.md",
+          "line": 24,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Psicoterapia Interpessoal (IPT)",
+          "norm": "psicoterapia interpessoal",
+          "file": "07_interpessoal_relacional_lote1.md",
+          "line": 3,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Psicoterapia Interpessoal (IPT)",
+          "norm": "psicoterapia interpessoal",
+          "file": "07_interpessoal_relacional_lote1.md",
+          "line": 1,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "07_interpessoal_relacional",
+      "canonical": "Terapia Relacional-Cultural",
+      "hits": [
+        {
+          "name": "Terapia Relacional‑Cultural (Relational‑Cultural Therapy, RCT)",
+          "norm": "terapia relacional cultural",
+          "file": "07_interpessoal_relacional_registros.md",
+          "line": 581,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Relacional‑Cultural (Relational‑Cultural Therapy, RCT)",
+          "norm": "terapia relacional cultural",
+          "file": "07_interpessoal_relacional_lote2.md",
+          "line": 2,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Relacional‑Cultural",
+          "norm": "terapia relacional cultural",
+          "file": "07_interpessoal_relacional_lote2.md",
+          "line": 1,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "07_interpessoal_relacional",
+      "canonical": "Psicanálise Interpessoal (Sullivan)",
+      "hits": [
+        {
+          "name": "Psicanálise Interpessoal (Interpersonal Psychoanalysis) — enquadramento relacional associado a Harry Stack Sullivan",
+          "norm": "psicanalise interpessoal enquadramento relacional associado a harry stack sullivan",
+          "file": "07_interpessoal_relacional_registros.md",
+          "line": 672,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Psicanálise Interpessoal (Harry Stack Sullivan / enquadramento relacional)",
+          "norm": "psicanalise interpessoal",
+          "file": "07_interpessoal_relacional_registros.md",
+          "line": 669,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Psicanálise Interpessoal (Interpersonal Psychoanalysis) — enquadramento relacional associado a Harry Stack Sullivan",
+          "norm": "psicanalise interpessoal enquadramento relacional associado a harry stack sullivan",
+          "file": "07_interpessoal_relacional_lote2.md",
+          "line": 49,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Psicanálise Interpessoal (Harry Stack Sullivan / enquadramento relacional)",
+          "norm": "psicanalise interpessoal",
+          "file": "07_interpessoal_relacional_lote2.md",
+          "line": 48,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "07_interpessoal_relacional",
+      "canonical": "Terapia Baseada em Mentalização",
+      "hits": [
+        {
+          "name": "Terapia Baseada em Mentalização (MBT)",
+          "norm": "terapia baseada em mentalizacao",
+          "file": "07_interpessoal_relacional_registros.md",
+          "line": 116,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Baseada em Mentalização (MBT)",
+          "norm": "terapia baseada em mentalizacao",
+          "file": "07_interpessoal_relacional_registros.md",
+          "line": 112,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia Baseada em Mentalização (MBT)",
+          "norm": "terapia baseada em mentalizacao",
+          "file": "07_interpessoal_relacional_lote1.md",
+          "line": 51,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Baseada em Mentalização (MBT)",
+          "norm": "terapia baseada em mentalizacao",
+          "file": "07_interpessoal_relacional_lote1.md",
+          "line": 49,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "07_interpessoal_relacional",
+      "canonical": "Teoria dos Sistemas Intersubjetivos",
+      "hits": [
+        {
+          "name": "Teoria dos Sistemas Intersubjetivos (Intersubjective Systems / Intersubjective Relational framework)",
+          "norm": "teoria dos sistemas intersubjetivos",
+          "file": "07_interpessoal_relacional_registros.md",
+          "line": 763,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Teoria dos Sistemas Intersubjetivos (abordagem intersubjetiva-relacional)",
+          "norm": "teoria dos sistemas intersubjetivos",
+          "file": "07_interpessoal_relacional_registros.md",
+          "line": 760,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Teoria dos Sistemas Intersubjetivos (Intersubjective Systems / Intersubjective Relational framework)",
+          "norm": "teoria dos sistemas intersubjetivos",
+          "file": "07_interpessoal_relacional_lote2.md",
+          "line": 96,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Teoria dos Sistemas Intersubjetivos (abordagem intersubjetiva-relacional)",
+          "norm": "teoria dos sistemas intersubjetivos",
+          "file": "07_interpessoal_relacional_lote2.md",
+          "line": 95,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "07_interpessoal_relacional",
+      "canonical": "Psicodinâmica Cíclica",
+      "hits": [
+        {
+          "name": "Psicodinâmica Cíclica (terapia cíclica psicodinâmica)",
+          "norm": "psicodinamica ciclica",
+          "file": "07_interpessoal_relacional_registros.md",
+          "line": 484,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Psicodinâmica Cíclica (Wachtel)",
+          "norm": "psicodinamica ciclica",
+          "file": "07_interpessoal_relacional_registros.md",
+          "line": 480,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Psicodinâmica Cíclica (terapia cíclica psicodinâmica)",
+          "norm": "psicodinamica ciclica",
+          "file": "07_interpessoal_relacional_lote1.md",
+          "line": 243,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Psicodinâmica Cíclica (Wachtel)",
+          "norm": "psicodinamica ciclica",
+          "file": "07_interpessoal_relacional_lote1.md",
+          "line": 241,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "07_interpessoal_relacional",
+      "canonical": "Terapia de Casais Baseada em Apego",
+      "hits": [
+        {
+          "name": "Terapia de Casais Baseada em Apego (EFT de Casais)",
+          "norm": "terapia de casais baseada em apego",
+          "file": "07_interpessoal_relacional_registros.md",
+          "line": 300,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia de Casais Baseada em Apego (EFT de Casais)",
+          "norm": "terapia de casais baseada em apego",
+          "file": "07_interpessoal_relacional_registros.md",
+          "line": 296,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia de Casais Baseada em Apego (EFT de Casais)",
+          "norm": "terapia de casais baseada em apego",
+          "file": "07_interpessoal_relacional_lote1.md",
+          "line": 147,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia de Casais Baseada em Apego (EFT de Casais)",
+          "norm": "terapia de casais baseada em apego",
+          "file": "07_interpessoal_relacional_lote1.md",
+          "line": 145,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "07_interpessoal_relacional",
+      "canonical": "Método Gottman de Terapia de Casais",
+      "hits": [
+        {
+          "name": "Método Gottman de Terapia de Casais (Gottman Method Couples Therapy)",
+          "norm": "metodo gottman de terapia de casais",
+          "file": "07_interpessoal_relacional_registros.md",
+          "line": 854,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Método Gottman de Terapia de Casais",
+          "norm": "metodo gottman de terapia de casais",
+          "file": "07_interpessoal_relacional_registros.md",
+          "line": 851,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Método Gottman de Terapia de Casais (Gottman Method Couples Therapy)",
+          "norm": "metodo gottman de terapia de casais",
+          "file": "07_interpessoal_relacional_lote2.md",
+          "line": 143,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Método Gottman de Terapia de Casais",
+          "norm": "metodo gottman de terapia de casais",
+          "file": "07_interpessoal_relacional_lote2.md",
+          "line": 142,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "07_interpessoal_relacional",
+      "canonical": "Terapia Familiar Focada nas Emoções",
+      "hits": [
+        {
+          "name": "Terapia Familiar Focada nas Emoções",
+          "norm": "terapia familiar focada nas emocoes",
+          "file": "07_interpessoal_relacional_registros.md",
+          "line": 392,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Familiar Focada nas Emoções (EFFT / EFT Familiar)",
+          "norm": "terapia familiar focada nas emocoes",
+          "file": "07_interpessoal_relacional_registros.md",
+          "line": 388,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia Familiar Focada nas Emoções",
+          "norm": "terapia familiar focada nas emocoes",
+          "file": "07_interpessoal_relacional_lote1.md",
+          "line": 195,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Familiar Focada nas Emoções (EFFT / EFT Familiar)",
+          "norm": "terapia familiar focada nas emocoes",
+          "file": "07_interpessoal_relacional_lote1.md",
+          "line": 193,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "08_integrativa_ecletica",
+      "canonical": "Psicoterapia Integrativa Geral",
+      "hits": [
+        {
+          "name": "Psicoterapia Integrativa Geral",
+          "norm": "psicoterapia integrativa geral",
+          "file": "08_integrativa_ecletica_registros.md",
+          "line": 21,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Psicoterapia Integrativa Geral",
+          "norm": "psicoterapia integrativa geral",
+          "file": "08_integrativa_ecletica_lote1.md",
+          "line": 2,
+          "kind": "campo_nome_inline"
+        }
+      ]
+    },
+    {
+      "family": "08_integrativa_ecletica",
+      "canonical": "Ecletismo Técnico",
+      "hits": [
+        {
+          "name": "Ecletismo Técnico",
+          "norm": "ecletismo tecnico",
+          "file": "08_integrativa_ecletica_registros.md",
+          "line": 91,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Ecletismo Técnico",
+          "norm": "ecletismo tecnico",
+          "file": "08_integrativa_ecletica_lote1.md",
+          "line": 28,
+          "kind": "campo_nome_inline"
+        }
+      ]
+    },
+    {
+      "family": "08_integrativa_ecletica",
+      "canonical": "Integração Assimilativa",
+      "hits": [
+        {
+          "name": "Integração Assimilativa",
+          "norm": "integracao assimilativa",
+          "file": "08_integrativa_ecletica_registros.md",
+          "line": 161,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Integração Assimilativa",
+          "norm": "integracao assimilativa",
+          "file": "08_integrativa_ecletica_lote1.md",
+          "line": 54,
+          "kind": "campo_nome_inline"
+        }
+      ]
+    },
+    {
+      "family": "08_integrativa_ecletica",
+      "canonical": "Terapia Multimodal",
+      "hits": [
+        {
+          "name": "Terapia Multimodal",
+          "norm": "terapia multimodal",
+          "file": "08_integrativa_ecletica_registros.md",
+          "line": 231,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Multimodal",
+          "norm": "terapia multimodal",
+          "file": "08_integrativa_ecletica_lote1.md",
+          "line": 80,
+          "kind": "campo_nome_inline"
+        }
+      ]
+    },
+    {
+      "family": "08_integrativa_ecletica",
+      "canonical": "Psicodinâmica Cíclica",
+      "hits": [
+        {
+          "name": "Psicodinâmica Cíclica (Wachtel)",
+          "norm": "psicodinamica ciclica",
+          "file": "08_integrativa_ecletica_registros.md",
+          "line": 301,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Psicodinâmica Cíclica (Wachtel)",
+          "norm": "psicodinamica ciclica",
+          "file": "08_integrativa_ecletica_lote1.md",
+          "line": 106,
+          "kind": "campo_nome_inline"
+        }
+      ]
+    },
+    {
+      "family": "08_integrativa_ecletica",
+      "canonical": "Terapia de Aceitação e Compromisso (ACT)",
+      "hits": [
+        {
+          "name": "Terapia de Aceitação e Compromisso (ACT) como modelo integrativo/contextual",
+          "norm": "terapia de aceitacao e compromisso como modelo integrativo contextual",
+          "file": "08_integrativa_ecletica_registros.md",
+          "line": 372,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia de Aceitação e Compromisso (ACT) como modelo integrativo/contextual",
+          "norm": "terapia de aceitacao e compromisso como modelo integrativo contextual",
+          "file": "08_integrativa_ecletica_lote1.md",
+          "line": 133,
+          "kind": "campo_nome_inline"
+        }
+      ]
+    },
+    {
+      "family": "08_integrativa_ecletica",
+      "canonical": "Formulação de Caso em Psicoterapia",
+      "hits": [
+        {
+          "name": " Formulação de Caso em Psicoterapia",
+          "norm": "formulacao de caso em psicoterapia",
+          "file": "08_integrativa_ecletica_registros.md",
+          "line": 440,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": " Formulação de Caso em Psicoterapia",
+          "norm": "formulacao de caso em psicoterapia",
+          "file": "08_integrativa_ecletica_lote2.md",
+          "line": 3,
+          "kind": "campo_nome_inline"
+        }
+      ]
+    },
+    {
+      "family": "08_integrativa_ecletica",
+      "canonical": "Modelo Transteórico de Mudança",
+      "hits": [
+        {
+          "name": " Modelo Transteórico de Mudança (Modelo dos Estágios)",
+          "norm": "modelo transteorico de mudanca",
+          "file": "08_integrativa_ecletica_registros.md",
+          "line": 488,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": " Modelo Transteórico de Mudança (Modelo dos Estágios)",
+          "norm": "modelo transteorico de mudanca",
+          "file": "08_integrativa_ecletica_lote2.md",
+          "line": 51,
+          "kind": "campo_nome_inline"
+        }
+      ]
+    },
+    {
+      "family": "08_integrativa_ecletica",
+      "canonical": "Prática Baseada em Evidências em Psicologia",
+      "hits": [
+        {
+          "name": " Prática Baseada em Evidências em Psicologia (PBE)",
+          "norm": "pratica baseada em evidencias em psicologia",
+          "file": "08_integrativa_ecletica_registros.md",
+          "line": 536,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": " Prática Baseada em Evidências em Psicologia (PBE)",
+          "norm": "pratica baseada em evidencias em psicologia",
+          "file": "08_integrativa_ecletica_lote2.md",
+          "line": 99,
+          "kind": "campo_nome_inline"
+        }
+      ]
+    },
+    {
+      "family": "09_social_cultural_genero",
+      "canonical": "Terapia Feminista",
+      "hits": [
+        {
+          "name": "Terapia Feminista",
+          "norm": "terapia feminista",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 22,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Feminista Psicanalítica",
+          "norm": "terapia feminista psicanalitica",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 528,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Feminista",
+          "norm": "terapia feminista",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 18,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia Feminista Psicanalítica",
+          "norm": "terapia feminista psicanalitica",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 524,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia Feminista",
+          "norm": "terapia feminista",
+          "file": "09_social_cultural_genero_lote1.md",
+          "line": 3,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Feminista",
+          "norm": "terapia feminista",
+          "file": "09_social_cultural_genero_lote1.md",
+          "line": 1,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia Feminista Psicanalítica",
+          "norm": "terapia feminista psicanalitica",
+          "file": "09_social_cultural_genero_lote2.md",
+          "line": 51,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Feminista Psicanalítica",
+          "norm": "terapia feminista psicanalitica",
+          "file": "09_social_cultural_genero_lote2.md",
+          "line": 49,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "09_social_cultural_genero",
+      "canonical": "Terapia Multicultural",
+      "hits": [
+        {
+          "name": "Terapia Multicultural",
+          "norm": "terapia multicultural",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 91,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Multicultural",
+          "norm": "terapia multicultural",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 87,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia Multicultural",
+          "norm": "terapia multicultural",
+          "file": "09_social_cultural_genero_lote1.md",
+          "line": 28,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Multicultural",
+          "norm": "terapia multicultural",
+          "file": "09_social_cultural_genero_lote1.md",
+          "line": 26,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "09_social_cultural_genero",
+      "canonical": "Terapia Afirmativa LGBTQ+",
+      "hits": [
+        {
+          "name": "Terapia Afirmativa LGBTQ+",
+          "norm": "terapia afirmativa lgbtq",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 160,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Afirmativa LGBTQ+",
+          "norm": "terapia afirmativa lgbtq",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 156,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia Afirmativa LGBTQ+",
+          "norm": "terapia afirmativa lgbtq",
+          "file": "09_social_cultural_genero_lote1.md",
+          "line": 53,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Afirmativa LGBTQ+",
+          "norm": "terapia afirmativa lgbtq",
+          "file": "09_social_cultural_genero_lote1.md",
+          "line": 51,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "09_social_cultural_genero",
+      "canonical": "Terapia Antirracista",
+      "hits": [
+        {
+          "name": "Terapia Antirracista",
+          "norm": "terapia antirracista",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 229,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Antirracista",
+          "norm": "terapia antirracista",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 225,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia Antirracista",
+          "norm": "terapia antirracista",
+          "file": "09_social_cultural_genero_lote1.md",
+          "line": 78,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Antirracista",
+          "norm": "terapia antirracista",
+          "file": "09_social_cultural_genero_lote1.md",
+          "line": 76,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "09_social_cultural_genero",
+      "canonical": "Terapia Interseccional",
+      "hits": [
+        {
+          "name": "Terapia Interseccional",
+          "norm": "terapia interseccional",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 298,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Interseccional",
+          "norm": "terapia interseccional",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 294,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia Interseccional",
+          "norm": "terapia interseccional",
+          "file": "09_social_cultural_genero_lote1.md",
+          "line": 103,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Interseccional",
+          "norm": "terapia interseccional",
+          "file": "09_social_cultural_genero_lote1.md",
+          "line": 101,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "09_social_cultural_genero",
+      "canonical": "Terapia Comunitária",
+      "hits": [
+        {
+          "name": "Terapia Comunitária",
+          "norm": "terapia comunitaria",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 367,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Comunitária",
+          "norm": "terapia comunitaria",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 363,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia Comunitária",
+          "norm": "terapia comunitaria",
+          "file": "09_social_cultural_genero_lote1.md",
+          "line": 128,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Comunitária",
+          "norm": "terapia comunitaria",
+          "file": "09_social_cultural_genero_lote1.md",
+          "line": 126,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "09_social_cultural_genero",
+      "canonical": "Abordagens Transculturais e Internacionais",
+      "hits": [
+        {
+          "name": "Abordagens Transculturais e Internacionais",
+          "norm": "abordagens transculturais e internacionais",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 436,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Abordagens Transculturais e Internacionais",
+          "norm": "abordagens transculturais e internacionais",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 432,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Abordagens Transculturais e Internacionais",
+          "norm": "abordagens transculturais e internacionais",
+          "file": "09_social_cultural_genero_lote2.md",
+          "line": 3,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Abordagens Transculturais e Internacionais",
+          "norm": "abordagens transculturais e internacionais",
+          "file": "09_social_cultural_genero_lote2.md",
+          "line": 1,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "09_social_cultural_genero",
+      "canonical": "Terapia Feminista Psicanalítica",
+      "hits": [
+        {
+          "name": "Terapia Feminista",
+          "norm": "terapia feminista",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 22,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Feminista Psicanalítica",
+          "norm": "terapia feminista psicanalitica",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 528,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Feminista",
+          "norm": "terapia feminista",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 18,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia Feminista Psicanalítica",
+          "norm": "terapia feminista psicanalitica",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 524,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia Feminista",
+          "norm": "terapia feminista",
+          "file": "09_social_cultural_genero_lote1.md",
+          "line": 3,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Feminista",
+          "norm": "terapia feminista",
+          "file": "09_social_cultural_genero_lote1.md",
+          "line": 1,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia Feminista Psicanalítica",
+          "norm": "terapia feminista psicanalitica",
+          "file": "09_social_cultural_genero_lote2.md",
+          "line": 51,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Feminista Psicanalítica",
+          "norm": "terapia feminista psicanalitica",
+          "file": "09_social_cultural_genero_lote2.md",
+          "line": 49,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "09_social_cultural_genero",
+      "canonical": "Terapia Familiar Feminista",
+      "hits": [
+        {
+          "name": "Terapia Familiar Feminista",
+          "norm": "terapia familiar feminista",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 620,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Familiar Feminista",
+          "norm": "terapia familiar feminista",
+          "file": "09_social_cultural_genero_registros.md",
+          "line": 616,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia Familiar Feminista",
+          "norm": "terapia familiar feminista",
+          "file": "09_social_cultural_genero_lote2.md",
+          "line": 99,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Familiar Feminista",
+          "norm": "terapia familiar feminista",
+          "file": "09_social_cultural_genero_lote2.md",
+          "line": 97,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "10_pragmaticos_objetivo",
+      "canonical": "Terapia Focada em Soluções",
+      "hits": [
+        {
+          "name": "Terapia Focada em Soluções (TFS)",
+          "norm": "terapia focada em solucoes",
+          "file": "10_pragmaticos_objetivo_registros.md",
+          "line": 22,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia Focada em Soluções",
+          "norm": "terapia focada em solucoes",
+          "file": "10_pragmaticos_objetivo_registros.md",
+          "line": 18,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia Focada em Soluções (TFS)",
+          "norm": "terapia focada em solucoes",
+          "file": "10_pragmaticos_objetivo_lote1.md",
+          "line": 3,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Focada em Soluções",
+          "norm": "terapia focada em solucoes",
+          "file": "10_pragmaticos_objetivo_lote1.md",
+          "line": 1,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "10_pragmaticos_objetivo",
+      "canonical": "Entrevista Motivacional",
+      "hits": [
+        {
+          "name": "Entrevista Motivacional (EM)",
+          "norm": "entrevista motivacional",
+          "file": "10_pragmaticos_objetivo_registros.md",
+          "line": 113,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Entrevista Motivacional",
+          "norm": "entrevista motivacional",
+          "file": "10_pragmaticos_objetivo_registros.md",
+          "line": 109,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Entrevista Motivacional (EM)",
+          "norm": "entrevista motivacional",
+          "file": "10_pragmaticos_objetivo_lote1.md",
+          "line": 50,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Entrevista Motivacional",
+          "norm": "entrevista motivacional",
+          "file": "10_pragmaticos_objetivo_lote1.md",
+          "line": 48,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "10_pragmaticos_objetivo",
+      "canonical": "Terapia da Realidade",
+      "hits": [
+        {
+          "name": "Terapia da Realidade",
+          "norm": "terapia da realidade",
+          "file": "10_pragmaticos_objetivo_registros.md",
+          "line": 204,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia da Realidade",
+          "norm": "terapia da realidade",
+          "file": "10_pragmaticos_objetivo_registros.md",
+          "line": 200,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia da Realidade",
+          "norm": "terapia da realidade",
+          "file": "10_pragmaticos_objetivo_lote1.md",
+          "line": 97,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia da Realidade",
+          "norm": "terapia da realidade",
+          "file": "10_pragmaticos_objetivo_lote1.md",
+          "line": 95,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "10_pragmaticos_objetivo",
+      "canonical": "Terapia de Resolução de Problemas",
+      "hits": [
+        {
+          "name": "Terapia de Resolução de Problemas (TRP / Problem-Solving Therapy)",
+          "norm": "terapia de resolucao de problemas",
+          "file": "10_pragmaticos_objetivo_registros.md",
+          "line": 295,
+          "kind": "campo_nome"
+        },
+        {
+          "name": "Terapia de Resolução de Problemas",
+          "norm": "terapia de resolucao de problemas",
+          "file": "10_pragmaticos_objetivo_registros.md",
+          "line": 291,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia de Resolução de Problemas (TRP / Problem-Solving Therapy)",
+          "norm": "terapia de resolucao de problemas",
+          "file": "10_pragmaticos_objetivo_lote1.md",
+          "line": 144,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia de Resolução de Problemas",
+          "norm": "terapia de resolucao de problemas",
+          "file": "10_pragmaticos_objetivo_lote1.md",
+          "line": 142,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "10_pragmaticos_objetivo",
+      "canonical": "Terapia Breve Orientada a Metas",
+      "hits": [
+        {
+          "name": "Terapia Breve Orientada a Metas",
+          "norm": "terapia breve orientada a metas",
+          "file": "10_pragmaticos_objetivo_registros.md",
+          "line": 386,
+          "kind": "campo_nome"
+        },
+        {
+          "name": " Terapia Breve (guarda‑chuva geral)",
+          "norm": "terapia breve",
+          "file": "10_pragmaticos_objetivo_registros.md",
+          "line": 474,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Breve Orientada a Metas",
+          "norm": "terapia breve orientada a metas",
+          "file": "10_pragmaticos_objetivo_registros.md",
+          "line": 382,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia Breve Orientada a Metas",
+          "norm": "terapia breve orientada a metas",
+          "file": "10_pragmaticos_objetivo_lote1.md",
+          "line": 191,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Breve Orientada a Metas",
+          "norm": "terapia breve orientada a metas",
+          "file": "10_pragmaticos_objetivo_lote1.md",
+          "line": 189,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": " Terapia Breve (guarda‑chuva geral)",
+          "norm": "terapia breve",
+          "file": "10_pragmaticos_objetivo_lote2.md",
+          "line": 3,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Breve (guarda‑chuva geral)",
+          "norm": "terapia breve",
+          "file": "10_pragmaticos_objetivo_lote2.md",
+          "line": 1,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "10_pragmaticos_objetivo",
+      "canonical": "Terapia Breve",
+      "hits": [
+        {
+          "name": "Terapia Breve Orientada a Metas",
+          "norm": "terapia breve orientada a metas",
+          "file": "10_pragmaticos_objetivo_registros.md",
+          "line": 386,
+          "kind": "campo_nome"
+        },
+        {
+          "name": " Terapia Breve (guarda‑chuva geral)",
+          "norm": "terapia breve",
+          "file": "10_pragmaticos_objetivo_registros.md",
+          "line": 474,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Breve Orientada a Metas",
+          "norm": "terapia breve orientada a metas",
+          "file": "10_pragmaticos_objetivo_registros.md",
+          "line": 382,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": "Terapia Breve Orientada a Metas",
+          "norm": "terapia breve orientada a metas",
+          "file": "10_pragmaticos_objetivo_lote1.md",
+          "line": 191,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Breve Orientada a Metas",
+          "norm": "terapia breve orientada a metas",
+          "file": "10_pragmaticos_objetivo_lote1.md",
+          "line": 189,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": " Terapia Breve (guarda‑chuva geral)",
+          "norm": "terapia breve",
+          "file": "10_pragmaticos_objetivo_lote2.md",
+          "line": 3,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Breve (guarda‑chuva geral)",
+          "norm": "terapia breve",
+          "file": "10_pragmaticos_objetivo_lote2.md",
+          "line": 1,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "10_pragmaticos_objetivo",
+      "canonical": "Aconselhamento de Carreira",
+      "hits": [
+        {
+          "name": " Aconselhamento de Carreira",
+          "norm": "aconselhamento de carreira",
+          "file": "10_pragmaticos_objetivo_registros.md",
+          "line": 522,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Aconselhamento de Carreira",
+          "norm": "aconselhamento de carreira",
+          "file": "10_pragmaticos_objetivo_registros.md",
+          "line": 520,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": " Aconselhamento de Carreira",
+          "norm": "aconselhamento de carreira",
+          "file": "10_pragmaticos_objetivo_lote2.md",
+          "line": 51,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Aconselhamento de Carreira",
+          "norm": "aconselhamento de carreira",
+          "file": "10_pragmaticos_objetivo_lote2.md",
+          "line": 49,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "10_pragmaticos_objetivo",
+      "canonical": "Terapia Baseada em Forças",
+      "hits": [
+        {
+          "name": " Terapia Baseada em Forças (perspectiva baseada em forças)",
+          "norm": "terapia baseada em forcas",
+          "file": "10_pragmaticos_objetivo_registros.md",
+          "line": 570,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Baseada em Forças (Strengths‑Based Therapy)",
+          "norm": "terapia baseada em forcas",
+          "file": "10_pragmaticos_objetivo_registros.md",
+          "line": 568,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": " Terapia Baseada em Forças (perspectiva baseada em forças)",
+          "norm": "terapia baseada em forcas",
+          "file": "10_pragmaticos_objetivo_lote2.md",
+          "line": 99,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia Baseada em Forças (Strengths‑Based Therapy)",
+          "norm": "terapia baseada em forcas",
+          "file": "10_pragmaticos_objetivo_lote2.md",
+          "line": 97,
+          "kind": "titulo_lote"
+        }
+      ]
+    },
+    {
+      "family": "10_pragmaticos_objetivo",
+      "canonical": "Terapia de Casal e Família de Curto Prazo",
+      "hits": [
+        {
+          "name": " Terapia de Casal e Família de Curto Prazo (MRI — Mental Research Institute / modelo estratégico)",
+          "norm": "terapia de casal e familia de curto prazo",
+          "file": "10_pragmaticos_objetivo_registros.md",
+          "line": 618,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia de Casal e Família de Curto Prazo (Modelo MRI)",
+          "norm": "terapia de casal e familia de curto prazo",
+          "file": "10_pragmaticos_objetivo_registros.md",
+          "line": 616,
+          "kind": "titulo_lote"
+        },
+        {
+          "name": " Terapia de Casal e Família de Curto Prazo (MRI — Mental Research Institute / modelo estratégico)",
+          "norm": "terapia de casal e familia de curto prazo",
+          "file": "10_pragmaticos_objetivo_lote2.md",
+          "line": 147,
+          "kind": "campo_nome_inline"
+        },
+        {
+          "name": "Terapia de Casal e Família de Curto Prazo (Modelo MRI)",
+          "norm": "terapia de casal e familia de curto prazo",
+          "file": "10_pragmaticos_objetivo_lote2.md",
+          "line": 145,
+          "kind": "titulo_lote"
+        }
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "family": "01_psicanalitica_psicodinamica",
+      "canonical_name": "Psicanálise Freudiana Clássica",
+      "name": "Psicanálise Freudiana Clássica",
+      "norm": "psicanalise freudiana classica",
+      "file": "01_psicanalitica_psicodinamica_registros.md",
+      "line": 23,
+      "kind": "registro_abordagem"
+    },
+    {
+      "family": "01_psicanalitica_psicodinamica",
+      "canonical_name": "Psicologia do Ego",
+      "name": "Psicologia do Ego",
+      "norm": "psicologia do ego",
+      "file": "01_psicanalitica_psicodinamica_registros.md",
+      "line": 143,
+      "kind": "registro_abordagem"
+    },
+    {
+      "family": "01_psicanalitica_psicodinamica",
+      "canonical_name": "Teoria das Relações Objetais",
+      "name": "Teoria das Relações Objetais",
+      "norm": "teoria das relacoes objetais",
+      "file": "01_psicanalitica_psicodinamica_registros.md",
+      "line": 237,
+      "kind": "registro_abordagem"
+    },
+    {
+      "family": "01_psicanalitica_psicodinamica",
+      "canonical_name": "Psicologia do Self (Kohut)",
+      "name": "Psicologia do Self (Kohut)",
+      "norm": "psicologia do self",
+      "file": "01_psicanalitica_psicodinamica_registros.md",
+      "line": 347,
+      "kind": "registro_abordagem"
+    },
+    {
+      "family": "01_psicanalitica_psicodinamica",
+      "canonical_name": "Psicanálise Relacional",
+      "name": "Psicanálise Relacional",
+      "norm": "psicanalise relacional",
+      "file": "01_psicanalitica_psicodinamica_registros.md",
+      "line": 441,
+      "kind": "registro_abordagem"
+    },
+    {
+      "family": "01_psicanalitica_psicodinamica",
+      "canonical_name": "Terapia Psicodinâmica Breve",
+      "name": "Terapia Psicodinâmica Breve",
+      "norm": "terapia psicodinamica breve",
+      "file": "01_psicanalitica_psicodinamica_registros.md",
+      "line": 813,
+      "kind": "registro_abordagem"
+    },
+    {
+      "family": "01_psicanalitica_psicodinamica",
+      "canonical_name": "Psicologia Analítica Junguiana",
+      "name": "Psicologia Analítica Junguiana",
+      "norm": "psicologia analitica junguiana",
+      "file": "01_psicanalitica_psicodinamica_registros.md",
+      "line": 535,
+      "kind": "registro_abordagem"
+    },
+    {
+      "family": "01_psicanalitica_psicodinamica",
+      "canonical_name": "Psicologia Individual Adleriana",
+      "name": "Psicologia Individual Adleriana",
+      "norm": "psicologia individual adleriana",
+      "file": "01_psicanalitica_psicodinamica_registros.md",
+      "line": 629,
+      "kind": "registro_abordagem"
+    },
+    {
+      "family": "01_psicanalitica_psicodinamica",
+      "canonical_name": "Psicanálise Interpessoal (Sullivan)",
+      "name": "Psicanálise Interpessoal (Sullivan)",
+      "norm": "psicanalise interpessoal",
+      "file": "01_psicanalitica_psicodinamica_registros.md",
+      "line": 721,
+      "kind": "registro_abordagem"
+    },
+    {
+      "family": "01_psicanalitica_psicodinamica",
+      "canonical_name": "Psicoterapia Psicodinâmica Contemporânea (integrativa)",
+      "name": "Psicoterapia Psicodinâmica Contemporânea (integrativa)",
+      "norm": "psicoterapia psicodinamica contemporanea",
+      "file": "01_psicanalitica_psicodinamica_registros.md",
+      "line": 905,
+      "kind": "registro_abordagem"
+    },
+    {
+      "family": "02_existencial_humanista",
+      "canonical_name": "Terapia Centrada na Pessoa (Rogers)",
+      "name": "Terapia Centrada na Pessoa (Rogers)",
+      "norm": "terapia centrada na pessoa",
+      "file": "02_existencial_humanista_registros.md",
+      "line": 23,
+      "kind": "registro_abordagem"
+    },
+    {
+      "family": "02_existencial_humanista",
+      "canonical_name": "Gestalt-terapia",
+      "name": "Gestalt-terapia",
+      "norm": "gestalt terapia",
+      "file": "02_existencial_humanista_registros.md",
+      "line": 117,
+      "kind": "registro_abordagem"
+    },
+    {
+      "family": "02_existencial_humanista",
+      "canonical_name": "Terapia Existencial-Humanista",
+      "name": "Terapia Existencial‑Humanista",
+      "norm": "terapia existencial humanista",
+      "file": "02_existencial_humanista_registros.md",
+      "line": 222,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "02_existencial_humanista",
+      "canonical_name": "Terapia Focada nas Emoções",
+      "name": "Terapia Focada nas Emoções (Emotion‑Focused Therapy — EFT, vertente de Leslie Greenberg)",
+      "norm": "terapia focada nas emocoes",
+      "file": "02_existencial_humanista_registros.md",
+      "line": 291,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "02_existencial_humanista",
+      "canonical_name": "Logoterapia",
+      "name": "Logoterapia",
+      "norm": "logoterapia",
+      "file": "02_existencial_humanista_registros.md",
+      "line": 360,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "02_existencial_humanista",
+      "canonical_name": "Terapia Experiencial",
+      "name": "Terapia Experiencial",
+      "norm": "terapia experiencial",
+      "file": "02_existencial_humanista_registros.md",
+      "line": 427,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "02_existencial_humanista",
+      "canonical_name": "Daseinsanalyse",
+      "name": "Daseinsanalyse (tradicionalmente associada a Ludwig Binswanger e Medard Boss)",
+      "norm": "daseinsanalyse",
+      "file": "02_existencial_humanista_lote3.md",
+      "line": 2,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "02_existencial_humanista",
+      "canonical_name": "Terapia Existencial Britânica",
+      "name": "Terapia Existencial Britânica (vertente clínica contemporânea)",
+      "norm": "terapia existencial britanica",
+      "file": "02_existencial_humanista_registros.md",
+      "line": 558,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "02_existencial_humanista",
+      "canonical_name": "Psicologia Humanista",
+      "name": "Psicologia Humanista (movimento amplo)",
+      "norm": "psicologia humanista",
+      "file": "02_existencial_humanista_registros.md",
+      "line": 625,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "02_existencial_humanista",
+      "canonical_name": "Terapia Transpessoal",
+      "name": "Terapia Transpessoal",
+      "norm": "terapia transpessoal",
+      "file": "02_existencial_humanista_registros.md",
+      "line": 692,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "03_comportamental",
+      "canonical_name": "Behaviorismo Metodológico/Radical",
+      "name": "Behaviorismo Metodológico/Radical (base teórica)",
+      "norm": "behaviorismo metodologico radical",
+      "file": "03_comportamental_registros.md",
+      "line": 24,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "03_comportamental",
+      "canonical_name": "Terapia Comportamental Clássica",
+      "name": "Terapia Comportamental Clássica",
+      "norm": "terapia comportamental classica",
+      "file": "03_comportamental_registros.md",
+      "line": 92,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "03_comportamental",
+      "canonical_name": "Análise do Comportamento Aplicada (ABA)",
+      "name": "Análise do Comportamento Aplicada (ABA)",
+      "norm": "analise do comportamento aplicada",
+      "file": "03_comportamental_registros.md",
+      "line": 160,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "03_comportamental",
+      "canonical_name": "Dessensibilização Sistemática",
+      "name": "Dessensibilização Sistemática (Wolpe)",
+      "norm": "dessensibilizacao sistematica",
+      "file": "03_comportamental_lote2.md",
+      "line": 2,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "03_comportamental",
+      "canonical_name": "Terapia de Exposição",
+      "name": "Terapia de Exposição",
+      "norm": "terapia de exposicao",
+      "file": "03_comportamental_registros.md",
+      "line": 293,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "03_comportamental",
+      "canonical_name": "Terapia Comportamental Dialética (DBT)",
+      "name": "Terapia Comportamental Dialética (DBT)",
+      "norm": "terapia comportamental dialetica",
+      "file": "03_comportamental_registros.md",
+      "line": 360,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "03_comportamental",
+      "canonical_name": "Ativação Comportamental",
+      "name": "Ativação Comportamental",
+      "norm": "ativacao comportamental",
+      "file": "03_comportamental_registros.md",
+      "line": 427,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "03_comportamental",
+      "canonical_name": "Treinamento de Habilidades Sociais",
+      "name": "Treinamento de Habilidades Sociais",
+      "norm": "treinamento de habilidades sociais",
+      "file": "03_comportamental_lote3.md",
+      "line": 2,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "03_comportamental",
+      "canonical_name": "Modificação de Comportamento Infantil",
+      "name": "Modificação de Comportamento Infantil",
+      "norm": "modificacao de comportamento infantil",
+      "file": "03_comportamental_registros.md",
+      "line": 558,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "03_comportamental",
+      "canonical_name": "Terapia Comportamental de Casais",
+      "name": "Terapia Comportamental de Casais",
+      "norm": "terapia comportamental de casais",
+      "file": "03_comportamental_registros.md",
+      "line": 625,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "04_cognitiva_tcc",
+      "canonical_name": "Terapia Cognitiva (Beck)",
+      "name": "Terapia Cognitiva (Beck)",
+      "norm": "terapia cognitiva",
+      "file": "04_cognitiva_tcc_registros.md",
+      "line": 24,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "04_cognitiva_tcc",
+      "canonical_name": "Terapia Racional-Emotiva Comportamental (REBT)",
+      "name": "Terapia Racional-Emotiva Comportamental (REBT)",
+      "norm": "terapia racional emotiva comportamental",
+      "file": "04_cognitiva_tcc_registros.md",
+      "line": 90,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "04_cognitiva_tcc",
+      "canonical_name": "TCC Integrada/Geral",
+      "name": "TCC Integrada/Geral",
+      "norm": "tcc integrada geral",
+      "file": "04_cognitiva_tcc_registros.md",
+      "line": 156,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "04_cognitiva_tcc",
+      "canonical_name": "Terapia do Esquema",
+      "name": "Terapia do Esquema",
+      "norm": "terapia do esquema",
+      "file": "04_cognitiva_tcc_registros.md",
+      "line": 222,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "04_cognitiva_tcc",
+      "canonical_name": "Terapia Cognitiva Baseada em Mindfulness (MBCT)",
+      "name": "Terapia Cognitiva (Beck)",
+      "norm": "terapia cognitiva",
+      "file": "04_cognitiva_tcc_registros.md",
+      "line": 24,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "04_cognitiva_tcc",
+      "canonical_name": "Terapia de Aceitação e Compromisso (ACT)",
+      "name": "Terapia de Aceitação e Compromisso (ACT)",
+      "norm": "terapia de aceitacao e compromisso",
+      "file": "04_cognitiva_tcc_registros.md",
+      "line": 353,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "04_cognitiva_tcc",
+      "canonical_name": "Terapia Focada na Compaixão",
+      "name": "Terapia Focada na Compaixão (CFT)",
+      "norm": "terapia focada na compaixao",
+      "file": "04_cognitiva_tcc_registros.md",
+      "line": 420,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "04_cognitiva_tcc",
+      "canonical_name": "Terapia Metacognitiva",
+      "name": "Terapia Metacognitiva de Wells (MCT)",
+      "norm": "terapia metacognitiva de wells",
+      "file": "04_cognitiva_tcc_registros.md",
+      "line": 487,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "04_cognitiva_tcc",
+      "canonical_name": "Terapia do Processamento Cognitivo",
+      "name": "Terapia do Processamento Cognitivo (para TEPT)",
+      "norm": "terapia do processamento cognitivo",
+      "file": "04_cognitiva_tcc_lote3.md",
+      "line": 2,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "04_cognitiva_tcc",
+      "canonical_name": "Terapia Cognitivo-Comportamental Baseada em Protocolo Transdiagnóstico",
+      "name": "Terapia Cognitivo‑Comportamental Baseada em Protocolo Transdiagnóstico",
+      "norm": "terapia cognitivo comportamental baseada em protocolo transdiagnostico",
+      "file": "04_cognitiva_tcc_registros.md",
+      "line": 658,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "05_sistemica_familiar_casais",
+      "canonical_name": "Terapia Familiar Estrutural",
+      "name": "Terapia Familiar Estrutural (Salvador Minuchin)",
+      "norm": "terapia familiar estrutural",
+      "file": "05_sistemica_familiar_casais_registros.md",
+      "line": 27,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "05_sistemica_familiar_casais",
+      "canonical_name": "Terapia Familiar Estratégica",
+      "name": "Terapia Familiar Estratégica (Jay Haley)",
+      "norm": "terapia familiar estrategica",
+      "file": "05_sistemica_familiar_casais_registros.md",
+      "line": 98,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "05_sistemica_familiar_casais",
+      "canonical_name": "Terapia Familiar Boweniana",
+      "name": "Terapia Familiar Boweniana (Murray Bowen)",
+      "norm": "terapia familiar boweniana",
+      "file": "05_sistemica_familiar_casais_registros.md",
+      "line": 169,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "05_sistemica_familiar_casais",
+      "canonical_name": "Escola de Milão",
+      "name": "Escola de Milão (Terapia Sistêmica de Milão)",
+      "norm": "escola de milao",
+      "file": "05_sistemica_familiar_casais_registros.md",
+      "line": 240,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "05_sistemica_familiar_casais",
+      "canonical_name": "Terapia Centrada em Soluções",
+      "name": "Terapia Centrada em Soluções",
+      "norm": "terapia centrada em solucoes",
+      "file": "05_sistemica_familiar_casais_registros.md",
+      "line": 313,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "05_sistemica_familiar_casais",
+      "canonical_name": "Terapia Familiar Geral",
+      "name": "Terapia Familiar Geral",
+      "norm": "terapia familiar geral",
+      "file": "05_sistemica_familiar_casais_registros.md",
+      "line": 381,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "05_sistemica_familiar_casais",
+      "canonical_name": "Terapia de Casais Integrativa",
+      "name": "Terapia de Casais Integrativa",
+      "norm": "terapia de casais integrativa",
+      "file": "05_sistemica_familiar_casais_registros.md",
+      "line": 449,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "05_sistemica_familiar_casais",
+      "canonical_name": "Terapia Familiar Experiencial",
+      "name": "Terapia Familiar Experiencial",
+      "norm": "terapia familiar experiencial",
+      "file": "05_sistemica_familiar_casais_registros.md",
+      "line": 517,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "05_sistemica_familiar_casais",
+      "canonical_name": "Terapia Familiar Baseada em Apego",
+      "name": "Terapia Familiar Baseada em Apego",
+      "norm": "terapia familiar baseada em apego",
+      "file": "05_sistemica_familiar_casais_registros.md",
+      "line": 585,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "05_sistemica_familiar_casais",
+      "canonical_name": "Terapia Multissistêmica",
+      "name": "Terapia Multissistêmica",
+      "norm": "terapia multissistemica",
+      "file": "05_sistemica_familiar_casais_registros.md",
+      "line": 653,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical_name": "Terapia Narrativa",
+      "name": "Terapia Narrativa",
+      "norm": "terapia narrativa",
+      "file": "06_construtivista_narrativa_registros.md",
+      "line": 21,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical_name": "Psicoterapias Construtivas",
+      "name": "Psicoterapias Construtivas",
+      "norm": "psicoterapias construtivas",
+      "file": "06_construtivista_narrativa_registros.md",
+      "line": 89,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical_name": "Terapia de Construção Pessoal",
+      "name": "Terapia de Construção Pessoal (Psicologia dos Construtos Pessoais)",
+      "norm": "terapia de construcao pessoal",
+      "file": "06_construtivista_narrativa_registros.md",
+      "line": 158,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical_name": "Terapia Colaborativa",
+      "name": "Terapia Colaborativa (Diálica/Colaborativa)",
+      "norm": "terapia colaborativa",
+      "file": "06_construtivista_narrativa_registros.md",
+      "line": 226,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical_name": "Terapia Pós-moderna",
+      "name": "Terapia Pós-moderna",
+      "norm": "terapia pos moderna",
+      "file": "06_construtivista_narrativa_registros.md",
+      "line": 294,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical_name": "Construcionismo Social",
+      "name": "Construcionismo Social",
+      "norm": "construcionismo social",
+      "file": "06_construtivista_narrativa_registros.md",
+      "line": 361,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical_name": "Coherence Therapy",
+      "name": "Coherence Therapy",
+      "norm": "coherence therapy",
+      "file": "06_construtivista_narrativa_registros.md",
+      "line": 429,
+      "kind": "campo_nome_inline"
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical_name": "Terapia Ericksoniana",
+      "name": "Terapia Ericksoniana",
+      "norm": "terapia ericksoniana",
+      "file": "06_construtivista_narrativa_registros.md",
+      "line": 496,
+      "kind": "campo_nome_inline"
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical_name": "Terapia Centrada em Soluções",
+      "name": "Terapia Centrada em Soluções (TCS)",
+      "norm": "terapia centrada em solucoes",
+      "file": "06_construtivista_narrativa_registros.md",
+      "line": 563,
+      "kind": "campo_nome_inline"
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical_name": "Prática Baseada em Resposta",
+      "name": "Prática Baseada em Resposta",
+      "norm": "pratica baseada em resposta",
+      "file": "06_construtivista_narrativa_registros.md",
+      "line": 630,
+      "kind": "campo_nome_inline"
+    },
+    {
+      "family": "06_construtivista_narrativa",
+      "canonical_name": "Terapia de Renegociação de Identidade",
+      "name": "Terapia de Renegociação de Identidade",
+      "norm": "terapia de renegociacao de identidade",
+      "file": "06_construtivista_narrativa_registros.md",
+      "line": 697,
+      "kind": "campo_nome_inline"
+    },
+    {
+      "family": "07_interpessoal_relacional",
+      "canonical_name": "Psicoterapia Interpessoal (IPT)",
+      "name": "Psicoterapia Interpessoal (IPT)",
+      "norm": "psicoterapia interpessoal",
+      "file": "07_interpessoal_relacional_registros.md",
+      "line": 20,
+      "kind": "registro_abordagem"
+    },
+    {
+      "family": "07_interpessoal_relacional",
+      "canonical_name": "Terapia Relacional-Cultural",
+      "name": "Terapia Relacional‑Cultural (Relational‑Cultural Therapy, RCT)",
+      "norm": "terapia relacional cultural",
+      "file": "07_interpessoal_relacional_registros.md",
+      "line": 581,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "07_interpessoal_relacional",
+      "canonical_name": "Psicanálise Interpessoal (Sullivan)",
+      "name": "Psicanálise Interpessoal (Interpersonal Psychoanalysis) — enquadramento relacional associado a Harry Stack Sullivan",
+      "norm": "psicanalise interpessoal enquadramento relacional associado a harry stack sullivan",
+      "file": "07_interpessoal_relacional_registros.md",
+      "line": 672,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "07_interpessoal_relacional",
+      "canonical_name": "Terapia Baseada em Mentalização",
+      "name": "Terapia Baseada em Mentalização (MBT)",
+      "norm": "terapia baseada em mentalizacao",
+      "file": "07_interpessoal_relacional_registros.md",
+      "line": 116,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "07_interpessoal_relacional",
+      "canonical_name": "Teoria dos Sistemas Intersubjetivos",
+      "name": "Teoria dos Sistemas Intersubjetivos (Intersubjective Systems / Intersubjective Relational framework)",
+      "norm": "teoria dos sistemas intersubjetivos",
+      "file": "07_interpessoal_relacional_registros.md",
+      "line": 763,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "07_interpessoal_relacional",
+      "canonical_name": "Psicodinâmica Cíclica",
+      "name": "Psicodinâmica Cíclica (terapia cíclica psicodinâmica)",
+      "norm": "psicodinamica ciclica",
+      "file": "07_interpessoal_relacional_registros.md",
+      "line": 484,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "07_interpessoal_relacional",
+      "canonical_name": "Terapia de Casais Baseada em Apego",
+      "name": "Terapia de Casais Baseada em Apego (EFT de Casais)",
+      "norm": "terapia de casais baseada em apego",
+      "file": "07_interpessoal_relacional_registros.md",
+      "line": 300,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "07_interpessoal_relacional",
+      "canonical_name": "Método Gottman de Terapia de Casais",
+      "name": "Método Gottman de Terapia de Casais (Gottman Method Couples Therapy)",
+      "norm": "metodo gottman de terapia de casais",
+      "file": "07_interpessoal_relacional_registros.md",
+      "line": 854,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "07_interpessoal_relacional",
+      "canonical_name": "Terapia Familiar Focada nas Emoções",
+      "name": "Terapia Familiar Focada nas Emoções",
+      "norm": "terapia familiar focada nas emocoes",
+      "file": "07_interpessoal_relacional_registros.md",
+      "line": 392,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "08_integrativa_ecletica",
+      "canonical_name": "Psicoterapia Integrativa Geral",
+      "name": "Psicoterapia Integrativa Geral",
+      "norm": "psicoterapia integrativa geral",
+      "file": "08_integrativa_ecletica_registros.md",
+      "line": 21,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "08_integrativa_ecletica",
+      "canonical_name": "Ecletismo Técnico",
+      "name": "Ecletismo Técnico",
+      "norm": "ecletismo tecnico",
+      "file": "08_integrativa_ecletica_registros.md",
+      "line": 91,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "08_integrativa_ecletica",
+      "canonical_name": "Integração Assimilativa",
+      "name": "Integração Assimilativa",
+      "norm": "integracao assimilativa",
+      "file": "08_integrativa_ecletica_registros.md",
+      "line": 161,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "08_integrativa_ecletica",
+      "canonical_name": "Terapia Multimodal",
+      "name": "Terapia Multimodal",
+      "norm": "terapia multimodal",
+      "file": "08_integrativa_ecletica_registros.md",
+      "line": 231,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "08_integrativa_ecletica",
+      "canonical_name": "Psicodinâmica Cíclica",
+      "name": "Psicodinâmica Cíclica (Wachtel)",
+      "norm": "psicodinamica ciclica",
+      "file": "08_integrativa_ecletica_registros.md",
+      "line": 301,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "08_integrativa_ecletica",
+      "canonical_name": "Terapia de Aceitação e Compromisso (ACT)",
+      "name": "Terapia de Aceitação e Compromisso (ACT) como modelo integrativo/contextual",
+      "norm": "terapia de aceitacao e compromisso como modelo integrativo contextual",
+      "file": "08_integrativa_ecletica_registros.md",
+      "line": 372,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "08_integrativa_ecletica",
+      "canonical_name": "Formulação de Caso em Psicoterapia",
+      "name": " Formulação de Caso em Psicoterapia",
+      "norm": "formulacao de caso em psicoterapia",
+      "file": "08_integrativa_ecletica_registros.md",
+      "line": 440,
+      "kind": "campo_nome_inline"
+    },
+    {
+      "family": "08_integrativa_ecletica",
+      "canonical_name": "Modelo Transteórico de Mudança",
+      "name": " Modelo Transteórico de Mudança (Modelo dos Estágios)",
+      "norm": "modelo transteorico de mudanca",
+      "file": "08_integrativa_ecletica_registros.md",
+      "line": 488,
+      "kind": "campo_nome_inline"
+    },
+    {
+      "family": "08_integrativa_ecletica",
+      "canonical_name": "Prática Baseada em Evidências em Psicologia",
+      "name": " Prática Baseada em Evidências em Psicologia (PBE)",
+      "norm": "pratica baseada em evidencias em psicologia",
+      "file": "08_integrativa_ecletica_registros.md",
+      "line": 536,
+      "kind": "campo_nome_inline"
+    },
+    {
+      "family": "09_social_cultural_genero",
+      "canonical_name": "Terapia Feminista",
+      "name": "Terapia Feminista",
+      "norm": "terapia feminista",
+      "file": "09_social_cultural_genero_registros.md",
+      "line": 22,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "09_social_cultural_genero",
+      "canonical_name": "Terapia Multicultural",
+      "name": "Terapia Multicultural",
+      "norm": "terapia multicultural",
+      "file": "09_social_cultural_genero_registros.md",
+      "line": 91,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "09_social_cultural_genero",
+      "canonical_name": "Terapia Afirmativa LGBTQ+",
+      "name": "Terapia Afirmativa LGBTQ+",
+      "norm": "terapia afirmativa lgbtq",
+      "file": "09_social_cultural_genero_registros.md",
+      "line": 160,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "09_social_cultural_genero",
+      "canonical_name": "Terapia Antirracista",
+      "name": "Terapia Antirracista",
+      "norm": "terapia antirracista",
+      "file": "09_social_cultural_genero_registros.md",
+      "line": 229,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "09_social_cultural_genero",
+      "canonical_name": "Terapia Interseccional",
+      "name": "Terapia Interseccional",
+      "norm": "terapia interseccional",
+      "file": "09_social_cultural_genero_registros.md",
+      "line": 298,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "09_social_cultural_genero",
+      "canonical_name": "Terapia Comunitária",
+      "name": "Terapia Comunitária",
+      "norm": "terapia comunitaria",
+      "file": "09_social_cultural_genero_registros.md",
+      "line": 367,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "09_social_cultural_genero",
+      "canonical_name": "Abordagens Transculturais e Internacionais",
+      "name": "Abordagens Transculturais e Internacionais",
+      "norm": "abordagens transculturais e internacionais",
+      "file": "09_social_cultural_genero_registros.md",
+      "line": 436,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "09_social_cultural_genero",
+      "canonical_name": "Terapia Feminista Psicanalítica",
+      "name": "Terapia Feminista",
+      "norm": "terapia feminista",
+      "file": "09_social_cultural_genero_registros.md",
+      "line": 22,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "09_social_cultural_genero",
+      "canonical_name": "Terapia Familiar Feminista",
+      "name": "Terapia Familiar Feminista",
+      "norm": "terapia familiar feminista",
+      "file": "09_social_cultural_genero_registros.md",
+      "line": 620,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "10_pragmaticos_objetivo",
+      "canonical_name": "Terapia Focada em Soluções",
+      "name": "Terapia Focada em Soluções (TFS)",
+      "norm": "terapia focada em solucoes",
+      "file": "10_pragmaticos_objetivo_registros.md",
+      "line": 22,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "10_pragmaticos_objetivo",
+      "canonical_name": "Entrevista Motivacional",
+      "name": "Entrevista Motivacional (EM)",
+      "norm": "entrevista motivacional",
+      "file": "10_pragmaticos_objetivo_registros.md",
+      "line": 113,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "10_pragmaticos_objetivo",
+      "canonical_name": "Terapia da Realidade",
+      "name": "Terapia da Realidade",
+      "norm": "terapia da realidade",
+      "file": "10_pragmaticos_objetivo_registros.md",
+      "line": 204,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "10_pragmaticos_objetivo",
+      "canonical_name": "Terapia de Resolução de Problemas",
+      "name": "Terapia de Resolução de Problemas (TRP / Problem-Solving Therapy)",
+      "norm": "terapia de resolucao de problemas",
+      "file": "10_pragmaticos_objetivo_registros.md",
+      "line": 295,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "10_pragmaticos_objetivo",
+      "canonical_name": "Terapia Breve Orientada a Metas",
+      "name": "Terapia Breve Orientada a Metas",
+      "norm": "terapia breve orientada a metas",
+      "file": "10_pragmaticos_objetivo_registros.md",
+      "line": 386,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "10_pragmaticos_objetivo",
+      "canonical_name": "Terapia Breve",
+      "name": "Terapia Breve Orientada a Metas",
+      "norm": "terapia breve orientada a metas",
+      "file": "10_pragmaticos_objetivo_registros.md",
+      "line": 386,
+      "kind": "campo_nome"
+    },
+    {
+      "family": "10_pragmaticos_objetivo",
+      "canonical_name": "Aconselhamento de Carreira",
+      "name": " Aconselhamento de Carreira",
+      "norm": "aconselhamento de carreira",
+      "file": "10_pragmaticos_objetivo_registros.md",
+      "line": 522,
+      "kind": "campo_nome_inline"
+    },
+    {
+      "family": "10_pragmaticos_objetivo",
+      "canonical_name": "Terapia Baseada em Forças",
+      "name": " Terapia Baseada em Forças (perspectiva baseada em forças)",
+      "norm": "terapia baseada em forcas",
+      "file": "10_pragmaticos_objetivo_registros.md",
+      "line": 570,
+      "kind": "campo_nome_inline"
+    },
+    {
+      "family": "10_pragmaticos_objetivo",
+      "canonical_name": "Terapia de Casal e Família de Curto Prazo",
+      "name": " Terapia de Casal e Família de Curto Prazo (MRI — Mental Research Institute / modelo estratégico)",
+      "norm": "terapia de casal e familia de curto prazo",
+      "file": "10_pragmaticos_objetivo_registros.md",
+      "line": 618,
+      "kind": "campo_nome_inline"
+    }
+  ],
+  "candidate_counts_raw": {
+    "01_psicanalitica_psicodinamica": 21,
+    "02_existencial_humanista": 20,
+    "03_comportamental": 19,
+    "04_cognitiva_tcc": 19,
+    "05_sistemica_familiar_casais": 17,
+    "06_construtivista_narrativa": 32,
+    "07_interpessoal_relacional": 40,
+    "08_integrativa_ecletica": 19,
+    "09_social_cultural_genero": 37,
+    "10_pragmaticos_objetivo": 36
+  },
+  "expected_by_family": {
+    "01_psicanalitica_psicodinamica": 10,
+    "02_existencial_humanista": 10,
+    "03_comportamental": 10,
+    "04_cognitiva_tcc": 10,
+    "05_sistemica_familiar_casais": 10,
+    "06_construtivista_narrativa": 11,
+    "07_interpessoal_relacional": 9,
+    "08_integrativa_ecletica": 9,
+    "09_social_cultural_genero": 9,
+    "10_pragmaticos_objetivo": 9
+  },
+  "found_by_family": {
+    "01_psicanalitica_psicodinamica": 10,
+    "02_existencial_humanista": 10,
+    "03_comportamental": 10,
+    "04_cognitiva_tcc": 10,
+    "05_sistemica_familiar_casais": 10,
+    "06_construtivista_narrativa": 11,
+    "07_interpessoal_relacional": 9,
+    "08_integrativa_ecletica": 9,
+    "09_social_cultural_genero": 9,
+    "10_pragmaticos_objetivo": 9
+  }
+}

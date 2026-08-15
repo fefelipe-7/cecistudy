@@ -4,7 +4,6 @@ import { useApp } from '../../context/AppContext';
 import { hapticSuccess } from '../../lib/haptics';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import {
-  FieldLabel,
   ReviewCard,
   SelectField,
   TagInput,
@@ -29,42 +28,35 @@ export const AuthorWizard: React.FC = () => {
     {
       id: 'autor-nome',
       title: 'nome',
+      headline: 'quem é esse autor?',
       content: (
         <div className="space-y-4">
-          <div>
-            <FieldLabel>nome do autor</FieldLabel>
-            <TextInput
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="ex: aaron beck"
-              autoFocus
-            />
-          </div>
-          <div>
-            <FieldLabel>lifespan (opcional)</FieldLabel>
-            <TextInput
-              value={lifespan}
-              onChange={(e) => setLifespan(e.target.value)}
-              placeholder="ex: 1921–2021"
-            />
-          </div>
+          <TextInput
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="nome do autor — ex: aaron beck"
+            autoFocus
+          />
+          <TextInput
+            value={lifespan}
+            onChange={(e) => setLifespan(e.target.value)}
+            placeholder="lifespan (opcional) — ex: 1921–2021"
+          />
         </div>
       ),
     },
     {
       id: 'autor-bio',
       title: 'biografia',
+      headline: 'conta um pouco sobre ele.',
       content: (
         <div className="space-y-4">
-          <div>
-            <FieldLabel>biografia / contribuição</FieldLabel>
-            <TextArea
-              rows={6}
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              placeholder="conte um pouco sobre o autor e a obra dele..."
-            />
-          </div>
+          <TextArea
+            rows={6}
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            placeholder="a biografia e a contribuição dele para a psicologia..."
+          />
           <SelectField
             label="abordagem (opcional)"
             value={approachId}
@@ -78,6 +70,7 @@ export const AuthorWizard: React.FC = () => {
     {
       id: 'autor-obras',
       title: 'obras & ideias',
+      headline: 'quais obras e ideias são dele?',
       content: (
         <div className="space-y-5">
           <TagInput
@@ -99,22 +92,18 @@ export const AuthorWizard: React.FC = () => {
     {
       id: 'autor-revisar',
       title: 'revisar',
+      headline: 'confere se está tudo certinho ♡',
       content: (
-        <div className="space-y-3">
-          <p className="text-xs font-medium text-ceci-secondary">
-            confere se está tudo certinho antes de guardar:
-          </p>
-          <ReviewCard
-            rows={[
-              { label: 'autor', value: name.trim() },
-              { label: 'lifespan', value: lifespan.trim() || '—' },
-              { label: 'biografia', value: bio.trim() },
-              { label: 'abordagem', value: approachName || 'sem abordagem' },
-              { label: 'obras principais', value: majorWorks.length ? majorWorks.join(' · ') : 'sem obras' },
-              { label: 'conceitos-chave', value: keyConcepts.length ? keyConcepts.join(' · ') : 'sem conceitos' },
-            ]}
-          />
-        </div>
+        <ReviewCard
+          rows={[
+            { label: 'autor', value: name.trim() },
+            { label: 'lifespan', value: lifespan.trim() || '—' },
+            { label: 'biografia', value: bio.trim() },
+            { label: 'abordagem', value: approachName || 'sem abordagem' },
+            { label: 'obras principais', value: majorWorks.length ? majorWorks.join(' · ') : 'sem obras' },
+            { label: 'conceitos-chave', value: keyConcepts.length ? keyConcepts.join(' · ') : 'sem conceitos' },
+          ]}
+        />
       ),
     },
   ];

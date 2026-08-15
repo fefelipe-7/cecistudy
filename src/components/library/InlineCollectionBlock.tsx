@@ -5,12 +5,14 @@ import { ContextCollection, CollectionBook } from '../../data/libraryData';
 interface InlineCollectionBlockProps {
   collection: ContextCollection;
   savedBookIds: string[];
+  readProgress?: Record<string, number>;
   onSelectBook: (book: CollectionBook) => void;
 }
 
 export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = ({
   collection,
   savedBookIds,
+  readProgress,
   onSelectBook,
 }) => {
   return (
@@ -34,7 +36,12 @@ export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = ({
       <div className="flex items-stretch gap-3 overflow-x-auto pb-2 scrollbar-none pt-1">
         {collection.books.map((book) => {
           const isSaved = savedBookIds.includes(book.id);
-          const progressPercent = Math.round((book.readPages / book.totalPages) * 100);
+          const readPages = readProgress?.[book.id] ?? book.readPages;
+          const isReading = (readPages ?? 0) > 0;
+          const progressPercent =
+            book.totalPages && readPages
+              ? Math.round((readPages / book.totalPages) * 100)
+              : 0;
 
           return (
             <div
@@ -66,7 +73,7 @@ export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = ({
                   {book.author}
                 </p>
 
-                {book.status === 'lendo' && (
+                {isReading && book.totalPages && readPages && (
                   <div className="w-full bg-black/10 h-1 rounded-full overflow-hidden">
                     <div
                       className="bg-ceci-primary h-full rounded-full"

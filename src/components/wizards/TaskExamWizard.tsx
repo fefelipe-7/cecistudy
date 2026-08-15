@@ -58,11 +58,9 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
   const choiceStep: WizardStep = {
     id: 'tipo',
     title: 'tipo',
+    headline: 'o que você quer registrar agora?',
     content: (
-      <div className="space-y-3 pt-1">
-        <p className="text-center text-sm text-ceci-secondary">
-          o que você quer registrar agora?
-        </p>
+      <div className="space-y-3">
         <button
           onClick={() => {
             setKind('task');
@@ -107,9 +105,9 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
     {
       id: 'tarefa-titulo',
       title: 'tarefa',
+      headline: 'o que você precisa fazer?',
       content: (
         <div className="space-y-2">
-          <FieldLabel>o que você precisa fazer?</FieldLabel>
           <TextInput
             value={taskTitle}
             onChange={(e) => setTaskTitle(e.target.value)}
@@ -125,6 +123,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
     {
       id: 'tarefa-categoria',
       title: 'categoria & foco',
+      headline: 'como essa tarefa se encaixa no seu dia?',
       content: (
         <div className="space-y-5">
           <ChipPicker
@@ -145,6 +144,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
     {
       id: 'tarefa-prazo',
       title: 'disciplina & prazo',
+      headline: 'qual disciplina e quando precisa estar pronta?',
       content: (
         <div className="space-y-4">
           <SelectField
@@ -164,21 +164,17 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
     {
       id: 'tarefa-revisar',
       title: 'revisar',
+      headline: 'confere se está tudo certinho ♡',
       content: (
-        <div className="space-y-3">
-          <p className="text-xs font-medium text-ceci-secondary">
-            confere se está tudo certinho antes de guardar:
-          </p>
-          <ReviewCard
-            rows={[
-              { label: 'tarefa', value: taskTitle.trim() },
-              { label: 'categoria', value: taskCategory },
-              { label: 'disciplina', value: courseName },
-              { label: 'prazo', value: taskDueDate ? new Date(taskDueDate).toLocaleDateString('pt-BR') : 'sem prazo definido' },
-              { label: 'prioridade', value: taskPriority },
-            ]}
-          />
-        </div>
+        <ReviewCard
+          rows={[
+            { label: 'tarefa', value: taskTitle.trim() },
+            { label: 'categoria', value: taskCategory },
+            { label: 'disciplina', value: courseName },
+            { label: 'prazo', value: taskDueDate ? new Date(taskDueDate).toLocaleDateString('pt-BR') : 'sem prazo definido' },
+            { label: 'prioridade', value: taskPriority },
+          ]}
+        />
       ),
     },
   ];
@@ -187,27 +183,23 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
     {
       id: 'prova-titulo',
       title: 'prova',
+      headline: 'vamos começar com o básico da avaliação.',
       content: (
         <div className="space-y-4">
-          <div>
-            <FieldLabel>título da prova / avaliação</FieldLabel>
-            <TextInput
-              value={examTitle}
-              onChange={(e) => setExamTitle(e.target.value)}
-              placeholder="ex: prova teórica ii — transtornos de ansiedade"
-              autoFocus
-            />
-          </div>
-          <div>
-            <FieldLabel>data</FieldLabel>
-            <DateInput value={examDate} onChange={(e) => setExamDate(e.target.value)} />
-          </div>
+          <TextInput
+            value={examTitle}
+            onChange={(e) => setExamTitle(e.target.value)}
+            placeholder="ex: prova teórica ii — transtornos de ansiedade"
+            autoFocus
+          />
+          <DateInput value={examDate} onChange={(e) => setExamDate(e.target.value)} />
         </div>
       ),
     },
     {
       id: 'prova-contexto',
       title: 'disciplina & peso',
+      headline: 'qual disciplina e quanto vale?',
       content: (
         <div className="space-y-4">
           <SelectField
@@ -231,36 +223,30 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
     {
       id: 'prova-topicos',
       title: 'tópicos',
+      headline: 'o que vai cair nessa prova?',
       content: (
-        <div className="space-y-2">
-          <TagInput
-            label="assuntos que vão cair"
-            tags={examTopics}
-            onChange={setExamTopics}
-            placeholder="ex: pensamentos automáticos"
-            emptyMessage="não precisa preencher tudo, pode deixar vazio ♡"
-          />
-        </div>
+        <TagInput
+          tags={examTopics}
+          onChange={setExamTopics}
+          placeholder="ex: pensamentos automáticos"
+          emptyMessage="não precisa preencher tudo, pode deixar vazio ♡"
+        />
       ),
     },
     {
       id: 'prova-revisar',
       title: 'revisar',
+      headline: 'confere se está tudo certinho ♡',
       content: (
-        <div className="space-y-3">
-          <p className="text-xs font-medium text-ceci-secondary">
-            confere se está tudo certinho antes de guardar:
-          </p>
-          <ReviewCard
-            rows={[
-              { label: 'prova', value: examTitle.trim() },
-              { label: 'disciplina', value: courseName },
-              { label: 'data', value: examDate ? new Date(examDate).toLocaleDateString('pt-BR') : 'a confirmar' },
-              { label: 'peso', value: examWeight.trim() || '1,0' },
-              { label: 'tópicos', value: examTopics.length ? examTopics.join(' · ') : 'ainda sem tópicos' },
-            ]}
-          />
-        </div>
+        <ReviewCard
+          rows={[
+            { label: 'prova', value: examTitle.trim() },
+            { label: 'disciplina', value: courseName },
+            { label: 'data', value: examDate ? new Date(examDate).toLocaleDateString('pt-BR') : 'a confirmar' },
+            { label: 'peso', value: examWeight.trim() || '1,0' },
+            { label: 'tópicos', value: examTopics.length ? examTopics.join(' · ') : 'ainda sem tópicos' },
+          ]}
+        />
       ),
     },
   ];

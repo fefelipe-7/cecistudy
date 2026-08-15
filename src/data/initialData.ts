@@ -5,7 +5,6 @@ import {
   Exam,
   PsychologyAuthor,
   PsychologyConcept,
-  PsychologyApproach,
   ReadingItem,
   Flashcard,
   MaterialItem,
@@ -13,7 +12,8 @@ import {
   TccData,
   Sticker,
   UserProfile,
-  StudySession
+  StudySession,
+  StreakData
 } from '../types';
 
 export const initialProfile: UserProfile = {
@@ -24,7 +24,8 @@ export const initialProfile: UserProfile = {
   targetCareer: 'Psicóloga Clínica & Pesquisadora',
   avatarMood: '🌸 estudando com foco e amor',
   dailyQuote: 'compreender o ser humano é a forma mais bonita de cuidado.',
-  stickersCollected: 6
+  stickersCollected: 6,
+  photoUrl: '',
 };
 
 export const initialCourses: Course[] = [
@@ -68,7 +69,9 @@ export const initialCourses: Course[] = [
     color: '#DCCBB8',
     icon: 'Sparkles',
     progress: 80,
-    description: 'princípios conceituais, formulação de caso e intervenções estruturadas na abordagem da TCC.'
+    description: 'princípios conceituais, formulação de caso e intervenções estruturadas na abordagem da TCC.',
+    officeHours: 'quartas, 14:00 - 15:30, sala dos professores (bloco c)',
+    attendance: { attended: 22, total: 24 }
   },
   {
     id: 'c4',
@@ -225,6 +228,7 @@ export const initialExams: Exam[] = [
     title: 'Avaliação Teórica I - Psicopatologia e Transtornos de Humor',
     date: '2026-08-25',
     weight: '35% da média final',
+    weightValue: 35,
     topics: ['Semiologia das funções psíquicas', 'Depressão Maior', 'Distimia', 'Transtorno Bipolar I e II'],
     completed: false
   },
@@ -234,6 +238,7 @@ export const initialExams: Exam[] = [
     title: 'Estudo de Caso Prático - Formulação em TCC',
     date: '2026-09-02',
     weight: '40% da média final',
+    weightValue: 40,
     topics: ['Tríade Cognitiva', 'Modelo ABC', 'Estratégia de RPD', 'Distorções Cognitivas'],
     completed: false
   },
@@ -243,43 +248,9 @@ export const initialExams: Exam[] = [
     title: 'Entrega do Relatório Técnico de Avaliação HTP',
     date: '2026-09-10',
     weight: '30% da média final',
+    weightValue: 25,
     topics: ['Síntese quantitativa e qualitativa', 'Laudo Técnico de Testagem'],
     completed: false
-  }
-];
-
-export const initialApproaches: PsychologyApproach[] = [
-  {
-    id: 'app-1',
-    name: 'Terapia Cognitivo-Comportamental',
-    shortName: 'TCC',
-    description: 'Foco na identificação e modificação de pensamentos automáticos e crenças disfuncionais para transformar emoções e comportamentos.',
-    foundingAuthors: ['Aaron Beck', 'Albert Ellis'],
-    color: '#E8AFC0'
-  },
-  {
-    id: 'app-2',
-    name: 'Psicanálise',
-    shortName: 'Psicanálise',
-    description: 'Exploração dos processos inconscientes, transferência, pulsões e determinação do sujeito através da linguagem e da história infantil.',
-    foundingAuthors: ['Sigmund Freud', 'Jacques Lacan', 'Donald Winnicott'],
-    color: '#BFDDED'
-  },
-  {
-    id: 'app-3',
-    name: 'Abordagem Centrada na Pessoa / Humanismo',
-    shortName: 'Humanismo',
-    description: 'Valorização da tendência atualizante, empatia genuína, consideração positiva incondicional e congruência na relação terapêutica.',
-    foundingAuthors: ['Carl Rogers', 'Abraham Maslow'],
-    color: '#DCCBB8'
-  },
-  {
-    id: 'app-4',
-    name: 'Psicologia Histórico-Cultural',
-    shortName: 'Socio-Histórica',
-    description: 'Compreensão do psiquismo humano como produto das mediações sociais, linguagem e contexto cultural.',
-    foundingAuthors: ['Lev Vygotsky', 'A. R. Luria'],
-    color: '#A8C9B0'
   }
 ];
 
@@ -289,7 +260,7 @@ export const initialAuthors: PsychologyAuthor[] = [
     name: 'Aaron Beck',
     bio: 'Psiquiatra norte-americano, considerado o pai da Terapia Cognitiva. Desenvolveu a teoria da depressão baseada nos esquemas cognitivos e na tríade cognitiva.',
     lifespan: '1921 - 2021',
-    approachId: 'app-1',
+    approachId: 'psic-04-01',
     keyConcepts: ['Pensamentos Automáticos', 'Crenças Centrais', 'Tríade Cognitiva da Depressão', 'Distorções Cognitivas'],
     majorWorks: ['Terapia Cognitiva da Depressão', 'Terapia Cognitivo-Comportamental: Teoria e Prática']
   },
@@ -298,7 +269,7 @@ export const initialAuthors: PsychologyAuthor[] = [
     name: 'Sigmund Freud',
     bio: 'Médico neurologista austríaco e criador da Psicanálise. Postulou a existência do inconsciente, o complexo de Édipo e os mecanismos de defesa do Ego.',
     lifespan: '1856 - 1939',
-    approachId: 'app-2',
+    approachId: 'psic-01-01',
     keyConcepts: ['Inconsciente', 'Transferência', 'Mecanismos de Defesa', 'Pulsão de Vida e Morte'],
     majorWorks: ['A Interpretação dos Sonhos (1900)', 'O Mal-Estar na Civilização (1930)']
   },
@@ -307,7 +278,7 @@ export const initialAuthors: PsychologyAuthor[] = [
     name: 'Carl Rogers',
     bio: 'Psicólogo norte-americano criador da Abordagem Centrada na Pessoa. Defendia as três condições necessárias de atitude no terapeuta: empatia, congruência e consideração positiva.',
     lifespan: '1902 - 1987',
-    approachId: 'app-3',
+    approachId: 'psic-02-01',
     keyConcepts: ['Empatia Genuína', 'Tendência Atualizante', 'Consideração Positiva Incondicional', 'Congruência'],
     majorWorks: ['Tornar-se Pessoa (1961)', 'Um Jeito de Ser (1980)']
   },
@@ -316,7 +287,6 @@ export const initialAuthors: PsychologyAuthor[] = [
     name: 'Lev Vygotsky',
     bio: 'Psicólogo soviético pioneiro na pesquisa sobre desenvolvimento cognitivo sócio-histórico, destacando a função da linguagem na mediação do pensamento.',
     lifespan: '1896 - 1934',
-    approachId: 'app-4',
     keyConcepts: ['Zona de Desenvolvimento Proximal (ZDP)', 'Mediação Semiótica', 'Funções Mentais Superiores'],
     majorWorks: ['A Formação Social da Mente', 'Pensamento e Linguagem']
   }
@@ -327,7 +297,7 @@ export const initialConcepts: PsychologyConcept[] = [
     id: 'con-1',
     name: 'Pensamentos Automáticos',
     definition: 'Fluxos de cognições que surgem de forma espontânea e involuntária diante de situações, influenciados pelas crenças centrais subjacentes.',
-    approachId: 'app-1',
+    approachId: 'psic-04-01',
     authorIds: ['aut-1'],
     courseIds: ['c1', 'c3'],
     tags: ['TCC', 'Cognição', 'Psicopatologia']
@@ -336,7 +306,7 @@ export const initialConcepts: PsychologyConcept[] = [
     id: 'con-2',
     name: 'Anedonia',
     definition: 'Incapacidade total ou parcial de sentir prazer e interesse em atividades que anteriormente traziam satisfação.',
-    approachId: 'app-1',
+    approachId: 'psic-04-01',
     authorIds: ['aut-1'],
     courseIds: ['c1'],
     tags: ['Semiologia', 'Depressão', 'Sintoma']
@@ -345,7 +315,7 @@ export const initialConcepts: PsychologyConcept[] = [
     id: 'con-3',
     name: 'Tríade Cognitiva da Depressão',
     definition: 'Visão disfuncional e sistematicamente negativa sobre si mesmo ("sou incapaz"), sobre o mundo ("o mundo é hostil") e sobre o futuro ("nada vai melhorar").',
-    approachId: 'app-1',
+    approachId: 'psic-04-01',
     authorIds: ['aut-1'],
     courseIds: ['c1', 'c3'],
     tags: ['TCC', 'Depressão', 'Esquema']
@@ -354,7 +324,7 @@ export const initialConcepts: PsychologyConcept[] = [
     id: 'con-4',
     name: 'Projeção / Testes Projetivos',
     definition: 'Mecanismo em que o sujeito atribui ao mundo externo (como no desenho do HTP) seus impulsos, conflitos e estados afetivos internos não conscientizados.',
-    approachId: 'app-2',
+    approachId: 'psic-01-01',
     authorIds: ['aut-2'],
     courseIds: ['c2'],
     tags: ['Avaliação', 'Psicodiagnóstico', 'HTP']
@@ -363,7 +333,7 @@ export const initialConcepts: PsychologyConcept[] = [
     id: 'con-5',
     name: 'Empatia Genuína',
     definition: 'Capacidade do psicólogo de se colocar no lugar do cliente, percebendo o seu mundo privado como se fosse o seu próprio, sem perder a condição do "como se".',
-    approachId: 'app-3',
+    approachId: 'psic-02-01',
     authorIds: ['aut-3'],
     courseIds: ['c5'],
     tags: ['Acolhimento', 'Relação Terapêutica', 'Humanismo']
@@ -491,6 +461,7 @@ export const initialMaterials: MaterialItem[] = [
 export const initialInternshipLogs: InternshipLog[] = [
   {
     id: 'ilog-1',
+    type: 'estagio',
     date: '2026-08-01',
     hours: 4,
     activity: 'Observação de acolhimento na Triagem da Clínica Escola',
@@ -500,10 +471,14 @@ export const initialInternshipLogs: InternshipLog[] = [
   },
   {
     id: 'ilog-2',
+    type: 'supervisao',
     date: '2026-08-05',
     hours: 4,
     activity: 'Supervisão de Grupo de Estágio Básico I',
-    supervisionNotes: 'Estudo do Código de Ética Profissional referente ao guarda de arquivos de prontuários e a conduta em casos de risco iminente.',
+    supervisor: 'supervisora do estágio básico',
+    topics: ['código de ética', 'prontuários', 'casos de risco iminente'],
+    orientations: 'Estudo do Código de Ética Profissional referente ao guarda de arquivos de prontuários e a conduta em casos de risco iminente.',
+    doubts: 'como agir com responsabilidade quando há risco iminente de dano?',
     reflections: 'A responsabilidade ética me faz perceber a profundidade da nossa futura profissão. O acolhimento exige rigor e sensibilidade.',
     conceptIds: ['con-5']
   }
@@ -627,3 +602,8 @@ export const initialStudySessions: StudySession[] = [
     notes: 'Revisei flashcards e fiz simulação de caso clínico para a prova.'
   }
 ];
+
+/** Streak de estudos começa vazia e honesta — os dias ativos são registrados a partir das ações. */
+export const initialStreakData: StreakData = {
+  activeDays: []
+};

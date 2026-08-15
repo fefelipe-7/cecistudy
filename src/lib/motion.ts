@@ -31,11 +31,14 @@ export const OVERLAY_FADE: Transition = { duration: 0.18, ease: 'easeOut' };
  * Cada variante resolve pelo `custom` (direction): 1 = push (entra da direita,
  * sai pela esquerda) · -1 = pop (entra da esquerda, sai pela direita) · 0 = fade sutil.
  * Sem spring: usa a curva de timing do iOS (60fps, sem cauda de ~1s).
+ *
+ * direction=0 (troca de tab): só fade, sem deslocamento — evita sensação
+ * de "engasgo" ao alternar entre abas.
  */
 export const screenVariants: Variants = {
   initial: (direction: number) => ({
-    x: direction === 0 ? 0 : direction * 28,
-    y: direction === 0 ? 8 : 0,
+    x: direction === 0 ? 0 : direction * 22,
+    y: 0,
     opacity: 0,
   }),
   animate: (direction: number) => ({
@@ -44,18 +47,25 @@ export const screenVariants: Variants = {
     opacity: 1,
     transition:
       direction === 0
-        ? { duration: 0.22, ease: IOS_EASE }
-        : { duration: 0.26, ease: IOS_EASE },
+        ? { duration: 0.18, ease: IOS_EASE_OUT }
+        : { duration: 0.24, ease: IOS_EASE },
   }),
   exit: (direction: number) => ({
-    x: direction === 0 ? 0 : direction * -18,
-    y: direction === 0 ? -6 : 0,
-    opacity: direction === 0 ? 0 : 0.4,
+    x: direction === 0 ? 0 : direction * -14,
+    y: 0,
+    opacity: direction === 0 ? 0 : 0.35,
     transition:
       direction === 0
-        ? { duration: 0.15, ease: 'easeIn' }
-        : { duration: 0.18, ease: 'easeIn' },
+        ? { duration: 0.12, ease: 'easeIn' }
+        : { duration: 0.16, ease: 'easeIn' },
   }),
+};
+
+/** Variants de fade + scale curtos para telas auxiliares (wizard, compose, mood, etc.). */
+export const overlayVariants: Variants = {
+  initial: { opacity: 0, scale: 0.985, y: 6 },
+  animate: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.18, ease: IOS_EASE_OUT } },
+  exit: { opacity: 0, scale: 0.99, y: 4, transition: { duration: 0.14, ease: 'easeIn' } },
 };
 
 /** Variants para painéis de modal por posição. */

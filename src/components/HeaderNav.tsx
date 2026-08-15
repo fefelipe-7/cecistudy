@@ -185,12 +185,20 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   }
                 }}
                 aria-label="ver meu espaço"
-                className={`rounded-full bg-surface-rose border-2 border-ceci-border-brand flex items-center justify-center text-ceci-primary font-display font-bold shadow-2xs cursor-pointer transition-colors duration-300 ${
+                className={`rounded-full bg-surface-rose border-2 border-ceci-border-brand flex items-center justify-center text-ceci-primary font-display font-bold shadow-2xs cursor-pointer transition-colors duration-300 overflow-hidden ${
                   scrolled ? 'w-7 h-7 text-xs' : 'w-10 h-10 text-lg hover:scale-105'
                 }`}
                 title="ver meu espaço"
               >
-                C
+                {profile.photoUrl ? (
+                  <img
+                    src={profile.photoUrl}
+                    alt={`foto de ${profile.name}`}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  'C'
+                )}
               </div>
               <div>
                 <div className="flex items-center gap-1.5">

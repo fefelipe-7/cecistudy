@@ -58,11 +58,14 @@ export const LibraryFilterModal: React.FC<LibraryFilterModalProps> = ({
           <div className="grid grid-cols-2 gap-2">
             {[
               { id: 'todos', label: 'todas as categorias' },
+              { id: 'mistas', label: 'categorias mistas ✨' },
               { id: 'autores', label: 'autores & obras' },
               { id: 'conceitos', label: 'conceitos-chave' },
               { id: 'abordagens', label: 'abordagens terapêuticas' },
+              { id: 'psicoterapias', label: 'catálogo de psicoterapias' },
               { id: 'testes', label: 'testes & escalas' },
               { id: 'multidisciplinar', label: 'bagagem complementar' },
+              { id: 'artigos', label: 'artigos científicos' },
               { id: 'salvos', label: 'salvos ♡' },
               { id: 'em_leitura', label: 'em leitura 📖' },
             ].map((cat) => {

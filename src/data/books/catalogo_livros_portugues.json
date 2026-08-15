@@ -1,0 +1,1202 @@
+[
+  {
+    "familia": "01_psicanalitica_psicodinamica",
+    "nome": "A Interpretação dos Sonhos",
+    "autor": "Sigmund Freud",
+    "resumo_do_livro": "Obra fundadora da psicanálise que apresenta a teoria dos sonhos como via régia para o inconsciente. Freud descreve a distinção entre conteúdo manifesto e latente, os processos do trabalho do sonho (condensação, deslocamento, simbolização) e o método da associação livre para decifrar significados inconscientes. O livro discute também a formação dos sonhos, desejos reprimidos e a relação entre sonhos e psicopatologia. Para estudantes e clínicos, é leitura essencial para entender as bases teóricas e técnicas da interpretação onírica e a centralidade do inconsciente na vida psíquica e na prática analítica.",
+    "trecho_memoravel": "Os sonhos manifestam desejos inconscientes ocultos por meio de símbolos e processos que censuram e disfarçam seu conteúdo.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "01_psicanalitica_psicodinamica",
+    "nome": "Introductory Lectures on Psycho-Analysis [sem edição brasileira confirmada]",
+    "autor": "Sigmund Freud",
+    "resumo_do_livro": "Coletânea de palestras introdutórias em que Freud sistematiza conceitos básicos da psicanálise destinados a iniciantes e profissionais. Aborda topicamente a libido, a sexualidade infantil, mecanismos de defesa, o inconsciente, sintomas neuróticos e a técnica analítica, além de introduzir casos clínicos e demonstrações do método associativo. A obra serve como manual pedagógico para compreender a lógica interna da teoria freudiana, sua evolução conceitual e aplicações clínicas iniciais. É útil para estudantes que buscam um panorama coerente das ideias principais e dos princípios explicativos que sustentam a prática psicanalítica.",
+    "trecho_memoravel": "A psicanálise interpreta sintomas e sonhos como expressões do inconsciente organizadas por conflitos e defesas psíquicas.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "01_psicanalitica_psicodinamica",
+    "nome": "Além do Princípio do Prazer",
+    "autor": "Sigmund Freud",
+    "resumo_do_livro": "Texto inovador em que Freud questiona a primazia do princípio do prazer e introduz o conceito controverso de pulsão de morte (Thanatos), além de discutir a repetição compulsiva e as implicações para trauma e luto. Ele revisita teorias sobre instintos, elaborando uma visão mais complexa das forças motivacionais humanas e das tendências autodestrutivas que escapam à simples busca por prazer. A obra é crucial para entender rupturas teóricas na psicanálise clássica e fornece ferramentas conceituais para abordar pacientes com comportamentos repetitivos, traumas não integrados e aspectos de agressividade intrapsíquica.",
+    "trecho_memoravel": "Além da busca pelo prazer, há tendências repetitivas e autolimitantes que apontam para uma pulsão que visa reduzir a tensão até a inércia.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "01_psicanalitica_psicodinamica",
+    "nome": "O Ego e o Id",
+    "autor": "Sigmund Freud",
+    "resumo_do_livro": "Trabalho teórico que articula a estrutura psíquica em id, ego e superego, oferecendo uma nova leitura das pulsões, da formação do ego e dos mecanismos de defesa. Freud explora como impulsos inconscientes entram em conflito com a realidade e as exigências internalizadas, afetando comportamento, sintomas e vida moral. A obra detalha dinâmicas como repressão, catarse e interferências do superego na vida afetiva, sendo fundamental para clinicians elaborarem formulações sobre conflitos intrapsíquicos e trajetórias de desenvolvimento. Útil para quem busca compreensão estrutural e técnica sobre intervenção psicanalítica.",
+    "trecho_memoravel": "A mente opera por estruturas em tensão: desejos inconscientes, funções realistas do eu e exigências internalizadas do superego que modulam o comportamento.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "01_psicanalitica_psicodinamica",
+    "nome": "O Mal-Estar na Civilização",
+    "autor": "Sigmund Freud",
+    "resumo_do_livro": "Ensaio filosófico-psicanalítico que examina o conflito entre pulsões individuais e exigências da civilização. Freud analisa como repressões necessárias para a vida social geram sofrimento, culpa e ressentimento, problematizando o papel da religião, cultura e moralidade na moderação de impulsos agressivos e sexuais. Discute ainda mecanismos como sublimação e o preço psíquico do progresso cultural. O texto é valioso para estudos clínicos e teóricos que buscam articular psicodinâmica individual com fatores socioculturais, oferecendo uma lente crítica sobre bem-estar, desejo e normatividade social.",
+    "trecho_memoravel": "A civilização impõe limites aos impulsos, gerando conflito interno e sofrimento psíquico como custo necessário da vida social organizada.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "01_psicanalitica_psicodinamica",
+    "nome": "Inveja e Gratidão",
+    "autor": "Melanie Klein",
+    "resumo_do_livro": "Contribuição central da teoria kleiniana que explora emoções primitivas como inveja e gratidão no desenvolvimento psíquico e nas relações de objeto iniciais. Klein descreve posições psíquicas (paranoide-esquizoide e depressiva), mecanismos de projeção, introjeção e reparação, enfocando como fantasias persecutórias e capacidades de gratidão moldam a relação com o outro. A obra tem grande relevância para análise infantil e adultos com perturbações relacionais, oferecendo instrumentos clínicos para avaliar defesas primitivas, agressividade internalizada e potencial para recuperação emocional através da reparação simbólica.",
+    "trecho_memoravel": "Sentimentos primários de inveja e gratidão organizam representações internas de objetos e determinam a capacidade de preservar ou destruir vínculos afetivos.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "01_psicanalitica_psicodinamica",
+    "nome": "Brincar e Realidade",
+    "autor": "D. W. Winnicott",
+    "resumo_do_livro": "Obra seminal sobre desenvolvimento infantil que introduz conceitos como objeto transicional, espaço potencial e as noções de verdadeiro e falso self. Winnicott argumenta que o brincar é atividade criativa essencial para a formação do self e para a capacidade simbólica, e que os objetos transicionais facilitam a transição entre dependência e autonomia. O livro oferece perspectivas práticas para intervenção terapêutica com crianças e adultos, iluminando como o ambiente suficientemente bom e a relação precursora permitem o surgimento da criatividade, do jogo e de uma experiência interna rica.",
+    "trecho_memoravel": "O brincar e objetos transicionais criam um espaço intermediário onde o self se desenvolve e a realidade simbólica é construída.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "01_psicanalitica_psicodinamica",
+    "nome": "Psychoanalytic Studies of the Personality [sem edição brasileira confirmada]",
+    "autor": "W. R. D. Fairbairn",
+    "resumo_do_livro": "Coletânea de ensaios em que Fairbairn apresenta sua teoria das relações objetais, deslocando o foco da teoria das pulsões para as relações internas e representações de objetos. Ele descreve como experiências relacionais frustradas geram fragmentação da personalidade, introduz o conceito de objeto interno e explora mecanismos de clivagem e introjeção. A obra oferece um enquadramento teórico para compreender patologias relacionais, delineando implicações para a técnica analítica centrada na reparação de vínculos internos e na reconstituição de representações objetais saudáveis. Relevante para clínicos interessados em dinâmica relacional.",
+    "trecho_memoravel": "A personalidade é constituída por relações internas com objetos introjetados, e o sofrimento surge da fragmentação e má-estrutura dessas representações relacionais.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "01_psicanalitica_psicodinamica",
+    "nome": "A Análise do Self",
+    "autor": "Heinz Kohut",
+    "resumo_do_livro": "Fundamento da psicologia do self que descreve a formação do self e as bases do narcisismo saudável e patológico. Kohut introduz a noção de selfobjects e enfatiza a importância da empatia na formação e na cura de feridas narcisísticas, explicando como falhas no espelhamento e na idealização parental levam a distúrbios do self. O livro propõe técnica terapêutica centrada na experiência empática e na restauração das funções selfobject. Essencial para entender e tratar transtornos narcisistas e para integrar uma perspectiva relacional e empática na prática clínica.",
+    "trecho_memoravel": "Distúrbios do self emergem de falhas nas experiências empáticas com figuras que funcionam como objetos do self, exigindo reparação empática na terapia.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "01_psicanalitica_psicodinamica",
+    "nome": "Borderline Conditions and Pathological Narcissism [sem edição brasileira confirmada]",
+    "autor": "Otto Kernberg",
+    "resumo_do_livro": "Obra clássica que integra teoria de relações objetais e teoria das pulsões para descrever a estrutura borderline e os quadros de narcisismo patológico. Kernberg analisa mecanismos como clivagem, idealização, desvalorização e agressividade, oferecendo critérios diferenciadores entre narcisismo e psicose. Propõe uma abordagem terapêutica focalizada em interpretação da transferência, contenção e estabelecimento de limites, além de avaliação estrutural da personalidade. O livro é referência para profissionais que atuam com pacientes graves, fornecendo modelos de diagnóstico, formulação e intervenção psicanalítica com ênfase na integração estrutural.",
+    "trecho_memoravel": "Estados borderline e narcisistas manifestam padrões de clivagem, idealização e agressividade que requerem intervenção interpretativa e contenedora para integrar a personalidade.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "01_psicanalitica_psicodinamica",
+    "nome": "Relational Concepts in Psychoanalysis [sem edição brasileira confirmada]",
+    "autor": "Stephen A. Mitchell",
+    "resumo_do_livro": "Texto fundamental do movimento relacional que propõe uma virada de duas-pessoas na psicanálise, enfatizando a co-construção da experiência entre analista e paciente. Mitchell sintetiza diferentes tradições teóricas, critica visões unilaterais centradas exclusivamente no intrapsíquico e argumenta que o contexto relacional é central para a formação do inconsciente. Discute implicações para técnica, transferência, contratransferência e correlações clínicas. Útil para clínicos e teóricos que buscam fundamentar práticas que valorizem reciprocidade, intersubjetividade e a influência mútua nas mudanças terapêuticas.",
+    "trecho_memoravel": "A experiência psicanalítica é produzida mutuamente por paciente e analista, destacando intersubjetividade e contextos relacionais como formadores do inconsciente.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "01_psicanalitica_psicodinamica",
+    "nome": "Diagnóstico Psicanalítico",
+    "autor": "Nancy McWilliams",
+    "resumo_do_livro": "Guia abrangente que oferece critérios e categorias para o diagnóstico psicanalítico, articulando dinâmica, estrutura e sintomatologia em formulações clínicas aplicáveis. McWilliams descreve tipos de personalidade, estilos defensivos, padrões de transferência e implicações terapêuticas, privilegiando uma compreensão integradora e idiográfica do paciente. O livro fornece ferramentas práticas para avaliação, escolha técnica e previsão prognóstica, com linguagem acessível e exemplificações clínicas. Indicado para formação clínica e supervisão, apoia o desenvolvimento de hipóteses diagnósticas que orientem intervenções psicanalíticas coerentes com a singularidade do sujeito.",
+    "trecho_memoravel": "O diagnóstico psicanalítico integra dinâmica, estrutura e sintomas para criar uma formulação clínica que oriente escolhas terapêuticas.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "01_psicanalitica_psicodinamica",
+    "nome": "Long-Term Psychodynamic Psychotherapy [sem edição brasileira confirmada]",
+    "autor": "Glen O. Gabbard",
+    "resumo_do_livro": "Manual prático e teórico sobre a condução de psicoterapias psicodinâmicas de longa duração que aborda indicação, processo terapêutico, manejo da transferência e contratransferência, técnicas interpretativas e questões de término. Gabbard discute evidências de eficácia, integração com abordagens baseadas em evidências e tratamento de casos complexos, incluindo transtornos de personalidade. Oferece diretrizes para formação clínica, ética e supervisão, sendo recurso valioso para psicoterapeutas que trabalham com objetivos de mudança estrutural e que necessitam de estratégias para manter a aliança e promover evolução psíquica sustentada.",
+    "trecho_memoravel": "A psicoterapia psicodinâmica prolongada promove mudanças estruturais mediante interpretações consistentes da transferência e do padrão repetitivo relacional.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "01_psicanalitica_psicodinamica",
+    "nome": "Principles of Psychoanalytic Psychotherapy [sem edição brasileira confirmada]",
+    "autor": "Mardi J. Horowitz",
+    "resumo_do_livro": "Obra que expõe princípios centrais da psicoterapia psicanalítica, integrando teoria e prática para orientar formulação de casos, estabelecimento de metas e técnicas terapêuticas. Horowitz aborda como entender sintomas a partir de conflitos, defesas e relações objetais, além de discutir alvos de tratamento e estratégias de intervenção, incluindo manejo da resistência e da transferência. O texto serve como referência para clínicos que buscam fundamentos claros para operacionalizar intervenções psicanalíticas, tanto em contextos de terapia breve quanto de longa duração, promovendo coerência entre teoria e prática clínica.",
+    "trecho_memoravel": "A prática psicanalítica se organiza por formulações dinâmicas que orientam foco terapêutico, intervenção técnica e manejo da relação transferencial.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "01_psicanalitica_psicodinamica",
+    "nome": "Psychoanalytic Psychotherapy: A Practitioner's Guide [sem edição brasileira confirmada]",
+    "autor": "Nancy McWilliams",
+    "resumo_do_livro": "Guia prático destinado a terapeutas que sintetiza teoria psicanalítica e intervenções clínicas aplicáveis à psicoterapia psicodinâmica. McWilliams trata da construção da aliança, técnicas interpretativas, manejo de contratransferência, e adaptações a diferentes personalidades e quadros psicopatológicos. O livro combina bases teóricas com exemplos de casos, oferecendo orientações concretas sobre como traduzir formulações dinâmicas em estratégias de tratamento. É recurso útil para profissionais em formação e prática clínica que procuram diretrizes acessíveis e embasadas para conduzir intervenções psicanalíticas efetivas e sensíveis às singularidades dos pacientes.",
+    "trecho_memoravel": "O guia traduz teoria psicanalítica em procedimentos clínicos concretos, articulando formulação dinâmica, manejo da relação e intervenções adaptadas ao paciente.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "02_existencial_humanista",
+    "nome": "Client-Centered Therapy [sem edição brasileira confirmada]",
+    "autor": "Carl R. Rogers",
+    "resumo_do_livro": "Client-Centered Therapy apresenta os princípios fundamentais da abordagem centrada na pessoa desenvolvida por Carl Rogers. O livro explora como condições relacionais — empatia, consideração positiva incondicional e congruência — criam um ambiente facilitador para o crescimento psicológico. Rogers descreve a prática clínica não diretiva, destaca a importância da confiança na capacidade auto-organizadora do cliente e discute evidências e implicações para treinamento e pesquisa em psicoterapia. A obra é essencial para estudantes e terapeutas que desejam compreender a base teórica e ética de uma prática que privilegia a experiência subjetiva e a autonomia do cliente.",
+    "trecho_memoravel": "Crescimento pessoal emerge quando o terapeuta oferece empatia, aceitação incondicional e autenticidade como contexto facilitador.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "02_existencial_humanista",
+    "nome": "On Becoming a Person [sem edição brasileira confirmada]",
+    "autor": "Carl R. Rogers",
+    "resumo_do_livro": "On Becoming a Person reúne ensaios e reflexões de Rogers sobre o processo terapêutico e o desenvolvimento humano. A obra aborda a visão fenomenológica de que cada indivíduo é o especialista de sua própria experiência, discute mudanças terapêuticas, educação, julgamento profissional e pesquisa clínica. Rogers expõe sua prática baseada na qualidade do encontro e no respeito à autonomia, com foco no papel do terapeuta como facilitador do crescimento. O livro é valioso para formação clínica e reflexão ética, oferecendo fundamentos teóricos e relatos que orientam uma prática centrada na pessoa e na autenticidade.",
+    "trecho_memoravel": "Ser pessoa implica desenvolver autonomia emocional quando se é ouvido e compreendido sem julgamentos, permitindo surgir mudança genuína.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "02_existencial_humanista",
+    "nome": "A Way of Being [sem edição brasileira confirmada]",
+    "autor": "Carl R. Rogers",
+    "resumo_do_livro": "A Way of Being apresenta uma síntese madura da visão humanista de Rogers sobre ensino, terapia e relações humanas. O autor enfatiza o modo de ser do terapeuta — autenticidade, presença e abertura — como determinante dos processos de cura. A obra integra desenvolvimento pessoal, mudanças sociais e práticas educacionais, mostrando como atitudes profissionais se refletem em resultados terapêuticos. Rica em exemplos e reflexões, é útil para terapeutas que desejam cultivar uma postura relacional consistente, para formadores que promovem competência empática e para pesquisadores interessados na interface entre experiência clínica e teoria humanista.",
+    "trecho_memoravel": "A eficácia terapêutica nasce da autenticidade e presença do terapeuta num encontro que valoriza a experiência singular do cliente.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "02_existencial_humanista",
+    "nome": "Gestalt Therapy: Excitement and Growth in the Human Personality [sem edição brasileira confirmada]",
+    "autor": "Frederick Perls, Ralph Hefferline e Paul Goodman",
+    "resumo_do_livro": "Gestalt Therapy: Excitement and Growth in the Human Personality é a obra fundadora que sistematiza a terapia Gestalt, combinando teoria, exercícios e exemplos clínicos. Os autores descrevem conceitos-chave como consciência (awareness), figura-fundo, contato e fronteira de contato, além da ênfase no aqui-e-agora e na experiência corporal. A proposta terapêutica busca completar gestalts interrompidas, restaurar a vitalidade e promover responsabilização. O livro serve como referência para estudantes e clínicos interessados em intervenções experiencialistas, técnicas de trabalho corporal e métodos terapêuticos que priorizam o presente e a autorregulação do indivíduo.",
+    "trecho_memoravel": "A mudança ocorre ao trazer a atenção ao aqui e agora e completar gestalts interrompidas por meio de contato autêntico e responsável.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "02_existencial_humanista",
+    "nome": "Gestalt Therapy Verbatim [sem edição brasileira confirmada]",
+    "autor": "Frederick Perls",
+    "resumo_do_livro": "Gestalt Therapy Verbatim reúne transcrições de sessões, seminários e demonstrações de Fritz Perls, oferecendo acesso direto ao estilo clínico e à filosofia prática da terapia Gestalt. A obra mostra intervenções verbais e não verbais, técnicas provocativas e exercícios destinados a aumentar a consciência e a responsabilização do cliente. O texto é contundente e didático, revelando tanto a eficácia quanto as controvérsias do método. Indicado para clínicos e estudantes que buscam compreender a aplicação concreta dos princípios gestaltistas e o impacto de uma postura terapêutica energizada e presencial.",
+    "trecho_memoravel": "Intervenções vivas e provocativas no presente expõem bloqueios emocionais e convidam o cliente a assumir responsabilidade por sua experiência.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "02_existencial_humanista",
+    "nome": "Existential Psychotherapy [sem edição brasileira confirmada]",
+    "autor": "Irvin D. Yalom",
+    "resumo_do_livro": "Existential Psychotherapy apresenta uma obra abrangente sobre a abordagem existencial em psicoterapia, integrando teoria, filosofia e prática clínica. Yalom organiza o campo em torno de quatro preocupações fundamentais: morte, liberdade, isolamento e falta de sentido, e explora como essas experiências estruturais geram sofrimento e oportunidade terapêutica. O livro discute formulações clínicas, técnicas e dilemas do terapeuta, incluindo exemplos de casos. É leitura essencial para profissionais que trabalham com questões existenciais profundas, oferecendo modelos para avaliação, intervenção e reflexão sobre a função terapêutica diante da condição humana.",
+    "trecho_memoravel": "Confrontar temas como finitude, liberdade e solidão é central para aliviar o sofrimento existencial e permitir escolhas mais autênticas.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "02_existencial_humanista",
+    "nome": "The Gift of Therapy [sem edição brasileira confirmada]",
+    "autor": "Irvin D. Yalom",
+    "resumo_do_livro": "The Gift of Therapy é um manual reflexivo e prático em que Yalom partilha lições acumuladas em décadas de atendimento clínico. Estruturado em conselhos, anedotas e princípios operacionais, o livro aborda a relação terapêutica, limites, transparência do terapeuta, técnicas didáticas e manejo de temas existenciais. A obra privilegia sabedoria clínica aplicada, oferecendo orientações sobre como pensar e agir em situações reais de consultório. Útil para iniciantes e experientes, serve como guia para moldar uma prática sensível às necessidades do cliente e fundamentada em postura ética e humana.",
+    "trecho_memoravel": "A relação terapêutica aliada à honestidade clínica constitui o instrumento mais valioso para facilitar a transformação do cliente.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "02_existencial_humanista",
+    "nome": "Love's Executioner and Other Tales of Psychotherapy [sem edição brasileira confirmada]",
+    "autor": "Irvin D. Yalom",
+    "resumo_do_livro": "Love's Executioner reúne dez relatos clínicos detalhados em que Yalom explora dilemas existenciais, conflitos amorosos, medo da morte e urgências emocionais. Cada narrativa descreve o processo terapêutico, decisões técnicas e reflexões éticas, iluminando como questões existenciais aparecem na clínica cotidiana. O autor demonstra sensibilidade narrativa e didática ao transformar casos individuais em lições sobre o entendimento humano e intervenção terapêutica. Este livro é valioso para estudantes e clínicos por sua combinação de narrativa clínica, análise existencial e exemplos práticos que evidenciam o impacto relacional no processo de cura.",
+    "trecho_memoravel": "Casos clínicos mostram que confrontar desejos e medos existenciais pode desestruturar padrões defensivos e abrir espaço para mudança profunda.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "02_existencial_humanista",
+    "nome": "The Art of Counseling [sem edição brasileira confirmada]",
+    "autor": "Rollo May",
+    "resumo_do_livro": "The Art of Counseling apresenta a perspectiva existencial de Rollo May aplicada ao processo de aconselhamento. O autor discute a importância da coragem, autenticidade e responsabilidade tanto do cliente quanto do terapeuta, abordando ansiedade, culpa e a busca por sentido. A obra combina teoria filosófica com orientações clínicas, enfatizando que o encontro terapêutico é um campo criativo onde se trabalha o ser e o tornar-se. Indicada para estudantes e profissionais, oferece fundamentos para uma prática que valoriza o enfrentamento da angústia e o desenvolvimento da liberdade e da autonomia pessoal.",
+    "trecho_memoravel": "A prática do aconselhamento exige coragem para tolerar ansiedade e cultivar um encontro criativo e autêntico entre terapeuta e cliente.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "02_existencial_humanista",
+    "nome": "The Meaning of Anxiety [sem edição brasileira confirmada]",
+    "autor": "Rollo May",
+    "resumo_do_livro": "The Meaning of Anxiety explora a ansiedade sob uma ótica existencial, diferenciando ansiedade normal da neurótica e examinando suas implicações no desenvolvimento pessoal e social. Rollo May vincula a experiência ansiosa à liberdade e à responsabilidade, mostrando como ela pode indicar crises de sentido ou oportunidades de maturação. O livro discute intervenções terapêuticas e a relação entre ansiedade, culpa e criatividade. Relevante para clínicos e pesquisadores, oferece um quadro conceitual para entender como a ansiedade pode ser sinal de conflito existencial e também motor de crescimento quando adequadamente trabalhada.",
+    "trecho_memoravel": "A ansiedade, vista em sua dimensão existencial, pode revelar tanto ameaça quanto oportunidade para o crescimento e a afirmação do self.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "02_existencial_humanista",
+    "nome": "Man's Search for Himself [sem edição brasileira confirmada]",
+    "autor": "Rollo May",
+    "resumo_do_livro": "Man's Search for Himself investiga a crise de identidade e a sensação de alienação na era moderna a partir de uma perspectiva existencial-humanista. May aborda temas como culpa, vontade, isolamento e a necessidade de responsabilidade pessoal para a autorrealização. A obra combina análise cultural, filosofia e aplicação clínica, propondo que a recuperação do sentido passe por escolhas conscientes e confrontos com limitações pessoais. Indicada para quem estuda psicoterapia e cultura contemporânea, oferece ferramentas conceituais para compreender a angústia moderna e caminhos terapêuticos rumo à autenticidade.",
+    "trecho_memoravel": "A crise do homem moderno advém da perda de sentido e só se supera mediante escolhas responsáveis e reencontro com a autenticidade.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "02_existencial_humanista",
+    "nome": "Em Busca de Sentido",
+    "autor": "Viktor E. Frankl",
+    "resumo_do_livro": "Man's Search for Meaning combina o relato das experiências de Viktor Frankl em campos de concentração com a exposição da logoterapia, sua abordagem psicoterapêutica centrada na busca de sentido. Frankl argumenta que encontrar propósito em qualquer circunstância é fator crucial para a resiliência e a saúde mental. O livro descreve técnicas e princípios para ajudar clientes a identificar valores, responsabilidades e significados, incluindo a atitude diante do sofrimento. Essencial para estudantes de psicoterapia e profissionais, oferece uma visão prática e humanista sobre o papel do sentido na motivação e no bem-estar.",
+    "trecho_memoravel": "Mesmo em condições extremas, encontrar um sentido pessoal habilita resistência, responsabilidade e possibilidade de renovação existencial.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "02_existencial_humanista",
+    "nome": "The Art of the Psychotherapist [sem edição brasileira confirmada]",
+    "autor": "James F. T. Bugental",
+    "resumo_do_livro": "The Art of the Psychotherapist apresenta uma abordagem existencial-experiencial centrada na presença do terapeuta e na vivência imediata do cliente. Bugental enfatiza o valor da percepção sensível, da autenticidade profissional e da exploração do aqui-e-agora como meios de promover insight e mudança. O autor discute técnicas para fomentar contato significativo, lidar com resistências e favorecer transformações profundas no nível existencial. A obra é prática e reflexiva, recomendada a clínicos que buscam integrar sensibilidade fenomenológica, habilidade técnica e compromisso humano na construção de intervenções terapêuticas eficazes.",
+    "trecho_memoravel": "A eficácia terapêutica depende da presença atenta e da coragem do terapeuta para trabalhar com o que o cliente vive no aqui e agora.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "02_existencial_humanista",
+    "nome": "Toward a Psychology of Being [sem edição brasileira confirmada]",
+    "autor": "Abraham H. Maslow",
+    "resumo_do_livro": "Toward a Psychology of Being sistematiza a perspectiva humanista de Maslow sobre a saúde psicológica e o potencial humano. O autor expande ideias sobre necessidades, autoatualização e experiências de pico, propondo uma psicologia que estude não só a patologia, mas também o florescimento humano. O texto combina teoria, pesquisa e observações clínicas para delinear características de indivíduos autorrealizados e implicações para educação e terapia. Essencial para quem investiga abordagens humanistas, oferece fundamentos conceituais e práticos para promover crescimento, criatividade e bem-estar psicológico.",
+    "trecho_memoravel": "Estudar o florescimento humano e a autoatualização é tão crucial quanto investigar a doença; a psicologia deve valorizar a saúde e o potencial.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "02_existencial_humanista",
+    "nome": "Emotion-Focused Therapy [sem edição brasileira confirmada]",
+    "autor": "Leslie S. Greenberg",
+    "resumo_do_livro": "Emotion-Focused Therapy (EFT) apresenta um modelo clínico centrado no papel das emoções como agentes de mudança terapêutica. Greenberg descreve princípios teóricos, processos de trabalho emocional e técnicas para identificar, validar, aprofundar e transformar experiências afetivas dolorosas. O livro integra evidência empírica, exercícios e estudos de caso, mostrando como a reprocessamento emocional pode reorganizar significados e comportamentos. Indicado para terapeutas que desejam abordar emoções de forma estruturada, o texto oferece ferramentas para facilitar regulação emocional, ressignificação e desenvolvimento de estratégias mais adaptativas em contextos individuais e de casal.",
+    "trecho_memoravel": "Trabalhar emoções no momento vivido permite reorganizar significados e promover mudanças terapêuticas profundas e duradouras.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "03_comportamental",
+    "nome": "Science and Human Behavior [sem edição brasileira confirmada]",
+    "autor": "B. F. Skinner",
+    "resumo_do_livro": "Obra fundamental de Skinner que sistematiza a análise experimental do comportamento aplicada à compreensão humana. O livro apresenta princípios operantes, reforçamento, controle aversivo e modelagem, articulando uma visão científica do comportamento individual em contextos sociais e institucionais. Destaca métodos experimentais, implicações práticas para educação, terapia e organização social, além de reflexões éticas sobre o uso do controle comportamental. Útil para estudantes e pesquisadores em psicologia comportamental e psicoterapia que buscam base conceitual rigorosa e exemplos de aplicação empírica das intervenções comportamentais.",
+    "trecho_memoravel": "Comportamentos humanos são explicáveis por contingências de reforçamento e ambientes que as mantêm",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "03_comportamental",
+    "nome": "About Behaviorism [sem edição brasileira confirmada]",
+    "autor": "B. F. Skinner",
+    "resumo_do_livro": "Texto acessível em que Skinner defende o behaviorismo como abordagem científica para estudar comportamento e como alternativa às explicações introspectivas. Discorre sobre linguagem, consciência, livre-arbítrio e metodologias experimentais, esclarecendo mal-entendidos sobre o behaviorismo e oferecendo argumentos para sua aplicabilidade clínica e educacional. Proporciona uma síntese das bases teóricas do behaviorismo e suas implicações práticas, sendo valioso para profissionais que desejam entender as ideias centrais de Skinner e como aplicá-las à avaliação funcional e ao planejamento de intervenções comportamentais.",
+    "trecho_memoravel": "Explicar comportamento exige focar nas relações ambientais e nas consequências que as mantêm, não em estados mentais privados",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "03_comportamental",
+    "nome": "Walden Two [sem edição brasileira confirmada]",
+    "autor": "B. F. Skinner",
+    "resumo_do_livro": "Romance de Skinner que ilustra, em forma ficcional, a aplicação prática de princípios comportamentais à organização social. Apresenta uma comunidade planejada que utiliza reforçamento contingente para promover bem-estar, cooperação e aprendizado eficiente, explorando questões éticas sobre engenharia social e liberdade individual. Embora literário, o livro funciona como estudo de caso conceitual para discutir intervenção comportamental em larga escala, desenho institucional e formação de hábitos. Relevante para estudantes interessados na intersecção entre teoria comportamental, políticas públicas e filosofia da prática terapêutica.",
+    "trecho_memoravel": "Modelos sociais podem ser projetados com técnicas comportamentais para favorecer hábitos e relations mais adaptativos",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "03_comportamental",
+    "nome": "Behaviorism [sem edição brasileira confirmada]",
+    "autor": "John B. Watson",
+    "resumo_do_livro": "Texto clássico de Watson que estabelece os fundamentos do behaviorismo enquanto corrente científica centrada no estudo observável do comportamento. Watson rejeita a introspecção e propõe métodos objetivos para investigar estímulos e respostas, condicionamento e prevenção de perturbações comportamentais. O livro enfatiza a importância da experiência e do ambiente na formação do comportamento humano, influenciando práticas clínicas e educacionais subsequentes. Importante para compreender a origem histórica do behaviorismo, seus pressupostos metodológicos e as raízes das intervenções comportamentais na psicoterapia contemporânea.",
+    "trecho_memoravel": "Estudar comportamento exige observação objetiva das relações estímulo-resposta e ênfase no papel do ambiente",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "03_comportamental",
+    "nome": "Psychotherapy by Reciprocal Inhibition [sem edição brasileira confirmada]",
+    "autor": "Joseph Wolpe",
+    "resumo_do_livro": "Obra seminal de Wolpe que descreve a técnica de inibição recíproca e sua aplicação ao tratamento de fobias e ansiedade. Baseada no condicionamento clássico, apresenta procedimentos como dessensibilização sistemática, relaxamento e hierarquias de exposição para substituir respostas de ansiedade por respostas incompatíveis. Explica fundamentos teóricos, protocolos terapêuticos e evidencia eficácia clínica, sendo marco no desenvolvimento de terapias comportamentais e cognitivas. Essencial para terapeutas que atuam com transtornos de ansiedade, oferecendo um modelo estruturado, empírico e replicável para intervenção clínica.",
+    "trecho_memoravel": "Substituir respostas de medo por respostas incompatíveis por meio de exposição gradual e relaxamento reduz ansiedade sustentavelmente",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "03_comportamental",
+    "nome": "Applied Behavior Analysis [sem edição brasileira confirmada]",
+    "autor": "John O. Cooper, Timothy E. Heron e William L. Heward",
+    "resumo_do_livro": "Manual abrangente que detalha princípios, métodos e aplicações da Análise do Comportamento Aplicada (ABA). Cobre avaliação funcional, desenvolvimento de programas de ensino, técnicas de reforçamento, manejo de contingências, controle de estímulos e coleta de dados. Apresenta exemplos clínicos e educacionais, ferramentas práticas para planejar e monitorar intervenções e discussões sobre ética e eficácia. Indispensável para profissionais e estudantes envolvidos em intervenções comportamentais, especialmente em contextos educacionais, autismo e reabilitação, oferecendo base técnica para práticas baseadas em evidência.",
+    "trecho_memoravel": "Intervenções eficazes combinam avaliação funcional rigorosa com programas de ensino individualizados e controle preciso de contingências",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "03_comportamental",
+    "nome": "Behavior Modification: What It Is and How To Do It [sem edição brasileira confirmada]",
+    "autor": "Garry L. Miltenberger",
+    "resumo_do_livro": "Guia prático e didático sobre modificação do comportamento que apresenta técnicas, procedimentos e estratégias passo a passo para avaliação e intervenção. Aborda definição de comportamentos-alvo, medidas de linha de base, planejamento de contingências, reforço, extinção, modelagem, treino de habilidades e generalização. Inclui estudos de caso e exemplos aplicados em clínicas, escolas e hospitais. Útil para estudantes iniciantes e profissionais que necessitam de um manual operacional para implementar programas comportamentais de forma ética e baseada em evidências, com ênfase em acompanhamento e monitoramento dos resultados.",
+    "trecho_memoravel": "Modificar comportamento exige definir metas claras, medir sistematicamente e aplicar contingências consistentes e monitoradas",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "03_comportamental",
+    "nome": "Behavior Modification in Applied Settings [sem edição brasileira confirmada]",
+    "autor": "Alan E. Kazdin",
+    "resumo_do_livro": "Coletânea de Kazdin que integra teoria e prática da modificação comportamental em contextos aplicados, com ênfase em metodologia e avaliação de intervenção. Explora design experimental, técnicas de mudança de comportamento, avaliação de eficácia e questões éticas, bem como aplicação em saúde mental, escolas e comunidade. Fornece frameworks para conduzir intervenções baseadas em evidência e para interpretar resultados científicos. Relevante para pesquisadores e clínicos que buscam rigor metodológico e orientação sobre tradução de princípios comportamentais em práticas efetivas em diversos ambientes aplicados.",
+    "trecho_memoravel": "Intervenções eficazes combinam procedimentos comportamentais testados com avaliação experimental rigorosa e sensibilidade ética",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "03_comportamental",
+    "nome": "Handbook of Applied Behavior Analysis [sem edição brasileira confirmada]",
+    "autor": "Johnny L. Matson, editor",
+    "resumo_do_livro": "Compêndio editorial que reúne temas centrais da aplicação da Análise do Comportamento: avaliação, intervenção, medidas, populações clínicas e questões contemporâneas. Cada capítulo aborda técnicas específicas, revisão empírica e recomendações práticas para implementação em ambientes clínicos, educacionais e comunitários. Oferece recursos para profissionais que precisam de referências atualizadas sobre práticas baseadas em evidência, adaptação de programas e resultados esperados. Útil tanto para formação acadêmica quanto para prática, servindo como manual de consulta para desenvolvimento e avaliação de intervenções comportamentais.",
+    "trecho_memoravel": "Práticas comportamentais eficazes integram conhecimento empírico, procedimentos padronizados e adaptação ao contexto do cliente",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "03_comportamental",
+    "nome": "Handbook of Applied Behavior Analysis [sem edição brasileira confirmada]",
+    "autor": "Wayne W. Fisher, Cathleen C. Piazza e Henry S. Roane, editores",
+    "resumo_do_livro": "Volume editorial que aborda intervenções baseadas em ABA para populações diversas, com capítulos sobre avaliação funcional, intervenções para problemas de comportamento, ensino de habilidades sociais e metodologias de pesquisa. Enfatiza tradução de ciência comportamental para práticas clínicas, protocolos de monitoramento e evidências de eficácia. Inclui discussões sobre ética, supervisão e formação profissional. Essencial para profissionais que implementam ABA em contextos de saúde mental, educação especial e reabilitação, fornecendo diretrizes técnicas e fundamentação científica para intervenções planejadas e mensuráveis.",
+    "trecho_memoravel": "Aplicar ABA com fidelidade exige avaliação contínua, protocolos padronizados e adaptação informada pelos dados",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "03_comportamental",
+    "nome": "Handbook of Applied Behavior Analysis Interventions for Autism [sem edição brasileira confirmada]",
+    "autor": "Justin B. Leaf, Joseph H. Cihon, Julia L. Ferguson e Mary Jane Weiss, editores",
+    "resumo_do_livro": "Coletânea especializada em intervenções ABA para pessoas com transtorno do espectro autista, cobrindo avaliação funcional, ensino de comunicação, redução de comportamentos-problema e promoção de independência. Capítulos oferecem protocolos, evidências empíricas, guias para adaptação de técnicas e estratégias para generalização e manutenção. Aborda também questões éticas e treinamento de equipes. Indicada para clínicos, supervisores e pesquisadores que trabalham com autismo, fornecendo ferramentas práticas e fundamentadas para planejar intervenções individualizadas e medir resultados clínicos de forma rigorosa.",
+    "trecho_memoravel": "Intervenções efetivas para autismo combinam avaliação funcional detalhada com programas de ensino sistemático e monitoramento contínuo",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "03_comportamental",
+    "nome": "Cognitive-Behavioral Treatment of Borderline Personality Disorder [sem edição brasileira confirmada]",
+    "autor": "Marsha M. Linehan",
+    "resumo_do_livro": "Manual seminal que descreve a Terapia Comportamental Dialética (DBT), integrando princípios comportamentais e cognitivos com ênfase em regulação emocional, tolerância ao sofrimento e relações interpessoais. Linehan apresenta protocolos estruturados, estratégias de mudança comportamental, treino de habilidades e abordagem contextualista para pacientes com personalidade borderline e comportamento auto-lesivo. Inclui orientação para terapia individual, grupos de habilidades e consultoria de equipe. Essencial para psicoterapeutas que atuam com casos complexos, fornecendo modelo empiricamente apoiado e detalhado para intervenção clínica e supervisão.",
+    "trecho_memoravel": "Combinar habilidades comportamentais sistemáticas com aceitação dialética permite reduzir comportamentos impulsivos e melhorar regulação emocional",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "03_comportamental",
+    "nome": "Behavioral Activation for Depression: A Clinician's Guide [sem edição brasileira confirmada]",
+    "autor": "Christopher R. Martell, Sona Dimidjian e Ruth Herman-Dunn",
+    "resumo_do_livro": "Guia clínico prático sobre ativação comportamental (BA) para depressão que descreve avaliação, formulação funcional e passos para implementar programas de atividade direcionada. Explica técnicas para identificar objetivos valiosos, agendamento de atividades, resolução de barreiras e prevenção de recaída, integrando evidência empírica e exemplos de caso. O livro é orientado para terapeutas que desejam intervenções breves e eficazes baseadas em comportamento, mostrando como aumentar o engajamento em atividades reforçadoras como caminho para reduzir sintomas depressivos e restaurar funcionamento social e ocupacional.",
+    "trecho_memoravel": "Aumentar o engajamento em atividades valorizadas reestrutura contingências e reduz sintomas depressivos por meio de reforçamento natural",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "03_comportamental",
+    "nome": "The Guilford Guide to Behavioral Activation [sem edição brasileira confirmada]",
+    "autor": "Christopher R. Martell e colaboradores",
+    "resumo_do_livro": "Coletânea prática que oferece protocolos, exercícios e exemplos clínicos para aplicação da ativação comportamental em diferentes populações e contextos. Reúne contribuições que detalham avaliação funcional, formulação individualizada, técnicas de engajamento e adaptação cultural, além de estratégias para lidar com comorbidades. Direcionado a clínicos que buscam integrar BA em sua prática, o livro apresenta ferramentas para implementação estruturada e orientações para medir progresso e fazer ajustes baseados em dados, fortalecendo a eficácia de tratamentos focados em mudança comportamental para depressão.",
+    "trecho_memoravel": "Protocolos de ativação combinam planejamento de atividades com monitoramento e ajustes para recuperar reforços naturais na vida do paciente",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "03_comportamental",
+    "nome": "Social Skills Training for Children and Adolescents with Asperger Syndrome and Social-Communication Problems [sem edição brasileira confirmada]",
+    "autor": "Jed Baker",
+    "resumo_do_livro": "Manual prático que apresenta estratégias e programas para ensino de habilidades sociais a jovens com dificuldades de comunicação social, incluindo os do espectro autista. Baker oferece currículos, exercícios estruturados, jogos de papéis e métodos para generalizar habilidades em contextos naturais. Discute avaliação inicial, planejamento de objetivos, trabalho com famílias e escolas e adaptações para diferentes níveis de desenvolvimento. Útil para psicólogos, terapeutas ocupacionais e educadores que precisam de intervenções concretas e replicáveis para promover interação social, compreensão de convenções sociais e autonomia social em crianças e adolescentes.",
+    "trecho_memoravel": "Ensinar habilidades sociais exige programas estruturados, práticas repetidas e transferir treinos para situações reais do dia a dia",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "04_cognitiva_tcc",
+    "nome": "Cognitive Therapy and the Emotional Disorders [sem edição brasileira confirmada]",
+    "autor": "Aaron T. Beck",
+    "resumo_do_livro": "Obra seminal que sistematiza a terapia cognitiva como abordagem para transtornos emocionais, estabelecendo fundamentos teóricos, mecanismos e estratégias clínicas. Beck descreve como pensamentos automáticos, crenças centrais e distorções cognitivas geram e mantêm sintomas de ansiedade e depressão, e apresenta métodos estruturados para avaliação, formulação de caso e intervenção. O livro combina fundamentos conceituais com exemplos clínicos e dados iniciais sobre eficácia, sendo leitura essencial para estudantes e clínicos que buscam compreender a lógica da reestruturação cognitiva e sua aplicação em diferentes quadros emocionais.",
+    "trecho_memoravel": "A alteração de pensamentos disfuncionais é o eixo para aliviar sintomas emocionais e transformar comportamentos.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "04_cognitiva_tcc",
+    "nome": "Cognitive Therapy of Depression [sem edição brasileira confirmada]",
+    "autor": "Aaron T. Beck, A. John Rush, Brian F. Shaw e Gary Emery",
+    "resumo_do_livro": "Manual clássico que detalha o modelo cognitivo da depressão e traduz teoria em um programa terapêutico específico e empiricamente fundamentado. Os autores apresentam avaliação, conceitualização de casos, técnicas para identificar pensamentos automáticos, testar crenças e modificar esquemas depressógenos, além de estratégias para prevenir recaídas. Inclui exemplos clínicos, exercícios práticos e orientação passo a passo para sessões. É recurso valioso para clínicos que tratam depressão, pesquisadores interessados em mecanismos cognitivos e estudantes que precisam de um guia operacional e baseado em evidências.",
+    "trecho_memoravel": "Identificar e reestruturar pensamentos automáticos e esquemas negativos é central para o tratamento efetivo da depressão.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "04_cognitiva_tcc",
+    "nome": "Reason and Emotion in Psychotherapy [sem edição brasileira confirmada]",
+    "autor": "Albert Ellis",
+    "resumo_do_livro": "Livro fundador da Terapia Racional Emotiva Comportamental (REBT), onde Ellis expõe a premissa de que emoções disfuncionais derivam de crenças irracionais e que a mudança destas crenças produz alívio emocional. A obra aborda princípios filosóficos e práticos, técnicas de disputa cognitiva, estratégias comportamentais e exercícios para promover pensamento mais flexível. Fornece um enquadramento ativo e diretivo para a intervenção terapêutica e enfatiza autonomia do cliente. Útil para clínicos que buscam uma abordagem direto-ativa para modificar crenças autolimitantes e para estudantes que estudam a gênese histórica das terapias cognitivas.",
+    "trecho_memoravel": "Emoções disfuncionais surgem de crenças irracionais que podem ser contestadas e substituídas por pensamentos mais racionais.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "04_cognitiva_tcc",
+    "nome": "Cognitive Behavior Therapy: Basics and Beyond [sem edição brasileira confirmada]",
+    "autor": "Judith S. Beck",
+    "resumo_do_livro": "Guia contemporâneo e prático da terapia cognitivo-comportamental que organiza conceitos teóricos em ferramentas clínicas aplicáveis. Judith Beck apresenta formulação de caso, definição de objetivos, estratégias de intervenção para distorções cognitivas, técnicas comportamentais e habilidades de sessão, incluindo como envolver o cliente e estruturar o tratamento. O livro oferece exemplos clínicos, scripts e sugestões para supervisão e treinamento, tornando-se referência obrigatória para profissionais e supervisores. Sua clareza é especialmente útil para quem introduz CBT em contextos ambulatoriais e busca modelos replicáveis e baseados em evidências.",
+    "trecho_memoravel": "Uma formulação clara e orientada por caso permite intervenções cognitivas-comportamentais eficazes e mensuráveis.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "04_cognitiva_tcc",
+    "nome": "Mind Over Mood [sem edição brasileira confirmada]",
+    "autor": "Dennis Greenberger e Christine A. Padesky",
+    "resumo_do_livro": "Manual prático em formato de workbook que traduz princípios da terapia cognitiva em exercícios acessíveis para pacientes e clínicos. O livro apresenta ferramentas passo a passo para identificar pensamentos automáticos, monitorar emoções, testar suposições e implementar estratégias comportamentais em problemas como depressão, ansiedade, raiva e culpa. Com exercícios, modelos e exemplos clínicos, é especialmente útil como recurso didático em sessões, em intervenções de autoajuda guiada e em contextos de educação terapêutica. Sua utilidade reside na aplicabilidade imediata e na capacidade de fomentar autonomia do paciente no manejo dos sintomas.",
+    "trecho_memoravel": "Habilidades estruturadas e exercícios guiados tornam possível aplicar a terapia cognitiva no cotidiano para reduzir sintomas e promover mudanças.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "04_cognitiva_tcc",
+    "nome": "Schema Therapy [sem edição brasileira confirmada]",
+    "autor": "Jeffrey E. Young, Janet S. Klosko e Marjorie E. Weishaar",
+    "resumo_do_livro": "Apresenta a terapia de esquemas como abordagem integrativa para padrões profundos de personalidade e transtornos crônicos. Young e colaboradores descrevem a formação de esquemas precoces, modos emocionais, e técnicas específicas como reestruturação cognitiva, trabalho experiencial e reparentalização limitada. O texto combina teoria do desenvolvimento, exemplos clínicos longos e estratégias terapêuticas para tratar clientes com traços de personalidade difíceis e com histórico de adversidade. Indicado para clínicos que enfrentam resistência e padrões duradouros, o livro fornece ferramentas para intervenção em tratamentos de longo prazo e para compreensão da manutenção dos esquemas.",
+    "trecho_memoravel": "Padrões duradouros de personalidade nascem de esquemas precoces que exigem intervenções cognitivas, emocionais e experienciantes para serem transformados.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "04_cognitiva_tcc",
+    "nome": "Mindfulness-Based Cognitive Therapy for Depression [sem edição brasileira confirmada]",
+    "autor": "Zindel V. Segal, J. Mark G. Williams e John D. Teasdale",
+    "resumo_do_livro": "Descrição detalhada do programa MBCT, que integra práticas de mindfulness com técnicas cognitivas para prevenir recaídas em depressão recorrente. Os autores apresentam a estrutura do curso, exercícios de atenção plena, estratégias para lidar com ruminação e reatividade emocional, além de fundamentação empírica sobre eficácia. O livro discute mecanismos de mudança, adaptações clínicas e orientações para conduzir grupos. É valioso para terapeutas que desejam incorporar práticas contemplativas em intervenções baseadas em evidências e para profissionais que trabalham com pacientes em risco de recaída depressiva.",
+    "trecho_memoravel": "Treinar atenção plena sobre processos mentais reduz reatividade automática e diminui o risco de recaída depressiva.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "04_cognitiva_tcc",
+    "nome": "Acceptance and Commitment Therapy [sem edição brasileira confirmada]",
+    "autor": "Steven C. Hayes, Kirk D. Strosahl e Kelly G. Wilson",
+    "resumo_do_livro": "Manual teórico-prático que apresenta os princípios da ACT, centrada na promoção de flexibilidade psicológica por meio de aceitação, desfusão cognitiva, contato com o momento presente, clarificação de valores e ação comprometida. Os autores articulam fundamentos teóricos, técnicas clínicas e exercícios para trabalhar a evitação experiencial e o sofrimento humano de forma funcional. A obra demonstra aplicações transdiagnósticas e discute evidências sobre eficácia. Indicado para clínicos interessados em intervenções contemporâneas que priorizam funcionamento e valores em vez da supressão de pensamentos e sentimentos.",
+    "trecho_memoravel": "Em vez de eliminar pensamentos, cultivar aceitação e ação guiada por valores favorece flexibilidade psicológica e melhora do funcionamento.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "04_cognitiva_tcc",
+    "nome": "Compassion Focused Therapy [sem edição brasileira confirmada]",
+    "autor": "Paul Gilbert",
+    "resumo_do_livro": "Apresenta a Terapia Focada na Compaixão (CFT), que integra ciência evolutiva, psicologia afetiva e técnicas cognitivas para abordar vergonha, autocriticismo e regulação afetiva. Gilbert descreve modelos de sistemas de afeto, exercícios de compaixão, abordagens imagéticas e práticas comportamentais destinadas a fortalecer o sistema de cuidado interno. O livro fornece indicação clínica para populações com elevado autocrítica e transtornos de personalidade, além de discutir evidência empírica e estratégias de adaptação terapêutica. É um recurso relevante para quem deseja intervir na dimensão afetiva profunda que mantém vários transtornos.",
+    "trecho_memoravel": "Fortalecer o sistema de compaixão regula o afeto e reduz autocriticismo e vergonha que mantêm sofrimento psicológico.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "04_cognitiva_tcc",
+    "nome": "Metacognitive Therapy for Anxiety and Depression [sem edição brasileira confirmada]",
+    "autor": "Adrian Wells",
+    "resumo_do_livro": "Wells apresenta a Terapia Metacognitiva (MCT), que focaliza as crenças sobre os próprios processos de pensamento (metacrenças) e o chamado Cognitive Attentional Syndrome composto por ruminação, preocupação e estratégias de controle disfuncionais. O autor descreve avaliação, formulação e intervenções específicas como treino de atenção desvinculada, reestruturação de metacrenças e técnicas para interromper padrões perseverativos. O livro discute evidências clínicas e aplicações transdiagnósticas, sendo útil para clínicos que enfrentam casos em que a repetição mental mais do que o conteúdo do pensamento mantém a sintomatologia.",
+    "trecho_memoravel": "Alterar crenças sobre o ato de pensar e interromper ruminação e preocupação é central para reduzir ansiedade e depressão.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "04_cognitiva_tcc",
+    "nome": "Cognitive Processing Therapy for PTSD [sem edição brasileira confirmada]",
+    "autor": "Patricia A. Resick, Candice M. Monson e Kathleen M. Chard",
+    "resumo_do_livro": "Manual técnico que descreve a Terapia de Processamento Cognitivo (CPT) para transtorno de estresse pós‑traumático. Os autores apresentam a estrutura do tratamento, exercícios como a elaboração de impact statement, identificação de stuck points, reexame de crenças disfuncionais relacionadas ao trauma e técnicas de reestruturação cognitiva. Inclui protocolos para sessões individuais e grupais, estudos de caso e evidência empírica robusta sobre eficácia. Essencial para profissionais que tratam TEPT, o livro combina clareza prática com fundamentação teórica, oferecendo ferramentas para ajudar pacientes a reconstruir sentidos e reduzir sintomas traumáticos.",
+    "trecho_memoravel": "Reexaminar significados e crenças sobre o trauma permite elaborar emoções e reduzir os sintomas do transtorno pós‑traumático.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "04_cognitiva_tcc",
+    "nome": "Unified Protocol for Transdiagnostic Treatment of Emotional Disorders [sem edição brasileira confirmada]",
+    "autor": "David H. Barlow e colaboradores",
+    "resumo_do_livro": "Apresenta o Protocolo Unificado (UP), uma intervenção transdiagnóstica baseada em princípios cognitivo-comportamentais para tratar transtornos emocionais com foco em regulação emocional. O livro descreve módulos moduláveis que incluem psicoeducação sobre emoções, estratégias de exposição, reavaliação cognitiva, treinamento em habilidades e prevenção de recaída, com ênfase em processos comuns que sustentam ansiedade e depressão. Oferece guias clínicos, materiais de sessão e evidência sobre aplicabilidade para comorbidades. Útil para clínicas que buscam um modelo eficiente para atender diversidade diagnóstica com consistência teórica e pragmática.",
+    "trecho_memoravel": "Focar em processos emocionais compartilhados possibilita tratar transtornos diversos por meio de um protocolo modular baseado em exposição e reestruturação.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "04_cognitiva_tcc",
+    "nome": "Cognitive-Behavior Modification [sem edição brasileira confirmada]",
+    "autor": "Donald Meichenbaum",
+    "resumo_do_livro": "Obra que consolidou princípios da modificação cognitivo-comportamental, destacando técnicas como treino de autoinstruções, ensaio comportamental e inoculação ao estresse. Meichenbaum discute como diálogos internos influenciam desempenho e regulação emocional, propondo intervenções para transformar mensagens internas e promover enfrentamento adaptativo. O livro inclui exemplos clínicos, programas estruturados e aplicações em variados contextos, desde reabilitação até manejo de ansiedade. Relevante para terapeutas interessados em intervenções que integrem mudança cognitiva com treino comportamental e para pesquisadores que estudam processos de aprendizagem e autorregulação na psicoterapia.",
+    "trecho_memoravel": "Modificar diálogos internos e treinar habilidades comportamentais constrói tolerância ao estresse e promove mudança terapêutica duradoura.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "04_cognitiva_tcc",
+    "nome": "Handbook of Cognitive-Behavioral Therapies [sem edição brasileira confirmada]",
+    "autor": "Keith S. Dobson (editor)",
+    "resumo_do_livro": "Coletânea abrangente que reúne contribuições de especialistas sobre fundamentos teóricos, modelos de tratamento e evidência empírica das diversas abordagens cognitivo-comportamentais. O manual aborda intervenções específicas para múltiplos transtornos, adaptações para populações especiais, metodologias de pesquisa e direções futuras do campo. Oferece capítulos técnicos que combinam síntese crítica e orientação clínica, sendo recurso de referência para pesquisadores, formadores e clínicos avançados. Sua amplitude e rigor tornam-no uma ferramenta valiosa para atualização, supervisão e para desenvolvimento de práticas baseadas em evidências em contextos acadêmicos e de saúde mental.",
+    "trecho_memoravel": "Uma coletânea técnica que integra teoria, pesquisa e práticas clínicas do campo cognitivo-comportamental para múltiplas condições.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "04_cognitiva_tcc",
+    "nome": "Cognitive Therapy Techniques [sem edição brasileira confirmada]",
+    "autor": "Robert L. Leahy",
+    "resumo_do_livro": "Manual prático que apresenta uma variedade de técnicas cognitivas aplicáveis a diferentes quadros clínicos, com ênfase em identificação de distorções, reestruturação cognitiva e integração de aspectos emocionais e interpessoais. Leahy descreve experimentos comportamentais, intervenções para emoção intensa, estratégias para trabalhar resistência e exercícios para uso em sessões. O texto traz exemplos clínicos e scripts que facilitam a implementação em prática diária. Indicado para terapeutas em formação e em exercício, o livro equilibra fundamentação teórica com ferramentas concretas para aprimorar a eficácia do atendimento cognitivo-comportamental.",
+    "trecho_memoravel": "Técnicas cognitivas, quando combinadas com foco emocional e intervenções comportamentais, facilitam a identificação e substituição de pensamentos disfuncionais.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "05_sistemica_familiar_casais",
+    "nome": "Families and Family Therapy [sem edição brasileira confirmada]",
+    "autor": "Salvador Minuchin",
+    "resumo_do_livro": "Obra clássica que apresenta a terapia familiar estrutural de Salvador Minuchin, detalhando a organização das famílias, padrões de interação e técnicas para reformular fronteiras e hierarquias disfuncionais. O livro combina descrição clínica, estudos de caso e orientações práticas para intervenção, enfatizando a observação das sequências interacionais e a reestruturação do sistema familiar como caminho para mudança. É leitura essencial para estudantes e terapeutas que buscam compreender como intervenções centradas na estrutura familiar podem resolver problemas comportamentais, emocionais e de relacionamento, oferecendo ferramentas concretas para avaliação e condução de sessões.",
+    "trecho_memoravel": "Problemas individuais frequentemente refletem padrões e fronteiras familiares que, ao serem reorganizados, possibilitam mudanças duradouras",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "05_sistemica_familiar_casais",
+    "nome": "Family Healing [sem edição brasileira confirmada]",
+    "autor": "Salvador Minuchin e Michael P. Nichols",
+    "resumo_do_livro": "Texto que integra a perspectiva estrutural de Minuchin com contribuições práticas de Michael Nichols sobre o processo de cura nas famílias. Explora intervenções terapêuticas que visam restaurar equilíbrio, fortalecer papéis funcionais e promover comunicação efetiva entre membros. Apresenta estudos de caso, estratégias de intervenção e reflexões sobre a relação terapeuta-sistema, destacando a importância de mudanças nas interações cotidianas para consolidar resultados. Útil tanto para formação quanto para prática clínica, serve como guia para intervenções que buscam transformar padrões repetitivos e promover resiliência familiar.",
+    "trecho_memoravel": "A cura familiar surge quando padrões de interação são transformados em estruturas que permitem funções saudáveis e comunicação aberta",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "05_sistemica_familiar_casais",
+    "nome": "Strategies of Psychotherapy [sem edição brasileira confirmada]",
+    "autor": "Jay Haley",
+    "resumo_do_livro": "Jay Haley apresenta uma coleção de estratégias pragmáticas e diretas para condução de psicoterapias, com ênfase em intervenções estratégicas e comunicativas. O livro discute o uso de tarefas, prescrições de sintoma e manobras arquitetadas para romper resistências e promover mudança rápida. Haley oferece exemplos clínicos e raciocínio estratégico que auxiliam terapeutas a escolher objetivos claros, mapear alvos de intervenção e manipular sequências interacionais. Indicado para clínicos que buscam ferramentas de intervenção breve e focal, é referência para abordagens que valorizam a ação e a criatividade técnica.",
+    "trecho_memoravel": "Mudança terapêutica exige intervenções planejadas que alterem diretamente as sequências interacionais que mantêm o problema",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "05_sistemica_familiar_casais",
+    "nome": "Problem-Solving Therapy [sem edição brasileira confirmada]",
+    "autor": "Jay Haley",
+    "resumo_do_livro": "Neste livro Haley aborda a terapia orientada à resolução de problemas como método para enfrentar dificuldades concretas dos pacientes. Descreve como identificar obstáculos, definir metas realistas, formular alternativas e testar soluções na vida diária. Inclui exemplos clínicos que ilustram o desenho de intervenções e a modificação de padrões comunicacionais que dificultam a solução de problemas. A obra é prática e instruicional, relevante para terapeutas que trabalham com famílias, casais e indivíduos, oferecendo estrutura para intervir sobre impedimentos comportamentais e cognitivos que mantêm o sofrimento.",
+    "trecho_memoravel": "Enfrentar o problema de forma sistemática e pragmática permite transformar dificuldades em tarefas resolvíveis e observáveis",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "05_sistemica_familiar_casais",
+    "nome": "Family Therapy in Clinical Practice [sem edição brasileira confirmada]",
+    "autor": "Murray Bowen",
+    "resumo_do_livro": "Murray Bowen apresenta os fundamentos da terapia familiar baseada na teoria dos sistemas familiares e no conceito de diferenciação do self. O livro explica como padrões intergeracionais, ansiedade emocional e triangulações influenciam o funcionamento familiar e a psicopatologia individual. Bowen descreve técnicas de intervenção que visam aumentar a autonomia emocional e reduzir a reatividade relacional, com foco na compreensão multigeracional e na observação de padrões repetidos. Essencial para quem estuda terapia familiar sistêmica, oferece uma base teórica robusta e aplicações clínicas para casos complexos.",
+    "trecho_memoravel": "A saúde emocional depende do grau de diferenciação individual dentro do tecido relacional e das rédeas que se têm sobre reações emocionais",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "05_sistemica_familiar_casais",
+    "nome": "Paradox and Counterparadox [sem edição brasileira confirmada]",
+    "autor": "Mara Selvini Palazzoli, Luigi Boscolo, Gianfranco Cecchin e Giuliana Prata",
+    "resumo_do_livro": "Livro seminal da Escola de Milão que introduz o uso intencional de intervenções paradoxais e contraparadoxais na terapia familiar. Descreve como prescrições aparentemente contraditórias e a manipulação estratégica da comunicação podem desestabilizar padrões rígidos e permitir novas alternativas. A obra traz casos clínicos e análise detalhada das sequências interacionais, enfatizando a criatividade técnica e a exploração da linguagem como instrumento terapêutico. Indicado para clínicos interessados em abordagens estratégicas e em compreender a dinâmica do poder, da aliança e da resistência nas famílias.",
+    "trecho_memoravel": "Intervenções paradoxais criam rupturas na circulação de significados que sustentam o problema e abrem espaço para novas respostas",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "05_sistemica_familiar_casais",
+    "nome": "Keys to Solution in Brief Therapy [sem edição brasileira confirmada]",
+    "autor": "Steve de Shazer",
+    "resumo_do_livro": "Steve de Shazer sintetiza princípios da terapia breve centrada em soluções, enfatizando foco em recursos, metas concretas e pequenas mudanças que ampliam possibilidades. O livro apresenta técnicas como perguntas sobre exceções, construção de objetivos desejáveis e reforço de estratégias já funcionantes, priorizando o que funciona sobre a etiologia do problema. Com exemplos clínicos, De Shazer oferece um modelo pragmático para intervenções de curta duração, útil para terapeutas que buscam eficiência clínica, clareza de objetivos e métodos replicáveis para facilitar transformação rápida e colaborativa.",
+    "trecho_memoravel": "Concentrar-se nas exceções e nos recursos existentes acelera soluções práticas mesmo sem aprofundar as causas do problema",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "05_sistemica_familiar_casais",
+    "nome": "Working with the Problem Drinker [sem edição brasileira confirmada]",
+    "autor": "Insoo Kim Berg e Scott D. Miller",
+    "resumo_do_livro": "Manual prático que aborda intervenções breves e centradas no cliente para trabalhar com bebedeiras problemáticas e seus contextos familiares. Baseado em modelos de terapia breve e orientação para soluções, oferece estratégias para engajar o cliente, negociar metas realistas e mobilizar apoio familiar. Destaca técnicas para tomada de decisão, interrupção de padrões de risco e planejamento de contingências, com foco em mudanças comportamentais mensuráveis. Útil para terapeutas e equipes de saúde que precisam de intervenções focalizadas, aplicáveis em consultório, serviços comunitários e contextos de emergência.",
+    "trecho_memoravel": "Trabalhar com bebedeiras exige metas práticas e mobilização de recursos que interrompam padrões de risco e reforcem escolhas mais seguras",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "05_sistemica_familiar_casais",
+    "nome": "Family Therapy: Concepts and Methods [sem edição brasileira confirmada]",
+    "autor": "Michael P. Nichols",
+    "resumo_do_livro": "Texto abrangente que apresenta conceitos fundamentais e métodos diversos em terapia familiar, integrando teoria, pesquisa e prática clínica. Nichols discute modelos sistêmicos, estratégias de avaliação, formatos de intervenção e considerações éticas e culturais. Cada capítulo combina revisão teórica com exemplos clínicos, oferecendo ferramentas para avaliação de padrões relacionais e formulação de intervenções adaptadas a diferentes quadros. Indicado para estudantes e clínicos que buscam panorama atualizado e aplicável da terapia familiar, com ênfase em prática reflexiva e integração de abordagens variadas.",
+    "trecho_memoravel": "Compreender e escolher métodos terapêuticos exige mapear padrões relacionais e adaptar intervenções ao contexto singular da família",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "05_sistemica_familiar_casais",
+    "nome": "Conjoint Family Therapy [sem edição brasileira confirmada]",
+    "autor": "Virginia Satir",
+    "resumo_do_livro": "Virginia Satir explora a terapia familiar conjugal enfatizando comunicação autêntica, autoestima e crescimento humano dentro do sistema familiar. O livro descreve técnicas para melhorar expressão emocional, reorganizar papéis e promover mudanças de postura entre os membros, valorizando a empatia e o poder das metáforas e experimentos terapêuticos. Satir coloca ênfase na dignidade individual e no potencial transformador das sessões conjuntas, oferecendo exercícios práticos e casos clínicos. Essencial para quem busca abordagens humanistas e experiencialmente orientadas na terapia de casais e famílias.",
+    "trecho_memoravel": "Ao cultivar comunicação honesta e autoestima, a família cria espaço para cura e mudança relacional significativa",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "05_sistemica_familiar_casais",
+    "nome": "Attachment Processes in Couple and Family Therapy [sem edição brasileira confirmada]",
+    "autor": "Susan M. Johnson e Valerie E. Whiffen, editoras",
+    "resumo_do_livro": "Coletânea que integra a teoria do apego às intervenções em casais e famílias, reunindo pesquisas e aplicações clínicas contemporâneas. Os capítulos exploram como padrões de apego influenciam regulação emocional, conflito e intimidade, propondo estratégias terapêuticas para reparar rupturas e fortalecer laços afetivos. Aborda modelos clínicos baseados em evidências, incluindo terapia focalizada em emoção, e discute implicações para avaliação e tratamento de transtornos relacionais. Útil para clínicos que desejam incorporar compreensão do apego em formulações e intervenções terapêuticas com casais e famílias.",
+    "trecho_memoravel": "Padrões de apego moldam reações emocionais e a capacidade de reparar rupturas, sendo chave para intervenções centradas na conexão",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "05_sistemica_familiar_casais",
+    "nome": "Integrative Behavioral Couple Therapy [sem edição brasileira confirmada]",
+    "autor": "Andrew Christensen e Neil S. Jacobson",
+    "resumo_do_livro": "Apresenta um modelo integrador que combina técnicas de modificação comportamental e trabalho emocional para casais em crise. Christensen e Jacobson descrevem avaliação funcional do conflito, intervenções para reduzir comportamentos problemáticos e estratégias para promover aceitação e mudança mútua. O livro inclui protocolos, exemplos clínicos e evidências empíricas sobre eficácia, destacando como trabalhar tanto as habilidades comunicacionais quanto as crenças e emoções subjacentes. Recomendado para terapeutas de casais que buscam um método baseado em pesquisa que una foco comportamental e processos emocionais.",
+    "trecho_memoravel": "Combinar mudança comportamental com cultivo de aceitação emocional permite reparar conflitos e fortalecer a relação conjugal",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "05_sistemica_familiar_casais",
+    "nome": "Multisystemic Therapy for Antisocial Behavior in Children and Adolescents [sem edição brasileira confirmada]",
+    "autor": "Scott W. Henggeler e colaboradores",
+    "resumo_do_livro": "Manual que descreve o modelo multisistêmico (MST) para tratamento de comportamentos antissociais em jovens, integrando intervenções familiares, comunitárias e escolares. Explica princípios fundamentais, técnicas de engajamento, estratégias para mudar interações familiares disfuncionais e ação sobre fatores de risco no contexto social. Inclui protocolos, evidências de eficácia e orientações para implementação em serviços clínicos e comunitários. Indicado para profissionais que trabalham com adolescentes em situação de risco, oferece abordagem intensiva, orientada por evidências, para reduzir delinquência e melhorar funcionamento familiar.",
+    "trecho_memoravel": "Mudar comportamentos antissociais exige intervenção coordenada em múltiplos contextos que influenciam o jovem",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "05_sistemica_familiar_casais",
+    "nome": "Genograms: Assessment and Intervention [sem edição brasileira confirmada]",
+    "autor": "Monica McGoldrick, Randy Gerson e Sylvia Shellenberger",
+    "resumo_do_livro": "Guia prático sobre uso do genograma como ferramenta de avaliação e intervenção familiar, detalhando símbolos, convenções e interpretações de padrões intergeracionais. Os autores mostram como mapear história, relações de poder, padrões de doença, migração e eventos significativos para informar formulações clínicas e planejar intervenções. Inclui exemplos, exercícios e aplicações em diferentes contextos culturais e etários. Essencial para profissionais que desejam incorporar uma perspectiva multigeracional na prática clínica, o livro facilita a visualização de heranças emocionais e padrões que influenciam o presente familiar.",
+    "trecho_memoravel": "Representar a história familiar em um genograma revela padrões invisíveis que orientam avaliação e planejamento terapêutico",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "05_sistemica_familiar_casais",
+    "nome": "Integrative Problem-Centered Therapy [sem edição brasileira confirmada]",
+    "autor": "Pinsof, Breunlin e colaboradores",
+    "resumo_do_livro": "Obra que propõe um modelo integrativo centrado em problemas específicos apresentados pelas famílias, combinando perspectivas sistêmicas, psicodinâmicas e comportamentais. Foca na identificação clara do problema, na escolha de estratégias teóricas múltiplas e na adaptação de intervenções ao contexto familiar singular. Apresenta casos clínicos e diretrizes para integrar técnicas e avaliar resultados, promovendo flexibilidade técnica e coerência teórica. Serve como referência para terapeutas que desejam um quadro integrador para abordar complexidade clínica sem perder foco no problema-alvo.",
+    "trecho_memoravel": "Uma abordagem integrativa e centrada no problema permite selecionar técnicas de diferentes tradições alinhadas às necessidades da família",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "06_construtivista_narrativa",
+    "nome": "Narrative Means to Therapeutic Ends [sem edição brasileira confirmada]",
+    "autor": "Michael White e David Epston",
+    "resumo_do_livro": "Obra fundamental que sistematiza a terapia narrativa, apresentando conceitos-chave como externalização dos problemas, mapeamento da influência dos problemas e re-authoring (reescrita de histórias de vida). Baseada em relatos clínicos e diálogos terapêuticos, o livro demonstra procedimentos para ajudar clientes a separar sua identidade das dificuldades, identificar exceções e construir narrativas alternativas que valorizem competências e escolhas. É leitura essencial para estudantes e profissionais que buscam métodos práticos e conceituais para promover mudança através da linguagem, oferecendo ferramentas para documentação, perguntas terapêuticas e estratégias colaborativas.",
+    "trecho_memoravel": "problemas não definem a pessoa; separá-los e recontar a história permite revelar capacidades e alternativas",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "06_construtivista_narrativa",
+    "nome": "Maps of Narrative Practice [sem edição brasileira confirmada]",
+    "autor": "Michael White",
+    "resumo_do_livro": "Manual prático que detalha mapas de intervenção da terapia narrativa, oferecendo sequências de perguntas, tarefas e recursos para orientar o trabalho clínico. White descreve passos para externalização, identificação de efeitos, levantamentos de história preferida e construção de documentos terapêuticos que consolidam mudanças. Repleto de exemplos e diálogos, o livro facilita a tradução da teoria narrativa em técnica, abordando questões éticas e contextuais. É especialmente útil para terapeutas em formação que desejam instrumentos concretos para operacionalizar re-authoring e fortalecer a agência dos clientes nas narrativas de suas vidas.",
+    "trecho_memoravel": "mapas terapêuticos transformam conceitos narrativos em procedimentos concretos para identificar, descrever e reconstruir histórias de vida",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "06_construtivista_narrativa",
+    "nome": "Re-Authoring Lives [sem edição brasileira confirmada]",
+    "autor": "Michael White",
+    "resumo_do_livro": "Explora em profundidade o processo de reescrita narrativa, mostrando como terapeutas podem ajudar indivíduos a identificar episódios que contradigam narrativas problemáticas e a articular novas linhas de enredo. O livro apresenta técnicas para recuperar esquecimentos, criar documentos terapêuticos e envolver redes de apoio na consolidação de mudanças. Com estudos de caso e reflexões teóricas, oferece um quadro detalhado para promover transformação pessoal através da linguagem e da memória. Indicado para quem busca aperfeiçoar intervenções que apoiem a construção de identidades alternativas e mais capacitadoras.",
+    "trecho_memoravel": "reescrever a vida passa por destacar e ampliar eventos que contrapõem a narrativa problemática, usando-os como alicerce para novos enredos",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "06_construtivista_narrativa",
+    "nome": "Psychology of Personal Constructs [sem edição brasileira confirmada]",
+    "autor": "George A. Kelly",
+    "resumo_do_livro": "Obra clássica da teoria dos constructos pessoais que propõe que indivíduos interpretam experiência por meio de construtos bipolares que organizam significado e previsão. Kelly descreve métodos empíricos e clínicos, como o repertório de papéis (Role Construct Repertory Test), para mapear sistemas pessoais de interpretação. A teoria oferece base para intervenções que visam examinar, testar e revisar construtos, tornando-a relevante para abordagens construtivistas e narrativas. Estudantes de psicoterapia encontrarão um arcabouço conceitual para compreender como representações internas moldam comportamento e como promover reformulação cognitiva e identitária.",
+    "trecho_memoravel": "pessoas constroem significados por pares de categorias pessoais; modificar esses construtos altera a forma como experienciam e agem",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "06_construtivista_narrativa",
+    "nome": "Meaning Reconstruction and the Experience of Loss [sem edição brasileira confirmada]",
+    "autor": "Robert A. Neimeyer",
+    "resumo_do_livro": "Volume teórico e aplicável que vê o luto como processo de reconstrução de significado após perdas significativas. Neimeyer integra pesquisa, teoria e intervenções clínicas para mostrar como narrativas, rituais e memórias são centrais na elaboração do luto. Oferece modelos para ajudar enlutados a reformular identidades, relacionamentos e metas de vida, além de técnicas para facilitar a criação de narrativas que integrem a perda sem apagar a ligação com o que foi perdido. Importante recurso para profissionais que trabalham com luto, trauma e transições, com implicações diretas para práticas narrativas e construtivistas.",
+    "trecho_memoravel": "o luto exige reconstruir significados e narrativas da vida, integrando a perda de modo a possibilitar continuidade e sentido renovado",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "06_construtivista_narrativa",
+    "nome": "Depth Oriented Brief Therapy [sem edição brasileira confirmada]",
+    "autor": "Bruce Ecker",
+    "resumo_do_livro": "Apresenta uma abordagem que une trabalho emocional profundo e eficácia temporal da terapia breve, abordando como acessos emocionais centrais podem ser modificados de forma focalizada. O autor descreve princípios para identificar memórias e padrões emocionais que sustentam problemas e propõe intervenções para promover reconsolidação emocional e mudança duradoura em poucas sessões. O texto é prático e teórico, oferecendo protocolos, exemplos clínicos e reflexões sobre quando aplicar técnicas mais profundas dentro de um enquadramento breve. Útil para clínicos que querem integrar emoção e brevidade de forma responsável.",
+    "trecho_memoravel": "acessar e alterar núcleos emocionais permite mudanças rápidas e sustentáveis sem sacrificar profundidade terapêutica",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "06_construtivista_narrativa",
+    "nome": "Conversation, Language, and Possibilities [sem edição brasileira confirmada]",
+    "autor": "Harlene Anderson",
+    "resumo_do_livro": "Coletânea que apresenta a terapia colaborativa e dialogal, enfatizando a centralidade da linguagem e da relação no processo terapêutico. Anderson defende uma postura de co-investigação, incerteza profissional e escuta terapêutica que abre espaço para novas possibilidades narrativas. O livro oferece reflexões filosóficas e exemplos clínicos que orientam intervenções não diretivas, onde significado é construído conjuntamente. Relevante para quem adota práticas construtivistas e sociais, fornece base ética e técnica para formar conversas terapêuticas que promovam agência e mudanças contextuais.",
+    "trecho_memoravel": "a transformação acontece na co-construção dialogal, onde escuta e pesquisa conjunta geram novas maneiras de viver e sentir",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "06_construtivista_narrativa",
+    "nome": "The New Language of Change [sem edição brasileira confirmada]",
+    "autor": "Gianfranco Cecchin, Gerry Lane e Wendel Ray, editores",
+    "resumo_do_livro": "Livro editado que reúne contribuições sobre a influência da linguagem nas práticas terapêuticas e nos processos de mudança. Aborda abordagens sistêmicas e construtivistas, explorando como intervenções linguísticas e metáforas podem romper padrões disfuncionais e habilitar novas ações. Inclui estudos de caso, reflexões teóricas e propostas de intervenção que destacam o papel do terapeuta como facilitador de novos significados. Ferramenta valiosa para clínicos interessados em intervenções baseadas na conversa e na reconfiguração de descrições que estruturam relações e problemas.",
+    "trecho_memoravel": "mudar é transformar padrões comunicacionais: ao alterar descrições e conversas, novas ações se tornam possíveis no sistema relacional",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "06_construtivista_narrativa",
+    "nome": "Hypnotherapy [sem edição brasileira confirmada]",
+    "autor": "Milton H. Erickson, Ernest L. Rossi e Sheila I. Rossi",
+    "resumo_do_livro": "Compilação das contribuições de Erickson e colaboradores sobre hipnoterapia clínica, apresentando princípios de indução indireta, utilização dos recursos do cliente, metáforas e intervenções estratégicas. O livro discute mecanismos de ação, integração com outras modalidades e exemplifica técnicas voltadas para mudança comportamental e emocional. Ao enfatizar a individualização da intervenção e a criatividade terapêutica, serve como referência para clínicos que desejam aplicar trance terapêutico de modo ético e alinhado ao contexto do paciente. Útil também para estudantes interessados em linguagem sugestiva e processos de mudança implícita.",
+    "trecho_memoravel": "a hipnose clínica usa linguagem e recursos pessoais para ativar capacidades internas e promover reorganizações terapêuticas respeitando o contexto do cliente",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "06_construtivista_narrativa",
+    "nome": "Briefly: Weaving Your Therapy [sem edição brasileira confirmada]",
+    "autor": "Bill O'Hanlon e Pat Hudson",
+    "resumo_do_livro": "Guia prático de terapia breve que combina estratégias narrativas, ericksonianas e centradas em soluções, propondo uma abordagem criativa e flexível para sessões de curta duração. Os autores ensinam como articular intervenções que entrelaçam metáforas, prescrições e relatos de progresso, com foco em resultados concretos e aproveitamento de recursos do cliente. Inclui exemplos clínicos, scripts e sugestões para estruturar encontros eficazes. Indicado para terapeutas que trabalham com limitações de tempo e desejam técnicas que potencializem mudanças rápidas sem perder sensibilidade clínica.",
+    "trecho_memoravel": "terapia breve é tecer intervenções concisas e criativas que aproveitam recursos do cliente para gerar mudanças práticas e significativas",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "06_construtivista_narrativa",
+    "nome": "Keys to Solution in Brief Therapy [sem edição brasileira confirmada]",
+    "autor": "Steve de Shazer",
+    "resumo_do_livro": "Texto central do movimento centrado em soluções que explicita princípios e técnicas para promover mudanças rápidas por meio de foco em exceções, objetivos e linguagem orientada para soluções. De Shazer descreve ferramentas como a pergunta do milagre, escalas e a formulação de tarefas que ampliam comportamentos desejados. O livro é conciso e eminentemente prático, com estudos de caso que ilustram como redirecionar a atenção do problema para possibilidades concretas. Essencial para profissionais que buscam intervenções breves, pragmáticas e colaborativas baseadas em recursos do cliente.",
+    "trecho_memoravel": "mudança ocorre ao ampliar exceções e focar soluções concretas, transformando pequenas diferenças em novos hábitos e resultados",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "06_construtivista_narrativa",
+    "nome": "Narrative Therapy in Practice [sem edição brasileira confirmada]",
+    "autor": "Gerald Monk, John Winslade, Kathie Crocket e David Epston, editores",
+    "resumo_do_livro": "Coletânea que apresenta diversas aplicações da terapia narrativa em contextos clínicos, comunitários e educacionais, com estudos de caso, reflexões éticas e estratégias adaptadas a diferentes faixas etárias. Os editores reúnem trabalhos que mostram como práticas narrativas podem ser implementadas em intervenção familiar, com jovens e em contextos de violência e exclusão. O livro enfatiza a importância de documentos terapêuticos, de testemunhos e de trabalhar com redes sociais do cliente. Recomendado para quem quer ver a variedade de formas pelas quais a narrativa opera na prática.",
+    "trecho_memoravel": "aplicar a terapia narrativa em contextos diversos evidencia como recontar histórias pode transformar relações, poder e práticas cotidianas",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "06_construtivista_narrativa",
+    "nome": "Collective Narrative Practice [sem edição brasileira confirmada]",
+    "autor": "David Denborough",
+    "resumo_do_livro": "Propõe uma extensão da terapia narrativa para o nível comunitário, descrevendo práticas de testemunho coletivo, círculos de escuta e uso de narrativas para mobilizar ação social e cura comunitária. Denborough apresenta procedimentos para facilitar relatos partilhados, mapear efeitos sociais do problema e criar documentos públicos que legitimem experiências marginalizadas. O enfoque valoriza a agência coletiva e a solidariedade, sendo aplicado em contextos de violência, desastres e injustiça. Livro valioso para profissionais que trabalham com grupos e comunidades, integrando intervenção terapêutica e transformação social.",
+    "trecho_memoravel": "práticas narrativas coletivas transformam sofrimento isolado em ação compartilhada ao criar testemunhos públicos que legitimam experiências e promovem solidariedade",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "06_construtivista_narrativa",
+    "nome": "Social Constructionism [sem edição brasileira confirmada]",
+    "autor": "Vivien Burr",
+    "resumo_do_livro": "Introdução clara e crítica ao construcionismo social, explicando suas bases epistemológicas e implicações para a psicologia e prática clínica. Burr aborda como conhecimento, identidade e ‘realidade’ são produzidos por práticas sociais e linguísticas, discutindo pesquisa, poder e implicações éticas. O texto examina a aplicação do construcionismo em terapia, educação e serviços sociais, e apresenta críticas e debates contemporâneos. Útil para estudantes e terapeutas que precisam compreender o enquadre teórico das abordagens narrativas e construtivistas e suas repercussões metodológicas e políticas.",
+    "trecho_memoravel": "realidades psicológicas são produzidas socialmente por meio de linguagem e práticas; reconhecer isso amplia as opções terapêuticas e políticas",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "06_construtivista_narrativa",
+    "nome": "The Reflecting Team [sem edição brasileira confirmada]",
+    "autor": "Tom Andersen",
+    "resumo_do_livro": "Descreve a metodologia da equipe reflexiva desenvolvida na Noruega, na qual observadores discutem suas impressões em presença dos clientes, promovendo múltiplas perspectivas e coconstrução de significado. Andersen apresenta fundamentos teóricos, procedimentos práticos e exemplos clínicos que mostram como a visibilidade das reflexões pode gerar novas possibilidades de ação e aliviar culpas e estigmas. A técnica favorece participação ativa, criatividade e experimentação, sendo valiosa em terapia familiar e contextos colaborativos. Indicado para profissionais que buscam formatos de intervenção que ampliem o campo de opções narrativas.",
+    "trecho_memoravel": "tornar reflexões visíveis em equipe cria múltiplas leituras que ampliam possibilidades e convidam cliente e família a novas ações",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "07_interpessoal_relacional",
+    "nome": "Interpersonal Psychotherapy of Depression [sem edição brasileira confirmada]",
+    "autor": "Gerald L. Klerman, Myrna M. Weissman e colaboradores",
+    "resumo_do_livro": "Interpersonal Psychotherapy of Depression apresenta a IPT como tratamento estruturado focalizado nas dificuldades relacionais que mantêm ou precipitam episódios depressivos. O livro descreve teoria, manual clínico e procedimentos práticos para avaliação, formulação de problemas e intervenção em luto, disputes interpessoais, transições de papel e déficits interpessoais. Destaca evidências empíricas, formas de adaptação para diferentes faixas etárias e contextos clínicos e orientações para terapia breve dirigida a sintomas depressivos. Útil para estudantes e clínicos que buscam um modelo concreto, baseado em resultados, para integrar trabalho relacional e manejo sintomático na prática psicoterapêutica.",
+    "trecho_memoravel": "Sintomas depressivos frequentemente refletem e são mantidos por conflitos e rupturas nos vínculos interpessoais, portanto intervir nas relações alivia o sintoma.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "07_interpessoal_relacional",
+    "nome": "A Comprehensive Guide to Interpersonal Psychotherapy [sem edição brasileira confirmada]",
+    "autor": "Myrna M. Weissman, John C. Markowitz e Gerald L. Klerman",
+    "resumo_do_livro": "Este guia completo amplia os princípios da terapia interpessoal, integrando teoria, evidência e aplicação clínica detalhada. Oferece protocolos passo a passo, estratégias para manejo de comorbidades e adaptações culturais e de desenvolvimento. Discute pesquisa controlada sobre eficácia, considerações para supervisão e formação, e módulos para populações específicas, incluindo perinatalidade e transtornos crônicos. Voltado a terapeutas, psiquiatras e estudantes, o livro equilibra fundamentação empírica com exemplos clínicos e instrumentos de avaliação, servindo como manual prático para implementar IPT com fidelidade e sensibilidade relacional.",
+    "trecho_memoravel": "A terapia interpessoal combina estrutura e foco relacional para transformar padrões de interação que sustentam sofrimento emocional, adaptando-se a contextos clínicos variados.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "07_interpessoal_relacional",
+    "nome": "Relational-Cultural Therapy [sem edição brasileira confirmada]",
+    "autor": "Judith V. Jordan e colaboradores",
+    "resumo_do_livro": "Relational-Cultural Therapy (RCT) propõe que o desenvolvimento humano é profundamente moldado por conexões relacionais e contextos sociais. O livro reúne teoria, pesquisa e intervenções que priorizam empatia, mutualidade e crescimento através de relacionamentos autênticos, criticando modelos individualistas. Explora dinâmicas de poder, opressão e gênero, e oferece técnicas para reparar rupturas e fortalecer resiliência relacional em clientes diversos. Importante para profissionais interessados em terapias centradas na conexão, RCT fornece um quadro crítico e prático para promover mudança clínica e social, ampliando a compreensão de sofrimento e cura além do intrapsíquico.",
+    "trecho_memoravel": "A cura psicológica se dá pela restauração de conexões autênticas e mútuas, não pela correção isolada do indivíduo.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "07_interpessoal_relacional",
+    "nome": "Psychoanalysis and Human Change [sem edição brasileira confirmada]",
+    "autor": "Harry Stack Sullivan",
+    "resumo_do_livro": "Psychoanalysis and Human Change apresenta a visão de Sullivan sobre a psicanálise interpessoal, enfatizando que a personalidade e os transtornos são produtos de relações humanas continuadas. Sullivan descreve como ansiedade, identidade e padrões de relacionamento emergem nas interações sociais e como a terapia pode alterar esses padrões através de novas experiências interpessoais. O texto oferece conceitos sobre dinamismo relacional, desenvolvimento de si através do outro e o papel da comunicação na formação do eu. Relevante para estudiosos da psicanálise e terapeutas relacionais, contribui com um arcabouço para integrar processo clínico e contexto social.",
+    "trecho_memoravel": "A personalidade se forma e muda nas trocas intersubjetivas; para modificar o indivíduo é preciso transformar seus padrões relacionais.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "07_interpessoal_relacional",
+    "nome": "Mentalization-Based Treatment for Personality Disorders [sem edição brasileira confirmada]",
+    "autor": "Anthony Bateman e Peter Fonagy",
+    "resumo_do_livro": "Mentalization-Based Treatment (MBT) descreve um modelo integrador para transtornos de personalidade, especialmente transtorno borderline, centrado na restauração da capacidade de mentalizar — compreender estados mentais próprios e alheios. O livro detalha fundamentos teóricos, avaliação, técnicas terapêuticas e estrutura de tratamento ambulatório e de grupo. Explica como déficits na mentalização se manifestam em crises relacionais e impulsividade, e oferece estratégias para modular emoção, aumentar reflexão e estabilizar vínculos. Essencial para clínicos que trabalham com pacientes complexos, MBT oferece um protocolo empírico para promover regulação afetiva e melhoria funcional nas relações interpessoais.",
+    "trecho_memoravel": "Restaurar a habilidade de interpretar mentais próprios e alheios permite regular emoção e transformar padrões relacionais disfuncionais.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "07_interpessoal_relacional",
+    "nome": "Affect Regulation, Mentalization, and the Development of the Self [sem edição brasileira confirmada]",
+    "autor": "Peter Fonagy, György Gergely, Elliot L. Jurist e Mary Target",
+    "resumo_do_livro": "Este livro integra teoria do apego, neurociência e desenvolvimento para explicar como a regulação afetiva e a mentalização contribuem para a formação do self. Os autores descrevem como interações cuidadoras suportam a organização emocional, favorecem representação de estados mentais e previnem vulnerabilidades psicopatológicas. O texto combina evidência empírica com implicações clínicas, oferecendo quadros para entender transtornos relacionados à falha de mentalização e orientações para intervenções que promovam segurança relacional e capacidade mentalizadora. Útil para pesquisadores, clínicos e estudantes interessados em intervenções que conectam biologia, desenvolvimento e processos relacionais.",
+    "trecho_memoravel": "A capacidade de nomear e entender estados mentais, fomentada por cuidados responsivos, é central para regular afeto e constituir o self.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "07_interpessoal_relacional",
+    "nome": "Attachment in Therapeutic Practice [sem edição brasileira confirmada]",
+    "autor": "Jeremy Holmes",
+    "resumo_do_livro": "Attachment in Therapeutic Practice traduz conceitos da teoria do apego em aplicações clínicas concretas. Holmes explica como diferentes padrões de apego influenciam apresentação clínica, transferência e relação terapêutica, e oferece estratégias para avaliar e intervir nas dinâmicas de vínculo com sensibilidade e segurança. Inclui casos, técnicas para promover reparação e reflexões sobre ética e limites na terapia. O livro é prático e acessível, destinado a profissionais que desejam usar a compreensão do apego para orientar formulação de caso, planejamento terapêutico e fortalecimento da aliança em variadas populações.",
+    "trecho_memoravel": "Compreender o estilo de apego do paciente orienta intervenções que reconstroem confiança e promovem reparação relacional na terapia.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "07_interpessoal_relacional",
+    "nome": "Relational Concepts in Psychoanalysis [sem edição brasileira confirmada]",
+    "autor": "Stephen A. Mitchell",
+    "resumo_do_livro": "Relational Concepts in Psychoanalysis oferece uma síntese que move a psicanálise do foco intrapsíquico para uma perspectiva relacional, enfatizando que as trocas intersubjetivas moldam fantasia, defesa e identidade. Mitchell revisa teoria clássica e contemporânea, propondo que transferência e contratransferência são co-construídas em contextos de interação. A obra discute implicações teóricas e técnicas, convidando clínicos a considerar reciprocidade e historicidade nos processos terapêuticos. Relevante para analistas e psicoterapeutas, o livro ajuda a repensar técnica e teoria a partir do princípio de que a relação é o quadro central da mudança psicológica.",
+    "trecho_memoravel": "Fenômenos como transferência só ganham sentido quando vistos como mutuamente construídos no campo relacional entre paciente e terapeuta.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "07_interpessoal_relacional",
+    "nome": "The Context of Being [sem edição brasileira confirmada]",
+    "autor": "Robert D. Stolorow, George E. Atwood e Donna M. Orange",
+    "resumo_do_livro": "The Context of Being propõe uma perspectiva fenomenológica e intersubjetiva, enfatizando que a experiência emocional só pode ser compreendida dentro de contextos relacionais vividos. Os autores articulam como formas de mundo compartilhado, trauma e vulnerabilidade moldam subjetividade e sofrimento psíquico. O trabalho destaca responsabilidade clínica: reconhecer a influência do campo intersubjetivo e acolher experiências afetivas em sua dimensão situacional. Fundamental para terapeutas interessados em profundidade clínica, oferece fundamentos para intervenções sensíveis ao contexto e reflexões sobre ética e a prática da escuta empática e não redutora.",
+    "trecho_memoravel": "A experiência emocional ganha significado pleno somente quando situada no contexto relacional e fenomenológico que a constitui.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "07_interpessoal_relacional",
+    "nome": "Like Subjects, Love Objects [sem edição brasileira confirmada]",
+    "autor": "Jessica Benjamin",
+    "resumo_do_livro": "Like Subjects, Love Objects explora a dialética entre reconhecimento mútuo e desejo de submissão, propondo que crescimento psíquico depende de equilíbrio entre autonomia e vínculo. Benjamin integra teoria psicanalítica e feminista para analisar como dinâmica de poder e inveja afetam relações íntimas e desenvolvimento do eu. Apresenta insight sobre transferência, agressividade e capacidade de reconhecimento do outro como sujeito. O livro é valioso para clínicos e pesquisadores que buscam compreender como processos psíquicos profundos se manifestam em relacionamentos e como a terapia pode promover reconhecimento e intersubjetividade saudável.",
+    "trecho_memoravel": "A maturidade relacional exige reconhecer o outro como sujeito, conciliando vínculo com autonomia sem anular a alteridade.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "07_interpessoal_relacional",
+    "nome": "Relational Theory and the Practice of Psychotherapy [sem edição brasileira confirmada]",
+    "autor": "Paul L. Wachtel",
+    "resumo_do_livro": "Relational Theory and the Practice of Psychotherapy integra abordagem relacional com técnicas cognitivo-comportamentais, propondo que padrões interacionais recorrentemente moldam cognições e emoções. Wachtel apresenta um modelo integrador que combina foco na história de relacionamentos, esquemas atuais e intervenções diretas sobre comportamento e cognição. Discute formulação de caso, objetivos terapêuticos e estratégias para modificar ciclos interacionais disfuncionais. Útil para terapeutas de orientação eclecticista, o livro oferece um guia pragmático para aplicar princípios relacionais em intervenções estruturadas visando mudança sustentável nas dinâmicas pessoais e interpessoais.",
+    "trecho_memoravel": "Mudar problemas emocionais requer intervir tanto nas representações mentais quanto nos padrões reais de interação que os mantêm.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "07_interpessoal_relacional",
+    "nome": "Negotiating the Therapeutic Alliance [sem edição brasileira confirmada]",
+    "autor": "Jeremy D. Safran e J. Christopher Muran",
+    "resumo_do_livro": "Negotiating the Therapeutic Alliance examina a aliança terapêutica como processo dinâmico que envolve rupturas e reparações contínuas. Safran e Muran descrevem métodos para identificar rupturas, analisar contribuições do paciente e terapeuta, e negociar reparos que promovam crescimento. Baseado em pesquisa empírica e estudos de caso, o livro oferece técnicas para observar interações imediatas, trabalhar com emoções emergentes e transformar impasses em oportunidades terapêuticas. Essencial para clínicos que desejam fortalecer a eficácia do tratamento, apresenta ferramentas práticas para manter aliança terapêutica sólida diante de conflitos e resistências inevitáveis.",
+    "trecho_memoravel": "A aliança é construída e reconstruída por meio de negociações contínuas; reparar rupturas é central para progresso terapêutico.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "07_interpessoal_relacional",
+    "nome": "Os Sete Princípios para Fazer o Casamento Dar Certo",
+    "autor": "John Gottman e Nan Silver",
+    "resumo_do_livro": "The Seven Principles for Making Marriage Work reúne pesquisa de décadas sobre relacionamentos conjugais e traduz achados em princípios práticos para fortalecer casais. Gottman e Silver apresentam intervenção baseada em observação comportamental, comunicação efetiva, resolução de conflitos e construção de amizade emocional. O livro oferece exercícios, estratégias para reduzir ciclos destrutivos e promover intimidade e compromisso duradouros. Embora voltado ao público amplo, tem utilidade clínica como complemento para psicoterapeutas de casal, fornecendo ferramentas baseadas em evidência que facilitam avaliação, psicoeducação e intervenções direcionadas à melhoria da qualidade relacional.",
+    "trecho_memoravel": "Relações duradouras se constroem com pequenas práticas cotidianas que fortalecem amizade, afeto e resolução de conflitos.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "07_interpessoal_relacional",
+    "nome": "Hold Me Tight [sem edição brasileira confirmada]",
+    "autor": "Sue Johnson",
+    "resumo_do_livro": "Hold Me Tight apresenta a Terapia Focada nas Emoções para casais (EFT) em linguagem acessível, explicando como padrões de apego e emoções não resolvidas criam ciclos negativos de interação. Sue Johnson descreve sete conversas essenciais para ajudar casais a reconhecer e reestruturar esses padrões, promovendo segurança emocional e reconexão afetiva. O livro combina teoria do apego, estudos de caso e exercícios práticos para casais e terapeutas, sendo um recurso valioso para melhorar intimidade, comunicação e regulação emocional no relacionamento. Indicado tanto para autoajuda quanto para uso clínico na terapia de casal.",
+    "trecho_memoravel": "Reconectar parceiros exige acessar e reformular emoções fundamentais que orientam padrões de interação e a sensação de segurança relacional.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "07_interpessoal_relacional",
+    "nome": "Affect Regulation and the Origin of the Self [sem edição brasileira confirmada]",
+    "autor": "Allan N. Schore",
+    "resumo_do_livro": "Affect Regulation and the Origin of the Self integra neurociência evolutiva e teoria do apego para explicar como a regulação afetiva precoce molda desenvolvimento cerebral e a formação do self. Schore analisa evidências sobre lateralização emocional, desenvolvimento do sistema límbico e papel das interações cuidadoras na organização funcional do cérebro. O livro discute implicações clínicas para entender trauma, desregulação emocional e estratégias terapêuticas que visem restaurar regulação através de relações seguras. Indispensável para clínicos e pesquisadores interessados nos vínculos precoces e nas bases neurobiológicas da experiência emocional e das perturbações relacionais.",
+    "trecho_memoravel": "A regulação afetiva nas primeiras relações configura circuitos cerebrais fundamentais que sustentam identidade emocional e capacidade de vínculo ao longo da vida.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "08_integrativa_ecletica",
+    "nome": "Handbook of Psychotherapy Integration [sem edição brasileira confirmada]",
+    "autor": "John C. Norcross e Marvin R. Goldfried, editores",
+    "resumo_do_livro": "Este manual reúne contribuições de especialistas sobre a integração em psicoterapia, abordando modelos teóricos, estratégias clínicas e evidências empíricas. Cobre abordagens teóricas — como integração técnica, assimilativa e transtheoretical — bem como temas éticos, formação e pesquisa. O volume é uma referência para compreender quando e como combinar técnicas de diferentes tradições de forma sistemática e baseada em resultados. Para estudantes e clínicos, oferece orientação prática, sínteses críticas da literatura e direções para pesquisa, ajudando a construir intervenções flexíveis e empiricamente informadas que respondam à complexidade dos pacientes reais.",
+    "trecho_memoravel": "A integração exige selecionar técnicas com base em evidência e ajuste clínico, não em preferência teórica cega",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "08_integrativa_ecletica",
+    "nome": "Multimodal Therapy [sem edição brasileira confirmada]",
+    "autor": "Arnold A. Lazarus",
+    "resumo_do_livro": "A terapia multimodal apresenta um modelo técnico eclético estruturado que avalia e intervém em múltiplas dimensões do funcionamento do paciente — comportamento, afetos, sensações, imagens, cognições, relação interpessoal e uso de drogas/estímulos. Lazarus oferece instrumentos de avaliação práticos, planejamento de caso e técnicas específicas para cada modalidade, enfatizando a personalização do tratamento. O livro contribui ao fornecer um arcabouço claro para integrar técnicas de diferentes escolas com foco nas necessidades específicas do cliente, sendo útil para clínicos que buscam um protocolo organizado para trabalhar com problemas complexos e com heterogeneidade de sintomas.",
+    "trecho_memoravel": "Tratar múltiplas dimensões do paciente simultaneamente aumenta a eficácia ao adaptar intervenções às necessidades específicas",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "08_integrativa_ecletica",
+    "nome": "Systems of Psychotherapy [sem edição brasileira confirmada]",
+    "autor": "James O. Prochaska e John C. Norcross",
+    "resumo_do_livro": "Este livro oferece uma análise comparativa das principais escolas de psicoterapia dentro de uma perspectiva integrativa e transtheórica. Prochaska e Norcross descrevem fundamentos teóricos, técnicas chave, evidências de eficácia e processos de mudança para cada sistema, além de discutir quando determinado enfoque pode ser mais indicado. A obra é valiosa para estudantes que precisam mapear as diferenças e convergências entre abordagens e para clínicos que desejam fundamentar escolhas terapêuticas em princípios de processo e resultado, promovendo decisões mais informadas e adaptativas na prática clínica.",
+    "trecho_memoravel": "Conhecer sistemas terapêuticos permite escolher intervenções alinhadas ao processo de mudança do paciente",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "08_integrativa_ecletica",
+    "nome": "Prescriptive Psychotherapy [sem edição brasileira confirmada]",
+    "autor": "Larry E. Beutler e Mary L. Clarkin",
+    "resumo_do_livro": "Prescriptive Psychotherapy propõe um modelo sistemático para selecionar tratamentos com base nas necessidades e características específicas do paciente. Beutler e Clarkin delineiam critérios de indicação, variáveis moderadoras e estratégias para adaptar técnicas psicoterapêuticas ao contexto individual, incluindo temperamento, comorbidades e suporte social. A obra integra teoria e evidência clínica para reduzir a aleatoriedade na escolha do tratamento, oferecendo guias práticos para formulação de caso e tomada de decisão. É especialmente útil para clínicos interessados em otimizar resultados através de seleção deliberada e personalizada de intervenções.",
+    "trecho_memoravel": "A escolha terapêutica deve ser guiada por características do paciente e por evidências sobre o que funciona para aquele perfil",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "08_integrativa_ecletica",
+    "nome": "Principles of Therapeutic Change That Work [sem edição brasileira confirmada]",
+    "autor": "Louis G. Castonguay e colaboradores, editores",
+    "resumo_do_livro": "Este volume reúne pesquisas que identificam princípios gerais de mudança terapêutica eficazes em diferentes modalidades. Castonguay e colaboradores sintetizam fatores comuns, mecanismos clínicos e processos responsáveis por melhorias, como aliança, expectativa e técnicas específicas que promovem mudanças. A obra discute implicações para pesquisa e prática, propondo que compreender princípios transdiagnósticos pode orientar intervenções mais eficazes e generalizáveis. Para pesquisadores e estudantes avançados, o livro oferece bases para desenvolver estudos sobre mecanismos de ação e para clínicos que buscam fundamentar escolhas técnicas em princípios empiricamente sustentados.",
+    "trecho_memoravel": "Encontrar princípios comuns entre abordagens ajuda a direcionar intervenções que promovem mudança independente da escola teórica",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "08_integrativa_ecletica",
+    "nome": "Psychotherapy Case Formulation [sem edição brasileira confirmada]",
+    "autor": "Jacqueline B. Persons",
+    "resumo_do_livro": "Persons apresenta um método sistemático para construir formulações clínicas que integram teoria, dados do paciente e planejamento terapêutico. O livro orienta sobre como organizar informações sobre sintomas, mecanismos de manutenção, vulnerabilidades e objetivos terapêuticos, além de traduzir a formulação em hipóteses testáveis e intervenções concretas. Inclui exemplos clínicos, questões para avaliação e estratégias para revisar formulações ao longo do tratamento. É uma ferramenta essencial para estudantes e clínicos que desejam melhorar a precisão diagnóstica, a coerência técnica e a eficácia do plano terapêutico através de raciocínio clínico estruturado.",
+    "trecho_memoravel": "Uma boa formulação converte dados clínicos em hipóteses acionáveis que orientam intervenções específicas e mensuráveis",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "08_integrativa_ecletica",
+    "nome": "Theories of Psychotherapy [sem edição brasileira confirmada]",
+    "autor": "Louis G. Castonguay e colaboradores",
+    "resumo_do_livro": "Este trabalho analisa teorias fundamentais da psicoterapia, comparando pressupostos, técnicas e evidências de eficácia. Castonguay e colaboradores exploram como diferentes modelos entendem psicopatologia, mudança e relação terapêutica, oferecendo uma visão crítica e integrativa. O texto ajuda alunos a situarem cada teoria no panorama histórico e científico, além de discutir como combinar conceitos de modo coerente. Serve como recurso para quem busca aprofundar a compreensão teórica, avaliar opções clínicas e desenvolver uma prática informada por múltiplos enquadramentos conceituais.",
+    "trecho_memoravel": "Comparar teorias esclarece seus pressupostos e aponta maneiras de integrá-las com coerência clínica",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "08_integrativa_ecletica",
+    "nome": "Assimilative Integration [sem edição brasileira confirmada]",
+    "autor": "M. A. Stricker e J. E. Gold, editores",
+    "resumo_do_livro": "Este volume descreve o modelo de assimilative integration, que permite que clínicos mantenham um enquadre teórico principal enquanto incorporam técnicas de outras abordagens quando necessário. Stricker e Gold reúnem capítulos sobre fundamentos teóricos, processos de assimilação técnica, treinamento e pesquisa. Discute vantagens e limites da estratégia, ilustrando com estudos de caso e evidências. Útil para profissionais que valorizam coerência conceitual mas precisam de flexibilidade técnica, o livro fornece critérios para integrar intervenções externas de forma a preservar a integridade teórica e a responsividade clínica.",
+    "trecho_memoravel": "Manter uma teoria base enquanto assimila técnicas externas permite flexibilidade sem perda de coerência conceitual",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "08_integrativa_ecletica",
+    "nome": "Psychotherapy Integration [sem edição brasileira confirmada]",
+    "autor": "George Stricker e Jerry Gold, editores",
+    "resumo_do_livro": "Este livro examina abordagens e estratégias para integrar técnicas e teorias de forma sistemática, cobrindo modelos como integração técnica, assimilativa, teórica e transtheoretical. Stricker e Gold apresentam debates conceituais, exemplos clínicos e pesquisa sobre eficácia e aplicabilidade. A obra discute também implicações para formação e supervisão, fornecendo ferramentas para avaliar quando a integração é apropriada. Recomendado para clínicos e formadores, o volume oferece um panorama crítico e pragmático para construir práticas integrativas fundamentadas em princípios teóricos e evidências empíricas.",
+    "trecho_memoravel": "A integração bem-sucedida decorre de critérios claros para combinar técnicas mantendo coerência teórica e foco no paciente",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "08_integrativa_ecletica",
+    "nome": "The Transtheoretical Approach [sem edição brasileira confirmada]",
+    "autor": "James O. Prochaska e Carlo DiClemente",
+    "resumo_do_livro": "Prochaska e DiClemente apresentam o modelo transtheórico de mudança, descrevendo estágios, processos e estratégias para promover comportamento saudável. O texto articula como avaliar estágio de prontidão, adaptar intervenções e utilizar técnicas específicas para progressão na mudança. Inclui pesquisa sobre eficácia em áreas como cessação do tabagismo e adesão a tratamento. Para clínicos e pesquisadores, o livro oferece um quadro prático para planejar intervenções adaptadas ao nível motivacional do paciente, facilitando seleção de técnicas que correspondam às necessidades de cada fase do processo terapêutico.",
+    "trecho_memoravel": "Intervenções devem corresponder ao estágio de prontidão do indivíduo para promover progressão sustentável na mudança",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "08_integrativa_ecletica",
+    "nome": "Building a Therapeutic Alliance [sem edição brasileira confirmada]",
+    "autor": "Marvin R. Goldfried",
+    "resumo_do_livro": "Este texto foca na construção e manutenção da aliança terapêutica como elemento central para o sucesso do tratamento. Goldfried analisa fatores que promovem confiança, colaboração e concordância sobre metas e tarefas terapêuticas, além de estratégias para reparar rupturas. Integra evidências empíricas com orientações clínicas práticas para avaliação da aliança e intervenção quando necessário. O conteúdo é útil para clínicos que desejam fortalecer o vínculo com pacientes, melhorar adesão e otimizar resultados, oferecendo ferramentas concretas para identificar e agir sobre problemas relacionais no processo terapêutico.",
+    "trecho_memoravel": "Aliança sólida é o alicerce que potencializa técnicas e facilita engajamento terapêutico sustentado",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "08_integrativa_ecletica",
+    "nome": "The Therapeutic Relationship in Psychotherapy [sem edição brasileira confirmada]",
+    "autor": "John C. Norcross e Bruce E. Wampold, editores",
+    "resumo_do_livro": "Este volume reúne pesquisas e perspectivas sobre o papel da relação terapêutica na eficácia da psicoterapia. Norcross e Wampold apresentam evidências sobre fatores comuns, mediação de resultados e variáveis que fortalecem a aliança. Debatem mecanismos como empatia, concordância e reparo de rupturas, além de diferenças entre abordagens. Para pesquisadores e clínicos, o livro esclarece como medir e intervir na relação terapêutica, oferecendo orientações para integrar atenção relacional com intervenções técnicas e maximizar o impacto terapêutico em contextos variados.",
+    "trecho_memoravel": "A qualidade da relação terapeutica atua como mecanismo central que potencia ou limita os efeitos das intervenções técnicas",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "08_integrativa_ecletica",
+    "nome": "Relational Psychotherapy [sem edição brasileira confirmada]",
+    "autor": "Stephen A. Mitchell",
+    "resumo_do_livro": "Mitchell desenvolve os princípios da abordagem relacional, que enfatiza a co-construção do vínculo terapêutico e a influência mútua entre paciente e terapeuta. O livro explora conceitos como transferências recíprocas, intersubjetividade e o papel das narrativas relacionais na formação do sofrimento e na mudança. Oferece fundamentos teóricos, exemplos clínicos e reflexões sobre técnica e ética. É valioso para profissionais interessados em intervenções que priorizam o campo relacional e a exploração das dinâmicas entre pessoas, contribuindo para uma compreensão profunda das interações que sustentam a cura psicoterapêutica.",
+    "trecho_memoravel": "A mudança acontece na interação, onde paciente e terapeuta coconstroem novos padrões relacionais que transformam o sofrimento",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "08_integrativa_ecletica",
+    "nome": "Psychotherapy Relationships That Work [sem edição brasileira confirmada]",
+    "autor": "John C. Norcross, editor",
+    "resumo_do_livro": "Norcross reúne evidências sobre quais aspectos da relação terapêutica contribuem para resultados positivos, sintetizando pesquisas sobre fatores comuns, rupturas e reparos, e características do terapeuta que influenciam eficácia. O livro oferece recomendações práticas para fortalecer a aliança, avaliar progresso e integrar conhecimento relacional na prática clínica. Destina-se a clínicos que querem melhorar a qualidade relacional do atendimento, fornecendo orientações baseadas em dados sobre como otimizar interações terapêuticas e adaptar estratégias relacionais a diferentes populações e contextos de tratamento.",
+    "trecho_memoravel": "Focar em habilidades relacionais específicas e reparar rupturas aumenta significativamente a eficácia terapêutica",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "08_integrativa_ecletica",
+    "nome": "Evidence-Based Psychotherapies [sem edição brasileira confirmada]",
+    "autor": "David H. Barlow, editor",
+    "resumo_do_livro": "Editado por Barlow, este compêndio apresenta tratamentos psicoterápicos apoiados por evidências para transtornos emocionais e comportamentais. Cada capítulo descreve fundamentos teóricos, protocolos de intervenção, evidência empírica e diretrizes para implementação clínica. O volume cobre intervenções cognitivas, comportamentais e integrativas, discutindo eficácia, limites e adaptações culturais. É uma referência essencial para estudantes, clínicos e gestores que buscam implementar práticas fundamentadas em pesquisa, oferecendo orientação prática para seleção, treinamento e avaliação de intervenções psicoterápicas com base em resultados comprovados.",
+    "trecho_memoravel": "Adotar práticas clinicamente testadas e adaptá‑las ao contexto maximiza a probabilidade de resultados positivos em psicoterapia",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "09_social_cultural_genero",
+    "nome": "Feminist Therapy [sem edição brasileira confirmada]",
+    "autor": "Laura S. Brown",
+    "resumo_do_livro": "Este livro apresenta fundamentos teóricos e práticos da terapia feminista, articulando análise de poder, gênero e opressão com intervenções clínicas. Brown discute como desigualdades sociais e expectativas de gênero moldam sofrimento psicológico e propõe práticas terapêuticas que valorizam autonomia, empoderamento e contextualização sociocultural do cliente. O texto é útil para estudantes e terapeutas que buscam integrar perspectivas políticas e éticas à prática clínica, oferecendo exemplos de casos, técnicas para trabalhar narrativa e identidade e orientações para construir alianças terapêuticas sensíveis às dinâmicas de poder entre paciente e terapeuta.",
+    "trecho_memoravel": "O sofrimento individual só se compreende plenamente quando ligado às estruturas sociais que o produzem; a terapia deve empoderar e contextualizar, não apenas ajustar o indivíduo.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "09_social_cultural_genero",
+    "nome": "Feminist Theories and Feminist Psychotherapies [sem edição brasileira confirmada]",
+    "autor": "Lenore E. A. Walker, editor",
+    "resumo_do_livro": "Coletânea editada que reúne perspectivas teóricas e práticas da abordagem feminista na psicoterapia. Os capítulos exploram contribuições de diferentes correntes feministas para entender gênero, violência, interseccionalidade e processos terapêuticos, além de discutir adaptações clínicas para populações diversas. O volume equilibra desenvolvimento conceitual com estudos de caso e orientações para intervenção, favorecendo reflexão crítica sobre hierarquias de poder na relação terapêutica. Relevante para pesquisadores e clínicos interessados em integrar teoria feminista, prática ética e estratégias para promover autonomia e justiça social no trabalho psicoterapêutico.",
+    "trecho_memoravel": "A prática terapêutica feminista integra análise das hierarquias sociais com técnicas clínicas para promover agência e justiça na vida das clientes.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "09_social_cultural_genero",
+    "nome": "Multicultural Care [sem edição brasileira confirmada]",
+    "autor": "Luis A. Comas-Díaz",
+    "resumo_do_livro": "Obra que aborda cuidados clínicos multiculturalmente informados, focando em avaliação, diagnóstico e intervenção com populações racializadas e culturalmente diversas. Comas-Díaz integra pesquisa sobre identidade, trauma e resiliência com recomendações práticas para adaptar técnicas psicoterapêuticas a contextos culturais específicos. O livro destaca a importância de humildade cultural, competência crítica e colaboração com redes comunitárias, além de discutir saúde mental em imigrantes, comunidades latinas e questões de racismo estrutural. Essencial para clínicos e estudantes que precisam equilibrar rigor técnico com sensibilidade intercultural na prática clínica.",
+    "trecho_memoravel": "Cuidado efetivo exige humildade cultural e adaptação terapêutica que considerem história, trauma coletivo e recursos comunitários do paciente.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "09_social_cultural_genero",
+    "nome": "Counseling the Culturally Diverse [sem edição brasileira confirmada]",
+    "autor": "Derald Wing Sue e David Sue",
+    "resumo_do_livro": "Texto clássico que fornece fundamentos teóricos e aplicações práticas para aconselhamento em contextos culturalmente diversos. Os autores exploram conceitos de cultura, etnicidade, racismo, preconcepções e microagressões, oferecendo estratégias de avaliação e intervenção culturalmente sensíveis. O livro inclui estudos de caso, instrumentos de autoavaliação do terapeuta e modelos para integrar competência multicultural na ética profissional. Útil para profissionais em formação e atuantes, o manual contribui para desenvolver práticas que minimizem danos, reconheçam diversidade e promovam resultados terapêuticos mais equitativos.",
+    "trecho_memoravel": "A eficácia do aconselhamento depende da consciência do terapeuta sobre preconceitos, microagressões e das adaptações necessárias para cada contexto cultural.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "09_social_cultural_genero",
+    "nome": "Addressing Cultural Complexities in Practice [sem edição brasileira confirmada]",
+    "autor": "Pamela A. Hays",
+    "resumo_do_livro": "Esta obra apresenta o modelo ADDRESSING, uma estrutura pragmática para avaliar e intervir considerando múltiplas dimensões da identidade e da cultura. Hays descreve como fatores como etnia, orientação sexual, religião, classe social e deficiência interagem para moldar experiência e sofrimento, oferecendo estratégias para avaliação, formulação de caso e intervenção clínica. O livro traz exemplos clínicos, exercícios de auto-reflexão e orientações para supervisionar prática multicultural. Indicado para terapeutas que desejam uma ferramenta sistemática para integrar complexidade identitária em formulações clínicas e planejar intervenções éticas e sensíveis.",
+    "trecho_memoravel": "Uma avaliação clínica completa reconhece múltiplas dimensões identitárias e suas interseções, guiando intervenções mais justas e eficazes.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "09_social_cultural_genero",
+    "nome": "Intentional Interviewing and Counseling [sem edição brasileira confirmada]",
+    "autor": "Allen E. Ivey, Mary Bradford Ivey e Carlos P. Zalaquett",
+    "resumo_do_livro": "Manual abrangente sobre entrevista e aconselhamento intencional, enfatizando habilidades de escuta, condução de entrevistas motivacionais e planejamento de intervenções em contextos multiculturais. Os autores combinam teoria do desenvolvimento, técnicas de micro-habilidades e estratégias para trabalhar com diversidade cultural, ética e tomada de decisão clínica. O texto inclui exemplos, transcrições e exercícios práticos que auxiliam no desenvolvimento de competência relacional e técnica. Fundamental para estudantes e profissionais que buscam aprimorar a prática de entrevista clínica com sensibilidade cultural e foco em objetivos terapêuticos claros.",
+    "trecho_memoravel": "Entrevistar com intenção significa combinar habilidades relacionais precisas com sensibilidade cultural para facilitar mudança e entendimento mútuo.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "09_social_cultural_genero",
+    "nome": "Re-Visioning Family Therapy [sem edição brasileira confirmada]",
+    "autor": "Monica McGoldrick, editor",
+    "resumo_do_livro": "Coletânea que revisita a terapia familiar incorporando questões de raça, cultura e gênero na prática sistêmica. Os autores fornecem análises teóricas e aplicações clínicas que demonstram como diferenças culturais moldam dinâmicas familiares, papéis de gênero e processos de comunicação. O volume apresenta técnicas para integrar genogramas multiculturais, abordar migração, perda cultural e transformar abordagens terapêuticas tradicionais para serem mais inclusivas. Útil para terapeutas familiares e estudantes que precisam compreender como adaptar intervenções sistêmicas para contextos culturais variados e promover alianças terapêuticas culturalmente competentes.",
+    "trecho_memoravel": "A terapia familiar ganha efetividade quando incorpora as raízes culturais e de gênero das famílias, transformando intervenções sistêmicas em processos culturalmente alinhados.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "09_social_cultural_genero",
+    "nome": "The Family Life Cycle: A Framework for Family Therapy [sem edição brasileira confirmada]",
+    "autor": "Monica McGoldrick e Randy Gerson",
+    "resumo_do_livro": "Este livro apresenta o ciclo de vida familiar como estrutura para compreender transições, crises e desenvolvimento intergeracional. McGoldrick e Gerson explicam estágios da família, tarefas normativas e estressores que afetam funcionamento familiar, incluindo migração, duelo e mudanças sociais. A obra enfatiza avaliação genogramática, sensibilidade cultural e abordagens terapêuticas adaptadas a fases específicas da vida familiar. Ferramenta prática para terapeutas e pesquisadores, o livro ajuda a situar problemas clínicos em contextos temporais e relacionais, favorecendo intervenções que respeitem história familiar e diversidade cultural.",
+    "trecho_memoravel": "Compreender as tarefas e transições do ciclo de vida familiar permite situar problemas atuais em trajetórias intergeracionais e adaptar intervenções condizentes.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "09_social_cultural_genero",
+    "nome": "Theories of Counseling and Psychotherapy [sem edição brasileira confirmada]",
+    "autor": "Edward S. Neukrug",
+    "resumo_do_livro": "Manual didático que apresenta as principais teorias de aconselhamento e psicoterapia, incluindo perspectiva psicodinâmica, comportamental, cognitivo-comportamental, humanista e sistêmica, com atenção a implicações culturais e de gênero. Neukrug descreve princípios, técnicas, evidências empíricas e critérios para seleção teórica conforme características do cliente. O texto integra comparações críticas e exemplos clínicos que ajudam estudantes a avaliar adequação teórica em contextos multiculturais. Útil para cursos de formação e para profissionais que precisam fundamentar escolhas clínicas em teoria, evidência e sensibilidade às diferenças socioculturais.",
+    "trecho_memoravel": "Selecionar uma abordagem terapêutica requer pesar teoria, evidência e as características culturais do cliente para maximizar relevância clínica.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "09_social_cultural_genero",
+    "nome": "Relational-Cultural Therapy [sem edição brasileira confirmada]",
+    "autor": "Judith V. Jordan",
+    "resumo_do_livro": "Obra que desenvolve a terapia relacional-cultural, centrada na ideia de que crescimento psicológico ocorre em conexões autênticas e mútuas. Jordan descreve como desigualdades sociais e experiências de desconexão — muitas vezes marcadas por gênero e cultura — afetam saúde mental, propondo intervenções que valorizam empatia, vulnerabilidade e reciprocidade. O livro apresenta bases teóricas, estudos de caso e técnicas para fortalecer vínculos terapêuticos e redes sociais de apoio. Importante para clínicos interessados em práticas que priorizam relacionamento, contexto sociopolítico e cura coletiva.",
+    "trecho_memoravel": "Cura e desenvolvimento emergem de relações recíprocas e autênticas; terapia deve restaurar conexões interrompidas por opressão e isolamento.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "09_social_cultural_genero",
+    "nome": "Handbook of Counseling and Psychotherapy with Lesbian, Gay, Bisexual, and Transgender Clients [sem edição brasileira confirmada]",
+    "autor": "John G. Bieschke, Robert M. Perez e Kurt A. DeBord, editores",
+    "resumo_do_livro": "Manual abrangente sobre intervenção clínica afirmativa para pessoas LGBT+, reunindo pesquisas, modelos de atendimento e orientações éticas. Os editores e colaboradores abordam desenvolvimento identitário, estressores relacionados a stigma, família, saúde sexual e intervenções adaptadas a diferentes ciclos de vida. O volume também discute avaliação, prevenção e estratégias de inclusão institucional. É referência para profissionais que buscam práticas baseadas em evidência e culturalmente informadas, fornecendo ferramentas para promover bem-estar e reduzir danos associados à discriminação e exclusão social.",
+    "trecho_memoravel": "Atendimento competente a pessoas LGBT+ exige modelos afirmativos que considerem desenvolvimento identitário, estigma e contextos familiares e sociais.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "09_social_cultural_genero",
+    "nome": "Culturally Responsive Cognitive-Behavioral Therapy [sem edição brasileira confirmada]",
+    "autor": "Andrew M. Hays e Pamela A. Hays",
+    "resumo_do_livro": "Livro que adapta princípios e técnicas da terapia cognitivo-comportamental ao trabalho com populações culturalmente diversas. Os autores propõem ajustes conceituais e clínicos — como reinterpretação cognitiva sensível à cultura, uso de valores comunitários e integração de recursos tradicionais — para aumentar eficácia e aceitação das intervenções. Inclui estudos de caso, exercícios e modelos de formulação culturalmente informada. Relevante para terapeutas que usam TCC e precisam desenvolver práticas responsivas à identidade cultural, focando redução de sintomas sem desconsiderar contexto sociocultural.",
+    "trecho_memoravel": "A TCC torna-se mais eficaz quando reconfigurada para respeitar valores culturais, compreender narrativas coletivas e mobilizar recursos comunitários.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "09_social_cultural_genero",
+    "nome": "Psychotherapy with African American Women [sem edição brasileira confirmada]",
+    "autor": "D. H. Jackson e C. B. Greene, editores",
+    "resumo_do_livro": "Coletânea que aborda especificidades do atendimento psicoterapêutico a mulheres afrodescendentes, integrando estudos sobre identidade racial, gênero, interseccionalidade e resistência. Os capítulos investigam impacto do racismo, pobreza e expectativas de gênero na saúde mental, propondo intervenções culturalmente pertinentes e baseadas em força e resiliência. O livro traz exemplos clínicos, estratégias de engajamento e recomendações para construir alianças terapêuticas sensíveis. Essencial para clínicos interessados em práticas que valorizem narrativas culturais, contexto comunitário e estratégias de empoderamento para mulheres negras.",
+    "trecho_memoravel": "Atender mulheres afrodescendentes exige reconhecer impactos interseccionais de raça e gênero e construir abordagens que valorizem resistência e redes comunitárias.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "09_social_cultural_genero",
+    "nome": "The Psychology of Sexual Orientation and Gender Diversity [sem edição brasileira confirmada]",
+    "autor": "Kristin A. K. H., editor",
+    "resumo_do_livro": "Volume editorial que reúne pesquisas e teorias sobre orientação sexual e diversidade de gênero, cobrindo desenvolvimento, saúde mental, estigma e implicações clínicas. O livro explora abordagens terapêuticas afirmativas, políticas públicas e formações para profissionais, além de destacar diferenças culturais e trajetórias intergeracionais. Destina-se a acadêmicos e clínicos que desejam compreender avanços teóricos e práticos na área, oferecendo sínteses críticas e recomendações para prática ética e baseada em evidências ao trabalhar com pessoas LGBTQIA+ em contextos diversos.",
+    "trecho_memoravel": "Compreender orientação e gênero exige integrar pesquisa, práticas afirmativas e sensibilidade cultural para reduzir o impacto do estigma na saúde mental.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "09_social_cultural_genero",
+    "nome": "Lesbian, Gay, Bisexual, and Transgender Psychology [sem edição brasileira confirmada]",
+    "autor": "B. L. Martin e colaboradores, editoras",
+    "resumo_do_livro": "Obra coletiva que aborda fundamentos psicológicos da experiência LGBT, reunindo capítulos sobre identidade, saúde mental, família, terapia e diferenças culturais. As editoras articulam teoria e pesquisa aplicada, discutindo intervenções clínicas, avaliação de risco e estratégias de promoção de bem-estar em diversos contextos sociais. O livro enfatiza abordagens afirmativas, compreensão das trajetórias identitárias e impacto de políticas discriminatórias. Indicado para estudantes e profissionais que trabalham com comunidades LGBT, fornece conhecimento crítico para práticas que respeitem diversidade e privilegiem redução de danos e inclusão.",
+    "trecho_memoravel": "Uma psicologia sensível a pessoas LGBT integra teoria, pesquisa e práticas afirmativas para enfrentar estigma e promover inclusão e bem-estar.",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "10_pragmaticos_objetivo",
+    "nome": "Reality Therapy [sem edição brasileira confirmada]",
+    "autor": "William Glasser",
+    "resumo_do_livro": "Reality Therapy apresenta a abordagem centrada na responsabilidade pessoal e nas escolhas conscientes, desenvolvida por William Glasser. O livro descreve princípios fundamentais: foco no aqui e agora, ênfase nas necessidades humanas básicas (sobrevivência, amor/pertencimento, poder, liberdade e diversão) e promoção de comportamentos escolhidos como caminho para satisfazer essas necessidades. Oferece técnicas práticas para estabelecer vínculo terapêutico, avaliar comportamentos atuais e negociar planos de ação realistas. É valioso para estudantes e clínicos que buscam uma terapia breve e pragmática, especialmente em contextos educacionais, familiares e de aconselhamento com foco na mudança comportamental efetiva.",
+    "trecho_memoravel": "A responsabilidade pela mudança emocional e comportamental reside na escolha consciente de agir para satisfazer necessidades básicas no presente",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "10_pragmaticos_objetivo",
+    "nome": "Choice Theory [sem edição brasileira confirmada]",
+    "autor": "William Glasser",
+    "resumo_do_livro": "Choice Theory desenvolve o arcabouço teórico por trás da Reality Therapy, explicando como as escolhas internas determinam comportamento e bem‑estar. Glasser descreve que todas as ações humanas são tentativas de atender às cinco necessidades básicas e que problemas relacionais surgem de expectativas e contratos falhos. O texto fornece modelos para avaliar qualidade de relacionamento, ensinar habilidades de resolução de problemas e renegociar compromissos pessoais. Útil para acadêmicos e clinicos, o livro integra teoria e aplicação prática, oferecendo instrumentos para intervenções educativas, terapêuticas e de coaching com ênfase em autonomia e responsabilidade.",
+    "trecho_memoravel": "Compreender que todo comportamento é uma escolha voltada para satisfazer necessidades essenciais permite reorientar intervenções para fortalecer responsabilidade e conexão",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "10_pragmaticos_objetivo",
+    "nome": "Entrevista Motivacional",
+    "autor": "William R. Miller e Stephen Rollnick",
+    "resumo_do_livro": "Motivational Interviewing é um manual fundamental sobre a técnica colaborativa e orientada para a mudança desenvolvida por Miller e Rollnick. O livro descreve princípios centrais — empatia, desenvolvimento da discrepância, evitar argumentação, rolar com a resistência e fortalecer a autoeficácia — e oferece estratégias concretas para evocar a motivação intrínseca do cliente. Inclui exemplos clínicos, scripts e orientações éticas aplicáveis a múltiplas áreas (dependência, saúde comportamental, adesão). Indicado para estudantes e profissionais que desejam intervenções breves, baseadas em evidências, para promover mudanças ambivalentes e sustentáveis.",
+    "trecho_memoravel": "Aumentar a mudança sustentável requer evocar a motivação interna do cliente por meio de escuta empática e exploração colaborativa da ambivalência",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "10_pragmaticos_objetivo",
+    "nome": "Brief Therapy: Focused Solution Development [sem edição brasileira confirmada]",
+    "autor": "Bill O'Hanlon e Michele Weiner-Davis",
+    "resumo_do_livro": "Brief Therapy: Focused Solution Development apresenta abordagens breves e orientadas para soluções, enfatizando intervenções pragmáticas que aceleram a mudança. O'Hanlon e Weiner‑Davis oferecem técnicas para identificar exceções ao problema, construir objetivos específicos e desenvolver intervenções experimentais que gerem resultados rápidos. O texto discute estratégias de linguagem, tarefas de casa e formas de medir progresso em poucos encontros, com ilustrações clínicas. Indicado para quem pratica terapia breve, consultoria ou coaching, o livro é um guia prático para estruturar sessões eficazes sem perder rigor clínico.",
+    "trecho_memoravel": "Focar em objetivos claros, identificar exceções e testar pequenas mudanças cria resultados rápidos sem longas explorações do passado",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "10_pragmaticos_objetivo",
+    "nome": "Interviewing for Solutions [sem edição brasileira confirmada]",
+    "autor": "Peter De Jong e Insoo Kim Berg",
+    "resumo_do_livro": "Interviewing for Solutions é um manual clássico da terapia focada em soluções que descreve técnicas para conduzir entrevistas terapêuticas orientadas para mudanças concretas. De Jong e Berg apresentam ferramentas como perguntas sobre exceções, a questão do milagre, escalas de progresso e reforço de recursos do cliente. O livro demonstra como construir esperança e mobilizar competências já presentes, usando linguagem precisa e sessões estruturadas. É essencial para acadêmicos e clínicos que trabalham com intervenções breves, atendimentos comunitários ou em contexto institucional, oferecendo roteiro prático e numerosos exemplos aplicáveis.",
+    "trecho_memoravel": "Concentrar-se em exceções e recursos existentes permite construir soluções práticas e fortalecer a esperança em poucos contatos",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "10_pragmaticos_objetivo",
+    "nome": "The Skilled Helper [sem edição brasileira confirmada]",
+    "autor": "Gerard Egan",
+    "resumo_do_livro": "The Skilled Helper é um manual abrangente de habilidades de entrevista e intervenção helping que integra teoria e prática em um modelo em três estágios: exploração do problema, elaboração de metas e implementação de um plano de ação. Gerard Egan oferece ferramentas para escuta ativa, questionamento estratégico, feedback construtivo e facilitação de tomada de decisões. O enfoque pragmático torna o livro útil para formação de conselheiros, terapeutas e profissionais de saúde mental, complementando teoria com exercícios, exemplos e orientações para adaptar a abordagem a diversos contextos clínicos e de aconselhamento.",
+    "trecho_memoravel": "Ajudar eficazmente envolve explorar o problema, definir metas claras e guiar a implementação de um plano prático de mudança",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "10_pragmaticos_objetivo",
+    "nome": "Problem-Solving Therapy [sem edição brasileira confirmada]",
+    "autor": "Arthur M. Nezu, Christine Maguth Nezu e Thomas D'Zurilla",
+    "resumo_do_livro": "Problem‑Solving Therapy (PST) descreve um método estruturado para capacitar clientes a enfrentar dificuldades por meio de habilidades sistemáticas de resolução de problemas. Os autores apresentam etapas: definição do problema, geração de alternativas, tomada de decisão e implementação/avaliação de soluções, integrando aspectos cognitivos e comportamentais. O livro discute evidências empíricas, adaptações para grupos e populações clínicas e exercícios práticos para treinar competências. Indicado para pesquisadores e clínicos, é recurso essencial para intervenções breves que visam diminuir estresse, depressão e melhorar funcionamento cotidiano por meio de habilidades concretas.",
+    "trecho_memoravel": "Ensinar um processo sistemático de resolver problemas transforma dificuldades repetitivas em oportunidades de ação prática e mensurável",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "10_pragmaticos_objetivo",
+    "nome": "Career Construction Theory [sem edição brasileira confirmada]",
+    "autor": "Mark L. Savickas",
+    "resumo_do_livro": "Career Construction Theory apresenta uma visão narrativa e centrada no indivíduo sobre desenvolvimento de carreira, enfatizando que as histórias de vida organizam identidade e escolhas profissionais. Savickas propõe técnicas de intervenção que exploram temas de vida, papéis e contratos, ajudando clientes a construir significados e planos de carreira coerentes. O livro combina teoria, pesquisa empírica e instrumentos de avaliação narrativa, sendo útil para orientadores, psicólogos do trabalho e pesquisadores. Oferece um arcabouço para intervenções que alinham objetivos vocacionais a valores pessoais e contextos sociais em constante mudança.",
+    "trecho_memoravel": "Construir carreira é articular a própria narrativa de vida para alinhar escolhas profissionais a identidade, valores e papéis sociais",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "10_pragmaticos_objetivo",
+    "nome": "Career Counseling [sem edição brasileira confirmada]",
+    "autor": "John C. Krumboltz e Al S. Mitchell, editores",
+    "resumo_do_livro": "Career Counseling, organizado por Krumboltz e Mitchell, é uma coletânea que reúne teorias, métodos e pesquisas contemporâneas sobre aconselhamento de carreira. O volume aborda modelos de decisão, estratégias de intervenção, avaliação vocacional e considerações culturais e contextuais. Inclui capítulos sobre aprendizagem social, indeterminação de percurso, técnicas de entrevista e planejamento de transições profissionais. Útil para estudantes e profissionais de orientação, o livro serve como referência acadêmica para projetar programas de intervenção, avaliar resultados e adaptar práticas de aconselhamento às demandas do mercado de trabalho e às trajetórias individuais.",
+    "trecho_memoravel": "Uma boa orientação de carreira integra teoria, avaliação e intervenção contextualizada para apoiar decisões coerentes em trajetórias profissionais dinâmicas",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "10_pragmaticos_objetivo",
+    "nome": "Strengths-Based Counseling [sem edição brasileira confirmada]",
+    "autor": "John J. Schmidt",
+    "resumo_do_livro": "Strengths‑Based Counseling defende um enfoque terapêutico que prioriza recursos, competências e potenciais do cliente em vez de patologias. John J. Schmidt descreve princípios para identificar forças pessoais, construir planos de ação com base em capital psicológico e aplicar intervenções que ampliem resiliência e autonomia. O livro traz exercícios práticos, estudos de caso e formas de integrar a perspectiva de forças em avaliações e metas terapêuticas. Relevante para clínicos e pesquisadores, oferece um percurso prático para tornar as intervenções mais otimistas, motivadoras e alinhadas com resultados funcionais.",
+    "trecho_memoravel": "Focar nas forças do cliente permite construir intervenções que ampliam resiliência e promovem mudanças sustentáveis e motivadoras",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "10_pragmaticos_objetivo",
+    "nome": "Mudança",
+    "autor": "Paul Watzlawick, John Weakland e Richard Fisch",
+    "resumo_do_livro": "Change apresenta fundamentos da terapia breve e estratégica ao explorar como mudanças podem ser facilitadas por intervenções paradoxais e reestruturações de interação. Watzlawick, Weakland e Fisch discutem teorias da comunicação, padrões de família e seqüências que mantêm problemas, propondo técnicas para interromper ciclos disfuncionais. O livro combina teoria com ilustrações clínicas sobre quando adotar estratégias diretas ou indiretas para promover transformação comportamental. É leitura chave para quem estuda intervenção familiar, terapia breve e abordagens pragmáticas que priorizam eficácia e economia em contextos clínicos complexos.",
+    "trecho_memoravel": "Intervir em padrões de interação que mantêm o problema, às vezes com propostas paradoxais, pode gerar mudanças rápidas e duradouras",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "10_pragmaticos_objetivo",
+    "nome": "The Tactics of Change [sem edição brasileira confirmada]",
+    "autor": "Richard Fisch, John Weakland e Lynn Segal",
+    "resumo_do_livro": "The Tactics of Change reúne estratégias práticas para produzir mudança terapêutica, derivadas da experiência em terapia breve e métodos estratégicos. Os autores descrevem táticas como prescrição de sintomas, tarefas paradoxais, reavaliação de custos e benefícios e reestruturação de sistemas relacionais. O livro oferece análise de casos e orientação sobre seleção de intervenções conforme o contexto e a resistência do cliente. Indicado para clínicos que buscam repertório de técnicas para enfrentar impasses terapêuticos, combina simplicidade técnica com reflexão teórica sobre mecanismos de mudança.",
+    "trecho_memoravel": "Táticas terapêuticas bem escolhidas interrompem padrões rígidos e criam novas possibilidades de comportamento e relação",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "10_pragmaticos_objetivo",
+    "nome": "Brief Strategic Therapy [sem edição brasileira confirmada]",
+    "autor": "Giorgio Nardone e Paul Watzlawick",
+    "resumo_do_livro": "Brief Strategic Therapy expõe uma abordagem pragmática e orientada à resolução rápida de problemas, articulando técnicas estratégicas para desmantelar crenças e rituais que sustentam sintomas. Nardone e Watzlawick apresentam formulações de caso, intervenções dirigidas e tarefas projetadas para provocar mudança em poucos encontros. O texto combina pesquisa clínica com procedimentos passo a passo, útil em contextos de ansiedade, transtornos de comportamento e dificuldades relacionais. Indicado para terapeutas que buscam intervenções breves e eficazes, enfatiza avaliação precisa do padrão de manutenção do problema e prescrição estratégica.",
+    "trecho_memoravel": "Desenvolver intervenções estratégicas e específicas para interromper rotinas que mantêm o sintoma permite mudanças rápidas e focalizadas",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "10_pragmaticos_objetivo",
+    "nome": "The Miracle Question [sem edição brasileira confirmada]",
+    "autor": "Insoo Kim Berg e Yvonne Dolan",
+    "resumo_do_livro": "The Miracle Question apresenta e explora a técnica da pergunta do milagre, ferramenta central na terapia focada em soluções que ajuda clientes a visualizar um futuro sem o problema e identificar passos concretos para aproximar‑se dessa visão. Berg e Dolan explicam formulação, variações e usos clínicos da técnica, além de exemplificar como ela mobiliza recursos e metas significativas. O texto é valioso para estudantes e praticantes que buscam intervenções simples e poderosas para fomentar esperança, clareza de objetivos e pequenas mudanças comportamentais que se somam à transformação terapêutica.",
+    "trecho_memoravel": "Imaginar detalhadamente um futuro sem o problema revela sinais práticos do progresso e orienta pequenos passos concretos em direção à solução",
+    "tipo_trecho": "paráfrase autoral"
+  },
+  {
+    "familia": "10_pragmaticos_objetivo",
+    "nome": "The Solution-Focused Brief Therapy Workbook [sem edição brasileira confirmada]",
+    "autor": "Arthur M. Nezu e colaboradores",
+    "resumo_do_livro": "The Solution‑Focused Brief Therapy Workbook reúne exercícios, roteiros de sessão e tarefas de casa para aplicar princípios de terapia focada em soluções em contexto clínico. O volume oferece instrumentos para formular metas específicas, identificar exceções, utilizar a questão do milagre e monitorar progresso por meio de escalas. Destinado a estudantes e terapeutas, o workbook facilita o treinamento de habilidades práticas, fornece modelos de intervenções breves e contém exemplos para adaptar técnicas a diferentes faixas etárias e problemas. É um recurso prático para operacionalizar uma abordagem breve e orientada para resultados.",
+    "trecho_memoravel": "Ferramentas práticas e exercícios estruturados permitem transformar princípios da terapia focada em soluções em intervenções replicáveis e mensuráveis",
+    "tipo_trecho": "paráfrase autoral"
+  }
+]

@@ -4,7 +4,7 @@ import { App as CapacitorApp } from '@capacitor/app';
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion';
 import { AppProvider, useApp } from './context/AppContext';
 import { setupNativeShell } from './lib/native';
-import { screenVariants } from './lib/motion';
+import { screenVariants, overlayVariants } from './lib/motion';
 
 import { HeaderNav } from './components/HeaderNav';
 import { BottomNav } from './components/BottomNav';
@@ -19,7 +19,9 @@ import { FaculdadeView } from './components/views/FaculdadeView';
 import { EstudosView } from './components/views/EstudosView';
 import { BibliotecaView } from './components/views/BibliotecaView';
 import { PerfilView } from './components/views/PerfilView';
+import { OnboardingScreen } from './components/views/OnboardingScreen';
 import { EstadoDeEspiritoView } from './components/views/EstadoDeEspiritoView';
+import { StreakView } from './components/views/StreakView';
 import { ComposeNoteView } from './components/views/ComposeNoteView';
 import { ClassNoteDetailWizard } from './components/views/ClassNoteDetailWizard';
 import { WizardRouter } from './components/wizards/WizardRouter';
@@ -53,10 +55,20 @@ function AppShell() {
         app.closeWizard();
       } else if (app.isMoodViewOpen) {
         app.closeMoodView();
+      } else if (app.isStreakScreenOpen) {
+        app.closeStreak();
+      } else if (app.isInternshipDiaryOpen) {
+        app.closeInternshipDiary();
       } else if (app.isNotesScreenOpen) {
         app.closeNotesScreen();
       } else if (app.isTempleScreenOpen) {
         app.closeTemple();
+      } else if (app.isFamiliesScreenOpen) {
+        app.closeFamilies();
+      } else if (app.focusedFamilyId) {
+        app.closeFamily();
+      } else if (app.focusedApproachId) {
+        app.closeApproach();
       } else if (app.focusedCourseId) {
         app.closeCourseDetail();
       } else {
@@ -98,6 +110,11 @@ function AppShell() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [openSearch]);
 
+  // Primeiro acesso → onboarding em tela cheia (sem header/nav)
+  if (!app.onboarding.completed) {
+    return <OnboardingScreen />;
+  }
+
   return (
     <div className="min-h-screen text-ceci-primary flex flex-col font-sans antialiased selection:bg-rose-100 selection:text-ceci-brand-strong">
 
@@ -108,39 +125,38 @@ function AppShell() {
           headerConfig={headerConfig}
           onOpenSearch={openSearch}
           onOpenQuickAdd={openQuickAdd}
-          onNavigateToPerfil={() => handleNavigate('perfil', 'jornada')}
+          onNavigateToPerfil={() => handleNavigate('perfil')}
         />
       )}
 
       {/* Main Screen Content (Mobile First App Frame Container) */}
       <main
-        className={`flex-1 max-w-md sm:max-w-xl w-full mx-auto px-3.5 py-4 sm:px-5 ${
+        className={`flex-1 max-w-md sm:max-w-xl w-full mx-auto px-3.5 py-4 sm:px-5 relative ${
           app.isBottomNavVisible
             ? 'pb-[calc(5rem+env(safe-area-inset-bottom,0px))]'
             : 'pb-6'
         }`}
       >
+        {/* === Camada 1: slide horizontal (base + auxiliares de 1º nível) === */}
         <AnimatePresence mode="popLayout" custom={app.navDirection} initial={false}>
           <motion.div
-            key={app.screenKey}
+            key={app.slideKey}
             custom={app.navDirection}
             variants={screenVariants}
             initial="initial"
             animate="animate"
             exit="exit"
+            layout="position"
+            style={{ willChange: 'transform, opacity' }}
           >
-            {app.isComposeScreenOpen ? (
-              <ComposeNoteView />
-            ) : app.isComposeDetailsOpen ? (
-              <ClassNoteDetailWizard />
-            ) : app.isWizardOpen ? (
-              <WizardRouter />
-            ) : app.isMoodViewOpen ? (
+            {app.isMoodViewOpen ? (
               <EstadoDeEspiritoView
                 currentMood={currentMood}
                 onSaveMood={handleSaveMood}
                 onBackToHome={closeMoodView}
               />
+            ) : app.isStreakScreenOpen ? (
+              <StreakView />
             ) : (
               <>
                 {activeTab === 'home' && <HomeView />}
@@ -151,6 +167,29 @@ function AppShell() {
               </>
             )}
           </motion.div>
+        </AnimatePresence>
+
+        {/* === Camada 2: overlay (fade+scale) — compose/wizard não disputam o slide === */}
+        <AnimatePresence mode="wait" initial={false}>
+          {app.overlayKey && (
+            <motion.div
+              key={app.overlayKey}
+              variants={overlayVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              style={{ willChange: 'transform, opacity' }}
+              className="absolute inset-0 px-3.5 py-4 sm:px-5 bg-canvas"
+            >
+              {app.isComposeScreenOpen ? (
+                <ComposeNoteView />
+              ) : app.isComposeDetailsOpen ? (
+                <ClassNoteDetailWizard />
+              ) : app.isWizardOpen ? (
+                <WizardRouter />
+              ) : null}
+            </motion.div>
+          )}
         </AnimatePresence>
       </main>
 

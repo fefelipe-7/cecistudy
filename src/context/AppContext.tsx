@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { FileText, CheckCircle2, Settings2, StickyNote } from 'lucide-react';
+import { FileText, CheckCircle2, Settings2, StickyNote, HeartHandshake } from 'lucide-react';
 import {
   NavTab,
   NavScreen,
@@ -7,7 +7,6 @@ import {
   SubTabFaculdade,
   SubTabEstudos,
   SubTabBiblioteca,
-  SubTabPerfil,
   UserProfile,
   Course,
   ClassNote,
@@ -25,25 +24,27 @@ import {
   StudySession,
   DynamicHeaderConfig,
   DailyMoodData,
-  WizardFlow
+  StreakData,
+  WizardFlow,
+  MoodEntry,
+  StudyQuestion,
+  Technique,
+  PsicoterapiaFamily,
+  OnboardingState
 } from '../types';
 import {
-  initialProfile,
-  initialCourses,
-  initialClasses,
-  initialTasks,
-  initialExams,
-  initialApproaches,
-  initialAuthors,
-  initialConcepts,
-  initialReadings,
-  initialFlashcards,
-  initialMaterials,
-  initialInternshipLogs,
-  initialTcc,
-  initialStickers,
-  initialStudySessions
-} from '../data/initialData';
+  emptyProfile,
+  emptyTcc,
+  emptyCurrentMood,
+  emptyStreakData,
+  emptyReminder,
+  emptyOnboarding,
+  emptyDatabase
+} from '../data/empty';
+import { PSICOTERAPIA_APPROACHES, PSICOTERAPIA_FAMILIES } from '../data/psicoterapiaBase';
+import { demoDatabase } from '../data/seeds';
+import { SCHEMA_VERSION } from '../data/schema';
+import { exportAppDatabase, importAppDatabase } from '../lib/exportImport';
 import { usePersistentState } from '../lib/usePersistentState';
 import { hapticTap, hapticSuccess } from '../lib/haptics';
 import { celebrate } from '../lib/celebrate';
@@ -55,7 +56,8 @@ import {
   routeToStack,
   stackToHash
 } from '../lib/routing';
-import { LooseNote, INITIAL_NOTES } from '../components/library/notes';
+import { computeStreak, getWeekProgress, isStudyDay, toDateKey, StreakStats, WeekDayCell } from '../lib/streak';
+import { LooseNote } from '../components/library/notes';
 
 
 export interface ReminderSettings {
@@ -81,12 +83,36 @@ export interface AppContextValue {
   stickers: Sticker[];
   sessions: StudySession[];
   currentMood: DailyMoodData;
+  moodHistory: MoodEntry[];
+  questions: StudyQuestion[];
+  techniques: Technique[];
+  savedBookIds: string[];
+  toggleSaveBook: (bookId: string) => void;
+  readingProgress: Record<string, number>;
+  updateReadingProgress: (bookId: string, readPages: number) => void;
   reminderSettings: ReminderSettings;
   updateReminder: (settings: ReminderSettings) => void;
+
+  // onboarding / ciclo de vida dos dados
+  onboarding: OnboardingState;
+  completeOnboarding: (profile: Partial<UserProfile>, loadDemo: boolean) => void;
+  loadDemoData: () => void;
+  resetApp: () => void;
+  exportData: () => void;
+  importData: (json: string) => void;
+
+  // streak de estudos
+  streakData: StreakData;
+  streakStats: StreakStats;
+  currentWeekProgress: WeekDayCell[];
 
   // navigation state
   activeTab: NavTab;
   screenKey: string;
+  /** Chave da camada de slide horizontal (base + auxiliares de 1º nível). */
+  slideKey: string;
+  /** Chave da camada overlay (fade+scale) — vazia quando não há overlay. */
+  overlayKey: string;
   navDirection: 0 | 1 | -1;
   setActiveTab: (tab: NavTab) => void;
   subTabFaculdade: SubTabFaculdade;
@@ -95,8 +121,6 @@ export interface AppContextValue {
   setSubTabEstudos: (t: SubTabEstudos) => void;
   subTabBiblioteca: SubTabBiblioteca;
   setSubTabBiblioteca: (t: SubTabBiblioteca) => void;
-  subTabPerfil: SubTabPerfil;
-  setSubTabPerfil: (t: SubTabPerfil) => void;
   targetId: string | undefined;
   setTargetId: (id: string | undefined) => void;
   focusedCourseId: string | null;
@@ -111,6 +135,17 @@ export interface AppContextValue {
   isTempleScreenOpen: boolean;
   openTemple: () => void;
   closeTemple: () => void;
+  isFamiliesScreenOpen: boolean;
+  openFamilies: () => void;
+  closeFamilies: () => void;
+  focusedFamilyId: string | null;
+  focusedFamily: PsicoterapiaFamily | undefined;
+  openFamily: (familyId: string) => void;
+  closeFamily: () => void;
+  focusedApproachId: string | null;
+  focusedApproach: PsychologyApproach | undefined;
+  openApproach: (approachId: string) => void;
+  closeApproach: () => void;
   bookmarkedCourseIds: string[];
   toggleBookmarkCourse: (id: string) => void;
 
@@ -150,6 +185,12 @@ export interface AppContextValue {
   openMoodView: () => void;
   closeMoodView: () => void;
   handleSaveMood: (mood: DailyMoodData) => void;
+  isStreakScreenOpen: boolean;
+  openStreak: () => void;
+  closeStreak: () => void;
+  isInternshipDiaryOpen: boolean;
+  openInternshipDiary: () => void;
+  closeInternshipDiary: () => void;
   isQuickAddOpen: boolean;
   openQuickAdd: () => void;
   closeQuickAdd: () => void;
@@ -169,17 +210,20 @@ export interface AppContextValue {
   handleToggleTask: (taskId: string) => void;
   handleToggleExam: (examId: string) => void;
   handleAddTask: (task: Task) => void;
+  handleUpdateTask: (taskId: string, patch: Partial<Task>) => void;
   handleAddClassNote: (note: ClassNote) => void;
   handleUpdateClassNote: (note: ClassNote) => void;
   handleAddReading: (reading: ReadingItem) => void;
   handleUpdateReadingPages: (readingId: string, newPages: number) => void;
   handleAddFlashcard: (card: Flashcard) => void;
   handleReviewFlashcard: (id: string, correct: boolean) => void;
-  handleAddConcept: (concept: PsychologyConcept) => void;
   handleAddInternshipLog: (log: InternshipLog) => void;
   handleAddExam: (exam: Exam) => void;
   handleAddAuthor: (author: PsychologyAuthor) => void;
   handleAddSession: (session: StudySession) => void;
+  handleAddQuestion: (question: StudyQuestion) => void;
+  handleAddTechnique: (technique: Technique) => void;
+  handleUpdateReadingChapters: (readingId: string, chapters: ReadingItem['chapters']) => void;
   handleUpdateProfile: (updated: Partial<UserProfile>) => void;
   handleUpdateTcc: (updated: TccData) => void;
   handleUpdateCourse: (updated: Course) => void;
@@ -191,37 +235,44 @@ export interface AppContextValue {
 const AppContext = createContext<AppContextValue | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  // State
-  const [profile, setProfile] = usePersistentState<UserProfile>('profile', initialProfile);
-  const [courses, setCourses] = usePersistentState<Course[]>('courses', initialCourses);
-  const [classes, setClasses] = usePersistentState<ClassNote[]>('classes', initialClasses);
-  const [tasks, setTasks] = usePersistentState<Task[]>('tasks', initialTasks);
-  const [exams, setExams] = usePersistentState<Exam[]>('exams', initialExams);
-  const [authors, setAuthors] = usePersistentState<PsychologyAuthor[]>('authors', initialAuthors);
-  const [concepts, setConcepts] = usePersistentState<PsychologyConcept[]>('concepts', initialConcepts);
-  const [approaches] = usePersistentState<PsychologyApproach[]>('approaches', initialApproaches);
-  const [readings, setReadings] = usePersistentState<ReadingItem[]>('readings', initialReadings);
-  const [flashcards, setFlashcards] = usePersistentState<Flashcard[]>('flashcards', initialFlashcards);
-  const [materials] = usePersistentState<MaterialItem[]>('materials', initialMaterials);
-  const [internshipLogs, setInternshipLogs] = usePersistentState<InternshipLog[]>('internship', initialInternshipLogs);
-  const [tcc, setTcc] = usePersistentState<TccData>('tcc', initialTcc);
-  const [stickers] = usePersistentState<Sticker[]>('stickers', initialStickers);
-  const [sessions, setSessions] = usePersistentState<StudySession[]>('sessions', initialStudySessions);
-  const [currentMood, setCurrentMood] = usePersistentState<DailyMoodData>('currentMood', {
-    emoji: '🤓',
-    label: 'focada & acadêmica',
-    energyLevel: 4,
-    vibeColor: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong',
-    reflection: 'dia focado nas aulas de psicopatologia e leituras curtas.',
-    intention: 'estudo leve e produtivo',
-    updatedAt: '09:00'
-  });
+  // State — defaults vazios (produção); dados de exemplo entram via onboarding/demo
+  const [profile, setProfile] = usePersistentState<UserProfile>('profile', emptyProfile);
+  const [courses, setCourses] = usePersistentState<Course[]>('courses', []);
+  const [classes, setClasses] = usePersistentState<ClassNote[]>('classes', []);
+  const [tasks, setTasks] = usePersistentState<Task[]>('tasks', []);
+  const [exams, setExams] = usePersistentState<Exam[]>('exams', []);
+  const [authors, setAuthors] = usePersistentState<PsychologyAuthor[]>('authors', []);
+  const [concepts, setConcepts] = usePersistentState<PsychologyConcept[]>('concepts', []);
+  const [approaches] = usePersistentState<PsychologyApproach[]>('approaches', PSICOTERAPIA_APPROACHES);
+  const [readings, setReadings] = usePersistentState<ReadingItem[]>('readings', []);
+  const [flashcards, setFlashcards] = usePersistentState<Flashcard[]>('flashcards', []);
+  const [materials, setMaterials] = usePersistentState<MaterialItem[]>('materials', []);
+  const [internshipLogs, setInternshipLogs] = usePersistentState<InternshipLog[]>('internship', []);
+  const [tcc, setTcc] = usePersistentState<TccData>('tcc', emptyTcc);
+  const [stickers, setStickers] = usePersistentState<Sticker[]>('stickers', []);
+  const [sessions, setSessions] = usePersistentState<StudySession[]>('sessions', []);
+  const [currentMood, setCurrentMood] = usePersistentState<DailyMoodData>('currentMood', emptyCurrentMood);
+  const [moodHistory, setMoodHistory] = usePersistentState<MoodEntry[]>('moodHistory', []);
+  const [questions, setQuestions] = usePersistentState<StudyQuestion[]>('questions', []);
+  const [techniques, setTechniques] = usePersistentState<Technique[]>('techniques', []);
+
+  // Streak de estudos (dias ativos; derivados calculados abaixo)
+  const [streakData, setStreakData] = usePersistentState<StreakData>('streakData', emptyStreakData);
 
   // Lembrete diário de estudo (só efetivo no app nativo)
-  const [reminderSettings, setReminderSettings] = usePersistentState<ReminderSettings>('reminder', {
-    enabled: false,
-    time: '19:00'
-  });
+  const [reminderSettings, setReminderSettings] = usePersistentState<ReminderSettings>('reminder', emptyReminder);
+
+  // Onboarding (primeiro acesso)
+  const [onboarding, setOnboarding] = usePersistentState<OnboardingState>('onboarding', emptyOnboarding);
+
+  // Livros salvos da biblioteca (no contexto → entram no export/import)
+  const [savedBookIds, setSavedBookIds] = usePersistentState<string[]>('savedBookIds', []);
+
+  // Progresso de leitura por obra (id → páginas lidas), registrado no modal do livro
+  const [readingProgress, setReadingProgress] = usePersistentState<Record<string, number>>(
+    'readingProgress',
+    {}
+  );
 
   // Navigation state — pilha nativa (push/pop)
   const [navigationStack, setNavigationStack] = useState<NavScreen[]>([{ kind: 'tab', tab: 'home' }]);
@@ -239,9 +290,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [subTabFaculdade, setSubTabFaculdade] = useState<SubTabFaculdade>('disciplinas');
   const [subTabEstudos, setSubTabEstudos] = useState<SubTabEstudos>('sessoes');
   const [subTabBiblioteca, setSubTabBiblioteca] = useState<SubTabBiblioteca>('autores');
-  const [subTabPerfil, setSubTabPerfil] = useState<SubTabPerfil>('jornada');
   const [targetId, setTargetId] = useState<string | undefined>(undefined);
-  const [bookmarkedCourseIds, setBookmarkedCourseIds] = usePersistentState<string[]>('bookmarkedCourseIds', ['c1', 'c2']);
+  const [bookmarkedCourseIds, setBookmarkedCourseIds] = usePersistentState<string[]>('bookmarkedCourseIds', []);
 
   // Modals
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
@@ -251,7 +301,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [toast, setToast] = useState<string | null>(null);
 
   // Notas avulsas (global — a tela de composição salva fora da biblioteca)
-  const [looseNotes, setLooseNotes] = usePersistentState<LooseNote[]>('looseNotes', INITIAL_NOTES);
+  const [looseNotes, setLooseNotes] = usePersistentState<LooseNote[]>('looseNotes', []);
 
   // Composição de nota (tela de captura rápida)
   const [composeCourseId, setComposeCourseId] = useState<string | undefined>(undefined);
@@ -271,8 +321,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const activeTab: NavTab =
     currentScreen.kind === 'tab' ? currentScreen.tab : navigationStack[0].kind === 'tab' ? navigationStack[0].tab : 'home';
   const isMoodViewOpen = currentScreen.kind === 'mood';
+  const isStreakScreenOpen = currentScreen.kind === 'streak';
+  const isInternshipDiaryOpen = currentScreen.kind === 'internshipDiary';
   const isNotesScreenOpen = currentScreen.kind === 'notes';
   const isTempleScreenOpen = currentScreen.kind === 'temple';
+  const isFamiliesScreenOpen = currentScreen.kind === 'families';
+  const focusedFamilyId = currentScreen.kind === 'family' ? currentScreen.familyId : null;
+  const focusedApproachId = currentScreen.kind === 'approach' ? currentScreen.approachId : null;
+  const focusedApproach = focusedApproachId ? approaches.find((a) => a.id === focusedApproachId) : undefined;
+  const focusedFamily = focusedFamilyId ? PSICOTERAPIA_FAMILIES.find((f) => f.id === focusedFamilyId) : undefined;
   const isBottomNavVisible = currentScreen.kind === 'tab';
   const isComposeScreenOpen = currentScreen.kind === 'compose';
   const isComposeDetailsOpen = currentScreen.kind === 'composeDetails';
@@ -289,13 +346,77 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           ? 'notes'
           : currentScreen.kind === 'temple'
             ? 'temple'
-            : currentScreen.kind === 'compose'
-              ? 'compose'
-              : currentScreen.kind === 'composeDetails'
-                ? 'composeDetails'
-                : currentScreen.kind === 'wizard'
-                  ? `wizard-${currentScreen.type}`
-                  : 'mood';
+            : currentScreen.kind === 'families'
+              ? 'families'
+              : currentScreen.kind === 'family'
+                ? `family-${currentScreen.familyId}`
+                : currentScreen.kind === 'approach'
+                  ? `approach-${currentScreen.approachId}`
+                  : currentScreen.kind === 'compose'
+                    ? 'compose'
+                    : currentScreen.kind === 'composeDetails'
+                      ? 'composeDetails'
+                      : currentScreen.kind === 'wizard'
+                        ? `wizard-${currentScreen.type}`
+                        : currentScreen.kind === 'streak'
+                          ? 'streak'
+                          : currentScreen.kind === 'internshipDiary'
+                            ? 'internshipDiary'
+                            : 'mood';
+
+  /**
+   * Chave da camada de slide horizontal (pilha).
+   * Inclui a base (tab/curso) e os auxiliares de primeiro nível
+   * (notes, temple, mood, streak) que aparecem com slide.
+   * Telas em camadas mais profundas (compose, composeDetails, wizard)
+   * usam uma camada separada de fade+scale — ficam fora desta key.
+   */
+  const slideKey =
+    currentScreen.kind === 'tab'
+      ? `tab-${currentScreen.tab}`
+      : currentScreen.kind === 'course'
+        ? `course-${currentScreen.courseId}`
+        : currentScreen.kind === 'notes'
+          ? 'notes'
+          : currentScreen.kind === 'temple'
+            ? 'temple'
+            : currentScreen.kind === 'families'
+              ? 'families'
+              : currentScreen.kind === 'family'
+                ? `family-${currentScreen.familyId}`
+                : currentScreen.kind === 'approach'
+                  ? `approach-${currentScreen.approachId}`
+                  : currentScreen.kind === 'mood'
+                    ? 'mood'
+                    : currentScreen.kind === 'streak'
+                      ? 'streak'
+                      : currentScreen.kind === 'internshipDiary'
+                        ? 'internshipDiary'
+                        : navigationStack[0]?.kind === 'tab'
+                          ? `tab-${navigationStack[0].tab}`
+                          : navigationStack[0]?.kind === 'course'
+                            ? `course-${navigationStack[0].courseId}`
+                            : 'tab-home';
+
+  /**
+   * Chave da camada overlay (fade+scale).
+   * Só as telas em camadas profundas da pilha entram aqui
+   * (compose, composeDetails, wizard). Quando vazio, a camada
+   * overlay fica oculta.
+   */
+  const overlayKey =
+    currentScreen.kind === 'compose'
+      ? 'compose'
+      : currentScreen.kind === 'composeDetails'
+        ? 'composeDetails'
+        : currentScreen.kind === 'wizard'
+          ? `wizard-${currentScreen.type}`
+          : '';
+
+  // Streak — derivados (a data é calculada a cada render; o app entende "qual dia é" por aqui)
+  const todayKey = toDateKey(new Date());
+  const streakStats = computeStreak(streakData.activeDays, todayKey);
+  const currentWeekProgress = getWeekProgress(streakData.activeDays, todayKey);
 
   // Roteamento hash como espelho (deep-link + voltar/avançar no browser; histórico do webview p/ swipe iOS)
   useEffect(() => {
@@ -308,7 +429,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         if (t === 'faculdade') setSubTabFaculdade(route.subTab as SubTabFaculdade);
         else if (t === 'estudos') setSubTabEstudos(route.subTab as SubTabEstudos);
         else if (t === 'biblioteca') setSubTabBiblioteca(route.subTab as SubTabBiblioteca);
-        else if (t === 'perfil') setSubTabPerfil(route.subTab as SubTabPerfil);
       }
       setTargetId(route.tab === 'faculdade' ? route.focusedCourseId ?? undefined : undefined);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -345,6 +465,27 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         </span>
       ),
     };
+  } else if (currentScreen.kind === 'streak') {
+    headerConfig = {
+      type: 'detail',
+      title: 'sua ofensiva de estudos',
+      subtitle: 'a chama dos seus estudos ♡',
+      icon: 'Flame',
+      color: '#D85F79',
+      onBack: () => goBack(),
+    };
+  } else if (currentScreen.kind === 'internshipDiary') {
+    headerConfig = {
+      type: 'detail',
+      title: 'diário de estágio',
+      subtitle: 'todos os registros por extenso',
+      icon: 'HeartHandshake',
+      color: '#D85F79',
+      onBack: () => goBack(),
+      actions: [
+        { label: 'nova anotação', Icon: HeartHandshake, onClick: () => openWizard('internship') },
+      ],
+    };
   } else if (currentScreen.kind === 'notes') {
     headerConfig = {
       type: 'detail',
@@ -366,6 +507,34 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       color: '#B94862',
       onBack: () => goBack(),
     };
+  } else if (currentScreen.kind === 'families') {
+    headerConfig = {
+      type: 'detail',
+      title: 'famílias de psicoterapias',
+      subtitle: '10 grupos de teorias e correntes clínicas',
+      icon: 'Landmark',
+      color: '#B94862',
+      onBack: () => goBack(),
+    };
+  } else if (currentScreen.kind === 'family' && focusedFamily) {
+    headerConfig = {
+      type: 'detail',
+      title: focusedFamily.name,
+      subtitle: `${focusedFamily.approachCount} abordagens nesta família`,
+      code: String(focusedFamily.order).padStart(2, '0'),
+      icon: 'Landmark',
+      color: focusedFamily.color,
+      onBack: () => goBack(),
+    };
+  } else if (currentScreen.kind === 'approach' && focusedApproach) {
+    headerConfig = {
+      type: 'detail',
+      title: focusedApproach.name,
+      subtitle: focusedApproach.family ?? 'abordagem de psicoterapia',
+      icon: 'Brain',
+      color: focusedApproach.color,
+      onBack: () => goBack(),
+    };
   } else if (currentScreen.kind === 'course' && focusedCourse) {
     const isBookmarked = bookmarkedCourseIds.includes(focusedCourse.id);
     const courseActions: HeaderAction[] = [
@@ -376,8 +545,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     headerConfig = {
       type: 'detail',
       title: focusedCourse.name,
-      subtitle: `${focusedCourse.code || 'PSI-300'} • ${focusedCourse.professor}`,
-      code: focusedCourse.code || 'PSI-300',
+      subtitle: `${focusedCourse.code || 'sem código'} • ${focusedCourse.professor}`,
+      code: focusedCourse.code || 'sem código',
       icon: focusedCourse.icon,
       color: focusedCourse.color,
       onBack: () => goBack(),
@@ -388,10 +557,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }
 
   // Handlers
+  /** Registra "hoje" como dia ativo na streak (só em dia útil; idempotente). */
+  const registerActivity = () => {
+    const key = toDateKey(new Date());
+    if (!isStudyDay(key)) return;
+    setStreakData((prev) =>
+      prev.activeDays.includes(key) ? prev : { activeDays: [...prev.activeDays, key] }
+    );
+  };
+
   const handleToggleTask = (taskId: string) => {
     hapticTap();
     const nextTasks = tasks.map((t) => (t.id === taskId ? { ...t, completed: !t.completed } : t));
     setTasks(nextTasks);
+    const toggled = nextTasks.find((t) => t.id === taskId);
+    if (toggled?.completed) registerActivity();
     if (shouldCelebrateTasks(nextTasks, taskId)) {
       hapticSuccess();
       celebrate('tasks-done');
@@ -410,8 +590,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setTasks((prev) => [task, ...prev]);
   };
 
+  const handleUpdateTask = (taskId: string, patch: Partial<Task>) => {
+    setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, ...patch } : t)));
+  };
+
   const handleAddClassNote = (note: ClassNote) => {
     setClasses((prev) => [note, ...prev]);
+    registerActivity();
   };
 
   const handleUpdateClassNote = (note: ClassNote) => {
@@ -442,6 +627,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       return r;
     });
     setReadings(nextReadings);
+    if (newPages > (prev?.readPages || 0)) registerActivity();
     const doneNow = nextReadings.find((r) => r.id === readingId);
     if (doneNow?.status === 'concluido' && prev?.status !== 'concluido') {
       hapticSuccess();
@@ -457,6 +643,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const handleReviewFlashcard = (id: string, correct: boolean) => {
     hapticTap();
     const today = new Date().toISOString().split('T')[0];
+    registerActivity();
     setFlashcards((prev) =>
       prev.map((c) => {
         if (c.id !== id) return c;
@@ -474,10 +661,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
-  const handleAddConcept = (concept: PsychologyConcept) => {
-    setConcepts((prev) => [concept, ...prev]);
-  };
-
   const handleAddInternshipLog = (log: InternshipLog) => {
     setInternshipLogs((prev) => [log, ...prev]);
   };
@@ -492,6 +675,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const handleAddSession = (session: StudySession) => {
     setSessions((prev) => [session, ...prev]);
+    registerActivity();
+  };
+
+  const handleAddQuestion = (question: StudyQuestion) => {
+    setQuestions((prev) => [question, ...prev]);
+  };
+
+  const handleAddTechnique = (technique: Technique) => {
+    setTechniques((prev) => [technique, ...prev]);
+  };
+
+  const handleUpdateReadingChapters = (readingId: string, chapters: ReadingItem['chapters']) => {
+    setReadings((prev) => prev.map((r) => (r.id === readingId ? { ...r, chapters } : r)));
   };
 
   const handleUpdateProfile = (updated: Partial<UserProfile>) => {
@@ -517,6 +713,86 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setCourses((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
   };
 
+  /** Aplica um banco completo (empty ou demo) a todos os estados persistidos. */
+  const applyDatabase = (db: ReturnType<typeof emptyDatabase>) => {
+    setProfile(db.profile);
+    setCourses(db.courses);
+    setClasses(db.classes);
+    setTasks(db.tasks);
+    setExams(db.exams);
+    setAuthors(db.authors);
+    setConcepts(db.concepts);
+    setReadings(db.readings);
+    setFlashcards(db.flashcards);
+    setMaterials(db.materials);
+    setInternshipLogs(db.internshipLogs);
+    setTcc(db.tcc);
+    setStickers(db.stickers);
+    setSessions(db.sessions);
+    setCurrentMood(db.currentMood);
+    setMoodHistory(db.moodHistory);
+    setQuestions(db.questions);
+    setTechniques(db.techniques);
+    setStreakData(db.streakData);
+    setReminderSettings(db.reminder);
+    setLooseNotes(db.looseNotes as LooseNote[]);
+    setSavedBookIds(db.savedBookIds);
+    setReadingProgress(db.readingProgress ?? {});
+    setBookmarkedCourseIds(db.bookmarkedCourseIds);
+  };
+
+  /** Carrega os dados de exemplo (onboarding "começar com exemplo" / Perfil → configurações). */
+  const loadDemoData = () => {
+    applyDatabase(demoDatabase());
+    showToast('prontinho, carreguei os exemplos ♡');
+  };
+
+  /** Limpa tudo e volta ao estado inicial (zerado). */
+  const resetApp = () => {
+    applyDatabase(emptyDatabase());
+    showToast('cantinho resetado — vamos começar de novo? ♡');
+  };
+
+  /** Conclui o onboarding: grava o perfil e opcionalmente carrega os exemplos. */
+  const completeOnboarding = (profileUpdate: Partial<UserProfile>, loadDemo: boolean) => {
+    if (loadDemo) {
+      applyDatabase(demoDatabase());
+      setProfile((prev) => ({ ...prev, ...profileUpdate }));
+    } else {
+      applyDatabase(emptyDatabase());
+      setProfile((prev) => ({ ...prev, ...profileUpdate }));
+    }
+    setOnboarding({ completed: true, completedAt: new Date().toISOString(), loadedDemo: loadDemo });
+    showToast(loadDemo ? 'cantinho pronto com exemplos ♡' : 'cantinho pronto — bora começar? ♡');
+  };
+
+  /** Coleta todos os estados persistidos num payload versionado (backup). */
+  const exportData = () => {
+    const payload = {
+      version: SCHEMA_VERSION,
+      exportedAt: new Date().toISOString(),
+      data: {
+        profile, courses, classes, tasks, exams, authors, concepts, approaches,
+        readings, flashcards, materials, internshipLogs, tcc, stickers, sessions,
+        currentMood, moodHistory, questions, techniques, streakData,
+        reminder: reminderSettings, looseNotes, savedBookIds, bookmarkedCourseIds, onboarding,
+        readingProgress,
+      },
+    };
+    exportAppDatabase(payload);
+  };
+
+  /** Restaura um payload exportado (backup/migração), validando a versão do schema. */
+  const importData = (json: string) => {
+    const db = importAppDatabase(json);
+    if (!db) {
+      showToast('ops, esse arquivo de backup não é compatível ♡');
+      return;
+    }
+    applyDatabase(db);
+    showToast('backup restaurado com carinho ♡');
+  };
+
   /** Sub-tab atual da aba base (para codificar no hash quando não for a padrão). */
   const currentSubTabFor = (tab: NavTab): string | undefined => {
     switch (tab) {
@@ -526,8 +802,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         return subTabEstudos;
       case 'biblioteca':
         return subTabBiblioteca;
-      case 'perfil':
-        return subTabPerfil;
       default:
         return undefined;
     }
@@ -579,7 +853,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (tab === 'faculdade' && subTab) setSubTabFaculdade(subTab as SubTabFaculdade);
     if (tab === 'estudos' && subTab) setSubTabEstudos(subTab as SubTabEstudos);
     if (tab === 'biblioteca' && subTab) setSubTabBiblioteca(subTab as SubTabBiblioteca);
-    if (tab === 'perfil' && subTab) setSubTabPerfil(subTab as SubTabPerfil);
     targetSectionRef.current = subTab;
 
     const base: NavScreen = { kind: 'tab', tab };
@@ -629,6 +902,47 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const closeTemple = () => goBack();
 
+  const openFamilies = () => {
+    const top = navigationStack[navigationStack.length - 1];
+    const next: NavScreen[] =
+      top.kind === 'families' ? navigationStack : [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'families' }];
+    setStack(next);
+    syncHash(next);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const closeFamilies = () => goBack();
+
+  const openFamily = (familyId: string) => {
+    const top = navigationStack[navigationStack.length - 1];
+    const next: NavScreen[] =
+      top.kind === 'family'
+        ? top.familyId === familyId
+          ? navigationStack
+          : [...navigationStack.slice(0, -1), { kind: 'family', familyId }]
+        : [...navigationStack, { kind: 'family', familyId }];
+    setStack(next);
+    syncHash(next);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const closeFamily = () => goBack();
+
+  const openApproach = (approachId: string) => {
+    const top = navigationStack[navigationStack.length - 1];
+    const next: NavScreen[] =
+      top.kind === 'approach'
+        ? top.approachId === approachId
+          ? navigationStack
+          : [...navigationStack.slice(0, -1), { kind: 'approach', approachId }]
+        : [...navigationStack, { kind: 'approach', approachId }];
+    setStack(next);
+    syncHash(next);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const closeApproach = () => goBack();
+
   const openMoodView = () => {
     const top = navigationStack[navigationStack.length - 1];
     const next: NavScreen[] =
@@ -638,6 +952,30 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const closeMoodView = () => goBack();
+
+  const openStreak = () => {
+    const top = navigationStack[navigationStack.length - 1];
+    const next: NavScreen[] =
+      top.kind === 'streak' ? navigationStack : [...navigationStack, { kind: 'streak' }];
+    setStack(next);
+    syncHash(next);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const closeStreak = () => goBack();
+
+  const openInternshipDiary = () => {
+    const top = navigationStack[navigationStack.length - 1];
+    const next: NavScreen[] =
+      top.kind === 'internshipDiary'
+        ? navigationStack
+        : [{ kind: 'tab', tab: 'perfil' }, { kind: 'internshipDiary' }];
+    setStack(next);
+    syncHash(next);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const closeInternshipDiary = () => goBack();
 
   const openCompose = (courseId?: string) => {
     setComposeCourseId(courseId);
@@ -685,7 +1023,23 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     hapticSuccess();
     celebrate('mood-saved');
     setCurrentMood(mood);
+    const today = toDateKey(new Date());
+    setMoodHistory((prev) => {
+      const entry: MoodEntry = { ...mood, id: `mood-${Date.now()}`, date: today };
+      const withoutToday = prev.filter((m) => m.date !== today);
+      return [entry, ...withoutToday].sort((a, b) => a.date.localeCompare(b.date));
+    });
     goBack();
+  };
+
+  const toggleSaveBook = (bookId: string) => {
+    setSavedBookIds((prev) =>
+      prev.includes(bookId) ? prev.filter((id) => id !== bookId) : [...prev, bookId]
+    );
+  };
+
+  const updateReadingProgress = (bookId: string, readPages: number) => {
+    setReadingProgress((prev) => ({ ...prev, [bookId]: Math.max(0, Math.floor(readPages)) }));
   };
 
   const openEditCourse = () => {
@@ -754,11 +1108,29 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     tcc,
     stickers,
     sessions,
-currentMood,
+    currentMood,
+    moodHistory,
+    questions,
+    techniques,
+    savedBookIds,
+    toggleSaveBook,
+    readingProgress,
+    updateReadingProgress,
     reminderSettings,
     updateReminder,
+    onboarding,
+    completeOnboarding,
+    loadDemoData,
+    resetApp,
+    exportData,
+    importData,
+    streakData,
+    streakStats,
+    currentWeekProgress,
     activeTab,
     screenKey,
+    slideKey,
+    overlayKey,
     navDirection,
     setActiveTab,
     subTabFaculdade,
@@ -767,8 +1139,6 @@ currentMood,
     setSubTabEstudos,
     subTabBiblioteca,
     setSubTabBiblioteca,
-    subTabPerfil,
-    setSubTabPerfil,
     targetId,
     setTargetId,
     focusedCourseId,
@@ -783,6 +1153,17 @@ currentMood,
     isTempleScreenOpen,
     openTemple,
     closeTemple,
+    isFamiliesScreenOpen,
+    openFamilies,
+    closeFamilies,
+    focusedFamilyId,
+    focusedFamily,
+    openFamily,
+    closeFamily,
+    focusedApproachId,
+    focusedApproach,
+    openApproach,
+    closeApproach,
     bookmarkedCourseIds,
     toggleBookmarkCourse,
     looseNotes,
@@ -803,6 +1184,12 @@ currentMood,
     isMoodViewOpen,
     openMoodView,
     closeMoodView,
+    isStreakScreenOpen,
+    openStreak,
+    closeStreak,
+    isInternshipDiaryOpen,
+    openInternshipDiary,
+    closeInternshipDiary,
     handleSaveMood,
     isQuickAddOpen,
     openQuickAdd,
@@ -827,17 +1214,20 @@ currentMood,
     handleToggleTask,
     handleToggleExam,
     handleAddTask,
+    handleUpdateTask,
     handleAddClassNote,
     handleUpdateClassNote,
     handleAddReading,
     handleUpdateReadingPages,
     handleAddFlashcard,
     handleReviewFlashcard,
-    handleAddConcept,
     handleAddInternshipLog,
     handleAddExam,
     handleAddAuthor,
     handleAddSession,
+    handleAddQuestion,
+    handleAddTechnique,
+    handleUpdateReadingChapters,
     handleUpdateProfile,
     handleUpdateTcc,
     handleUpdateCourse,

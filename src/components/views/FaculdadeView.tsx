@@ -13,9 +13,17 @@ import { ClassNoteModal } from '../courses/ClassNoteModal';
 import { ClassNoteListItem } from '../courses/ClassNoteListItem';
 import { PillTabBar } from '../ui/PillTabBar';
 import { useApp } from '../../context/AppContext';
+import {
+  eventsForMonth,
+  upcomingEvents,
+  formatShortDate,
+  monthName,
+  daysInMonth,
+} from '../../lib/schedule';
 
 export const FaculdadeView: React.FC = () => {
   const {
+    profile,
     courses,
     classes,
     exams,
@@ -59,6 +67,17 @@ export const FaculdadeView: React.FC = () => {
   const filteredClasses = classes;
   const filteredExams = exams;
 
+  // Calendário real (mês atual, eventos de provas/tarefas do mês)
+  const now = new Date();
+  const calYear = now.getFullYear();
+  const calMonth = now.getMonth() + 1;
+  const calEvents = eventsForMonth(exams, tasks, calMonth, calYear);
+  const todayDay = now.getDate();
+  const totalDays = daysInMonth(calYear, calMonth);
+
+  // Próximos eventos da semana acadêmica (derivados de provas/tarefas/estágio)
+  const weekEvents = upcomingEvents(exams, tasks, internshipLogs);
+
   return (
     <div className="max-w-md sm:max-w-xl mx-auto space-y-6 pb-1">
       
@@ -67,7 +86,7 @@ export const FaculdadeView: React.FC = () => {
         <div>
           <p className="text-xs text-ceci-secondary font-medium lowercase tracking-wide">faculdade</p>
           <h1 className="font-display text-2xl sm:text-3xl text-ceci-primary font-bold mt-0.5 tracking-tight">
-            6º semestre
+            {profile.semester}º semestre
           </h1>
         </div>
         <button
@@ -133,7 +152,7 @@ export const FaculdadeView: React.FC = () => {
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="text-[10px] font-bold text-ceci-secondary uppercase tracking-wider bg-surface-muted px-2 py-0.5 rounded-md border border-ceci-border-default">
-                          {course.code || 'PSI-300'}
+                          {course.code || 'sem código'}
                         </span>
                         <h3 className="font-display text-lg font-bold text-ceci-primary group-hover:text-ceci-brand-strong transition-colors">
                           {course.name}
@@ -145,23 +164,13 @@ export const FaculdadeView: React.FC = () => {
                     </div>
                   </div>
 
-                  <p className="text-xs text-ceci-secondary line-clamp-1">
-                    {course.schedule || 'semanal'} • {nextExam ? `prova em ${nextExam.date}` : 'sem provas pendentes'}
-                  </p>
-
-                  <div className="space-y-1 pt-1">
-                    <div className="w-full h-1.5 bg-surface-muted rounded-full overflow-hidden border border-ceci-border-default">
-                      <div
-                        className="h-full rounded-full transition-all"
-                        style={{ width: `${course.progress || 50}%`, backgroundColor: course.color || '#B94862' }}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between text-[11px] text-ceci-secondary pt-1">
-                      <span>progresso: {course.progress || 50}%</span>
-                      <span className="font-semibold text-ceci-brand-strong flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
-                        abrir disciplina <ChevronRight className="w-3.5 h-3.5" />
-                      </span>
-                    </div>
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs text-ceci-secondary line-clamp-1">
+                      {course.schedule || 'horário a definir'} • {nextExam ? `prova em ${nextExam.date}` : 'sem provas pendentes'}
+                    </p>
+                    <span className="text-[11px] font-semibold text-ceci-brand-strong flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
+                      abrir disciplina <ChevronRight className="w-3.5 h-3.5" />
+                    </span>
                   </div>
                 </div>
               );
@@ -219,7 +228,7 @@ export const FaculdadeView: React.FC = () => {
       {subTab === 'calendario' && (
         <div className="space-y-3 px-1">
           <h2 className="font-display text-base font-bold text-ceci-primary">
-            calendário acadêmico · 2026.2
+            calendário acadêmico · {monthName(calYear, calMonth)} {calYear}
           </h2>
 
           <div className="grid grid-cols-7 gap-1.5 text-center text-xs font-semibold text-ceci-tertiary py-1 border-b border-ceci-border-default">
@@ -227,9 +236,9 @@ export const FaculdadeView: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-7 gap-1.5 text-center text-xs">
-            {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => {
-              const isToday = day === 8;
-              const hasEvent = day === 12 || day === 25;
+            {Array.from({ length: totalDays }, (_, i) => i + 1).map((day) => {
+              const isToday = day === todayDay;
+              const hasEvent = (calEvents.get(day)?.length ?? 0) > 0;
 
               return (
                 <div
@@ -243,6 +252,7 @@ export const FaculdadeView: React.FC = () => {
                   }`}
                 >
                   <span>{day}</span>
+                  {hasEvent && <span className="w-1 h-1 rounded-full bg-current mt-0.5" />}
                 </div>
               );
             })}
@@ -260,25 +270,31 @@ export const FaculdadeView: React.FC = () => {
         </div>
 
         <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
-          <div className="py-2.5 flex items-center justify-between">
-            <div>
-              <h3 className="font-bold text-xs text-ceci-primary">entrega de fichamento</h3>
-              <p className="text-[11px] text-ceci-secondary mt-0.5">psicologia social · segunda-feira</p>
+          {weekEvents.length === 0 && (
+            <div className="py-4 text-center">
+              <p className="text-xs text-ceci-secondary">
+                sem eventos próximos anotados. que tal registrar uma prova ou tarefa?
+              </p>
             </div>
-            <span className="text-[11px] font-bold text-ceci-brand-strong bg-surface-rose px-2.5 py-0.5 rounded-full border border-ceci-border-brand">
-              11/08
-            </span>
-          </div>
+          )}
 
-          <div className="py-2.5 flex items-center justify-between">
-            <div>
-              <h3 className="font-bold text-xs text-ceci-primary">supervisão de estágio</h3>
-              <p className="text-[11px] text-ceci-secondary mt-0.5">anotar aprendizados e dúvidas</p>
-            </div>
-            <span className="text-[11px] font-bold text-ceci-academic-strong bg-surface-blue px-2.5 py-0.5 rounded-full border border-ceci-border-academic">
-              13/08
-            </span>
-          </div>
+          {weekEvents.map((ev) => {
+            const evCourse = ev.courseId ? courses.find((c) => c.id === ev.courseId)?.name : undefined;
+            const kindLabel = ev.kind === 'prova' ? 'prova' : ev.kind === 'tarefa' ? 'tarefa' : 'estágio';
+            return (
+              <div key={ev.id} className="py-2.5 flex items-center justify-between">
+                <div>
+                  <h3 className="font-bold text-xs text-ceci-primary line-clamp-1">{ev.title}</h3>
+                  <p className="text-[11px] text-ceci-secondary mt-0.5">
+                    {kindLabel}{evCourse ? ` · ${evCourse}` : ''}
+                  </p>
+                </div>
+                <span className="text-[11px] font-bold text-ceci-brand-strong bg-surface-rose px-2.5 py-0.5 rounded-full border border-ceci-border-brand shrink-0">
+                  {formatShortDate(ev.date)}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
 

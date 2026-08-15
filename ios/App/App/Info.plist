@@ -66,5 +66,17 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>usar a câmera para tirar sua foto de perfil no cantinho.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>acessar suas fotos para escolher a foto de perfil do cantinho.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>guardar fotos tiradas no cantinho na sua biblioteca.</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>acessar a agenda para te lembrar de aulas, provas e estudos.</string>
+	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
+	<string>anotar aulas, provas e estudos na sua agenda.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>usar a agenda para organizar seus compromissos de estudo.</string>
 </dict>
 </plist>

@@ -30,21 +30,20 @@ export const SessionWizard: React.FC = () => {
     {
       id: 'sessao-tema',
       title: 'tema',
+      headline: 'o que você vai estudar?',
       content: (
-        <div className="space-y-2">
-          <FieldLabel>o que você vai estudar?</FieldLabel>
-          <TextInput
-            value={topic}
-            onChange={(e) => setTopic(e.target.value)}
-            placeholder="ex: revisar semiologia dos transtornos do humor"
-            autoFocus
-          />
-        </div>
+        <TextInput
+          value={topic}
+          onChange={(e) => setTopic(e.target.value)}
+          placeholder="ex: revisar semiologia dos transtornos do humor"
+          autoFocus
+        />
       ),
     },
     {
       id: 'sessao-ritmo',
       title: 'ritmo',
+      headline: 'por quanto tempo e como está o ritmo?',
       content: (
         <div className="space-y-4">
           <div>
@@ -68,9 +67,9 @@ export const SessionWizard: React.FC = () => {
     {
       id: 'sessao-disciplina',
       title: 'disciplina',
+      headline: 'quer conectar a uma disciplina?',
       content: (
         <SelectField
-          label="disciplina (opcional)"
           value={courseId}
           onChange={setCourseId}
           options={courses.map((c) => ({ value: c.id, label: c.name }))}
@@ -81,20 +80,16 @@ export const SessionWizard: React.FC = () => {
     {
       id: 'sessao-revisar',
       title: 'revisar',
+      headline: 'confere se está tudo certinho ♡',
       content: (
-        <div className="space-y-3">
-          <p className="text-xs font-medium text-ceci-secondary">
-            confere se está tudo certinho antes de guardar:
-          </p>
-          <ReviewCard
-            rows={[
-              { label: 'estudo', value: topic.trim() },
-              { label: 'duração', value: `${minutes} min` },
-              { label: 'ritmo', value: mood },
-              { label: 'disciplina', value: courseName || 'sem disciplina' },
-            ]}
-          />
-        </div>
+        <ReviewCard
+          rows={[
+            { label: 'estudo', value: topic.trim() },
+            { label: 'duração', value: `${minutes} min` },
+            { label: 'ritmo', value: mood },
+            { label: 'disciplina', value: courseName || 'sem disciplina' },
+          ]}
+        />
       ),
     },
   ];

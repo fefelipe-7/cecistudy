@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles,
@@ -23,23 +23,43 @@ import {
 import { Task } from '../../types';
 import { useApp } from '../../context/AppContext';
 import { AnimatedNumber } from '../ui/AnimatedNumber';
+import { getCoursesOnWeekday, extractScheduleTime } from '../../lib/schedule';
+import { buildSuggestions } from '../../lib/suggestions';
 
 export const HomeView: React.FC = () => {
   const {
     profile,
+    courses,
     tasks,
     exams,
+    flashcards,
+    readings,
     currentMood,
     handleToggleTask,
     handleAddTask,
     handleNavigate,
     openMoodView,
+    openStreak,
+    streakStats,
+    currentWeekProgress,
   } = useApp();
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
   // Pending tasks and items calculations
   const pendingTasks = tasks.filter((t) => !t.completed);
-  const pendingExamsIn14Days = (exams || []).filter((e) => !e.completed);
+
+  // Provas nos próximos 14 dias (filtro real de data)
+  const pendingExamsIn14Days = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const limit = new Date(today);
+    limit.setDate(today.getDate() + 14);
+    return (exams || []).filter((e) => {
+      if (e.completed) return false;
+      const d = new Date(`${e.date}T00:00:00`);
+      return !Number.isNaN(d.getTime()) && d >= today && d <= limit;
+    });
+  }, [exams]);
 
   // Time-based Greeting
   const hour = new Date().getHours();
@@ -53,29 +73,42 @@ export const HomeView: React.FC = () => {
     month: 'long'
   }).toLowerCase();
 
-  // System suggestions (optional tasks)
-  const [systemSuggestions, setSystemSuggestions] = useState([
-    {
-      id: 'sug_1',
-      title: 'revisar 10 flashcards de psicopatologia',
-      category: 'sugestão • opcional',
-      time: '15 min',
-      completed: false
-    },
-    {
-      id: 'sug_2',
-      title: 'ler 5 páginas restantes do capítulo 4 de beck',
-      category: 'sugestão • opcional',
-      time: '20 min',
-      completed: false
-    }
-  ]);
+  // Aulas de hoje (derivadas do horário das disciplinas)
+  const todayClasses = useMemo(() => getCoursesOnWeekday(courses, new Date()), [courses]);
+
+  // Sugestões do dia (derivadas de flashcards/leituras/provas reais)
+  const suggestions = useMemo(
+    () => buildSuggestions(flashcards, readings, exams, courses),
+    [flashcards, readings, exams, courses]
+  );
+  const [doneSuggestions, setDoneSuggestions] = useState<Set<string>>(new Set());
+  const visibleSuggestions = suggestions.filter((s) => !doneSuggestions.has(s.id));
 
   const toggleSuggestion = (id: string) => {
-    setSystemSuggestions((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, completed: !s.completed } : s))
-    );
+    setDoneSuggestions((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
   };
+
+  // Assuntos a estudar (das tarefas pendentes + sugestões derivadas)
+  const studyTopics = useMemo(() => {
+    const fromTasks = pendingTasks.slice(0, 3).map((t) => ({
+      id: t.id,
+      title: t.title,
+      course: courses.find((c) => c.id === t.disciplineId)?.name ?? 'tarefa',
+      time: '—',
+      badge: t.category,
+    }));
+    if (fromTasks.length >= 3) return fromTasks;
+    const extra = visibleSuggestions
+      .filter((s) => !fromTasks.some((f) => f.title === s.title))
+      .slice(0, 3 - fromTasks.length)
+      .map((s) => ({ id: s.id, title: s.title, course: 'sugestão', time: s.time, badge: 'opcional' }));
+    return [...fromTasks, ...extra];
+  }, [pendingTasks, courses, visibleSuggestions]);
 
   const handleAddNewTask = (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,9 +118,8 @@ export const HomeView: React.FC = () => {
       id: 'task_' + Date.now(),
       title: newTaskTitle.trim(),
       completed: false,
-      priority: 'alta',
-      category: 'trabalho',
-      dueDate: 'hoje'
+      priority: 'media',
+      category: 'outro'
     };
 
     handleAddTask(newTask);
@@ -95,15 +127,7 @@ export const HomeView: React.FC = () => {
   };
 
   // Days of week progress data
-  const weekDaysProgress = [
-    { day: 'seg', date: '04/08', label: '2 aulas + anotações', completed: true, status: 'aula & notas' },
-    { day: 'ter', date: '05/08', label: 'leitura cap. 4 beck', completed: true, status: 'leitura' },
-    { day: 'qua', date: '06/08', label: '12 flashcards revisados', completed: true, status: 'revisão' },
-    { day: 'qui', date: '07/08', label: 'foco 1h45 psicopatologia', completed: true, status: 'foco ativo' },
-    { day: 'sex', date: '08/08', label: 'hoje em andamento ♡', completed: false, isToday: true, status: 'hoje' },
-    { day: 'sáb', date: '09/08', label: 'pausa & descanso', completed: false, status: 'livre' },
-    { day: 'dom', date: '10/08', label: 'planejamento da semana', completed: false, status: 'planejamento' }
-  ];
+  const weekStudyDays = currentWeekProgress.filter((d) => d.status !== 'weekend');
 
   return (
     <div className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-1">
@@ -220,35 +244,32 @@ export const HomeView: React.FC = () => {
                 aulas hoje
               </span>
               <span className="text-xs font-bold text-ceci-brand-strong bg-surface-rose px-2.5 py-0.5 rounded-full border border-ceci-border-brand">
-                2 aulas
+                {todayClasses.length} {todayClasses.length === 1 ? 'aula' : 'aulas'}
               </span>
             </div>
 
             <p className="text-xs text-ceci-secondary mt-2">
-              hoje tem aula para você:
+              {todayClasses.length > 0 ? 'hoje tem aula para você:' : 'hoje não tem aula marcada ♡'}
             </p>
 
-            {/* List of Today's Classes */}
+            {/* List of Today's Classes (derivada do horário real das disciplinas) */}
             <div className="space-y-2 mt-3">
-              <div className="p-3 rounded-[18px] bg-surface-muted border border-ceci-border-subtle flex items-center justify-between text-xs">
-                <div>
-                  <p className="font-semibold text-ceci-primary">Psicopatologia</p>
-                  <p className="text-[11px] text-ceci-secondary mt-0.5">09:00 • Sala 204</p>
+              {todayClasses.map((course) => (
+                <div
+                  key={course.id}
+                  className="p-3 rounded-[18px] bg-surface-muted border border-ceci-border-subtle flex items-center justify-between text-xs"
+                >
+                  <div>
+                    <p className="font-semibold text-ceci-primary">{course.name}</p>
+                    <p className="text-[11px] text-ceci-secondary mt-0.5">
+                      {extractScheduleTime(course.schedule) || 'horário a definir'} • {course.room || course.professor}
+                    </p>
+                  </div>
+                  <span className="text-[10px] font-medium text-ceci-brand-strong bg-surface-rose px-2.5 py-1 rounded-full border border-ceci-border-brand">
+                    {course.category || 'aula'}
+                  </span>
                 </div>
-                <span className="text-[10px] font-medium text-ceci-brand-strong bg-surface-rose px-2.5 py-1 rounded-full border border-ceci-border-brand">
-                  presencial
-                </span>
-              </div>
-
-              <div className="p-3 rounded-[18px] bg-surface-muted border border-ceci-border-subtle flex items-center justify-between text-xs">
-                <div>
-                  <p className="font-semibold text-ceci-primary">Psicologia Social</p>
-                  <p className="text-[11px] text-ceci-secondary mt-0.5">14:00 • Bloco B</p>
-                </div>
-                <span className="text-[10px] font-medium text-ceci-academic-strong bg-surface-blue px-2.5 py-1 rounded-full border border-ceci-border-academic">
-                  seminário
-                </span>
-              </div>
+              ))}
             </div>
           </div>
 
@@ -272,45 +293,32 @@ export const HomeView: React.FC = () => {
                 assuntos a estudar
               </span>
               <span className="text-xs font-bold text-ceci-academic-strong bg-surface-blue px-2.5 py-0.5 rounded-full border border-ceci-border-academic">
-                3 tópicos
+                {studyTopics.length} {studyTopics.length === 1 ? 'tópico' : 'tópicos'}
               </span>
             </div>
 
             <p className="text-xs text-ceci-secondary mt-2">
-              conteúdos para priorizar hoje:
+              {studyTopics.length > 0 ? 'conteúdos para priorizar hoje:' : 'por enquanto, só respira e começa devagar ♡'}
             </p>
 
-            {/* List of Study Topics */}
+            {/* List of Study Topics (derivada de tarefas pendentes + sugestões) */}
             <div className="space-y-2 mt-3">
-              <div className="p-2.5 rounded-[18px] bg-surface-muted border border-ceci-border-subtle flex items-center justify-between text-xs">
-                <div className="min-w-0 pr-2">
-                  <p className="font-semibold text-ceci-primary truncate">Pensamentos Automáticos</p>
-                  <p className="text-[11px] text-ceci-secondary mt-0.5">Psicopatologia • 30m</p>
+              {studyTopics.map((topic) => (
+                <div
+                  key={topic.id}
+                  className="p-2.5 rounded-[18px] bg-surface-muted border border-ceci-border-subtle flex items-center justify-between text-xs"
+                >
+                  <div className="min-w-0 pr-2">
+                    <p className="font-semibold text-ceci-primary truncate">{topic.title}</p>
+                    <p className="text-[11px] text-ceci-secondary mt-0.5">
+                      {topic.course}{topic.time && topic.time !== '—' ? ` • ${topic.time}` : ''}
+                    </p>
+                  </div>
+                  <span className="text-[10px] font-medium text-ceci-academic-strong bg-surface-blue px-2 py-0.5 rounded-full border border-ceci-border-academic shrink-0">
+                    {topic.badge}
+                  </span>
                 </div>
-                <span className="text-[10px] font-medium text-ceci-academic-strong bg-surface-blue px-2 py-0.5 rounded-full border border-ceci-border-academic shrink-0">
-                  tcc
-                </span>
-              </div>
-
-              <div className="p-2.5 rounded-[18px] bg-surface-muted border border-ceci-border-subtle flex items-center justify-between text-xs">
-                <div className="min-w-0 pr-2">
-                  <p className="font-semibold text-ceci-primary truncate">Influência Social</p>
-                  <p className="text-[11px] text-ceci-secondary mt-0.5">Psicologia Social • 45m</p>
-                </div>
-                <span className="text-[10px] font-medium text-beige-700 bg-surface-subtle px-2 py-0.5 rounded-full border border-cream-200 shrink-0">
-                  leitura
-                </span>
-              </div>
-
-              <div className="p-2.5 rounded-[18px] bg-surface-muted border border-ceci-border-subtle flex items-center justify-between text-xs">
-                <div className="min-w-0 pr-2">
-                  <p className="font-semibold text-ceci-primary truncate">Fobia Específica</p>
-                  <p className="text-[11px] text-ceci-secondary mt-0.5">Cap. 4 Beck • 20m</p>
-                </div>
-                <span className="text-[10px] font-medium text-green-700 bg-green-50 px-2 py-0.5 rounded-full border border-green-200 shrink-0">
-                  ficha
-                </span>
-              </div>
+              ))}
             </div>
           </div>
 
@@ -326,44 +334,67 @@ export const HomeView: React.FC = () => {
 
       </div>
 
-      {/* Card: Seu Progresso (Dias da Semana) */}
+      {/* Card: Seu Progresso (Dias da Semana) — clicável → tela de streak */}
       <div
-        className="card-lift press-card bg-white rounded-[24px] p-5 border border-ceci-border-subtle shadow-sm space-y-3.5"
+        onClick={openStreak}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openStreak();
+          }
+        }}
+        className="card-lift press-card bg-white rounded-[24px] p-5 border border-ceci-border-subtle shadow-sm space-y-3.5 cursor-pointer"
       >
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-ceci-primary font-display">
             seu progresso semanal
           </h2>
-          <span className="text-xs text-ceci-secondary font-medium cursor-pointer hover:text-ceci-primary transition-colors">
+          <span className="text-xs text-ceci-secondary font-medium hover:text-ceci-primary transition-colors">
             ver estatísticas &gt;
           </span>
         </div>
 
-        {/* Days of Week Row */}
-        <div className="grid grid-cols-7 gap-1.5 pt-1">
-          {weekDaysProgress.map((item) => (
+        {/* Streak counter */}
+        <div className="flex items-center gap-2">
+          <Flame className={`w-4 h-4 ${streakStats.alive ? 'fill-rose-500 text-rose-500' : 'text-ceci-muted'}`} />
+          <span className="text-xs font-bold text-ceci-brand-strong bg-surface-rose px-2.5 py-0.5 rounded-full border border-ceci-border-brand">
+            <AnimatedNumber value={streakStats.current} /> {streakStats.current === 1 ? 'dia' : 'dias'}
+            {streakStats.alive ? ' 🔥' : ''}
+          </span>
+          {streakStats.longest > 0 && (
+            <span className="text-[10px] font-medium text-ceci-secondary">
+              recorde: {streakStats.longest} dias
+            </span>
+          )}
+        </div>
+
+        {/* Days of Week Row (seg–sex; fim de semana é descanso) */}
+        <div className="grid grid-cols-5 gap-1.5 pt-1">
+          {weekStudyDays.map((item) => (
             <motion.div
-              key={item.day}
+              key={item.dateKey}
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
               className={`p-2 rounded-[18px] border text-center flex flex-col items-center justify-between cursor-pointer ${
-                item.completed
+                item.status === 'done'
                   ? 'bg-surface-rose border-ceci-border-brand text-ceci-primary'
-                  : item.isToday
+                  : item.status === 'today'
                   ? 'bg-white border-rose-500 shadow-2xs'
                   : 'bg-surface-muted border-ceci-border-subtle text-ceci-secondary'
               }`}
             >
               <span className="text-[10px] font-medium lowercase text-ceci-secondary">
-                {item.day}
+                {item.label}
               </span>
 
               <div className="my-1">
-                {item.completed ? (
+                {item.status === 'done' ? (
                   <span className="w-6 h-6 rounded-full bg-rose-500 text-white font-bold text-[10px] flex items-center justify-center shadow-2xs">
                     ✓
                   </span>
-                ) : item.isToday ? (
+                ) : item.status === 'today' ? (
                   <span className="w-6 h-6 rounded-full bg-rose-500 text-white font-bold text-[10px] flex items-center justify-center">
                     ✨
                   </span>
@@ -375,11 +406,15 @@ export const HomeView: React.FC = () => {
               </div>
 
               <span className="text-[9px] font-medium text-ceci-secondary truncate w-full">
-                {item.status}
+                {item.status === 'today' ? 'hoje' : item.status === 'done' ? 'feito ♡' : 'vago'}
               </span>
             </motion.div>
           ))}
         </div>
+
+        <p className="text-[10px] text-ceci-tertiary text-center">
+          sáb e dom são seu descanso ♡
+        </p>
       </div>
 
       {/* Section Header: Recent Tasks & Action Plan */}
@@ -431,7 +466,10 @@ export const HomeView: React.FC = () => {
                       {task.title}
                     </p>
                     <p className="text-[11px] text-ceci-secondary mt-0.5">
-                      prazo: {task.dueDate || 'hoje'} • Psicopatologia
+                      prazo: {task.dueDate || 'sem prazo'}
+                      {task.disciplineId && courses.find((c) => c.id === task.disciplineId)?.name
+                        ? ` • ${courses.find((c) => c.id === task.disciplineId)!.name}`
+                        : ''}
                     </p>
                   </div>
                 </div>
@@ -470,7 +508,7 @@ export const HomeView: React.FC = () => {
           </p>
 
           <AnimatePresence mode="popLayout">
-            {systemSuggestions.map((sug) => (
+            {visibleSuggestions.map((sug) => (
               <motion.div
                 key={sug.id}
                 layout

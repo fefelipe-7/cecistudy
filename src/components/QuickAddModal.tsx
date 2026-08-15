@@ -4,7 +4,6 @@ import {
   BookOpen,
   Brain,
   HeartHandshake,
-  Sparkles,
   Timer,
   ClipboardList,
   UserCheck,
@@ -49,13 +48,6 @@ const TYPE_OPTIONS: {
     caption: 'vale nota',
     Icon: ClipboardList,
     accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong',
-  },
-  {
-    type: 'concept',
-    label: 'conceito',
-    caption: 'ideia de psicologia',
-    Icon: Sparkles,
-    accent: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong',
   },
   {
     type: 'flashcard',

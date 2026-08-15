@@ -1,12 +1,14 @@
 import React, { useRef } from 'react';
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
-import { ArrowLeft, Check, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Check, ChevronRight } from 'lucide-react';
 import { IOS_EASE } from '../../lib/motion';
 import { cn } from '../../lib/utils';
 
 export interface WizardStep {
   id: string;
   title: string;
+  /** Pergunta direta exibida em destaque no topo do passo (título em vez de rótulo de campo). */
+  headline?: string;
   content: React.ReactNode;
 }
 
@@ -25,7 +27,7 @@ interface WizardScaffoldProps {
   canNext?: boolean;
   /** Habilita o botão "guardar" no último step (default: canNext). */
   canSave?: boolean;
-  /** Esconde o botão direito de navegação (usado em steps de escolha, ex.: tarefa × prova). */
+  /** Esconde o botão principal (usado em steps de escolha, ex.: tarefa × prova). */
   hideNext?: boolean;
   saveLabel?: string;
   onSave: () => void;
@@ -56,6 +58,7 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
 }) => {
   const dirRef = useRef<number>(1);
   const isLast = step === steps.length - 1;
+  const canConfirm = isLast ? canSave ?? canNext : canNext;
 
   const goTo = (next: number) => {
     const clamped = Math.max(0, Math.min(steps.length - 1, next));
@@ -69,7 +72,7 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
   };
 
   return (
-    <div className="min-h-[70vh] flex flex-col animate-in fade-in duration-300">
+    <div className="min-h-[70vh] flex flex-col animate-in fade-in duration-300 pb-44">
       {/* Header */}
       <div className="sticky top-0 z-10 -mx-3.5 sm:-mx-5 px-3.5 sm:px-5 pt-[calc(0.5rem+env(safe-area-inset-top,0px))] pb-3 bg-canvas/95 backdrop-blur-md border-b border-ceci-border-subtle">
         <div className="max-w-md sm:max-w-xl mx-auto flex items-center justify-between gap-2">
@@ -97,41 +100,22 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
             </div>
           </div>
 
-          <span className="text-[11px] font-bold text-ceci-tertiary tabular-nums shrink-0">
-            {step + 1}/{steps.length}
-          </span>
+          <span className="w-9 h-9 shrink-0" aria-hidden />
         </div>
 
-        {/* Barra de progresso do wizard */}
-        <div className="max-w-md sm:max-w-xl mx-auto mt-3 h-1.5 rounded-full bg-ceci-border-subtle overflow-hidden">
+        {/* Barra de progresso linear fina (o único indicador de progresso) */}
+        <div className="max-w-md sm:max-w-xl mx-auto mt-3 h-0.5 rounded-full bg-ceci-border-subtle overflow-hidden">
           <motion.div
             className="h-full rounded-full bg-ceci-brand-strong"
             initial={false}
             animate={{ width: `${((step + 1) / steps.length) * 100}%` }}
-            transition={{ duration: 0.3, ease: IOS_EASE }}
+            transition={{ duration: 0.35, ease: IOS_EASE }}
           />
         </div>
       </div>
 
-      {/* Steps (pills) */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pt-3 scrollbar-none">
-        {steps.map((s, i) => (
-          <button
-            key={s.id}
-            onClick={() => goTo(i)}
-            className={`px-3 py-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap transition-all cursor-pointer ${
-              step === i
-                ? 'bg-ceci-primary text-white shadow-2xs'
-                : 'bg-white text-ceci-secondary border border-ceci-border-default hover:bg-surface-rose'
-            }`}
-          >
-            {i + 1} · {s.title}
-          </button>
-        ))}
-      </div>
-
-      {/* Corpo com transição entre steps */}
-      <div className="flex-1 pt-4 pb-2">
+      {/* Corpo — um passo por vez, com pergunta em destaque */}
+      <div className="flex-1 pt-4">
         <AnimatePresence mode="wait" initial={false} custom={dirRef.current}>
           <motion.div
             key={steps[step].id}
@@ -141,50 +125,52 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
             animate="animate"
             exit="exit"
           >
-            {steps[step].content}
+            {steps[step].headline && (
+              <h2 className="font-display font-bold text-[26px] leading-[1.15] text-ceci-primary">
+                {steps[step].headline}
+              </h2>
+            )}
+            <div className="pt-4">{steps[step].content}</div>
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Navegação do wizard */}
-      <div className="flex items-center justify-between gap-2 pt-4 mt-auto">
-        <button
-          onClick={() => (step === 0 ? onClose() : goTo(step - 1))}
-          className="flex items-center gap-1 px-4 py-2.5 rounded-xl text-xs text-ceci-secondary hover:bg-surface-muted transition-colors min-h-[44px] cursor-pointer"
-        >
-          {step === 0 ? 'cancelar' : (
-            <>
-              <ChevronLeft className="w-4 h-4" />
-              <span>voltar</span>
-            </>
+      {/* Barra de ação fixa na base da tela (sticky footer) */}
+      <div className="fixed bottom-0 inset-x-0 z-10 bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(64,56,58,0.06)]">
+        <div className="max-w-md sm:max-w-xl mx-auto flex flex-col gap-1.5 px-3.5 sm:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
+          {!hideNext && (
+            <button
+              onClick={handleNext}
+              disabled={!canConfirm}
+              className={cn(
+                'w-full min-h-[56px] rounded-[14px] text-sm font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition-transform active:scale-[0.98] cursor-pointer',
+                isLast
+                  ? 'bg-rose-500 hover:bg-ceci-brand-strong text-white'
+                  : 'bg-ceci-primary hover:bg-ceci-primary-hover text-white',
+                !canConfirm && 'opacity-40 cursor-not-allowed'
+              )}
+            >
+              {isLast ? (
+                <>
+                  <Check className="w-5 h-5 stroke-[2.5]" />
+                  <span>{saveLabel}</span>
+                </>
+              ) : (
+                <>
+                  <span>continuar</span>
+                  <ChevronRight className="w-5 h-5" />
+                </>
+              )}
+            </button>
           )}
-        </button>
 
-        {!hideNext && (
           <button
-            onClick={handleNext}
-            disabled={isLast ? !(canSave ?? canNext) : !canNext}
-            className={cn(
-              'flex items-center gap-1.5 px-5 py-2.5 rounded-[14px] text-xs font-medium shadow-2xs transition-transform active:scale-95 min-h-[48px] cursor-pointer',
-              isLast
-                ? 'bg-rose-500 hover:bg-ceci-brand-strong text-white'
-                : 'bg-ceci-primary hover:bg-ceci-primary-hover text-white',
-              (isLast ? !(canSave ?? canNext) : !canNext) && 'opacity-40 cursor-not-allowed'
-            )}
+            onClick={() => (step === 0 ? onClose() : goTo(step - 1))}
+            className="w-full min-h-[40px] rounded-xl text-xs font-medium text-ceci-tertiary hover:text-ceci-primary hover:bg-surface-muted transition-colors cursor-pointer"
           >
-            {isLast ? (
-              <>
-                <Check className="w-4 h-4 stroke-[2.5]" />
-                <span>{saveLabel}</span>
-              </>
-            ) : (
-              <>
-                <span>continuar</span>
-                <ChevronRight className="w-4 h-4" />
-              </>
-            )}
+            {step === 0 ? 'cancelar' : 'voltar'}
           </button>
-        )}
+        </div>
       </div>
     </div>
   );

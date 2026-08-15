@@ -55,6 +55,9 @@ Callbacks `onAddTask: (task: any) => void` etc. usam `any`.
 Aulas de hoje, progresso semanal, stats de estudo (25min/08 cartões), eventos do
 calendário são literais nas views em vez de derivados do estado.
 **Ação:** derivar de dados reais ou mover para seeds.
+**Progresso:** o "progresso semanal" da Home e a streak do Perfil agora são derivados
+de `streakData` (`src/lib/streak.ts`). "Aulas de hoje", "assuntos a estudar", meta diária
+e ppm seguem dummy.
 
 ## 🟢 10. Sem testes
 `bun run lint` = apenas `tsc --noEmit`. Nenhum framework de testes configurado.
@@ -250,7 +253,8 @@ e não persistidos. Unificar o modelo evita divergência.
 
 **Pendências p/ fases futuras**
 - EstudosView: sub-tabs `leituras`/`questoes` ainda não renderizam conteúdo (Tema C).
-- Dados dummy das views (HomeView, MoodCalendar) a derivar do estado/seeds.
+- HomeView: "aulas de hoje" e "assuntos a estudar" ainda dummy a derivar do estado/seeds.
+  (O `MoodCalendarWidget` fake foi **removido** — o Perfil é página única inline com métricas reais.)
 - Unificar catálogo da biblioteca (`CollectionBook`/`ContextCollection`) com `ReadingItem`.
 - Expansão dos testes para `QuickAddModal`/`GlobalSearchModal` e cobertura das views.
 

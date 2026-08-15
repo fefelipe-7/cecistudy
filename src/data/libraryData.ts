@@ -5,19 +5,41 @@ export interface CollectionBook {
   coverColor: string;
   accentColor: string;
   badge?: string;
-  totalPages: number;
-  readPages: number;
+  /** Total de páginas — opcional (livros do catálogo não trazem contagem). */
+  totalPages?: number;
+  /** Páginas lidas — opcional quando não há contagem. */
+  readPages?: number;
   status: 'lendo' | 'concluido' | 'para_ler';
   description: string;
   quote?: string;
   tags: string[];
   courseName?: string;
+  /** Família de psicoterapia (livros do catálogo). */
+  family?: string;
+  /** Área interdisciplinar (livros da bagagem complementar). */
+  area?: string;
 }
 
 export interface ContextCollection {
   id: string;
-  blockType: 'author' | 'concept' | 'approach' | 'saved' | 'multidisciplinary' | 'tests';
-  blockCategory: 'autores' | 'conceitos' | 'abordagens' | 'multidisciplinar' | 'testes' | 'recentes';
+  blockType:
+    | 'author'
+    | 'concept'
+    | 'approach'
+    | 'saved'
+    | 'multidisciplinary'
+    | 'tests'
+    | 'catalog'
+    | 'complementary';
+  blockCategory:
+    | 'autores'
+    | 'conceitos'
+    | 'abordagens'
+    | 'multidisciplinar'
+    | 'testes'
+    | 'recentes'
+    | 'psicoterapias'
+    | 'complementar';
   title: string;
   subtitle: string;
   readersCount: number;

@@ -1,0 +1,902 @@
+[
+  {
+    "nome": "Ética a Nicômaco",
+    "autor": "Aristóteles",
+    "area": "01_filosofia_e_existencia",
+    "resumo_do_livro": "Obra central da ética aristotélica que articula a formação do caráter, a razão prática e o ideal de eudaimonia (vida boa). Aristóteles explora como hábitos, educação e vida política moldam a subjetividade e a capacidade de agir moralmente. A virtude é apresentada como meio termo regulado pela deliberação racional, implicando responsabilidade pessoal e social. O texto dialoga com cultura e desenvolvimento humano ao mostrar que a ética não é apenas teoria, mas prática cotidiana orientada para o bem comum e a realização humana.",
+    "trecho_memoravel": "A virtude surge da prática habitual orientada por um fim humano e socialmente compartilhado.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A República",
+    "autor": "Platão",
+    "area": "01_filosofia_e_existencia",
+    "resumo_do_livro": "Diálogo filosófico que investiga justiça, educação e a organização da cidade ideal como espelho da alma humana. Platão usa mitos e alegorias para discutir como instituições culturais formam subjetividades e hábitos éticos, propondo uma pedagogia para líderes e a necessidade de linguagem e arte reguladas para o bem coletivo. A República questiona a relação entre indivíduo e comunidade, o papel do conhecimento na vida social e a tensão entre ordem política e desenvolvimento moral, oferecendo instrumentos conceituais para pensar sofrimento, poder e cidadania.",
+    "trecho_memoravel": "A justiça se revela na harmonia entre as partes da alma e na forma como a cidade educa e molda seus cidadãos.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Meditações",
+    "autor": "Marco Aurélio",
+    "area": "01_filosofia_e_existencia",
+    "resumo_do_livro": "Conjunto de reflexões pessoais do imperador estoico sobre autocontrole, impermanência e ética prática diante do sofrimento e da responsabilidade pública. Marco Aurélio enfatiza a disciplina interior, a aceitação da natureza e a importância de governar as paixões para manter a integridade moral. O texto aborda subjetividade como trabalho contínuo sobre si, relacionando linguagem íntima e práticas de atenção ao desenvolvimento do caráter. Revela como a vida social e o poder exigem uma postura ética fundamentada na razão e no serviço coletivo.",
+    "trecho_memoravel": "A serenidade ética nasce do reconhecimento da transitoriedade das coisas e do domínio constante sobre os impulsos internos.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Confissões",
+    "autor": "Santo Agostinho",
+    "area": "01_filosofia_e_existencia",
+    "resumo_do_livro": "Narrativa autobiográfica e teológica que combina memória, linguagem e exame interior para entender pecado, desejo e conversão. Agostinho apresenta a subjetividade em transformação, mostrando como cultura, família e linguagem moldam a consciência e o processo de busca pela verdade divina. O livro aborda sofrimento e culpa como motores do desenvolvimento espiritual, destacando a tensão entre vontade humana e graça. Sua reflexão sobre memória e linguagem influencia abordagens posteriores sobre identidade, sofrimento psíquico e ética da autenticidade.",
+    "trecho_memoravel": "A busca pela verdade passa pelo exame íntimo da memória, da linguagem e dos desejos que moldam a vida interior.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "O Príncipe",
+    "autor": "Nicolau Maquiavel",
+    "area": "01_filosofia_e_existencia",
+    "resumo_do_livro": "Tratado sobre política realista que analisa meios e fins do exercício do poder, separando moralejas idealizadas das exigências da ação governamental. Maquiavel discute como culturas políticas, convenções sociais e percepções públicas influenciam estabilidade e legitimidade, oferecendo uma leitura pragmática da vida social. Para estudantes de subjetividade, o texto mostra como atitudes individuais e coletivas se alinham ou convergem para manutenção do poder, abrindo debates sobre ética competente, sofrimento causado pela política e responsabilidade moral dos governantes.",
+    "trecho_memoravel": "Na política é essencial conhecer e manejar o poder de modo prático, muitas vezes além das máximas morais abstratas.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Discurso do Método",
+    "autor": "René Descartes",
+    "area": "01_filosofia_e_existencia",
+    "resumo_do_livro": "Texto fundador do pensamento moderno que propõe regras de investigação baseadas na dúvida metódica e no uso da razão para alcançar conhecimento seguro. Descartes enfatiza a autonomia do sujeito pensante, a linguagem da clareza e distinção das ideias e a importância da razão prática na formação do indivíduo moderno. A obra influencia concepções de desenvolvimento cognitivo, afirma a centralidade da reflexão crítica na vida social e suscita questionamentos sobre a relação entre conhecimento, ética e responsabilidade individual.",
+    "trecho_memoravel": "A dúvida metódica e o pensamento claro constituem a base para edificar um conhecimento seguro e uma autonomia intelectual.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Tratado da Natureza Humana",
+    "autor": "David Hume",
+    "area": "01_filosofia_e_existencia",
+    "resumo_do_livro": "Obra empírica que investiga mente, emoção e moralidade, defendendo que ideias, hábitos e sentimentos moldam crenças e ações humanas. Hume apresenta a razão como serva das paixões e destaca o papel das convenções sociais e da simpatia na construção do juízo moral. Para estudantes de psicologia, o livro é valioso ao relacionar desenvolvimento da subjetividade com processos afetivos, linguagem e cultura, e ao explicar como sofrimentos e normas sociais influenciam comportamentos, normas e vínculos sociais.",
+    "trecho_memoravel": "Crenças e ações humanas emergem de hábitos, sentimentos e convenções sociais mais do que de deduções racionais puras.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Crítica da Razão Pura",
+    "autor": "Immanuel Kant",
+    "area": "01_filosofia_e_existencia",
+    "resumo_do_livro": "Tratado epistemológico que investiga as condições que tornam possível o conhecimento, mostrando como estruturas mentais organizam a experiência. Kant articula a subjetividade transcendetal com princípios universais, ligando a autonomia prática e a ética à forma como percebemos o mundo. O texto influencia discussões sobre linguagem, responsabilidade moral e desenvolvimento humano ao propor que tanto o saber quanto a liberdade são mediados por categorias cognitivas e normas racionais, oferecendo bases para pensar sofrimento, dignidade e vida social.",
+    "trecho_memoravel": "Nossa experiência e a possibilidade da moralidade são moldadas por estruturas mentais que condicionam tanto o conhecimento quanto a ação livre.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Assim Falou Zaratustra",
+    "autor": "Friedrich Nietzsche",
+    "area": "01_filosofia_e_existencia",
+    "resumo_do_livro": "Poema filosófico que anuncia a necessidade de criação de novos valores diante do declínio das tradições religiosas e morais. Nietzsche explora sofrimento, linguagem poética e transformação subjetiva através da figura de Zaratustra, propondo a superação de si mesmo e a afirmação da vida como resposta ética à crise cultural. A obra dialoga com desenvolvimento pessoal, cultura e vida social, estimulando reflexões sobre a responsabilidade criativa de cada indivíduo ao enfrentar angústias, tabus e formas estabelecidas de sentido.",
+    "trecho_memoravel": "A vida pede a criação contínua de valores: enfrentar o sofrimento e reinventar a si mesmo é condição de grandeza humana.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "O Ser e o Nada",
+    "autor": "Jean-Paul Sartre",
+    "area": "01_filosofia_e_existencia",
+    "resumo_do_livro": "Tratado existencialista que analisa liberdade, consciência e a condição humana a partir da noção de nada e projeto. Sartre explora como a subjetividade se constitui na relação com o outro, originando conflitos como a má-fé e dilemas éticos. A obra discute responsabilidade individual, angústia e as bases da ação humana em contextos sociais, oferecendo ferramentas conceituais para entender sofrimento, identidade e elaboração de sentido em situações de opressão ou conflito cultural. Fundamental para pensar ética e vida social contemporânea.",
+    "trecho_memoravel": "A existência precede a essência: somos livres para escolher e responsáveis pelas relações que construímos com os outros.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "O Mundo como Vontade e Representação",
+    "autor": "Arthur Schopenhauer",
+    "area": "02_filosofia_moderna_e_psicologia",
+    "resumo_do_livro": "Schopenhauer desenvolve uma visão da subjetividade em que o sujeito é tanto conhecimento quanto expressão de uma vontade irracional. A obra vincula sofrimento e desejo: a vontade como força cega gera incessantes necessidades que estruturam a vida psíquica e cultural. Para estudantes de Psicologia, o livro ilumina como pulsões profundas moldam comportamento, criatividade e ascetismo, e propõe uma ética da compaixão baseada no reconhecimento do sofrimento compartilhado. Linguagem e representação aparecem como formas de encobrimento e mediação desse impulso primordial.",
+    "trecho_memoravel": "A vida é conduzida por uma vontade cega que torna o mundo uma representação permeada por sofrimento.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "O Nascimento da Tragédia",
+    "autor": "Friedrich Nietzsche",
+    "area": "02_filosofia_moderna_e_psicologia",
+    "resumo_do_livro": "Nietzsche explora como as forças apolíneas e dionisíacas moldam formas culturais e a experiência subjetiva. A tragédia grega é tomada como modelo de integração entre ordem simbólica e êxtase coletivo, mostrando como a arte e o rito formam identidades e modos de encontro social. A obra chama atenção para o papel da música, do mito e do sofrimento estético no desenvolvimento psíquico e na resistência à racionalidade estreita. Para psicólogos, propõe reflexões sobre linguagem, criação, pulsão e a vida social.",
+    "trecho_memoravel": "A arte trágica une ordem e êxtase, mostrando que subjetividade nasce na tensão entre forma e impulso.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Gaia Ciência",
+    "autor": "Friedrich Nietzsche",
+    "area": "02_filosofia_moderna_e_psicologia",
+    "resumo_do_livro": "Neste conjunto de aforismos, Nietzsche aborda a crise de sentido moderna — incluindo a célebre constatação do desaparecimento de Deus — e as implicações para a subjetividade e os valores. O texto investiga como a linguagem, a criação de significados e as formas de vida respondem ao niilismo emergente, estimulando uma ética de afirmação e invenção de si. Para a Psicologia, oferece instrumentos conceituais sobre desenvolvimento individual, criatividade, resistência cultural e as transformações psíquicas diante da perda de certezas coletivas.",
+    "trecho_memoravel": "Perante a morte de velhas verdades, o sujeito deve reinventar valores e afirmar a própria criação de sentido.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "O Mal-Estar na Civilização",
+    "autor": "Sigmund Freud",
+    "area": "02_filosofia_moderna_e_psicologia",
+    "resumo_do_livro": "Freud articula a tensão entre impulsos individuais e exigências da vida social, mostrando como a cultura demanda renúncias que geram sofrimento psíquico e neuroses. O texto examina formação do superego, sentimento de culpa e mecanismos de defesa, relacionando desenvolvimento pessoal à dinâmica histórica e ética das sociedades. Para estudantes de Psicologia, o livro é referência sobre regulação dos desejos, linguagem do inconsciente e o modo como instituições moldam subjetividades e modos de lidar com a frustração e a angústia cultural.",
+    "trecho_memoravel": "A civilização exige renúncias aos impulsos, e essas exigências produzem o núcleo do sofrimento psíquico coletivo.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "O Mito de Sísifo",
+    "autor": "Albert Camus",
+    "area": "02_filosofia_moderna_e_psicologia",
+    "resumo_do_livro": "Camus confronta o indivíduo com a condição do absurdo, quando a busca por sentido colide com um mundo indiferente. A reflexão filosófica se volta à experiência subjetiva do fracasso das grandes narrativas e propõe a revolta como resposta ética e vital. Para a Psicologia, o ensaio oferece perspectivas sobre enfrentamento do vazio existencial, resiliência, escolhas rumo à autenticidade e implicações sociais de quem vive sem consolação transcendente, destacando linguagem e ações como modos de afirmar a própria vida.",
+    "trecho_memoravel": "Diante do absurdo, a atitude mais humana é persistir em criar sentido através da própria revolta e ação.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Náusea",
+    "autor": "Jean-Paul Sartre",
+    "area": "02_filosofia_moderna_e_psicologia",
+    "resumo_do_livro": "Romance filosófico que dramatiza a experiência da existência sem fundamento, onde a náusea simboliza o choque da consciência com a contingência do mundo. Sartre investiga liberdade, má-fé e responsabilidade, mostrando como a linguagem e as relações sociais estruturam ou alienam a identidade. Psicologicamente, o livro ilumina processos de angústia, desidentificação e elaboração existencial, propondo que o desenvolvimento pessoal passa pela assunção da liberdade e a criação de projetos que conferem sentido às relações e à ação ética.",
+    "trecho_memoravel": "A percepção crua da contingência do mundo força a consciência a reconhecer sua liberdade e a responsabilidade por si mesma.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "O Segundo Sexo",
+    "autor": "Simone de Beauvoir",
+    "area": "02_filosofia_moderna_e_psicologia",
+    "resumo_do_livro": "Obra fundadora do pensamento feminista que examina como a cultura e a linguagem constituem a mulher como outro, moldando subjetividade e trajetórias de vida. Beauvoir analisa desenvolvimento psíquico, mitos, economia e papéis sociais, articulando reflexão existencial e crítica social. Para estudantes de Psicologia, oferece ferramentas para entender construção de gênero, opressão internalizada, ética da liberdade e caminhos para emancipação. O livro aponta como transformações culturais e políticas são necessárias para reconfigurar relações afetivas e possibilidades de vida.",
+    "trecho_memoravel": "Ser mulher foi historicamente ser definido como outro; transformar isso exige recusar papéis e reivindicar liberdade.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Condição Humana",
+    "autor": "Hannah Arendt",
+    "area": "02_filosofia_moderna_e_psicologia",
+    "resumo_do_livro": "Arendt distingue labor, trabalho e ação para pensar a vida social e a esfera pública, mostrando como essas categorias moldam identidades e experiências coletivas. A obra aborda corrupção do mundo comum, perda de sentido político e implicações éticas da ação e do discurso. Para a Psicologia, ilumina como a pluralidade, a linguagem e a responsabilidade nas relações públicas constituem a formação do sujeito social, e como o isolamento, a burocracia e a violência afetam desenvolvimento emocional e ético.",
+    "trecho_memoravel": "A vida humana se realiza na ação e no discurso compartilhado; perder esse espaço é perder parte da própria humanidade.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Vigiar e Punir",
+    "autor": "Michel Foucault",
+    "area": "02_filosofia_moderna_e_psicologia",
+    "resumo_do_livro": "Foucault traça a genealogia das técnicas disciplinares que transformaram a punição e a gestão de corpos em práticas cotidianas de poder. O livro relaciona formação do sujeito a instituições como prisão, escola e clínica, mostrando processos de normalização, vigilância e autoexame. Para a Psicologia, é leitura essencial sobre subjetivação, regimes de verdade, efeitos psicológicos da vigilância e questões éticas vinculadas ao controle social. Revela como linguagem institucional e saberes técnicos contribuem para conformar comportamentos e identidades.",
+    "trecho_memoravel": "As instituições moldam sujeitos ao substituir punições espetaculares por técnicas sutis de vigilância e normalização.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Hermenêutica do Sujeito",
+    "autor": "Michel Foucault",
+    "area": "02_filosofia_moderna_e_psicologia",
+    "resumo_do_livro": "Coletânea de conferências e textos que explora práticas antigas e modernas de care of the self, mostrando como técnicas de si e modos de subjetivação variam historicamente. Foucault investiga a relação entre linguagem, ética e formação do sujeito, propondo que a autonomia aparece como resultado de práticas reflexivas orientadas por normas culturais. Para estudantes de Psicologia, a obra oferece um quadro para pensar terapia, cuidado e transformação ética, enfatizando práticas corpóreas, discursivas e sociais que constituem a vida interior.",
+    "trecho_memoravel": "O sujeito não nasce pronto, é constituído por práticas e linguagens que ensinam a cuidar de si e a se governar.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Crime e Castigo",
+    "autor": "Fiódor Dostoiévski",
+    "area": "03_literatura_e_subjetividade",
+    "resumo_do_livro": "Romance centrado em Raskólnikov, um jovem impulsionado por idéias morais e sociais que comete um crime acreditando transcender as leis comuns. A narrativa explora culpa, remorso e a tensão entre teoria e sentimento, mostrando como sofrimento e contexto social modelam a consciência. A obra oferece um estudo sobre a construção do eu em crise, o papel da empatia e da responsabilidade ética, além de evidenciar como linguagem e delírio mental influenciam decisões que rearranjam laços familiares e comunitários.",
+    "trecho_memoravel": "A culpa desencadeia uma luta íntima que força a revisão do próprio valor e dos vínculos sociais.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Os Irmãos Karamázov",
+    "autor": "Fiódor Dostoiévski",
+    "area": "03_literatura_e_subjetividade",
+    "resumo_do_livro": "Uma saga familiar que investiga fé, dúvida, desejo e a multiplicidade do sujeito através dos conflitos entre pai e filhos. O romance discute responsabilidade moral, justiça e a busca por sentido numa sociedade em transformação, confrontando crenças religiosas com impulsos humanos. A trama articula desenvolvimento psíquico e cultural, expondo como narrativas pessoais e discursos éticos moldam decisões e sofrimentos íntimos, além de problematizar a relação entre leis sociais, julgamento coletivo e singularidade subjetiva.",
+    "trecho_memoravel": "A vida moral é um campo de escolha onde fé, dúvida e afetos definem a identidade e o juízo sobre o outro.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Memórias do Subsolo",
+    "autor": "Fiódor Dostoiévski",
+    "area": "03_literatura_e_subjetividade",
+    "resumo_do_livro": "Monólogo de um narrador isolado que desvela contradições internas, ressentimento e prazer em autossabotagem. A obra examina como linguagem e autoanálise produziram um sujeito fragmentado, resistente às narrativas racionais do progresso. Ao expor humilhação, inveja e recusa social, o texto aborda sofrimento psíquico, agência limitada e a construção de recortes identitários a partir do ressentimento. É leitura central para pensar subjetividade, precariedade das relações e a ética do reconhecimento em contextos modernizantes.",
+    "trecho_memoravel": "O eu pode escolher o sofrimento como prova de autonomia, mesmo quando essa escolha revela sua própria impotência.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Morte de Ivan Ilitch",
+    "autor": "Liev Tolstói",
+    "area": "03_literatura_e_subjetividade",
+    "resumo_do_livro": "Relato da gradual tomada de consciência de um juiz diante da morte que desmonta sua vida de convenções. A narrativa investiga como rotinas sociais e ambições profissionais escondem vazios existenciais, e como a dor forja uma ética do cuidado e da autenticidade. Tolstói problematiza o isolamento diante do sofrimento, a superficialidade das relações e a possibilidade de transformação subjetiva frente à finitude, oferecendo material rico para refletir sobre sentido de vida, luto, compaixão e linguagem do sofrimento.",
+    "trecho_memoravel": "A proximidade da morte revela quanto das nossas escolhas foram cenários vazios e chama para uma vida mais autêntica.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Madame Bovary",
+    "autor": "Gustave Flaubert",
+    "area": "03_literatura_e_subjetividade",
+    "resumo_do_livro": "História de Emma Bovary que, presa a expectativas sociais e ao tédio conjugal, busca no consumo e nas paixões a construção de um eu idealizado. O romance analisa como representações culturais, linguagem sentimental e prescrição de gênero moldam desejos e frustrações, conduzindo ao sofrimento e à ruína. Flaubert oferece uma leitura sobre formação da subjetividade feminina, ambivalência entre aparência e interioridade, e efeitos éticos e sociais das ilusões romantizadas na vida cotidiana.",
+    "trecho_memoravel": "Desejo e imagem social podem construir uma identidade que sufoca o eu real e termina em ruína emocional.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Em Busca do Tempo Perdido — No Caminho de Swann",
+    "autor": "Marcel Proust",
+    "area": "03_literatura_e_subjetividade",
+    "resumo_do_livro": "Primeira parte da grande investigação proustiana sobre memória e tempo, onde lembranças involuntárias desdobram a formação do sujeito e das relações sociais. Proust mostra como linguagem, arte e recordação reconstroem experiências afetivas e culturais, influenciando autoconhecimento e narrativa de vida. A escrita examina desenvolvimento psíquico, linguagem sensorial e o papel da memória na construção de identidade, além de apontar tensões entre sociedade, desejo e a ética do reconhecimento do outro.",
+    "trecho_memoravel": "A memória revela que o eu é tecido por pequenas sensações que reconstroem a vida com novas significações.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "O Estrangeiro",
+    "autor": "Albert Camus",
+    "area": "03_literatura_e_subjetividade",
+    "resumo_do_livro": "Romance sobre Meursault, um homem cuja indiferença diante das normas sociais expõe o conflito entre sentido individual e expectativas coletivas. A obra problematiza julgamento moral, alienação e a experiência de estranhamento em relação à comunidade, colocando em foco a responsabilidade e a construção do sentido na vida. Camus oferece um panorama para estudar como linguagem, sentimento e normas sociais produzem exclusão e sofrimento, e como a ética se confronta com o absurdo da condição humana.",
+    "trecho_memoravel": "A indiferença perante convenções sociais transforma o indivíduo em figura julgada pela comunidade, não apenas por seus atos.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Metamorfose",
+    "autor": "Franz Kafka",
+    "area": "03_literatura_e_subjetividade",
+    "resumo_do_livro": "Relato da transformação de Gregor Samsa em criatura grotesca que intensifica a alienação e o colapso das relações familiares. A narrativa investiga corpo e subjetividade, mostrando como identidade e valor social se sustentam em funções laborais e afetivas. O sofrimento físico espelha humilhações emocionais; a linguagem do absurdo revela limites da empatia e da comunicação. Kafka oferece material para pensar desenvolvimento pessoal, violência simbólica, e como a cultura molda respostas éticas diante do diferente.",
+    "trecho_memoravel": "A perda da função esperada pelo grupo expõe que a identidade social depende de reconhecimento e utilidade.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Ensaio sobre a Cegueira",
+    "autor": "José Saramago",
+    "area": "03_literatura_e_subjetividade",
+    "resumo_do_livro": "Romance alegórico em que uma epidemia de cegueira coletiva desnuda mecanismos sociais e éticos sob pressão. A narrativa examina solidariedade, violência, deterioração das normas e a emergência de novos modos de vida frente ao colapso institucional. Saramago aborda como subjetividades se reorganizam, como linguagem e símbolos perdem e ganham sentido, e como sofrimento coletivo exige respostas morais e culturais. A obra é útil para refletir sobre comunidade, poder, vulnerabilidade e os limites da comunicação humana.",
+    "trecho_memoravel": "A crise revela que a civilidade é frágil e que o cuidado mútuo é escolha ética que sustenta a vida social.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Grande Sertão: Veredas",
+    "autor": "João Guimarães Rosa",
+    "area": "03_literatura_e_subjetividade",
+    "resumo_do_livro": "Romance que combina linguagem inventiva e cosmologia sertaneja para explorar identidade, violência, destino e linguagem como constituição do sujeito. A narrativa em primeira pessoa de Riobaldo aborda escolhas morais, ambiguidade do bem e do mal, amor e a formação de laços comunitários em contexto rural. Rosa investiga como cultura, fala e mitologia local moldam a subjetividade, oferecendo material rico para pensar ética, desenvolvimento pessoal, sofrimento e a tradução entre experiência individual e imaginário social.",
+    "trecho_memoravel": "A linguagem do sertão não só descreve o mundo como forja as escolhas morais e a identidade de quem nela vive.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Dom Casmurro",
+    "autor": "Machado de Assis",
+    "area": "04_literatura_brasileira_e_identidade",
+    "resumo_do_livro": "Narrado por Bentinho, Dom Casmurro explora memória, ciúme e construção da identidade a partir de uma visão íntima e desconfiada. O romance examina como a linguagem do narrador molda a realidade social e as relações afetivas, suscitando questões éticas sobre verdade e responsabilidade. Para estudantes de psicologia, o texto é um estudo sobre subjetividade, mecanismos de suspeita e a influência do contexto social na formação do eu, mostrando também como narrativas pessoais reconfiguram o sofrimento e as dinâmicas familiares.",
+    "trecho_memoravel": "A memória reescreve os fatos para justificar ressentimentos e construir identidade",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Memórias Póstumas de Brás Cubas",
+    "autor": "Machado de Assis",
+    "area": "04_literatura_brasileira_e_identidade",
+    "resumo_do_livro": "Com um narrador defunto e irônico, o romance desconstrói noções convencionais de temporalidade, autoria e moralidade, investigando a construção do sujeito desde a voz que sobrevive à própria vida. A obra cruza crítica social e introspecção, revelando como orgulho, desejo e fracassos moldam a existência. Para psicologia, o texto oferece material sobre narração do eu, mecanismo de defesa por ironia e observação aguda sobre relações sociais e hierarquias que influenciam sofrimento e comportamento ético.",
+    "trecho_memoravel": "Uma consciência que observa a própria vida além da vida redefine culpa e liberdade",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "O Alienista",
+    "autor": "Machado de Assis",
+    "area": "04_literatura_brasileira_e_identidade",
+    "resumo_do_livro": "Através da figura do médico Simão Bacamarte, O Alienista problematiza os limites entre sanidade e loucura, evidenciando o papel do poder e da ciência na normalização social. A novela provoca reflexão sobre critérios diagnósticos, estigmatização e o uso da autoridade para controlar comportamentos divergentes. Para estudantes de psicologia, o texto é um convite a discutir a construção social dos transtornos, a ética profissional e os efeitos da institucionalização sobre a subjetividade e a vida comunitária.",
+    "trecho_memoravel": "A linha entre razão e loucura é marcada pelo poder de quem define normas sociais",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Angústia",
+    "autor": "Graciliano Ramos",
+    "area": "04_literatura_brasileira_e_identidade",
+    "resumo_do_livro": "Angústia acompanha pensamentos introspectivos de Luís da Silva, um homem marcado por frustrações e relações destrutivas. O romance explora a angústia existencial, culpa e violência simbólica, articulando sofrimento individual com condições sociais e urbanas. A narrativa densa e psicológica permite analisar mecanismos de repetição, narcisismo e formação do eu em contextos de tensão moral. Para a psicologia, a obra ilumina como linguagem íntima expressa traumas, repressões e dilemas éticos que atravessam identidade e vida relacional.",
+    "trecho_memoravel": "O sofrimento íntimo cresce quando desejos frustrados colidem com normas sociais e culpa",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Vidas Secas",
+    "autor": "Graciliano Ramos",
+    "area": "04_literatura_brasileira_e_identidade",
+    "resumo_do_livro": "Vidas Secas retrata a família de retirantes no sertão nordestino, mostrando sofrimento material, resistência e laços afetivos mínimos que sustentam a sobrevivência. A prosa econômica revela como condições sociais e escassez moldam subjetividades, linguagem e formas de sociabilidade. O romance é fundamental para discutir desenvolvimento humano em contextos de privação, efeitos do abandono institucional e da violência estrutural sobre memória, identidade e estratégias de enfrentamento coletiva e individual.",
+    "trecho_memoravel": "Privação e deslocamento transformam afetos e modos de ser em estratégias de sobrevivência",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "São Bernardo",
+    "autor": "Graciliano Ramos",
+    "area": "04_literatura_brasileira_e_identidade",
+    "resumo_do_livro": "São Bernardo acompanha a trajetória de Paulo Honório, um homem que constrói poder e riqueza por meio de violência econômica e emocional. O romance investiga ambição, dominação e o custo ético da construção do eu em cenário rural-empresarial. Para quem estuda psicologia, a obra é um estudo sobre conformação da personalidade autoritária, relações de poder, culpa e solidão, mostrando como estruturas sociais promovem sofrimento psicológico e moldam linguagem e comportamento nas interações sociais.",
+    "trecho_memoravel": "A construção do poder pessoal muitas vezes sacrifica vínculos e moral em troca de controle",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Hora da Estrela",
+    "autor": "Clarice Lispector",
+    "area": "04_literatura_brasileira_e_identidade",
+    "resumo_do_livro": "O romance de Clarice centra-se em Macabéa, jovem nordestina migrante no Rio, e na voz narrativa que alterna compaixão e reflexão filosófica. A obra aborda exclusão social, anonimato, dignidade e o estatuto ético do olhar sobre o outro. É leitura essencial para discutir subjetividade emergente em condições de marginalidade, linguagem como forma de criação de sentido e impactos do deslocamento cultural sobre desenvolvimento psicológico e relações sociais.",
+    "trecho_memoravel": "A existência anônima revela a urgência de reconhecer dignidade humana além do olhar social",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Perto do Coração Selvagem",
+    "autor": "Clarice Lispector",
+    "area": "04_literatura_brasileira_e_identidade",
+    "resumo_do_livro": "Romance de formação que investiga o fluxo de consciência de Joana, Perto do Coração Selvagem aprofunda a descoberta do eu, sexualidade, linguagem e conflito entre impulso e convenção. A escrita fragmentada traduz processos psíquicos de desenvolvimento e ruptura, salientando como cultura e família influenciam subjetividade. Para psicologia, o livro é valioso para entender experiências internas, construção identitária e como a linguagem literária pode mapear zonas de sofrimento, criatividade e resistência à normatização social.",
+    "trecho_memoravel": "A construção do eu é um processo instável onde impulsos e convenções em constante choque moldam identidade",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Quarto de Despejo",
+    "autor": "Carolina Maria de Jesus",
+    "area": "04_literatura_brasileira_e_identidade",
+    "resumo_do_livro": "Diário de de Carolina Maria de Jesus, Quarto de Despejo documenta a vida na favela, maternidade, privação e estigmas sociais com voz direta e urgente. O relato oferece uma perspectiva íntima sobre sofrimento material e emocional, estratégias de sobrevivência e crítica social. Para estudantes de psicologia, trata-se de registro vivo sobre trauma social, agência em contextos de exclusão, expressão narrativa como resistência e o papel da linguagem subjetiva na visibilização de desigualdades e demandas éticas da sociedade.",
+    "trecho_memoravel": "A escrita íntima de quem vive na margem denuncia injustiças e reivindica humanidade cotidiana",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Ponciá Vicêncio",
+    "autor": "Conceição Evaristo",
+    "area": "04_literatura_brasileira_e_identidade",
+    "resumo_do_livro": "Ponciá Vicêncio acompanha uma mulher negra em rota de migração entre modos de vida rurais e urbanos, articulando memória, racismo, gênero e subjetividade. A narrativa problematiza herança intergeracional, violência simbólica e resistência afetiva, destacando como identidade se constrói em diálogo com corpo, linguagem e comunidade. Para psicologia, a obra oferece reflexão sobre trauma racial, trabalhos emocionais, estratégias de resiliência e ética do cuidado em contextos que atravessam cultura, sofrimento e processos de reconhecimento social.",
+    "trecho_memoravel": "Memória e resistência reinventam a identidade diante das marcas do racismo e da dor",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "As Regras do Método Sociológico",
+    "autor": "Émile Durkheim",
+    "area": "05_sociologia_e_vida_social",
+    "resumo_do_livro": "Durkheim estabelece fundamentos metodológicos para estudar a vida social como realidade sui generis, distinta das consciências individuais. Defende que os fatos sociais devem ser tratados como coisas, observáveis e explicáveis por suas causas sociais. A obra investiga como normas, instituições e representações coletivas moldam subjetividades, regulam comportamento e produzem consenso ou conflito. Para estudantes de psicologia, oferece ferramentas para conectar sofrimento e experiência individual a estruturas sociais, mostrando implicações éticas e culturais das explicações científicas sobre o social.",
+    "trecho_memoravel": "os fatos sociais existem independentemente das vontades individuais e moldam comportamentos",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "O Suicídio",
+    "autor": "Émile Durkheim",
+    "area": "05_sociologia_e_vida_social",
+    "resumo_do_livro": "Neste estudo clássico Durkheim analisa o suicídio como fenômeno social, não apenas ato individual. Ao relacionar taxas de suicídio com níveis de integração e regulação social, demonstra como transformações culturais, crises e mudanças econômicas afetam subjetividade e sofrimento. A obra ressalta a importância de contextos coletivos, laços sociais e normas morais para entender comportamentos extremos. Para futuros psicólogos, propõe olhar clínico que considera fatores sociais, éticos e culturais na explicação e prevenção do sofrimento humano.",
+    "trecho_memoravel": "a existência de laços sociais e de regras coletivas condiciona fortemente os atos extremos",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Ética Protestante e o Espírito do Capitalismo",
+    "autor": "Max Weber",
+    "area": "05_sociologia_e_vida_social",
+    "resumo_do_livro": "Weber traça a relação entre crenças religiosas e práticas econômicas, argumentando que certas éticas protestantes favoreceram o surgimento do capitalismo moderno. A análise revela como valores, modos de pensamento e linguagens simbólicas influenciam subjetividade, trabalho e organização social. A obra destaca tensões éticas frente ao desenvolvimento material e as implicações culturais da racionalização. Para estudantes de psicologia, ilumina como sistemas de valores moldam identidades, motivações e sofrimentos ligados ao sentido do trabalho e à vida social.",
+    "trecho_memoravel": "valores religiosos e culturais podem estruturar hábitos que favorecem formas modernas de organização econômica",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Economia e Sociedade — conceitos sociológicos fundamentais",
+    "autor": "Max Weber",
+    "area": "05_sociologia_e_vida_social",
+    "resumo_do_livro": "Obra abrangente que organiza conceitos essenciais da sociologia: ação social, tipos de autoridade, racionalização e burocracia. Weber explora como formas de poder, administração e legitimidade moldam experiências individuais e coletivas, influenciando subjetividade, linguagem administrativa e éticas profissionais. A análise sociológica oferece ferramentas para entender sofrimento ligado à desumanização burocrática e às contradições do progresso. Estudantes de psicologia encontram aqui um instrumental teórico para articular processos institucionais com formas de identidade, regulação social e conflitos morais.",
+    "trecho_memoravel": "racionalização e burocracia reconfiguram relações sociais e a experiência subjetiva de liberdade",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Imaginação Sociológica",
+    "autor": "C. Wright Mills",
+    "area": "05_sociologia_e_vida_social",
+    "resumo_do_livro": "Mills propõe a imaginação sociológica como capacidade de conectar problemas privados a contextos públicos e históricos. Incentiva o olhar que associa trajetórias individuais a estruturas sociais, políticas e econômicas, ampliando a compreensão do sofrimento e das escolhas pessoais. A obra estimula reflexão crítica sobre identidade, agência e responsabilidade ética na vida social. Para estudantes de psicologia, é convite a integrar dimensões biográficas e coletivas no diagnóstico e intervenção, valorizando linguagem, cultura e poder nas histórias humanas.",
+    "trecho_memoravel": "compreender uma vida exige ligar experiências pessoais a mudanças sociais e históricas",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Distinção",
+    "autor": "Pierre Bourdieu",
+    "area": "05_sociologia_e_vida_social",
+    "resumo_do_livro": "Bourdieu analisa como gostos e preferências funcionam como sinais de classe e mecanismos de distinção social. A obra demonstra que cultura e consumo não são meras escolhas individuais, mas práticas que reproduzem hierarquias e afetam subjetividades. Ao explicar capital cultural, habitus e campo, oferece quadro para entender como identidades, reconhecimento e sofrimento se articulam com desigualdades simbólicas. Estudantes de psicologia podem usar essas noções para interpretar processos de exclusão, autoestima e conformação ética dentro de contextos culturais e educacionais.",
+    "trecho_memoravel": "os gostos expressam disposições sociais que reproduzem hierarquias e afetam identidades",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "O Poder Simbólico",
+    "autor": "Pierre Bourdieu",
+    "area": "05_sociologia_e_vida_social",
+    "resumo_do_livro": "Bourdieu examina como o poder opera por meio de símbolos, linguagem e reconhecimento, frequentemente sem ser percebido como violência. A noção de violência simbólica explica processos de dominação que se naturalizam em instituições, linguagem e práticas cotidianas, produzindo efeitos sobre autoestima, possibilidades e sofrimento. A obra dialoga com questões éticas sobre legitimação e resistência cultural. Para psicologia, oferece reflexos sobre como comunicação e práticas sociais moldam subjetividades, identidade e trajetórias de exclusão ou empoderamento.",
+    "trecho_memoravel": "o domínio muitas vezes se impõe por formas sutis de linguagem e reconhecimento que parecem naturais",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Sociedade do Espetáculo",
+    "autor": "Guy Debord",
+    "area": "05_sociologia_e_vida_social",
+    "resumo_do_livro": "Debord critica a transformação da vida social em imagens e representações dominadas por mídias e consumo, onde a experiência direta é substituída por espetáculos. A obra evidencia efeitos sobre subjetividade: alienação, perda de sentido e relações mediadas por imagens que reorganizam desejos e sofrimentos. Para estudantes de psicologia, oferece perspectiva crítica sobre mídia, linguagem visual e construção de identidades, além de fundamentar análises éticas sobre manipulação, consumo cultural e a precarização das formas de sociabilidade contemporâneas.",
+    "trecho_memoravel": "a vida social é subsumida por imagens que substituem experiências e moldam desejos",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Modernidade Líquida",
+    "autor": "Zygmunt Bauman",
+    "area": "05_sociologia_e_vida_social",
+    "resumo_do_livro": "Bauman descreve a modernidade contemporânea como líquida: relações, empregos e identidades tornam-se voláteis e inseguros. Essa fluidez impacta subjetividades, produz ansiedade, fragilidade de vínculos e reconfigura negociações éticas na vida cotidiana. A obra discute como o indivíduo enfrenta escolhas em contextos de incerteza, afetando o desenvolvimento pessoal e coletivo. Para estudantes de psicologia, oferece enquadramento para entender sofrimento contemporâneo, precariedade emocional e a importância de redes sociais e linguagem na construção de sentido.",
+    "trecho_memoravel": "laços e projetos se tornaram frágeis, exigindo constante adaptação e gerando insegurança íntima",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Sociedade em Rede",
+    "autor": "Manuel Castells",
+    "area": "05_sociologia_e_vida_social",
+    "resumo_do_livro": "Castells analisa a emergência de uma sociedade estruturada por redes de informação, comunicação e poder, onde tecnologia reformula trabalho, cultura e identidade. O livro explora como fluxos digitais transformam linguagem, interação social e formas de participação, criando novas oportunidades e desigualdades. Para a psicologia, oferece chave para entender impactos sobre subjetividade, construção do eu, sofrimentos ligados à exposição e fragmentação social, além de dilemas éticos sobre vigilância, autonomia e mobilização coletiva na era da conectividade.",
+    "trecho_memoravel": "as redes informacionais reconfiguram poder, identidade e a forma de vida social contemporânea",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Argonautas do Pacífico Ocidental",
+    "autor": "Bronislaw Malinowski",
+    "area": "06_antropologia_cultura_e_diferenca",
+    "resumo_do_livro": "Argonautas do Pacífico Ocidental apresenta uma etnografia detalhada da vida econômica e simbólica dos ilhéus trobriandeses. Malinowski recupera práticas de troca, magia e parentesco para mostrar como a subjetividade e as relações sociais se constroem no cotidiano. O livro conecta linguagem, ritual e organização econômica, indicando que sofrimento e ética aparecem na gestão das dependências emocionais e materiais. Para estudantes de Psicologia, oferece método etnográfico e uma compreensão das práticas culturais como modos de formação do self, da moralidade e dos vínculos sociais.",
+    "trecho_memoravel": "As trocas e rituais moldam o sentido do eu e mantêm a vida social.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Tristes Trópicos",
+    "autor": "Claude Lévi-Strauss",
+    "area": "06_antropologia_cultura_e_diferenca",
+    "resumo_do_livro": "Tristes Trópicos mescla viagem, filosofia e crítica ao colonialismo ao relatar as experiências de Lévi-Strauss em campo. O autor analisa estruturas mentais e mitos para mostrar como categorias culturais organizam a experiência humana, a linguagem e a alteridade. A obra discute desenvolvimento histórico, perda cultural e o sofrimento provocado pela expansão europeia, oferecendo reflexões sobre ética do encontro e os limites do progresso. Para estudantes de Psicologia, ilumina como formas simbólicas e narrativas moldam a subjetividade e a vida social em contextos de confronto cultural.",
+    "trecho_memoravel": "O contato com outras culturas expõe as contradições do progresso e transforma nossa visão do humano.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "As Estruturas Elementares do Parentesco",
+    "autor": "Claude Lévi-Strauss",
+    "area": "06_antropologia_cultura_e_diferenca",
+    "resumo_do_livro": "As Estruturas Elementares do Parentesco apresenta uma teoria estrutural dos sistemas de parentesco, destacando a função da troca matrimonial na formação de alianças sociais. Lévi-Strauss propõe que padrões simbólicos e regras de parentesco articulam linguagem, desejo e organização social, influenciando identidades e papéis subjetivos. O livro é central para compreender como normas culturais regulam afetos, obrigações e sofrimento relacionado a laços familiares. Para psicologia, oferece instrumentos conceituais sobre simbolismo, transferência social e a constituição do sujeito em rede de relações.",
+    "trecho_memoravel": "Regras de parentesco e trocas matrimoniais organizam a linguagem dos afetos e da aliança social.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Interpretação das Culturas",
+    "autor": "Clifford Geertz",
+    "area": "06_antropologia_cultura_e_diferenca",
+    "resumo_do_livro": "A Interpretação das Culturas introduz o conceito de descrição densa e defende a leitura das práticas sociais como textos carregados de significado. Geertz mostra que religião, ritual e linguagem são sistemas simbólicos que constituem modos de ser e de sentir, moldando subjetividades e categorias morais. A obra estimula reflexão ética sobre a compreensão do outro e sobre limites da teoria. Para estudantes de Psicologia promove ferramentas para analisar sentido, ambiguidade e processos de simbolização que sustentam sofrimento, identidade e vida social.",
+    "trecho_memoravel": "Descrever densamente práticas sociais revela os significados que sustentam subjetividade e moralidade.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Cultura: um conceito antropológico",
+    "autor": "Roque de Barros Laraia",
+    "area": "06_antropologia_cultura_e_diferenca",
+    "resumo_do_livro": "Cultura: um conceito antropológico é uma obra didática que explica conceitos fundamentais da antropologia cultural no contexto brasileiro. Laraia discute práticas, valores, símbolos e processos de transmissão cultural, relacionando-os com formação da subjetividade, linguagem e modos de vida social. O livro aborda como desenvolvimento e mudança cultural afetam sofrimento coletivo e dilemas éticos, oferecendo exemplos que articulam teoria e prática. Para estudantes de Psicologia fornece quadro conceitual para compreender influência cultural em personalidade, saúde mental e intervenções sociais.",
+    "trecho_memoravel": "Cultura é o conjunto de práticas e símbolos que moldam identidades, linguagem e modos de lidar com o sofrimento.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "O Povo Brasileiro",
+    "autor": "Darcy Ribeiro",
+    "area": "06_antropologia_cultura_e_diferenca",
+    "resumo_do_livro": "O Povo Brasileiro é uma interpretação histórica e antropológica da formação do Brasil, explorando encontros entre indígenas, africanos e europeus. Darcy Ribeiro analisa processos culturais, linguísticos e afetivos que deram origem a identidades híbridas, discutindo desigualdade, sofrimento social e projetos de desenvolvimento. A obra combina cuidado ético com crítica política, exemplificando como estruturas sociais moldam subjetividade e práticas de vida. Para estudantes de Psicologia oferece perspectiva sobre como memória coletiva, migração e relações de poder influenciam saúde psíquica e formas de sociabilidade.",
+    "trecho_memoravel": "A formação brasileira é fruto de encontros culturais que produzem identidades híbridas e desigualdades estruturais.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Casa-Grande & Senzala",
+    "autor": "Gilberto Freyre",
+    "area": "06_antropologia_cultura_e_diferenca",
+    "resumo_do_livro": "Casa-Grande & Senzala oferece uma análise sociocultural do Brasil colonial, enfocando o sistema patriarcal, a escravidão e os processos de miscigenação. Freyre descreve como relações domésticas e práticas culturais produziram modos de vida, afetos e hierarquias simbólicas que permeiam a subjetividade brasileira. A obra discute linguagem, sexualidade e valores morais, revelando tensões éticas e sofrimentos decorrentes das desigualdades. Para estudantes de Psicologia, traz reflexões sobre formação do self coletivo, memória cultural e práticas sociais que condicionam relações interpessoais e identidades.",
+    "trecho_memoravel": "Relações domésticas e hierarquias forjaram padrões afetivos e desigualdades que marcam a subjetividade nacional.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Queda do Céu",
+    "autor": "Davi Kopenawa e Bruce Albert",
+    "area": "06_antropologia_cultura_e_diferenca",
+    "resumo_do_livro": "A Queda do Céu reúne o testemunho de Davi Kopenawa sobre a cosmologia yanomami e os impactos devastadores do contato com colonizadores e garimpeiros. A narrativa expõe sofrimento, perda de territórios e ameaças às formas simbólicas de vida, destacando a defesa ética dos modos tradicionais. O diálogo entre cosmologia, linguagem e práticas coletivas ilumina como subjetividades coletivas se constituem e resistem. Para estudantes de Psicologia oferece perspectiva sobre trauma cultural, cuidado comunitário e a importância da escuta intercultural na proteção da saúde mental e dos modos de vida.",
+    "trecho_memoravel": "A cosmologia yanomami e a luta pela terra mostram como culturas resistem ao apagamento e protegem modos de vida.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Pequeno Manual Antirracista",
+    "autor": "Djamila Ribeiro",
+    "area": "06_antropologia_cultura_e_diferenca",
+    "resumo_do_livro": "Pequeno Manual Antirracista propõe conceitos e reflexões práticas para identificar e combater o racismo nas esferas pessoal e institucional. Djamila Ribeiro conecta debates sobre raça, linguagem e poder com implicações para subjetividade, sofrimento e justiça social. A obra enfatiza a ética do reconhecimento, a responsabilidade intersubjetiva e estratégias de transformação cultural que afetam saúde mental e relações sociais. Para estudantes de Psicologia, oferece ferramentas conceituais e éticas para abordagens clínicas e coletivas sensíveis às dinâmicas raciais e às formas variadas de opressão.",
+    "trecho_memoravel": "Reconhecer o racismo exige mudanças éticas e práticas que transformem subjetividades e relações sociais.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Os Sertões",
+    "autor": "Euclides da Cunha",
+    "area": "06_antropologia_cultura_e_diferenca",
+    "resumo_do_livro": "Os Sertões é um clássico que cruza reportagens, história e análise antropológica para narrar a Guerra de Canudos e a vida do sertão brasileiro. Euclides da Cunha mostra como ambiente, pobreza, religião e estruturas de poder produzem sofrimento coletivo e modos específicos de subjetividade. A obra discute linguagem, sentimento de comunidade e tensões entre projeto de desenvolvimento e resistência popular. Para estudantes de Psicologia, oferece leitura sobre trauma social, memória coletiva e a relação entre contextos materiais e formação da psique.",
+    "trecho_memoravel": "O sertão e a guerra de Canudos demonstram como ambiente, pobreza e poder produzem sofrimento e identidade coletiva.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "História da Loucura na Idade Clássica",
+    "autor": "Michel Foucault",
+    "area": "07_historia_memoria_e_poder",
+    "resumo_do_livro": "Foucault examina as práticas sociais e institucionais que definiram a loucura desde o Renascimento até a modernidade, mostrando como categorias psiquiátricas emergem de relações de poder e linguagem. O livro conecta subjetividade e exclusão, revelando como discursos médicos, jurídicos e morais moldaram a experiência do sofrimento e a identidade dos internados. Para estudantes de Psicologia, oferece ferramentas para pensar eticamente sobre diagnóstico, estigma e a historicidade das categorias clínicas, além de apontar como a vida social e cultural produz e legitima formas de cuidado e controle.",
+    "trecho_memoravel": "As fronteiras entre razão e loucura não são naturais, mas construídas por práticas sociais e discursos de poder",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Ordem do Discurso",
+    "autor": "Michel Foucault",
+    "area": "07_historia_memoria_e_poder",
+    "resumo_do_livro": "Neste ensaio inaugural, Foucault analisa como instituições e saberes regulam o que pode ser dito e pensado, impondo ordens discursivas que moldam subjetividades e práticas sociais. O texto é fundamental para entender a relação entre linguagem, poder e ética: discursos científicos, jurídicos e clínicos definem limites de legitimidade e exclusão. Para estudantes de Psicologia, ilumina como normas discursivas influenciam diagnósticos, intervenções e subjetividade, convocando uma atitude crítica frente às práticas profissionais e ao papel da linguagem na construção do sofrimento e da norma.",
+    "trecho_memoravel": "As linguagens autorizadas organizam quem pode falar, o que é verdadeiro e quais vidas são legitimadas",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Os Reis Taumaturgos",
+    "autor": "Marc Bloch",
+    "area": "07_historia_memoria_e_poder",
+    "resumo_do_livro": "Bloch investiga crenças populares sobre poderes curativos atribuídos aos reis, mostrando a interação entre simbolismo político, rituais e experiências de saúde coletiva. A obra revela como práticas ritualizadas produzem sentidos sociais e formas de autoridade, conectando memória cultural, subjetividade e expectativa de cura. Para Psicologia, propõe reflexões sobre simbolismos terapêuticos, construção de confiança e vínculo social em torno de figuras de poder, além de evidenciar como imaginários e tradições incidem sobre sofrimento, legitimidade e sobre a relação entre indivíduo e comunidade.",
+    "trecho_memoravel": "Rituais e crenças compartilhadas conferem poder terapêutico que sustenta autoridade e sentido social",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Apologia da História",
+    "autor": "Marc Bloch",
+    "area": "07_historia_memoria_e_poder",
+    "resumo_do_livro": "Neste texto fundamental, Bloch defende o ofício do historiador como investigação empática e crítica das experiências humanas no tempo, valorizando fontes orais, costumes e mentalidades coletivas. A proposta estimula psicólogos a considerar memória social, narrativa e contexto na compreensão do desenvolvimento humano e do sofrimento. Bloch ressalta responsabilidades éticas do pesquisador ao reconstruir vidas e significados, enfatizando que a história ilumina processos de identidade, poder e transmissão cultural que moldam subjetividades e práticas sociais.",
+    "trecho_memoravel": "História é o esforço de reconstruir vidas e significados com rigor e responsabilidade ética",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "O Queijo e os Vermes",
+    "autor": "Carlo Ginzburg",
+    "area": "07_historia_memoria_e_poder",
+    "resumo_do_livro": "Ginzburg analisa o universo cultural e as crenças de um moleiro do século XVI, usando micro-história para revelar como indivíduos inventam sentidos e resistem às hegemonias religiosas e sociais. O estudo mostra como linguagem, imaginação e experiências individuais dialogam com estruturas de poder, oferecendo à Psicologia um modelo para entender subjetividades marginais, expressão do sofrimento e formas alternativas de conhecimento. A obra incentiva atenção às vozes subalternas e à complexa interlocução entre cultura popular, identidade e processos de exclusão.",
+    "trecho_memoravel": "Mesmo vozes aparentemente marginais revelam cosmologias próprias e resistência simbólica às estruturas dominantes",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Escrita da História",
+    "autor": "Michel de Certeau",
+    "area": "07_historia_memoria_e_poder",
+    "resumo_do_livro": "De Certeau problematiza a prática historiográfica, mostrando como narrativas e linguagem transformam o passado em experiência legível, influenciando memórias coletivas e pessoais. O autor destaca a construção textual do real e o papel do historiador na produção de sentidos sociais. Para estudantes de Psicologia, a obra oferece instrumentos para refletir sobre como narrativas terapêuticas, memórias e relatos de sofrimento são formatados por convenções discursivas, afetando identidades, ética profissional e a vida social que circunda o sujeito.",
+    "trecho_memoravel": "Escrever a história é moldar memórias e construir sentidos que configuram identidades coletivas e individuais",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Invenção das Tradições",
+    "autor": "Eric Hobsbawm e Terence Ranger",
+    "area": "07_historia_memoria_e_poder",
+    "resumo_do_livro": "Organizado por Hobsbawm e Ranger, o livro mostra como muitas tradições consideradas antigas foram, na verdade, construídas para legitimar poderes, identidades e coesão social. A obra ilumina processos de fabricação de memória e símbolos que moldam subjetividades e expectativas sociais. Para Psicologia, destaca o papel das tradições na formação do self, normas morais, lutos e rituais, e como a manipulação simbólica pode produzir sofrimento ou resiliência coletiva, além de questionar a naturalização de práticas culturais aparentemente imutáveis.",
+    "trecho_memoravel": "Tradições frequentemente são construções recentes que servem para legitimar identidades e hierarquias sociais",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Era dos Extremos",
+    "autor": "Eric Hobsbawm",
+    "area": "07_historia_memoria_e_poder",
+    "resumo_do_livro": "Hobsbawm traça o século XX como período de rupturas e intensas transformações políticas, sociais e culturais, analisando guerras, totalitarismos e crises econômicas que moldaram subjetividades e memórias coletivas. O panorama histórico ajuda psicólogos a compreender contextos de desenvolvimento, trauma intergeracional, ideologias e práticas de poder que influenciam sofrimento e ação política. Ao articular macroprocessos e vivências cotidianas, a obra estimula reflexões éticas sobre intervenção social, memória pública e os recursos simbólicos que sustentam coesão ou violência.",
+    "trecho_memoravel": "O século XX radicalizou formas de experiência coletiva e produziu memórias e traumas que ainda estruturam o presente",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Brasil: Uma Biografia",
+    "autor": "Lilia Moritz Schwarcz e Heloisa Murgel Starling",
+    "area": "07_historia_memoria_e_poder",
+    "resumo_do_livro": "Schwarcz e Starling oferecem uma narrativa ampla da história brasileira, integrando política, cultura, escravidão e identidades, com atenção às memórias e símbolos que forjam a nação. Para a Psicologia, o livro é recurso para entender como processos históricos e raciais atravessam subjetividades, práticas sociais e sofrimento coletivo. Analisa também a produção de narrativas oficiais e marginalizadas, destacando implicações éticas e terapêuticas no trabalho com comunidades e indivíduos cujas experiências são moldadas por desigualdades históricas e memórias culturais persistentes.",
+    "trecho_memoravel": "A história do Brasil revela como memórias, hierarquias e narrativas públicas moldam identidades e desigualdades duradouras",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Holocausto Brasileiro",
+    "autor": "Daniela Arbex",
+    "area": "07_historia_memoria_e_poder",
+    "resumo_do_livro": "Investigação jornalística sobre o Massacre de Barbacena expõe negligência, violência institucional e sofrimento em hospitais psiquiátricos no Brasil, conectando memórias silenciadas a práticas de poder e estigma. Arbex recupera relatos de vítimas e sobreviventes, evidenciando consequências éticas e clínicas de políticas de exclusão. Para estudantes de Psicologia, o livro é um alerta sobre a responsabilidade profissional, a dignidade dos sujeitos e a necessidade de práticas de cuidado que reconheçam sofrimento histórico, direitos humanos e os laços entre memória coletiva e reconstrução social.",
+    "trecho_memoravel": "Negligência institucional pode silenciar vidas e produzir sofrimento em escala, exigindo responsabilização ética e memória",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "O Homem que Confundiu Sua Mulher com um Chapéu",
+    "autor": "Oliver Sacks",
+    "area": "08_neurociencia_cerebro_e_comportamento",
+    "resumo_do_livro": "Coleção de relatos clínicos de pacientes neurológicos que expõem como lesões e disfunções cerebrais alteram percepção, identidade e vida social. Sacks descreve casos de agnosia, prosopagnosia e outras síndromes, mostrando o entrelaçamento entre cérebro e subjetividade. O livro discute como a cultura médica e a escuta clínica moldam o tratamento do sofrimento e a ética do cuidado, além de apontar desafios para a linguagem e a comunicação quando o mundo interno do paciente se torna incomunicável.",
+    "trecho_memoravel": "O cérebro pode desconstruir a imagem do mundo e, ainda assim, o sujeito persiste buscando sentido.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Um Antropólogo em Marte",
+    "autor": "Oliver Sacks",
+    "area": "08_neurociencia_cerebro_e_comportamento",
+    "resumo_do_livro": "Sacks reúne estudos que combinam neurociência com observação biográfica, retratando pessoas cuja diferença neurológica cria modos alternativos de estar no mundo. A perspectiva quase etnográfica revela como alterações cerebrais implicam reconfigurações da linguagem, da personalidade e das relações sociais. O texto problematiza julgamentos culturais sobre normalidade e sofrimento, e discute implicações éticas no reconhecimento das singularidades e das estratégias de adaptação desenvolvidas pelos pacientes.",
+    "trecho_memoravel": "Diferenças neurológicas são territórios culturais onde se reinventam modos de viver e comunicar-se.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Despertar",
+    "autor": "Oliver Sacks",
+    "area": "08_neurociencia_cerebro_e_comportamento",
+    "resumo_do_livro": "Relato comovente das epidemias de encefalite letárgica e das tentativas de tratamento com L-DOPA, que reverteram estados catatônicos apenas para revelar dilemas sobre identidade e sofrimento. Sacks explora o efeito dos fármacos na subjetividade, na temporalidade da vida e nas relações familiares e profissionais. O livro também discute ética médica, a complexidade do desenvolvimento neurológico e como a cultura e o contexto determinam respostas sociais ao adoecimento e à reabilitação.",
+    "trecho_memoravel": "Medicação pode restaurar movimento sem devolver toda a trama da vida que foi perdida.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "O Erro de Descartes",
+    "autor": "António Damásio",
+    "area": "08_neurociencia_cerebro_e_comportamento",
+    "resumo_do_livro": "Damásio propõe que emoções e sentimentos são essenciais para a razão, criticando a separação cartesiana entre mente e corpo. A obra liga processos neurais a decisões éticas, à formação da subjetividade e à vida social, mostrando como lesões que afetam sentimentos comprometem julgamento moral e comportamento social. Ao refletir sobre desenvolvimento e cultura, Damásio enfatiza a biologia do sentimento e suas implicações para a compreensão de sofrimento, responsabilidade e linguagem em contextos humanos.",
+    "trecho_memoravel": "Razão sem sentimento perde a bússola que orienta escolhas morais e sociais.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Em Busca de Espinosa",
+    "autor": "António Damásio",
+    "area": "08_neurociencia_cerebro_e_comportamento",
+    "resumo_do_livro": "Damásio dialoga com a filosofia de Espinosa para articular como emoções e afeto constituem a base da consciência e da autonomia humana. O livro discute desenvolvimento emocional, ética e a construção da subjetividade a partir de processos neurais, destacando a interseção entre corpo, cultura e linguagem. Ao aproximar neurociência e pensamento clássico, aponta repercussões sobre sofrimento psíquico, responsabilidade moral e as raízes biológicas da vida social e das práticas culturais.",
+    "trecho_memoravel": "Sentir é um alicerce biológico que sustenta entendimento moral e liberdade pessoal.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "O Mistério da Consciência",
+    "autor": "António Damásio",
+    "area": "08_neurociencia_cerebro_e_comportamento",
+    "resumo_do_livro": "Damásio investiga como a consciência emerge dos processos cerebrais que representam o corpo e as emoções, conectando percepção, linguagem e self. A obra aborda desenvolvimento cognitivo, diferenças individuais e experiências de sofrimento que alteram a sensação de estar no mundo. Reflete sobre implicações culturais e éticas de entender a consciência biologicamente, questionando noções de autonomia e responsabilidade em contextos sociais e clínicos.",
+    "trecho_memoravel": "A consciência nasce quando o cérebro representa o corpo e suas emoções como um todo unificado.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Incógnito",
+    "autor": "David Eagleman",
+    "area": "08_neurociencia_cerebro_e_comportamento",
+    "resumo_do_livro": "Eagleman explora os processos inconscientes que organizam percepção, tomada de decisão e comportamento social, mostrando como grande parte da vida mental opera fora da linguagem consciente. O livro relaciona essas descobertas à responsabilidade ética, ao desenvolvimento e ao sofrimento psíquico, e discute implicações culturais sobre identidade e criminalidade. Ao popularizar resultados neurocientíficos, problematiza como sociedades interpretam autonomia e culpa à luz de mecanismos cerebrais invisíveis.",
+    "trecho_memoravel": "A maior parte do que nos guia acontece fora da consciência e molda comportamentos e julgamentos.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "O Cérebro Autista",
+    "autor": "Temple Grandin e Richard Panek",
+    "area": "08_neurociencia_cerebro_e_comportamento",
+    "resumo_do_livro": "Combina perspectiva pessoal de Temple Grandin com pesquisa científica sobre autismo, examinando diferenças de percepção, linguagem e desenvolvimento social. O livro destaca como variações neurológicas produzem modos distintos de experienciar o mundo, afetando educação, trabalho e vida comunitária. Trata também do sofrimento associado à incompreensão cultural e propõe abordagens éticas para inclusão, valorizando adaptações que ampliem oportunidades comunicacionais e potenciais individuais dentro da vida social.",
+    "trecho_memoravel": "Autismo revela maneiras alternativas de perceber e organizar o mundo, exigindo adaptação social e ética.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Vida Secreta da Mente",
+    "autor": "Mariano Sigman",
+    "area": "08_neurociencia_cerebro_e_comportamento",
+    "resumo_do_livro": "Sigman traz ensaios que conectam neurociência a questões psicológicas e sociais, explicando como memória, linguagem e tomada de decisão emergem em contextos culturais. O autor discute desenvolvimento cognitivo, aprendizagem e sofrimento mental, e problematiza implicações éticas de intervenções tecnológicas e educacionais. A narrativa relaciona cérebros individuais às práticas coletivas, evidenciando como a vida social e a cultura moldam trajetórias subjetivas e possibilidades de autorreflexão.",
+    "trecho_memoravel": "Nossa mente se forma em diálogo constante entre processos neurais e contextos culturais compartilhados.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "O Cérebro no Mundo Digital",
+    "autor": "Maryanne Wolf",
+    "area": "08_neurociencia_cerebro_e_comportamento",
+    "resumo_do_livro": "Wolf analisa como a leitura e a linguagem vêm sendo transformadas pelas tecnologias digitais, afetando desenvolvimento cognitivo, atenção e formação da subjetividade. Discute consequências culturais e éticas dessas mudanças para educação, empatia e vida social, e os riscos de empobrecimento do pensamento profundo. Ao relacionar neurociência e práticas culturais, o livro propõe estratégias para preservar competências linguísticas e formas de sentido que sustentam convivência e bem-estar coletivo.",
+    "trecho_memoravel": "A tecnologia altera hábitos de leitura e, junto a eles, modos de pensar e relacionar-se socialmente.",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Emílio, ou Da Educação",
+    "autor": "Jean-Jacques Rousseau",
+    "area": "09_educacao_linguagem_e_desenvolvimento",
+    "resumo_do_livro": "Emílio é um tratado clássico sobre a formação do sujeito pela educação natural e pela experiência sensorial. Rousseau propõe que o desenvolvimento humano deve respeitar etapas biológicas e afetivas, protegendo a singularidade e a liberdade da criança frente às imposições sociais. O texto problematiza a relação entre educação, moralidade e vida social, destacando como instituições e cultura moldam a sensibilidade e a subjetividade. Para quem estuda psicologia, a obra instiga reflexões éticas sobre sofrimento infantil, autonomia, linguagem e os limites entre educação dirigida e formação ética do indivíduo.",
+    "trecho_memoravel": "A formação humana madura quando a educação acompanha os ritmos naturais da criança, promovendo autonomia e sensibilidade ética",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Pedagogia do Oprimido",
+    "autor": "Paulo Freire",
+    "area": "09_educacao_linguagem_e_desenvolvimento",
+    "resumo_do_livro": "Pedagogia do Oprimido discute a educação como prática política e libertadora, centrada no diálogo e na conscientização (conscientização). Freire analisa como o sistema educacional reproduz opressões culturais e sociais, afetando subjetividades e produzindo sofrimento. A linguagem é vista como instrumento de Poder e de libertação; a práxis educativa exige uma ética do cuidado e da recíproca escuta. Relevante para psicologia, o livro propõe que desenvolvimento e aprendizagem só são plenos quando vinculados à participação social, à crítica e à transformação das relações humanas.",
+    "trecho_memoravel": "Educar é facilitar a consciência crítica e transformar a desigualdade através do diálogo ético e coletivo",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Pedagogia da Autonomia",
+    "autor": "Paulo Freire",
+    "area": "09_educacao_linguagem_e_desenvolvimento",
+    "resumo_do_livro": "Nesta obra, Freire articula princípios éticos e práticos para a formação de professores comprometidos com a democracia e o respeito à subjetividade dos alunos. Enfatiza responsabilidade, reflexão crítica e o valor da linguagem como espaço de construção de sentido e identidade social. A pedagogia proposta trata o sofrimento e a exclusão como problemas políticos que a escola deve enfrentar mediante práticas que promovam autonomia e solidariedade. Para estudantes de psicologia, o livro oferece fundamentos para pensar formação profissional, ética educativa e a interseção entre desenvolvimento psíquico e vida social.",
+    "trecho_memoravel": "Formar professores é cultivar autonomia moral e sensibilidade ética para transformar o espaço escolar em prática democrática",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Educação como Prática da Liberdade",
+    "autor": "Paulo Freire",
+    "area": "09_educacao_linguagem_e_desenvolvimento",
+    "resumo_do_livro": "Coletânea de textos em que Freire aprofunda a ideia de educação como processo de libertação, ressaltando linguagem e cultura como eixos formativos. Discute alfabetização, diálogo e pedagogia crítica como meios para enfrentar a opressão e o sofrimento social. A obra valoriza a subjetividade dos sujeitos educandos e a dimensão ética da ação pedagógica, apontando que aprendizagem autêntica implica participação crítica na vida social. Para psicologia, os ensaios iluminam como práticas educativas moldam identidades, relações de poder e possibilidades de desenvolvimento humano emancipatório.",
+    "trecho_memoravel": "Educação verdadeira é prática transformadora que articula linguagem, cultura e responsabilidade ética para libertar sujeitos",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Formação Social da Mente",
+    "autor": "Lev Vygotsky",
+    "area": "09_educacao_linguagem_e_desenvolvimento",
+    "resumo_do_livro": "Obra que reúne textos fundamentais sobre a origem social dos processos mentais superiores, destacando a mediação cultural e a linguagem como ferramentas do desenvolvimento. Vygotsky mostra como pensamento e consciência emergem da interação social e do uso de signos, com implicações diretas para a intervenção educativa e terapêutica. A perspectiva relacional ilumina como subjetividade, sofrimento e desigualdade são produzidos e podem ser transformados por práticas educativas sensíveis ao contexto cultural. Indispensável para psicólogos interessados em desenvolvimento, linguagem, mediação e ética na intervenção com crianças e comunidades.",
+    "trecho_memoravel": "As funções mentais superiores nascem da interação social mediada por signos e práticas culturais",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Pensamento e Linguagem",
+    "autor": "Lev Vygotsky",
+    "area": "09_educacao_linguagem_e_desenvolvimento",
+    "resumo_do_livro": "Neste livro Vygotsky explora a íntima relação entre pensamento e linguagem, descrevendo o surgimento da fala interior e seu papel na autorregulação. A obra destaca como processos cognitivos se formam historicamente através da linguagem compartilhada, implicando que o desenvolvimento psíquico é também cultural. Para a psicologia, isso oferece ferramentas para compreender como a comunicação, a socialização e a educação moldam a subjetividade e podem mitigar ou reproduzir sofrimentos. Aborda ainda questões éticas sobre intervenção e respeito à singularidade em contextos educacionais.",
+    "trecho_memoravel": "O pensamento adulto se conforma pela linguagem social internalizada, fazendo da fala interior um instrumento de autorregulação",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "O Nascimento da Inteligência na Criança",
+    "autor": "Jean Piaget",
+    "area": "09_educacao_linguagem_e_desenvolvimento",
+    "resumo_do_livro": "Piaget descreve a emergência das estruturas cognitivas na infância, enfocando o período sensório-motor em que a ação e a percepção dão origem a representações. A obra mostra como o conhecimento é construído ativamente pela criança, vinculando desenvolvimento intelectual a experiência e interação com o mundo. Para psicólogos, as observações são cruciais para entender a formação da subjetividade, a linguagem gestual e simbólica, e os dilemas éticos na educação que respeita o ritmo infantil. Também aponta relações entre aprender, errar e enfrentar sofrimento nas etapas iniciais.",
+    "trecho_memoravel": "A inteligência surge quando a ação sobre o mundo gera representações que se estruturam progressivamente",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Psicologia da Criança",
+    "autor": "Jean Piaget e Bärbel Inhelder",
+    "area": "09_educacao_linguagem_e_desenvolvimento",
+    "resumo_do_livro": "Obra que sistematiza estágios do desenvolvimento infantil, integrando observação clínica e teoria construtivista. Piaget e Inhelder discutem aprendizagem, moralidade, linguagem e raciocínio lógico, mostrando como a criança constrói regras e sentido em interação com o ambiente. O texto ilumina como processos cognitivos se entrelaçam com a socialização e com conflitos morais que afetam a subjetividade. Para estudantes de psicologia, oferece bases para pensar práticas educativas que evitem sofrimento e promovam autonomia, além de esclarecer implicações éticas no trabalho com crianças.",
+    "trecho_memoravel": "A criança constrói suas regras e mundos mentais através de interações progressivas com o ambiente e os outros",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Reprodução: Elementos para uma Teoria do Sistema de Ensino",
+    "autor": "Pierre Bourdieu e Jean-Claude Passeron",
+    "area": "09_educacao_linguagem_e_desenvolvimento",
+    "resumo_do_livro": "Bourdieu e Passeron analisam como o sistema educacional contribui para reproduzir diferenças sociais por meio da transmissão cultural e da imposição de um habitus legitimado. O livro investiga linguagem, símbolos e violência simbólica que naturalizam desigualdades, afetando subjetividades e produzindo sofrimento social. Oferece ferramentas críticas para psicólogos compreenderem como expectativas e práticas escolares moldam identidades, escolhas e oportunidades, levantando questões éticas sobre justiça educativa e intervenções que rompam ciclos de exclusão cultural e social.",
+    "trecho_memoravel": "A escola tende a legitimizar a cultura dominante e a reproduzir desigualdades através de mecanismos simbólicos sutis",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Criança e o Número",
+    "autor": "Constance Kamii",
+    "area": "09_educacao_linguagem_e_desenvolvimento",
+    "resumo_do_livro": "Constance Kamii apresenta uma abordagem construtivista para a aprendizagem da matemática na infância, baseada nas ideias de Piaget. Defende atividades que respeitem o desenvolvimento cognitivo e promovam autonomia, linguagem matemática e argumentação entre crianças. A obra conecta desenvolvimento intelectual à vida social em sala de aula, mostrando como práticas pedagógicas podem reduzir sofrimento causado por métodos autoritários e padronizados. Para psicologia, oferece perspectiva ética sobre ensinar respeitando processos subjetivos e culturais implicados na construção do conhecimento numérico.",
+    "trecho_memoravel": "Aprender matemática é construir significados em interação, privilegiando autonomia e argumentação das crianças",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Genealogia da Moral",
+    "autor": "Friedrich Nietzsche",
+    "area": "10_etica_politica_e_sociedade",
+    "resumo_do_livro": "Neste conjunto de ensaios, Nietzsche desconstrói as origens e funções das noções morais que moldam a vida social e a subjetividade ocidental. Investiga como ressentimento, linguagem e poder produzem valores que regulam a consciência e a cultura, questionando a ideia de bem e mal como verdades imutáveis. Para estudantes de Psicologia, oferece ferramentas para compreender como normas éticas historicamente constituídas influenciam desenvolvimento psíquico, sofrimento moral e formas coletivas de justificar exclusões e hierarquias em contextos sociais e institucionais.",
+    "trecho_memoravel": "Moralidade não é dado natural, mas construção histórica que regula sentimentos e poder",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Eichmann em Jerusalém",
+    "autor": "Hannah Arendt",
+    "area": "10_etica_politica_e_sociedade",
+    "resumo_do_livro": "Arendt examina o julgamento de Adolf Eichmann para discutir a chamada banalidade do mal, analisando como burocracia, obediência e linguagem administrativa possibilitam atrocidades. O livro problematiza responsabilidade individual em sistemas políticos e a fragilidade dos juízos morais diante de estruturas institucionais. Para a Psicologia, ilumina as condições sociais que modelam ação e silêncio, mostrando como racionalidades organizacionais afetam subjetividade, ética e o sofrimento coletivo, e provocando reflexão sobre julgamento, memória e reparação social.",
+    "trecho_memoravel": "O mal pode emergir da conformidade burocrática mais do que da maldade consciente",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Origens do Totalitarismo",
+    "autor": "Hannah Arendt",
+    "area": "10_etica_politica_e_sociedade",
+    "resumo_do_livro": "Arendt traça as condições históricas, sociais e culturais que deram origem a regimes totalitários, destacando antissemitismo, imperialismo e a deterioração das formas políticas de vida coletiva. A obra analisa a destruição dos vínculos sociais e a atomização do sujeito, mostrando como a propaganda e a linguagem ideológica reconstroem identidades e legitima violência. Estudantes de Psicologia encontram aqui uma reflexão sobre como estruturas políticas impactam subjetividade, sofrimento social e possibilidades de resistência e reconstrução ética na vida pública.",
+    "trecho_memoravel": "Totalitarismo nasce quando isolamento social e linguagem ideológica tornam pessoas intocáveis pela empatia",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Pedagogia do Oprimido",
+    "autor": "Paulo Freire",
+    "area": "10_etica_politica_e_sociedade",
+    "resumo_do_livro": "Freire propõe uma pedagogia que transforma educação em prática de liberdade, articulando diálogo, consciência crítica e linguagem como instrumentos de emancipação. A obra conecta desenvolvimento pessoal e coletivo, mostrando como a opressão molda subjetividades e produz sofrimento, e como a alfabetização política redefine relações de poder e cultura. Para estudantes de Psicologia, oferece um quadro para pensar intervenção educativa que respeite a experiência, promova agência e reconstrução ética nas comunidades, articulando linguagens e saberes locais na luta por justiça social.",
+    "trecho_memoravel": "Educação verdadeira promove consciência crítica e transforma opressão em ação libertadora",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Pele Negra, Máscaras Brancas",
+    "autor": "Frantz Fanon",
+    "area": "10_etica_politica_e_sociedade",
+    "resumo_do_livro": "Fanon explora os efeitos psicológicos do colonialismo e do racismo sobre a identidade e a formação do sujeito negro, analisando linguagem, desejo de assimilação e sentimentos de inferioridade. A obra revela como a cultura colonizadora impõe máscaras que distorcem o desenvolvimento emocional e social, causando sofrimento psíquico coletivo. Para a Psicologia, oferece diagnósticos e tensões sobre identidade racial, alienação e resistência cultural, evidenciando a necessidade de práticas terapêuticas e políticas que considerem contexto histórico e desigualdades estruturais.",
+    "trecho_memoravel": "O colonialismo fomenta máscaras identitárias que quebram a relação entre eu e cultura",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Os Condenados da Terra",
+    "autor": "Frantz Fanon",
+    "area": "10_etica_politica_e_sociedade",
+    "resumo_do_livro": "Fanon analisa a violência da descolonização como processo de reconstrução política e psicológica, discutindo como a luta gera transformações na subjetividade e nas estruturas culturais. O livro aborda sofrimento imposto pelo colonialismo e as tensões éticas entre libertação e destruição, oferecendo uma crítica às continuidades de dominação. Para estudantes de Psicologia, a obra ilumina como trauma coletivo, linguagem de resistência e imaginários sociais moldam trajetórias de desenvolvimento e possibilidades de recomposição identitária em contextos pós-coloniais.",
+    "trecho_memoravel": "A descolonização é uma revolução que remolda subjetividades e reconstitui mundos sociais",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Mulheres, Raça e Classe",
+    "autor": "Angela Davis",
+    "area": "10_etica_politica_e_sociedade",
+    "resumo_do_livro": "Angela Davis aborda as intersecções entre gênero, raça e classe na história das lutas sociais, evidenciando como diferentes eixos de opressão moldam experiências específicas de sofrimento e resistência. A obra destaca linguagem, representações culturais e políticas que marginalizam corpos e subjetividades, propondo solidariedades que reconheçam desigualdades múltiplas. Para estudantes de Psicologia, oferece um quadro para analisar identidades complexas, políticas públicas inclusivas e práticas terapêuticas conscientes das dinâmicas estruturais que afetam desenvolvimento e vida social.",
+    "trecho_memoravel": "Opressores se entrelaçam; compreender a experiência exige olhar para género, raça e classe juntos",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "A Interseccionalidade",
+    "autor": "Patricia Hill Collins e Sirma Bilge",
+    "area": "10_etica_politica_e_sociedade",
+    "resumo_do_livro": "Collins e Bilge sistematizam a interseccionalidade como ferramenta teórica e prática para analisar como categorias sociais sobrepostas produzem desigualdades e experiências diferenciadas de sofrimento. O livro discute linguagem conceitual, métodos e implicações éticas das pesquisas que consideram raça, gênero, classe, sexualidade e outras marcas sociais. Para a Psicologia, fornece um arcabouço para investigar subjetividades complexas, políticas de cuidado e intervenções culturalmente sensíveis que dialoguem com as múltiplas dimensões da vida social e do desenvolvimento humano.",
+    "trecho_memoravel": "Desigualdades só se compreendem ao mapear as marcas sociais que se sobrepõem nas vidas",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Quarto de Despejo",
+    "autor": "Carolina Maria de Jesus",
+    "area": "10_etica_politica_e_sociedade",
+    "resumo_do_livro": "Diário de Carolina Maria de Jesus retrata a pobreza urbana em suas minúcias, expondo a vivência de exclusão, estigma e sofrimento psicológico nas periferias. A obra traz linguagem direta e subjetividade íntima, mostrando como cultura, fome, violência e relações sociais moldam identidade e esperança. Para estudantes de Psicologia, o livro é um documento de vida social que convoca reflexões sobre políticas públicas, reconhecimento, dignidade e o papel da narrativa para afirmar vozes marginalizadas diante das estruturas que reproduzem desigualdade e silenciamento.",
+    "trecho_memoravel": "A vida na favela revela injustiças que moldam corpo, palavra e dignidade cotidiana",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  },
+  {
+    "nome": "Ideias para Adiar o Fim do Mundo",
+    "autor": "Ailton Krenak",
+    "area": "10_etica_politica_e_sociedade",
+    "resumo_do_livro": "Krenak oferece reflexões sobre a crise ecológica, espiritualidade indígena e a forma como modelos de desenvolvimento afetam modos de ser e sentir coletivos. O texto conecta linguagem, memória cultural e ética relacional, propondo alternativas de cuidado social que respeitem a diversidade de subjetividades e saberes. Para a Psicologia, inspira pensar processos de cura que incluam cosmologias distintas, modos de vida comunitários e práticas políticas que confrontem sofrimento causado pela exploração ambiental e desconexão entre humanos e territórios.",
+    "trecho_memoravel": "Sustentação da vida exige ouvir saberes que preservam vínculo entre humanos e natureza",
+    "tipo_trecho": "paráfrase autoral",
+    "colecao": "livros_interdisciplinares"
+  }
+]

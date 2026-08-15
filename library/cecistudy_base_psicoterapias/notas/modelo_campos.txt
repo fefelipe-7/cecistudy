@@ -1,0 +1,199 @@
+Sim. Como você quer usar isso como **checklist de pesquisa**, eu faria o SQL refletir exatamente o que você precisa levantar, sem tentar resolver agora as relações com conceitos, técnicas, autores, fontes etc.
+
+A ideia seria: **família é mínima; abordagem é rica**.
+
+```sql
+-- ============================================================
+-- FAMÍLIAS E ABORDAGENS — ESTRUTURA DE PESQUISA
+-- ============================================================
+
+CREATE TABLE familia (
+    id INTEGER PRIMARY KEY,
+
+    nome TEXT NOT NULL,
+    descricao_curta TEXT NOT NULL,
+
+    ordem_exibicao INTEGER NOT NULL DEFAULT 0
+);
+
+
+CREATE TABLE abordagem (
+    id INTEGER PRIMARY KEY,
+
+    familia_id INTEGER NOT NULL
+        REFERENCES familia(id)
+        ON DELETE CASCADE,
+
+    -- IDENTIFICAÇÃO
+    nome TEXT NOT NULL,
+    descricao_curta TEXT,
+
+    -- DEFINIÇÃO
+    definicao TEXT,
+    ideia_central TEXT,
+
+    -- HISTÓRIA E ORIGEM
+    origem TEXT,
+    periodo_historico TEXT,
+    contexto_historico TEXT,
+
+    -- VISÃO TEÓRICA
+    visao_ser_humano TEXT,
+    visao_psique TEXT,
+    visao_desenvolvimento TEXT,
+    visao_sofrimento TEXT,
+    teoria_da_mudanca TEXT,
+
+    -- PRÁTICA
+    apresentacao_pratica TEXT,
+    papel_terapeuta TEXT,
+    papel_paciente TEXT,
+    relacao_terapeutica TEXT,
+    foco_clinico TEXT,
+
+    -- ACADEMIA E PESQUISA
+    perspectiva_academica TEXT,
+    evidencias TEXT,
+    debates TEXT,
+    criticas_limitacoes TEXT,
+
+    -- LITERATURA
+    leituras_fundamentais TEXT,
+
+    -- ORGANIZAÇÃO
+    ordem_exibicao INTEGER NOT NULL DEFAULT 0,
+
+    data_cadastro TEXT NOT NULL DEFAULT (datetime('now')),
+    data_ultima_revisao TEXT
+);
+```
+
+### O que você precisa pesquisar para cada família
+
+É literalmente só:
+
+| Campo             | Tipo    | O que pesquisar                                  |
+| ----------------- | ------- | ------------------------------------------------ |
+| `nome`            | TEXT    | Nome da família                                  |
+| `descricao_curta` | TEXT    | Uma frase explicando o que caracteriza a família |
+| `ordem_exibicao`  | INTEGER | Posição no app                                   |
+
+Então, por exemplo, sua pesquisa para uma família termina quando você tiver algo equivalente a:
+
+```text
+Nome:
+Psicanalítica e Psicodinâmica
+
+Descrição:
+Abordagens que enfatizam processos inconscientes, conflitos psíquicos,
+desenvolvimento da personalidade e relações interpessoais.
+```
+
+Não precisa pesquisar história, autores, evidências etc. **na família**.
+
+---
+
+### O que você precisa pesquisar para cada abordagem
+
+Aqui está o seu checklist de pesquisa:
+
+| Campo                   | Tipo | Pergunta que a pesquisa precisa responder                         |
+| ----------------------- | ---- | ----------------------------------------------------------------- |
+| `nome`                  | TEXT | Qual é o nome da abordagem?                                       |
+| `descricao_curta`       | TEXT | O que é essa abordagem em poucas linhas?                          |
+| `definicao`             | TEXT | Qual é uma definição mais completa e academicamente fundamentada? |
+| `ideia_central`         | TEXT | Qual é a ideia fundamental que diferencia essa abordagem?         |
+| `origem`                | TEXT | Onde e por quem surgiu?                                           |
+| `periodo_historico`     | TEXT | Em que período surgiu/desenvolveu-se?                             |
+| `contexto_historico`    | TEXT | Que contexto histórico e intelectual levou ao seu surgimento?     |
+| `visao_ser_humano`      | TEXT | Como essa abordagem compreende o ser humano?                      |
+| `visao_psique`          | TEXT | Como compreende a mente/psique e seus processos?                  |
+| `visao_desenvolvimento` | TEXT | Como explica o desenvolvimento psicológico?                       |
+| `visao_sofrimento`      | TEXT | Como explica o sofrimento ou os problemas psicológicos?           |
+| `teoria_da_mudanca`     | TEXT | Como entende que a mudança psicológica acontece?                  |
+| `apresentacao_pratica`  | TEXT | Como essa abordagem costuma aparecer na prática?                  |
+| `papel_terapeuta`       | TEXT | Qual é o papel/postura do terapeuta?                              |
+| `papel_paciente`        | TEXT | Qual é o papel esperado do paciente?                              |
+| `relacao_terapeutica`   | TEXT | Como a relação terapeuta-paciente é compreendida?                 |
+| `foco_clinico`          | TEXT | O que costuma receber maior atenção durante o trabalho clínico?   |
+| `perspectiva_academica` | TEXT | Como a literatura acadêmica contemporânea enxerga a abordagem?    |
+| `evidencias`            | TEXT | O que a pesquisa empírica indica sobre ela?                       |
+| `debates`               | TEXT | Quais são os principais debates e controvérsias?                  |
+| `criticas_limitacoes`   | TEXT | Quais críticas e limitações são apontadas?                        |
+| `leituras_fundamentais` | TEXT | Quais obras são consideradas importantes/fundamentais?            |
+
+Isso te dá um **roteiro de pesquisa extremamente claro**.
+
+Por exemplo, quando você for pesquisar “Psicologia Analítica Junguiana”, não precisa pensar:
+
+> “O que eu deveria pesquisar sobre Jung?”
+
+Você simplesmente percorre:
+
+```text
+□ Nome
+□ Definição
+□ Ideia central
+□ Origem
+□ Período histórico
+□ Contexto histórico
+□ Visão de ser humano
+□ Visão de psique
+□ Visão de desenvolvimento
+□ Visão de sofrimento
+□ Teoria da mudança
+□ Como aparece na prática
+□ Papel do terapeuta
+□ Papel do paciente
+□ Relação terapêutica
+□ Foco clínico
+□ Perspectiva acadêmica
+□ Evidências
+□ Debates
+□ Críticas e limitações
+□ Leituras fundamentais
+```
+
+### Mas eu faria uma pequena alteração no banco final
+
+Eu **não colocaria ainda** coisas como:
+
+```text
+autor_id
+conceito_id
+tecnica_id
+comparacao_id
+fonte_id
+```
+
+porque vocês já decidiram que essas relações serão construídas posteriormente.
+
+Primeiro vocês fazem o trabalho pesado:
+
+**Famílias → Abordagens → conteúdo textual.**
+
+Depois:
+
+**Autores → conceitos → técnicas → fontes → comparações → relações.**
+
+Isso é muito mais sustentável.
+
+E, principalmente, eu manteria esses campos textuais **mesmo que posteriormente parte deles seja substituída por relações estruturadas**. Por exemplo, `foco_clinico` pode começar como texto; depois vocês podem criar relações com conceitos/modelos/técnicas quando a biblioteca estiver madura.
+
+### Uma observação importante sobre `leituras_fundamentais`
+
+Eu deixaria esse campo como `TEXT` **temporariamente**, mas no banco definitivo provavelmente transformaria em uma tabela própria:
+
+```text
+abordagem
+    ↓
+abordagem_obra
+    ↓
+obra
+```
+
+porque uma abordagem pode ter várias obras, autores, anos, editoras, DOI/ISBN etc.
+
+Mas **não faça isso agora**.
+
+Para a fase que você está entrando — levantar o conteúdo de cada abordagem — o SQL acima é suficiente e te dá exatamente a lista de informações que precisa pesquisar.

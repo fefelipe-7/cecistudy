@@ -1,0 +1,108 @@
+01 — Psicanalítica e Psicodinâmica
+Psicanálise Freudiana Clássica
+Psicologia do Ego
+Teoria das Relações Objetais
+Psicologia do Self (Kohut)
+Psicanálise Relacional
+Terapia Psicodinâmica Breve (Theories of Psychotherapy: "Brief Dynamic Therapy")
+Psicologia Analítica Junguiana
+Psicologia Individual Adleriana (Theories of Psychotherapy: "Adlerian Psychotherapy")
+Psicanálise Interpessoal (Sullivan)
+Psicoterapia Psicodinâmica Contemporânea (integrativa) (Theories of Psychotherapy: "Psychoanalysis and Psychoanalytic Therapies")
+
+02 — Existencial-Humanista
+Terapia Centrada na Pessoa (Rogers) (Theories of Psychotherapy: "Person-Centered Psychotherapies")
+Gestalt-terapia (Theories of Psychotherapy: "Gestalt Therapy")
+Terapia Existencial-Humanista (Theories of Psychotherapy: "Existential-Humanistic Therapy")
+Terapia Focada nas Emoções (Theories of Psychotherapy: "Emotion-Focused Therapy")
+Logoterapia (Frankl)
+Terapia Experiencial
+Daseinsanalyse
+Terapia Existencial Britânica (May, Yalom — tradição americana/britânica)
+Psicologia Humanista (tradição mais ampla, Maslow)
+Terapia Transpessoal
+
+03 — Comportamental
+Behaviorismo Metodológico/Radical (base teórica)
+Terapia Comportamental Clássica (Theories of Psychotherapy: "Behavior Therapy")
+Análise do Comportamento Aplicada (ABA)
+Dessensibilização Sistemática (Wolpe)
+Terapia de Exposição
+Terapia Comportamental Dialética — DBT (também citada como 3ª onda)
+Ativação Comportamental
+Treinamento de Habilidades Sociais
+Modificação de Comportamento Infantil
+Terapia Comportamental de Casais
+
+04 — Cognitiva e Cognitivo-Comportamental
+Terapia Cognitiva (Beck) (Theories of Psychotherapy: "Cognitive Therapy")
+Terapia Racional-Emotiva Comportamental — REBT (Ellis) (Theories of Psychotherapy: "Rational Emotive Behavior Therapy")
+TCC Integrada/Geral (Theories of Psychotherapy: "Cognitive-Behavioral Therapy")
+Terapia do Esquema (Young)
+Terapia Cognitiva Baseada em Mindfulness (MBCT)
+Terapia de Aceitação e Compromisso — ACT (Theories of Psychotherapy: "Acceptance and Commitment Therapy")
+Terapia Focada na Compaixão
+Terapia Metacognitiva
+Terapia do Processamento Cognitivo (para TEPT)
+Terapia Cognitivo-Comportamental Baseada em Protocolo Transdiagnóstico
+
+05 — Sistêmica, Familiar e de Casais
+Terapia Familiar Estrutural (Minuchin)
+Terapia Familiar Estratégica (Haley)
+Terapia Familiar Boweniana
+Escola de Milão (sistêmica)
+Terapia Centrada em Soluções (Theories of Psychotherapy: "Solution-Focused Therapy")
+Terapia Familiar Geral (Theories of Psychotherapy: "Family Therapy")
+Terapia de Casais Integrativa
+Terapia Familiar Experiencial (Satir)
+Terapia Familiar Baseada em Apego
+Terapia Multissistêmica
+
+06 — Construtivista e Narrativa (de 7 para 10)
+Terapia Narrativa (White & Epston)
+Psicoterapia(s) Construtiva(s) — visão geral
+Terapia de Construção Pessoal (Kelly)
+Coherence Therapy
+Terapia Colaborativa (Anderson & Goolishian)
+Terapia Ericksoniana
+Terapia Centrada em Soluções (também referenciada na família 10 — atravessa famílias, como esperado num grafo)
+Prática Baseada em Resposta (Response-Based Practice)
+Terapia de Renegociação de Identidade
+Construcionismo Social (visão teórica mais ampla que sustenta os itens acima)
+
+07 — Interpessoal e Relacional Contemporânea (de 5 para 9)
+Psicoterapia Interpessoal — IPT (Klerman & Weissman)
+Terapia Relacional-Cultural
+Psicanálise Interpessoal (Sullivan)
+Tratamento Baseado em Mentalização
+Teoria dos Sistemas Intersubjetivos
+Psicodinâmica Cíclica (Wachtel)
+Terapia de Casais Baseada em Apego
+Método Gottman de Terapia de Casais
+Terapia Familiar Focada nas Emoções
+
+08 — Integrativa e Eclética
+Psicoterapia Integrativa Geral (Theories of Psychotherapy: "Psychotherapy Integration")
+Formulação de Caso em Psicoterapia (Theories of Psychotherapy: "Psychotherapy Case Formulation")
+Ecletismo Técnico
+Psicodinâmica Cíclica (Wachtel) — integra behaviorismo e psicanálise
+Modelo Transteórico de Mudança (Prochaska/DiClemente)
+Terapia Multimodal (Lazarus)
+A Prática Baseada em Evidências (perspectiva geral)
+
+09 — Social, Cultural e de Gênero (permanece mais enxuta — 6 itens — porque a literatura trata isso predominantemente como perspectiva transversal, não como conjunto de escolas técnicas distintas; isso é uma característica real do campo, não lacuna de pesquisa)
+Terapia Feminista
+Aconselhamento Multicultural
+Terapia Afirmativa LGBTQ+
+Abordagens Transculturais e Internacionais
+Terapia Feminista Psicanalítica
+Terapia Familiar Feminista
+
+10 — Modelos Pragmáticos e Focados em Objetivo (de 4 para 7)
+Terapia da Realidade / Teoria da Escolha (Glasser)
+Entrevista Motivacional
+Terapia Breve (guarda-chuva geral)
+Terapia Centrada em Soluções (referência cruzada com família 06)
+Aconselhamento de Carreira
+Terapia Baseada em Forças (Strengths-Based)
+Terapia de Casal e Família de Curto Prazo (modelo MRI)

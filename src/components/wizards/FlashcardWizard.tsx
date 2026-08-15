@@ -3,7 +3,7 @@ import { Brain } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { hapticSuccess } from '../../lib/haptics';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
-import { FieldLabel, ReviewCard, SelectField, TextArea, TextInput } from './wizardFields';
+import { ReviewCard, SelectField, TextArea, TextInput } from './wizardFields';
 
 export const FlashcardWizard: React.FC = () => {
   const {
@@ -28,36 +28,33 @@ export const FlashcardWizard: React.FC = () => {
     {
       id: 'card-frente',
       title: 'frente',
+      headline: 'qual a pergunta do card?',
       content: (
-        <div className="space-y-2">
-          <FieldLabel>pergunta / frente do card</FieldLabel>
-          <TextInput
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            placeholder="ex: o que é a tríade cognitiva da depressão?"
-            autoFocus
-          />
-        </div>
+        <TextInput
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          placeholder="ex: o que é a tríade cognitiva da depressão?"
+          autoFocus
+        />
       ),
     },
     {
       id: 'card-verso',
       title: 'verso',
+      headline: 'e qual é a resposta?',
       content: (
-        <div className="space-y-2">
-          <FieldLabel>resposta / verso do card</FieldLabel>
-          <TextArea
-            rows={6}
-            value={answer}
-            onChange={(e) => setAnswer(e.target.value)}
-            placeholder="explique a resposta com suas palavras..."
-          />
-        </div>
+        <TextArea
+          rows={6}
+          value={answer}
+          onChange={(e) => setAnswer(e.target.value)}
+          placeholder="explique a resposta com suas palavras..."
+        />
       ),
     },
     {
       id: 'card-contexto',
       title: 'contexto',
+      headline: 'quer conectar a um conceito ou disciplina?',
       content: (
         <div className="space-y-4">
           <SelectField
@@ -80,20 +77,16 @@ export const FlashcardWizard: React.FC = () => {
     {
       id: 'card-revisar',
       title: 'revisar',
+      headline: 'confere se está tudo certinho ♡',
       content: (
-        <div className="space-y-3">
-          <p className="text-xs font-medium text-ceci-secondary">
-            confere se está tudo certinho antes de guardar:
-          </p>
-          <ReviewCard
-            rows={[
-              { label: 'pergunta', value: question.trim() },
-              { label: 'resposta', value: answer.trim() },
-              { label: 'conceito', value: conceptName || 'sem conceito' },
-              { label: 'disciplina', value: courseName || 'sem disciplina' },
-            ]}
-          />
-        </div>
+        <ReviewCard
+          rows={[
+            { label: 'pergunta', value: question.trim() },
+            { label: 'resposta', value: answer.trim() },
+            { label: 'conceito', value: conceptName || 'sem conceito' },
+            { label: 'disciplina', value: courseName || 'sem disciplina' },
+          ]}
+        />
       ),
     },
   ];

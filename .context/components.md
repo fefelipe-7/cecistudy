@@ -54,7 +54,9 @@ Dono de todo o estado global (`usePersistentState`) + navegação + modais. Orqu
 
 | Arquivo | Propósito | Status |
 |---|---|---|
-| `InlineCollectionBlock.tsx` · `BookDetailModal.tsx` · `LibraryFilterModal.tsx` | Bloco de coleção, detalhe de livro, filtros | ✅ |
+| `InlineCollectionBlock.tsx` · `BookDetailModal.tsx` · `LibraryFilterModal.tsx` | Bloco de coleção, detalhe de livro (com seletor de páginas lidas), filtros | ✅ |
+| `ArticleCard.tsx` · `ArticleDetailModal.tsx` | Card de artigo no padrão de livro (folha de papel colorida) + modal com botão "abrir artigo ↗" (link direto/DOI) | ✅ |
+| `MixedCollectionBlock.tsx` | Shelf de categoria mista (capas de livros + artigos em folha de papel) | ✅ |
 | `NotesScreen.tsx` | Tela de notas avulsas (aberta via pilha `#/biblioteca/notas`) | ✅ |
 | `notes.ts` | Tipos/seed de notas avulsas (`LooseNote`, `CATEGORY_BADGE`) | ✅ |
 
@@ -69,7 +71,7 @@ Dono de todo o estado global (`usePersistentState`) + navegação + modais. Orqu
 | `CourseDetailView.tsx` | Detalhe de disciplina (info/aulas/repertório) + ação inferior | ✅ (via Faculdade) |
 | `EstudosView.tsx` | Study corner: timer pomodoro, flashcards, leituras | ✅ |
 | `BibliotecaView.tsx` | Catálogo + filtros + coleções + notas avulsas + modais (book/reader/filter) | ✅ |
-| `PerfilView.tsx` | Jornada, stickers, estágio, TCC, personalização | ✅ |
+| `PerfilView.tsx` | Página única inline: resumo da jornada (métricas reais), timeline, streak, estágio, TCC, stickers, personalização | ✅ |
 | `EstadoDeEspiritoView.tsx` | Registro de mood do dia (presets, energia, intenção, reflexão) | ✅ |
 
 ---
@@ -79,7 +81,6 @@ Dono de todo o estado global (`usePersistentState`) + navegação + modais. Orqu
 | Arquivo | Propósito | Status |
 |---|---|---|
 | `StudyStatsWidget.tsx` | Ofensiva de estudos + velocidade de leitura (sparkline) | ✅ (PerfilView) |
-| `MoodCalendarWidget.tsx` | Calendário de humor mensal | ✅ (PerfilView) |
 | `ReaderModeModal.tsx` | Modo leitura (temas papel/sépia/noturno, progresso) | ✅ (Estudos + Biblioteca) |
 
 ---

@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Brain,
   FileText,
+  Flame,
   GraduationCap,
   HeartHandshake,
   Landmark,
@@ -18,6 +19,7 @@ const COURSE_ICON_MAP: Record<string, LucideIcon> = {
   HeartHandshake,
   GraduationCap,
   Landmark,
+  Flame,
 };
 
 const COURSE_ICON_COLOR: Record<string, string> = {
@@ -28,6 +30,7 @@ const COURSE_ICON_COLOR: Record<string, string> = {
   HeartHandshake: 'text-gold',
   GraduationCap: 'text-ceci-brand-strong',
   Landmark: 'text-ceci-brand-strong',
+  Flame: 'text-rose-500',
 };
 
 interface CourseIconProps {

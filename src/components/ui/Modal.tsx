@@ -15,8 +15,8 @@ interface ModalProps {
 }
 
 const POSITION_CLASSES = {
-  center: 'items-center justify-center',
-  top: 'items-start justify-center pt-12 sm:pt-20',
+  center: 'items-center justify-center p-4',
+  top: 'items-start justify-center pt-12 sm:pt-20 px-4',
   bottom: 'items-end justify-center sm:items-center',
 };
 

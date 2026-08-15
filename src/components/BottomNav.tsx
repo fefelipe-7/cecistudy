@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, GraduationCap, Brain, Library, User, FileText, BookOpen, Check, Sparkles } from 'lucide-react';
+import { Home, GraduationCap, Brain, Library, User, FileText, BookOpen, Check, HeartHandshake } from 'lucide-react';
 import { NavTab, WizardFlow } from '../types';
 import { BottomNavBar, NavItem } from '@/components/ui/bottom-nav-bar';
 import FloatingActionMenu from '@/components/ui/floating-action-menu';
@@ -31,9 +31,9 @@ export const BottomNav: React.FC<BottomNavProps> = ({
 
   const menuOptions = [
     {
-      label: 'Novo conceito',
-      Icon: <Sparkles className="w-4 h-4 text-ceci-border-brand" />,
-      onClick: () => onOpenWizard?.('concept'),
+      label: 'Novo estágio',
+      Icon: <HeartHandshake className="w-4 h-4 text-ceci-border-brand" />,
+      onClick: () => onOpenWizard?.('internship'),
     },
     {
       label: 'Novo flashcard',

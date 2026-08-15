@@ -1,7 +1,6 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { TaskExamWizard } from './TaskExamWizard';
-import { ConceptWizard } from './ConceptWizard';
 import { FlashcardWizard } from './FlashcardWizard';
 import { ReadingWizard } from './ReadingWizard';
 import { SessionWizard } from './SessionWizard';
@@ -19,8 +18,6 @@ export const WizardRouter: React.FC = () => {
       return <TaskExamWizard preset="exam" />;
     case 'task-exam':
       return <TaskExamWizard />;
-    case 'concept':
-      return <ConceptWizard />;
     case 'flashcard':
       return <FlashcardWizard />;
     case 'reading':

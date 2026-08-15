@@ -10,8 +10,7 @@ import {
   AlertCircle,
   MessageSquare,
   Timer,
-  ClipboardList,
-  BookMarked
+  ClipboardList
 } from 'lucide-react';
 import { CourseIcon } from '../ui/CourseIcon';
 import { ClassNoteModal } from '../courses/ClassNoteModal';
@@ -67,6 +66,18 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
   const courseReadings = readings.filter((r) => r.courseId === course.id);
   const courseMaterials = materials.filter((m) => m.courseId === course.id);
 
+  // Frequência e pesos derivados dos dados reais
+  const attendance =
+    course.attendance && course.attendance.total > 0
+      ? {
+          pct: Math.round((course.attendance.attended / course.attendance.total) * 100),
+          absences: course.attendance.total - course.attendance.attended,
+        }
+      : null;
+  const assessment = courseExams
+    .filter((e) => typeof e.weightValue === 'number')
+    .sort((a, b) => a.date.localeCompare(b.date));
+
   // Concepts related to this course
   const courseConcepts = concepts.filter(
     (c) => c.courseIds && c.courseIds.includes(course.id)
@@ -109,7 +120,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
         {[
           { type: 'session', icon: Timer, label: 'anotar estudo', accent: 'bg-surface-blue text-ceci-academic-strong border-ceci-border-academic' },
           { type: 'exam', icon: ClipboardList, label: 'anotar prova', accent: 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand' },
-          { type: 'concept', icon: BookMarked, label: 'anotar conceito', accent: 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand' },
+          { type: 'reading', icon: BookOpen, label: 'anotar leitura', accent: 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand' },
           { type: 'class', icon: FileText, label: 'anotar aula', accent: 'bg-surface-muted text-ceci-primary border-ceci-border-default' },
         ].map((btn) => {
           const Icon = btn.icon;
@@ -177,12 +188,12 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
           {/* Badges: código, dias de aula, obrigatória/complementar */}
           <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
             <span className="text-[10px] font-extrabold uppercase tracking-wider bg-white px-2.5 py-0.5 rounded-full border border-ceci-border-default text-ceci-primary">
-              {course.code || 'PSI-300'}
+              {course.code || 'sem código'}
             </span>
 
             <span className="inline-flex items-center gap-1 px-3 py-1 bg-white rounded-full text-[11px] font-semibold text-ceci-primary border border-ceci-border-default">
               <Clock className="w-3 h-3 text-ceci-academic-strong" />
-              <span>{course.schedule || 'Semanal'}</span>
+              <span>{course.schedule || 'horário a definir'}</span>
             </span>
 
             <span className="inline-flex items-center gap-1 px-3 py-1 bg-surface-rose text-ceci-brand-strong rounded-full text-[11px] font-semibold border border-ceci-border-brand">
@@ -198,7 +209,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
             </h3>
             <div className="border-l-3 border-ceci-brand-strong pl-3.5 py-1 text-xs text-ceci-text-soft leading-relaxed font-medium bg-gradient-to-r from-surface-rose/70 to-transparent rounded-r-xl">
               {course.description ||
-                'estudo detalhado das estruturas clínicas, semiologia psiquiátrica, modelo de compreensão comportamental e práticas de diagnóstico em psicologia.'}
+                'esta disciplina ainda não tem ementa anotada. edite os detalhes da matéria para registrar os objetivos.'}
             </div>
           </div>
 
@@ -211,12 +222,12 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
             <div className="border-y border-ceci-border-default py-3 grid grid-cols-2 gap-y-3.5 gap-x-4">
               <div>
                 <span className="text-[10px] font-bold text-ceci-tertiary uppercase tracking-wider block">Sala & Local</span>
-                <p className="font-semibold text-xs text-ceci-primary mt-0.5">{course.room || 'Bloco C - Sala 204'}</p>
+                <p className="font-semibold text-xs text-ceci-primary mt-0.5">{course.room || 'não informada'}</p>
               </div>
 
               <div>
                 <span className="text-[10px] font-bold text-ceci-tertiary uppercase tracking-wider block">Horário Semanal</span>
-                <p className="font-semibold text-xs text-ceci-primary mt-0.5">{course.schedule || 'Segunda 08:00 - 11:30'}</p>
+                <p className="font-semibold text-xs text-ceci-primary mt-0.5">{course.schedule || 'horário a definir'}</p>
               </div>
 
               <div>
@@ -226,12 +237,14 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
 
               <div>
                 <span className="text-[10px] font-bold text-ceci-tertiary uppercase tracking-wider block">Frequência Registrada</span>
-                <p className="font-bold text-xs text-success-deep mt-0.5">92% (2 ausências)</p>
+                <p className="font-bold text-xs text-success-deep mt-0.5">
+                  {attendance ? `${attendance.pct}% (${attendance.absences} ${attendance.absences === 1 ? 'ausência' : 'ausências'})` : 'não registrada'}
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Fórmulas de Avaliação / Pesos (Inline divided list) */}
+          {/* Fórmulas de Avaliação / Pesos (derivadas das provas anotadas) */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="font-display font-bold text-sm text-ceci-primary">
@@ -242,43 +255,39 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
               </span>
             </div>
 
-            <div className="divide-y divide-ceci-border-default/70 border-t border-ceci-border-default">
-              <div className="flex items-center justify-between py-2.5 text-xs">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-ceci-brand-strong" />
-                  <span className="font-semibold text-ceci-primary">prova teórica i (p1)</span>
-                </div>
-                <span className="font-bold text-ceci-primary bg-surface-muted px-2 py-0.5 rounded border border-ceci-border-default">peso 35%</span>
+            {assessment.length > 0 ? (
+              <div className="divide-y divide-ceci-border-default/70 border-t border-ceci-border-default">
+                {assessment.map((ex) => (
+                  <div key={ex.id} className="flex items-center justify-between py-2.5 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-ceci-brand-strong" />
+                      <span className="font-semibold text-ceci-primary line-clamp-1">{ex.title}</span>
+                    </div>
+                    <span className="font-bold text-ceci-primary bg-surface-muted px-2 py-0.5 rounded border border-ceci-border-default shrink-0">
+                      peso {ex.weightValue}%
+                    </span>
+                  </div>
+                ))}
               </div>
+            ) : (
+              <p className="text-xs text-ceci-tertiary py-1">
+                ainda não tem prova com peso anotada — registre as avaliações para ver a composição da média.
+              </p>
+            )}
+          </div>
 
-              <div className="flex items-center justify-between py-2.5 text-xs">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-ceci-academic-strong" />
-                  <span className="font-semibold text-ceci-primary">estudo de caso / trabalho (p2)</span>
-                </div>
-                <span className="font-bold text-ceci-primary bg-surface-muted px-2 py-0.5 rounded border border-ceci-border-default">peso 40%</span>
-              </div>
-
-              <div className="flex items-center justify-between py-2.5 text-xs">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-success-deep" />
-                  <span className="font-semibold text-ceci-primary">atividades práticas / fichamentos</span>
-                </div>
-                <span className="font-bold text-ceci-primary bg-surface-muted px-2 py-0.5 rounded border border-ceci-border-default">peso 25%</span>
-              </div>
+          {/* Horário de Atendimento e Monitoria (vem dos dados da disciplina) */}
+          {course.officeHours && (
+            <div className="pl-3.5 py-2.5 border-l-2 border-ceci-academic-strong space-y-1">
+              <h4 className="font-display font-bold text-xs text-ceci-academic-strong flex items-center gap-1.5">
+                <MessageSquare className="w-3.5 h-3.5 text-ceci-academic-strong" />
+                <span>atendimento & monitoria</span>
+              </h4>
+              <p className="text-xs text-ceci-secondary leading-relaxed">
+                {course.officeHours}
+              </p>
             </div>
-          </div>
-
-          {/* Horário de Atendimento e Monitoria (Inline callout) */}
-          <div className="pl-3.5 py-2.5 border-l-2 border-ceci-academic-strong space-y-1">
-            <h4 className="font-display font-bold text-xs text-ceci-academic-strong flex items-center gap-1.5">
-              <MessageSquare className="w-3.5 h-3.5 text-ceci-academic-strong" />
-              <span>atendimento & monitoria</span>
-            </h4>
-            <p className="text-xs text-ceci-secondary leading-relaxed">
-              Quartas-feiras das 14:00 às 15:30 na Sala dos Professores (Bloco C). Dúvidas sobre seminários podem ser enviadas por e-mail institucional.
-            </p>
-          </div>
+          )}
 
         </div>
       )}
@@ -508,7 +517,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                       <p className="text-[11px] text-ceci-tertiary">por {reading.author}</p>
                     </div>
                     <span className="text-[10px] font-semibold text-success-deep bg-surface-mint-soft px-2.5 py-1 rounded-full border border-ceci-border-academic">
-                      {reading.readPages || 0} / {reading.totalPages || 100} pág
+                      {reading.readPages || 0} / {reading.totalPages ?? '—'} pág
                     </span>
                   </div>
                 ))}

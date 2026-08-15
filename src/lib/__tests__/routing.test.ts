@@ -29,14 +29,33 @@ describe('parseRoute', () => {
     expect(parseRoute('#/faculdade/calendario')).toEqual({ tab: 'faculdade', subTab: 'calendario' });
   });
 
-  it('reconhece sub-tabs de estudos e perfil', () => {
+  it('reconhece sub-tab de estudos', () => {
     expect(parseRoute('#/estudos/leituras')).toEqual({ tab: 'estudos', subTab: 'leituras' });
-    expect(parseRoute('#/perfil/stickers')).toEqual({ tab: 'perfil', subTab: 'stickers' });
+  });
+
+  it('perfil não tem sub-tabs — qualquer segmento cai na aba base', () => {
+    expect(parseRoute('#/perfil/stickers')).toEqual({ tab: 'perfil' });
+  });
+
+  it('reconhece o diário de estágio em /perfil/estagio', () => {
+    expect(parseRoute('#/perfil/estagio')).toEqual({ tab: 'perfil', internshipDiary: true });
   });
 
   it('reconhece telas especiais da biblioteca', () => {
     expect(parseRoute('#/biblioteca/notas')).toEqual({ tab: 'biblioteca', notes: true });
     expect(parseRoute('#/biblioteca/templo')).toEqual({ tab: 'biblioteca', temple: true });
+  });
+
+  it('reconhece famílias de psicoterapias e detalhe de família', () => {
+    expect(parseRoute('#/biblioteca/familias')).toEqual({ tab: 'biblioteca', families: true });
+    expect(parseRoute('#/biblioteca/familias/fam-01')).toEqual({
+      tab: 'biblioteca',
+      familyId: 'fam-01',
+    });
+    expect(parseRoute('#/biblioteca/abordagens/psic-04-01')).toEqual({
+      tab: 'biblioteca',
+      approachId: 'psic-04-01',
+    });
   });
 
   it('reconhece sub-tab da biblioteca', () => {
@@ -45,6 +64,11 @@ describe('parseRoute', () => {
 
   it('reconhece mood', () => {
     expect(parseRoute('#/mood')).toEqual({ mood: true });
+  });
+
+  it('reconhece a tela de streak com base dinâmica', () => {
+    expect(parseRoute('#/streak')).toEqual({ tab: 'home', streak: true });
+    expect(parseRoute('#/perfil/streak')).toEqual({ tab: 'perfil', streak: true });
   });
 
   it('reconhece composição de nota e wizard de detalhes (com base)', () => {
@@ -68,7 +92,6 @@ describe('parseRoute', () => {
   });
 
   it('reconhece wizards de criação (com base opcional)', () => {
-    expect(parseRoute('#/novo/conceito')).toEqual({ baseTab: 'home', wizard: 'concept' });
     expect(parseRoute('#/novo/flashcard').wizard).toBe('flashcard');
     expect(parseRoute('#/novo/prova').wizard).toBe('exam');
     expect(parseRoute('#/novo/tarefa').wizard).toBe('task');
@@ -77,15 +100,13 @@ describe('parseRoute', () => {
     expect(parseRoute('#/novo/estudo').wizard).toBe('session');
     expect(parseRoute('#/novo/estagio').wizard).toBe('internship');
     expect(parseRoute('#/novo/autor').wizard).toBe('author');
-    expect(parseRoute('#/biblioteca/novo/conceito')).toEqual({
-      baseTab: 'biblioteca',
-      wizard: 'concept',
-    });
     expect(parseRoute('#/faculdade/c3/novo/prova')).toEqual({
       baseTab: 'faculdade',
       baseCourseId: 'c3',
       wizard: 'exam',
     });
+    // slug removido do conceito → rota desconhecida cai em home
+    expect(parseRoute('#/novo/conceito')).toEqual({ tab: 'home' });
     expect(parseRoute('#/novo/xyz').wizard).toBeUndefined();
   });
 
@@ -124,6 +145,30 @@ describe('routeToStack', () => {
       { kind: 'tab', tab: 'biblioteca' },
       { kind: 'temple' },
     ]);
+    expect(routeToStack({ streak: true })).toEqual([
+      { kind: 'tab', tab: 'home' },
+      { kind: 'streak' },
+    ]);
+    expect(routeToStack({ tab: 'perfil', streak: true })).toEqual([
+      { kind: 'tab', tab: 'perfil' },
+      { kind: 'streak' },
+    ]);
+    expect(routeToStack({ internshipDiary: true })).toEqual([
+      { kind: 'tab', tab: 'perfil' },
+      { kind: 'internshipDiary' },
+    ]);
+    expect(routeToStack({ tab: 'biblioteca', approachId: 'psic-04-01' })).toEqual([
+      { kind: 'tab', tab: 'biblioteca' },
+      { kind: 'approach', approachId: 'psic-04-01' },
+    ]);
+    expect(routeToStack({ tab: 'biblioteca', families: true })).toEqual([
+      { kind: 'tab', tab: 'biblioteca' },
+      { kind: 'families' },
+    ]);
+    expect(routeToStack({ tab: 'biblioteca', familyId: 'fam-01' })).toEqual([
+      { kind: 'tab', tab: 'biblioteca' },
+      { kind: 'family', familyId: 'fam-01' },
+    ]);
     expect(routeToStack({ compose: true })).toEqual([
       { kind: 'tab', tab: 'home' },
       { kind: 'compose' },
@@ -150,17 +195,17 @@ describe('routeToStack', () => {
   });
 
   it('monta pilha de wizard de criação', () => {
-    expect(routeToStack({ wizard: 'concept' })).toEqual([
+    expect(routeToStack({ wizard: 'internship' })).toEqual([
       { kind: 'tab', tab: 'home' },
-      { kind: 'wizard', type: 'concept' },
+      { kind: 'wizard', type: 'internship' },
     ]);
     expect(routeToStack({ wizard: 'task-exam' })).toEqual([
       { kind: 'tab', tab: 'home' },
       { kind: 'wizard', type: 'task-exam' },
     ]);
-    expect(routeToStack({ baseTab: 'biblioteca', wizard: 'concept' })).toEqual([
+    expect(routeToStack({ baseTab: 'biblioteca', wizard: 'reading' })).toEqual([
       { kind: 'tab', tab: 'biblioteca' },
-      { kind: 'wizard', type: 'concept' },
+      { kind: 'wizard', type: 'reading' },
     ]);
     expect(routeToStack({ baseTab: 'faculdade', baseCourseId: 'c3', wizard: 'exam' })).toEqual([
       { kind: 'tab', tab: 'faculdade' },
@@ -179,14 +224,19 @@ describe('stackToHash', () => {
 
   it('serializa sub-tab quando diferente da padrão', () => {
     expect(stackToHash([{ kind: 'tab', tab: 'estudos' }], 'leituras')).toBe('#/estudos/leituras');
-    expect(stackToHash([{ kind: 'tab', tab: 'perfil' }], 'stickers')).toBe('#/perfil/stickers');
     expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }], 'conceitos')).toBe('#/biblioteca/conceitos');
   });
 
   it('serializa telas auxiliares ignorando sub-tab', () => {
     expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c3' }], 'aulas')).toBe('#/faculdade/c3');
     expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'mood' }])).toBe('#/mood');
+    expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'streak' }])).toBe('#/streak');
+    expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'streak' }])).toBe('#/perfil/streak');
+    expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'internshipDiary' }])).toBe('#/perfil/estagio');
     expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }])).toBe('#/biblioteca/notas');
+    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'approach', approachId: 'psic-04-01' }])).toBe('#/biblioteca/abordagens/psic-04-01');
+    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'families' }])).toBe('#/biblioteca/familias');
+    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'family', familyId: 'fam-01' }])).toBe('#/biblioteca/familias/fam-01');
     expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'compose' }])).toBe('#/nota');
     expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'composeDetails' }])).toBe('#/nota/detalhes');
   });
@@ -199,16 +249,16 @@ describe('stackToHash', () => {
   });
 
   it('serializa wizard de criação com a base preservada', () => {
-    expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'wizard', type: 'concept' }])).toBe('#/novo/conceito');
+    expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'wizard', type: 'internship' }])).toBe('#/novo/estagio');
     expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'wizard', type: 'task-exam' }])).toBe('#/novo/prova-atividade');
-    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'wizard', type: 'concept' }])).toBe('#/biblioteca/novo/conceito');
+    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'wizard', type: 'reading' }])).toBe('#/biblioteca/novo/leitura');
     expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c3' }, { kind: 'wizard', type: 'exam' }])).toBe('#/faculdade/c3/novo/prova');
   });
 });
 
 describe('round-trip hash ↔ rota', () => {
   it('reconstrói a rota a partir do hash serializado (abas + sub-tabs)', () => {
-    const cases = ['#/home', '#/faculdade', '#/faculdade/c3', '#/faculdade/aulas', '#/estudos/leituras', '#/biblioteca/conceitos', '#/perfil/stickers', '#/biblioteca/notas', '#/biblioteca/templo', '#/mood', '#/nota', '#/nota/detalhes', '#/biblioteca/nota', '#/faculdade/c3/nota', '#/biblioteca/nota/detalhes', '#/faculdade/c3/nota/detalhes', '#/novo/conceito', '#/novo/prova-atividade', '#/biblioteca/novo/conceito', '#/faculdade/c3/novo/prova'];
+    const cases = ['#/home', '#/faculdade', '#/faculdade/c3', '#/faculdade/aulas', '#/estudos/leituras', '#/biblioteca/conceitos', '#/biblioteca/notas', '#/biblioteca/templo', '#/biblioteca/familias', '#/biblioteca/familias/fam-01', '#/biblioteca/abordagens/psic-04-01', '#/mood', '#/streak', '#/perfil/streak', '#/perfil/estagio', '#/nota', '#/nota/detalhes', '#/biblioteca/nota', '#/faculdade/c3/nota', '#/biblioteca/nota/detalhes', '#/faculdade/c3/nota/detalhes', '#/novo/estagio', '#/novo/prova-atividade', '#/biblioteca/novo/leitura', '#/faculdade/c3/novo/prova'];
     for (const h of cases) {
       const route = parseRoute(h);
       const stack = routeToStack(route);
@@ -217,11 +267,11 @@ describe('round-trip hash ↔ rota', () => {
   });
 
   it('sub-tab da aba base sobrevive à serialização quando não padrão', () => {
-    const route = parseRoute('#/perfil/stickers');
-    expect(route.subTab).toBe('stickers');
+    const route = parseRoute('#/biblioteca/conceitos');
+    expect(route.subTab).toBe('conceitos');
     const stack = routeToStack(route);
     const h = stackToHash(stack, route.subTab);
-    expect(h).toBe('#/perfil/stickers');
-    expect(parseRoute(h).subTab).toBe('stickers');
+    expect(h).toBe('#/biblioteca/conceitos');
+    expect(parseRoute(h).subTab).toBe('conceitos');
   });
 });

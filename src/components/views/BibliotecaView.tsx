@@ -15,6 +15,8 @@ import {
   RotateCcw,
   FileText,
   Landmark,
+  Newspaper,
+  Brain,
 } from 'lucide-react';
 import {
   PsychologyAuthor,
@@ -23,24 +25,37 @@ import {
   MaterialItem,
   Course,
   SubTabBiblioteca,
-  ReadingItem,
 } from '../../types';
 import {
   initialContextCollections,
   initialTrendingBooks,
   CollectionBook,
+  ContextCollection,
 } from '../../data/libraryData';
-import { ReaderModeModal } from '../widgets/ReaderModeModal';
+import {
+  psychotherapyCollections,
+  complementaryCollections,
+  articleGroups,
+  catalogBooks,
+  mixedCollections,
+  Article,
+  MixedCollection,
+} from '../../data/books';
 import { InlineCollectionBlock } from '../library/InlineCollectionBlock';
 import { BookDetailModal } from '../library/BookDetailModal';
 import { LibraryFilterModal } from '../library/LibraryFilterModal';
 import { NotesScreen } from '../library/NotesScreen';
 import { TempleScreen } from '../library/TempleScreen';
-import { usePersistentState } from '../../lib/usePersistentState';
+import { FamiliesView } from './FamiliesView';
+import { FamilyDetailView } from './FamilyDetailView';
+import { ApproachDetailView } from './ApproachDetailView';
+import { ArticleCard } from '../library/ArticleCard';
+import { ArticleDetailModal } from '../library/ArticleDetailModal';
+import { MixedCollectionBlock } from '../library/MixedCollectionBlock';
 import { useApp } from '../../context/AppContext';
 
 export const BibliotecaView: React.FC = () => {
-  const { openQuickAdd, isNotesScreenOpen, openNotesScreen, isCreatingLooseNote, setIsCreatingLooseNote, isTempleScreenOpen, openTemple, looseNotes, addLooseNote, deleteLooseNote } = useApp();
+  const { openQuickAdd, isNotesScreenOpen, openNotesScreen, isCreatingLooseNote, setIsCreatingLooseNote, isTempleScreenOpen, openTemple, isFamiliesScreenOpen, focusedFamilyId, focusedApproachId, looseNotes, addLooseNote, deleteLooseNote, savedBookIds, toggleSaveBook, readingProgress, updateReadingProgress } = useApp();
   // Filter States
   const [activeCategory, setActiveCategory] = useState<string>('todos');
   const [activeStatus, setActiveStatus] = useState<string>('todos');
@@ -50,46 +65,17 @@ export const BibliotecaView: React.FC = () => {
 
   // Detail & Modal States
   const [selectedBook, setSelectedBook] = useState<CollectionBook | null>(null);
-  const [readerReading, setReaderReading] = useState<ReadingItem | null>(null);
-  const [isReaderOpen, setIsReaderOpen] = useState(false);
-  // Dedicated Notes Screen (aberta via pilha de navegação — header detail)
-  const [savedBookIds, setSavedBookIds] = usePersistentState<string[]>('savedBookIds', [
-    'bk-1', 'bk-5', 'bk-9', 'tr-1', 'tr-3', 'bk-33'
-  ]);
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
 
-  // Popular quick tags available in the filter modal or search
-  const availableTags = [
-    'TCC & Cognição',
-    'Psicanálise',
-    'Finanças Comportamentais',
-    'Don Norman',
-    'BFP Bateria',
-    'Hábitos',
-    'Viktor Frankl',
-    'Kahneman'
-  ];
-
-  const toggleSaveBook = (bookId: string) => {
-    setSavedBookIds((prev) =>
-      prev.includes(bookId) ? prev.filter((id) => id !== bookId) : [...prev, bookId]
-    );
-  };
-
-  const handleOpenReaderForBook = (book: CollectionBook) => {
-    const readingObj: ReadingItem = {
-      id: book.id,
-      title: book.title,
-      author: book.author,
-      type: 'livro',
-      totalPages: book.totalPages,
-      readPages: book.readPages,
-      status: book.status === 'para_ler' ? 'nao_iniciado' : book.status,
-      highlights: book.quote ? [book.quote] : ['A essência do estudo da psicologia reside na observação compassiva e analítica.'],
-    };
-    setReaderReading(readingObj);
-    setIsReaderOpen(true);
-    setSelectedBook(null);
-  };
+  // Tags derivadas do catálogo (nenhuma lista fixa no código da view)
+  const availableTags = Array.from(
+    new Set([
+      ...initialContextCollections.flatMap((c) => c.books.flatMap((b) => b.tags)),
+      ...initialTrendingBooks.flatMap((b) => b.tags),
+      ...psychotherapyCollections.flatMap((c) => c.books.flatMap((b) => b.tags)),
+      ...complementaryCollections.flatMap((c) => c.books.flatMap((b) => b.tags)),
+    ])
+  ).sort((a, b) => a.localeCompare(b));
 
   const resetAllFilters = () => {
     setActiveCategory('todos');
@@ -104,31 +90,30 @@ export const BibliotecaView: React.FC = () => {
     selectedTag !== null ||
     searchTerm.trim() !== '';
 
-  // Filter collections by search term and filter selections
-  const filteredCollections = initialContextCollections.filter((col) => {
-    const matchesCategory =
-      activeCategory === 'todos' ||
-      (activeCategory === 'autores' && col.blockCategory === 'autores') ||
-      (activeCategory === 'conceitos' && col.blockCategory === 'conceitos') ||
-      (activeCategory === 'abordagens' && col.blockCategory === 'abordagens') ||
-      (activeCategory === 'multidisciplinar' && col.blockCategory === 'multidisciplinar') ||
-      (activeCategory === 'testes' && col.blockCategory === 'testes') ||
-      (activeCategory === 'salvos' && col.books.some((b) => savedBookIds.includes(b.id))) ||
-      (activeCategory === 'em_leitura' && col.books.some((b) => b.status === 'lendo'));
+  // -----------------------------------------------------------------------
+  // Filtros compartilhados (coleções curadas, catálogo, complementar)
+  // -----------------------------------------------------------------------
+  const matchesCategory = (col: ContextCollection, allowed: string[]) => {
+    if (activeCategory === 'todos') return true;
+    if (activeCategory === 'salvos') return col.books.some((b) => savedBookIds.includes(b.id));
+    if (activeCategory === 'em_leitura') return col.books.some((b) => b.status === 'lendo');
+    return allowed.includes(col.blockCategory) && col.blockCategory === activeCategory;
+  };
 
-    const matchesStatus =
-      activeStatus === 'todos' ||
-      col.books.some((b) => b.status === activeStatus);
+  const matchesStatus = (col: ContextCollection) =>
+    activeStatus === 'todos' ||
+    col.books.some((b) => b.status === activeStatus);
 
-    const matchesTag =
-      !selectedTag ||
-      col.books.some((b) =>
-        b.tags.some((t) => t.toLowerCase().includes(selectedTag.toLowerCase()))
-      );
+  const matchesTag = (col: ContextCollection) =>
+    !selectedTag ||
+    col.books.some((b) =>
+      b.tags.some((t) => t.toLowerCase().includes(selectedTag.toLowerCase()))
+    );
 
+  const matchesSearch = (col: ContextCollection) => {
+    if (!searchTerm) return true;
     const searchLower = searchTerm.toLowerCase();
-    const matchesSearch =
-      !searchTerm ||
+    return (
       col.title.toLowerCase().includes(searchLower) ||
       col.subtitle.toLowerCase().includes(searchLower) ||
       col.books.some(
@@ -136,12 +121,38 @@ export const BibliotecaView: React.FC = () => {
           b.title.toLowerCase().includes(searchLower) ||
           b.author.toLowerCase().includes(searchLower) ||
           b.tags.some((t) => t.toLowerCase().includes(searchLower))
-      );
+      )
+    );
+  };
 
-    return matchesCategory && matchesStatus && matchesTag && matchesSearch;
-  });
+  // Coleções curadas (existentes)
+  const filteredCollections = initialContextCollections.filter(
+    (col) =>
+      matchesCategory(col, ['autores', 'conceitos', 'abordagens', 'multidisciplinar', 'testes']) &&
+      matchesStatus(col) &&
+      matchesTag(col) &&
+      matchesSearch(col)
+  );
 
-  // Filter loose trending books by search term and filters
+  // Catálogo de psicoterapias (10 famílias)
+  const filteredCatalogCollections = psychotherapyCollections.filter(
+    (col) =>
+      matchesCategory(col, ['psicoterapias']) &&
+      matchesStatus(col) &&
+      matchesTag(col) &&
+      matchesSearch(col)
+  );
+
+  // Bagagem complementar (10 áreas interdisciplinares)
+  const filteredComplementaryCollections = complementaryCollections.filter(
+    (col) =>
+      matchesCategory(col, ['multidisciplinar', 'complementar']) &&
+      matchesStatus(col) &&
+      matchesTag(col) &&
+      matchesSearch(col)
+  );
+
+  // Filtro loose trending books por busca e filtros
   const filteredTrendingBooks = initialTrendingBooks.filter((b) => {
     if (activeStatus !== 'todos' && b.status !== activeStatus) return false;
     if (activeCategory === 'salvos' && !savedBookIds.includes(b.id)) return false;
@@ -157,10 +168,114 @@ export const BibliotecaView: React.FC = () => {
     );
   });
 
+  // Artigos científicos — filtro próprio (título/autor/periódico/família/tag)
+  const articleMatches = (a: Article) => {
+    if (activeCategory === 'todos' || activeCategory === 'artigos') {
+      // ok
+    } else if (activeCategory === 'salvos') {
+      if (!savedBookIds.includes(a.id)) return false;
+    } else {
+      return false;
+    }
+
+    // artigos não têm status de leitura — esconder quando filtrando por status
+    if (activeStatus !== 'todos') return false;
+
+    const searchLower = searchTerm.toLowerCase();
+    const text =
+      `${a.titulo} ${a.autores} ${a.periodico} ${a.classificacao} ${a.observacao} ${a.resumo}`.toLowerCase();
+    if (searchTerm && !text.includes(searchLower)) return false;
+
+    if (selectedTag) {
+      const tagLower = selectedTag.toLowerCase();
+      const hasTag =
+        a.titulo.toLowerCase().includes(tagLower) ||
+        a.autores.toLowerCase().includes(tagLower) ||
+        a.periodico.toLowerCase().includes(tagLower) ||
+        a.classificacao.toLowerCase().includes(tagLower);
+      if (!hasTag) return false;
+    }
+
+    return true;
+  };
+
+  const filteredArticleGroups = articleGroups
+    .map((g) => ({ ...g, articles: g.articles.filter(articleMatches) }))
+    .filter((g) => g.articles.length > 0);
+  const totalFilteredArticles = filteredArticleGroups.reduce(
+    (acc, g) => acc + g.articles.length,
+    0
+  );
+
+  // Categorias mistas — misturam livros (catálogo + complementar) e artigos
+  const mixedMatches = (col: MixedCollection) => {
+    const bookCategoryOk =
+      activeCategory === 'todos' ||
+      activeCategory === 'psicoterapias' ||
+      activeCategory === 'complementar' ||
+      activeCategory === 'multidisciplinar' ||
+      activeCategory === 'mistas' ||
+      (activeCategory === 'salvos' &&
+        col.books.some((b) => savedBookIds.includes(b.id))) ||
+      (activeCategory === 'em_leitura' && col.books.some((b) => b.status === 'lendo'));
+
+    const articleCategoryOk =
+      activeCategory === 'todos' ||
+      activeCategory === 'artigos' ||
+      activeCategory === 'mistas' ||
+      (activeCategory === 'salvos' &&
+        col.articles.some((a) => savedBookIds.includes(a.id)));
+
+    if (!bookCategoryOk && !articleCategoryOk) return false;
+
+    // artigos não têm status de leitura — filtrando por status, exige um livro
+    if (activeStatus !== 'todos' && !col.books.some((b) => b.status === activeStatus)) {
+      return false;
+    }
+
+    if (searchTerm) {
+      const searchLower = searchTerm.toLowerCase();
+      const bookMatch = col.books.some(
+        (b) =>
+          b.title.toLowerCase().includes(searchLower) ||
+          b.author.toLowerCase().includes(searchLower) ||
+          b.tags.some((t) => t.toLowerCase().includes(searchLower))
+      );
+      const articleMatch = col.articles.some(
+        (a) =>
+          `${a.titulo} ${a.autores} ${a.periodico} ${a.classificacao}`
+            .toLowerCase()
+            .includes(searchLower)
+      );
+      if (!bookMatch && !articleMatch) return false;
+    }
+
+    if (selectedTag) {
+      const tagLower = selectedTag.toLowerCase();
+      const bookTag = col.books.some((b) =>
+        b.tags.some((t) => t.toLowerCase().includes(tagLower))
+      );
+      const articleTag = col.articles.some(
+        (a) =>
+          `${a.titulo} ${a.autores} ${a.periodico} ${a.classificacao}`
+            .toLowerCase()
+            .includes(tagLower)
+      );
+      if (!bookTag && !articleTag) return false;
+    }
+
+    return true;
+  };
+
+  const filteredMixedCollections = mixedCollections.filter(mixedMatches);
+
   // Category specific slices for inline sections
   const testCollections = filteredCollections.filter((c) => c.blockCategory === 'testes');
   const authorCollections = filteredCollections.filter((c) => c.blockCategory === 'autores');
-  const multidisciplinaryCollections = filteredCollections.filter((c) => c.blockCategory === 'multidisciplinar');
+  const multidisciplinaryCollections = [
+    ...filteredCollections.filter((c) => c.blockCategory === 'multidisciplinar'),
+    ...filteredComplementaryCollections,
+  ];
   const conceptCollections = filteredCollections.filter((c) => c.blockCategory === 'conceitos');
   const approachCollections = filteredCollections.filter((c) => c.blockCategory === 'abordagens');
 
@@ -180,6 +295,21 @@ export const BibliotecaView: React.FC = () => {
   // Dedicated Screen View for "Templo de Conhecimento"
   if (isTempleScreenOpen) {
     return <TempleScreen />;
+  }
+
+  // Dedicated Screen View for "Famílias de Psicoterapias"
+  if (isFamiliesScreenOpen) {
+    return <FamiliesView />;
+  }
+
+  // Dedicated Screen View for a Família específica
+  if (focusedFamilyId) {
+    return <FamilyDetailView familyId={focusedFamilyId} />;
+  }
+
+  // Dedicated Screen View for a Abordagem específica (página de leitura)
+  if (focusedApproachId) {
+    return <ApproachDetailView approachId={focusedApproachId} />;
   }
 
   return (
@@ -399,6 +529,77 @@ export const BibliotecaView: React.FC = () => {
       )}
 
       {/* ==================================================================== */}
+      {/* INLINE SECTION: CATÁLOGO DE PSICOTERAPIAS (10 famílias)             */}
+      {/* ==================================================================== */}
+      {filteredCatalogCollections.length > 0 && (
+        <div data-section="psicoterapias" className="space-y-4 pt-4 px-1 border-t border-ceci-border-default">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Brain className="w-4 h-4 text-ceci-brand-strong" />
+              <h2 className="font-display font-bold text-base text-ceci-primary">
+                catálogo de psicoterapias
+              </h2>
+            </div>
+            <span className="text-[10px] font-bold text-ceci-brand-strong bg-surface-rose px-2.5 py-0.5 rounded-full border border-ceci-border-brand">
+              {catalogBooks.length} obras · {psychotherapyCollections.length} famílias
+            </span>
+          </div>
+
+          <p className="text-xs text-ceci-secondary leading-relaxed">
+            as grandes obras de cada abordagem terapêutica — da psicanálise à terapia pragmática, com resumo e trecho memorável para navegar o repertório.
+          </p>
+
+          <div className="space-y-6">
+            {filteredCatalogCollections.map((col) => (
+              <InlineCollectionBlock
+                key={col.id}
+                collection={col}
+                savedBookIds={savedBookIds}
+                readProgress={readingProgress}
+                onSelectBook={(book) => setSelectedBook(book)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ==================================================================== */}
+      {/* INLINE SECTION: CATEGORIAS MISTAS (livros + artigos)                 */}
+      {/* ==================================================================== */}
+      {filteredMixedCollections.length > 0 && (
+        <div data-section="mistas" className="space-y-4 pt-4 px-1 border-t border-ceci-border-default">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-ceci-brand-strong" />
+              <h2 className="font-display font-bold text-base text-ceci-primary">
+                categorias mistas
+              </h2>
+            </div>
+            <span className="text-[10px] font-bold text-ceci-brand-strong bg-surface-rose px-2.5 py-0.5 rounded-full border border-ceci-border-brand">
+              {filteredMixedCollections.length} trilhas
+            </span>
+          </div>
+
+          <p className="text-xs text-ceci-secondary leading-relaxed">
+            trilhas temáticas que cruzam obras e artigos de diferentes abordagens — toque para abrir e registrar suas páginas lidas.
+          </p>
+
+          <div className="space-y-6">
+            {filteredMixedCollections.map((col) => (
+              <MixedCollectionBlock
+                key={col.id}
+                collection={col}
+                savedBookIds={savedBookIds}
+                readProgress={readingProgress}
+                onSelectBook={(book) => setSelectedBook(book)}
+                onSelectArticle={(article) => setSelectedArticle(article)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ==================================================================== */}
       {/* INLINE SECTION 2: TESTES & INSTRUMENTOS PSICOLÓGICOS               */}
       {/* ==================================================================== */}
       {(activeCategory === 'todos' || activeCategory === 'testes') && testCollections.length > 0 && (
@@ -422,6 +623,7 @@ export const BibliotecaView: React.FC = () => {
                 collection={col}
                 savedBookIds={savedBookIds}
                 onSelectBook={(book) => setSelectedBook(book)}
+                readProgress={readingProgress}
               />
             ))}
           </div>
@@ -452,6 +654,7 @@ export const BibliotecaView: React.FC = () => {
                 collection={col}
                 savedBookIds={savedBookIds}
                 onSelectBook={(book) => setSelectedBook(book)}
+                readProgress={readingProgress}
               />
             ))}
           </div>
@@ -482,6 +685,7 @@ export const BibliotecaView: React.FC = () => {
                 collection={col}
                 savedBookIds={savedBookIds}
                 onSelectBook={(book) => setSelectedBook(book)}
+                readProgress={readingProgress}
               />
             ))}
           </div>
@@ -511,7 +715,12 @@ export const BibliotecaView: React.FC = () => {
                 key={col.id}
                 collection={col}
                 savedBookIds={savedBookIds}
-                onSelectBook={(book) => setSelectedBook(book)}
+                onSelectBook={(book) => {
+                  // For approach collections, navigate to approach detail view
+                  // Assuming the collection's books contain approach info or we can use col.id
+                  // We'll use the collection id as approachId for navigation
+                  window.location.hash = `#/biblioteca/abordagens/${col.id}`;
+                }}
               />
             ))}
           </div>
@@ -527,13 +736,17 @@ export const BibliotecaView: React.FC = () => {
             <div className="flex items-center gap-2">
               <Compass className="w-4 h-4 text-gold" />
               <h2 className="font-display font-bold text-base text-ceci-primary">
-                coleções de bagagem complementar
+                bagagem complementar & visão expandida
               </h2>
             </div>
-            <span className="text-[11px] text-ceci-tertiary">
-              {multidisciplinaryCollections.length} coleções
+            <span className="text-[10px] font-bold text-success-deep bg-surface-mint-soft px-2.5 py-0.5 rounded-full border border-ceci-border-academic">
+              100 obras · 10 áreas
             </span>
           </div>
+
+          <p className="text-xs text-ceci-secondary leading-relaxed">
+            filosofia, literatura, sociologia, história, neurociência e mais — o repertório que enriquece seu olhar clínico.
+          </p>
 
           <div className="space-y-6">
             {multidisciplinaryCollections.map((col) => (
@@ -542,14 +755,72 @@ export const BibliotecaView: React.FC = () => {
                 collection={col}
                 savedBookIds={savedBookIds}
                 onSelectBook={(book) => setSelectedBook(book)}
+                readProgress={readingProgress}
               />
             ))}
           </div>
         </div>
       )}
 
+      {/* ==================================================================== */}
+      {/* INLINE SECTION 7: ARTIGOS CIENTÍFICOS (150, 15 por família)        */}
+      {/* ==================================================================== */}
+      {filteredArticleGroups.length > 0 && (
+        <div data-section="artigos" className="space-y-4 pt-4 px-1 border-t border-ceci-border-default">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Newspaper className="w-4 h-4 text-ceci-academic-strong" />
+              <h2 className="font-display font-bold text-base text-ceci-primary">
+                artigos científicos
+              </h2>
+            </div>
+            <span className="text-[10px] font-bold text-ceci-academic-strong bg-surface-blue px-2.5 py-0.5 rounded-full border border-ceci-border-academic">
+              {totalFilteredArticles} artigos
+            </span>
+          </div>
+
+          <p className="text-xs text-ceci-secondary leading-relaxed">
+            referências reais com DOI — toque para ler o resumo e abrir o artigo onde ele está disponível.
+          </p>
+
+          <div className="space-y-5">
+            {filteredArticleGroups.map((group) => (
+              <div key={group.familia} className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <span
+                    className="w-2.5 h-2.5 rounded-full shrink-0"
+                    style={{ backgroundColor: group.color }}
+                  />
+                  <span className="font-display font-bold text-sm text-ceci-primary">
+                    {group.label}
+                  </span>
+                  <span className="text-[10px] font-bold text-ceci-tertiary bg-surface-muted px-2 py-0.5 rounded-full border border-ceci-border-default">
+                    {group.articles.length}
+                  </span>
+                </div>
+                <div className="flex items-stretch gap-3 overflow-x-auto pb-2 scrollbar-none">
+                  {group.articles.map((article) => (
+                    <ArticleCard
+                      key={article.id}
+                      article={article}
+                      isSaved={savedBookIds.includes(article.id)}
+                      onSelect={() => setSelectedArticle(article)}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Empty Filter State */}
-      {filteredCollections.length === 0 && filteredTrendingBooks.length === 0 && (
+      {filteredCollections.length === 0 &&
+        filteredTrendingBooks.length === 0 &&
+        filteredCatalogCollections.length === 0 &&
+        filteredComplementaryCollections.length === 0 &&
+        filteredMixedCollections.length === 0 &&
+        filteredArticleGroups.length === 0 && (
         <div className="py-12 text-center space-y-3 px-1 border-t border-ceci-border-default">
           <BookOpen className="w-8 h-8 text-ceci-faded mx-auto" />
           <h3 className="font-display font-bold text-base text-ceci-primary">
@@ -595,18 +866,22 @@ export const BibliotecaView: React.FC = () => {
         <BookDetailModal
           book={selectedBook}
           isSaved={savedBookIds.includes(selectedBook.id)}
+          readPages={readingProgress[selectedBook.id] ?? selectedBook.readPages ?? 0}
           onClose={() => setSelectedBook(null)}
           onToggleSave={() => toggleSaveBook(selectedBook.id)}
-          onOpenReader={() => handleOpenReaderForBook(selectedBook)}
+          onUpdateProgress={(p) => updateReadingProgress(selectedBook.id, p)}
         />
       )}
 
-      {/* Reader Mode Modal */}
-      <ReaderModeModal
-        isOpen={isReaderOpen}
-        onClose={() => setIsReaderOpen(false)}
-        reading={readerReading}
-      />
+      {/* Article Details Modal */}
+      {selectedArticle && (
+        <ArticleDetailModal
+          article={selectedArticle}
+          isSaved={savedBookIds.includes(selectedArticle.id)}
+          onClose={() => setSelectedArticle(null)}
+          onToggleSave={() => toggleSaveBook(selectedArticle.id)}
+        />
+      )}
 
     </div>
   );

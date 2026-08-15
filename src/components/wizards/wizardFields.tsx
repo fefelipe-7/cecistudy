@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { Plus, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
-/** Rótulo de campo padrão dos wizards. */
+/** Rótulo de campo discreto dos wizards (o destaque é o headline do passo). */
 export const FieldLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <label className="block text-xs font-medium text-ceci-secondary mb-1">{children}</label>
+  <label className="block text-[11px] font-semibold text-ceci-tertiary mb-1.5 uppercase tracking-wider">{children}</label>
 );
 
+/** Input "chunky": fundo sólido suave, cantos grandes, bastante respiro interno. */
 const inputClass =
-  'w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2.5 text-sm text-ceci-primary focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 placeholder-ceci-faded';
+  'w-full bg-surface-input border border-transparent rounded-2xl px-4 py-4 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 transition-shadow';
 
 export const TextInput: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = (props) => (
   <input {...props} className={cn(inputClass, props.className)} />
@@ -42,14 +43,14 @@ export const SelectField: React.FC<SelectFieldProps> = ({
   <div>
     {label && <FieldLabel>{label}</FieldLabel>}
     {options.length === 0 ? (
-      <p className="text-[11px] text-ceci-tertiary bg-white border border-ceci-border-default rounded-xl px-3.5 py-2.5">
+      <p className="text-[11px] text-ceci-tertiary bg-surface-input rounded-2xl px-4 py-4">
         {emptyMessage ?? 'ainda não há opções no cantinho.'}
       </p>
     ) : (
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2.5 text-sm text-ceci-primary focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 cursor-pointer"
+        className="w-full bg-surface-input border border-transparent rounded-2xl px-4 py-4 text-sm text-ceci-primary focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 cursor-pointer"
       >
         {placeholder && <option value="" disabled>{placeholder}</option>}
         {options.map((o) => (
@@ -82,7 +83,10 @@ interface MultiChipPickerProps<T extends string> {
   onChange: (values: React.SetStateAction<T[]>) => void;
 }
 
-/** Pills de escolha única (categorias, prioridades, status…). */
+/**
+ * Escolha única em cartões clicáveis (selection cards):
+ * cantos 16px, borda leve; selecionado = borda da marca + fundo rosado.
+ */
 export const ChipPicker = <T extends string>({
   label,
   options,
@@ -91,28 +95,29 @@ export const ChipPicker = <T extends string>({
 }: ChipPickerProps<T>) => (
   <div>
     {label && <FieldLabel>{label}</FieldLabel>}
-    <div className="flex flex-wrap gap-1.5">
+    <div className="grid grid-cols-2 gap-2.5">
       {options.map((o) => (
         <button
           key={o.value}
           type="button"
           onClick={() => onChange(o.value)}
+          aria-pressed={value === o.value}
           className={cn(
-            'px-3 py-1.5 rounded-full text-[11px] font-semibold capitalize transition-all cursor-pointer',
+            'flex items-center gap-2.5 px-3.5 py-3.5 rounded-[16px] border-2 text-left transition-all active:scale-[0.98] cursor-pointer min-h-[52px]',
             value === o.value
-              ? 'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand shadow-2xs'
-              : 'bg-white text-ceci-secondary border border-ceci-border-default hover:bg-surface-rose'
+              ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong shadow-2xs'
+              : 'bg-white border-ceci-border-subtle text-ceci-primary hover:bg-surface-muted'
           )}
         >
-          {o.emoji ? `${o.emoji} ` : ''}
-          {o.label}
+          {o.emoji && <span className="text-lg leading-none shrink-0">{o.emoji}</span>}
+          <span className="text-xs font-semibold leading-snug">{o.label}</span>
         </button>
       ))}
     </div>
   </div>
 );
 
-/** Pills de escolha múltipla (disciplinas, autores…). */
+/** Pills de escolha múltipla (disciplinas, autores…) — mantidas compactas p/ listas grandes. */
 export const MultiChipPicker = <T extends string>({
   label,
   options,
@@ -132,6 +137,7 @@ export const MultiChipPicker = <T extends string>({
             key={o.value}
             type="button"
             onClick={() => toggle(o.value)}
+            aria-pressed={values.includes(o.value)}
             className={cn(
               'px-3 py-1.5 rounded-full text-[11px] font-semibold capitalize transition-all cursor-pointer',
               values.includes(o.value)
@@ -192,19 +198,19 @@ export const TagInput: React.FC<TagInputProps> = ({
             }
           }}
           placeholder={placeholder}
-          className="flex-1 min-w-0 bg-white border border-ceci-border-default rounded-xl px-3.5 py-2.5 text-sm text-ceci-primary focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 placeholder-ceci-faded"
+          className={cn(inputClass, 'flex-1 min-w-0')}
         />
         <button
           type="button"
           onClick={add}
-          className="w-10 h-10 rounded-xl bg-ceci-primary hover:bg-ceci-primary-hover text-white flex items-center justify-center shrink-0 shadow-2xs transition-transform active:scale-95 cursor-pointer"
+          className="w-14 h-14 rounded-2xl bg-ceci-primary hover:bg-ceci-primary-hover text-white flex items-center justify-center shrink-0 shadow-2xs transition-transform active:scale-95 cursor-pointer"
           aria-label="adicionar"
         >
-          <Plus className="w-4 h-4 stroke-[2.5]" />
+          <Plus className="w-5 h-5 stroke-[2.5]" />
         </button>
       </div>
 
-      <div className="flex flex-wrap gap-1.5 mt-2">
+      <div className="flex flex-wrap gap-1.5 mt-2.5">
         {tags.map((t) => (
           <span
             key={t}

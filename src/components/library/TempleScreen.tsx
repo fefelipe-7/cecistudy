@@ -20,6 +20,7 @@ interface TempleCard {
   titleHover: string;
   chevron: string;
   toast: string;
+  action?: 'familias';
 }
 
 const TEMPLE_CARDS: TempleCard[] = [
@@ -32,6 +33,7 @@ const TEMPLE_CARDS: TempleCard[] = [
     titleHover: 'group-hover:text-ceci-brand-strong',
     chevron: 'text-ceci-brand-strong',
     toast: 'em breve: famílias ♡',
+    action: 'familias',
   },
   {
     id: 'conceitos',
@@ -76,7 +78,12 @@ const TEMPLE_CARDS: TempleCard[] = [
 ];
 
 export const TempleScreen: React.FC = () => {
-  const { showToast } = useApp();
+  const { showToast, openFamilies } = useApp();
+
+  const handleCardClick = (card: TempleCard) => {
+    if (card.action === 'familias') openFamilies();
+    else showToast(card.toast);
+  };
 
   return (
     <div className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-1 animate-in fade-in duration-300 relative">
@@ -102,7 +109,7 @@ export const TempleScreen: React.FC = () => {
         {TEMPLE_CARDS.map((card) => (
           <button
             key={card.id}
-            onClick={() => showToast(card.toast)}
+            onClick={() => handleCardClick(card)}
             className="w-full text-left bg-white rounded-[22px] p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs tap-interactive hover:shadow-xs active:scale-[0.99] cursor-pointer group flex items-center justify-between"
           >
             <div className="flex items-center gap-3 min-w-0 pr-2">

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Bookmark, Share2, Sun, Moon, Type, ChevronLeft, ChevronRight, Highlighter } from 'lucide-react';
+import { X, Bookmark, Share2, Sun, Moon, Type, ChevronLeft, ChevronRight, Highlighter, List } from 'lucide-react';
 import { ReadingItem } from '../../types';
 import { Modal } from '../ui/Modal';
 
@@ -18,11 +18,11 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
 }) => {
   const [theme, setTheme] = useState<'paper' | 'dark' | 'sepia'>('paper');
   const [fontSize, setFontSize] = useState<number>(18);
-  const [currentPage, setCurrentPage] = useState<number>(() => reading?.readPages || 12);
+  const [currentPage, setCurrentPage] = useState<number>(() => reading?.readPages || 1);
 
   if (!isOpen || !reading) return null;
 
-  const totalPages = reading?.totalPages || 120;
+  const totalPages = reading?.totalPages || 1;
   const progressPercent = Math.round((currentPage / totalPages) * 100);
 
   const themeClasses = {
@@ -30,13 +30,6 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
     sepia: 'bg-surface-paper text-beige-700',
     dark: 'bg-ceci-primary text-surface-muted',
   };
-
-  const sampleExcerpt = [
-    "A psicologia contemporânea e a psicanálise se cruzam na compreensão das formações do inconsciente e dos comportamentos humanos cotidianos.",
-    "A riqueza da mente não está apenas no acúmulo de memórias conscientes, mas em como ressignificamos experiências e lidamos com a subjetividade.",
-    "A maioria dos indivíduos subestima a força dos mecanismos de defesa e superestima a capacidade do controle racional absoluto sobre as emoções.",
-    "Primeira regra do aprendizado reflexivo: não negligencie o afeto. Segunda regra: o escutar analítico é o instrumento fundamental para transformar angústia em elaboração.",
-  ];
 
   const handlePageChange = (newPage: number) => {
     const clamped = Math.max(1, Math.min(totalPages, newPage));
@@ -99,34 +92,43 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
 
         {/* Reader Canvas Content */}
         <div className="flex-1 overflow-y-auto px-8 sm:px-14 py-8 space-y-6 select-text">
-          <div className="text-center space-y-2 mb-8">
-            <span className="text-[11px] lowercase tracking-widest opacity-50">
-              capítulo {Math.ceil(currentPage / 10)}
-            </span>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold leading-tight">
-              A Equação da Mente e do Afeto
-            </h2>
-            <div className="w-8 h-0.5 bg-rose-500 mx-auto opacity-70 mt-3" />
-          </div>
+<div className="text-center space-y-2 mb-4">
+             <h2 className="font-display text-2xl sm:text-3xl font-bold leading-tight">
+               {reading.title}
+             </h2>
+             <div className="w-8 h-0.5 bg-rose-500 mx-auto opacity-70 mt-2" />
+           </div>
 
-          {/* Highlighted Key Text Box */}
-          <div className="my-6 p-4 rounded-xl bg-surface-paper border-l-4 ceci-border-gold text-sm leading-relaxed italic text-beige-700">
-            "A riqueza da mente não está apenas no acúmulo de dados, mas em como acolhemos o desconhecido e ressignificamos nossa história interpessoal."
-            <div className="mt-2 text-[10px] font-bold tracking-wider lowercase text-gold flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-gold inline-block" />
-              destaque do leitor
+          {reading.highlights && reading.highlights.length > 0 && (
+            <div className="mb-6 p-4 rounded-xl bg-surface-paper border-l-4 ceci-border-gold text-sm leading-relaxed italic text-beige-700">
+              <strong className="text-beige-700">Destaques:</strong>
+              <ul className="mt-2 space-y-1 pl-5 text-beige-600">
+                {reading.highlights.map((h, idx) => (
+                  <li key={idx}>{h}</li>
+                ))}
+              </ul>
             </div>
-          </div>
+          )}
 
-          {sampleExcerpt.map((paragraph, idx) => (
-            <p
-              key={idx}
-              className="leading-relaxed text-justify"
-              style={{ fontSize: `${fontSize}px` }}
-            >
-              {paragraph}
+          {reading.chapters && reading.chapters.length > 0 ? (
+            <>
+              {reading.chapters.map((chapter, idx) => (
+                <div key={chapter.id} className="mb-6">
+                  <h3 className="font-display text-xl font-bold mb-2">{chapter.title}</h3>
+                  <p
+                    className="leading-relaxed text-justify"
+                    style={{ fontSize: `${fontSize}px` }}
+                  >
+                    {chapter.body}
+                  </p>
+                </div>
+              ))}
+            </>
+          ) : (
+            <p className="text-center text-xs text-ceci-secondary italic">
+              Nenhum capítulo disponível para esta leitura.
             </p>
-          ))}
+          )}
 
           <p
             className="leading-relaxed text-justify"

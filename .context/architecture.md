@@ -73,7 +73,6 @@ storage.getSync(key) // apenas web (inicialização do hook)
   stickers, sessions, currentMood, reminder), todos expostos via hook `useApp()`.
 - Alguns estados **não** usam persistência e vivem em `useState` local da view:
   - `systemSuggestions`, dados de dias da semana (HomeView — dummy)
-  - `dotsData` do calendário de humor (MoodCalendarWidget — dummy)
 
 > ✅ Persistidos via `usePersistentState`: `savedBookIds` e `looseNotes` (BibliotecaView),
 > `bookmarkedCourseIds` (favoritos) e `composePrefs` (última escolha do quick capture).
@@ -109,7 +108,7 @@ voltar/avançar do browser e o histórico do webview (swipe-back do iOS).
 
 Rotas: `#/home`, `#/faculdade`, `#/faculdade/:courseId`, `#/faculdade/:subTab`, `#/estudos`,
 `#/estudos/:subTab`, `#/biblioteca`, `#/biblioteca/:subTab`, `#/biblioteca/notas`,
-`#/biblioteca/templo`, `#/perfil`, `#/perfil/:subTab`, `#/mood`,
+`#/biblioteca/templo`, `#/perfil`, `#/mood`,
 `#/nota`, `#/<tab>/nota`, `#/faculdade/:courseId/nota` (+ sufixo `/detalhes`).
 
 - `NavScreen` = `{kind:'tab', tab} | {kind:'course', courseId} | {kind:'notes'} | {kind:'temple'} | {kind:'mood'} | {kind:'compose'} | {kind:'composeDetails'}`
@@ -144,7 +143,8 @@ Rotas: `#/home`, `#/faculdade`, `#/faculdade/:courseId`, `#/faculdade/:subTab`, 
   (box-shadow rosa temporário) o item com `data-target` (ex.: ClassNoteListItem) ou a seção
   com `data-section` (BibliotecaView: testes/autores/conceitos/abordagens/multidisciplinar).
 - Sub-tabs por tab agora vivem no **contexto** (`subTabFaculdade`, `subTabEstudos`,
-  `subTabBiblioteca`, `subTabPerfil`) e são codificadas na URL quando não padrão.
+  `subTabBiblioteca`) e são codificadas na URL quando não padrão. O **Perfil não tem
+  sub-tabs**: é uma única página inline (`#/perfil`) com métricas reais derivadas do estado.
 
 ### Header dinâmico (`DynamicHeaderConfig`)
 `AppContext` constrói um `headerConfig` conforme o contexto:
