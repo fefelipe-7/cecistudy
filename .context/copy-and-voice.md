@@ -18,12 +18,11 @@ leveza, afeto. Evita tom formal ou rígido, mas mantém clareza.
 - **Branding:** escrever `cecistudy` minúsculo; com o coração, `cecistudy ♡`.
 - **Ações:** preferir "anotar/guardar" a "registrar/cadastrar/salvar"; CTAs convidativos
   ("bora estudar?", "bora focar?", "guardar", "esquecer filtros").
-- **Emojis:** usados com moderação, sempre com propósito (decoração de cards, mood, badges).
+- **Emojis:** usados com moderação, sempre com propósito (decoração de cards, badges).
   Emojis comuns: `♡`, `✨`, `📚`, `🧠`, `☕`, `🌷`, `🎓`.
 - **Termos próprios do produto:**
   - "cantinho" = o app/espaço pessoal.
   - "dica da ceci" = dicas motivacionais (componente recorrente).
-  - "estado de espírito" = mood do dia.
   - "study corner", "meta do dia", "plano de ação", "sessões de foco".
 
 ## 3. Tom por contexto
@@ -52,4 +51,4 @@ leveza, afeto. Evita tom formal ou rígido, mas mantém clareza.
 - [ ] Minúsculo (salvo exceções de CSS `uppercase`/siglas/nomes próprios).
 - [ ] Tom acolhedor, sem jargão técnico de IA.
 - [ ] Acentuação correta (acentos são bem-vindos mesmo em minúsculo).
-- [ ] Usar termos próprios do produto ("cantinho", "dica da ceci", "estado de espírito").
+- [ ] Usar termos próprios do produto ("cantinho", "dica da ceci").

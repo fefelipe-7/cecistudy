@@ -11,12 +11,12 @@
 
 | Entidade | Campos-chave | Relações |
 |---|---|---|
-| `UserProfile` | name, semester, totalSemesters, university, targetCareer, avatarMood, dailyQuote, stickersCollected | — |
+| `UserProfile` | name, semester, totalSemesters, university, targetCareer, dailyQuote, stickersCollected | — |
 | `Course` | id, name, code, professor, semester, schedule, room, color, icon, progress, description | — (pai de classes/exams/tasks/readings/materials) |
 | `ClassNote` | id, courseId, title, number, date, summary, fullNotes, conceptIds[], authorIds[], materials[], hasQuestions, **rating** (1–5 estrelas, opcional) | `courseId`, `conceptIds`, `authorIds` |
 | `Task` | id, title, disciplineId, classId, dueDate, completed, priority, category | `disciplineId`→Course, `classId`→ClassNote |
 | `Exam` | id, courseId, title, date, weight, topics[], completed, grade | `courseId` |
-| `StudySession` | id, courseId, topic, date, durationMinutes, mood, notes | `courseId` |
+| `StudySession` | id, courseId, topic, date, durationMinutes, notes | `courseId` |
 | `ReadingItem` | id, title, author, courseId, type, totalPages, readPages, status, highlights[] | `courseId` |
 | `Flashcard` | id, conceptId, courseId, question, answer, lastReviewed, easeFactor, timesReviewed | `conceptId`, `courseId` |
 | `PsychologyConcept` | id, name, definition, approachId, authorIds[], courseIds[], tags[] | `approachId`, `authorIds`, `courseIds` |
@@ -26,7 +26,6 @@
 | `InternshipLog` | id, date, hours, activity, supervisionNotes, reflections, conceptIds[] | `conceptIds` |
 | `TccData` | title, advisor, field, problemStatement, objectives[], status, chapters[], references[] | — |
 | `Sticker` | id, name, emoji, description, unlocked, unlockedAt, category | — |
-| `DailyMoodData` | emoji, label, energyLevel, vibeColor, reflection, intention, updatedAt | (definido em `EstadoDeEspiritoView`) |
 | `StreakData` | `activeDays: string[]` (YYYY-MM-DD, fuso local) — dias com ≥1 ação que conta para a streak | derivado: `streakStats`/`currentWeekProgress` (lógica em `src/lib/streak.ts`) |
 
 ### Tipos de navegação
@@ -69,7 +68,7 @@
   o prefixo (o hook/storage adicionam).
 - Chaves usadas: `profile`, `courses`, `classes`, `tasks`, `exams`, `authors`, `concepts`,
   `approaches`, `readings`, `flashcards`, `materials`, `internship`, `tcc`, `stickers`,
-  `sessions`, `currentMood`, `reminder` (`{enabled, time}` — lembrete diário),
+  `sessions`, `reminder` (`{enabled, time}` — lembrete diário),
   `savedBookIds`, `looseNotes` (BibliotecaView), `bookmarkedCourseIds` (favoritos de disciplinas),
   `streakData` (`{activeDays}` — dias ativos da streak, derivados em `src/lib/streak.ts`),
   `composePrefs` (`{mode, courseId}` — última escolha do quick capture: aula vs. avulsa),

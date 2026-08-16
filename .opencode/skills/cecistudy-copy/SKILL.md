@@ -15,7 +15,7 @@ Ceci as a **helpful secretary friend** (1st/2nd person: "vamos?", "deixa eu te a
      ABNT, CRP), and proper names (authors, universities).
 2. Write the brand as `cecistudy` (lowercase), or `cecistudy ♡` with the heart.
 3. Use emojis sparingly and with purpose (`♡ ✨ 📚 🧠 ☕ 🌷 🎓`).
-4. Use product vocabulary: "cantinho", "dica da ceci", "estado de espírito", "meta do dia",
+4. Use product vocabulary: "cantinho", "dica da ceci", "meta do dia",
    "plano de ação", "study corner", "sessões de foco".
 5. **Actions**: prefer "anotar/guardar" over "registrar/cadastrar/salvar"; use inviting CTAs
    ("bora estudar?", "bora focar?", "guardar", "esquecer filtros").
@@ -33,4 +33,4 @@ Ceci as a **helpful secretary friend** (1st/2nd person: "vamos?", "deixa eu te a
 - [ ] Lowercase (except CSS-uppercase titles, acronyms, proper names).
 - [ ] Warm and affectionate tone.
 - [ ] Correct accents.
-- [ ] Product vocabulary ("cantinho", "dica da ceci", "estado de espírito").
+- [ ] Product vocabulary ("cantinho", "dica da ceci").

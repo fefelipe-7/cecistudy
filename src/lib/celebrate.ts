@@ -6,7 +6,7 @@ export type CelebrationKind =
   | 'reading-done'
   | 'session-done'
   | 'flashcards-done'
-  | 'mood-saved';
+  | 'sticker-unlocked';
 
 /** Paleta de confetes alinhada ao design system (rose/green/blue/yellow). */
 const CONFETTI_COLORS = [
@@ -74,11 +74,11 @@ export function celebrate(kind: CelebrationKind): void {
     case 'flashcards-done':
       burstFromCenter(110, { spread: 82, startVelocity: 42 });
       break;
+    case 'sticker-unlocked':
+      burstFromCenter(150, { spread: 96, startVelocity: 40 });
+      break;
     case 'reading-done':
       burstFromCenter(80, { spread: 70 });
-      break;
-    case 'mood-saved':
-      burstFromCenter(45, { spread: 55, startVelocity: 30, gravity: 1.05 });
       break;
   }
 }

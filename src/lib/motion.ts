@@ -61,7 +61,7 @@ export const screenVariants: Variants = {
   }),
 };
 
-/** Variants de fade + scale curtos para telas auxiliares (wizard, compose, mood, etc.). */
+/** Variants de fade + scale curtos para telas auxiliares (wizard, compose, etc.). */
 export const overlayVariants: Variants = {
   initial: { opacity: 0, scale: 0.985, y: 6 },
   animate: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.18, ease: IOS_EASE_OUT } },

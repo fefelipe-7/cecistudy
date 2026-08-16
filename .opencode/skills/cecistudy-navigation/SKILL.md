@@ -20,7 +20,7 @@ The project has no router. Navigation is driven by state in `App.tsx`. Full refe
 
 ## Dynamic header (`DynamicHeaderConfig`)
 Built in `App.tsx`. Two modes:
-- **default** — brand header (logo "C", "cecistudy ♡", semester badge, search, mood).
+- **default** — brand header (logo "C", "cecistudy ♡", semester badge, search).
 - **detail** — back button, icon/code, title/subtitle, bookmark toggle, and `rightActions`
   (e.g. an "Anotação" quick-add button).
 

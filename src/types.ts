@@ -15,9 +15,10 @@ export type NavScreen =
   | { kind: 'course'; courseId: string }
   | { kind: 'notes' }
   | { kind: 'temple' }
-  | { kind: 'mood' }
   | { kind: 'streak' }
   | { kind: 'internshipDiary' }
+  | { kind: 'tcc' }
+  | { kind: 'stickers' }
   | { kind: 'compose' }
   | { kind: 'composeDetails' }
   | { kind: 'wizard'; type: WizardFlow }
@@ -129,7 +130,6 @@ export interface StudySession {
   topic: string;
   date: string;
   durationMinutes: number;
-  mood: 'com_foco' | 'tranquilo' | 'cansado' | 'produtivo';
   notes?: string;
 }
 
@@ -366,7 +366,25 @@ export interface Sticker {
   unlocked: boolean;
   unlockedAt?: string;
   category: 'faculdade' | 'estudo' | 'leituras' | 'jornada';
+  /** Condição de desbloqueio (lida do catálogo em `src/data/stickerCatalog.ts`). */
+  condition?: StickerCondition;
 }
+
+/** Regra de desbloqueio de um sticker (conquista), avaliada contra o estado do app. */
+export type StickerCondition =
+  | { type: 'reading-done' }
+  | { type: 'profile-set' }
+  | { type: 'flashcards-reviewed'; min: number }
+  | { type: 'internship-first' }
+  | { type: 'streak'; min: number }
+  | { type: 'degree-half' }
+  | { type: 'concepts-with-authors'; min: number }
+  | { type: 'tcc-done' }
+  | { type: 'sessions'; min: number }
+  | { type: 'class-notes'; min: number }
+  | { type: 'pages-read'; min: number }
+  | { type: 'tasks-done'; min: number }
+  | { type: 'saved-books'; min: number };
 
 export interface UserProfile {
   name: string;
@@ -374,7 +392,6 @@ export interface UserProfile {
   totalSemesters: number;
   university: string;
   targetCareer: string;
-  avatarMood: string;
   dailyQuote: string;
   stickersCollected: number;
   /** Foto de perfil (data URL). Vazia quando não definida. */
@@ -389,16 +406,6 @@ export interface StreakData {
 /** Progresso de leitura por obra da biblioteca (id → páginas lidas). */
 export type ReadingProgress = Record<string, number>;
 
-export interface DailyMoodData {
-  emoji: string;
-  label: string;
-  energyLevel: number; // 1-5
-  vibeColor: string;
-  reflection: string;
-  intention: string;
-  updatedAt: string;
-}
-
 export type QuickType =
   | 'task'
   | 'class'
@@ -408,13 +415,6 @@ export type QuickType =
   | 'session'
   | 'exam'
   | 'author';
-
-/** Um registro de humor em um dia específico (alimenta o calendário de humor real). */
-export interface MoodEntry extends DailyMoodData {
-  id: string;
-  /** YYYY-MM-DD (fuso local). */
-  date: string;
-}
 
 /** Questão de estudo (banco de questões — aba `questoes`). */
 export interface StudyQuestion {

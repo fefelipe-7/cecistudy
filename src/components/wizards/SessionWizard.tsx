@@ -3,16 +3,7 @@ import { Timer } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { hapticSuccess } from '../../lib/haptics';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
-import { ChipPicker, FieldLabel, ReviewCard, SelectField, TextInput } from './wizardFields';
-
-type StudyMood = 'com_foco' | 'tranquilo' | 'cansado' | 'produtivo';
-
-const MOOD_OPTIONS: { value: StudyMood; label: string; emoji?: string }[] = [
-  { value: 'com_foco', label: 'com foco', emoji: '🎯' },
-  { value: 'produtivo', label: 'produtivo', emoji: '🌟' },
-  { value: 'tranquilo', label: 'tranquilo', emoji: '🌿' },
-  { value: 'cansado', label: 'cansado', emoji: '😮‍💨' },
-];
+import { FieldLabel, ReviewCard, SelectField, TextInput } from './wizardFields';
 
 const today = () => new Date().toISOString().split('T')[0];
 
@@ -22,7 +13,6 @@ export const SessionWizard: React.FC = () => {
   const [topic, setTopic] = useState('');
   const [minutes, setMinutes] = useState('25');
   const [courseId, setCourseId] = useState(wizardCourseId || courses[0]?.id || '');
-  const [mood, setMood] = useState<StudyMood>('com_foco');
 
   const courseName = courses.find((c) => c.id === courseId)?.name ?? '';
 
@@ -43,23 +33,15 @@ export const SessionWizard: React.FC = () => {
     {
       id: 'sessao-ritmo',
       title: 'ritmo',
-      headline: 'por quanto tempo e como está o ritmo?',
+      headline: 'por quanto tempo?',
       content: (
-        <div className="space-y-4">
-          <div>
-            <FieldLabel>duração (minutos)</FieldLabel>
-            <TextInput
-              type="number"
-              value={minutes}
-              onChange={(e) => setMinutes(e.target.value)}
-              placeholder="ex: 25"
-            />
-          </div>
-          <ChipPicker
-            label="como você estava no ritmo?"
-            options={MOOD_OPTIONS}
-            value={mood}
-            onChange={setMood}
+        <div>
+          <FieldLabel>duração (minutos)</FieldLabel>
+          <TextInput
+            type="number"
+            value={minutes}
+            onChange={(e) => setMinutes(e.target.value)}
+            placeholder="ex: 25"
           />
         </div>
       ),
@@ -86,7 +68,6 @@ export const SessionWizard: React.FC = () => {
           rows={[
             { label: 'estudo', value: topic.trim() },
             { label: 'duração', value: `${minutes} min` },
-            { label: 'ritmo', value: mood },
             { label: 'disciplina', value: courseName || 'sem disciplina' },
           ]}
         />
@@ -101,7 +82,6 @@ export const SessionWizard: React.FC = () => {
       topic: topic.trim(),
       date: today(),
       durationMinutes: parseInt(minutes) || 25,
-      mood,
     });
     hapticSuccess();
     closeWizard();

@@ -6,13 +6,12 @@
  * - Defaults vazios (produção): `empty.ts`.
  * - Dados de exemplo: `seeds.ts`.
  * - Catálogo da biblioteca: `libraryData.ts`.
- * - Constantes de UI: `constants.ts` / `moodPresets.ts`.
+ * - Constantes de UI: `constants.ts`.
  */
 export * from '../types';
 export * from './schema';
 export * from './empty';
 export * from './seeds';
 export * from './libraryData';
-export * from './moodPresets';
 export * from './constants';
 export * from './notesSeeds';

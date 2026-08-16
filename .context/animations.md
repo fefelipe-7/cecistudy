@@ -198,7 +198,7 @@ abrir/fechar quick-add/busca/editar matéria, lembrete). Ficou apenas em intera�
 
 **Motor:** `src/lib/celebrate.ts` — `celebrate(kind)` com presets por momento:
 - `tasks-done` (grande: burst central + canhões laterais) · `session-done`/`flashcards-done`
-  (médio) · `reading-done` (médio) · `mood-saved` (pequeno).
+  (médio) · `reading-done` (médio).
 - Cores da paleta (rose/green/blue/yellow), `z-index` 9999, no-op com `prefers-reduced-motion`.
 
 **Gatilhos (todos data-driven):**
@@ -206,7 +206,6 @@ abrir/fechar quick-add/busca/editar matéria, lembrete). Ficou apenas em intera�
   transição para 100% vive em `src/lib/taskLogic.ts` (`shouldCelebrateTasks`, testado) + toast
   "plano do dia completo! parabéns, Ceci 🎉" e `hapticSuccess`.
 - **Leitura concluída** → `handleUpdateReadingPages` (status passa a `concluido`).
-- **Mood salvo** → `handleSaveMood` (já tinha `hapticSuccess`).
 - **Pomodoro concluído** → `EstudosView` (timer atinge 0).
 - **Fim da fila de flashcards** → `EstudosView.handleReview` (último cartão).
 

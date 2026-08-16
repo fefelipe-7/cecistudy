@@ -10,10 +10,13 @@ export interface Route {
   focusedCourseId?: string | null;
   notes?: boolean;
   temple?: boolean;
-  mood?: boolean;
   streak?: boolean;
   /** Diário de estágio (tela cheia de todos os registros, empilhada sobre o perfil). */
   internshipDiary?: boolean;
+  /** Tela cheia do meu TCC (criar/manter), empilhada sobre o perfil. */
+  tcc?: boolean;
+  /** Tela cheia de stickers & conquistas, empilhada sobre o perfil. */
+  stickers?: boolean;
   compose?: boolean;
   composeDetails?: boolean;
   /** Wizard de criação em tela cheia (ex.: `#/novo/conceito`, `#/faculdade/c3/novo/prova`). */
@@ -78,7 +81,6 @@ export function parseRoute(hash: string): Route {
   const h = hash.replace(/^#\/?/, '').split('/');
   const seg = h[0];
 
-  if (seg === 'mood') return { mood: true };
   if (seg === 'streak') return { tab: 'home', streak: true };
 
   // Telas de composição: "nota" (e "detalhes") pode aparecer em qualquer nível,
@@ -157,6 +159,12 @@ export function parseRoute(hash: string): Route {
     if (seg === 'perfil' && h[1] === 'estagio') {
       return { tab: 'perfil', internshipDiary: true };
     }
+    if (seg === 'perfil' && h[1] === 'tcc') {
+      return { tab: 'perfil', tcc: true };
+    }
+    if (seg === 'perfil' && h[1] === 'stickers') {
+      return { tab: 'perfil', stickers: true };
+    }
     if (h[1] === 'streak') return { tab: seg as NavTab, streak: true };
     const s = subtab(seg);
     if (s) return { tab: seg as NavTab, subTab: s };
@@ -184,9 +192,10 @@ export function routeToStack(route: Route): NavScreen[] {
   if (route.wizard) {
     return [...baseStackFor(route.baseTab ?? 'home', route.baseCourseId), { kind: 'wizard', type: route.wizard }];
   }
-  if (route.mood) return [{ kind: 'tab', tab: 'home' }, { kind: 'mood' }];
   if (route.streak) return [...baseStackFor(route.tab ?? 'home'), { kind: 'streak' }];
   if (route.internshipDiary) return [{ kind: 'tab', tab: 'perfil' }, { kind: 'internshipDiary' }];
+  if (route.tcc) return [{ kind: 'tab', tab: 'perfil' }, { kind: 'tcc' }];
+  if (route.stickers) return [{ kind: 'tab', tab: 'perfil' }, { kind: 'stickers' }];
   if (route.notes) return [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }];
   if (route.temple) return [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'temple' }];
   if (route.approachId) {
@@ -232,13 +241,14 @@ export function stackToHash(stack: NavScreen[], subTab?: string): string {
     }
     return `#/novo/${suffix}`;
   }
-  if (top.kind === 'mood') return '#/mood';
   if (top.kind === 'streak') {
     const base = stack[0];
     const tab = base?.kind === 'tab' ? base.tab : 'home';
     return tab === 'home' ? '#/streak' : `#/${tab}/streak`;
   }
   if (top.kind === 'internshipDiary') return '#/perfil/estagio';
+  if (top.kind === 'tcc') return '#/perfil/tcc';
+  if (top.kind === 'stickers') return '#/perfil/stickers';
   if (top.kind === 'notes') return '#/biblioteca/notas';
   if (top.kind === 'temple') return '#/biblioteca/templo';
   if (top.kind === 'course') return `#/faculdade/${top.courseId}`;

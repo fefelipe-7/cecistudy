@@ -71,7 +71,6 @@ export const OnboardingScreen: React.FC = () => {
         totalSemesters,
         university: university.trim(),
         targetCareer: targetCareer.trim() || 'Psicóloga Clínica',
-        avatarMood: '✿ começando uma nova fase',
         dailyQuote: 'compreender o ser humano é a forma mais bonita de cuidado.',
         stickersCollected: 0,
         photoUrl: photoUrl || '',

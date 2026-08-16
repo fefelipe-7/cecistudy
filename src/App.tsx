@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { Suspense, lazy, memo, useCallback, useEffect, useRef } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { App as CapacitorApp } from '@capacitor/app';
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion';
 import { AppProvider, useApp } from './context/AppContext';
 import { setupNativeShell } from './lib/native';
+import { initOta } from './lib/ota';
 import { screenVariants, overlayVariants } from './lib/motion';
 
 import { HeaderNav } from './components/HeaderNav';
@@ -11,22 +12,98 @@ import { BottomNav } from './components/BottomNav';
 import { QuickAddModal } from './components/QuickAddModal';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 import { EditCourseModal } from './components/courses/EditCourseModal';
+import { EditTccModal } from './components/tcc/EditTccModal';
 import { Toast } from './components/ui/Toast';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
 
-import { HomeView } from './components/views/HomeView';
-import { FaculdadeView } from './components/views/FaculdadeView';
-import { EstudosView } from './components/views/EstudosView';
-import { BibliotecaView } from './components/views/BibliotecaView';
-import { PerfilView } from './components/views/PerfilView';
 import { OnboardingScreen } from './components/views/OnboardingScreen';
-import { EstadoDeEspiritoView } from './components/views/EstadoDeEspiritoView';
-import { StreakView } from './components/views/StreakView';
-import { ComposeNoteView } from './components/views/ComposeNoteView';
-import { ClassNoteDetailWizard } from './components/views/ClassNoteDetailWizard';
-import { WizardRouter } from './components/wizards/WizardRouter';
+
+// C1: views carregadas sob demanda — cada uma vira chunk próprio; o boot fica
+// leve e a biblioteca (com o catálogo estático grande) só carrega ao ser aberta.
+const HomeView = lazy(() => import('./components/views/HomeView').then((m) => ({ default: m.HomeView })));
+const FaculdadeView = lazy(() => import('./components/views/FaculdadeView').then((m) => ({ default: m.FaculdadeView })));
+const EstudosView = lazy(() => import('./components/views/EstudosView').then((m) => ({ default: m.EstudosView })));
+const BibliotecaView = lazy(() => import('./components/views/BibliotecaView').then((m) => ({ default: m.BibliotecaView })));
+const PerfilView = lazy(() => import('./components/views/PerfilView').then((m) => ({ default: m.PerfilView })));
+const StreakView = lazy(() => import('./components/views/StreakView').then((m) => ({ default: m.StreakView })));
+const ComposeNoteView = lazy(() => import('./components/views/ComposeNoteView').then((m) => ({ default: m.ComposeNoteView })));
+const ClassNoteDetailWizard = lazy(() => import('./components/views/ClassNoteDetailWizard').then((m) => ({ default: m.ClassNoteDetailWizard })));
+const WizardRouter = lazy(() => import('./components/wizards/WizardRouter').then((m) => ({ default: m.WizardRouter })));
 import { Modal } from './components/ui/Modal';
+import { OtaUpdateModal } from './components/ui/OtaUpdateModal';
+import { ViewSkeleton } from './components/ui/Skeleton';
 import { FileText } from 'lucide-react';
+import { QuickType } from './types';
+
+// Componentes orientados a props com memo: não re-renderizam quando o AppShell
+// re-renderiza por mudança de dados (ex.: togglar tarefa) sem que suas props mudem.
+const HeaderNavMemo = memo(HeaderNav);
+const BottomNavMemo = memo(BottomNav);
+const QuickAddModalMemo = memo(QuickAddModal);
+const GlobalSearchModalMemo = memo(GlobalSearchModal);
+const EditCourseModalMemo = memo(EditCourseModal);
+const ToastMemo = memo(Toast);
+
+/** Fallback discreto enquanto um chunk de view carrega (primeira visita à aba). */
+const ViewFallback = () => <ViewSkeleton rows={5} />;
+
+/** Prompt "quer dar mais detalhes?" após salvar uma aula (memoizado). */
+const DetailPromptModal = memo(function DetailPromptModal({
+  open,
+  noteId,
+  onClose,
+  onOpenComposeDetails,
+  onShowToast,
+}: {
+  open: boolean;
+  noteId: string | null;
+  onClose: () => void;
+  onOpenComposeDetails: (id: string) => void;
+  onShowToast: (message: string) => void;
+}) {
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      className="w-full max-w-sm bg-white rounded-[28px] border border-ceci-border-default shadow-2xl p-6 space-y-4 text-ceci-primary animate-in zoom-in-95 duration-200"
+    >
+      <div className="flex items-center gap-3">
+        <span className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
+          <FileText className="w-5 h-5" />
+        </span>
+        <div>
+          <h3 className="font-display font-bold text-lg text-ceci-primary leading-tight">
+            aula registrada ♡
+          </h3>
+          <p className="text-xs text-ceci-secondary">
+            quer dar mais detalhes sobre essa anotação de aula?
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-2 pt-1">
+        <button
+          onClick={() => {
+            if (noteId) onOpenComposeDetails(noteId);
+            onClose();
+          }}
+          className="w-full bg-ceci-primary hover:bg-ceci-primary-hover text-white py-2.5 rounded-2xl text-xs font-bold cursor-pointer transition-colors"
+        >
+          dar mais detalhes
+        </button>
+        <button
+          onClick={() => {
+            onClose();
+            onShowToast('aula registrada no diário ♡');
+          }}
+          className="w-full bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong py-2.5 rounded-2xl text-xs font-bold cursor-pointer transition-colors"
+        >
+          fazer depois
+        </button>
+      </div>
+    </Modal>
+  );
+});
 
 function AppShell() {
   const app = useApp();
@@ -36,41 +113,46 @@ function AppShell() {
   }, []);
 
   // Android back button: fecha modais → pop de telas → sai do app na raiz
+  const appRef = useRef(app);
+  appRef.current = app;
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
     const handler = CapacitorApp.addListener('backButton', () => {
-      if (app.isQuickAddOpen) {
-        app.closeQuickAdd();
-      } else if (app.isSearchOpen) {
-        app.closeSearch();
-      } else if (app.isEditCourseOpen) {
-        app.closeEditCourse();
-      } else if (app.isDetailPromptOpen) {
-        app.closeDetailPrompt();
-      } else if (app.isComposeDetailsOpen) {
-        app.closeComposeDetails();
-      } else if (app.isComposeScreenOpen) {
-        app.closeCompose();
-      } else if (app.isWizardOpen) {
-        app.closeWizard();
-      } else if (app.isMoodViewOpen) {
-        app.closeMoodView();
-      } else if (app.isStreakScreenOpen) {
-        app.closeStreak();
-      } else if (app.isInternshipDiaryOpen) {
-        app.closeInternshipDiary();
-      } else if (app.isNotesScreenOpen) {
-        app.closeNotesScreen();
-      } else if (app.isTempleScreenOpen) {
-        app.closeTemple();
-      } else if (app.isFamiliesScreenOpen) {
-        app.closeFamilies();
-      } else if (app.focusedFamilyId) {
-        app.closeFamily();
-      } else if (app.focusedApproachId) {
-        app.closeApproach();
-      } else if (app.focusedCourseId) {
-        app.closeCourseDetail();
+      const a = appRef.current;
+      if (a.isQuickAddOpen) {
+        a.closeQuickAdd();
+      } else if (a.isSearchOpen) {
+        a.closeSearch();
+      } else if (a.isEditCourseOpen) {
+        a.closeEditCourse();
+      } else if (a.isDetailPromptOpen) {
+        a.closeDetailPrompt();
+      } else if (a.isComposeDetailsOpen) {
+        a.closeComposeDetails();
+      } else if (a.isComposeScreenOpen) {
+        a.closeCompose();
+      } else if (a.isWizardOpen) {
+        a.closeWizard();
+      } else if (a.isStreakScreenOpen) {
+        a.closeStreak();
+      } else if (a.isInternshipDiaryOpen) {
+        a.closeInternshipDiary();
+      } else if (a.isTccScreenOpen) {
+        a.closeTccScreen();
+      } else if (a.isStickersScreenOpen) {
+        a.closeStickersScreen();
+      } else if (a.isNotesScreenOpen) {
+        a.closeNotesScreen();
+      } else if (a.isTempleScreenOpen) {
+        a.closeTemple();
+      } else if (a.isFamiliesScreenOpen) {
+        a.closeFamilies();
+      } else if (a.focusedFamilyId) {
+        a.closeFamily();
+      } else if (a.focusedApproachId) {
+        a.closeApproach();
+      } else if (a.focusedCourseId) {
+        a.closeCourseDetail();
       } else {
         void CapacitorApp.exitApp();
       }
@@ -78,26 +160,34 @@ function AppShell() {
     return () => {
       void handler.then((h) => h.remove());
     };
-  }, [app]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const {
     profile,
     headerConfig,
     activeTab,
-    isMoodViewOpen,
-    currentMood,
     courses,
     handleNavigate,
-    handleSaveMood,
     openSearch,
     openQuickAdd,
     openCompose,
-    closeMoodView,
     closeQuickAdd,
     closeSearch,
   } = app;
 
   const isAuxFlow = app.isComposeScreenOpen || app.isComposeDetailsOpen || app.isWizardOpen;
+
+  // Callbacks estáveis para os filhos memoizados (evita re-render quando dados mudam)
+  const onNavigateToPerfil = useCallback(() => handleNavigate('perfil'), [handleNavigate]);
+  const onPickQuickAdd = useCallback(
+    (type: QuickType) => {
+      if (type === 'class') openCompose();
+      else app.openWizard(type);
+    },
+    [openCompose, app.openWizard]
+  );
+
   // Keyboard shortcut (Cmd+K) for search
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -110,6 +200,11 @@ function AppShell() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [openSearch]);
 
+  // OTA self-hosted: checa atualização web (só nativo, após o onboarding concluído)
+  useEffect(() => {
+    if (app.onboarding.completed) void initOta();
+  }, [app.onboarding.completed]);
+
   // Primeiro acesso → onboarding em tela cheia (sem header/nav)
   if (!app.onboarding.completed) {
     return <OnboardingScreen />;
@@ -120,12 +215,12 @@ function AppShell() {
 
       {/* Top Header */}
       {!isAuxFlow && (
-        <HeaderNav
+        <HeaderNavMemo
           profile={profile}
           headerConfig={headerConfig}
           onOpenSearch={openSearch}
           onOpenQuickAdd={openQuickAdd}
-          onNavigateToPerfil={() => handleNavigate('perfil')}
+          onNavigateToPerfil={onNavigateToPerfil}
         />
       )}
 
@@ -147,21 +242,19 @@ function AppShell() {
             animate="animate"
             exit="exit"
           >
-            {app.isMoodViewOpen ? (
-              <EstadoDeEspiritoView
-                currentMood={currentMood}
-                onSaveMood={handleSaveMood}
-                onBackToHome={closeMoodView}
-              />
-            ) : app.isStreakScreenOpen ? (
-              <StreakView />
+            {app.isStreakScreenOpen ? (
+              <Suspense fallback={<ViewFallback />}>
+                <StreakView />
+              </Suspense>
             ) : (
               <>
-                {activeTab === 'home' && <HomeView />}
-                {activeTab === 'faculdade' && <FaculdadeView />}
-                {activeTab === 'estudos' && <EstudosView />}
-                {activeTab === 'biblioteca' && <BibliotecaView />}
-                {activeTab === 'perfil' && <PerfilView />}
+                <Suspense fallback={<ViewFallback />}>
+                  {activeTab === 'home' && <HomeView />}
+                  {activeTab === 'faculdade' && <FaculdadeView />}
+                  {activeTab === 'estudos' && <EstudosView />}
+                  {activeTab === 'biblioteca' && <BibliotecaView />}
+                  {activeTab === 'perfil' && <PerfilView />}
+                </Suspense>
               </>
             )}
           </motion.div>
@@ -179,11 +272,17 @@ function AppShell() {
               className="fixed inset-0 z-40 overflow-y-auto px-3.5 py-4 sm:px-5 bg-canvas"
             >
               {app.isComposeScreenOpen ? (
-                <ComposeNoteView />
+                <Suspense fallback={<ViewFallback />}>
+                  <ComposeNoteView />
+                </Suspense>
               ) : app.isComposeDetailsOpen ? (
-                <ClassNoteDetailWizard />
+                <Suspense fallback={<ViewFallback />}>
+                  <ClassNoteDetailWizard />
+                </Suspense>
               ) : app.isWizardOpen ? (
-                <WizardRouter />
+                <Suspense fallback={<ViewFallback />}>
+                  <WizardRouter />
+                </Suspense>
               ) : null}
             </motion.div>
           )}
@@ -192,27 +291,24 @@ function AppShell() {
 
       {/* Fixed Bottom Navigation Bar (escondida em telas auxiliares) */}
       {app.isBottomNavVisible && (
-        <BottomNav
+        <BottomNavMemo
           activeTab={activeTab}
-          onChangeTab={(tab) => handleNavigate(tab)}
+          onChangeTab={handleNavigate}
           onOpenWizard={app.openWizard}
           onOpenTaskExamWizard={app.openTaskExamWizard}
-          onOpenCompose={() => openCompose()}
+          onOpenCompose={openCompose}
         />
       )}
 
       {/* Quick Add (escolha de tipo → abre o wizard em tela cheia) */}
-      <QuickAddModal
+      <QuickAddModalMemo
         isOpen={app.isQuickAddOpen}
         onClose={closeQuickAdd}
-        onPick={(type) => {
-          if (type === 'class') openCompose();
-          else app.openWizard(type);
-        }}
+        onPick={onPickQuickAdd}
       />
 
       {/* Global Search Modal */}
-      <GlobalSearchModal
+      <GlobalSearchModalMemo
         isOpen={app.isSearchOpen}
         onClose={closeSearch}
         courses={courses}
@@ -225,57 +321,35 @@ function AppShell() {
       />
 
       {/* Editar matéria (aberta pelo menu do header de disciplina) */}
-      <EditCourseModal
+      <EditCourseModalMemo
         isOpen={app.isEditCourseOpen}
         course={app.focusedCourse}
         onClose={app.closeEditCourse}
         onSave={app.handleUpdateCourse}
       />
 
-      {/* Prompt "quer dar mais detalhes?" após salvar uma aula */}
-      <Modal
-        open={app.isDetailPromptOpen}
-        onClose={app.closeDetailPrompt}
-        className="w-full max-w-sm bg-white rounded-[28px] border border-ceci-border-default shadow-2xl p-6 space-y-4 text-ceci-primary animate-in zoom-in-95 duration-200"
-      >
-        <div className="flex items-center gap-3">
-          <span className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
-            <FileText className="w-5 h-5" />
-          </span>
-          <div>
-            <h3 className="font-display font-bold text-lg text-ceci-primary leading-tight">
-              aula registrada ♡
-            </h3>
-            <p className="text-xs text-ceci-secondary">
-              quer dar mais detalhes sobre essa anotação de aula?
-            </p>
-          </div>
-        </div>
+      {/* Editar tcc (aberto pela tela de tcc / header detail) */}
+      <EditTccModal
+        isOpen={app.isEditTccOpen}
+        tcc={app.tcc}
+        onClose={app.closeEditTcc}
+        onSave={app.handleUpdateTcc}
+      />
 
-        <div className="space-y-2 pt-1">
-          <button
-            onClick={() => {
-              if (app.detailNoteId) app.openComposeDetails(app.detailNoteId);
-              app.closeDetailPrompt();
-            }}
-            className="w-full bg-ceci-primary hover:bg-ceci-primary-hover text-white py-2.5 rounded-2xl text-xs font-bold cursor-pointer transition-colors"
-          >
-            dar mais detalhes
-          </button>
-          <button
-            onClick={() => {
-              app.closeDetailPrompt();
-              app.showToast('aula registrada no diário ♡');
-            }}
-            className="w-full bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong py-2.5 rounded-2xl text-xs font-bold cursor-pointer transition-colors"
-          >
-            fazer depois
-          </button>
-        </div>
-      </Modal>
+      {/* Prompt "quer dar mais detalhes?" após salvar uma aula */}
+      <DetailPromptModal
+        open={app.isDetailPromptOpen}
+        noteId={app.detailNoteId}
+        onClose={app.closeDetailPrompt}
+        onOpenComposeDetails={app.openComposeDetails}
+        onShowToast={app.showToast}
+      />
+
+      {/* Aviso de atualização OTA pronta (só nativo) */}
+      <OtaUpdateModal />
 
       {/* Toast de feedback */}
-      <Toast message={app.toast} />
+      <ToastMemo message={app.toast} />
 
     </div>
   );

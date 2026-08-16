@@ -22,7 +22,6 @@ export const initialProfile: UserProfile = {
   totalSemesters: 10,
   university: 'Universidade de Psicologia',
   targetCareer: 'Psicóloga Clínica & Pesquisadora',
-  avatarMood: '🌸 estudando com foco e amor',
   dailyQuote: 'compreender o ser humano é a forma mais bonita de cuidado.',
   stickersCollected: 6,
   photoUrl: '',
@@ -589,7 +588,6 @@ export const initialStudySessions: StudySession[] = [
     topic: 'Semiologia dos Transtornos do Humor (Depressão)',
     date: '2026-08-06',
     durationMinutes: 45,
-    mood: 'com_foco',
     notes: 'Li o capítulo do Dalgalarrondo e resumi os critérios diagnósticos principais.'
   },
   {
@@ -598,7 +596,6 @@ export const initialStudySessions: StudySession[] = [
     topic: 'Treino de RPD e Esquemas de Beck',
     date: '2026-08-07',
     durationMinutes: 30,
-    mood: 'produtivo',
     notes: 'Revisei flashcards e fiz simulação de caso clínico para a prova.'
   }
 ];

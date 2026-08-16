@@ -17,17 +17,27 @@ import {
   Settings,
   ChevronRight,
   Camera,
-  Trash2
+  Trash2,
+  Smartphone,
+  RefreshCw
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { isReminderSupported } from '../../lib/notifications';
+import { isNativePlatform } from '../../lib/storage';
 import { pickProfilePhoto } from '../../lib/photo';
+import {
+  applyNow,
+  checkForUpdates,
+  formatVersionLabel,
+  useOtaStatus,
+} from '../../lib/ota';
 import { StudyStatsWidget } from '../widgets/StudyStatsWidget';
-import { MoodCalendarWidget } from '../widgets/MoodCalendarWidget';
 import { AnimatedNumber } from '../ui/AnimatedNumber';
 import { ProgressBar } from '../ui/ProgressBar';
 import { InternshipLogCard } from '../InternshipLogCard';
 import { InternshipDiaryView } from './InternshipDiaryView';
+import { TccView } from './TccView';
+import { StickersView } from './StickersView';
 
 /** Formata minutos de estudo em "Xh Ymin" / "Xmin". */
 const formatStudyTime = (minutes: number): string => {
@@ -53,6 +63,74 @@ const scrollToSection = (id: string) => {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
+/** Card de atualização OTA (auto-suficiente; renderizado só no app nativo). */
+const OtaSection: React.FC = () => {
+  const ota = useOtaStatus();
+
+  const statusText =
+    ota.status === 'checking'
+      ? 'procurando novidades…'
+      : ota.status === 'downloading'
+        ? `baixando atualização (${ota.progress}%)…`
+        : ota.status === 'ready'
+          ? `a versão ${ota.availableVersion} está pronta ♡`
+          : ota.status === 'error'
+            ? 'não consegui verificar agora — tenta de novo.'
+            : ota.availableVersion && ota.availableVersion !== ota.currentVersion
+              ? `novidade disponível: ${ota.availableVersion}`
+              : 'tudo em dia ✨';
+
+  const busy = ota.status === 'checking' || ota.status === 'downloading';
+
+  return (
+    <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
+      <div className="flex items-center gap-2">
+        <Smartphone className="w-4 h-4 text-ceci-academic-strong" />
+        <h2 className="font-display font-bold text-xl text-ceci-primary">
+          atualização do app
+        </h2>
+      </div>
+
+      <div className="rounded-2xl p-4 border bg-surface-blue border-ceci-border-academic space-y-3">
+        <div>
+          <h3 className="font-display font-bold text-sm text-ceci-primary">
+            versão web: {formatVersionLabel(ota.currentVersion)}
+          </h3>
+          <p className="text-[11px] text-ceci-secondary leading-tight mt-0.5">
+            {statusText}
+          </p>
+        </div>
+
+        {ota.status === 'downloading' && <ProgressBar value={ota.progress} className="h-2" />}
+
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => void checkForUpdates({ manual: true })}
+            disabled={busy}
+            className="flex items-center gap-2 bg-white border border-ceci-border-default text-ceci-primary px-4 py-2.5 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer hover:border-ceci-border-brand transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <RefreshCw className="w-4 h-4" />
+            verificar atualização
+          </button>
+
+          {ota.status === 'ready' && (
+            <button
+              onClick={() => void applyNow()}
+              className="flex items-center gap-2 bg-ceci-primary hover:bg-ceci-primary-hover text-white px-4 py-2.5 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer transition-colors"
+            >
+              aplicar agora
+            </button>
+          )}
+        </div>
+      </div>
+
+      <p className="text-[11px] text-ceci-tertiary -mt-1">
+        mudanças de interface chegam direto pelo cantinho; mudanças nativas precisam de atualização pela loja.
+      </p>
+    </div>
+  );
+};
+
 export const PerfilView: React.FC = () => {
   const {
     profile,
@@ -67,11 +145,14 @@ export const PerfilView: React.FC = () => {
     tcc,
     stickers,
     handleUpdateProfile,
-    handleUpdateTcc,
     handleNavigate,
     openQuickAdd,
     openInternshipDiary,
     isInternshipDiaryOpen,
+    isTccScreenOpen,
+    openTccScreen,
+    isStickersScreenOpen,
+    openStickersScreen,
     reminderSettings,
     updateReminder,
     showToast,
@@ -85,11 +166,20 @@ export const PerfilView: React.FC = () => {
   const [semester, setSemester] = useState(profile.semester);
   const [university, setUniversity] = useState(profile.university);
   const [dailyQuote, setDailyQuote] = useState(profile.dailyQuote);
-  const [avatarMood, setAvatarMood] = useState(profile.avatarMood);
 
   // Tela cheia do diário de estágio (empilhada sobre o perfil)
   if (isInternshipDiaryOpen) {
     return <InternshipDiaryView />;
+  }
+
+  // Tela cheia do meu TCC (empilhada sobre o perfil)
+  if (isTccScreenOpen) {
+    return <TccView />;
+  }
+
+  // Tela cheia de stickers & conquistas (empilhada sobre o perfil)
+  if (isStickersScreenOpen) {
+    return <StickersView />;
   }
 
   const handleSaveProfile = (e: React.FormEvent) => {
@@ -99,7 +189,6 @@ export const PerfilView: React.FC = () => {
       semester: Number(semester),
       university,
       dailyQuote,
-      avatarMood,
       photoUrl: profile.photoUrl
     });
     showToast('guardei suas configurações com carinho ♡');
@@ -122,15 +211,6 @@ export const PerfilView: React.FC = () => {
     showToast('foto removida — tudo bem, sem pressa ♡');
   };
 
-  const handleToggleTccChapter = (index: number) => {
-    const updatedChapters = [...tcc.chapters];
-    updatedChapters[index].completed = !updatedChapters[index].completed;
-    handleUpdateTcc({
-      ...tcc,
-      chapters: updatedChapters
-    });
-  };
-
   // ---- métricas reais derivadas do estado ----
   const percentDegree = Math.round((profile.semester / profile.totalSemesters) * 100);
   const studyMinutes = sessions.reduce((acc, s) => acc + s.durationMinutes, 0);
@@ -145,6 +225,7 @@ export const PerfilView: React.FC = () => {
   const tccChaptersDone = tcc.chapters.filter((ch) => ch.completed).length;
   const tccChaptersTotal = tcc.chapters.length;
   const stickersUnlocked = stickers.filter((s) => s.unlocked).length;
+  const hasTcc = tcc.title.trim().length > 0;
 
   const tccStatusLabel =
     tcc.status === 'concluido' ? 'concluído' : tcc.status === 'revisao' ? 'em revisão' : 'em andamento';
@@ -266,9 +347,6 @@ export const PerfilView: React.FC = () => {
             <p className="text-xs text-ceci-secondary mt-0.5">
               {profile.targetCareer} • {profile.university}
             </p>
-            <span className="inline-block text-[11px] bg-surface-blue text-ceci-academic-strong px-2.5 py-0.5 rounded-full font-medium border border-ceci-border-academic mt-2">
-              {profile.avatarMood}
-            </span>
           </div>
         </div>
 
@@ -342,9 +420,6 @@ export const PerfilView: React.FC = () => {
 
       {/* ===== Ofensiva de estudos (streak real) ===== */}
       <StudyStatsWidget />
-
-      {/* ===== Calendário de humor ===== */}
-      <MoodCalendarWidget />
 
       {/* ===== Linha do tempo da graduação ===== */}
       <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
@@ -447,129 +522,89 @@ export const PerfilView: React.FC = () => {
       </div>
 
       {/* ===== Meu TCC ===== */}
-      <div id="perfil-tcc" className="scroll-mt-4 rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
-        <div className="border-b border-ceci-border-subtle pb-4 space-y-2">
-          <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand">
-            tcc • {tccStatusLabel}
-          </span>
-          <h2 className="font-display font-bold text-xl sm:text-2xl text-ceci-primary">
-            {tcc.title}
-          </h2>
-          <p className="text-xs text-ceci-secondary">
-            orientadora: <span className="font-semibold text-ceci-primary">{tcc.advisor}</span> • área: {tcc.field}
-          </p>
-        </div>
-
-        <div className="bg-surface-muted p-4 rounded-2xl border border-ceci-border-default space-y-3 text-xs">
-          <div>
-            <p className="font-semibold text-ceci-primary mb-1">problema de pesquisa:</p>
-            <p className="text-ceci-secondary leading-relaxed">{tcc.problemStatement}</p>
-          </div>
-
-          <div>
-            <p className="font-semibold text-ceci-primary mb-1">objetivos:</p>
-            <ul className="list-disc pl-4 space-y-1 text-ceci-secondary">
-              {tcc.objectives.map((obj, idx) => (
-                <li key={idx}>{obj}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <h3 className="font-display font-bold text-base text-ceci-primary">
-              cronograma de capítulos
-            </h3>
-            <span className="text-[11px] font-bold text-ceci-brand-strong bg-surface-rose px-2.5 py-0.5 rounded-full border border-ceci-border-brand">
-              {tccChaptersDone}/{tccChaptersTotal}
-            </span>
-          </div>
-
-          <ProgressBar value={tccChaptersTotal ? Math.round((tccChaptersDone / tccChaptersTotal) * 100) : 0} />
-
-          <div className="space-y-2 pt-1">
-            {tcc.chapters.map((ch, idx) => (
-              <div
-                key={idx}
-                onClick={() => handleToggleTccChapter(idx)}
-                className={`flex items-center justify-between p-3 rounded-2xl border cursor-pointer tap-interactive ${
-                  ch.completed
-                    ? 'bg-surface-blue/60 border-ceci-border-academic text-ceci-academic-strong'
-                    : 'bg-white border-ceci-border-default hover:border-ceci-border-brand'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <CheckCircle2 className={`w-5 h-5 ${ch.completed ? 'text-success-leaf' : 'text-ceci-faded'}`} />
-                  <span className={`text-xs font-medium ${ch.completed ? 'line-through text-ceci-tertiary' : 'text-ceci-primary'}`}>
-                    {ch.title}
-                  </span>
-                </div>
-
-                {ch.dueDate && (
-                  <span className="text-[10px] text-ceci-secondary">prazo: {ch.dueDate}</span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <h3 className="font-display font-bold text-base text-ceci-primary mb-2">
-            referências utilizadas (abnt)
-          </h3>
-          <div className="space-y-1.5 text-xs text-ceci-secondary">
-            {tcc.references.map((ref, idx) => (
-              <p key={idx} className="bg-surface-muted p-2.5 rounded-xl border border-ceci-border-default font-mono text-[11px] text-ceci-primary">
-                {ref}
-              </p>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ===== Stickers & conquistas ===== */}
-      <div id="perfil-stickers" className="scroll-mt-4 rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
+      <div id="perfil-tcc" className="scroll-mt-4 rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-3">
         <div className="flex items-center justify-between gap-2">
           <div>
             <h2 className="font-display font-bold text-xl text-ceci-primary">
-              stickers & pequenas conquistas
+              meu tcc
             </h2>
             <p className="text-xs text-ceci-secondary">
-              celebrando cada passo da faculdade sem pressão, apenas com carinho.
+              plantando e cuidando do seu trabalho ♡
             </p>
           </div>
-          <span className="text-xs bg-rose-500 text-white px-3 py-1 rounded-full font-medium shadow-2xs shrink-0">
-            {stickersUnlocked} desbloqueados
-          </span>
+          <button
+            onClick={openTccScreen}
+            className="flex items-center gap-1 text-xs font-bold text-ceci-brand-strong bg-surface-rose border border-ceci-border-brand px-3.5 py-2 rounded-xl tap-interactive cursor-pointer hover:bg-ceci-border-brand/40 active:scale-[0.98] transition-colors shrink-0"
+          >
+            {hasTcc ? 'ver tcc' : 'criar tcc'}
+            <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
-          {stickers.map((st) => (
-            <div
-              key={st.id}
-              className={`p-3.5 rounded-2xl border text-center ${
-                st.unlocked
-                  ? 'bg-white border-ceci-border-brand shadow-2xs'
-                  : 'bg-surface-muted border-dashed border-ceci-border-default opacity-50 grayscale'
-              }`}
-            >
-              <span className="text-4xl block my-1">{st.emoji}</span>
-              <h3 className="font-display font-bold text-sm text-ceci-primary mt-1">{st.name}</h3>
-              <p className="text-[11px] text-ceci-secondary leading-tight mt-1">{st.description}</p>
-
-              {st.unlocked ? (
-                <span className="inline-block text-[9px] bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand px-2 py-0.5 rounded-full font-medium mt-3">
-                  {st.unlockedAt ? `conquistado em ${st.unlockedAt.split('-').reverse().join('/')} ✨` : 'conquistado ✨'}
-                </span>
-              ) : (
-                <span className="inline-block text-[9px] bg-surface-muted text-ceci-tertiary px-2 py-0.5 rounded-full font-medium mt-3">
-                  bloqueado
-                </span>
-              )}
+        {hasTcc ? (
+          <>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand shrink-0">
+                {tccStatusLabel}
+              </span>
+              <span className="text-xs text-ceci-primary font-semibold truncate">{tcc.title}</span>
             </div>
+            <ProgressBar value={tccChaptersTotal ? Math.round((tccChaptersDone / tccChaptersTotal) * 100) : 0} />
+            <p className="text-[11px] text-ceci-secondary">
+              {tccChaptersDone}/{tccChaptersTotal} capítulos concluídos
+            </p>
+          </>
+        ) : (
+          <p className="text-xs text-ceci-secondary bg-surface-muted border border-ceci-border-subtle rounded-2xl p-4 text-center">
+            ainda não tem tcc — que tal começar a plantar o seu? ♡
+          </p>
+        )}
+      </div>
+
+      {/* ===== Stickers & conquistas ===== */}
+      <div id="perfil-stickers" className="scroll-mt-4 rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-3">
+        <div className="flex items-center justify-between gap-2">
+          <div>
+            <h2 className="font-display font-bold text-xl text-ceci-primary">
+              stickers & conquistas
+            </h2>
+            <p className="text-xs text-ceci-secondary">
+              celebrando cada passo do cantinho ♡
+            </p>
+          </div>
+          <button
+            onClick={openStickersScreen}
+            className="flex items-center gap-1 text-xs font-bold text-ceci-brand-strong bg-surface-rose border border-ceci-border-brand px-3.5 py-2 rounded-xl tap-interactive cursor-pointer hover:bg-ceci-border-brand/40 active:scale-[0.98] transition-colors shrink-0"
+          >
+            ver conquistas
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2 flex-wrap pt-1">
+          {stickers.filter((s) => s.unlocked).slice(0, 6).map((st) => (
+            <span
+              key={st.id}
+              title={st.name}
+              className="w-11 h-11 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-2xl"
+            >
+              {st.emoji}
+            </span>
+          ))}
+          {stickers.filter((s) => !s.unlocked).slice(0, 3).map((st) => (
+            <span
+              key={st.id}
+              title={st.name}
+              className="w-11 h-11 rounded-2xl bg-surface-muted border border-dashed border-ceci-border-default flex items-center justify-center text-2xl opacity-50 grayscale"
+            >
+              {st.emoji}
+            </span>
           ))}
         </div>
+
+        <p className="text-[11px] text-ceci-secondary">
+          {stickersUnlocked} de {stickers.length} desbloqueados — bora buscar as próximas? ♡
+        </p>
       </div>
 
       {/* ===== Personalização do cantinho ===== */}
@@ -662,16 +697,6 @@ export const PerfilView: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-ceci-secondary mb-1">seu estado de espírito do dia</label>
-            <input
-              type="text"
-              value={avatarMood}
-              onChange={(e) => setAvatarMood(e.target.value)}
-              className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
-            />
-          </div>
-
-          <div>
             <label className="block text-xs font-medium text-ceci-secondary mb-1">frase motivacional de entrada</label>
             <textarea
               rows={2}
@@ -689,6 +714,9 @@ export const PerfilView: React.FC = () => {
           </button>
         </form>
       </div>
+
+      {/* ===== Atualização do app (OTA — só no app nativo) ===== */}
+      {isNativePlatform && <OtaSection />}
 
       {/* ===== Dados do cantinho (backup / exemplos / reset) ===== */}
       <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">

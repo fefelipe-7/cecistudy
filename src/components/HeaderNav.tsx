@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   Search,
-  Sparkles,
   ArrowLeft,
   Bookmark,
   Plus
@@ -252,17 +251,6 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 aria-label="buscar"
               >
                 <Search className="w-4 h-4" />
-              </button>
-
-              {/* Mood Badge */}
-              <button
-                onClick={onNavigateToPerfil}
-                className={`hidden sm:flex items-center gap-1.5 bg-surface-rose border border-ceci-border-brand hover:border-rose-300 text-ceci-brand-strong px-3 rounded-full font-medium shadow-2xs transition-colors duration-300 cursor-pointer ${
-                  scrolled ? 'py-1 text-[11px] min-h-[32px]' : 'py-1.5 text-xs min-h-[40px]'
-                }`}
-              >
-                <Sparkles className="w-3.5 h-3.5 text-rose-500 shrink-0" />
-                <span className="truncate max-w-[130px]">{profile.avatarMood}</span>
               </button>
             </div>
           </motion.div>

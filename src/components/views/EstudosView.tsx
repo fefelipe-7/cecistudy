@@ -17,10 +17,9 @@ import {
   ChevronRight,
   Flame
 } from 'lucide-react';
-import { Flashcard, ReadingItem, StudySession, SubTabEstudos } from '../../types';
-import { cn } from '../../lib/utils';
+import { Flashcard, ReadingItem, SubTabEstudos } from '../../types';
 import { ReaderModeModal } from '../widgets/ReaderModeModal';
-import { PillTabBar } from '../ui/PillTabBar';
+import { UnderlineTabBar } from '../ui/UnderlineTabBar';
 import { useApp } from '../../context/AppContext';
 import { hapticSuccess } from '../../lib/haptics';
 import { celebrate } from '../../lib/celebrate';
@@ -35,13 +34,6 @@ const daysSince = (iso: string) => Math.floor((Date.now() - new Date(iso).getTim
 
 const isDueToday = (card: Flashcard) =>
   !card.lastReviewed || daysSince(card.lastReviewed) >= intervalFor(card.timesReviewed);
-
-const SESSION_MOOD_EMOJI: Record<StudySession['mood'], string> = {
-  com_foco: '🤓',
-  tranquilo: '😌',
-  cansado: '😪',
-  produtivo: '✨',
-};
 
 const READING_STATUS_LABEL: Record<ReadingItem['status'], string> = {
   nao_iniciado: 'não iniciado',
@@ -86,7 +78,6 @@ export const EstudosView: React.FC = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [sessionTopic, setSessionTopic] = useState('');
   const [sessionCourseId, setSessionCourseId] = useState('');
-  const [selectedMood, setSelectedMood] = useState<'com_foco' | 'tranquilo' | 'cansado' | 'produtivo'>('com_foco');
   const [showSaveSession, setShowSaveSession] = useState(false);
 
   // Revisão de flashcards (fila da sessão)
@@ -147,8 +138,7 @@ export const EstudosView: React.FC = () => {
       courseId: sessionCourseId || undefined,
       topic: sessionTopic.trim() || 'sessão de foco',
       date: toISODate(new Date()),
-      durationMinutes: preset,
-      mood: selectedMood
+      durationMinutes: preset
     });
     hapticSuccess();
     showToast('sessão de estudo registrada com carinho ♡');
@@ -336,7 +326,7 @@ export const EstudosView: React.FC = () => {
       </div>
 
       {/* Sub-Tabs Pill Navigation */}
-      <PillTabBar
+      <UnderlineTabBar
         tabs={[
           { id: 'sessoes', label: 'sessão de foco', icon: <Clock className="w-3.5 h-3.5" /> },
           { id: 'flashcards', label: 'revisar', icon: <Brain className="w-3.5 h-3.5" /> },
@@ -425,25 +415,6 @@ export const EstudosView: React.FC = () => {
                     </option>
                   ))}
 </select>
-               </div>
-               <div>
-                 <label className="block text-xs font-medium text-ceci-secondary mb-1">humor da sessão</label>
-                 <div className="flex flex-wrap gap-1">
-                   {Object.entries(SESSION_MOOD_EMOJI).map(([mood, emoji]) => (
-                     <button
-                       key={mood}
-                       onClick={() => setSelectedMood(mood as any)}
-                       className={cn(
-                         'flex items-center gap-1 rounded-full border px-2 py-1 text-xs font-semibold transition-colors cursor-pointer',
-                         selectedMood === mood
-                           ? 'bg-ceci-primary text-white border-ceci-primary shadow-xs'
-                           : 'bg-white text-ceci-secondary border-ceci-border-default hover:bg-surface-muted'
-                       )}
-                     >
-                       {emoji} {mood}
-                     </button>
-                   ))}
-                 </div>
                </div>
               <div className="flex items-center justify-end gap-2 pt-1">
                 <button
@@ -741,7 +712,6 @@ export const EstudosView: React.FC = () => {
               >
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-sm">{SESSION_MOOD_EMOJI[s.mood] || '✨'}</span>
                     <h3 className="font-semibold text-xs text-ceci-primary truncate">{s.topic}</h3>
                   </div>
                   <p className="text-[11px] text-ceci-secondary mt-1">

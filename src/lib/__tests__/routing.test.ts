@@ -33,12 +33,17 @@ describe('parseRoute', () => {
     expect(parseRoute('#/estudos/leituras')).toEqual({ tab: 'estudos', subTab: 'leituras' });
   });
 
-  it('perfil não tem sub-tabs — qualquer segmento cai na aba base', () => {
-    expect(parseRoute('#/perfil/stickers')).toEqual({ tab: 'perfil' });
+  it('perfil não tem sub-tabs — segmento desconhecido cai na aba base', () => {
+    expect(parseRoute('#/perfil/xyz')).toEqual({ tab: 'perfil' });
   });
 
   it('reconhece o diário de estágio em /perfil/estagio', () => {
     expect(parseRoute('#/perfil/estagio')).toEqual({ tab: 'perfil', internshipDiary: true });
+  });
+
+  it('reconhece as telas de tcc e stickers em /perfil', () => {
+    expect(parseRoute('#/perfil/tcc')).toEqual({ tab: 'perfil', tcc: true });
+    expect(parseRoute('#/perfil/stickers')).toEqual({ tab: 'perfil', stickers: true });
   });
 
   it('reconhece telas especiais da biblioteca', () => {
@@ -60,10 +65,6 @@ describe('parseRoute', () => {
 
   it('reconhece sub-tab da biblioteca', () => {
     expect(parseRoute('#/biblioteca/conceitos')).toEqual({ tab: 'biblioteca', subTab: 'conceitos' });
-  });
-
-  it('reconhece mood', () => {
-    expect(parseRoute('#/mood')).toEqual({ mood: true });
   });
 
   it('reconhece a tela de streak com base dinâmica', () => {
@@ -136,7 +137,6 @@ describe('routeToStack', () => {
   });
 
   it('monta pilha de telas auxiliares', () => {
-    expect(routeToStack({ mood: true })).toEqual([{ kind: 'tab', tab: 'home' }, { kind: 'mood' }]);
     expect(routeToStack({ notes: true })).toEqual([
       { kind: 'tab', tab: 'biblioteca' },
       { kind: 'notes' },
@@ -156,6 +156,14 @@ describe('routeToStack', () => {
     expect(routeToStack({ internshipDiary: true })).toEqual([
       { kind: 'tab', tab: 'perfil' },
       { kind: 'internshipDiary' },
+    ]);
+    expect(routeToStack({ tcc: true })).toEqual([
+      { kind: 'tab', tab: 'perfil' },
+      { kind: 'tcc' },
+    ]);
+    expect(routeToStack({ stickers: true })).toEqual([
+      { kind: 'tab', tab: 'perfil' },
+      { kind: 'stickers' },
     ]);
     expect(routeToStack({ tab: 'biblioteca', approachId: 'psic-04-01' })).toEqual([
       { kind: 'tab', tab: 'biblioteca' },
@@ -229,10 +237,11 @@ describe('stackToHash', () => {
 
   it('serializa telas auxiliares ignorando sub-tab', () => {
     expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c3' }], 'aulas')).toBe('#/faculdade/c3');
-    expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'mood' }])).toBe('#/mood');
     expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'streak' }])).toBe('#/streak');
     expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'streak' }])).toBe('#/perfil/streak');
     expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'internshipDiary' }])).toBe('#/perfil/estagio');
+    expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'tcc' }])).toBe('#/perfil/tcc');
+    expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'stickers' }])).toBe('#/perfil/stickers');
     expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }])).toBe('#/biblioteca/notas');
     expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'approach', approachId: 'psic-04-01' }])).toBe('#/biblioteca/abordagens/psic-04-01');
     expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'families' }])).toBe('#/biblioteca/familias');
@@ -258,7 +267,7 @@ describe('stackToHash', () => {
 
 describe('round-trip hash ↔ rota', () => {
   it('reconstrói a rota a partir do hash serializado (abas + sub-tabs)', () => {
-    const cases = ['#/home', '#/faculdade', '#/faculdade/c3', '#/faculdade/aulas', '#/estudos/leituras', '#/biblioteca/conceitos', '#/biblioteca/notas', '#/biblioteca/templo', '#/biblioteca/familias', '#/biblioteca/familias/fam-01', '#/biblioteca/abordagens/psic-04-01', '#/mood', '#/streak', '#/perfil/streak', '#/perfil/estagio', '#/nota', '#/nota/detalhes', '#/biblioteca/nota', '#/faculdade/c3/nota', '#/biblioteca/nota/detalhes', '#/faculdade/c3/nota/detalhes', '#/novo/estagio', '#/novo/prova-atividade', '#/biblioteca/novo/leitura', '#/faculdade/c3/novo/prova'];
+    const cases = ['#/home', '#/faculdade', '#/faculdade/c3', '#/faculdade/aulas', '#/estudos/leituras', '#/biblioteca/conceitos', '#/biblioteca/notas', '#/biblioteca/templo', '#/biblioteca/familias', '#/biblioteca/familias/fam-01', '#/biblioteca/abordagens/psic-04-01', '#/streak', '#/perfil/streak', '#/perfil/estagio', '#/perfil/tcc', '#/perfil/stickers', '#/nota', '#/nota/detalhes', '#/biblioteca/nota', '#/faculdade/c3/nota', '#/biblioteca/nota/detalhes', '#/faculdade/c3/nota/detalhes', '#/novo/estagio', '#/novo/prova-atividade', '#/biblioteca/novo/leitura', '#/faculdade/c3/novo/prova'];
     for (const h of cases) {
       const route = parseRoute(h);
       const stack = routeToStack(route);

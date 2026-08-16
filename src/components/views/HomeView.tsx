@@ -17,7 +17,6 @@ import {
   Check,
   Lightbulb,
   ChevronRight,
-  Smile,
   FileText
 } from 'lucide-react';
 import { Task } from '../../types';
@@ -34,11 +33,9 @@ export const HomeView: React.FC = () => {
     exams,
     flashcards,
     readings,
-    currentMood,
     handleToggleTask,
     handleAddTask,
     handleNavigate,
-    openMoodView,
     openStreak,
     streakStats,
     currentWeekProgress,
@@ -132,39 +129,17 @@ export const HomeView: React.FC = () => {
   return (
     <div className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-1">
       
-      {/* Top Header Label & Greeting + Mood Button */}
-      <div className="flex items-center justify-between pt-1 px-0.5">
-        <div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-            <p className="text-xs font-medium text-ceci-secondary lowercase">
-              {formattedDate}
-            </p>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-ceci-primary mt-0.5 tracking-tight font-display">
-            {greeting}, {profile.name} <span className="font-normal text-xl">✨</span>
-          </h1>
+      {/* Top Header Label & Greeting */}
+      <div className="pt-1 px-0.5">
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+          <p className="text-xs font-medium text-ceci-secondary lowercase">
+            {formattedDate}
+          </p>
         </div>
-
-        {/* Daily Mood Face Button */}
-        <motion.button
-          whileTap={{ scale: 0.96 }}
-          transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          onClick={openMoodView}
-          title="conta como você está se sentindo hoje?"
-          className="group relative flex items-center gap-2 bg-white px-3 py-2 rounded-2xl border border-ceci-border-subtle shadow-sm cursor-pointer"
-        >
-          <div className="w-8 h-8 rounded-xl bg-surface-rose flex items-center justify-center text-lg border border-ceci-border-brand group-hover:scale-105 transition-transform">
-            {currentMood.emoji || '🤓'}
-          </div>
-          <div className="hidden sm:block text-left pr-1">
-            <p className="text-[10px] font-bold text-ceci-brand-strong lowercase tracking-wider">estado de espírito</p>
-            <p className="text-xs font-medium text-ceci-primary truncate max-w-[90px] lowercase">
-              {currentMood.label || 'focada'}
-            </p>
-          </div>
-          <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-rose-500 border-2 border-white" />
-        </motion.button>
+        <h1 className="text-2xl sm:text-3xl font-bold text-ceci-primary mt-0.5 tracking-tight font-display">
+          {greeting}, {profile.name} <span className="font-normal text-xl">✨</span>
+        </h1>
       </div>
 
       {/* Meta do Dia - Detailed & Large Inline Section */}

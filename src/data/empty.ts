@@ -4,6 +4,7 @@
  * O app nasce sem dados de demonstração: o primeiro acesso passa pelo onboarding,
  * e a usuária constrói tudo do zero (ou carrega os exemplos — ver `seeds.ts`).
  */
+import { lockedStickerCatalog } from './stickerCatalog';
 import {
   Course,
   ClassNote,
@@ -21,8 +22,6 @@ import {
   UserProfile,
   StudySession,
   StreakData,
-  DailyMoodData,
-  MoodEntry,
   StudyQuestion,
   Technique,
   OnboardingState,
@@ -34,7 +33,6 @@ export const emptyProfile: UserProfile = {
   totalSemesters: 8,
   university: '',
   targetCareer: '',
-  avatarMood: '',
   dailyQuote: '',
   stickersCollected: 0,
   photoUrl: '',
@@ -49,16 +47,6 @@ export const emptyTcc: TccData = {
   status: 'em_andamento',
   chapters: [],
   references: [],
-};
-
-export const emptyCurrentMood: DailyMoodData = {
-  emoji: '',
-  label: '',
-  energyLevel: 3,
-  vibeColor: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong',
-  reflection: '',
-  intention: '',
-  updatedAt: '',
 };
 
 export const emptyStreakData: StreakData = { activeDays: [] };
@@ -83,13 +71,11 @@ export interface EmptyDatabase {
   tcc: TccData;
   stickers: Sticker[];
   sessions: StudySession[];
-  currentMood: DailyMoodData;
   streakData: StreakData;
   reminder: { enabled: boolean; time: string };
   looseNotes: unknown[];
   savedBookIds: string[];
   bookmarkedCourseIds: string[];
-  moodHistory: MoodEntry[];
   questions: StudyQuestion[];
   techniques: Technique[];
   onboarding: OnboardingState;
@@ -111,15 +97,13 @@ export function emptyDatabase(): EmptyDatabase {
     materials: [],
     internshipLogs: [],
     tcc: emptyTcc,
-    stickers: [],
+    stickers: lockedStickerCatalog(),
     sessions: [],
-    currentMood: emptyCurrentMood,
     streakData: emptyStreakData,
     reminder: emptyReminder,
     looseNotes: [],
     savedBookIds: [],
     bookmarkedCourseIds: [],
-    moodHistory: [],
     questions: [],
     techniques: [],
     onboarding: emptyOnboarding,

@@ -5,7 +5,7 @@
  * incremente esta versão e registre a migração correspondente em `MIGRATIONS`.
  * O export/import carrega a versão junto; o app recusa/avisa dados de versão desconhecida.
  */
-export const SCHEMA_VERSION = 5;
+export const SCHEMA_VERSION = 6;
 
 /** Chave persistida que guarda a versão do schema em uso. */
 export const SCHEMA_VERSION_KEY = 'schemaVersion';
@@ -24,11 +24,10 @@ export interface AppDatabase {
 export type Migration = (data: Record<string, unknown>) => Record<string, unknown>;
 
 export const MIGRATIONS: Record<number, Migration> = {
-  // 1 → 2: adição de novas coleções (moodHistory, questions, techniques, onboarding)
+  // 1 → 2: adição de novas coleções (questions, techniques, onboarding)
   // e campos novos em entidades existentes. Dados antigos continuam válidos;
   // a migração apenas garante defaults para as chaves novas.
   2: (data) => ({
-    moodHistory: [],
     questions: [],
     techniques: [],
     onboarding: { completed: false },
@@ -57,6 +56,19 @@ export const MIGRATIONS: Record<number, Migration> = {
     readingProgress: {},
     ...data,
   }),
+  // 5 → 6: remoção do recurso de humor. Descarta os estados de mood (e o campo
+  // `avatarMood` do perfil) de backups antigos — o app não lê mais essas chaves.
+  6: (data) => {
+    const next = { ...data };
+    delete next.currentMood;
+    delete next.moodHistory;
+    const profile = (data.profile ?? {}) as Record<string, unknown>;
+    if ('avatarMood' in profile) {
+      next.profile = { ...profile };
+      delete (next.profile as Record<string, unknown>).avatarMood;
+    }
+    return next;
+  },
 };
 
 /**

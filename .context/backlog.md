@@ -286,6 +286,66 @@ e não persistidos. Unificar o modelo evita divergência.
 
 ---
 
+## Fase 10 — Remoção do recurso de humor (estado de espírito) (implementada)
+
+> **Status: `[x]` implementada a pedido da usuária.** O recurso de "estado de espírito"
+> (mood do dia) foi **completamente removido**: seletor na home, calendário no Perfil e tudo
+> relacionado. Este registro existe para agentes futuros não reimplementarem mood sem contexto.
+
+**O que foi feito**
+- Removidos `currentMood`/`moodHistory` (estado + persistência + export), `DailyMoodData`/
+  `MoodEntry` (types), `MOOD_PRESETS`/`moodPresets.ts` (deletado), `INTENTION_CHIPS`.
+- Removidos `avatarMood` (`UserProfile` — tagline do perfil) e `mood` (`StudySession` —
+  humor da sessão no `SessionWizard` e no histórico do `EstudosView`).
+- Removidos `EstadoDeEspiritoView` e `MoodCalendarWidget` (deletados); home sem botão de mood;
+  header default sem badge de humor; `#/mood` sem rota (`NavScreen`/`routing.ts`/`App.tsx`);
+  `handleSaveMood`/`openMoodView`/`closeMoodView`/`isMoodViewOpen` removidos; confete
+  `mood-saved` removido de `celebrate.ts`.
+- `SCHEMA_VERSION` 5 → **6**: `MIGRATIONS[6]` descarta `currentMood`/`moodHistory`/
+  `profile.avatarMood` de backups antigos; `AppContext` limpa as chaves órfãs no boot.
+- Docs (`AGENTS.md`, `.context/*.md`, skills) atualizados.
+
+**Gatilho de validação:** `npm run lint` + `npm run test` + `npm run build` verdes.
+
+---
+
+## Fase 11 — OTA self-hosted (atualizações web sem novo IPA/APK) (implementada)
+
+> **Status: `[x]` implementada.** O app nativo agora atualiza o bundle web
+> (React/CSS/JS) over-the-air via `@capgo/capacitor-updater` (modo manual), servido
+> de graça pelo GitHub Pages — sem servidor próprio nem novo `.ipa`/`.apk` a cada
+> mudança de interface.
+
+**O que foi feito**
+- **Cliente:** `src/lib/ota.ts` (modo manual do `@capgo/capacitor-updater`, no-op no web) —
+  `initOta()` chama `notifyAppReady()` no boot e agenda a checagem; `checkForUpdates()`
+  busca o `version.json` no GitHub Pages, compara com a versão atual e baixa o zip
+  (valida SHA-256); `next()` agenda a troca para a próxima abertura; `applyNow()`
+  aplica na hora. UI reativa via `useOtaStatus()`.
+- **Lógica pura testável:** `src/lib/otaLogic.ts` (`semverCompare`, `parseOtaManifest`,
+  `shouldUpdate`) + testes (`otaLogic.test.ts`).
+- **UI:** modal `ui/OtaUpdateModal.tsx` ("atualização pronta ♡") + card "atualização do
+  app" no Perfil (versão atual, progresso de download, "verificar atualização",
+  "aplicar agora") — só nativo.
+- **Publicação:** `.github/workflows/ota.yml` (push na `main` com mudanças web +
+  `workflow_dispatch`) → `npm ci` → lint → test → build → zip do `dist/` → SHA-256 →
+  `version.json` + `bundles/` (mantém as últimas 5 em `available`) → GitHub Pages.
+  Versão semver automática `1.0.<nº de commits>`.
+- **Config:** `capacitor.config.ts` com `CapacitorUpdater: { autoUpdate: 'off' }`; dep
+  `@capgo/capacitor-updater` + `npx cap sync` (android/ios commitados).
+- **Docs:** `ota/README.md` + `ota/version.json.example`; `AGENTS.md` e `architecture.md`
+  atualizados.
+
+**Setup manual único:** Settings → Pages → Source: "GitHub Actions"; e **uma** build
+nativa (IPA/APK) com o plugin embutido para o dispositivo passar a receber OTA.
+
+**Rollback:** automático se o bundle novo crashar antes do `notifyAppReady()`; manual via
+re-run do workflow num commit antigo; `available` guarda as últimas 5 versões.
+
+**Gatilho de validação:** `npm run lint` + `npm run test` + `npm run build` verdes.
+
+---
+
 ## Sugestão de ordem de execução
 
 1. **Fase 1** (correção de Hooks + fundações) → destrava as próximas fases.
@@ -296,3 +356,4 @@ e não persistidos. Unificar o modelo evita divergência.
 6. **Fase 6** (Capacitor & patamar de app — implementada; ver pendências acima).
 7. **Fase 7** (navegação native-first por pilha — implementada; ver acima).
 8. **Fase 8** (temas A/D/F: tokens, deep-link e testes — implementada; ver acima).
+9. **Fase 10** (remoção do humor — implementada; ver acima) e **Fase 11** (OTA self-hosted — implementada; ver acima).

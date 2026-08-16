@@ -10,7 +10,7 @@ Guide for working with cecistudy data. Full reference: `.context/data-model.md`.
 ## Source of truth
 - **Types:** `src/types.ts` (interfaces for Course, ClassNote, Task, Exam, StudySession,
   ReadingItem, Flashcard, PsychologyConcept, PsychologyAuthor, PsychologyApproach,
-  MaterialItem, InternshipLog, TccData, Sticker, UserProfile, DailyMoodData).
+  MaterialItem, InternshipLog, TccData, Sticker, UserProfile).
 - **Seeds:** `src/data/initialData.ts` (domain entities) and `src/data/libraryData.ts`
   (library catalog — own types `CollectionBook`, `ContextCollection`).
 
@@ -33,7 +33,7 @@ QuickAdd-created ids use `Date.now()` with a prefix (`t-`, `cl-`, `r-`, `f-`, `c
 - Global state in `App.tsx` via `usePersistentState(key, initial)` → localStorage key
   `cecistudy_<key>`.
 - **Not persisted** (local view state): `savedBookIds`, `looseNotes` (BibliotecaView),
-  dummy data in HomeView and MoodCalendarWidget. Flag this if you touch these.
+  dummy data in HomeView. Flag this if you touch these.
 
 ## Rules
 1. New global entity → add interface in `types.ts`, seed in `initialData.ts`, and
