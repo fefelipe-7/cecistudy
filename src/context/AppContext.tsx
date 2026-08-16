@@ -28,7 +28,11 @@ import {
   StudyQuestion,
   Technique,
   PsicoterapiaFamily,
-  OnboardingState
+  OnboardingState,
+  QuizConfig,
+  QuizAnswer,
+  QuizSession,
+  QuizPlayState
 } from '../types';
 import {
   emptyProfile,
@@ -85,6 +89,7 @@ export interface AppContextValue {
   sessions: StudySession[];
   questions: StudyQuestion[];
   techniques: Technique[];
+  quizSessions: QuizSession[];
   savedBookIds: string[];
   toggleSaveBook: (bookId: string) => void;
   readingProgress: Record<string, number>;
@@ -113,6 +118,9 @@ export interface AppContextValue {
   /** Chave da camada overlay (fade+scale) — vazia quando não há overlay. */
   overlayKey: string;
   navDirection: 0 | 1 | -1;
+  navigationStack: NavScreen[];
+  setStack: (next: NavScreen[]) => void;
+  syncHash: (stack: NavScreen[]) => void;
   setActiveTab: (tab: NavTab) => void;
   subTabFaculdade: SubTabFaculdade;
   setSubTabFaculdade: (t: SubTabFaculdade) => void;
@@ -192,6 +200,15 @@ export interface AppContextValue {
   isStickersScreenOpen: boolean;
   openStickersScreen: () => void;
   closeStickersScreen: () => void;
+  isQuizCategoryOpen: boolean;
+  openQuizCategory: (config?: Partial<QuizConfig>) => void;
+  closeQuizCategory: () => void;
+  isQuizPlayOpen: boolean;
+  openQuizPlay: (pool: StudyQuestion[], config: QuizConfig) => void;
+  closeQuizPlay: () => void;
+  isQuizResultOpen: boolean;
+  openQuizResult: (answers: QuizAnswer[], config: QuizConfig, startTime: number, correctCount: number, totalCount: number) => void;
+  closeQuizResult: () => void;
   isQuickAddOpen: boolean;
   openQuickAdd: () => void;
   closeQuickAdd: () => void;
@@ -230,6 +247,16 @@ export interface AppContextValue {
   handleUpdateProfile: (updated: Partial<UserProfile>) => void;
   handleUpdateTcc: (updated: TccData) => void;
   handleUpdateCourse: (updated: Course) => void;
+  handleSaveQuizSession: (session: QuizSession) => void;
+
+  // Quiz helpers (extraídos da pilha de navegação)
+  currentQuizPlayState: QuizPlayState | null;
+  currentQuizResultAnswers: QuizAnswer[] | null;
+  currentQuizResultConfig: QuizConfig | null;
+  currentQuizResultStartTime: number | null;
+  currentQuizResultCorrectCount: number | null;
+  currentQuizResultTotalCount: number | null;
+  currentQuizResultPool: StudyQuestion[] | null;
 
   // header
   headerConfig: DynamicHeaderConfig | null;
@@ -275,6 +302,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [sessions, setSessions] = usePersistentState<StudySession[]>('sessions', []);
   const [questions, setQuestions] = usePersistentState<StudyQuestion[]>('questions', []);
   const [techniques, setTechniques] = usePersistentState<Technique[]>('techniques', []);
+  const [quizSessions, setQuizSessions] = usePersistentState<QuizSession[]>('quizSessions', []);
 
   // Questões (745) — banco estático, seed lazy igual abordagens.
   const questionsSeededRef = useRef(false);
@@ -376,6 +404,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const isComposeDetailsOpen = currentScreen.kind === 'composeDetails';
   const isWizardOpen = currentScreen.kind === 'wizard';
   const currentWizardType: WizardFlow | null = currentScreen.kind === 'wizard' ? currentScreen.type : null;
+  const isQuizCategoryOpen = currentScreen.kind === 'quiz-category';
+  const isQuizPlayOpen = currentScreen.kind === 'quiz-play';
+  const isQuizResultOpen = currentScreen.kind === 'quiz-result';
   const focusedCourseId = currentScreen.kind === 'course' ? currentScreen.courseId : null;
   const focusedCourse = focusedCourseId ? courses.find((c) => c.id === focusedCourseId) : undefined;
   const screenKey =
@@ -695,6 +726,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     registerActivity();
   };
 
+  const handleSaveQuizSession = (session: QuizSession) => {
+    setQuizSessions((prev) => [session, ...prev]);
+    registerActivity();
+  };
+
   const handleAddTechnique = (technique: Technique) => {
     setTechniques((prev) => [technique, ...prev]);
   };
@@ -970,7 +1006,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const next: NavScreen[] =
       top.kind === 'internshipDiary'
         ? navigationStack
-        : [{ kind: 'tab', tab: 'perfil' }, { kind: 'internshipDiary' }];
+        : [{ kind: 'tab', tab: 'perfil' as NavTab }, { kind: 'internshipDiary' }];
     setStack(next);
     syncHash(next);
     scrollToTop();
@@ -981,7 +1017,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const openTccScreen = useCallback(() => {
     const top = navigationStack[navigationStack.length - 1];
     const next: NavScreen[] =
-      top.kind === 'tcc' ? navigationStack : [{ kind: 'tab', tab: 'perfil' }, { kind: 'tcc' }];
+      top.kind === 'tcc' ? navigationStack : [{ kind: 'tab', tab: 'perfil' as NavTab }, { kind: 'tcc' } as const];
     setStack(next);
     syncHash(next);
     scrollToTop();
@@ -994,13 +1030,68 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const next: NavScreen[] =
       top.kind === 'stickers'
         ? navigationStack
-        : [{ kind: 'tab', tab: 'perfil' }, { kind: 'stickers' }];
+        : [{ kind: 'tab', tab: 'perfil' as NavTab }, { kind: 'stickers' } as const];
     setStack(next);
     syncHash(next);
     scrollToTop();
   }, [navigationStack, setStack, syncHash]);
 
   const closeStickersScreen = useCallback(() => goBack(), [goBack]);
+
+  const openQuizCategory = useCallback((config?: Partial<QuizConfig>) => {
+    const top = navigationStack[navigationStack.length - 1];
+    const base: readonly NavScreen[] = top.kind === 'tab' && top.tab === 'estudos'
+      ? navigationStack
+      : [{ kind: 'tab' as const, tab: 'estudos' as NavTab }];
+    const next: NavScreen[] =
+      top.kind === 'quiz-category' ? navigationStack : [...base, { kind: 'quiz-category' as const }];
+    setStack(next);
+    syncHash(next);
+    scrollToTop();
+  }, [navigationStack, setStack, syncHash]);
+
+  const closeQuizCategory = useCallback(() => goBack(), [goBack]);
+
+  const openQuizPlay = useCallback((pool: StudyQuestion[], config: QuizConfig) => {
+    const top = navigationStack[navigationStack.length - 1];
+    const base: readonly NavScreen[] = navigationStack.find(s => s.kind === 'quiz-category')
+      ? navigationStack.slice(0, navigationStack.findIndex(s => s.kind === 'quiz-category') + 1)
+      : [{ kind: 'tab' as const, tab: 'estudos' as NavTab }, { kind: 'quiz-category' as const }];
+    const playState: QuizPlayState = {
+      pool,
+      config,
+      answers: [],
+      currentIdx: 0,
+      startTime: Date.now(),
+      questionStartTime: Date.now(),
+    };
+    const next: NavScreen[] = [...base, { kind: 'quiz-play' as const, state: playState }];
+    setStack(next);
+    syncHash(next);
+    scrollToTop();
+  }, [navigationStack, setStack, syncHash]);
+
+  const closeQuizPlay = useCallback(() => goBack(), [goBack]);
+
+  const openQuizResult = useCallback((
+    answers: QuizAnswer[],
+    config: QuizConfig,
+    startTime: number,
+    correctCount: number,
+    totalCount: number
+  ) => {
+    const top = navigationStack[navigationStack.length - 1];
+    const base = navigationStack.slice(0, navigationStack.findIndex(s => s.kind === 'quiz-play') + 1);
+    const next: NavScreen[] = [
+      ...base,
+      { kind: 'quiz-result', answers, config, startTime, correctCount, totalCount }
+    ];
+    setStack(next);
+    syncHash(next);
+    scrollToTop();
+  }, [navigationStack, setStack, syncHash]);
+
+  const closeQuizResult = useCallback(() => goBack(), [goBack]);
 
   const openCompose = useCallback((courseId?: string) => {
     setComposeCourseId(courseId);
@@ -1248,6 +1339,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     sessions,
     questions,
     techniques,
+    quizSessions,
     savedBookIds,
     toggleSaveBook,
     readingProgress,
@@ -1268,6 +1360,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     slideKey,
     overlayKey,
     navDirection,
+    navigationStack,
+    setStack,
+    syncHash,
     setActiveTab,
     subTabFaculdade,
     setSubTabFaculdade,
@@ -1329,6 +1424,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     isStickersScreenOpen,
     openStickersScreen,
     closeStickersScreen,
+    isQuizCategoryOpen,
+    openQuizCategory,
+    closeQuizCategory,
+    isQuizPlayOpen,
+    openQuizPlay,
+    closeQuizPlay,
+    isQuizResultOpen,
+    openQuizResult,
+    closeQuizResult,
     isQuickAddOpen,
     openQuickAdd,
     closeQuickAdd,
@@ -1367,10 +1471,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     handleAddAuthor,
     handleAddSession,
     handleAddTechnique,
+    handleSaveQuizSession,
     handleUpdateReadingChapters,
     handleUpdateProfile,
     handleUpdateTcc,
     handleUpdateCourse,
+
+    // Quiz helpers (extraídos da pilha de navegação)
+    currentQuizPlayState: navigationStack.find((s) => s.kind === 'quiz-play')?.state ?? null,
+    currentQuizResultAnswers: (navigationStack.find((s) => s.kind === 'quiz-result') as any)?.answers ?? null,
+    currentQuizResultConfig: (navigationStack.find((s) => s.kind === 'quiz-result') as any)?.config ?? null,
+    currentQuizResultStartTime: (navigationStack.find((s) => s.kind === 'quiz-result') as any)?.startTime ?? null,
+    currentQuizResultCorrectCount: (navigationStack.find((s) => s.kind === 'quiz-result') as any)?.correctCount ?? null,
+    currentQuizResultTotalCount: (navigationStack.find((s) => s.kind === 'quiz-result') as any)?.totalCount ?? null,
+    currentQuizResultPool: (navigationStack.find((s) => s.kind === 'quiz-play') as any)?.state?.pool ?? null,
+
     headerConfig
   };
 

@@ -1,4 +1,4 @@
-import type { NavTab, NavScreen, WizardFlow } from '../types';
+import type { NavTab, NavScreen, WizardFlow, QuizConfig, QuizAnswer, QuizPlayState } from '../types';
 
 /**
  * Rota virtual (espelho do `location.hash`).
@@ -17,6 +17,12 @@ export interface Route {
   tcc?: boolean;
   /** Tela cheia de stickers & conquistas, empilhada sobre o perfil. */
   stickers?: boolean;
+  /** Quiz: tela de escolha de filtros/categoria. */
+  quizCategory?: boolean;
+  /** Quiz: tela de jogo (pergunta + alternativas). */
+  quizPlay?: boolean;
+  /** Quiz: tela de resultado/estatísticas. */
+  quizResult?: boolean;
   compose?: boolean;
   composeDetails?: boolean;
   /** Wizard de criação em tela cheia (ex.: `#/novo/conceito`, `#/faculdade/c3/novo/prova`). */
@@ -163,6 +169,9 @@ export function parseRoute(hash: string): Route {
     if (seg === 'perfil' && h[1] === 'stickers') {
       return { tab: 'perfil', stickers: true };
     }
+    if (seg === 'estudos' && h[1] === 'quiz') {
+      return { tab: 'estudos', quizCategory: true };
+    }
     if (h[1] === 'streak') return { tab: seg as NavTab, streak: true };
     const s = subtab(seg);
     if (s) return { tab: seg as NavTab, subTab: s };
@@ -204,6 +213,9 @@ export function routeToStack(route: Route): NavScreen[] {
   }
   if (route.families) {
     return [...baseStackFor('biblioteca'), { kind: 'families' }];
+  }
+  if (route.quizCategory) {
+    return [...baseStackFor('estudos'), { kind: 'quiz-category' }];
   }
   if (route.tab === 'faculdade' && route.focusedCourseId) {
     return [{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: route.focusedCourseId }];
@@ -255,6 +267,9 @@ export function stackToHash(stack: NavScreen[], subTab?: string): string {
   }
   if (top.kind === 'families') return '#/biblioteca/familias';
   if (top.kind === 'family') return `#/biblioteca/familias/${top.familyId}`;
+  if (top.kind === 'quiz-category') return '#/estudos/quiz';
+  if (top.kind === 'quiz-play') return '#/quiz/play';
+  if (top.kind === 'quiz-result') return '#/quiz/result';
   const base = `#/${top.tab}`;
   const subtab = subTab && subTab !== DEFAULT_SUB_TAB[top.tab] ? subTab : undefined;
   return subtab ? `${base}/${subtab}` : base;

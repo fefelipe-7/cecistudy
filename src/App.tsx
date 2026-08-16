@@ -33,7 +33,7 @@ import { Modal } from './components/ui/Modal';
 import { OtaUpdateModal } from './components/ui/OtaUpdateModal';
 import { ViewSkeleton } from './components/ui/Skeleton';
 import { FileText } from 'lucide-react';
-import { QuickType } from './types';
+import { QuickType, QuizPlayState, QuizConfig, QuizAnswer } from './types';
 
 // Componentes orientados a props com memo: não re-renderizam quando o AppShell
 // re-renderiza por mudança de dados (ex.: togglar tarefa) sem que suas props mudem.
@@ -43,6 +43,11 @@ const QuickAddModalMemo = memo(QuickAddModal);
 const GlobalSearchModalMemo = memo(GlobalSearchModal);
 const EditCourseModalMemo = memo(EditCourseModal);
 const ToastMemo = memo(Toast);
+
+// Quiz components (lazy loaded)
+const QuizCategorySelector = lazy(() => import('./components/quizzes/QuizCategorySelector').then((m) => ({ default: m.QuizCategorySelector })));
+const QuizPlayer = lazy(() => import('./components/quizzes/QuizPlayer').then((m) => ({ default: m.QuizPlayer })));
+const QuizResultScreen = lazy(() => import('./components/quizzes/QuizResultScreen').then((m) => ({ default: m.QuizResultScreen })));
 
 /** Fallback discreto enquanto um chunk de view carrega (primeira visita à aba). */
 const ViewFallback = () => <ViewSkeleton rows={5} />;
@@ -245,6 +250,84 @@ function AppShell() {
             {app.isStreakScreenOpen ? (
               <Suspense fallback={<ViewFallback />}>
                 <StreakView />
+              </Suspense>
+            ) : app.isQuizCategoryOpen ? (
+              <Suspense fallback={<ViewFallback />}>
+                <QuizCategorySelector
+                  questions={app.questions}
+                  onStart={(config, pool) => app.openQuizPlay(pool, config)}
+                  onClose={app.closeQuizCategory}
+                />
+              </Suspense>
+            ) : app.isQuizPlayOpen ? (
+              <Suspense fallback={<ViewFallback />}>
+                <QuizPlayer
+                  state={app.currentQuizPlayState!}
+                  onAnswer={(answer) => {
+                    // Update the quiz play state with the new answer
+                    const current = app.currentQuizPlayState!;
+                    const updatedState: QuizPlayState = {
+                      ...current,
+                      answers: [...current.answers, answer],
+                      currentIdx: current.currentIdx + 1,
+                      questionStartTime: Date.now(),
+                    };
+                    // We need to update the stack with the new state
+                    const stack = app.navigationStack.map((screen) =>
+                      screen.kind === 'quiz-play' ? { ...screen, state: updatedState } : screen
+                    );
+                    app.setStack(stack);
+                    app.syncHash(stack);
+                  }}
+                  onFinish={(answers, config, startTime, correctCount, totalCount) => {
+                    app.openQuizResult(answers, config, startTime, correctCount, totalCount);
+                  }}
+                  onClose={app.closeQuizPlay}
+                />
+              </Suspense>
+            ) : app.isQuizResultOpen ? (
+              <Suspense fallback={<ViewFallback />}>
+                <QuizResultScreen
+                  answers={app.currentQuizResultAnswers!}
+                  config={app.currentQuizResultConfig!}
+                  startTime={app.currentQuizResultStartTime!}
+                  correctCount={app.currentQuizResultCorrectCount!}
+                  totalCount={app.currentQuizResultTotalCount!}
+                  onSave={(sessionId) => {
+                    app.handleSaveQuizSession({
+                      id: sessionId,
+                      config: app.currentQuizResultConfig!,
+                      answers: app.currentQuizResultAnswers!,
+                      startedAt: app.currentQuizResultStartTime!,
+                      finishedAt: Date.now(),
+                      totalTimeMs: Date.now() - app.currentQuizResultStartTime!,
+                      correctCount: app.currentQuizResultCorrectCount!,
+                      totalCount: app.currentQuizResultTotalCount!,
+                      scorePct: Math.round((app.currentQuizResultCorrectCount! / app.currentQuizResultTotalCount!) * 100),
+                      createdAt: new Date().toISOString().split('T')[0],
+                    });
+                    app.closeQuizResult();
+                    app.closeQuizPlay();
+                    app.closeQuizCategory();
+                    app.showToast('sessão de quiz guardada ♡');
+                  }}
+                  onRetry={() => {
+                    // Reopen quiz-play with same config
+                    const pool = app.currentQuizResultPool!;
+                    app.openQuizPlay(pool, app.currentQuizResultConfig!);
+                    app.closeQuizResult();
+                  }}
+                  onNewQuiz={() => {
+                    app.closeQuizResult();
+                    app.closeQuizPlay();
+                    // quiz-category stays open
+                  }}
+                  onClose={() => {
+                    app.closeQuizResult();
+                    app.closeQuizPlay();
+                    app.closeQuizCategory();
+                  }}
+                />
               </Suspense>
             ) : (
               <>

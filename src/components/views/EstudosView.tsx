@@ -17,11 +17,8 @@ import {
   ChevronRight,
   Flame,
   Target,
-  Trophy,
-  RefreshCw,
-  Settings
 } from 'lucide-react';
-import { Flashcard, ReadingItem, SubTabEstudos, StudyQuestion, Course, StudySession } from '../../types';
+import { Flashcard, ReadingItem, SubTabEstudos, StudyQuestion, Course, StudySession, QuizConfig, QuizAnswer, QuizSession } from '../../types';
 import { ReaderModeModal } from '../widgets/ReaderModeModal';
 import { UnderlineTabBar } from '../ui/UnderlineTabBar';
 import { Kitty } from '../ui/Kitty';
@@ -46,236 +43,6 @@ const READING_STATUS_LABEL: Record<ReadingItem['status'], string> = {
   concluido: 'concluído',
 };
 
-/** Quiz de questões — sessão com N questões, ao final salva StudySession */
-const QuestoesQuiz: React.FC<{ questions: StudyQuestion[]; courses: Course[]; handleAddSession: (s: StudySession) => void }> = ({
-  questions,
-  courses,
-  handleAddSession,
-}) => {
-  const [mode, setMode] = useState<'start' | 'playing' | 'result'>('start');
-  const [count, setCount] = useState(10);
-  const [currentIdx, setCurrentIdx] = useState(0);
-  const [selected, setSelected] = useState<string | null>(null);
-  const [answers, setAnswers] = useState<{ q: StudyQuestion; userAnswer: string; correct: boolean }[]>([]);
-  const [startTime] = useState(Date.now());
-
-  const pool = useMemo(() => [...questions].sort(() => Math.random() - 0.5).slice(0, count), [questions, count]);
-  const current = pool[currentIdx];
-  const progress = pool.length > 0 ? ((currentIdx + 1) / pool.length) * 100 : 0;
-  const correctCount = answers.filter((a) => a.correct).length;
-
-  const handleOptionClick = (opt: string) => {
-    if (selected) return;
-    const isCorrect = opt === current.gabarito;
-    setSelected(opt);
-    setAnswers((prev) => [...prev, { q: current, userAnswer: opt, correct: isCorrect }]);
-  };
-
-  const nextOrFinish = () => {
-    if (currentIdx + 1 < pool.length) {
-      setCurrentIdx((i) => i + 1);
-      setSelected(null);
-    } else {
-      setMode('result');
-    }
-  };
-
-  const saveAndExit = () => {
-    const duration = Math.round((Date.now() - startTime) / 60000) || 1;
-    handleAddSession({
-      id: 'ss-' + Date.now(),
-      courseId: courses[0]?.id,
-      topic: `quiz de questões (${correctCount}/${pool.length})`,
-      date: new Date().toISOString().split('T')[0],
-      durationMinutes: duration,
-      notes: answers.map((a) => `${a.q.id}: ${a.userAnswer} (${a.correct ? '✓' : '✗'})`).join('; '),
-    });
-    setMode('start');
-    setCurrentIdx(0);
-    setAnswers([]);
-  };
-
-  const resetQuiz = () => {
-    setMode('start');
-    setCurrentIdx(0);
-    setAnswers([]);
-    setSelected(null);
-  };
-
-  if (mode === 'start') {
-    return (
-      <div className="space-y-4">
-        <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4">
-          <Kitty expression="pensativa" className="w-14 h-14 mx-auto" decorative />
-          <div>
-            <h3 className="font-display font-bold text-base text-ceci-primary">quiz de questões do acervo</h3>
-            <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
-              {questions.length} questões de múltipla escolha. escolha quantas quer responder e bora ♡
-            </p>
-          </div>
-          <div className="space-y-3 pt-2">
-            <label className="flex items-center justify-center gap-2 text-xs text-ceci-secondary">
-              <span>número de questões:</span>
-              <select
-                value={count}
-                onChange={(e) => setCount(Number(e.target.value))}
-                className="w-20 px-2 py-1 rounded-xl border border-ceci-border-default bg-white text-ceci-primary text-xs font-medium focus:outline-none focus:border-ceci-brand-strong"
-              >
-                {[5, 10, 15, 20].map((n) => (
-                  <option key={n} value={n}>{n}</option>
-                ))}
-              </select>
-            </label>
-            <button
-              onClick={() => setMode('playing')}
-              className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-white bg-[#E97891] hover:bg-[#D85F79] cursor-pointer"
-            >
-              <Target className="w-4 h-4" /> começar quiz
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (mode === 'playing' && current) {
-    const opts = current.options ?? [];
-    const correctLetter = current.gabarito ?? 'A';
-    const correctText = opts[correctLetter.charCodeAt(0) - 65] ?? current.answer;
-
-    return (
-      <div className="space-y-4">
-        <div className="rounded-[24px] p-4 bg-white border border-ceci-border-default shadow-sm">
-          <div className="flex items-center justify-between text-xs mb-3">
-            <span className="text-ceci-secondary">questão {currentIdx + 1} de {pool.length}</span>
-            <span className="font-semibold text-ceci-primary">{Math.round(progress)}%</span>
-          </div>
-          <div className="h-2 bg-ceci-border-subtle rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-ceci-brand-strong"
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.3 }}
-            />
-          </div>
-        </div>
-
-        <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-3">
-          <h4 className="font-display font-bold text-sm text-ceci-primary">{current.question}</h4>
-          {current.explanation && selected && (
-            <div className="rounded-xl p-3 bg-surface-blue border border-ceci-border-academic text-[11px] text-ceci-academic-strong">
-              <span className="font-semibold">explicação:</span> {current.explanation}
-            </div>
-          )}
-          <div className="space-y-2 pt-2">
-            {opts.map((opt, i) => {
-              const letter = String.fromCharCode(65 + i);
-              const isCorrect = letter === correctLetter;
-              const isSelected = selected === letter;
-              return (
-                <button
-                  key={letter}
-                  onClick={() => handleOptionClick(letter)}
-                  disabled={!!selected}
-                  className={`w-full text-left p-4 rounded-xl border-2 transition-all text-xs ${
-                    isSelected
-                      ? isCorrect
-                        ? 'bg-green-50 border-green-300 text-green-800'
-                        : 'bg-red-50 border-red-300 text-red-800'
-                      : 'bg-white border-ceci-border-default hover:bg-surface-rose hover:border-ceci-border-brand'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-full border flex items-center justify-center font-bold flex-shrink-0 ${
-                      isSelected
-                        ? isCorrect
-                          ? 'bg-green-400 border-green-400 text-white'
-                          : 'bg-red-400 border-red-400 text-white'
-                        : 'border-ceci-border-default text-ceci-secondary'
-                    }">
-                      {letter}
-                    </span>
-                    <span className="flex-1">{opt}</span>
-                    {isSelected && isCorrect && <CheckCircle2 className="w-4 h-4 text-green-500 fill-green-500" />}
-                    {isSelected && !isCorrect && <X className="w-4 h-4 text-red-500" />}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <button
-          onClick={nextOrFinish}
-          disabled={!selected}
-          className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-white bg-[#E97891] hover:bg-[#D85F79] cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          {currentIdx + 1 < pool.length ? (
-            <>
-              <ChevronRight className="w-4 h-4" /> próxima
-            </>
-          ) : (
-            <>
-              <Trophy className="w-4 h-4" /> ver resultado
-            </>
-          )}
-        </button>
-      </div>
-    );
-  }
-
-  if (mode === 'result') {
-    return (
-      <div className="space-y-4">
-        <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
-          <Kitty expression={correctCount === pool.length ? 'rindo' : correctCount >= pool.length / 2 ? 'feliz' : 'pensativa'} className="w-16 h-16 mx-auto" decorative />
-          <h3 className="font-display font-bold text-lg text-ceci-primary">quiz finalizado ♡</h3>
-          <div className="flex items-center justify-center gap-4 text-2xl font-display font-bold">
-            <span className="text-green-600">{correctCount}</span>
-            <span className="text-ceci-muted">/</span>
-            <span className="text-ceci-primary">{pool.length}</span>
-          </div>
-          <p className="text-xs text-ceci-secondary">
-            {Math.round((correctCount / pool.length) * 100)}% de acerto
-          </p>
-        </div>
-
-        <div className="rounded-[24px] p-4 bg-white border border-ceci-border-default shadow-sm space-y-2 max-h-64 overflow-y-auto">
-          <h4 className="font-display font-bold text-xs text-ceci-primary">revisão das respostas</h4>
-          {answers.map((a, i) => (
-            <div key={i} className="p-2 rounded-xl bg-surface-muted text-[10px] flex items-start gap-2">
-              <span className={`w-5 h-5 rounded-full border flex items-center justify-center font-bold flex-shrink-0 ${a.correct ? 'bg-green-100 border-green-300 text-green-700' : 'bg-red-100 border-red-300 text-red-700'}`}>
-                {String.fromCharCode(65 + (a.q.options ?? []).findIndex((o) => o === a.userAnswer))}
-              </span>
-              <div className="flex-1 min-w-0">
-                <p className="font-medium text-ceci-primary truncate">{a.q.question}</p>
-                <p className="text-ceci-secondary">sua: {a.userAnswer} · correta: {a.q.gabarito}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="flex gap-2">
-          <button
-            onClick={saveAndExit}
-            className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-white bg-[#E97891] hover:bg-[#D85F79] cursor-pointer"
-          >
-            <CheckCircle2 className="w-4 h-4" /> guardar sessão
-          </button>
-          <button
-            onClick={resetQuiz}
-            className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-ceci-academic-strong bg-[#F3F9FC] border border-ceci-border-academic cursor-pointer"
-          >
-            <RefreshCw className="w-4 h-4" /> refazer
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  return null;
-};
-
 export const EstudosView: React.FC = () => {
   const {
     flashcards,
@@ -289,6 +56,7 @@ export const EstudosView: React.FC = () => {
     handleUpdateReadingPages,
     handleReviewFlashcard,
     openWizard,
+    openQuizCategory,
     questions
   } = useApp();
 
@@ -859,8 +627,40 @@ export const EstudosView: React.FC = () => {
         </div>
       )}
 
-{/* QUESTÕES — Modo Quiz */}
-       {subTab === 'questoes' && <QuestoesQuiz questions={questions} courses={courses} handleAddSession={handleAddSession} />}
+{/* QUESTÕES — Modo Quiz (abre QuizCategorySelector via nav stack) */}
+       {subTab === 'questoes' && (
+         <div className="space-y-3">
+           {questions.length === 0 ? (
+             <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4">
+               <Kitty expression="pensativa" className="w-14 h-14 mx-auto" decorative />
+               <div>
+                 <h3 className="font-display font-bold text-base text-ceci-primary">acervo vazio</h3>
+                 <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
+                   o banco de questões ainda não carregou. tente novamente em instantes ♡
+                 </p>
+               </div>
+             </div>
+           ) : (
+             <div className="space-y-3">
+               <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4">
+                 <Kitty expression="pensativa" className="w-14 h-14 mx-auto" decorative />
+                 <div>
+                   <h3 className="font-display font-bold text-base text-ceci-primary">quiz de questões do acervo</h3>
+                   <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
+                     {questions.length} questões de múltipla escolha organizadas por área, tema e escola ♡
+                   </p>
+                 </div>
+                 <button
+                   onClick={() => openQuizCategory()}
+                   className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-white bg-[#E97891] hover:bg-[#D85F79] cursor-pointer"
+                 >
+                   <Target className="w-4 h-4" /> começar quiz
+                 </button>
+               </div>
+             </div>
+           )}
+         </div>
+       )}
 
       {/* HISTÓRICO DE SESSÕES */}
       {subTab === 'historico' && (

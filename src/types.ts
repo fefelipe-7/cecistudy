@@ -24,7 +24,10 @@ export type NavScreen =
   | { kind: 'wizard'; type: WizardFlow }
   | { kind: 'approach'; approachId: string }
   | { kind: 'families' }
-  | { kind: 'family'; familyId: string };
+  | { kind: 'family'; familyId: string }
+  | { kind: 'quiz-category' }
+  | { kind: 'quiz-play'; state: QuizPlayState }
+  | { kind: 'quiz-result'; answers: QuizAnswer[]; config: QuizConfig; startTime: number; correctCount: number; totalCount: number };
 
 /**
  * Tipos de wizard de criação em tela cheia (substitui o quick add em modal).
@@ -130,6 +133,49 @@ export interface StudySession {
   date: string;
   durationMinutes: number;
   notes?: string;
+}
+
+/** Configuração de um quiz (filtros escolhidos pelo usuário). */
+export interface QuizConfig {
+  areas: string[];                    // ex: ["Psicologia Clínica", "Psicopatologia"]
+  temas: string[];                    // ex: ["luto", "memória"]
+  escolas: string[];                  // ex: ["Psicanálise", "TCC"]
+  dificuldades: ('basica' | 'intermediaria' | 'avancada')[];
+  count: number;                      // 5, 10, 15, 20
+}
+
+/** Resposta do usuário a uma questão no quiz. */
+export interface QuizAnswer {
+  questionId: string;
+  userAnswer: string;                 // letra: "A" | "B" | "C" | "D" | "E"
+  correct: boolean;
+  timeMs: number;                     // tempo gasto nesta questão
+  question: StudyQuestion;            // snapshot da questão para revisão
+  explanation?: string;               // explicação da questão (para revisão)
+}
+
+/** Sessão de quiz persistida (histórico rico). */
+export interface QuizSession {
+  id: string;                         // qs-<timestamp>
+  config: QuizConfig;
+  answers: QuizAnswer[];
+  startedAt: number;                  // epoch ms
+  finishedAt: number;                 // epoch ms
+  totalTimeMs: number;
+  correctCount: number;
+  totalCount: number;
+  scorePct: number;                   // 0-100
+  createdAt: string;                  // YYYY-MM-DD
+}
+
+/** Estado de navegação do quiz (passado via stack, não URL). */
+export interface QuizPlayState {
+  pool: StudyQuestion[];
+  config: QuizConfig;
+  answers: QuizAnswer[];
+  currentIdx: number;
+  startTime: number;
+  questionStartTime: number;          // epoch ms da questão atual
 }
 
 export interface ReadingChapter {
