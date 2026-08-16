@@ -2,6 +2,7 @@ import React from 'react';
 import { X, Bookmark, Minus, Plus } from 'lucide-react';
 import { CollectionBook } from '../../data/libraryData';
 import { Modal } from '../ui/Modal';
+import { Kitty } from '../ui/Kitty';
 import { cn } from '../../lib/utils';
 
 interface BookDetailModalProps {
@@ -79,6 +80,11 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
             {book.title}
           </h3>
           <p className="text-xs text-ceci-tertiary mt-0.5 font-medium">por {book.author}</p>
+        </div>
+
+        {/* Bonequinha apaixonada — companhia na leitura */}
+        <div className="flex justify-center -my-1">
+          <Kitty expression="apaixonada" className="w-14 h-14" decorative />
         </div>
 
         {/* Páginas lidas — seletor */}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { Kitty } from '../ui/Kitty';
 
 /** Rótulo de campo discreto dos wizards (o destaque é o headline do passo). */
 export const FieldLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -43,9 +44,12 @@ export const SelectField: React.FC<SelectFieldProps> = ({
   <div>
     {label && <FieldLabel>{label}</FieldLabel>}
     {options.length === 0 ? (
-      <p className="text-[11px] text-ceci-tertiary bg-surface-input rounded-2xl px-4 py-4">
-        {emptyMessage ?? 'ainda não há opções no cantinho.'}
-      </p>
+      <div className="flex items-center gap-2.5 bg-surface-input rounded-2xl px-4 py-4">
+        <Kitty expression="curiosa" className="w-8 h-8 shrink-0" decorative />
+        <p className="text-[11px] text-ceci-tertiary">
+          {emptyMessage ?? 'ainda não há opções no cantinho.'}
+        </p>
+      </div>
     ) : (
       <select
         value={value}

@@ -7,9 +7,9 @@ import {
   Check,
   Copy,
   Trash2,
-  StickyNote,
 } from 'lucide-react';
 import { LooseNote, CATEGORY_BADGE } from './notes';
+import { Kitty } from '../ui/Kitty';
 import { copyToClipboard } from '../../lib/utils';
 
 interface NotesScreenProps {
@@ -280,7 +280,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
 
         {filteredNotes.length === 0 && (
           <div className="bg-white rounded-[22px] p-8 text-center border border-dashed border-ceci-border-default space-y-2">
-            <StickyNote className="w-8 h-8 text-ceci-faded mx-auto" />
+            <Kitty expression="curiosa" className="w-14 h-14 mx-auto" decorative />
             <p className="text-xs font-bold text-ceci-primary">nenhuma nota encontrada</p>
             <p className="text-xs text-ceci-secondary">
               {noteSearchTerm || noteCategoryFilter !== 'todas'

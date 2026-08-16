@@ -3,6 +3,7 @@ import { X, Bookmark, ExternalLink, Copy, FileText, Landmark } from 'lucide-reac
 import { Article } from '../../data/books';
 import { PSYCHOTHERAPY_FAMILIES } from '../../data/books/families';
 import { Modal } from '../ui/Modal';
+import { Kitty } from '../ui/Kitty';
 import { copyToClipboard } from '../../lib/utils';
 import { useApp } from '../../context/AppContext';
 
@@ -79,6 +80,11 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({
 
       {/* Conteúdo */}
       <div className="px-6 space-y-4 pb-6">
+        {/* Bonequinha surpresa — artigo interessante */}
+        <div className="flex justify-center -my-1">
+          <Kitty expression="surpresa" className="w-14 h-14" decorative />
+        </div>
+
         {/* Resumo */}
         <div className="space-y-1">
           <span className="text-[11px] font-bold text-ceci-tertiary lowercase">resumo</span>

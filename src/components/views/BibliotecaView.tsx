@@ -42,6 +42,7 @@ import {
   MixedCollection,
 } from '../../data/books';
 import { InlineCollectionBlock } from '../library/InlineCollectionBlock';
+import { Kitty } from '../ui/Kitty';
 import { BookDetailModal } from '../library/BookDetailModal';
 import { LibraryFilterModal } from '../library/LibraryFilterModal';
 import { NotesScreen } from '../library/NotesScreen';
@@ -854,7 +855,7 @@ export const BibliotecaView: React.FC = () => {
         filteredMixedCollections.length === 0 &&
         filteredArticleGroups.length === 0 && (
         <div className="py-12 text-center space-y-3 px-1 border-t border-ceci-border-default">
-          <BookOpen className="w-8 h-8 text-ceci-faded mx-auto" />
+          <Kitty expression="surpresa" className="w-16 h-16 mx-auto" decorative />
           <h3 className="font-display font-bold text-base text-ceci-primary">
             nenhuma coleção ou obra encontrada
           </h3>

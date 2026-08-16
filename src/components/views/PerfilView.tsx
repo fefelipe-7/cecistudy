@@ -34,6 +34,7 @@ import {
 import { StudyStatsWidget } from '../widgets/StudyStatsWidget';
 import { AnimatedNumber } from '../ui/AnimatedNumber';
 import { ProgressBar } from '../ui/ProgressBar';
+import { Kitty } from '../ui/Kitty';
 import { InternshipLogCard } from '../InternshipLogCard';
 import { InternshipDiaryView } from './InternshipDiaryView';
 import { TccView } from './TccView';
@@ -514,7 +515,8 @@ export const PerfilView: React.FC = () => {
           )}
 
           {internshipLogs.length === 0 && (
-            <p className="text-xs text-ceci-secondary bg-surface-muted border border-ceci-border-subtle rounded-2xl p-4 text-center">
+            <p className="text-xs text-ceci-secondary bg-surface-muted border border-ceci-border-subtle rounded-2xl p-4 text-center flex items-center justify-center gap-2">
+              <Kitty expression="feliz" className="w-7 h-7 shrink-0" decorative />
               ainda não tem registro de estágio — que tal anotar o primeiro? ♡
             </p>
           )}
@@ -555,7 +557,8 @@ export const PerfilView: React.FC = () => {
             </p>
           </>
         ) : (
-          <p className="text-xs text-ceci-secondary bg-surface-muted border border-ceci-border-subtle rounded-2xl p-4 text-center">
+          <p className="text-xs text-ceci-secondary bg-surface-muted border border-ceci-border-subtle rounded-2xl p-4 text-center flex items-center justify-center gap-2">
+            <Kitty expression="curiosa" className="w-7 h-7 shrink-0" decorative />
             ainda não tem tcc — que tal começar a plantar o seu? ♡
           </p>
         )}

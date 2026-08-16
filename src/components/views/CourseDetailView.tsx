@@ -13,6 +13,7 @@ import {
   ClipboardList
 } from 'lucide-react';
 import { CourseIcon } from '../ui/CourseIcon';
+import { Kitty } from '../ui/Kitty';
 import { ClassNoteModal } from '../courses/ClassNoteModal';
 import { ClassNoteListItem } from '../courses/ClassNoteListItem';
 import { useApp } from '../../context/AppContext';
@@ -207,7 +208,8 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
               <BookOpen className="w-4 h-4 text-ceci-brand-strong" />
               <span>o que essa disciplina ensina</span>
             </h3>
-            <div className="border-l-3 border-ceci-brand-strong pl-3.5 py-1 text-xs text-ceci-text-soft leading-relaxed font-medium bg-gradient-to-r from-surface-rose/70 to-transparent rounded-r-xl">
+            <div className="border-l-3 border-ceci-brand-strong pl-3.5 py-1 text-xs text-ceci-text-soft leading-relaxed font-medium bg-gradient-to-r from-surface-rose/70 to-transparent rounded-r-xl flex items-start gap-2">
+              {!course.description && <Kitty expression="pensativa" className="w-7 h-7 shrink-0 -mt-1" decorative />}
               {course.description ||
                 'esta disciplina ainda não tem ementa anotada. edite os detalhes da matéria para registrar os objetivos.'}
             </div>
@@ -270,7 +272,8 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-ceci-tertiary py-1">
+              <p className="text-xs text-ceci-tertiary py-1 flex items-center gap-1.5">
+                <Kitty expression="curiosa" className="w-6 h-6 shrink-0" decorative />
                 ainda não tem prova com peso anotada — registre as avaliações para ver a composição da média.
               </p>
             )}
@@ -350,7 +353,8 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-ceci-tertiary py-2">
+              <p className="text-xs text-ceci-tertiary py-2 flex items-center gap-1.5">
+                <Kitty expression="curiosa" className="w-6 h-6 shrink-0" decorative />
                 ainda não tem prova anotada para esta disciplina.
               </p>
             )}
@@ -385,7 +389,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
               </div>
             ) : (
               <div className="py-6 text-center space-y-2">
-                <FileText className="w-6 h-6 text-ceci-faded mx-auto" />
+                <Kitty expression="sonolenta" className="w-14 h-14 mx-auto" decorative />
                 <p className="text-xs font-semibold text-ceci-primary">ainda não tem aula anotada</p>
                 <button
                   onClick={() => openCompose(course.id)}
@@ -464,7 +468,8 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-ceci-tertiary py-2">
+              <p className="text-xs text-ceci-tertiary py-2 flex items-center gap-1.5">
+                <Kitty expression="pensativa" className="w-6 h-6 shrink-0" decorative />
                 ainda não tem conceito ligado a esta disciplina.
               </p>
             )}
@@ -535,7 +540,8 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-ceci-tertiary py-2">
+              <p className="text-xs text-ceci-tertiary py-2 flex items-center gap-1.5">
+                <Kitty expression="feliz" className="w-6 h-6 shrink-0" decorative />
                 ainda não tem leitura vinculada a esta disciplina.
               </p>
             )}

@@ -2,6 +2,7 @@ import React from 'react';
 import { HeartHandshake } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { InternshipLogCard } from '../InternshipLogCard';
+import { Kitty } from '../ui/Kitty';
 
 /** Tela cheia do diário de estágio — todos os registros em cards, por extenso. */
 export const InternshipDiaryView: React.FC = () => {
@@ -33,9 +34,12 @@ export const InternshipDiaryView: React.FC = () => {
           <InternshipLogCard key={log.id} log={log} />
         ))}
         {internshipLogs.length === 0 && (
-          <p className="text-xs text-ceci-secondary bg-surface-muted border border-ceci-border-subtle rounded-2xl p-4 text-center">
-            ainda não tem registro de estágio — que tal anotar o primeiro? ♡
-          </p>
+          <div className="bg-surface-muted border border-ceci-border-subtle rounded-2xl p-5 text-center space-y-2">
+            <Kitty expression="feliz" className="w-14 h-14 mx-auto" decorative />
+            <p className="text-xs text-ceci-secondary">
+              ainda não tem registro de estágio — que tal anotar o primeiro? ♡
+            </p>
+          </div>
         )}
       </div>
     </div>

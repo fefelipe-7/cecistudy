@@ -22,6 +22,7 @@ import {
 import { Task } from '../../types';
 import { useApp } from '../../context/AppContext';
 import { AnimatedNumber } from '../ui/AnimatedNumber';
+import { Kitty } from '../ui/Kitty';
 import { getCoursesOnWeekday, extractScheduleTime } from '../../lib/schedule';
 import { buildSuggestions } from '../../lib/suggestions';
 
@@ -137,8 +138,10 @@ export const HomeView: React.FC = () => {
             {formattedDate}
           </p>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-ceci-primary mt-0.5 tracking-tight font-display">
-          {greeting}, {profile.name} <span className="font-normal text-xl">✨</span>
+        <h1 className="text-2xl sm:text-3xl font-bold text-ceci-primary mt-0.5 tracking-tight font-display flex items-center gap-2">
+          {greeting}, {profile.name}
+          <span className="font-normal text-xl">✨</span>
+          <Kitty expression="rindo" className="w-8 h-8 inline-block" decorative />
         </h1>
       </div>
 

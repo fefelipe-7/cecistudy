@@ -1,6 +1,6 @@
 import React from 'react';
-import { Sparkles } from 'lucide-react';
 import { Modal } from './Modal';
+import { Kitty } from './Kitty';
 import { applyNow, dismissUpdate, useOtaStatus } from '@/lib/ota';
 
 /**
@@ -18,8 +18,8 @@ export const OtaUpdateModal: React.FC = () => {
       className="w-full max-w-sm bg-white rounded-[28px] border border-ceci-border-default shadow-2xl p-6 space-y-4 text-ceci-primary animate-in zoom-in-95 duration-200"
     >
       <div className="flex items-center gap-3">
-        <span className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
-          <Sparkles className="w-5 h-5" />
+        <span className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0 overflow-hidden">
+          <Kitty expression="rindo" className="w-9 h-9" decorative />
         </span>
         <div>
           <h3 className="font-display font-bold text-lg text-ceci-primary leading-tight">

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Flame, Trophy, CalendarDays, CheckCircle2 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { AnimatedNumber } from '../ui/AnimatedNumber';
+import { Kitty } from '../ui/Kitty';
 import { addDays, getRecentWeeks, toDateKey } from '../../lib/streak';
 
 const fmtShort = (key: string): string => {
@@ -70,6 +71,12 @@ export const StreakView: React.FC = () => {
               ? 'seu ritmo está a todo vapor ♡ cada dia útil com atividade mantém a chama acesa.'
               : 'cada dia conta, comece hoje ♡ uma atividade por dia útil é o suficiente.'}
         </p>
+
+        <Kitty
+          expression={streakStats.alive ? 'rindo' : todayPending ? 'curiosa' : 'sonolenta'}
+          className="w-16 h-16 mx-auto"
+          decorative
+        />
 
         {todayPending && (
           <button

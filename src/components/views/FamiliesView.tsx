@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Network, Search, ChevronRight, Landmark } from 'lucide-react';
 import { PSICOTERAPIA_FAMILIES } from '../../data/psicoterapiaFamilies';
 import { useApp } from '../../context/AppContext';
+import { Kitty } from '../ui/Kitty';
 
 export const FamiliesView: React.FC = () => {
   const { openFamily } = useApp();
@@ -46,9 +47,12 @@ export const FamiliesView: React.FC = () => {
       {/* Lista de famílias */}
       <div className="space-y-3 px-1">
         {families.length === 0 && (
-          <p className="text-sm text-ceci-secondary text-center py-8">
-            nada por aqui com esse nome ♡
-          </p>
+          <div className="text-center py-8 space-y-2">
+            <Kitty expression="surpresa" className="w-14 h-14 mx-auto" decorative />
+            <p className="text-sm text-ceci-secondary">
+              nada por aqui com esse nome ♡
+            </p>
+          </div>
         )}
         {families.map((family) => (
           <button

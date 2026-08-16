@@ -11,6 +11,7 @@ import {
   FileText,
 } from 'lucide-react';
 import { Modal } from './ui/Modal';
+import { Kitty } from './ui/Kitty';
 import { QuickType } from '../types';
 import { cn } from '../lib/utils';
 
@@ -96,9 +97,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({ isOpen, onClose, o
     {/* Header */}
     <div className="flex items-center justify-between border-b border-ceci-border-subtle pb-3 mb-4">
       <div className="flex items-center gap-2">
-        <span className="w-8 h-8 rounded-full bg-surface-rose flex items-center justify-center text-ceci-brand text-sm font-bold border border-ceci-border-brand">
-          ♡
-        </span>
+        <Kitty expression="curiosa" className="w-8 h-8 shrink-0" decorative />
         <div>
           <h3 className="font-display font-bold text-lg text-ceci-primary">
             novo registro no cantinho

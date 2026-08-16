@@ -20,6 +20,7 @@ import {
 import { Flashcard, ReadingItem, SubTabEstudos } from '../../types';
 import { ReaderModeModal } from '../widgets/ReaderModeModal';
 import { UnderlineTabBar } from '../ui/UnderlineTabBar';
+import { Kitty } from '../ui/Kitty';
 import { useApp } from '../../context/AppContext';
 import { hapticSuccess } from '../../lib/haptics';
 import { celebrate } from '../../lib/celebrate';
@@ -303,6 +304,7 @@ export const EstudosView: React.FC = () => {
 
           {!lastSession && dueCards.length === 0 && !continueReading && (
             <div className="p-4 rounded-2xl bg-surface-subtle border border-ceci-border-subtle text-center space-y-2">
+              <Kitty expression="sonolenta" className="w-14 h-14 mx-auto" decorative />
               <p className="text-xs text-ceci-secondary leading-relaxed">
                 ainda não há nada em andamento por aqui. registre seus flashcards ou leituras para o cantinho montar seu fluxo ♡
               </p>
@@ -442,9 +444,7 @@ export const EstudosView: React.FC = () => {
           <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4">
             {reviewQueue.length === 0 && reviewedCount === 0 ? (
               <div className="py-6 space-y-3">
-                <span className="w-14 h-14 mx-auto rounded-full bg-surface-rose border border-ceci-border-brand flex items-center justify-center">
-                  <Brain className="w-6 h-6 text-ceci-brand-strong" />
-                </span>
+                <Kitty expression="rindo" className="w-14 h-14 mx-auto" decorative />
                 <div>
                   <h3 className="font-display font-bold text-base text-ceci-primary">tudo em dia por aqui!</h3>
                   <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
@@ -462,9 +462,7 @@ export const EstudosView: React.FC = () => {
               </div>
             ) : queueIndex >= reviewQueue.length ? (
               <div className="py-6 space-y-3">
-                <span className="w-14 h-14 mx-auto rounded-full bg-[#F2FAF5] border border-[#C2E8D0] flex items-center justify-center">
-                  <CheckCircle2 className="w-6 h-6 text-[#43805B]" />
-                </span>
+                <Kitty expression="rindo" className="w-14 h-14 mx-auto" decorative />
                 <div>
                   <h3 className="font-display font-bold text-base text-ceci-primary">revisão concluída, parabéns Ceci! ♡</h3>
                   <p className="text-xs text-ceci-secondary mt-1.5">
@@ -546,9 +544,7 @@ export const EstudosView: React.FC = () => {
         <div className="space-y-3">
           {readings.length === 0 ? (
             <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
-              <span className="w-14 h-14 mx-auto rounded-full bg-[#F3F9FC] border border-ceci-border-academic flex items-center justify-center">
-                <BookOpen className="w-6 h-6 text-ceci-academic-strong" />
-              </span>
+              <Kitty expression="curiosa" className="w-14 h-14 mx-auto" decorative />
               <p className="text-xs text-ceci-secondary leading-relaxed">
                 nenhuma leitura anotada ainda. que tal adicionar seu primeiro livro ou artigo ♡
               </p>
@@ -634,9 +630,7 @@ export const EstudosView: React.FC = () => {
          <div className="space-y-3">
            {questions.length === 0 ? (
              <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4">
-               <span className="w-14 h-14 mx-auto rounded-full bg-surface-rose border border-ceci-border-brand flex items-center justify-center">
-                 <HelpCircle className="w-6 h-6 text-ceci-brand-strong" />
-               </span>
+               <Kitty expression="pensativa" className="w-14 h-14 mx-auto" decorative />
                <div>
                  <h3 className="font-display font-bold text-base text-ceci-primary">ainda não tem questões salvas</h3>
                  <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
@@ -694,6 +688,7 @@ export const EstudosView: React.FC = () => {
 
           {sortedSessions.length === 0 ? (
             <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
+              <Kitty expression="sonolenta" className="w-14 h-14 mx-auto" decorative />
               <p className="text-xs text-ceci-secondary leading-relaxed">
                 nenhuma sessão anotada ainda. quando você concluir seu primeiro foco, ela aparece aqui ♡
               </p>
