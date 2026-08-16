@@ -156,8 +156,8 @@ e não persistidos. Unificar o modelo evita divergência.
 - [x] **6.5** Ícones/splash: arte-fonte `assets/*.svg` (ícone "C" provisório) → `@capacitor/assets`
   (Android 123 res, iOS AppIcon/Splash, PWA `public/icons/*.webp`) + `public/icon.png`/`icon-192.png`
   + `ic_stat_cecistudy.png` (notificação Android).
-- [x] **6.6** CI `.github/workflows/native-build.yml`: Android (ubuntu + JDK 21 + SDK → APK debug,
-  artifact) e iOS (macOS runner + Xcode → build unsigned p/ simulador).
+- [x] **6.6** CI `.github/workflows/release.yml`: Android (ubuntu + JDK 21 + SDK → APK, assinado
+  com keystore ou debug) e iOS (macOS runner + Xcode → IPA assinado ou simulador unsigned).
 - [x] **6.7** Docs `.context/` (arquitetura, guia nativo, storage dual, CI).
 
 **Pendências / próximos passos**
@@ -327,10 +327,11 @@ e não persistidos. Unificar o modelo evita divergência.
 - **UI:** modal `ui/OtaUpdateModal.tsx` ("atualização pronta ♡") + card "atualização do
   app" no Perfil (versão atual, progresso de download, "verificar atualização",
   "aplicar agora") — só nativo.
-- **Publicação:** `.github/workflows/ota.yml` (push na `main` com mudanças web +
+- **Publicação:** o pipeline único `.github/workflows/release.yml` (tag `v*` ou
   `workflow_dispatch`) → `npm ci` → lint → test → build → zip do `dist/` → SHA-256 →
   `version.json` + `bundles/` (mantém as últimas 5 em `available`) → GitHub Pages.
-  Versão semver automática `1.0.<nº de commits>`.
+  A versão semver do OTA é a **versão do release** (ex.: tag `v1.2.3` → OTA `1.2.3`).
+  Script do manifest: `.github/scripts/ota-manifest.mjs`.
 - **Config:** `capacitor.config.ts` com `CapacitorUpdater: { autoUpdate: 'off' }`; dep
   `@capgo/capacitor-updater` + `npx cap sync` (android/ios commitados).
 - **Docs:** `ota/README.md` + `ota/version.json.example`; `AGENTS.md` e `architecture.md`

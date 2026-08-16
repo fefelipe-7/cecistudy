@@ -22,7 +22,7 @@ Guidance for OpenCode sessions working in **cecistudy ♡** — a personal, mobi
 
 ## Persistence & Native
 - **Dual Storage:** `src/lib/storage.ts` switches `localStorage` (web) ↔ `@capacitor/preferences` (native).
-- **Native (`android/`/`ios/`):** Committed to repo. Native builds run in CI (`.github/workflows/native-build.yml`); this Linux machine has no JDK/SDK/Xcode.
+- **Native (`android/`/`ios/`):** Committed to repo. Native builds + releases + OTA run in CI (`.github/workflows/release.yml`); this Linux machine has no JDK/SDK/Xcode.
 - **OTA Updates:** Self-hosted web bundle updates via `@capgo/capacitor-updater` (`src/lib/ota.ts`) hosted on GitHub Pages (`ota/README.md`).
 
 ## Gotchas & Environment Quirks

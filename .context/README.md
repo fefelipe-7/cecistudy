@@ -69,6 +69,6 @@ assets/                        → arte-fonte (icon/splash SVGs) p/ `cap:assets`
 - Web: `npm run dev` (porta 3000) · `npm run build` · `npm run preview`
 - Lint/typecheck: `npm run lint` = `tsc --noEmit`
 - Nativo: `npm run cap:sync` (build + sync) · `npm run cap:open:android` · `npm run cap:open:ios` · `npm run cap:assets` (regenera ícones/splash)
-- CI: `.github/workflows/native-build.yml` (APK debug + IPA unsigned via GitHub Actions)
+- CI: `.github/workflows/release.yml` (pipeline único: APK + IPA + OTA, versão por tag)
 
 Veja [`architecture.md`](./architecture.md) para os detalhes.

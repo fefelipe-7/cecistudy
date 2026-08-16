@@ -20,7 +20,7 @@
 
 > Sem dependências mortas: `@google/genai`, `express`, `dotenv` e `@types/express` foram
 > removidos (backend Gemini/AI Studio descartado). `package.json` usa `"name": "cecistudy"`.
-> Builds nativos: `.github/workflows/native-build.yml` (APK debug + IPA unsigned).
+> Builds nativos: `.github/workflows/release.yml` (APK + IPA + OTA, versão por tag).
 
 ## 2. Hierarquia de componentes
 
@@ -191,10 +191,12 @@ O cecistudy é **dois produtos em uma base de código**:
 
 ### OTA self-hosted (web bundle)
 Atualizações **over-the-air** do bundle web sem novo `.ipa`/`.apk`:
-- **Publicação:** `.github/workflows/ota.yml` (push na `main` com mudanças web +
+- **Publicação:** o pipeline único `.github/workflows/release.yml` (tag `v*` ou
   `workflow_dispatch`) → `npm ci` → lint → test → build → zip do `dist/` → SHA-256 →
   `version.json` + `bundles/` (mantém as últimas 5) → **GitHub Pages** (Source: "GitHub Actions").
-  Versão semver automática `1.0.<nº de commits>`.
+  A versão semver do OTA é a **versão do release** (ex.: tag `v1.2.3` → OTA `1.2.3`) — todo
+  release vira também uma atualização over-the-air. Script do manifest:
+  `.github/scripts/ota-manifest.mjs`.
 - **Endpoints:** `https://fefelipe-7.github.io/cecistudy/version.json` e `.../bundles/cecistudy-<ver>.zip`.
 - **Cliente:** `src/lib/ota.ts` (modo manual do `@capgo/capacitor-updater`, no-op no web) —
   `notifyAppReady()` no boot, `checkForUpdates()` baixa+valida (SHA-256), `next()` agenda a
@@ -221,14 +223,18 @@ npm run cap:assets     → regenera ícones/splash a partir de assets/*.svg
 - Notificação Android usa `ic_stat_cecistudy.png` (drawable).
 
 ### Builds (CI)
-`.github/workflows/native-build.yml`:
-- **Android:** ubuntu + JDK 21 + Android SDK → `assembleDebug` → artifact APK.
-- **iOS:** macOS runner + Xcode → build unsigned p/ iphonesimulator (IPA assinado exige
-  provisioning do usuário — ver `backlog.md`).
+`.github/workflows/release.yml` — pipeline único de release (tag `v*` ou dispatch manual):
+- **prepare:** lint + testes + build web → zip do bundle OTA (sha256) + `dist/`.
+- **Android:** ubuntu + JDK 21 + Android SDK → `assembleRelease` assinado (keystore via
+  secrets `ANDROID_KEYSTORE*`) ou `assembleDebug` sem keystore → APK no release.
+- **iOS:** macOS runner + Xcode → IPA `Release` assinado (secrets `IOS_TEAM_ID`/`IOS_CERTIFICATE*`)
+  ou build de simulador unsigned sem secrets → IPA no release.
+- **release:** cria o GitHub Release `v<versão>` com `cecistudy-<ver>-android.apk`,
+  `-ios.ipa` e o `.zip` do bundle, e publica o OTA no Pages com a mesma versão.
 
 > **Limitação do ambiente:** esta máquina (Linux) **não compila** os apps (sem JDK/SDK/Xcode).
-> Os builds nativos rodam no CI; para distribuir nas stores é preciso configurar
-> keystore (Android) e signing/provisioning (iOS) — documentado em `backlog.md`.
+> Os builds nativos rodam no CI; para gerar APK/IPA **instaláveis** (assinados) é preciso
+> configurar keystore (Android) e signing/provisioning (iOS) — ver `backlog.md`.
 
 ## 7. Pontos de atenção arquitetural (resumo)
 

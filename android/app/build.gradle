@@ -1,5 +1,14 @@
 apply plugin: 'com.android.application'
 
+// Versão e assinatura vêm do ambiente (CI) quando presentes; local usa fallbacks.
+def env = System.getenv()
+def verCode = (env['APP_VERSION_CODE'] ?: '1').toInteger()
+def verName = env['APP_VERSION_NAME'] ?: '1.0'
+def keystorePath = env['ANDROID_KEYSTORE_PATH']
+def keystorePassword = env['ANDROID_KEYSTORE_PASSWORD']
+def keyAlias = env['ANDROID_KEY_ALIAS']
+def keyPassword = env['ANDROID_KEY_PASSWORD']
+
 android {
     namespace = "ceci.study.app"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -7,8 +16,8 @@ android {
         applicationId "ceci.study.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode verCode
+        versionName verName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -16,10 +25,23 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        if (keystorePath) {
+            release {
+                storeFile file(keystorePath)
+                storePassword keystorePassword
+                keyAlias keyAlias
+                keyPassword keyPassword
+            }
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (keystorePath) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 }

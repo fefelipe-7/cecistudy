@@ -6,25 +6,29 @@ baixa, valida e troca o bundle sozinho — sem gerar um `.ipa`/`.apk` novo a cad
 mudança de interface.
 
 > Este diretório (`ota/`) contém só documentação e o exemplo do manifest. O site
-> real (`version.json` + `bundles/`) é **gerado pelo CI** em `.github/workflows/ota.yml`
-> e publicado no GitHub Pages.
+> real (`version.json` + `bundles/`) é **gerado pelo pipeline de release**
+> (`.github/workflows/release.yml` → `.github/scripts/ota-manifest.mjs`) e publicado
+> no GitHub Pages.
 
 ## Como funciona
 
 ```
-       push na main (mudanças em src/ etc.)
+        tag v1.2.3 (ou release manual)
                     │
                     ▼
-            GitHub Actions (ota.yml)
-                    │  npm ci → lint → test → build
-                    │  zip do dist/ → sha256
-                    │  version.json + bundles/ (últimas 5 versões)
-                    ▼
-                GitHub Pages
+        GitHub Actions (release.yml)
+        npm ci → lint → test → build web
+        zip do dist/ → sha256
+        build APK (android) + IPA (ios)
+        ▼
+  GitHub Release v1.2.3          GitHub Pages (OTA)
+  cecistudy-1.2.3-android.apk     version.json + bundles/ (últimas 5)
+  cecistudy-1.2.3-ios.ipa         └─ version = 1.2.3 (a do release)
+  cecistudy-1.2.3.zip             └─ bundles/cecistudy-1.2.3.zip
                     │
         ┌───────────┴───────────┐
         │                       │
-  version.json            bundles/1.0.<n>.zip
+  version.json            bundles/1.2.3.zip
         │                       │
         └───────────┬───────────┘
                     ▼
@@ -38,8 +42,9 @@ mudança de interface.
   próxima abertura e avisa ("atualização pronta ♡"). Dá para aplicar na hora pelo
   modal ou pelo Perfil → "atualização do app".
 - **Manifest:** `https://fefelipe-7.github.io/cecistudy/version.json`
-- **Bundle:** `https://fefelipe-7.github.io/cecistudy/bundles/cecistudy-1.0.<n>.zip`
-- **Versão:** semver derivada automaticamente (`1.0.<nº de commits>`), sempre crescente.
+- **Bundle:** `https://fefelipe-7.github.io/cecistudy/bundles/cecistudy-<versão>.zip`
+- **Versão:** semver da **tag do release** (ex.: tag `v1.2.3` → OTA `1.2.3`). Todo
+  release vira também uma atualização over-the-air.
 
 ## Setup único (manual)
 
@@ -48,7 +53,9 @@ mudança de interface.
    (`@capgo/capacitor-updater`) embutido — ou seja, é preciso gerar **uma** build
    nativa nova (IPA/APK) com o plugin. Depois disso, mudanças web são OTA.
    - `npm i @capgo/capacitor-updater` → `npx cap sync` → build via CI
-     (`.github/workflows/native-build.yml`) ou local.
+     (`.github/workflows/release.yml`) ou local.
+3. **Release:** criar uma tag `v*` (ex.: `git tag v1.2.3 && git push origin v1.2.3`)
+   ou rodar o workflow `release.yml` manualmente (Actions → "release" → Run workflow).
 
 ## version.json (schema)
 
@@ -73,8 +80,9 @@ para rollback. Veja `version.json.example`.
 1. **Automático (crash):** se o bundle novo travar antes do JS marcar o app como
    pronto (`notifyAppReady()`), o plugin reverte sozinho para a versão anterior na
    próxima abertura.
-2. **Manual:** re-executar o workflow `ota.yml` num commit antigo (GitHub Actions
-   → Re-run) restaura aquele bundle como `latest`.
+2. **Manual:** re-executar o workflow `release.yml` (dispatch) com a versão de um
+   commit antigo, ou apontar `version/url/checksum` do `version.json` para uma versão
+   antiga preservada em `available`.
 3. **Preservado:** `available` guarda as últimas 5 versões em `bundles/` — dá para
    apontar `version/url/checksum` para uma antiga sem rebuild (editar o `version.json`
    no site ou ajustar o workflow).
