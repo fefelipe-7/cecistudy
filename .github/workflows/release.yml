@@ -348,6 +348,8 @@ jobs:
           ls -la final
 
       - name: create/update github release
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           NOTES=$(cat <<EOF
           ## cecistudy v$VERSION
