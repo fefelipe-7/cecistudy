@@ -5,13 +5,14 @@ import {
   ChevronRight,
   FileCheck2,
   AlertCircle,
-  CheckCircle2,
+  Plus,
 } from 'lucide-react';
 import { SubTabFaculdade, ClassNote } from '../../types';
 import { CourseDetailView } from './CourseDetailView';
 import { ClassNoteModal } from '../courses/ClassNoteModal';
 import { ClassNoteListItem } from '../courses/ClassNoteListItem';
 import { UnderlineTabBar } from '../ui/UnderlineTabBar';
+import { CompletionToggle } from '../ui/CompletionToggle';
 import { useApp } from '../../context/AppContext';
 import {
   eventsForMonth,
@@ -37,6 +38,7 @@ export const FaculdadeView: React.FC = () => {
     setSubTabFaculdade: setSubTab,
     focusedCourseId,
     openCourseDetail,
+    openWizard,
     handleToggleExam,
     handleToggleTask,
   } = useApp();
@@ -129,10 +131,10 @@ export const FaculdadeView: React.FC = () => {
           <div className="flex items-center justify-between px-1">
             <h2 className="font-display text-base font-bold text-ceci-primary">grade de disciplinas</h2>
             <button
-              onClick={() => setSubTab('calendario')}
-              className="text-xs text-ceci-brand-strong hover:underline font-semibold cursor-pointer"
+              onClick={() => openWizard('course')}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand hover:bg-rose-100 transition-colors cursor-pointer"
             >
-              ver calendário completo →
+              <Plus className="w-3.5 h-3.5" /> nova matéria
             </button>
           </div>
 
@@ -217,7 +219,11 @@ export const FaculdadeView: React.FC = () => {
                   <h3 className="font-bold text-xs text-ceci-primary">{ex.title}</h3>
                   <p className="text-[11px] text-ceci-secondary mt-0.5">data: {ex.date} · peso {ex.weight}</p>
                 </div>
-                <CheckCircle2 className={`w-5 h-5 ${ex.completed ? 'text-success-deep' : 'text-ceci-faded'}`} />
+                                <CompletionToggle
+                  checked={ex.completed}
+                  onChange={() => handleToggleExam(ex.id)}
+                  label={ex.completed ? `marcar prova "${ex.title}" como pendente` : `marcar prova "${ex.title}" como concluída`}
+                />
               </div>
             ))}
           </div>

@@ -22,6 +22,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { Toggle } from '../ui/Toggle';
 import { isReminderSupported } from '../../lib/notifications';
 import { isNativePlatform } from '../../lib/storage';
 import { pickProfilePhoto } from '../../lib/photo';
@@ -633,22 +634,12 @@ export const PerfilView: React.FC = () => {
               </p>
             </div>
 
-            <button
-              type="button"
-              onClick={() => updateReminder({ ...reminderSettings, enabled: !reminderSettings.enabled })}
+            <Toggle
+              checked={reminderSettings.enabled}
+              onChange={() => updateReminder({ ...reminderSettings, enabled: !reminderSettings.enabled })}
               disabled={!isReminderSupported()}
-              aria-pressed={reminderSettings.enabled}
-              className={`relative w-12 h-7 rounded-full tap-interactive cursor-pointer shrink-0 touch-target ${
-                reminderSettings.enabled ? 'bg-rose-500' : 'bg-ceci-border-strong'
-              } ${!isReminderSupported() ? 'opacity-50 cursor-not-allowed' : ''}`}
-              title={reminderSettings.enabled ? 'desativar lembrete' : 'ativar lembrete'}
-            >
-              <span
-                className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow-xs transition-transform ${
-                  reminderSettings.enabled ? 'translate-x-5' : ''
-                }`}
-              />
-            </button>
+              label="ativar lembrete diário de estudo"
+            />
           </div>
 
           {isReminderSupported() && (

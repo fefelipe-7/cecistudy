@@ -77,7 +77,7 @@ const handleNext = useCallback(() => {
     const correctCount = answers.filter((a) => a.correct).length;
     onFinish(answers, config, state.startTime, correctCount, pool.length);
   }
-}, [currentIdx, pool.length, onAdvance, onFinish]);
+  }, [currentIdx, pool.length, onAdvance, onFinish, state.answers]);
 
   // Para controle do parent - expõe callbacks
   // O parent passa o state completo, então usamos callbacks
@@ -215,22 +215,26 @@ const handleNext = useCallback(() => {
                 />
               </div>
             </motion.div>
+          </AnimatePresence>
 
-            {/* Tela da Explicação (overlay que substitui a pergunta) */}
-            <motion.div
-              key="explanation"
-              variants={{
-                initial: { opacity: 0, scale: 0.95, y: 20 },
-                animate: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] } },
-                exit: { opacity: 0, scale: 0.95, y: -20, transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] } },
-              }}
-            >
-              <QuizExplanationOverlay
-                explanation={current.explanation ?? 'sem explicação disponível'}
-                isCorrect={selectedOption === correctLetter}
-                onClose={handleNext}
-              />
-            </motion.div>
+          {/* Tela da Explicação (overlay exibido após responder) */}
+          <AnimatePresence>
+            {showExplanation && (
+              <motion.div
+                key="explanation"
+                variants={{
+                  initial: { opacity: 0, scale: 0.95, y: 20 },
+                  animate: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] } },
+                  exit: { opacity: 0, scale: 0.95, y: -20, transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] } },
+                }}
+              >
+                <QuizExplanationOverlay
+                  explanation={current.explanation ?? 'sem explicação disponível'}
+                  isCorrect={selectedOption === correctLetter}
+                  onClose={handleNext}
+                />
+              </motion.div>
+            )}
           </AnimatePresence>
         </div>
       </div>
@@ -241,7 +245,7 @@ const handleNext = useCallback(() => {
           <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
             <button
               onClick={handleNext}
-              className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-sm font-semibold text-white bg-[#E97891] hover:bg-[#D85F79] cursor-pointer active:scale-[0.98]"
+              className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-sm font-semibold text-white bg-ceci-brand hover:bg-ceci-brand-strong cursor-pointer active:scale-[0.98]"
             >
               {currentIdx + 1 < pool.length ? (
                 <>

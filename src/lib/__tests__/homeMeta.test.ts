@@ -11,10 +11,38 @@ describe('getGreeting', () => {
 });
 
 describe('getDailyGoalMessage', () => {
-  it('gera frases específicas quando não há tarefas e quando só há provas', () => {
-    expect(getDailyGoalMessage({ pendingTasks: 0, pendingExams: 0 })).toContain('hoje está mais leve');
-    expect(getDailyGoalMessage({ pendingTasks: 0, pendingExams: 2 })).toContain('prova');
-    expect(getDailyGoalMessage({ pendingTasks: 3, pendingExams: 0 })).toContain('tarefas');
-    expect(getDailyGoalMessage({ pendingTasks: 3, pendingExams: 2 })).toContain('tudo');
+  const DAY = new Date('2026-08-15T12:00:00');
+
+  it('sem pendências fala de leveza, valendo para qualquer frase do conjunto', () => {
+    for (let day = 1; day <= 31; day++) {
+      const d = new Date(`2026-08-${String(day).padStart(2, '0')}T12:00:00`);
+      expect(getDailyGoalMessage({ pendingTasks: 0, pendingExams: 0 }, d)).toMatch(
+        /leve|tranquilo|descansar|correria|respira/
+      );
+    }
+  });
+
+  it('só provas menciona prova/provas, só tarefas menciona tarefa/tarefas', () => {
+    for (let day = 1; day <= 31; day++) {
+      const d = new Date(`2026-08-${String(day).padStart(2, '0')}T12:00:00`);
+      expect(getDailyGoalMessage({ pendingTasks: 0, pendingExams: 2 }, d)).toMatch(/prova/);
+      expect(getDailyGoalMessage({ pendingTasks: 3, pendingExams: 0 }, d)).toMatch(/tarefa/);
+    }
+  });
+
+  it('cenário misto cita os dois números e os tipos', () => {
+    for (let day = 1; day <= 31; day++) {
+      const d = new Date(`2026-08-${String(day).padStart(2, '0')}T12:00:00`);
+      const msg = getDailyGoalMessage({ pendingTasks: 3, pendingExams: 2 }, d);
+      expect(msg).toContain('3');
+      expect(msg).toContain('2');
+      expect(msg).toMatch(/tarefa|prova/);
+    }
+  });
+
+  it('é estável no mesmo dia (não varia a cada render)', () => {
+    const a = getDailyGoalMessage({ pendingTasks: 3, pendingExams: 2 }, DAY);
+    const b = getDailyGoalMessage({ pendingTasks: 3, pendingExams: 2 }, DAY);
+    expect(a).toBe(b);
   });
 });

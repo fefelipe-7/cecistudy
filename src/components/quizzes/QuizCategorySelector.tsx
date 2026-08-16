@@ -357,7 +357,7 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
               className={`w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold cursor-pointer transition-all active:scale-[0.98] ${
                 pool.length === 0
                   ? 'bg-ceci-muted text-ceci-secondary cursor-not-allowed'
-                  : 'bg-[#E97891] hover:bg-[#D85F79] text-white shadow-2xs'
+                  : 'bg-ceci-brand hover:bg-ceci-brand-strong text-white shadow-2xs'
               }`}
             >
               <Target className="w-4 h-4" /> {pool.length === 0 ? 'nenhuma questão com esses filtros' : `começar quiz (${config.count} questões)`}

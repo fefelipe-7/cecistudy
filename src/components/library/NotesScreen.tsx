@@ -3,7 +3,6 @@ import {
   FileText,
   Search,
   X,
-  Plus,
   Check,
   Copy,
   Trash2,
@@ -91,14 +90,6 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
             </button>
           )}
         </div>
-
-        <button
-          onClick={() => setIsCreatingNote(!isCreatingNote)}
-          className="bg-ceci-brand-strong hover:bg-ceci-brand-hover text-white px-3.5 py-2.5 rounded-2xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-2xs tap-interactive active:scale-95 cursor-pointer shrink-0"
-        >
-          <Plus className="w-4 h-4" />
-          <span>{isCreatingNote ? 'fechar' : 'nova nota'}</span>
-        </button>
       </div>
 
       {/* Category Pills */}
@@ -285,7 +276,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
             <p className="text-xs text-ceci-secondary">
               {noteSearchTerm || noteCategoryFilter !== 'todas'
                 ? 'tente ajustar seus filtros de busca.'
-                : 'clique em "+ nova nota" acima para guardar sua primeira nota avulsa.'}
+                : 'use a ação "nova nota avulsa" (menu ⋯ no topo) para guardar sua primeira nota.'}
             </p>
           </div>
         )}

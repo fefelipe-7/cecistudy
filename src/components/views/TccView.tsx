@@ -1,7 +1,8 @@
 import React from 'react';
-import { GraduationCap, PencilLine, CheckCircle2 } from 'lucide-react';
+import { GraduationCap, PencilLine } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ProgressBar } from '../ui/ProgressBar';
+import { CompletionToggle } from '../ui/CompletionToggle';
 import { Kitty } from '../ui/Kitty';
 
 /** Tela cheia do meu TCC — visualização + botão de edição (criar/manter). */
@@ -126,7 +127,11 @@ export const TccView: React.FC = () => {
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <CheckCircle2 className={`w-5 h-5 ${ch.completed ? 'text-success-leaf' : 'text-ceci-faded'}`} />
+                      <CompletionToggle
+                        checked={ch.completed}
+                        onChange={() => handleToggleChapter(idx)}
+                        label={`capítulo ${ch.title}`}
+                      />
                       <span className={`text-xs font-medium ${ch.completed ? 'line-through text-ceci-tertiary' : 'text-ceci-primary'}`}>
                         {ch.title}
                       </span>

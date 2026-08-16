@@ -652,7 +652,7 @@ export const EstudosView: React.FC = () => {
                  </div>
                  <button
                    onClick={() => openQuizCategory()}
-                   className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-white bg-[#E97891] hover:bg-[#D85F79] cursor-pointer"
+                    className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-white bg-ceci-brand hover:bg-ceci-brand-strong cursor-pointer"
                  >
                    <Target className="w-4 h-4" /> começar quiz
                  </button>

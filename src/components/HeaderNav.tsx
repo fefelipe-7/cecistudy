@@ -4,7 +4,6 @@ import {
   Search,
   ArrowLeft,
   Bookmark,
-  Plus
 } from 'lucide-react';
 import { UserProfile, DynamicHeaderConfig } from '../types';
 import { CourseIcon } from './ui/CourseIcon';
@@ -14,7 +13,6 @@ import { fadeSlide } from '../lib/motion';
 interface HeaderNavProps {
   profile: UserProfile;
   onOpenSearch: () => void;
-  onOpenQuickAdd?: () => void;
   onNavigateToPerfil: () => void;
   headerConfig?: DynamicHeaderConfig | null;
 }
@@ -22,7 +20,6 @@ interface HeaderNavProps {
 export const HeaderNav: React.FC<HeaderNavProps> = ({
   profile,
   onOpenSearch,
-  onOpenQuickAdd,
   onNavigateToPerfil,
   headerConfig,
 }) => {
@@ -135,18 +132,6 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
 
               {/* Contextual action menu (telas auxiliares) */}
               {headerConfig.actions && <HeaderActionMenu actions={headerConfig.actions} />}
-
-              {/* Quick Add Button if rightActions/actions not passed */}
-              {!headerConfig.rightActions && !headerConfig.actions && onOpenQuickAdd && (
-                <button
-                  onClick={onOpenQuickAdd}
-                  className="bg-ceci-primary hover:bg-ceci-primary-hover text-white px-3 py-1.5 rounded-2xl font-display font-bold text-xs shadow-xs flex items-center gap-1 tap-interactive active:scale-95 cursor-pointer"
-                  title="nova anotação ou tarefa"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">anotação</span>
-                </button>
-              )}
 
               {/* Quick Search */}
               <button

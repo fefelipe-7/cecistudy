@@ -17,46 +17,45 @@ interface QuizResultScreenProps {
   onClose: () => void;
 }
 
-function StatCard({ icon, label, value, color, bgColor }: {
+function StatCard({ icon, label, value, colorClass, bgClass }: {
   icon: React.ReactNode;
   label: string;
   value: string | number;
-  color: string;
-  bgColor: string;
+  colorClass: string;
+  bgClass: string;
 }) {
   return (
     <div className="rounded-xl p-4 bg-white border border-ceci-border-default shadow-sm">
       <div className="flex items-center gap-2 mb-2">
-        <span className={`w-8 h-8 rounded-xl flex items-center justify-center ${bgColor}`}>
+        <span className={`w-8 h-8 rounded-xl flex items-center justify-center ${bgClass}`}>
           {icon}
         </span>
         <span className="text-xs font-medium text-ceci-secondary">{label}</span>
       </div>
-      <div className="font-display font-bold text-2xl" style={{ color }}>
+      <div className={`font-display font-bold text-2xl ${colorClass}`}>
         {value}
       </div>
     </div>
   );
 }
 
-function BarStat({ label, count, total, color, bgColor }: {
+function BarStat({ label, count, total, colorClass, barClass }: {
   label: string;
   count: number;
   total: number;
-  color: string;
-  bgColor: string;
+  colorClass: string;
+  barClass: string;
 }) {
   const pct = total > 0 ? (count / total) * 100 : 0;
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between text-xs">
         <span className="text-ceci-secondary truncate pr-2">{label}</span>
-        <span className="font-semibold" style={{ color }}>{count}/{total} ({Math.round(pct)}%)</span>
+        <span className={`font-semibold ${colorClass}`}>{count}/{total} ({Math.round(pct)}%)</span>
       </div>
       <div className="h-2 rounded-full bg-ceci-border-subtle overflow-hidden">
         <motion.div
-          className="h-full rounded-full"
-          style={{ backgroundColor: color }}
+          className={`h-full rounded-full ${barClass}`}
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
           transition={{ duration: 0.5, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
@@ -211,29 +210,29 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
               icon={<CheckCircle2 className="w-4 h-4" />}
               label="acertos"
               value={correctCount}
-              color="#16A34A"
-              bgColor="bg-green-100 text-green-600"
+              colorClass="text-green-700"
+              bgClass="bg-green-100 text-green-600"
             />
             <StatCard
               icon={<X className="w-4 h-4" />}
               label="erros"
               value={totalCount - correctCount}
-              color="#DC2626"
-              bgColor="bg-red-100 text-red-600"
+              colorClass="text-red-700"
+              bgClass="bg-red-100 text-red-600"
             />
             <StatCard
               icon={<Clock className="w-4 h-4" />}
               label="tempo total"
               value={`${totalTimeMin} min`}
-              color="#7C3AED"
-              bgColor="bg-purple-100 text-purple-600"
+              colorClass="text-purple-700"
+              bgClass="bg-purple-100 text-purple-600"
             />
             <StatCard
               icon={<Brain className="w-4 h-4" />}
               label="méd/questão"
               value={`${avgTimePerQ}s`}
-              color="#E97891"
-              bgColor="bg-surface-rose text-ceci-brand-strong"
+              colorClass="text-ceci-brand"
+              bgClass="bg-surface-rose text-ceci-brand-strong"
             />
           </motion.div>
 
@@ -253,8 +252,8 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
                     label={area}
                     count={data.correct}
                     total={data.total}
-                    color="#16A34A"
-                    bgColor="bg-green-100"
+                    colorClass="text-green-700"
+                    barClass="bg-green-700"
                   />
                 ))}
               </div>
@@ -277,8 +276,8 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
                     label={dif.charAt(0).toUpperCase() + dif.slice(1)}
                     count={data.correct}
                     total={data.total}
-                    color="#7C3AED"
-                    bgColor="bg-purple-100"
+                    colorClass="text-purple-700"
+                    barClass="bg-purple-700"
                   />
                 ))}
               </div>
@@ -301,8 +300,8 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
                     label={escola}
                     count={data.correct}
                     total={data.total}
-                    color="#E97891"
-                    bgColor="bg-surface-rose"
+                    colorClass="text-ceci-brand"
+                    barClass="bg-ceci-brand"
                   />
                 ))}
               </div>
@@ -367,7 +366,7 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
               const sessionId = `qs-${Date.now()}`;
               onSave(sessionId);
             }}
-            className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-sm font-semibold text-white bg-[#E97891] hover:bg-[#D85F79] cursor-pointer active:scale-[0.98]"
+            className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-sm font-semibold text-white bg-ceci-brand hover:bg-ceci-brand-strong cursor-pointer active:scale-[0.98]"
           >
             <CheckCircle2 className="w-4 h-4" /> guardar sessão
           </button>
@@ -380,7 +379,7 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
             </button>
             <button
               onClick={onNewQuiz}
-              className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl text-sm font-semibold text-ceci-academic-strong bg-[#F3F9FC] border border-ceci-border-academic cursor-pointer active:scale-[0.98]"
+              className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl text-sm font-semibold text-ceci-academic-strong bg-surface-blue border border-ceci-border-academic cursor-pointer active:scale-[0.98]"
             >
               <Target className="w-4 h-4" /> novo quiz
             </button>

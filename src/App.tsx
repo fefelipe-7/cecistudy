@@ -175,7 +175,6 @@ function AppShell() {
     courses,
     handleNavigate,
     openSearch,
-    openQuickAdd,
     openCompose,
     closeQuickAdd,
     closeSearch,
@@ -224,7 +223,6 @@ function AppShell() {
           profile={profile}
           headerConfig={headerConfig}
           onOpenSearch={openSearch}
-          onOpenQuickAdd={openQuickAdd}
           onNavigateToPerfil={onNavigateToPerfil}
         />
       )}
@@ -261,43 +259,27 @@ function AppShell() {
               </Suspense>
             ) : app.isQuizPlayOpen ? (
               <Suspense fallback={<ViewFallback />}>
-<QuizPlayer
-  state={app.currentQuizPlayState!}
-  onAnswer={(answer) => {
-    // Update the quiz play state with the new answer
-    const current = app.currentQuizPlayState!;
-    const updatedState: QuizPlayState = {
-      ...current,
-      answers: [...current.answers, answer],
-      currentIdx: current.currentIdx + 1,
-      questionStartTime: Date.now(),
-    };
-    // We need to update the stack with the new state
-    const stack = app.navigationStack.map((screen) =>
-      screen.kind === 'quiz-play' ? { ...screen, state: updatedState } : screen
-    );
-    app.setStack(stack);
-    app.syncHash(stack);
-  }}
-  onAdvance={() => {
-    // Advance to next question
-    const current = app.currentQuizPlayState!;
-    const updatedState: QuizPlayState = {
-      ...current,
-      currentIdx: current.currentIdx + 1,
-      questionStartTime: Date.now(),
-    };
-    // We need to update the stack with the new state
-    const stack = app.navigationStack.map((screen) =>
-      screen.kind === 'quiz-play' ? { ...screen, state: updatedState } : screen
-    );
-    app.setStack(stack);
-    app.syncHash(stack);
-  }}
-  onFinish={(answers, config, startTime, correctCount, totalCount) => {
-    app.openQuizResult(answers, config, startTime, correctCount, totalCount);
-  }}
-  onClose={app.closeQuizPlay}
+                <QuizPlayer
+                  state={app.currentQuizPlayState!}
+                  onAnswer={(answer) => {
+                    // Registra a resposta (sem avançar o índice)
+                    const current = app.currentQuizPlayState!;
+                    app.updateQuizPlayState({
+                      answers: [...current.answers, answer],
+                    });
+                  }}
+                  onAdvance={() => {
+                    // Avança para próxima questão (sem adicionar resposta novamente)
+                    const current = app.currentQuizPlayState!;
+                    app.updateQuizPlayState({
+                      currentIdx: current.currentIdx + 1,
+                      questionStartTime: Date.now(),
+                    });
+                  }}
+                  onFinish={(answers, config, startTime, correctCount, totalCount) => {
+                    app.openQuizResult(answers, config, startTime, correctCount, totalCount);
+                  }}
+                  onClose={app.closeQuizPlay}
                 />
               </Suspense>
             ) : app.isQuizResultOpen ? (
@@ -321,26 +303,19 @@ function AppShell() {
                       scorePct: Math.round((app.currentQuizResultCorrectCount! / app.currentQuizResultTotalCount!) * 100),
                       createdAt: new Date().toISOString().split('T')[0],
                     });
-                    app.closeQuizResult();
-                    app.closeQuizPlay();
-                    app.closeQuizCategory();
+                    app.closeAllQuizScreens();
                     app.showToast('sessão de quiz guardada ♡');
                   }}
                   onRetry={() => {
-                    // Reopen quiz-play with same config
-                    const pool = app.currentQuizResultPool!;
-                    app.openQuizPlay(pool, app.currentQuizResultConfig!);
-                    app.closeQuizResult();
+                    // Repete o mesmo quiz (mesmo pool + config)
+                    app.openQuizPlay(app.currentQuizResultPool!, app.currentQuizResultConfig!);
                   }}
                   onNewQuiz={() => {
-                    app.closeQuizResult();
-                    app.closeQuizPlay();
-                    // quiz-category stays open
+                    // Volta para o seletor de assuntos
+                    app.newQuizFromResult();
                   }}
                   onClose={() => {
-                    app.closeQuizResult();
-                    app.closeQuizPlay();
-                    app.closeQuizCategory();
+                    app.closeAllQuizScreens();
                   }}
                 />
               </Suspense>

@@ -61,7 +61,7 @@ import {
 } from '../lib/routing';
 import { computeStreak, getWeekProgress, isStudyDay, toDateKey, StreakStats, WeekDayCell } from '../lib/streak';
 import { LooseNote } from '../components/library/notes';
-import { applyStickerUnlocks, mergeCatalogWithProgress } from '../lib/stickers';
+import { applyStickerUnlocks, mergeCatalogWithProgress, countUnlocked } from '../lib/stickers';
 import { lockedStickerCatalog } from '../data/stickerCatalog';
 
 
@@ -209,6 +209,9 @@ export interface AppContextValue {
   isQuizResultOpen: boolean;
   openQuizResult: (answers: QuizAnswer[], config: QuizConfig, startTime: number, correctCount: number, totalCount: number) => void;
   closeQuizResult: () => void;
+  updateQuizPlayState: (updates: Partial<QuizPlayState>) => void;
+  closeAllQuizScreens: () => void;
+  newQuizFromResult: () => void;
   isQuickAddOpen: boolean;
   openQuickAdd: () => void;
   closeQuickAdd: () => void;
@@ -503,6 +506,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Janela de boot: enquanto o app "acorda" (hidratação assíncrona no nativo), conquistas
+  // desbloqueadas por reconhecimento do estado persistido são aplicadas em silêncio —
+  // só celebramos (confete/vibração/toast) desbloqueios que acontecem em sessão.
+  const bootWindowRef = useRef(true);
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      bootWindowRef.current = false;
+    }, 2500);
+    return () => window.clearTimeout(t);
+  }, []);
+
   // Stickers: avalia desbloqueios (conquistas) quando o estado de estudo muda.
   // `applyStickerUnlocks` devolve a mesma referência quando nada muda — sem loop.
   useEffect(() => {
@@ -534,13 +548,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setStickers(updated);
       setProfile((p) => ({
         ...p,
-        stickersCollected: p.stickersCollected + newlyUnlocked.filter((item) => !stickers.some((existing) => existing.id === item.id && existing.unlocked)).length,
+        stickersCollected: countUnlocked(updated),
       }));
-      celebrate('sticker-unlocked');
-      hapticSuccess();
-      showToast(
-        `conquista desbloqueada: ${newlyUnlocked[0].emoji} ${newlyUnlocked[0].name} ♡`
-      );
+      if (!bootWindowRef.current) {
+        celebrate('sticker-unlocked');
+        hapticSuccess();
+        showToast(
+          `conquista desbloqueada: ${newlyUnlocked[0].emoji} ${newlyUnlocked[0].name} ♡`
+        );
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -1099,6 +1115,56 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const closeQuizResult = useCallback(() => goBack(), [goBack]);
 
+  /** Atualiza o estado do quiz em jogo (adiciona resposta ou avança questão). */
+  const updateQuizPlayState = useCallback((updates: Partial<QuizPlayState>) => {
+    const playScreen = navigationStack.find((s) => s.kind === 'quiz-play') as any;
+    if (!playScreen) return;
+
+    const current = playScreen.state as QuizPlayState;
+    const updatedState: QuizPlayState = { ...current, ...updates };
+
+    const stack = navigationStack.map((screen) =>
+      screen.kind === 'quiz-play' ? { ...screen, state: updatedState } : screen
+    );
+    setStack(stack);
+    syncHash(stack);
+  }, [navigationStack, setStack, syncHash]);
+
+  /** Volta de todas as telas de quiz para tab de estudos em um só goBack. */
+  const closeAllQuizScreens = useCallback(() => {
+    // Encontra o índice da quiz-category e volta a ela
+    const quizCategoryIdx = navigationStack.findIndex((s) => s.kind === 'quiz-category');
+    if (quizCategoryIdx === -1) {
+      // Não há quiz-category, apenas volta
+      goBack();
+      return;
+    }
+
+    // Remove tudo a partir de quiz-category (volta para tab anterior)
+    const base = navigationStack.slice(0, quizCategoryIdx);
+    if (base.length === 0) {
+      // Se base está vazia, volta para tab estudos
+      setStack([{ kind: 'tab' as const, tab: 'estudos' as NavTab }]);
+    } else {
+      setStack(base);
+    }
+    syncHash(base.length > 0 ? base : [{ kind: 'tab' as const, tab: 'estudos' as NavTab }]);
+    scrollToTop();
+  }, [navigationStack, setStack, syncHash, goBack]);
+
+  /** Volta do resultado para o seletor de assuntos (mantém quiz-category). */
+  const newQuizFromResult = useCallback(() => {
+    const quizCategoryIdx = navigationStack.findIndex((s) => s.kind === 'quiz-category');
+    if (quizCategoryIdx === -1) {
+      openQuizCategory();
+      return;
+    }
+    const next = navigationStack.slice(0, quizCategoryIdx + 1);
+    setStack(next);
+    syncHash(next);
+    scrollToTop();
+  }, [navigationStack, setStack, syncHash, openQuizCategory]);
+
   const openCompose = useCallback((courseId?: string) => {
     setComposeCourseId(courseId);
     const top = navigationStack[navigationStack.length - 1];
@@ -1439,6 +1505,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     isQuizResultOpen,
     openQuizResult,
     closeQuizResult,
+    updateQuizPlayState,
+    closeAllQuizScreens,
+    newQuizFromResult,
     isQuickAddOpen,
     openQuickAdd,
     closeQuickAdd,

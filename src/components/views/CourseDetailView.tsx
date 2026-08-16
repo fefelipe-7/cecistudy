@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { CourseIcon } from '../ui/CourseIcon';
 import { Kitty } from '../ui/Kitty';
+import { CompletionToggle } from '../ui/CompletionToggle';
 import { ClassNoteModal } from '../courses/ClassNoteModal';
 import { ClassNoteListItem } from '../courses/ClassNoteListItem';
 import { useApp } from '../../context/AppContext';
@@ -347,7 +348,11 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                     </div>
 
                     <div className="pt-1">
-                      <CheckCircle2 className={`w-5 h-5 ${exam.completed ? 'text-success-deep fill-success-deep/10' : 'text-ceci-faded'}`} />
+                      <CompletionToggle
+                        checked={exam.completed}
+                        onChange={() => onToggleExam(exam.id)}
+                        label={exam.completed ? `marcar prova "${exam.title}" como pendente` : `marcar prova "${exam.title}" como concluída`}
+                      />
                     </div>
                   </div>
                 ))}
@@ -424,7 +429,12 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                         <span className="text-[10px] text-ceci-tertiary">prazo: {t.dueDate}</span>
                       )}
                     </div>
-                    <CheckCircle2 className={`w-4 h-4 shrink-0 ${t.completed ? 'text-success-deep' : 'text-ceci-faded'}`} />
+                    <CompletionToggle
+                        checked={t.completed}
+                        onChange={() => onToggleTask(t.id)}
+                        size="sm"
+                        label={t.completed ? `marcar tarefa "${t.title}" como pendente` : `marcar tarefa "${t.title}" como concluída`}
+                      />
                   </div>
                 ))}
               </div>

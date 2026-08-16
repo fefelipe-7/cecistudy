@@ -13,11 +13,11 @@ import {
   Images,
   CalendarDays,
   Bell,
-  Check,
   X,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { cn } from '../../lib/utils';
+import { Toggle } from '../ui/Toggle';
 import { pickProfilePhoto } from '../../lib/photo';
 import {
   checkPermission,
@@ -495,33 +495,13 @@ const PermissionsStep: React.FC<{ onFinish: () => void; onBack: () => void }> = 
                 )}
               </div>
 
-              <button
-                type="button"
-                onClick={() => toggle(kind)}
-                disabled={!supported || loading}
-                aria-pressed={granted}
-                aria-label={`permissão de ${title}`}
-                className={cn(
-                  'relative w-12 h-7 rounded-full tap-interactive cursor-pointer shrink-0 touch-target',
-                  granted ? 'bg-rose-500' : 'bg-ceci-border-strong',
-                  (!supported || loading) ? 'opacity-50 cursor-not-allowed' : ''
-                )}
-              >
-                {loading ? (
-                  <span className="absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow-xs flex items-center justify-center text-[10px] text-ceci-secondary">
-                    …
-                  </span>
-                ) : (
-                  <span
-                    className={cn(
-                      'absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow-xs flex items-center justify-center transition-transform',
-                      granted && 'translate-x-5'
-                    )}
-                  >
-                    {granted && <Check className="w-3 h-3 text-rose-500" />}
-                  </span>
-                )}
-              </button>
+              <Toggle
+                checked={granted}
+                onChange={() => toggle(kind)}
+                disabled={!supported}
+                loading={loading}
+                label={`permissão de ${title}`}
+              />
             </div>
           );
         })}

@@ -2,8 +2,6 @@ import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles,
-  CheckCircle2,
-  Circle,
   Calendar,
   Clock,
   BookOpen,
@@ -23,6 +21,7 @@ import { Task } from '../../types';
 import { useApp } from '../../context/AppContext';
 import { AnimatedNumber } from '../ui/AnimatedNumber';
 import { Kitty } from '../ui/Kitty';
+import { CompletionToggle } from '../ui/CompletionToggle';
 import { getCoursesOnWeekday, extractScheduleTime } from '../../lib/schedule';
 import { buildSuggestions } from '../../lib/suggestions';
 import { getDailyGoalMessage, getGreeting } from '../../lib/homeMeta';
@@ -412,21 +411,11 @@ export const HomeView: React.FC = () => {
                 }`}
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <button className="text-ceci-primary cursor-pointer">
-                    {task.completed ? (
-                      <motion.span
-                        key={`done-${task.id}`}
-                        initial={{ scale: 0.4 }}
-                        animate={{ scale: 1 }}
-                        transition={{ type: 'spring', stiffness: 500, damping: 18 }}
-                        className="inline-flex"
-                      >
-                        <CheckCircle2 className="w-5 h-5 text-green-700 fill-green-200/40" />
-                      </motion.span>
-                    ) : (
-                      <Circle className="w-5 h-5 text-ceci-muted" />
-                    )}
-                  </button>
+                  <CompletionToggle
+                    checked={task.completed}
+                    onChange={() => handleToggleTask(task.id)}
+                    label={task.completed ? `marcar "${task.title}" como pendente` : `marcar "${task.title}" como concluída`}
+                  />
                   <div className="min-w-0">
                     <p className={`text-xs sm:text-sm font-medium ${task.completed ? 'line-through text-ceci-muted' : 'text-ceci-primary'}`}>
                       {task.title}
@@ -489,13 +478,12 @@ export const HomeView: React.FC = () => {
                 }`}
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <button className="text-ceci-primary cursor-pointer">
-                    {sug.completed ? (
-                      <CheckCircle2 className="w-4 h-4 text-ceci-academic-strong" />
-                    ) : (
-                      <Circle className="w-4 h-4 text-ceci-muted" />
-                    )}
-                  </button>
+                  <CompletionToggle
+                    checked={sug.completed}
+                    onChange={() => toggleSuggestion(sug.id)}
+                    size="sm"
+                    label={sug.completed ? `marcar sugestão "${sug.title}" como pendente` : `marcar sugestão "${sug.title}" como concluída`}
+                  />
                   <div className="min-w-0">
                     <p className={`text-xs font-medium ${sug.completed ? 'line-through text-ceci-muted' : 'text-ceci-primary'}`}>
                       {sug.title}

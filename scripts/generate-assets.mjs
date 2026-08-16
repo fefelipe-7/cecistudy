@@ -47,7 +47,20 @@ function ensureDir(p) {
   if (!existsSync(p)) mkdirSync(p, { recursive: true });
 }
 
-/** Composição da splash: fundo creme cheio + ícone centralizado (1/3 do tamanho) + Kitty "feliz" abaixo. */
+/** Ícone do app: fundo branco cheio + conteúdo da fonte centralizado em 1/3 do tamanho. */
+async function renderIcon(size) {
+  const iconSize = Math.round(size * 0.33);
+  const icon = await sharp(ICON_SRC)
+    .resize(iconSize, iconSize, { fit: 'contain', background: { r: 255, g: 255, b: 255, alpha: 1 } })
+    .png()
+    .toBuffer();
+  const canvas = sharp({
+    create: { width: size, height: size, channels: 3, background: { r: 255, g: 255, b: 255 } },
+  });
+  return canvas.composite([{ input: icon, gravity: 'centre' }]).png().toBuffer();
+}
+
+/** Composição da splash: fundo branco cheio + ícone centralizado (1/3 do tamanho) + Kitty "feliz" abaixo. */
 async function renderSplash(width, height) {
   const iconSize = Math.round(Math.min(width, height) * 0.33); // Ícone em 1/3 do tamanho
   const kittySize = Math.round(Math.min(width, height) * 0.25); // Kitty em 1/4 do tamanho
@@ -58,9 +71,9 @@ async function renderSplash(width, height) {
   
   const icon = await sharp(ICON_SRC).resize(iconSize, iconSize).png().toBuffer();
   
-  // Cria fundo creme
+  // Cria fundo branco
   let canvas = sharp({
-    create: { width, height, channels: 3, background: { r: 255, g: 252, b: 248 } },
+    create: { width, height, channels: 3, background: { r: 255, g: 255, b: 255 } },
   });
   
   // Composição de camadas: ícone no meio-alto, Kitty abaixo
@@ -92,32 +105,37 @@ async function renderSplash(width, height) {
 
 async function generateWeb() {
   log('→ web/pwa (public/)');
-  const iconPng = await sharp(ICON_SRC).resize(512, 512).png().toBuffer();
-  const icon192 = await sharp(ICON_SRC).resize(192, 192).png().toBuffer();
+  const iconPng = await renderIcon(512);
+  const icon192 = await renderIcon(192);
   writeFileSync(join(root, 'public', 'icon.png'), iconPng);
   writeFileSync(join(root, 'public', 'icon-192.png'), icon192);
 
   ensureDir(join(root, 'public', 'icons'));
   for (const size of [48, 72, 96, 128, 192, 256, 512]) {
-    const buf = await sharp(ICON_SRC).resize(size, size).webp({ quality: 85 }).toBuffer();
-    writeFileSync(join(root, 'public', 'icons', `icon-${size}.webp`), buf);
+    const buf = await renderIcon(size);
+    const webp = await sharp(buf).webp({ quality: 85 }).toBuffer();
+    writeFileSync(join(root, 'public', 'icons', `icon-${size}.webp`), webp);
   }
 }
 
 async function generateAndroid() {
   log('→ android (mipmaps + splash)');
-  const iconPng = await sharp(ICON_SRC).png().toBuffer();
   for (const [bucket, size] of Object.entries(MIPMAP_SIZES)) {
     const dir = join(ANDROID_RES, bucket);
     ensureDir(dir);
-    const resized = await sharp(iconPng).resize(size, size).png().toBuffer();
+    const resized = await renderIcon(size);
     writeFileSync(join(dir, 'ic_launcher.png'), resized);
     writeFileSync(join(dir, 'ic_launcher_round.png'), resized);
-    // Full-bleed: fundo = JPEG inteiro; foreground transparente
-    writeFileSync(join(dir, 'ic_launcher_background.png'), resized);
+    // Adaptativo: fundo branco cheio + foreground com o ícone em 1/3 (transparente ao redor)
+    const background = await sharp({
+      create: { width: size, height: size, channels: 3, background: { r: 255, g: 255, b: 255 } },
+    }).png().toBuffer();
+    writeFileSync(join(dir, 'ic_launcher_background.png'), background);
+    const iconSize = Math.round(size * 0.33);
+    const iconSmall = await sharp(ICON_SRC).resize(iconSize, iconSize).png().toBuffer();
     const transparent = await sharp({
       create: { width: size, height: size, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
-    }).png().toBuffer();
+    }).composite([{ input: iconSmall, gravity: 'centre' }]).png().toBuffer();
     writeFileSync(join(dir, 'ic_launcher_foreground.png'), transparent);
   }
 
@@ -144,7 +162,7 @@ async function generateAndroid() {
 
 async function generateIos() {
   log('→ ios (AppIcon + splash)');
-  const appIcon = await sharp(ICON_SRC).resize(1024, 1024).png().toBuffer();
+  const appIcon = await renderIcon(1024);
   writeFileSync(
     join(IOS_XCASSETS, 'AppIcon.appiconset', 'AppIcon-512@2x.png'),
     appIcon,

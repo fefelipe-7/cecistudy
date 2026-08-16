@@ -3,8 +3,7 @@
  * Provides utilities for creating events in Google Calendar on native platforms.
  */
 
-import { Calendar } from '@capacitor/calendar';
-import { checkPermission, requestPermission } from './permissions';
+import { Calendar, type CreateEventOptions } from '@capacitor/calendar';
 
 interface CalendarEventInput {
   title: string;
@@ -13,74 +12,56 @@ interface CalendarEventInput {
   endDate?: string; // ISO date string (YYYY-MM-DD), defaults to startDate
 }
 
+/** Converte a entrada para o formato do plugin (epoch ms + `notes`). */
+function toOptions(event: CalendarEventInput): CreateEventOptions {
+  const start = new Date(event.startDate);
+  const end = event.endDate ? new Date(event.endDate) : new Date(start);
+  return {
+    title: event.title,
+    notes: event.description,
+    startDate: start.getTime(),
+    endDate: end.getTime(),
+    isAllDay: true,
+  };
+}
+
 /**
- * Creates a calendar event in Google Calendar (native only).
- * Returns success/failure status without throwing errors.
+ * Cria um evento no Google Agenda (apenas nativo).
+ * Primeiro tenta criar em silêncio (o plugin pede permissão quando ainda não
+ * foi decidida); se não der (permissão negada ou erro), abre o editor do
+ * Google Agenda já preenchido — assim a ação sempre leva até a agenda.
  *
- * @param event - Event details
- * @returns true if event was created, false otherwise
+ * @param event - Detalhes do evento
+ * @returns true se o evento foi criado (ou confirmado no editor), false caso contrário
  */
 export async function createCalendarEvent(event: CalendarEventInput): Promise<boolean> {
+  const options = toOptions(event);
+
   try {
-    // Check for calendar permission
-    const hasPermission = await checkPermission('calendar');
-
-    if (!hasPermission) {
-      console.log('[calendar] No calendar permission, requesting...');
-      const permissionResult = await requestPermission('calendar');
-
-      if (permissionResult !== 'granted') {
-        console.log('[calendar] Calendar permission denied by user');
-        return false;
-      }
-    }
-
-    // Parse dates
-    const startDate = new Date(event.startDate);
-    const endDate = event.endDate ? new Date(event.endDate) : new Date(startDate);
-
-    // Capacitor Calendar expects event objects with specific format
-    const calendarEvent = {
-      title: event.title,
-      description: event.description || '',
-      startDate: {
-        year: startDate.getFullYear(),
-        month: startDate.getMonth() + 1, // Capacitor uses 1-based months
-        day: startDate.getDate(),
-        hour: 0,
-        minute: 0,
-      },
-      endDate: {
-        year: endDate.getFullYear(),
-        month: endDate.getMonth() + 1,
-        day: endDate.getDate(),
-        hour: 0,
-        minute: 0,
-      },
-      isAllDay: true,
-      calendarId: 'primary', // Google Calendar's primary calendar
-    };
-
-    // Create the event
-    const result = await Calendar.createEvent(calendarEvent as any);
-
-    console.log('[calendar] Event created successfully:', result);
+    await Calendar.createEvent(options);
     return true;
   } catch (error) {
-    // Web platforms and errors are expected to fail gracefully
-    console.debug('[calendar] Calendar event creation unavailable:', error instanceof Error ? error.message : String(error));
-    return false;
+    console.debug(
+      '[calendar] createEvent falhou, abrindo editor interativo:',
+      error instanceof Error ? error.message : String(error)
+    );
+    try {
+      await Calendar.createEventInteractively(options);
+      return true;
+    } catch {
+      console.debug('[calendar] editor interativo cancelado ou indisponível');
+      return false;
+    }
   }
 }
 
 /**
- * Creates a task event in Google Calendar (for tasks/activities).
- * Automatically handles permissions and date parsing.
+ * Cria um evento de tarefa no Google Agenda (para tarefas/atividades).
  *
- * @param taskTitle - Title of the task
- * @param courseName - Course/discipline name to include in description
- * @param dueDate - Due date in ISO format (YYYY-MM-DD)
- * @returns true if event was created successfully
+ * @param taskTitle - Título da tarefa
+ * @param courseName - Nome da disciplina (vai na descrição)
+ * @param dueDate - Data limite em ISO (YYYY-MM-DD)
+ * @returns true se o evento foi criado
  */
 export async function createTaskCalendarEvent(
   taskTitle: string,
@@ -96,13 +77,12 @@ export async function createTaskCalendarEvent(
 }
 
 /**
- * Creates an exam event in Google Calendar (for tests/exams).
- * Automatically handles permissions and date parsing.
+ * Cria um evento de prova no Google Agenda (para testes/provas).
  *
- * @param examTitle - Title of the exam
- * @param courseName - Course/discipline name
- * @param examDate - Exam date in ISO format (YYYY-MM-DD)
- * @returns true if event was created successfully
+ * @param examTitle - Título da prova
+ * @param courseName - Nome da disciplina (vai na descrição)
+ * @param examDate - Data da prova em ISO (YYYY-MM-DD)
+ * @returns true se o evento foi criado
  */
 export async function createExamCalendarEvent(
   examTitle: string,

@@ -5,6 +5,7 @@ import type { Task } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { createTaskCalendarEvent, createExamCalendarEvent } from '../../lib/calendar';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
+import { Toggle } from '../ui/Toggle';
 import {
   ChipPicker,
   DateInput,
@@ -75,18 +76,18 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => setAddToAgenda((prev) => !prev)}
-            className={`w-full flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-medium transition-all cursor-pointer ${
-              addToAgenda
-                ? 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong'
-                : 'bg-surface-muted border-ceci-border-default text-ceci-primary'
-            }`}
-          >
-            <span>{addToAgenda ? 'sim, adicionar ao Google Agenda' : 'não, só guardar no app'}</span>
-            <span className="text-lg">{addToAgenda ? '✓' : '○'}</span>
-          </button>
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-ceci-primary">
+                {addToAgenda ? 'sim, adicionar ao Google Agenda' : 'não, só guardar no app'}
+              </p>
+            </div>
+            <Toggle
+              checked={addToAgenda}
+              onChange={() => setAddToAgenda((prev) => !prev)}
+              label="adicionar ao Google Agenda"
+            />
+          </div>
         </div>
       </div>
     ),
@@ -313,8 +314,15 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
         priority: taskPriority,
       });
       if (addToAgenda) {
-        await createTaskCalendarEvent(taskTitle.trim(), courseName, taskDueDate || today());
-        showToast('tarefa salva no app e marcada para a agenda ♡');
+        const ok = await createTaskCalendarEvent(taskTitle.trim(), courseName, taskDueDate || today());
+        if (ok) {
+          showToast('tarefa salva e marcada na sua agenda ♡');
+        } else {
+          showToast('tarefa salva no app — não consegui marcar na agenda ♡');
+        }
+        hapticSuccess();
+        closeWizard();
+        return;
       }
     } else {
       handleAddExam({
@@ -327,8 +335,15 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
         completed: false,
       });
       if (addToAgenda) {
-        await createExamCalendarEvent(examTitle.trim(), courseName, examDate || today());
-        showToast('prova salva no app e marcada na agenda ♡');
+        const ok = await createExamCalendarEvent(examTitle.trim(), courseName, examDate || today());
+        if (ok) {
+          showToast('prova salva e marcada na sua agenda ♡');
+        } else {
+          showToast('prova salva no app — não consegui marcar na agenda ♡');
+        }
+        hapticSuccess();
+        closeWizard();
+        return;
       }
     }
     hapticSuccess();

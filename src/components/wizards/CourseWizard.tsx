@@ -16,11 +16,11 @@ const courseIcons: Array<{ value: string; label: string; emoji: string }> = [
 ];
 
 export const CourseWizard: React.FC = () => {
-  const { handleAddCourse, closeWizard, showToast } = useApp();
+  const { profile, handleAddCourse, closeWizard, showToast } = useApp();
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
   const [professor, setProfessor] = useState('');
-  const [semester, setSemester] = useState('');
+  const [semester, setSemester] = useState(() => (profile.semester ? `${profile.semester}º sem` : ''));
   const [schedule, setSchedule] = useState('');
   const [room, setRoom] = useState('');
   const [description, setDescription] = useState('');

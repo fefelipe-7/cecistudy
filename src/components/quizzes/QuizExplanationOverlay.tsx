@@ -56,7 +56,7 @@ export const QuizExplanationOverlay: React.FC<QuizExplanationOverlayProps> = ({
 
           <button
             onClick={onClose}
-            className="w-full mt-5 flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-semibold text-white bg-[#E97891] hover:bg-[#D85F79] cursor-pointer"
+            className="w-full mt-5 flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-semibold text-white bg-ceci-brand hover:bg-ceci-brand-strong cursor-pointer"
           >
             <span>continuar</span>
           </button>
