@@ -9,6 +9,7 @@ import type { StudyQuestion, QuizConfig, QuizAnswer, QuizPlayState } from '../..
 interface QuizPlayerProps {
   state: QuizPlayState;
   onAnswer: (answer: QuizAnswer) => void;
+  onAdvance: () => void;
   onFinish: (answers: QuizAnswer[], config: QuizConfig, startTime: number, correctCount: number, totalCount: number) => void;
   onClose: () => void;
 }
@@ -18,6 +19,7 @@ const OPTION_LETTERS = ['A', 'B', 'C', 'D', 'E'];
 export const QuizPlayer: React.FC<QuizPlayerProps> = ({
   state,
   onAnswer,
+  onAdvance,
   onFinish,
   onClose,
 }) => {
@@ -65,17 +67,17 @@ export const QuizPlayer: React.FC<QuizPlayerProps> = ({
     setTimeout(() => setShowExplanation(true), 300);
   }, [current, correctLetter, onAnswer, questionStartTime]);
 
-  const handleNext = useCallback(() => {
-    if (currentIdx + 1 < pool.length) {
-      // Avança para próxima questão
-      // O parent controla o currentIdx via state
-    } else {
-      // Finaliza quiz
-      const answers = state.answers;
-      const correctCount = answers.filter((a) => a.correct).length;
-      onFinish(answers, config, state.startTime, correctCount, pool.length);
-    }
-  }, [currentIdx, pool.length, state.answers, state.startTime, state.questionStartTime, config, onFinish]);
+const handleNext = useCallback(() => {
+  if (currentIdx + 1 < pool.length) {
+    // Avança para próxima questão
+    onAdvance();
+  } else {
+    // Finaliza quiz
+    const answers = state.answers;
+    const correctCount = answers.filter((a) => a.correct).length;
+    onFinish(answers, config, state.startTime, correctCount, pool.length);
+  }
+}, [currentIdx, pool.length, onAdvance, onFinish]);
 
   // Para controle do parent - expõe callbacks
   // O parent passa o state completo, então usamos callbacks

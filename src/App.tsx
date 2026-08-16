@@ -261,28 +261,43 @@ function AppShell() {
               </Suspense>
             ) : app.isQuizPlayOpen ? (
               <Suspense fallback={<ViewFallback />}>
-                <QuizPlayer
-                  state={app.currentQuizPlayState!}
-                  onAnswer={(answer) => {
-                    // Update the quiz play state with the new answer
-                    const current = app.currentQuizPlayState!;
-                    const updatedState: QuizPlayState = {
-                      ...current,
-                      answers: [...current.answers, answer],
-                      currentIdx: current.currentIdx + 1,
-                      questionStartTime: Date.now(),
-                    };
-                    // We need to update the stack with the new state
-                    const stack = app.navigationStack.map((screen) =>
-                      screen.kind === 'quiz-play' ? { ...screen, state: updatedState } : screen
-                    );
-                    app.setStack(stack);
-                    app.syncHash(stack);
-                  }}
-                  onFinish={(answers, config, startTime, correctCount, totalCount) => {
-                    app.openQuizResult(answers, config, startTime, correctCount, totalCount);
-                  }}
-                  onClose={app.closeQuizPlay}
+<QuizPlayer
+  state={app.currentQuizPlayState!}
+  onAnswer={(answer) => {
+    // Update the quiz play state with the new answer
+    const current = app.currentQuizPlayState!;
+    const updatedState: QuizPlayState = {
+      ...current,
+      answers: [...current.answers, answer],
+      currentIdx: current.currentIdx + 1,
+      questionStartTime: Date.now(),
+    };
+    // We need to update the stack with the new state
+    const stack = app.navigationStack.map((screen) =>
+      screen.kind === 'quiz-play' ? { ...screen, state: updatedState } : screen
+    );
+    app.setStack(stack);
+    app.syncHash(stack);
+  }}
+  onAdvance={() => {
+    // Advance to next question
+    const current = app.currentQuizPlayState!;
+    const updatedState: QuizPlayState = {
+      ...current,
+      currentIdx: current.currentIdx + 1,
+      questionStartTime: Date.now(),
+    };
+    // We need to update the stack with the new state
+    const stack = app.navigationStack.map((screen) =>
+      screen.kind === 'quiz-play' ? { ...screen, state: updatedState } : screen
+    );
+    app.setStack(stack);
+    app.syncHash(stack);
+  }}
+  onFinish={(answers, config, startTime, correctCount, totalCount) => {
+    app.openQuizResult(answers, config, startTime, correctCount, totalCount);
+  }}
+  onClose={app.closeQuizPlay}
                 />
               </Suspense>
             ) : app.isQuizResultOpen ? (
