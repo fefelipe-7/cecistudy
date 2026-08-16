@@ -5,7 +5,8 @@ name: release (apk + ipa + ota)
 # Em um tag v* (ex.: `v1.2.3`) ou via dispatch manual, ele:
 #   1. valida o código (lint + testes) e builda o bundle web;
 #   2. builda o APK Android (release assinado quando há keystore, senão debug);
-#   3. builda o IPA iOS (release assinado quando há certificado, senão só simulador);
+#   3. builda o IPA iOS (release assinado quando há certificado; senão unsigned de
+#      dispositivo — pronto para sideload com o seu apple id, ex. Sideloadly/AltStore);
 #   4. cria um GitHub Release `v<versão>` com os artefatos de cada dispositivo
 #      (cecistudy-<versão>-android.apk / -ios.ipa / .zip do bundle web);
 #   5. publica o OTA no GitHub Pages com a MESMA versão do release — ou seja,
@@ -272,30 +273,35 @@ jobs:
             -exportPath build/ipa \
             -exportOptionsPlist "$export_options"
 
-      - name: 'build (fallback: simulador unsigned)'
+      - name: 'build ipa unsigned (dispositivo → sideload)'
         if: env.IOS_TEAM_ID == ''
         run: |
           cd ios/App
           xcodebuild \
             -project App.xcodeproj \
             -scheme App \
-            -configuration Debug \
-            -sdk iphonesimulator \
+            -configuration Release \
+            -sdk iphoneos \
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO build
+          APP_PATH=$(find build/Build/Products/Release-iphoneos -name '*.app' -maxdepth 1 | head -1)
+          mkdir -p build/unsigned/Payload
+          cp -R "$APP_PATH" build/unsigned/Payload/
+          (cd build/unsigned && zip -r ../cecistudy-unsigned.ipa Payload)
+          ls -la build/cecistudy-unsigned.ipa
+          echo "→ ipa unsigned p/ sideload: true" >> "$GITHUB_STEP_SUMMARY"
 
       - name: upload ipa
-        if: env.IOS_TEAM_ID != ''
         uses: actions/upload-artifact@v4
         with:
           name: ios-ipa
-          path: ios/App/build/ipa/*.ipa
+          path: ios/App/build/**/*.ipa
           if-no-files-found: error
 
   release:
     name: github release + ota
     needs: [prepare, android, ios]
-    if: always() && needs.prepare.result == 'success' && needs.android.result == 'success'
+    if: always() && needs.prepare.result == 'success' && needs.android.result == 'success' && needs.ios.result == 'success'
     runs-on: ubuntu-latest
     env:
       VERSION: ${{ needs.prepare.outputs.version }}
@@ -322,7 +328,6 @@ jobs:
           path: release-assets
 
       - name: download ipa
-        if: needs.ios.result == 'success'
         uses: actions/download-artifact@v4
         with:
           name: ios-ipa
@@ -338,9 +343,7 @@ jobs:
         run: |
           mkdir -p final
           cp "$(find release-assets -name '*.apk' | head -1)" "final/cecistudy-$VERSION-android.apk"
-          if [ "${{ needs.ios.result }}" = "success" ]; then
-            cp "$(find release-assets -name '*.ipa' | head -1)" "final/cecistudy-$VERSION-ios.ipa"
-          fi
+          cp "$(find release-assets -name '*.ipa' | head -1)" "final/cecistudy-$VERSION-ios.ipa"
           cp "$(find ota-bundle -name '*.zip' | head -1)" "final/cecistudy-$VERSION.zip"
           ls -la final
 
@@ -352,7 +355,7 @@ jobs:
 
           artefatos:
           - android: cecistudy-$VERSION-android.apk
-          - ios: cecistudy-$VERSION-ios.ipa (presente quando a assinatura está configurada)
+          - ios: cecistudy-$VERSION-ios.ipa (unsigned p/ sideload — assine com seu apple id)
           - ota (web): cecistudy-$VERSION.zip
 
           ota: o app nativo com o plugin @capgo/capacitor-updater recebe esta versão automaticamente pelo github pages.
@@ -360,19 +363,17 @@ jobs:
           )
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release edit "$TAG" --title "cecistudy v$VERSION" --notes "$NOTES"
-            gh release upload "$TAG" final/cecistudy-$VERSION-android.apk final/cecistudy-$VERSION.zip --clobber || true
-            if [ "${{ needs.ios.result }}" = "success" ]; then
-              gh release upload "$TAG" final/cecistudy-$VERSION-ios.ipa --clobber || true
-            fi
+            gh release upload "$TAG" \
+              final/cecistudy-$VERSION-android.apk \
+              final/cecistudy-$VERSION-ios.ipa \
+              final/cecistudy-$VERSION.zip --clobber || true
           else
-            ASSETS="final/cecistudy-$VERSION-android.apk final/cecistudy-$VERSION.zip"
-            if [ "${{ needs.ios.result }}" = "success" ]; then
-              ASSETS="$ASSETS final/cecistudy-$VERSION-ios.ipa"
-            fi
             gh release create "$TAG" \
               --title "cecistudy v$VERSION" \
               --notes "$NOTES" \
-              $ASSETS
+              final/cecistudy-$VERSION-android.apk \
+              final/cecistudy-$VERSION-ios.ipa \
+              final/cecistudy-$VERSION.zip
           fi
 
       - name: publish ota (version.json + bundles)
