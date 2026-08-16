@@ -276,6 +276,13 @@
   justify-content: center;
 }
 
+/* Seções/shelves pesadas da biblioteca: conteúdo offscreen não paga layout/paint.
+   `contain-intrinsic-size: auto N` lembra o último tamanho renderizado (fallback p/ não renderizado). */
+.cv-shelf {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 280px;
+}
+
 /* Custom Scrollbars */
 ::-webkit-scrollbar {
   width: 5px;

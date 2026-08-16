@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Network, Search, ChevronRight, Landmark } from 'lucide-react';
-import { PSICOTERAPIA_FAMILIES } from '../../data/psicoterapiaBase';
+import { PSICOTERAPIA_FAMILIES } from '../../data/psicoterapiaFamilies';
 import { useApp } from '../../context/AppContext';
 
 export const FamiliesView: React.FC = () => {

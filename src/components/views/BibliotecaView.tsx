@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   BookOpen,
   User,
@@ -68,14 +68,18 @@ export const BibliotecaView: React.FC = () => {
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
 
   // Tags derivadas do catálogo (nenhuma lista fixa no código da view)
-  const availableTags = Array.from(
-    new Set([
-      ...initialContextCollections.flatMap((c) => c.books.flatMap((b) => b.tags)),
-      ...initialTrendingBooks.flatMap((b) => b.tags),
-      ...psychotherapyCollections.flatMap((c) => c.books.flatMap((b) => b.tags)),
-      ...complementaryCollections.flatMap((c) => c.books.flatMap((b) => b.tags)),
-    ])
-  ).sort((a, b) => a.localeCompare(b));
+  const availableTags = useMemo(
+    () =>
+      Array.from(
+        new Set([
+          ...initialContextCollections.flatMap((c) => c.books.flatMap((b) => b.tags)),
+          ...initialTrendingBooks.flatMap((b) => b.tags),
+          ...psychotherapyCollections.flatMap((c) => c.books.flatMap((b) => b.tags)),
+          ...complementaryCollections.flatMap((c) => c.books.flatMap((b) => b.tags)),
+        ])
+      ).sort((a, b) => a.localeCompare(b)),
+    []
+  );
 
   const resetAllFilters = () => {
     setActiveCategory('todos');
@@ -126,47 +130,66 @@ export const BibliotecaView: React.FC = () => {
   };
 
   // Coleções curadas (existentes)
-  const filteredCollections = initialContextCollections.filter(
-    (col) =>
-      matchesCategory(col, ['autores', 'conceitos', 'abordagens', 'multidisciplinar', 'testes']) &&
-      matchesStatus(col) &&
-      matchesTag(col) &&
-      matchesSearch(col)
+  const filteredCollections = useMemo(
+    () =>
+      initialContextCollections.filter(
+        (col) =>
+          matchesCategory(col, ['autores', 'conceitos', 'abordagens', 'multidisciplinar', 'testes']) &&
+          matchesStatus(col) &&
+          matchesTag(col) &&
+          matchesSearch(col)
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds]
   );
 
   // Catálogo de psicoterapias (10 famílias)
-  const filteredCatalogCollections = psychotherapyCollections.filter(
-    (col) =>
-      matchesCategory(col, ['psicoterapias']) &&
-      matchesStatus(col) &&
-      matchesTag(col) &&
-      matchesSearch(col)
+  const filteredCatalogCollections = useMemo(
+    () =>
+      psychotherapyCollections.filter(
+        (col) =>
+          matchesCategory(col, ['psicoterapias']) &&
+          matchesStatus(col) &&
+          matchesTag(col) &&
+          matchesSearch(col)
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds]
   );
 
   // Bagagem complementar (10 áreas interdisciplinares)
-  const filteredComplementaryCollections = complementaryCollections.filter(
-    (col) =>
-      matchesCategory(col, ['multidisciplinar', 'complementar']) &&
-      matchesStatus(col) &&
-      matchesTag(col) &&
-      matchesSearch(col)
+  const filteredComplementaryCollections = useMemo(
+    () =>
+      complementaryCollections.filter(
+        (col) =>
+          matchesCategory(col, ['multidisciplinar', 'complementar']) &&
+          matchesStatus(col) &&
+          matchesTag(col) &&
+          matchesSearch(col)
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds]
   );
 
   // Filtro loose trending books por busca e filtros
-  const filteredTrendingBooks = initialTrendingBooks.filter((b) => {
-    if (activeStatus !== 'todos' && b.status !== activeStatus) return false;
-    if (activeCategory === 'salvos' && !savedBookIds.includes(b.id)) return false;
-    if (activeCategory === 'em_leitura' && b.status !== 'lendo') return false;
-    if (selectedTag && !b.tags.some((t) => t.toLowerCase().includes(selectedTag.toLowerCase()))) return false;
+  const filteredTrendingBooks = useMemo(
+    () =>
+      initialTrendingBooks.filter((b) => {
+        if (activeStatus !== 'todos' && b.status !== activeStatus) return false;
+        if (activeCategory === 'salvos' && !savedBookIds.includes(b.id)) return false;
+        if (activeCategory === 'em_leitura' && b.status !== 'lendo') return false;
+        if (selectedTag && !b.tags.some((t) => t.toLowerCase().includes(selectedTag.toLowerCase()))) return false;
 
-    if (!searchTerm) return true;
-    const searchLower = searchTerm.toLowerCase();
-    return (
-      b.title.toLowerCase().includes(searchLower) ||
-      b.author.toLowerCase().includes(searchLower) ||
-      b.tags.some((t) => t.toLowerCase().includes(searchLower))
-    );
-  });
+        if (!searchTerm) return true;
+        const searchLower = searchTerm.toLowerCase();
+        return (
+          b.title.toLowerCase().includes(searchLower) ||
+          b.author.toLowerCase().includes(searchLower) ||
+          b.tags.some((t) => t.toLowerCase().includes(searchLower))
+        );
+      }),
+    [activeStatus, activeCategory, savedBookIds, selectedTag, searchTerm]
+  );
 
   // Artigos científicos — filtro próprio (título/autor/periódico/família/tag)
   const articleMatches = (a: Article) => {
@@ -199,12 +222,17 @@ export const BibliotecaView: React.FC = () => {
     return true;
   };
 
-  const filteredArticleGroups = articleGroups
-    .map((g) => ({ ...g, articles: g.articles.filter(articleMatches) }))
-    .filter((g) => g.articles.length > 0);
-  const totalFilteredArticles = filteredArticleGroups.reduce(
-    (acc, g) => acc + g.articles.length,
-    0
+  const filteredArticleGroups = useMemo(
+    () =>
+      articleGroups
+        .map((g) => ({ ...g, articles: g.articles.filter(articleMatches) }))
+        .filter((g) => g.articles.length > 0),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds]
+  );
+  const totalFilteredArticles = useMemo(
+    () => filteredArticleGroups.reduce((acc, g) => acc + g.articles.length, 0),
+    [filteredArticleGroups]
   );
 
   // Categorias mistas — misturam livros (catálogo + complementar) e artigos
@@ -267,7 +295,11 @@ export const BibliotecaView: React.FC = () => {
     return true;
   };
 
-  const filteredMixedCollections = mixedCollections.filter(mixedMatches);
+  const filteredMixedCollections = useMemo(
+    () => mixedCollections.filter(mixedMatches),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds]
+  );
 
   // Category specific slices for inline sections
   const testCollections = filteredCollections.filter((c) => c.blockCategory === 'testes');
@@ -458,7 +490,7 @@ export const BibliotecaView: React.FC = () => {
       {/* INLINE SECTION 1: REPERTÓRIO & LEITURAS RECOMENDADAS               */}
       {/* ==================================================================== */}
       {filteredTrendingBooks.length > 0 && (
-        <div className="space-y-3 pt-2 px-1 border-t border-ceci-border-default">
+        <div className="cv-shelf space-y-3 pt-2 px-1 border-t border-ceci-border-default">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-ceci-brand-strong" />
@@ -532,7 +564,7 @@ export const BibliotecaView: React.FC = () => {
       {/* INLINE SECTION: CATÁLOGO DE PSICOTERAPIAS (10 famílias)             */}
       {/* ==================================================================== */}
       {filteredCatalogCollections.length > 0 && (
-        <div data-section="psicoterapias" className="space-y-4 pt-4 px-1 border-t border-ceci-border-default">
+        <div data-section="psicoterapias" className="cv-shelf space-y-4 pt-4 px-1 border-t border-ceci-border-default">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Brain className="w-4 h-4 text-ceci-brand-strong" />
@@ -567,7 +599,7 @@ export const BibliotecaView: React.FC = () => {
       {/* INLINE SECTION: CATEGORIAS MISTAS (livros + artigos)                 */}
       {/* ==================================================================== */}
       {filteredMixedCollections.length > 0 && (
-        <div data-section="mistas" className="space-y-4 pt-4 px-1 border-t border-ceci-border-default">
+        <div data-section="mistas" className="cv-shelf space-y-4 pt-4 px-1 border-t border-ceci-border-default">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-ceci-brand-strong" />
@@ -603,7 +635,7 @@ export const BibliotecaView: React.FC = () => {
       {/* INLINE SECTION 2: TESTES & INSTRUMENTOS PSICOLÓGICOS               */}
       {/* ==================================================================== */}
       {(activeCategory === 'todos' || activeCategory === 'testes') && testCollections.length > 0 && (
-        <div data-section="testes" className="space-y-4 pt-4 px-1 border-t border-ceci-border-default">
+        <div data-section="testes" className="cv-shelf space-y-4 pt-4 px-1 border-t border-ceci-border-default">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <BrainCircuit className="w-4 h-4 text-success-deep" />
@@ -634,7 +666,7 @@ export const BibliotecaView: React.FC = () => {
       {/* INLINE SECTION 3: AUTORES DA PSICOLOGIA                              */}
       {/* ==================================================================== */}
       {(activeCategory === 'todos' || activeCategory === 'autores') && authorCollections.length > 0 && (
-        <div data-section="autores" className="space-y-4 pt-4 px-1 border-t border-ceci-border-default">
+        <div data-section="autores" className="cv-shelf space-y-4 pt-4 px-1 border-t border-ceci-border-default">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <User className="w-4 h-4 text-ceci-brand-strong" />
@@ -665,7 +697,7 @@ export const BibliotecaView: React.FC = () => {
       {/* INLINE SECTION 4: CONCEITOS-CHAVE & FICHAMENTOS                    */}
       {/* ==================================================================== */}
       {(activeCategory === 'todos' || activeCategory === 'conceitos') && conceptCollections.length > 0 && (
-        <div data-section="conceitos" className="space-y-4 pt-4 px-1 border-t border-ceci-border-default">
+        <div data-section="conceitos" className="cv-shelf space-y-4 pt-4 px-1 border-t border-ceci-border-default">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-ceci-academic-strong" />
@@ -696,7 +728,7 @@ export const BibliotecaView: React.FC = () => {
       {/* INLINE SECTION 5: ABORDAGENS DA PSICOLOGIA                           */}
       {/* ==================================================================== */}
       {(activeCategory === 'todos' || activeCategory === 'abordagens') && approachCollections.length > 0 && (
-        <div data-section="abordagens" className="space-y-4 pt-4 px-1 border-t border-ceci-border-default">
+        <div data-section="abordagens" className="cv-shelf space-y-4 pt-4 px-1 border-t border-ceci-border-default">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Bookmark className="w-4 h-4 text-beige-700" />
@@ -731,7 +763,7 @@ export const BibliotecaView: React.FC = () => {
       {/* INLINE SECTION 6: BAGAGEM MULTIDISCIPLINAR COMPLETA                  */}
       {/* ==================================================================== */}
       {(activeCategory === 'todos' || activeCategory === 'multidisciplinar') && multidisciplinaryCollections.length > 0 && (
-        <div data-section="multidisciplinar" className="space-y-4 pt-4 px-1 border-t border-ceci-border-default">
+        <div data-section="multidisciplinar" className="cv-shelf space-y-4 pt-4 px-1 border-t border-ceci-border-default">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Compass className="w-4 h-4 text-gold" />
@@ -766,7 +798,7 @@ export const BibliotecaView: React.FC = () => {
       {/* INLINE SECTION 7: ARTIGOS CIENTÍFICOS (150, 15 por família)        */}
       {/* ==================================================================== */}
       {filteredArticleGroups.length > 0 && (
-        <div data-section="artigos" className="space-y-4 pt-4 px-1 border-t border-ceci-border-default">
+        <div data-section="artigos" className="cv-shelf space-y-4 pt-4 px-1 border-t border-ceci-border-default">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Newspaper className="w-4 h-4 text-ceci-academic-strong" />
