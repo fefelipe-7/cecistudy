@@ -225,7 +225,6 @@ export interface AppContextValue {
   handleAddExam: (exam: Exam) => void;
   handleAddAuthor: (author: PsychologyAuthor) => void;
   handleAddSession: (session: StudySession) => void;
-  handleAddQuestion: (question: StudyQuestion) => void;
   handleAddTechnique: (technique: Technique) => void;
   handleUpdateReadingChapters: (readingId: string, chapters: ReadingItem['chapters']) => void;
   handleUpdateProfile: (updated: Partial<UserProfile>) => void;
@@ -266,6 +265,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       cancelled = true;
     };
   }, [approaches.length]);
+
   const [readings, setReadings] = usePersistentState<ReadingItem[]>('readings', []);
   const [flashcards, setFlashcards] = usePersistentState<Flashcard[]>('flashcards', []);
   const [materials, setMaterials] = usePersistentState<MaterialItem[]>('materials', []);
@@ -275,6 +275,25 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [sessions, setSessions] = usePersistentState<StudySession[]>('sessions', []);
   const [questions, setQuestions] = usePersistentState<StudyQuestion[]>('questions', []);
   const [techniques, setTechniques] = usePersistentState<Technique[]>('techniques', []);
+
+  // Questões (745) — banco estático, seed lazy igual abordagens.
+  const questionsSeededRef = useRef(false);
+  useEffect(() => {
+    if (questionsSeededRef.current || questions.length > 0) return;
+    let cancelled = false;
+    import('../data/bancoQuestoes')
+      .then((m) => {
+        if (cancelled) return;
+        questionsSeededRef.current = true;
+        setQuestions(m.BANCO_QUESTOES);
+      })
+      .catch(() => {
+        questionsSeededRef.current = true;
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [questions.length]);
 
   // Streak de estudos (dias ativos; derivados calculados abaixo)
   const [streakData, setStreakData] = usePersistentState<StreakData>('streakData', emptyStreakData);
@@ -462,11 +481,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       sessions,
       classes,
       tasks,
+      exams,
+      authors,
+      materials,
+      courses,
+      questions,
+      techniques,
       internshipLogs,
       currentStreak: streakStats.current,
+      streakTotal: streakStats.total,
+      streakLongest: streakStats.longest,
       tcc,
       savedBookIds,
       concepts,
+      looseNotes,
     };
     const { updated, newlyUnlocked } = applyStickerUnlocks(stickers, state, todayKey);
     if (newlyUnlocked.length > 0) {
@@ -656,10 +684,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const handleAddSession = (session: StudySession) => {
     setSessions((prev) => [session, ...prev]);
     registerActivity();
-  };
-
-  const handleAddQuestion = (question: StudyQuestion) => {
-    setQuestions((prev) => [question, ...prev]);
   };
 
   const handleAddTechnique = (technique: Technique) => {
@@ -1333,7 +1357,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     handleAddExam,
     handleAddAuthor,
     handleAddSession,
-    handleAddQuestion,
     handleAddTechnique,
     handleUpdateReadingChapters,
     handleUpdateProfile,

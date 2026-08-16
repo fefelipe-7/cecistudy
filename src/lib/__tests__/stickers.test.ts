@@ -17,9 +17,18 @@ const baseState = {
   tasks: [],
   internshipLogs: [],
   currentStreak: 0,
-  tcc: { status: 'em_andamento' },
+  streakTotal: 0,
+  streakLongest: 0,
+  tcc: { status: 'em_andamento', title: '', chapters: [] },
   savedBookIds: [],
   concepts: [],
+  exams: [],
+  authors: [],
+  materials: [],
+  courses: [],
+  questions: [],
+  techniques: [],
+  looseNotes: [],
 };
 
 const makeStickers = (unlocked: string[] = []): Sticker[] =>
@@ -94,12 +103,12 @@ describe('isConditionMet', () => {
   });
 
   it('tcc-done: status concluido', () => {
-    expect(isConditionMet({ type: 'tcc-done' }, { ...baseState, tcc: { status: 'concluido' } })).toBe(true);
-    expect(isConditionMet({ type: 'tcc-done' }, { ...baseState, tcc: { status: 'revisao' } })).toBe(false);
+    expect(isConditionMet({ type: 'tcc-done' }, { ...baseState, tcc: { status: 'concluido', title: '', chapters: [] } })).toBe(true);
+    expect(isConditionMet({ type: 'tcc-done' }, { ...baseState, tcc: { status: 'revisao', title: '', chapters: [] } })).toBe(false);
   });
 
   it('limiares simples (sessions, class-notes, pages-read, tasks-done, saved-books, internship-first)', () => {
-    expect(isConditionMet({ type: 'sessions', min: 5 }, { ...baseState, sessions: [1, 2, 3, 4, 5] })).toBe(true);
+    expect(isConditionMet({ type: 'sessions', min: 5 }, { ...baseState, sessions: [{ durationMinutes: 1 }, { durationMinutes: 2 }, { durationMinutes: 3 }, { durationMinutes: 4 }, { durationMinutes: 5 }] })).toBe(true);
     expect(isConditionMet({ type: 'class-notes', min: 10 }, { ...baseState, classes: new Array(9) })).toBe(false);
     expect(
       isConditionMet({ type: 'pages-read', min: 500 }, { ...baseState, readings: [{ readPages: 300 }, { readPages: 250 }] })
@@ -149,7 +158,7 @@ describe('applyStickerUnlocks', () => {
       ...baseState,
       internshipLogs: [{}],
       currentStreak: 7,
-      tcc: { status: 'concluido' },
+      tcc: { status: 'concluido', title: '', chapters: [] },
     }, '2026-08-15');
 
     expect(updated.find((s) => s.id === 'st-4')?.unlocked).toBe(true);

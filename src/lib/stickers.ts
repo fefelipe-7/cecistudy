@@ -18,14 +18,23 @@ export interface StickerState {
   profile: { name: string; semester: number; totalSemesters: number };
   readings: { status?: string; readPages?: number; totalPages?: number }[];
   flashcards: { timesReviewed?: number }[];
-  sessions: unknown[];
+  sessions: { durationMinutes?: number }[];
   classes: unknown[];
   tasks: { completed: boolean }[];
-  internshipLogs: unknown[];
+  internshipLogs: { hours?: number }[];
   currentStreak: number;
-  tcc: { status: string };
+  tcc: { status: string; title: string; chapters: { completed: boolean }[] };
   savedBookIds: string[];
   concepts: { authorIds: string[] }[];
+  exams: { completed: boolean }[];
+  authors: unknown[];
+  materials: unknown[];
+  courses: unknown[];
+  questions: unknown[];
+  techniques: unknown[];
+  streakTotal: number;
+  streakLongest: number;
+  looseNotes: unknown[];
 }
 
 /** Verifica se uma condição está satisfeita no snapshot atual. */

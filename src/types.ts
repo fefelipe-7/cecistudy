@@ -38,8 +38,7 @@ export type WizardFlow =
   | 'flashcard'
   | 'internship'
   | 'session'
-  | 'author'
-  | 'question';
+  | 'author';
 
 export interface HeaderAction {
   label: string;
@@ -384,7 +383,28 @@ export type StickerCondition =
   | { type: 'class-notes'; min: number }
   | { type: 'pages-read'; min: number }
   | { type: 'tasks-done'; min: number }
-  | { type: 'saved-books'; min: number };
+  | { type: 'saved-books'; min: number }
+  | { type: 'exams-added'; min: number }
+  | { type: 'exams-done'; min: number }
+  | { type: 'concepts-known'; min: number }
+  | { type: 'authors-known'; min: number }
+  | { type: 'materials-added'; min: number }
+  | { type: 'courses'; min: number }
+  | { type: 'flashcards-count'; min: number }
+  | { type: 'questions-created'; min: number }
+  | { type: 'techniques-used'; min: number }
+  | { type: 'study-minutes'; min: number }
+  | { type: 'streak-total'; min: number }
+  | { type: 'streak-longest'; min: number }
+  | { type: 'reading-count'; min: number }
+  | { type: 'reading-in-progress'; min: number }
+  | { type: 'loose-notes'; min: number }
+  | { type: 'internship-hours'; min: number }
+  | { type: 'internship-logs'; min: number }
+  | { type: 'tcc-created' }
+  | { type: 'tcc-chapters-done'; min: number }
+  | { type: 'penultimate-semester' }
+  | { type: 'graduation' };
 
 export interface UserProfile {
   name: string;
@@ -426,6 +446,21 @@ export interface StudyQuestion {
   explanation?: string;
   conceptIds?: string[];
   tags?: string[];
+  area?: string;
+  tema?: string;
+  subtema?: string;
+  escolaOuAbordagem?: string;
+  dificuldade?: 'basica' | 'intermediaria' | 'avancada';
+  tipoConhecimento?: string;
+  autores?: string[];
+  referencias?: string[];
+  formato?: string;
+  origem?: string;
+  gabarito?: string;
+  respostaDiscursiva?: string;
+  criteriosDeCorrecao?: string[];
+  afirmativas?: string[];
+  itensDeAssociacao?: string[];
 }
 
 /** Técnica clínica / instrumento (templo de conhecimento). */
