@@ -228,7 +228,7 @@ npm run cap:assets     → regenera ícones/splash a partir de assets/*.svg
 - **Android:** ubuntu + JDK 21 + Android SDK → `assembleRelease` assinado (keystore via
   secrets `ANDROID_KEYSTORE*`) ou `assembleDebug` sem keystore → APK no release.
 - **iOS:** macOS runner + Xcode → IPA `Release` assinado (secrets `IOS_TEAM_ID`/`IOS_CERTIFICATE*`)
-  ou build de simulador unsigned sem secrets → IPA no release.
+  ou IPA unsigned de dispositivo (p/ sideload com apple id) sem secrets → IPA no release.
 - **release:** cria o GitHub Release `v<versão>` com `cecistudy-<ver>-android.apk`,
   `-ios.ipa` e o `.zip` do bundle, e publica o OTA no Pages com a mesma versão.
 

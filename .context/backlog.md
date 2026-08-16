@@ -157,7 +157,7 @@ e não persistidos. Unificar o modelo evita divergência.
   (Android 123 res, iOS AppIcon/Splash, PWA `public/icons/*.webp`) + `public/icon.png`/`icon-192.png`
   + `ic_stat_cecistudy.png` (notificação Android).
 - [x] **6.6** CI `.github/workflows/release.yml`: Android (ubuntu + JDK 21 + SDK → APK, assinado
-  com keystore ou debug) e iOS (macOS runner + Xcode → IPA assinado ou simulador unsigned).
+  com keystore ou debug) e iOS (macOS runner + Xcode → IPA assinado ou unsigned p/ sideload).
 - [x] **6.7** Docs `.context/` (arquitetura, guia nativo, storage dual, CI).
 
 **Pendências / próximos passos**
