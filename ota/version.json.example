@@ -1,0 +1,14 @@
+{
+  "version": "1.0.1",
+  "url": "https://fefelipe-7.github.io/cecistudy/bundles/cecistudy-1.0.1.zip",
+  "checksum": "<sha256 hex do zip>",
+  "releasedAt": "2026-08-15T00:00:00Z",
+  "available": [
+    {
+      "version": "1.0.1",
+      "url": "https://fefelipe-7.github.io/cecistudy/bundles/cecistudy-1.0.1.zip",
+      "checksum": "<sha256 hex do zip>",
+      "releasedAt": "2026-08-15T00:00:00Z"
+    }
+  ]
+}

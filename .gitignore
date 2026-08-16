@@ -16,3 +16,9 @@ ios/App/build/
 ios/DerivedData/
 *.keystore
 *.jks
+
+# Duplicata aninhada do repositório (mantida fora do controle de versão)
+cecistudy/
+
+# Site OTA gerado pelo workflow (.github/workflows/ota.yml)
+ota-site/

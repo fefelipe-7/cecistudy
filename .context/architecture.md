@@ -30,7 +30,6 @@ App  (wrapper fino: AppProvider → AppShell)
     └── AppShell  (consome useApp(); renderiza HeaderNav, views, BottomNav, modais)
         ├── HeaderNav  (header dinâmico: modo default (brand) ou detail)
         ├── main (container mobile-first, max-w-md / sm:max-w-xl)
-        │   ├── (se moodView aberto) EstadoDeEspiritoView
         │   └── Views por activeTab (consumem useApp(), sem props):
         │       ├── HomeView
         │       ├── FaculdadeView ──► (se focusedCourse) CourseDetailView
@@ -70,7 +69,7 @@ storage.getSync(key) // apenas web (inicialização do hook)
 
 - Cada entidade tem seu próprio estado + setter (profile, courses, classes, tasks, exams,
   authors, concepts, approaches, readings, flashcards, materials, internshipLogs, tcc,
-  stickers, sessions, currentMood, reminder), todos expostos via hook `useApp()`.
+  stickers, sessions, reminder), todos expostos via hook `useApp()`.
 - Alguns estados **não** usam persistência e vivem em `useState` local da view:
   - `systemSuggestions`, dados de dias da semana (HomeView — dummy)
 
@@ -83,16 +82,22 @@ storage.getSync(key) // apenas web (inicialização do hook)
   `Keyboard` (`resizeMode: native` p/ não cobrir inputs) e `SplashScreen.hide()` no 1º frame.
 - `src/lib/haptics.ts` — `hapticTap()`/`hapticSuccess()` (no-op no web), **enxutos**:
   `hapticTap` só em toggles diretos (tarefa/prova/flashcard); `hapticSuccess` em confirmações/
-  celebrações (salvar mood/sessão/nota, lembrete agendado). Sem vibração em navegação/modais.
+  celebrações (salvar sessão/nota, lembrete agendado). Sem vibração em navegação/modais.
 - `src/lib/celebrate.ts` — confetes via `canvas-confetti` (`celebrate(kind)`, presets por
   momento, respeita `prefers-reduced-motion`). Gatilhos: todas as tarefas concluídas, leitura
-  concluída, mood salvo, pomodoro concluído, fim da fila de flashcards. Decisão de "tarefas 100%"
+  concluída, pomodoro concluído, fim da fila de flashcards. Decisão de "tarefas 100%"
   em `src/lib/taskLogic.ts` (`shouldCelebrateTasks`, testado).
 - `src/lib/notifications.ts` — lembrete diário via `@capacitor/local-notifications`
   (no-op no web). Estado `reminderSettings` (`{enabled, time}`) persistido no `AppContext`;
   UI em Perfil → personalização. Ícone pequeno Android: `ic_stat_cecistudy`.
+- `src/lib/ota.ts` + `src/lib/otaLogic.ts` — **OTA self-hosted** via
+  `@capgo/capacitor-updater` (modo manual; no-op no web). `initOta()` chama
+  `notifyAppReady()` e agenda a checagem do manifest estático no GitHub Pages;
+  `checkForUpdates()` baixa e valida o zip (SHA-256); `applyNow()`/`next()`+`reload()`
+  aplicam. A UI reativa é `useOtaStatus()` (modal `ui/OtaUpdateModal` + card no Perfil).
+  Lógica pura (semver/parse) em `otaLogic.ts` (testado).
 - **Back do Android** — `@capacitor/app` registrado no `AppShell` (`src/App.tsx`):
-  fechar modal → pop da pilha (mood/notes/course) → `App.exitApp()` na raiz.
+  fechar modal → pop da pilha (notes/course) → `App.exitApp()` na raiz.
 - **Safe areas:** header e bottom-nav usam `env(safe-area-inset-*)` no padding (`viewport-fit=cover`).
 - **Fontes offline:** Google Fonts substituídas por `@fontsource/*` importadas no `src/main.tsx`
   (bundladas no `dist/` — nativo offline sem fallback).
@@ -108,16 +113,16 @@ voltar/avançar do browser e o histórico do webview (swipe-back do iOS).
 
 Rotas: `#/home`, `#/faculdade`, `#/faculdade/:courseId`, `#/faculdade/:subTab`, `#/estudos`,
 `#/estudos/:subTab`, `#/biblioteca`, `#/biblioteca/:subTab`, `#/biblioteca/notas`,
-`#/biblioteca/templo`, `#/perfil`, `#/mood`,
+`#/biblioteca/templo`, `#/perfil`,
 `#/nota`, `#/<tab>/nota`, `#/faculdade/:courseId/nota` (+ sufixo `/detalhes`).
 
-- `NavScreen` = `{kind:'tab', tab} | {kind:'course', courseId} | {kind:'notes'} | {kind:'temple'} | {kind:'mood'} | {kind:'compose'} | {kind:'composeDetails'}`
+- `NavScreen` = `{kind:'tab', tab} | {kind:'course', courseId} | {kind:'notes'} | {kind:'temple'} | {kind:'compose'} | {kind:'composeDetails'}`
   (em `src/types.ts`). Base = tab; telas auxiliares são **empurradas** por cima.
-  Curso → sobre faculdade · notas/templo → sobre biblioteca · mood → sobre home.
+  Curso → sobre faculdade · notas/templo → sobre biblioteca.
   Compose/composeDetails → **mantêm a base** (aba/curso de origem) — fechar retorna ao
   contexto de onde abriu (a base é serializada na rota: `#/biblioteca/nota`, `#/faculdade/c3/nota`).
 - **Derivados do topo da pilha** (`currentScreen`): `activeTab` (base da pilha),
-  `focusedCourseId`/`focusedCourse` (course), `isMoodViewOpen` (mood), `isNotesScreenOpen`
+  `focusedCourseId`/`focusedCourse` (course), `isNotesScreenOpen`
   (notes), `isComposeScreenOpen` (compose), `isComposeDetailsOpen` (composeDetails),
   `isBottomNavVisible` (quando o topo é tab — bottom nav some em telas auxiliares).
 - `parseRoute(hash)` → `routeToStack(route)` reconstroem a pilha a partir da URL;
@@ -128,9 +133,9 @@ Rotas: `#/home`, `#/faculdade`, `#/faculdade/:courseId`, `#/faculdade/:subTab`, 
   `#/biblioteca/conceitos`). `parseRoute` distingue sub-tab de `courseId` por lista conhecida;
   a sub-tab padrão (`DEFAULT_SUB_TAB`) não é serializada (URLs limpas).
 - Ações de navegação (push/pop): `handleNavigate` (reseta a pilha numa tab; com `target`
-  de disciplina já empurra o curso), `openCourseDetail`, `openNotesScreen`, `openMoodView`,
+  de disciplina já empurra o curso), `openCourseDetail`, `openNotesScreen`,
   `openCompose`/`openComposeDetails` (push sobre a base atual) e
-  `goBack`/`closeCourseDetail`/`closeNotesScreen`/`closeMoodView`/`closeCompose`/
+  `goBack`/`closeCourseDetail`/`closeNotesScreen`/`closeCompose`/
   `closeComposeDetails` (pop).
 - **Quick capture:** `ComposeNoteView` guarda a última escolha em `composePrefs`
   (`{mode: 'aula'|'avulsa', courseId?}`, persistido) — o FAB reabre no último modo;
@@ -148,7 +153,7 @@ Rotas: `#/home`, `#/faculdade`, `#/faculdade/:courseId`, `#/faculdade/:subTab`, 
 
 ### Header dinâmico (`DynamicHeaderConfig`)
 `AppContext` constrói um `headerConfig` conforme o contexto:
-- **default** — header de marca (logo "C", "cecistudy ♡", badge de semestre, busca, mood).
+- **default** — header de marca (logo "C", "cecistudy ♡", badge de semestre, busca).
 - **detail** — botão voltar, ícone/`code`, título/subtítulo, favorito (bookmark) e um menu
   de ações **`actions?: HeaderAction[]`** (`label`, `Icon`, `onClick`) renderizado pelo
   `HeaderActionMenu` (padrão de telas auxiliares: voltar à esquerda, ação contextual à direita).
@@ -175,12 +180,31 @@ O cecistudy é **dois produtos em uma base de código**:
 ### Configuração
 - `capacitor.config.ts`: `appId: "ceci.study.app"`, `appName: "cecistudy"`, `webDir: "dist"`,
   `backgroundColor: #FFFCF8`, `ios.scrollEnabled`; plugins `SplashScreen` (fundo da marca,
-  auto-hide), `StatusBar` (DARK, sem overlay) e `App` (`@capacitor/app` — back do Android).
-- Plugins nativos: `@capacitor/{core,app,status-bar,splash-screen,keyboard,haptics,local-notifications,preferences}`.
+  auto-hide), `StatusBar` (DARK, sem overlay), `App` (`@capacitor/app` — back do Android)
+  e `CapacitorUpdater` (`autoUpdate: 'off'` — OTA dirigido pelo JS).
+- Plugins nativos: `@capacitor/{core,app,status-bar,splash-screen,keyboard,haptics,local-notifications,preferences}`
+  + `@capgo/capacitor-updater`.
 - Fontes via `@fontsource/*` bundladas no `dist/` (Inter, Plus Jakarta Sans, DM Serif Display,
   JetBrains Mono) — sem Google Fonts remota, nativo funciona offline.
 - `android/` e `ios/` são **commitados** (projetos gerados por `cap add`), exceto
   artefatos de build (`android/app/build/`, `ios/App/App/public/`, `*.jks`).
+
+### OTA self-hosted (web bundle)
+Atualizações **over-the-air** do bundle web sem novo `.ipa`/`.apk`:
+- **Publicação:** `.github/workflows/ota.yml` (push na `main` com mudanças web +
+  `workflow_dispatch`) → `npm ci` → lint → test → build → zip do `dist/` → SHA-256 →
+  `version.json` + `bundles/` (mantém as últimas 5) → **GitHub Pages** (Source: "GitHub Actions").
+  Versão semver automática `1.0.<nº de commits>`.
+- **Endpoints:** `https://fefelipe-7.github.io/cecistudy/version.json` e `.../bundles/cecistudy-<ver>.zip`.
+- **Cliente:** `src/lib/ota.ts` (modo manual do `@capgo/capacitor-updater`, no-op no web) —
+  `notifyAppReady()` no boot, `checkForUpdates()` baixa+valida (SHA-256), `next()` agenda a
+  troca para a próxima abertura, `applyNow()` aplica na hora. UI: `ui/OtaUpdateModal` +
+  card "atualização do app" no Perfil (só nativo).
+- **Rollback:** automático se a versão nova crashar antes do `notifyAppReady()`; manual via
+  re-run do workflow num commit antigo; `available` preserva as últimas 5 para apontar `version.json`
+  a uma versão antiga. Docs: `ota/README.md`.
+- **Limite:** só HTML/CSS/JS são OTA; mudanças nativas (plugins, permissões, `Info.plist`)
+  exigem nova build nativa. Dados intactos (persistência nativa usa `Preferences`).
 
 ### Fluxo de trabalho
 ```

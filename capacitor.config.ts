@@ -14,6 +14,11 @@ const config: CapacitorConfig = {
     scrollEnabled: true,
   },
   plugins: {
+    // OTA self-hosted: atualizações web via @capgo/capacitor-updater (modo manual,
+    // dirigido pelo JS em src/lib/ota.ts — endpoint estático no GitHub Pages).
+    CapacitorUpdater: {
+      autoUpdate: 'off',
+    },
     SplashScreen: {
       launchShowDuration: 500,
       launchAutoHide: true,

@@ -44,7 +44,7 @@ npm run cap:open:android / cap:open:ios
   (~1090 lines, owns ALL global state + handlers + navigation + dynamic header). The
   `location.hash` is only a mirror; serialization lives in `src/lib/routing.ts`
   (`parseRoute` / `routeToStack` / `stackToHash`). `App.tsx` is a thin shell.
-- **`NavScreen` kinds:** `tab | course | notes | temple | mood | streak | compose |
+- **`NavScreen` kinds:** `tab | course | notes | temple | streak | compose |
   composeDetails | wizard (type) | approach` (in `src/types.ts`). `App.tsx` animates in two
   layers: horizontal slide for base + 1st-level screens (`slideKey`), fade+scale overlay for
   compose/wizard (`overlayKey`).
@@ -57,9 +57,9 @@ npm run cap:open:android / cap:open:ios
   Demo data (`data/seeds.ts` → `demoDatabase()`, built from `initialData.ts`) loads only via
   the onboarding choice or Perfil → configurações. `data/index.ts` is a facade that is
   currently **unused**.
-- **Data layer:** `data/schema.ts` holds `SCHEMA_VERSION` (2) + `MIGRATIONS`;
-  `data/constants.ts` (UI chips/labels) and `data/moodPresets.ts` hold static UI data.
-- **UI primitives** live in `src/components/ui/`; reuse `Modal`, `PillTabBar`, `Card`,
+- **Data layer:** `data/schema.ts` holds `SCHEMA_VERSION` (6) + `MIGRATIONS`;
+  `data/constants.ts` (UI chips/labels) holds static UI data.
+- **UI primitives** live in `src/components/ui/`; reuse `Modal`, `UnderlineTabBar`, `Card`,
   `Button`, `IconButton`, `ProgressBar`, `StarRating`, `Toast`, `AnimatedNumber` instead of
   duplicating markup.
 
@@ -76,7 +76,7 @@ npm run cap:open:android / cap:open:ios
   (demo). If it changes persisted shape, bump `SCHEMA_VERSION` in `data/schema.ts` and add a
   migration. Keys in use: `profile, courses, classes, tasks, exams, authors, concepts,
   approaches, readings, flashcards, materials, internship, tcc, stickers, sessions,
-  currentMood, moodHistory, questions, techniques, streakData, reminder, bookmarkedCourseIds,
+  questions, techniques, streakData, reminder, bookmarkedCourseIds,
   looseNotes, savedBookIds, composePrefs, onboarding`. Note: **`approaches` has no setter**
   (read-only in the context value).
 
@@ -96,10 +96,19 @@ npm run cap:open:android / cap:open:ios
 - `@capacitor/app` back-button handling is in `App.tsx` (modals → pop stack → exit).
 - **Streak rules** (`src/lib/streak.ts`): only weekdays (Mon–Fri) count as active days;
   weekends are rest and never break the streak. Dates are local `YYYY-MM-DD`.
+- **OTA updates (self-hosted):** web bundle (React/CSS/JS) updates over-the-air via
+  `@capgo/capacitor-updater` (manual mode, `src/lib/ota.ts` + pure logic in
+  `src/lib/otaLogic.ts`), served free from **GitHub Pages** (`.github/workflows/ota.yml`
+  builds + zips `dist/`, computes SHA-256 and publishes `version.json` + `bundles/`).
+  Manifest: `https://fefelipe-7.github.io/cecistudy/version.json`. Native-only; no-op on
+  web. Requires `CapacitorUpdater.autoUpdate: 'off'` in `capacitor.config.ts` and **one**
+  native build with the plugin embedded. Docs: `ota/README.md`. Data is untouched
+  (native persistence uses Preferences, not localStorage).
 
 ## Project state / progress (as of writing)
 
-Mature and feature-complete through backlog **Fase 8**. Fase 9 (gesture swipe) was
+Mature and feature-complete through backlog **Fase 8** (plus Fases 10–11: mood removal +
+OTA self-hosted). Fase 9 (gesture swipe) was
 **implemented then reverted** — do not reintroduce swipe without user confirmation. Current
 known open items (see `backlog.md`):
 - `ApproachDetailView.tsx` exists but is **never rendered** — the `#/biblioteca/abordagens/:id`
@@ -116,12 +125,14 @@ known open items (see `backlog.md`):
 
 - `components.md` predates some code: it does **not** list `src/components/wizards/*`,
   `OnboardingScreen.tsx`, `StreakView.tsx`, `ApproachDetailView.tsx`, `TempleScreen.tsx`,
-  `ComposeNoteView.tsx`, `ClassNoteDetailWizard.tsx`, `MoodCalendarWidget.tsx`,
+  `ComposeNoteView.tsx`, `ClassNoteDetailWizard.tsx`,
   `StarRating.tsx`, `AnimatedNumber.tsx`, `ApproachDetail*Card.tsx`. Trust the code +
   `types.ts` over that inventory when they conflict.
 - `.context/*.md` are **also drifted** on: `npm run cap:assets` (script **removed** from
   `package.json`), seeds-as-default (app now starts empty), `EstudosView` sub-tabs
-  `leituras`/`questoes` (now render content) and the removed MoodCalendarWidget (back, real).
+  `leituras`/`questoes` (now render content) and the **mood feature** (estado de espírito
+  was fully removed: `currentMood`/`moodHistory`/`avatarMood`/`StudySession.mood`,
+  `moodPresets.ts`, `EstadoDeEspiritoView`, `MoodCalendarWidget`).
 - The workspace is **not currently a git repo** (`.git` absent) even though
   `.github/workflows/` exists; CI expects a `main` branch when initialized.
 - On **Node 26**, the experimental global `localStorage` (undefined) shadows jsdom's and breaks
