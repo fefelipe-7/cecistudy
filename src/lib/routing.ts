@@ -74,6 +74,7 @@ const WIZARD_SLUG_TO_TYPE: Record<WizardFlow, string> = {
   task: 'tarefa',
   exam: 'prova',
   'task-exam': 'prova-atividade',
+  course: 'materia',
   reading: 'leitura',
   flashcard: 'flashcard',
   internship: 'estagio',

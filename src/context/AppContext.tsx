@@ -240,6 +240,7 @@ export interface AppContextValue {
   handleReviewFlashcard: (id: string, correct: boolean) => void;
   handleAddInternshipLog: (log: InternshipLog) => void;
   handleAddExam: (exam: Exam) => void;
+  handleAddCourse: (course: Course) => void;
   handleAddAuthor: (author: PsychologyAuthor) => void;
   handleAddSession: (session: StudySession) => void;
   handleAddTechnique: (technique: Technique) => void;
@@ -528,11 +529,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       looseNotes,
     };
     const { updated, newlyUnlocked } = applyStickerUnlocks(stickers, state, todayKey);
-    if (newlyUnlocked.length > 0) {
+    const hasRealNewUnlock = newlyUnlocked.some((item) => !stickers.some((existing) => existing.id === item.id && existing.unlocked));
+    if (newlyUnlocked.length > 0 && hasRealNewUnlock) {
       setStickers(updated);
       setProfile((p) => ({
         ...p,
-        stickersCollected: p.stickersCollected + newlyUnlocked.length,
+        stickersCollected: p.stickersCollected + newlyUnlocked.filter((item) => !stickers.some((existing) => existing.id === item.id && existing.unlocked)).length,
       }));
       celebrate('sticker-unlocked');
       hapticSuccess();
@@ -716,6 +718,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const handleAddExam = (exam: Exam) => {
     setExams((prev) => [exam, ...prev]);
   };
+
+  const handleAddCourse = useCallback((course: Course) => {
+    setCourses((prev) => [course, ...prev]);
+  }, []);
 
   const handleAddAuthor = (author: PsychologyAuthor) => {
     setAuthors((prev) => [author, ...prev]);
@@ -1468,6 +1474,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     handleReviewFlashcard,
     handleAddInternshipLog,
     handleAddExam,
+    handleAddCourse,
     handleAddAuthor,
     handleAddSession,
     handleAddTechnique,

@@ -25,6 +25,7 @@ import { AnimatedNumber } from '../ui/AnimatedNumber';
 import { Kitty } from '../ui/Kitty';
 import { getCoursesOnWeekday, extractScheduleTime } from '../../lib/schedule';
 import { buildSuggestions } from '../../lib/suggestions';
+import { getDailyGoalMessage, getGreeting } from '../../lib/homeMeta';
 
 export const HomeView: React.FC = () => {
   const {
@@ -59,11 +60,7 @@ export const HomeView: React.FC = () => {
     });
   }, [exams]);
 
-  // Time-based Greeting
-  const hour = new Date().getHours();
-  let greeting = 'bom dia';
-  if (hour >= 12 && hour < 18) greeting = 'boa tarde';
-  else if (hour >= 18) greeting = 'boa noite';
+  const greeting = getGreeting();
 
   const formattedDate = new Date().toLocaleDateString('pt-BR', {
     weekday: 'long',
@@ -169,16 +166,7 @@ export const HomeView: React.FC = () => {
 
         {/* Detailed Descriptive Text */}
         <p className="text-sm sm:text-base text-ceci-primary font-medium leading-relaxed font-display">
-          para dar conta do dia com carinho, ainda temos{' '}
-          <span className="font-bold text-ceci-brand-strong underline decoration-ceci-border-brand underline-offset-2">
-            {pendingTasks.length} {pendingTasks.length === 1 ? 'tarefa pendente' : 'tarefas pendentes'}
-          </span>
-          {pendingTasks.length > 0 && (
-            <span className="text-ceci-secondary font-normal text-xs sm:text-sm">
-              {' '}({pendingTasks.slice(0, 2).map((t) => t.title).join(', ')})
-            </span>
-          )}
-          {' '}e <span className="font-bold text-ceci-academic-strong">revisão ativa de conteúdos</span>. vamos manter o ritmo com leveza e foco! ♡
+          {getDailyGoalMessage({ pendingTasks: pendingTasks.length, pendingExams: pendingExamsIn14Days.length })}
         </p>
 
         {/* 2 Simple Metric Blocks in a Single Row */}

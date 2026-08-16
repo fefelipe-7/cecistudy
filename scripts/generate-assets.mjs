@@ -47,16 +47,47 @@ function ensureDir(p) {
   if (!existsSync(p)) mkdirSync(p, { recursive: true });
 }
 
-/** Composição da splash: fundo creme cheio + ícone centralizado a X% da menor dimensão. */
+/** Composição da splash: fundo creme cheio + ícone centralizado (1/3 do tamanho) + Kitty "feliz" abaixo. */
 async function renderSplash(width, height) {
-  const iconSize = Math.round(Math.min(width, height) * 0.38);
+  const iconSize = Math.round(Math.min(width, height) * 0.33); // Ícone em 1/3 do tamanho
+  const kittySize = Math.round(Math.min(width, height) * 0.25); // Kitty em 1/4 do tamanho
+  
+  // Procura pela SVG da Kitty "feliz" para a splash
+  const kittySvgPath = join(KITTY_DIR, 'hello_kitty_feliz.svg');
+  const kittyExists = existsSync(kittySvgPath);
+  
   const icon = await sharp(ICON_SRC).resize(iconSize, iconSize).png().toBuffer();
-  return sharp({
+  
+  // Cria fundo creme
+  let canvas = sharp({
     create: { width, height, channels: 3, background: { r: 255, g: 252, b: 248 } },
-  })
-    .composite([{ input: icon, gravity: 'centre' }])
-    .png()
-    .toBuffer();
+  });
+  
+  // Composição de camadas: ícone no meio-alto, Kitty abaixo
+  const layers = [
+    // Ícone centralizado (posição 30% da altura)
+    { input: icon, gravity: 'centre' },
+  ];
+  
+  // Adiciona Kitty se o SVG "feliz" existir
+  if (kittyExists) {
+    try {
+      const kittyPng = await sharp(kittySvgPath)
+        .resize(kittySize, kittySize, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+        .png()
+        .toBuffer();
+      
+      layers.push({
+        input: kittyPng,
+        gravity: 'south',
+        offset: { left: 0, top: -Math.round(height * 0.1) } // 10% from bottom
+      });
+    } catch (e) {
+      console.warn(`⚠ Kitty SVG não encontrado em ${kittySvgPath}, usando apenas ícone`);
+    }
+  }
+  
+  return canvas.composite(layers).png().toBuffer();
 }
 
 async function generateWeb() {

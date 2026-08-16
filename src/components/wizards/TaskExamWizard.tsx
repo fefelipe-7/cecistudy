@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { ClipboardList, CheckCircle2, Sparkles } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { ClipboardList, CheckCircle2, Sparkles, CalendarPlus2 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import type { Task } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
+import { createTaskCalendarEvent, createExamCalendarEvent } from '../../lib/calendar';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import {
   ChipPicker,
@@ -46,6 +47,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
   const [taskCategory, setTaskCategory] = useState<Task['category']>('leitura');
   const [taskDueDate, setTaskDueDate] = useState('');
   const [taskPriority, setTaskPriority] = useState<Task['priority']>('media');
+  const [addToAgenda, setAddToAgenda] = useState(false);
 
   // prova
   const [examTitle, setExamTitle] = useState('');
@@ -54,6 +56,41 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
   const [examTopics, setExamTopics] = useState<string[]>([]);
 
   const courseName = courses.find((c) => c.id === courseId)?.name ?? '';
+
+  const agendaStep: WizardStep = {
+    id: 'agenda',
+    title: 'agenda',
+    headline: 'quer guardar isso direto na sua agenda do Google?',
+    content: (
+      <div className="space-y-4">
+        <div className="rounded-[22px] border border-ceci-border-default bg-white p-4 space-y-3">
+          <div className="flex items-start gap-3">
+            <div className="w-11 h-11 rounded-2xl bg-surface-blue border border-ceci-border-academic flex items-center justify-center text-ceci-academic-strong shrink-0">
+              <CalendarPlus2 className="w-5 h-5" />
+            </div>
+            <div className="space-y-1">
+              <p className="font-display font-bold text-base text-ceci-primary">lembrete para a agenda</p>
+              <p className="text-xs text-ceci-secondary leading-relaxed">
+                adiciona esse compromisso no Google Agenda com o título, data e disciplina.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setAddToAgenda((prev) => !prev)}
+            className={`w-full flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-medium transition-all cursor-pointer ${
+              addToAgenda
+                ? 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong'
+                : 'bg-surface-muted border-ceci-border-default text-ceci-primary'
+            }`}
+          >
+            <span>{addToAgenda ? 'sim, adicionar ao Google Agenda' : 'não, só guardar no app'}</span>
+            <span className="text-lg">{addToAgenda ? '✓' : '○'}</span>
+          </button>
+        </div>
+      </div>
+    ),
+  };
 
   const choiceStep: WizardStep = {
     id: 'tipo',
@@ -161,6 +198,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
         </div>
       ),
     },
+    agendaStep,
     {
       id: 'tarefa-revisar',
       title: 'revisar',
@@ -173,6 +211,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
             { label: 'disciplina', value: courseName },
             { label: 'prazo', value: taskDueDate ? new Date(taskDueDate).toLocaleDateString('pt-BR') : 'sem prazo definido' },
             { label: 'prioridade', value: taskPriority },
+            { label: 'agenda', value: addToAgenda ? 'sim' : 'não' },
           ]}
         />
       ),
@@ -233,6 +272,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
         />
       ),
     },
+    agendaStep,
     {
       id: 'prova-revisar',
       title: 'revisar',
@@ -245,6 +285,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
             { label: 'data', value: examDate ? new Date(examDate).toLocaleDateString('pt-BR') : 'a confirmar' },
             { label: 'peso', value: examWeight.trim() || '1,0' },
             { label: 'tópicos', value: examTopics.length ? examTopics.join(' · ') : 'ainda sem tópicos' },
+            { label: 'agenda', value: addToAgenda ? 'sim' : 'não' },
           ]}
         />
       ),
@@ -260,7 +301,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
         ? taskTitle.trim().length > 0
         : examTitle.trim().length > 0;
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (kind === 'task') {
       handleAddTask({
         id: 't-' + Date.now(),
@@ -271,6 +312,10 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
         completed: false,
         priority: taskPriority,
       });
+      if (addToAgenda) {
+        await createTaskCalendarEvent(taskTitle.trim(), courseName, taskDueDate || today());
+        showToast('tarefa salva no app e marcada para a agenda ♡');
+      }
     } else {
       handleAddExam({
         id: 'e-' + Date.now(),
@@ -281,6 +326,10 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
         topics: examTopics,
         completed: false,
       });
+      if (addToAgenda) {
+        await createExamCalendarEvent(examTitle.trim(), courseName, examDate || today());
+        showToast('prova salva no app e marcada na agenda ♡');
+      }
     }
     hapticSuccess();
     closeWizard();

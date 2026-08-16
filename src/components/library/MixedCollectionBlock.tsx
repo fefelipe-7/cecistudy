@@ -77,7 +77,7 @@ export const MixedCollectionBlock: React.FC<MixedCollectionBlockProps> = ({
       <div className="flex items-stretch gap-3 overflow-x-auto pb-2 scrollbar-none pt-1">
         {collection.books.map((book) => {
           const isSaved = savedBookIds.includes(book.id);
-          const readPages = readProgress?.[book.id] ?? book.readPages;
+          const readPages = readProgress?.[book.id];
           const isReading = (readPages ?? 0) > 0;
           const progressPercent =
             book.totalPages && readPages

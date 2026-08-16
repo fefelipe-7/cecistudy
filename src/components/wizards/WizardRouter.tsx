@@ -6,6 +6,7 @@ import { ReadingWizard } from './ReadingWizard';
 import { SessionWizard } from './SessionWizard';
 import { InternshipWizard } from './InternshipWizard';
 import { AuthorWizard } from './AuthorWizard';
+import { CourseWizard } from './CourseWizard';
 
 /** Renderiza o wizard correspondente ao topo da pilha (`currentWizardType`). */
 export const WizardRouter: React.FC = () => {
@@ -18,6 +19,8 @@ export const WizardRouter: React.FC = () => {
       return <TaskExamWizard preset="exam" />;
     case 'task-exam':
       return <TaskExamWizard />;
+    case 'course':
+      return <CourseWizard />;
     case 'flashcard':
       return <FlashcardWizard />;
     case 'reading':

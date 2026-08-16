@@ -37,6 +37,7 @@ export type WizardFlow =
   | 'task'
   | 'exam'
   | 'task-exam'
+  | 'course'
   | 'reading'
   | 'flashcard'
   | 'internship'

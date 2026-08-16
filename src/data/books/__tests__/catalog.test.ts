@@ -97,12 +97,13 @@ describe('coleções curadas geradas', () => {
     }
   });
 
-  it('os livros das coleções mapeiam para CollectionBook com status padrão', () => {
+  it('os livros das coleções mapeiam para CollectionBook sem status (status deriva do readingProgress)', () => {
     const book = psychotherapyCollections[0].books[0];
     expect(book.id).toMatch(/^cat-/);
-    expect(book.status).toBe('para_ler');
     expect(book.description).toBeTruthy();
     expect(book.quote).toBeTruthy();
+    // status não existe mais no tipo - é derivado do readingProgress do usuário
+    expect('status' in book).toBe(false);
   });
 });
 

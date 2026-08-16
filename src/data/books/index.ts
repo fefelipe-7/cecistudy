@@ -96,7 +96,6 @@ function bookCard(
     coverColor: meta.color,
     accentColor: meta.accent,
     badge: meta.short ?? 'catálogo',
-    status: 'para_ler',
     description,
     quote,
     tags: meta.label ? [meta.label, meta.short ?? meta.label].filter(Boolean) : [],

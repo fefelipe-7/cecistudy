@@ -56,7 +56,7 @@ import { MixedCollectionBlock } from '../library/MixedCollectionBlock';
 import { useApp } from '../../context/AppContext';
 
 export const BibliotecaView: React.FC = () => {
-  const { openQuickAdd, isNotesScreenOpen, openNotesScreen, isCreatingLooseNote, setIsCreatingLooseNote, isTempleScreenOpen, openTemple, isFamiliesScreenOpen, focusedFamilyId, focusedApproachId, looseNotes, addLooseNote, deleteLooseNote, savedBookIds, toggleSaveBook, readingProgress, updateReadingProgress } = useApp();
+  const { isNotesScreenOpen, openNotesScreen, isCreatingLooseNote, setIsCreatingLooseNote, isTempleScreenOpen, openTemple, isFamiliesScreenOpen, focusedFamilyId, focusedApproachId, looseNotes, addLooseNote, deleteLooseNote, savedBookIds, toggleSaveBook, readingProgress, updateReadingProgress } = useApp();
   // Filter States
   const [activeCategory, setActiveCategory] = useState<string>('todos');
   const [activeStatus, setActiveStatus] = useState<string>('todos');
@@ -67,6 +67,8 @@ export const BibliotecaView: React.FC = () => {
   // Detail & Modal States
   const [selectedBook, setSelectedBook] = useState<CollectionBook | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+
+  const renderBottomAction = null;
 
   // Tags derivadas do catálogo (nenhuma lista fixa no código da view)
   const availableTags = useMemo(
@@ -98,16 +100,32 @@ export const BibliotecaView: React.FC = () => {
   // -----------------------------------------------------------------------
   // Filtros compartilhados (coleções curadas, catálogo, complementar)
   // -----------------------------------------------------------------------
+  const isBookReading = (book: CollectionBook) => {
+    const progress = readingProgress[book.id];
+    return progress !== undefined && progress > 0;
+  };
+
+  const isBookCompleted = (book: CollectionBook) => {
+    const progress = readingProgress[book.id];
+    return book.totalPages !== undefined && progress !== undefined && progress >= book.totalPages;
+  };
+
+  const getBookStatus = (book: CollectionBook): 'lendo' | 'concluido' | 'para_ler' => {
+    if (isBookCompleted(book)) return 'concluido';
+    if (isBookReading(book)) return 'lendo';
+    return 'para_ler';
+  };
+
   const matchesCategory = (col: ContextCollection, allowed: string[]) => {
     if (activeCategory === 'todos') return true;
     if (activeCategory === 'salvos') return col.books.some((b) => savedBookIds.includes(b.id));
-    if (activeCategory === 'em_leitura') return col.books.some((b) => b.status === 'lendo');
+    if (activeCategory === 'em_leitura') return col.books.some((b) => isBookReading(b));
     return allowed.includes(col.blockCategory) && col.blockCategory === activeCategory;
   };
 
   const matchesStatus = (col: ContextCollection) =>
     activeStatus === 'todos' ||
-    col.books.some((b) => b.status === activeStatus);
+    col.books.some((b) => getBookStatus(b) === activeStatus);
 
   const matchesTag = (col: ContextCollection) =>
     !selectedTag ||
@@ -141,7 +159,7 @@ export const BibliotecaView: React.FC = () => {
           matchesSearch(col)
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds]
+    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds, readingProgress]
   );
 
   // Catálogo de psicoterapias (10 famílias)
@@ -155,7 +173,7 @@ export const BibliotecaView: React.FC = () => {
           matchesSearch(col)
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds]
+    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds, readingProgress]
   );
 
   // Bagagem complementar (10 áreas interdisciplinares)
@@ -169,16 +187,17 @@ export const BibliotecaView: React.FC = () => {
           matchesSearch(col)
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds]
+    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds, readingProgress]
   );
 
   // Filtro loose trending books por busca e filtros
   const filteredTrendingBooks = useMemo(
     () =>
       initialTrendingBooks.filter((b) => {
-        if (activeStatus !== 'todos' && b.status !== activeStatus) return false;
+        const bookStatus = getBookStatus(b);
+        if (activeStatus !== 'todos' && bookStatus !== activeStatus) return false;
         if (activeCategory === 'salvos' && !savedBookIds.includes(b.id)) return false;
-        if (activeCategory === 'em_leitura' && b.status !== 'lendo') return false;
+        if (activeCategory === 'em_leitura' && bookStatus !== 'lendo') return false;
         if (selectedTag && !b.tags.some((t) => t.toLowerCase().includes(selectedTag.toLowerCase()))) return false;
 
         if (!searchTerm) return true;
@@ -189,7 +208,7 @@ export const BibliotecaView: React.FC = () => {
           b.tags.some((t) => t.toLowerCase().includes(searchLower))
         );
       }),
-    [activeStatus, activeCategory, savedBookIds, selectedTag, searchTerm]
+    [activeStatus, activeCategory, savedBookIds, selectedTag, searchTerm, readingProgress]
   );
 
   // Artigos científicos — filtro próprio (título/autor/periódico/família/tag)
@@ -246,7 +265,7 @@ export const BibliotecaView: React.FC = () => {
       activeCategory === 'mistas' ||
       (activeCategory === 'salvos' &&
         col.books.some((b) => savedBookIds.includes(b.id))) ||
-      (activeCategory === 'em_leitura' && col.books.some((b) => b.status === 'lendo'));
+      (activeCategory === 'em_leitura' && col.books.some((b) => isBookReading(b)));
 
     const articleCategoryOk =
       activeCategory === 'todos' ||
@@ -258,7 +277,7 @@ export const BibliotecaView: React.FC = () => {
     if (!bookCategoryOk && !articleCategoryOk) return false;
 
     // artigos não têm status de leitura — filtrando por status, exige um livro
-    if (activeStatus !== 'todos' && !col.books.some((b) => b.status === activeStatus)) {
+    if (activeStatus !== 'todos' && !col.books.some((b) => getBookStatus(b) === activeStatus)) {
       return false;
     }
 
@@ -299,7 +318,7 @@ export const BibliotecaView: React.FC = () => {
   const filteredMixedCollections = useMemo(
     () => mixedCollections.filter(mixedMatches),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds]
+    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds, readingProgress]
   );
 
   // Category specific slices for inline sections
@@ -871,15 +890,6 @@ export const BibliotecaView: React.FC = () => {
         </div>
       )}
 
-      {/* Floating Action Button (+) */}
-      <button
-        onClick={openQuickAdd}
-        className="fixed bottom-20 right-5 sm:right-8 z-30 w-12 h-12 rounded-full bg-ceci-primary hover:bg-ceci-primary-hover text-white shadow-lg flex items-center justify-center transition-transform active:scale-90 cursor-pointer border border-white/20"
-        title="novo registro na biblioteca"
-      >
-        <Plus className="w-6 h-6 stroke-[2.5]" />
-      </button>
-
       {/* Filter Modal / Drawer */}
       <LibraryFilterModal
         isOpen={isFilterModalOpen}
@@ -899,7 +909,7 @@ export const BibliotecaView: React.FC = () => {
         <BookDetailModal
           book={selectedBook}
           isSaved={savedBookIds.includes(selectedBook.id)}
-          readPages={readingProgress[selectedBook.id] ?? selectedBook.readPages ?? 0}
+          readPages={readingProgress[selectedBook.id] ?? 0}
           onClose={() => setSelectedBook(null)}
           onToggleSave={() => toggleSaveBook(selectedBook.id)}
           onUpdateProgress={(p) => updateReadingProgress(selectedBook.id, p)}
