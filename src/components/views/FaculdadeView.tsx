@@ -11,7 +11,7 @@ import { SubTabFaculdade, ClassNote } from '../../types';
 import { CourseDetailView } from './CourseDetailView';
 import { ClassNoteModal } from '../courses/ClassNoteModal';
 import { ClassNoteListItem } from '../courses/ClassNoteListItem';
-import { PillTabBar } from '../ui/PillTabBar';
+import { UnderlineTabBar } from '../ui/UnderlineTabBar';
 import { useApp } from '../../context/AppContext';
 import {
   eventsForMonth,
@@ -112,7 +112,7 @@ export const FaculdadeView: React.FC = () => {
       </div>
 
       {/* Sub-Tabs Navigation */}
-      <PillTabBar
+      <UnderlineTabBar
         tabs={[
           { id: 'disciplinas', label: 'disciplinas', icon: <BookOpen className="w-3.5 h-3.5" /> },
           { id: 'aulas', label: 'diário de aulas', icon: <FileCheck2 className="w-3.5 h-3.5" /> },

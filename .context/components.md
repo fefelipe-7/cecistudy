@@ -33,7 +33,7 @@ Dono de todo o estado global (`usePersistentState`) + navegação + modais. Orqu
 | `button.tsx` | Button com variantes (CVA) + `asChild` (Radix Slot) | ✅ |
 | `bottom-nav-bar.tsx` | Barra de navegação animada (pill ativa) | ✅ (via BottomNav) |
 | `floating-action-menu.tsx` | Menu FAB "+" com opções animadas | ✅ (via BottomNav) |
-| `Card.tsx` · `Modal.tsx` · `PillTabBar.tsx` · `IconButton.tsx` · `ProgressBar.tsx` | Primitivas reutilizáveis | ✅ |
+| `Card.tsx` · `Modal.tsx` · `UnderlineTabBar.tsx` · `IconButton.tsx` · `ProgressBar.tsx` | Primitivas reutilizáveis | ✅ |
 | `CourseIcon.tsx` | Resolvedor de ícones de curso (Brain, FileText, Sparkles…) | ✅ |
 | `HeaderActionMenu.tsx` | Menu "⋯" de ações contextuais do header detail | ✅ (HeaderNav) |
 | `Toast.tsx` | Feedback toast (ex.: salvar/copiar) | ✅ (AppShell) |
@@ -72,7 +72,6 @@ Dono de todo o estado global (`usePersistentState`) + navegação + modais. Orqu
 | `EstudosView.tsx` | Study corner: timer pomodoro, flashcards, leituras | ✅ |
 | `BibliotecaView.tsx` | Catálogo + filtros + coleções + notas avulsas + modais (book/reader/filter) | ✅ |
 | `PerfilView.tsx` | Página única inline: resumo da jornada (métricas reais), timeline, streak, estágio, TCC, stickers, personalização | ✅ |
-| `EstadoDeEspiritoView.tsx` | Registro de mood do dia (presets, energia, intenção, reflexão) | ✅ |
 
 ---
 

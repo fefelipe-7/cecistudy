@@ -54,11 +54,10 @@ src/
   data/
     initialData.ts             → seed das entidades
     libraryData.ts             → catálogo da biblioteca (livros/coleções)
-    moodPresets.ts             → presets de humor
   components/
-    ui/                        → primitivas (button, Card, Modal, PillTabBar, IconButton, ProgressBar, CourseIcon…)
-    views/                     → Home, Faculdade, Estudos, Biblioteca, Perfil, EstadoDeEspirito, CourseDetail
-    widgets/                   → blocos reutilizáveis (stats, mood, reader…)
+    ui/                        → primitivas (button, Card, Modal, UnderlineTabBar, IconButton, ProgressBar, CourseIcon…)
+    views/                     → Home, Faculdade, Estudos, Biblioteca, Perfil, CourseDetail
+    widgets/                   → blocos reutilizáveis (stats, reader…)
     library/  courses/         → componentes extraídos da biblioteca e de disciplinas
 android/                       → projeto nativo Android (Capacitor)
 ios/                           → projeto nativo iOS (Capacitor)
