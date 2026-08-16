@@ -404,7 +404,12 @@ export type StickerCondition =
   | { type: 'tcc-created' }
   | { type: 'tcc-chapters-done'; min: number }
   | { type: 'penultimate-semester' }
-  | { type: 'graduation' };
+  | { type: 'graduation' }
+  | { type: 'streak-week'; min: number }
+  | { type: 'streak-month'; min: number }
+  | { type: 'flashcard-streak' }
+  | { type: 'questions-mastered'; min: number }
+  | { type: 'techniques-explored'; min: number };
 
 export interface UserProfile {
   name: string;

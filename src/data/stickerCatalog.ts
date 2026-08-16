@@ -341,6 +341,46 @@ export const STICKER_CATALOG: StickerDefinition[] = [
     category: 'jornada',
     condition: { type: 'graduation' },
   },
+  {
+    id: 'st-41',
+    name: 'semana de foco',
+    emoji: '📅',
+    description: 'estude em 5 dias diferentes na mesma semana (seg-sexta).',
+    category: 'estudo',
+    condition: { type: 'streak-week', min: 5 },
+  },
+  {
+    id: 'st-42',
+    name: 'mês de consistência',
+    emoji: '🗓️',
+    description: 'acumule 15 dias ativos de estudo num único mês.',
+    category: 'estudo',
+    condition: { type: 'streak-month', min: 15 },
+  },
+  {
+    id: 'st-43',
+    name: 'flashcards em dia',
+    emoji: '🃏',
+    description: 'revise cartões em 14 dias consecutivos.',
+    category: 'estudo',
+    condition: { type: 'flashcard-streak' },
+  },
+  {
+    id: 'st-44',
+    name: 'mestre das questões',
+    emoji: '❓',
+    description: 'acerte 50 questões de estudo do seu banco.',
+    category: 'estudo',
+    condition: { type: 'questions-mastered', min: 50 },
+  },
+  {
+    id: 'st-45',
+    name: 'exploradora de técnicas',
+    emoji: '🛠️',
+    description: 'experimente 5 técnicas de estudo diferentes.',
+    category: 'estudo',
+    condition: { type: 'techniques-explored', min: 5 },
+  },
 ];
 
 /** Condição de desbloqueio por id (fallback: nunca desbloqueia). */

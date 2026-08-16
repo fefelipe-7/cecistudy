@@ -119,6 +119,19 @@ describe('isConditionMet', () => {
     expect(isConditionMet({ type: 'saved-books', min: 5 }, { ...baseState, savedBookIds: ['a', 'b', 'c', 'd', 'e'] })).toBe(true);
     expect(isConditionMet({ type: 'internship-first' }, { ...baseState, internshipLogs: [{}] })).toBe(true);
   });
+
+  it('novas condições: streak-week, streak-month, flashcard-streak, questions-mastered, techniques-explored', () => {
+    expect(isConditionMet({ type: 'streak-week', min: 5 }, { ...baseState, streakTotal: 5 })).toBe(true);
+    expect(isConditionMet({ type: 'streak-week', min: 5 }, { ...baseState, streakTotal: 4 })).toBe(false);
+    expect(isConditionMet({ type: 'streak-month', min: 15 }, { ...baseState, streakTotal: 15 })).toBe(true);
+    expect(isConditionMet({ type: 'streak-month', min: 15 }, { ...baseState, streakTotal: 10 })).toBe(false);
+    expect(isConditionMet({ type: 'flashcard-streak' }, { ...baseState, flashcards: Array(14).fill({ timesReviewed: 1 }) })).toBe(true);
+    expect(isConditionMet({ type: 'flashcard-streak' }, { ...baseState, flashcards: Array(13).fill({ timesReviewed: 1 }) })).toBe(false);
+    expect(isConditionMet({ type: 'questions-mastered', min: 50 }, { ...baseState, questions: Array(50).fill({ correct: true }) })).toBe(true);
+    expect(isConditionMet({ type: 'questions-mastered', min: 50 }, { ...baseState, questions: Array(49).fill({ correct: true }) })).toBe(false);
+    expect(isConditionMet({ type: 'techniques-explored', min: 5 }, { ...baseState, techniques: Array(5).fill({}) })).toBe(true);
+    expect(isConditionMet({ type: 'techniques-explored', min: 5 }, { ...baseState, techniques: Array(4).fill({}) })).toBe(false);
+  });
 });
 
 describe('mergeCatalogWithProgress', () => {

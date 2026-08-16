@@ -70,6 +70,16 @@ export function isConditionMet(condition: StickerCondition, state: StickerState)
       return state.tasks.filter((t) => t.completed).length >= condition.min;
     case 'saved-books':
       return state.savedBookIds.length >= condition.min;
+    case 'streak-week':
+      return state.streakTotal >= 5 && condition.min ? state.streakTotal >= condition.min : state.streakTotal >= 5;
+    case 'streak-month':
+      return state.streakTotal >= 15 && condition.min ? state.streakTotal >= condition.min : state.streakTotal >= 15;
+    case 'flashcard-streak':
+      return state.flashcards.filter((f) => (f.timesReviewed ?? 0) > 0).length >= 14;
+    case 'questions-mastered':
+      return state.questions.filter((q) => (q as { correct?: boolean }).correct).length >= 50;
+    case 'techniques-explored':
+      return state.techniques.length >= 5;
     default:
       return false;
   }
