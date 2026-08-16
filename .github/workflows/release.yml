@@ -49,7 +49,6 @@ env:
   OTA_DIR: ota-site
   OTA_BASE_URL: https://fefelipe-7.github.io/cecistudy
   KEEP_VERSIONS: '5'
-  IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
 
 jobs:
   prepare:
@@ -126,6 +125,7 @@ jobs:
     needs: prepare
     runs-on: ubuntu-latest
     env:
+      ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
       ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
       ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
@@ -165,9 +165,9 @@ jobs:
           echo "APP_VERSION_CODE=$(git rev-list --count HEAD)" >> "$GITHUB_ENV"
 
       - name: import keystore (quando presente)
-        if: ${{ secrets.ANDROID_KEYSTORE != '' }}
+        if: env.ANDROID_KEYSTORE != ''
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > android/app/release.jks
+          echo "$ANDROID_KEYSTORE" | base64 --decode > android/app/release.jks
           echo "ANDROID_KEYSTORE_PATH=$GITHUB_WORKSPACE/android/app/release.jks" >> "$GITHUB_ENV"
           echo "→ release assinado: true" >> "$GITHUB_STEP_SUMMARY"
 
@@ -195,6 +195,8 @@ jobs:
     name: ios ipa
     needs: prepare
     runs-on: macos-latest
+    env:
+      IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -218,7 +220,7 @@ jobs:
         run: npx cap sync ios
 
       - name: setup code signing
-        if: ${{ secrets.IOS_TEAM_ID != '' }}
+        if: env.IOS_TEAM_ID != ''
         run: |
           KEYCHAIN=cecistudy-build.keychain
           security create-keychain -p ci "$KEYCHAIN"
@@ -236,7 +238,7 @@ jobs:
           security find-identity -v -p codesigning "$KEYCHAIN"
 
       - name: build ipa (release, dispositivo)
-        if: ${{ secrets.IOS_TEAM_ID != '' }}
+        if: env.IOS_TEAM_ID != ''
         run: |
           cd ios/App
           export_options=/tmp/export-options.plist
@@ -271,7 +273,7 @@ jobs:
             -exportOptionsPlist "$export_options"
 
       - name: 'build (fallback: simulador unsigned)'
-        if: ${{ secrets.IOS_TEAM_ID == '' }}
+        if: env.IOS_TEAM_ID == ''
         run: |
           cd ios/App
           xcodebuild \
@@ -283,7 +285,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO build
 
       - name: upload ipa
-        if: ${{ secrets.IOS_TEAM_ID != '' }}
+        if: env.IOS_TEAM_ID != ''
         uses: actions/upload-artifact@v4
         with:
           name: ios-ipa
