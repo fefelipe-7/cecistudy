@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import {
   FileText,
   Search,
@@ -6,15 +7,26 @@ import {
   Check,
   Copy,
   Trash2,
+  Pencil,
+  Wand2,
+  BookOpen,
+  Sparkles,
+  UserCheck,
 } from 'lucide-react';
-import { LooseNote, CATEGORY_BADGE } from './notes';
+import { CATEGORY_BADGE, formatNoteDate } from './notes';
 import { Kitty } from '../ui/Kitty';
 import { copyToClipboard } from '../../lib/utils';
+import type { LooseNote, Course, PsychologyConcept, PsychologyAuthor } from '../../types';
 
 interface NotesScreenProps {
   looseNotes: LooseNote[];
   onAddNote: (note: LooseNote) => void;
   onDeleteNote: (id: string) => void;
+  onEditNote: (noteId: string) => void;
+  onTransformNote: (noteId: string) => void;
+  courses: Course[];
+  concepts: PsychologyConcept[];
+  authors: PsychologyAuthor[];
   isCreatingNote: boolean;
   setIsCreatingNote: (v: boolean) => void;
 }
@@ -23,6 +35,11 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
   looseNotes,
   onAddNote,
   onDeleteNote,
+  onEditNote,
+  onTransformNote,
+  courses,
+  concepts,
+  authors,
   isCreatingNote,
   setIsCreatingNote,
 }) => {
@@ -44,8 +61,18 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
     return matchesCategory && matchesSearch;
   });
 
+  const courseName = (id?: string) => courses.find((c) => c.id === id)?.name ?? '';
+  const conceptNames = (ids: string[] = []) =>
+    concepts.filter((c) => ids.includes(c.id)).map((c) => c.name).slice(0, 3);
+  const authorNames = (ids: string[] = []) =>
+    authors.filter((a) => ids.includes(a.id)).map((a) => a.name).slice(0, 3);
+
   return (
-    <div className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-1 animate-in fade-in duration-300 relative">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-1 relative"
+    >
       {/* Counter badge (voltado para o header detail) */}
       <div className="flex items-center justify-end pt-1 px-1">
         <span className="text-xs font-semibold text-ceci-secondary bg-white px-3 py-1 rounded-full border border-ceci-border-default">
@@ -64,7 +91,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
               suas notas avulsas
             </h1>
             <p className="text-xs text-ceci-secondary">
-              espaço exclusivo para anotações rápidas, reflexões e lembretes soltos
+              rascunhos transitórios — podem virar aulas, tarefas, conceitos e mais ♡
             </p>
           </div>
         </div>
@@ -117,7 +144,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
 
       {/* New Note Form */}
       {isCreatingNote && (
-        <div className="bg-white rounded-[22px] p-4 border border-ceci-border-brand bg-surface-rose/30 space-y-3 shadow-2xs animate-in fade-in duration-200">
+        <div className="bg-white rounded-[22px] p-4 border border-ceci-border-brand bg-surface-rose/30 space-y-3 shadow-2xs">
           <div className="flex items-center justify-between border-b border-ceci-border-brand/60 pb-2">
             <h3 className="text-xs font-bold text-ceci-primary font-display uppercase tracking-wider">
               criar nova nota avulsa
@@ -187,7 +214,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
                     title: newNoteTitle.trim() || 'Nota sem título',
                     content: newNoteContent.trim(),
                     category: newNoteCategory,
-                    date: 'Hoje, agora',
+                    date: new Date().toISOString(),
                   };
                   onAddNote(newNote);
                   setNewNoteTitle('');
@@ -205,69 +232,130 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
 
       {/* List of Notes */}
       <div className="space-y-3">
-        {filteredNotes.map((note) => (
-          <div
-            key={note.id}
-            className="bg-white rounded-[20px] p-4 border border-ceci-border-default hover:border-ceci-border-brand tap-interactive space-y-2.5 shadow-2xs flex flex-col justify-between group"
-          >
-            <div className="space-y-2">
-              <div className="flex items-center justify-between gap-2 border-b border-ceci-border-subtle pb-2">
-                <div className="flex items-center gap-1.5 min-w-0">
-                  <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider ${CATEGORY_BADGE[note.category]}`}>
-                    {note.category}
+        {filteredNotes.map((note) => {
+          const cName = courseName(note.courseId);
+          const cons = conceptNames(note.conceptIds);
+          const auths = authorNames(note.authorIds);
+          const hasLinks = Boolean(cName) || cons.length > 0 || auths.length > 0;
+          return (
+            <div
+              key={note.id}
+              className="bg-white rounded-[20px] p-4 border border-ceci-border-default hover:border-ceci-border-brand tap-interactive space-y-2.5 shadow-2xs flex flex-col justify-between group"
+            >
+              <div className="space-y-2">
+                <div className="flex items-center justify-between gap-2 border-b border-ceci-border-subtle pb-2">
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider ${CATEGORY_BADGE[note.category]}`}>
+                      {note.category}
+                    </span>
+                    <h3 className="font-bold font-display text-xs text-ceci-primary truncate">
+                      {note.title}
+                    </h3>
+                  </div>
+
+                  <span className="text-[10px] text-ceci-tertiary shrink-0 font-medium">
+                    {formatNoteDate(note.date)}
                   </span>
-                  <h3 className="font-bold font-display text-xs text-ceci-primary truncate">
-                    {note.title}
-                  </h3>
                 </div>
 
-                <span className="text-[10px] text-ceci-tertiary shrink-0 font-medium">
-                  {note.date}
-                </span>
+                <p className="text-xs text-ceci-primary leading-relaxed whitespace-pre-wrap">
+                  {note.content}
+                </p>
+
+                {hasLinks && (
+                  <div className="flex flex-wrap gap-1.5 pt-0.5">
+                    {cName && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-blue border border-ceci-border-academic text-[10px] font-semibold text-ceci-academic-strong">
+                        <BookOpen className="w-3 h-3" />
+                        {cName}
+                      </span>
+                    )}
+                    {cons.map((name) => (
+                      <span
+                        key={name}
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-bg border border-amber-border text-[10px] font-semibold text-amber-text"
+                      >
+                        <Sparkles className="w-3 h-3" />
+                        {name}
+                      </span>
+                    ))}
+                    {auths.map((name) => (
+                      <span
+                        key={name}
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-muted border border-ceci-border-default text-[10px] font-semibold text-ceci-secondary"
+                      >
+                        <UserCheck className="w-3 h-3" />
+                        {name}
+                      </span>
+                    ))}
+                    {note.conceptIds && note.conceptIds.length > 3 && (
+                      <span className="text-[10px] text-ceci-tertiary font-medium">
+                        +{note.conceptIds.length - 3} conceitos
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
 
-              <p className="text-xs text-ceci-primary leading-relaxed whitespace-pre-wrap">
-                {note.content}
-              </p>
-            </div>
+              <div className="flex items-center justify-between gap-2 pt-2 border-t border-ceci-border-subtle/60">
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => onEditNote(note.id)}
+                    className="text-[11px] text-ceci-secondary hover:text-ceci-brand-strong flex items-center gap-1 px-2.5 py-1 rounded-lg hover:bg-surface-rose transition-colors cursor-pointer"
+                    title="editar nota"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                    <span>editar</span>
+                  </button>
+                  <button
+                    onClick={() => onTransformNote(note.id)}
+                    className="text-[11px] text-ceci-brand-strong hover:text-ceci-brand-strong flex items-center gap-1 px-2.5 py-1 rounded-lg hover:bg-surface-rose transition-colors cursor-pointer font-semibold"
+                    title="transformar em outra entidade"
+                  >
+                    <Wand2 className="w-3.5 h-3.5" />
+                    <span>transformar em...</span>
+                  </button>
+                </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-ceci-border-subtle/60">
-              <button
-                onClick={() => {
-                  void copyToClipboard(`${note.title}\n${note.content}`).then((ok) => {
-                    if (ok) {
-                      setCopiedNoteId(note.id);
-                      setTimeout(() => setCopiedNoteId(null), 2000);
-                    }
-                  });
-                }}
-                className="text-[11px] text-ceci-secondary hover:text-ceci-brand-strong flex items-center gap-1 px-2.5 py-1 rounded-lg hover:bg-surface-rose transition-colors cursor-pointer"
-                title="copiar texto da nota"
-              >
-                {copiedNoteId === note.id ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-success-deep" />
-                    <span className="text-success-deep font-bold">copiado!</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5" />
-                    <span>copiar</span>
-                  </>
-                )}
-              </button>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => {
+                      void copyToClipboard(`${note.title}\n${note.content}`).then((ok) => {
+                        if (ok) {
+                          setCopiedNoteId(note.id);
+                          setTimeout(() => setCopiedNoteId(null), 2000);
+                        }
+                      });
+                    }}
+                    className="text-[11px] text-ceci-tertiary hover:text-ceci-brand-strong flex items-center gap-1 px-2.5 py-1 rounded-lg hover:bg-surface-rose transition-colors cursor-pointer"
+                    title="copiar texto da nota"
+                  >
+                    {copiedNoteId === note.id ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-success-deep" />
+                        <span className="text-success-deep font-bold">copiado!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>copiar</span>
+                      </>
+                    )}
+                  </button>
 
-              <button
-                onClick={() => onDeleteNote(note.id)}
-                className="text-[11px] text-ceci-tertiary hover:text-ceci-brand-strong flex items-center gap-1 px-2.5 py-1 rounded-lg hover:bg-surface-rose transition-colors cursor-pointer"
-                title="excluir nota"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                <span>excluir</span>
-              </button>
+                  <button
+                    onClick={() => onDeleteNote(note.id)}
+                    className="text-[11px] text-ceci-tertiary hover:text-ceci-brand-strong flex items-center gap-1 px-2.5 py-1 rounded-lg hover:bg-surface-rose transition-colors cursor-pointer"
+                    title="excluir nota"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>excluir</span>
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         {filteredNotes.length === 0 && (
           <div className="bg-white rounded-[22px] p-8 text-center border border-dashed border-ceci-border-default space-y-2">
@@ -281,6 +369,6 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };

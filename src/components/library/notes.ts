@@ -1,10 +1,4 @@
-export interface LooseNote {
-  id: string;
-  title: string;
-  content: string;
-  category: 'reflexão' | 'estudo' | 'ideia' | 'lembrete';
-  date: string;
-}
+import type { LooseNote } from '../../types';
 
 export const CATEGORY_BADGE: Record<LooseNote['category'], string> = {
   'reflexão': 'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand',
@@ -31,8 +25,11 @@ export function formatNoteDate(iso: string): string {
     d.getMonth() === yesterday.getMonth() &&
     d.getDate() === yesterday.getDate();
   if (isYesterday) return `ontem, ${time}`;
-  return d
-    .toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' })
-    .replace('.', '')
-    .toLowerCase();
+  return (
+    d
+      .toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' })
+      .replace('.', '')
+      .toLowerCase() +
+    `, ${time}`
+  );
 }

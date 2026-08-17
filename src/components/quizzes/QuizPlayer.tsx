@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, Trophy, CheckCircle2, X, Target, RotateCcw, Clock, Brain, BarChart2 } from 'lucide-react';
+import { ChevronRight, Trophy, CheckCircle2, X, Clock } from 'lucide-react';
 import { Kitty } from '../ui/Kitty';
 import { QuizExplanationOverlay } from './QuizExplanationOverlay';
 import { cn } from '../../lib/utils';
@@ -11,7 +11,6 @@ interface QuizPlayerProps {
   onAnswer: (answer: QuizAnswer) => void;
   onAdvance: () => void;
   onFinish: (answers: QuizAnswer[], config: QuizConfig, startTime: number, correctCount: number, totalCount: number) => void;
-  onClose: () => void;
 }
 
 const OPTION_LETTERS = ['A', 'B', 'C', 'D', 'E'];
@@ -21,7 +20,6 @@ export const QuizPlayer: React.FC<QuizPlayerProps> = ({
   onAnswer,
   onAdvance,
   onFinish,
-  onClose,
 }) => {
   const { pool, config, currentIdx, questionStartTime } = state;
   const current = pool[currentIdx];
@@ -86,52 +84,23 @@ const handleNext = useCallback(() => {
   if (!current) return null;
 
   return (
-    <div className="min-h-[70vh] flex flex-col animate-in fade-in duration-300 pb-44">
-      {/* Header com progresso */}
-      <div className="sticky top-0 z-10 -mx-3.5 sm:-mx-5 px-3.5 sm:px-5 pt-[calc(0.5rem+env(safe-area-inset-top,0px))] pb-3 bg-canvas/95 backdrop-blur-md border-b border-ceci-border-subtle">
-        <div className="max-w-md sm:max-w-xl mx-auto flex items-center justify-between gap-2">
-          <button
-            onClick={onClose}
-            className="w-9 h-9 rounded-2xl bg-white border border-ceci-border-default hover:bg-surface-rose flex items-center justify-center text-ceci-primary shadow-2xs transition-all active:scale-95 cursor-pointer"
-            title="sair do quiz"
-            aria-label="sair do quiz"
-          >
-            <X className="w-4 h-4" />
-          </button>
-
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="w-7 h-7 rounded-xl border flex items-center justify-center shrink-0 bg-surface-blue border-ceci-border-academic text-ceci-academic-strong">
-              <Target className="w-3.5 h-3.5" />
-            </span>
-            <div className="min-w-0">
-              <h1 className="font-display font-bold text-sm text-ceci-primary truncate leading-tight">quiz</h1>
-              <p className="text-[11px] text-ceci-secondary truncate">
-                questão {currentIdx + 1} de {pool.length}
-              </p>
-            </div>
-          </div>
-
-          <span className="w-9 h-9 shrink-0 flex items-center justify-end">
-            <span className="text-xs font-semibold text-ceci-primary px-2 py-0.5 rounded-full bg-surface-blue">
-              {Math.round(progress)}%
-            </span>
-          </span>
-        </div>
-
-        {/* Barra de progresso linear */}
-        <div className="max-w-md sm:max-w-xl mx-auto mt-3 h-1.5 rounded-full bg-ceci-border-subtle overflow-hidden">
-          <motion.div
-            className="h-full rounded-full bg-ceci-brand-strong"
-            initial={false}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
-          />
-        </div>
-      </div>
-
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="min-h-[70vh] flex flex-col pb-44"
+    >
       {/* Corpo - área da questão/explicação */}
       <div className="flex-1 pt-4 overflow-y-auto">
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5">
+          {/* Barra de progresso linear */}
+          <div className="mb-4 h-1.5 rounded-full bg-ceci-border-subtle overflow-hidden">
+            <motion.div
+              className="h-full rounded-full bg-ceci-brand-strong"
+              initial={false}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+            />
+          </div>
           <AnimatePresence mode="wait" custom={showExplanation ? 1 : -1}>
             {/* Tela da Pergunta */}
             <motion.div
@@ -260,6 +229,6 @@ const handleNext = useCallback(() => {
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };

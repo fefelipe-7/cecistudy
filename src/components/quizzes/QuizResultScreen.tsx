@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, X, RotateCcw, Target, Trophy, BarChart2, Clock, Brain, ArrowLeft, ChevronRight } from 'lucide-react';
+import { CheckCircle2, X, RotateCcw, Target, BarChart2, Clock, Brain } from 'lucide-react';
 import { Kitty } from '../ui/Kitty';
 import { cn } from '../../lib/utils';
 import type { StudyQuestion, QuizConfig, QuizAnswer } from '../../types';
@@ -14,7 +14,6 @@ interface QuizResultScreenProps {
   onSave: (sessionId: string) => void;
   onRetry: () => void;
   onNewQuiz: () => void;
-  onClose: () => void;
 }
 
 function StatCard({ icon, label, value, colorClass, bgClass }: {
@@ -85,7 +84,6 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
   onSave,
   onRetry,
   onNewQuiz,
-  onClose,
 }) => {
   const scorePct = totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 0;
   const totalTimeMs = Date.now() - startTime;
@@ -136,35 +134,11 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
   const kittyExpression = scorePct === 100 ? 'rindo' : scorePct >= 70 ? 'feliz' : scorePct >= 50 ? 'pensativa' : 'curiosa';
 
   return (
-    <div className="min-h-[70vh] flex flex-col animate-in fade-in duration-300 pb-44">
-      {/* Header */}
-      <div className="sticky top-0 z-10 -mx-3.5 sm:-mx-5 px-3.5 sm:px-5 pt-[calc(0.5rem+env(safe-area-inset-top,0px))] pb-3 bg-canvas/95 backdrop-blur-md border-b border-ceci-border-subtle">
-        <div className="max-w-md sm:max-w-xl mx-auto flex items-center justify-between gap-2">
-          <button
-            onClick={onClose}
-            className="w-9 h-9 rounded-2xl bg-white border border-ceci-border-default hover:bg-surface-rose flex items-center justify-center text-ceci-primary shadow-2xs transition-all active:scale-95 cursor-pointer"
-            title="voltar"
-            aria-label="voltar"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="w-7 h-7 rounded-xl border flex items-center justify-center shrink-0 bg-surface-rose border-ceci-border-brand text-ceci-brand-strong">
-              <Trophy className="w-3.5 h-3.5" />
-            </span>
-            <div className="min-w-0">
-              <h1 className="font-display font-bold text-sm text-ceci-primary truncate leading-tight">resultado do quiz</h1>
-              <p className="text-[11px] text-ceci-secondary truncate">
-                {correctCount} de {totalCount} • {scorePct}% de acerto
-              </p>
-            </div>
-          </div>
-
-          <span className="w-9 h-9 shrink-0" aria-hidden />
-        </div>
-      </div>
-
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="min-h-[70vh] flex flex-col pb-44"
+    >
       {/* Corpo */}
       <div className="flex-1 pt-4 overflow-y-auto">
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 space-y-6">
@@ -386,6 +360,6 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

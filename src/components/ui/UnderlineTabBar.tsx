@@ -36,7 +36,7 @@ export const UnderlineTabBar = <T extends string,>({
           {tab.icon}
           {tab.label}
           {isActive && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-ceci-primary rounded-full animate-in fade-in duration-200" />
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-ceci-primary rounded-full" />
           )}
         </button>
       );

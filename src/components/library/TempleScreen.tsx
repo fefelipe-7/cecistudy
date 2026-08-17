@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import {
   Landmark,
   Network,
@@ -86,7 +87,11 @@ export const TempleScreen: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-1 animate-in fade-in duration-300 relative">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-1 relative"
+    >
       {/* Screen Title Banner */}
       <div className="bg-white rounded-[24px] p-5 border border-ceci-border-default space-y-1.5 shadow-2xs">
         <div className="flex items-center gap-2.5">
@@ -110,7 +115,7 @@ export const TempleScreen: React.FC = () => {
           <button
             key={card.id}
             onClick={() => handleCardClick(card)}
-            className="w-full text-left bg-white rounded-[22px] p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs tap-interactive hover:shadow-xs active:scale-[0.99] cursor-pointer group flex items-center justify-between"
+            className="w-full text-left bg-white rounded-[22px] p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
           >
             <div className="flex items-center gap-3 min-w-0 pr-2">
               <div
@@ -131,6 +136,6 @@ export const TempleScreen: React.FC = () => {
           </button>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 };

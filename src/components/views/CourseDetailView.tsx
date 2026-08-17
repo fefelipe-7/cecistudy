@@ -173,7 +173,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                   </span>
                 )}
                 {isSel && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-ceci-primary rounded-full animate-in fade-in duration-200" />
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-ceci-primary rounded-full" />
                 )}
               </button>
             );
@@ -185,7 +185,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
       {/* TAB 1: INFORMAÇÕES DA MATÉRIA (Clean, inline layout without nested cards) */}
       {/* ==================================================================== */}
       {activeTab === 'info' && (
-        <div className="space-y-6 animate-in fade-in duration-200 px-1">
+        <div className="space-y-6 px-1">
 
           {/* Badges: código, dias de aula, obrigatória/complementar */}
           <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
@@ -300,7 +300,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
       {/* TAB 2: AULAS & AVALIAÇÕES (Inline Journal & Exam List)              */}
       {/* ==================================================================== */}
       {activeTab === 'aulas' && (
-        <div className="space-y-6 animate-in fade-in duration-200 px-1">
+        <div className="space-y-6 px-1">
           
           {/* Section A: Próximas Avaliações */}
           <div className="space-y-3">
@@ -448,7 +448,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
       {/* TAB 3: REPERTÓRIO & CONTEÚDO (Inline Glossary & Author list)        */}
       {/* ==================================================================== */}
       {activeTab === 'repertorio' && (
-        <div className="space-y-6 animate-in fade-in duration-200 px-1">
+        <div className="space-y-6 px-1">
           
           {/* Section A: Conceitos Relacionados */}
           <div className="space-y-3">

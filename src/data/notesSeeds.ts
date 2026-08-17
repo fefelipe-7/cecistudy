@@ -2,7 +2,7 @@
  * Seeds de notas avulsas de exemplo (carregadas apenas via "começar com dados de exemplo").
  * As datas são ISO completas (o display converte para texto amigável).
  */
-import type { LooseNote } from '../components/library/notes';
+import type { LooseNote } from '../types';
 
 export const INITIAL_NOTES: LooseNote[] = [
   {

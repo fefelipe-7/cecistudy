@@ -41,7 +41,7 @@ export const HeaderActionMenu: React.FC<HeaderActionMenuProps> = ({ actions }) =
       </button>
 
       {open && (
-        <div className="absolute right-0 top-11 z-50 w-56 bg-white rounded-2xl border border-ceci-border-default shadow-floating overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
+        <div className="absolute right-0 top-11 z-50 w-56 bg-white rounded-2xl border border-ceci-border-default shadow-floating overflow-hidden">
           {actions.map((action, i) => {
             const Icon = action.Icon;
             return (

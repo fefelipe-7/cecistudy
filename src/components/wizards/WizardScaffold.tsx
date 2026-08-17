@@ -72,7 +72,7 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
   };
 
   return (
-    <div className="min-h-[70vh] flex flex-col animate-in fade-in duration-300 pb-44">
+    <div className="min-h-[70vh] flex flex-col pb-44">
       {/* Header */}
       <div className="sticky top-0 z-10 -mx-3.5 sm:-mx-5 px-3.5 sm:px-5 pt-[calc(0.5rem+env(safe-area-inset-top,0px))] pb-3 bg-canvas/95 backdrop-blur-md border-b border-ceci-border-subtle">
         <div className="max-w-md sm:max-w-xl mx-auto flex items-center justify-between gap-2">

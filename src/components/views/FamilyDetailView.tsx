@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { PSICOTERAPIA_FAMILIES } from '../../data/psicoterapiaFamilies';
 import { useApp } from '../../context/AppContext';
@@ -21,7 +22,11 @@ export const FamilyDetailView: React.FC<{ familyId: string }> = ({ familyId }) =
   const loadingApproaches = approaches.length === 0;
 
   return (
-    <div className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-1 relative animate-in fade-in duration-300">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-1 relative"
+    >
       {/* Título da família */}
       <div
         className="bg-white rounded-[24px] p-5 border space-y-1.5 shadow-2xs"
@@ -61,7 +66,7 @@ export const FamilyDetailView: React.FC<{ familyId: string }> = ({ familyId }) =
                 <button
                   key={approach.id}
                   onClick={() => openApproach(approach.id)}
-                  className="w-full text-left bg-white rounded-[22px] p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs tap-interactive hover:shadow-xs active:scale-[0.99] cursor-pointer group flex items-center justify-between"
+                  className="w-full text-left bg-white rounded-[22px] p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3 min-w-0 pr-2">
                     <span
@@ -88,7 +93,7 @@ export const FamilyDetailView: React.FC<{ familyId: string }> = ({ familyId }) =
               {!showAll && familyApproaches.length > 10 && (
                 <button
                   onClick={() => setShowAll(true)}
-                  className="w-full text-center text-sm font-semibold text-ceci-brand-strong py-3 rounded-2xl border border-ceci-border-brand bg-surface-rose tap-interactive active:scale-[0.99] cursor-pointer"
+                  className="w-full text-center text-sm font-semibold text-ceci-brand-strong py-3 rounded-2xl border border-ceci-border-brand bg-surface-rose press-card cursor-pointer"
                 >
                   ver todas as {familyApproaches.length} abordagens
                 </button>
@@ -97,6 +102,6 @@ export const FamilyDetailView: React.FC<{ familyId: string }> = ({ familyId }) =
           );
         })()
       )}
-    </div>
+    </motion.div>
   );
 };

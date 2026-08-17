@@ -14,7 +14,7 @@ export const ClassNoteModal: React.FC<ClassNoteModalProps> = ({ note, onClose })
     <Modal
       open={!!note}
       onClose={onClose}
-      className="w-full max-w-sm bg-white rounded-[28px] border border-ceci-border-default shadow-2xl p-6 space-y-4 text-ceci-primary animate-in zoom-in-95 duration-200 max-h-[85vh] overflow-y-auto"
+      className="w-full max-w-sm bg-white rounded-[28px] border border-ceci-border-default shadow-2xl p-6 space-y-4 text-ceci-primary max-h-[85vh] overflow-y-auto"
     >
       <div className="flex items-center justify-between border-b border-ceci-border-default pb-3">
         <span className="text-xs font-bold text-ceci-brand-strong bg-surface-rose px-2.5 py-0.5 rounded-full border border-ceci-border-brand">

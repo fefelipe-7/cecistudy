@@ -1,14 +1,16 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp, Check, X, Target, Filter, Sparkles } from 'lucide-react';
+import { ChevronDown, ChevronUp, Check, Target, Filter, Sparkles } from 'lucide-react';
 import { Kitty } from '../ui/Kitty';
 import { cn } from '../../lib/utils';
+import { filterQuestionPool } from '../../lib/quizLogic';
 import type { QuizConfig, StudyQuestion } from '../../types';
 
 interface QuizCategorySelectorProps {
   questions: StudyQuestion[];
-  onStart: (config: QuizConfig, pool: StudyQuestion[]) => void;
+  onStart: (config: QuizConfig) => void;
   onClose: () => void;
+  ensureQuestionsLoaded?: () => Promise<StudyQuestion[]>;
 }
 
 // Extrai opções únicas das questões
@@ -153,7 +155,23 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
   questions,
   onStart,
   onClose,
+  ensureQuestionsLoaded,
 }) => {
+  const [isReloading, setIsReloading] = useState(false);
+
+  // Garante o acervo em memória quando a conta vem com questões vazias (bug legado).
+  useEffect(() => {
+    if (questions.length > 0) return;
+    let cancelled = false;
+    setIsReloading(true);
+    ensureQuestionsLoaded?.().finally(() => {
+      if (!cancelled) setIsReloading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [questions.length, ensureQuestionsLoaded]);
+
   const { areas, temas, escolas, dificuldades } = useMemo(() => getUniqueOptions(questions), [questions]);
 
   const [config, setConfig] = useState<QuizConfig>({
@@ -171,15 +189,7 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
   });
 
   // Filtra pool baseado na config
-  const pool = useMemo(() => {
-    return questions.filter((q) => {
-      const areaMatch = config.areas.length === 0 || (q.area && config.areas.includes(q.area));
-      const temaMatch = config.temas.length === 0 || (q.tema && config.temas.includes(q.tema));
-      const escolaMatch = config.escolas.length === 0 || (q.escolaOuAbordagem && config.escolas.includes(q.escolaOuAbordagem));
-      const difMatch = config.dificuldades.length === 0 || (q.dificuldade && config.dificuldades.includes(q.dificuldade));
-      return areaMatch && temaMatch && escolaMatch && difMatch;
-    });
-  }, [questions, config]);
+  const pool = useMemo(() => filterQuestionPool(questions, config), [questions, config]);
 
   // Ajusta count se pool for menor
   useEffect(() => {
@@ -207,53 +217,34 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
 
   const handleStart = () => {
     if (pool.length === 0) return;
-    const shuffled = [...pool].sort(() => Math.random() - 0.5).slice(0, config.count);
-    onStart(config, shuffled);
+    onStart(config);
   };
 
   const hasAnyFilter = config.areas.length > 0 || config.temas.length > 0 || config.escolas.length > 0 || config.dificuldades.length > 0;
 
   return (
-    <div className="min-h-[70vh] flex flex-col animate-in fade-in duration-300 pb-44">
-      {/* Header */}
-      <div className="sticky top-0 z-10 -mx-3.5 sm:-mx-5 px-3.5 sm:px-5 pt-[calc(0.5rem+env(safe-area-inset-top,0px))] pb-3 bg-canvas/95 backdrop-blur-md border-b border-ceci-border-subtle">
-        <div className="max-w-md sm:max-w-xl mx-auto flex items-center justify-between gap-2">
-          <button
-            onClick={onClose}
-            className="w-9 h-9 rounded-2xl bg-white border border-ceci-border-default hover:bg-surface-rose flex items-center justify-center text-ceci-primary shadow-2xs transition-all active:scale-95 cursor-pointer"
-            title="voltar"
-            aria-label="voltar"
-          >
-            <X className="w-4 h-4" />
-          </button>
-
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="w-7 h-7 rounded-xl border flex items-center justify-center shrink-0 bg-surface-rose border-ceci-border-brand text-ceci-brand-strong">
-              <Target className="w-3.5 h-3.5" />
-            </span>
-            <div className="min-w-0">
-              <h1 className="font-display font-bold text-sm text-ceci-primary truncate leading-tight">novo quiz</h1>
-              <p className="text-[11px] text-ceci-secondary truncate">
-                {questions.length} questões no acervo • {pool.length} com filtros atuais
-              </p>
-            </div>
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="min-h-[70vh] flex flex-col pb-44"
+    >
+      {isReloading && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col items-center justify-center gap-3 py-16 text-center"
+        >
+          <Kitty expression="curiosa" className="w-14 h-14" decorative />
+          <div>
+            <h3 className="font-display font-bold text-base text-ceci-primary">escrevendo suas questões ♡</h3>
+            <p className="text-xs text-ceci-secondary mt-1.5">
+              {questions.length === 0 ? 'a tia kelly está montando o acervo pra você...' : 'só um minutinho...'}
+            </p>
           </div>
-
-          <span className="w-9 h-9 shrink-0" aria-hidden />
-        </div>
-
-        {/* Barra de progresso do pool */}
-        <div className="max-w-md sm:max-w-xl mx-auto mt-3 h-0.5 rounded-full bg-ceci-border-subtle overflow-hidden">
-          <motion.div
-            className="h-full rounded-full bg-ceci-brand-strong"
-            initial={false}
-            animate={{ width: `${Math.min(100, (pool.length / questions.length) * 100)}%` }}
-            transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
-          />
-        </div>
-      </div>
-
-      {/* Corpo */}
+        </motion.div>
+      )}
+      {!isReloading && (
+      <>
       <div className="flex-1 pt-4 overflow-y-auto">
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 space-y-4">
           {/* Card explicativo */}
@@ -366,7 +357,6 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
         </div>
       </div>
 
-      {/* Footer sticky para fechar */}
       <div className="fixed bottom-0 inset-x-0 z-10 bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(64,56,58,0.06)]">
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
           <button
@@ -377,6 +367,8 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
           </button>
         </div>
       </div>
-    </div>
+      </>
+      )}
+    </motion.div>
   );
 };

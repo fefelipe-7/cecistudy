@@ -28,6 +28,8 @@ const PerfilView = lazy(() => import('./components/views/PerfilView').then((m) =
 const StreakView = lazy(() => import('./components/views/StreakView').then((m) => ({ default: m.StreakView })));
 const ComposeNoteView = lazy(() => import('./components/views/ComposeNoteView').then((m) => ({ default: m.ComposeNoteView })));
 const ClassNoteDetailWizard = lazy(() => import('./components/views/ClassNoteDetailWizard').then((m) => ({ default: m.ClassNoteDetailWizard })));
+const NoteDetailWizard = lazy(() => import('./components/views/NoteDetailWizard').then((m) => ({ default: m.NoteDetailWizard })));
+const NoteTransformWizard = lazy(() => import('./components/views/NoteTransformWizard').then((m) => ({ default: m.NoteTransformWizard })));
 const WizardRouter = lazy(() => import('./components/wizards/WizardRouter').then((m) => ({ default: m.WizardRouter })));
 import { Modal } from './components/ui/Modal';
 import { OtaUpdateModal } from './components/ui/OtaUpdateModal';
@@ -46,8 +48,15 @@ const ToastMemo = memo(Toast);
 
 // Quiz components (lazy loaded)
 const QuizCategorySelector = lazy(() => import('./components/quizzes/QuizCategorySelector').then((m) => ({ default: m.QuizCategorySelector })));
+const QuizLoadingScreen = lazy(() => import('./components/quizzes/QuizLoadingScreen').then((m) => ({ default: m.QuizLoadingScreen })));
 const QuizPlayer = lazy(() => import('./components/quizzes/QuizPlayer').then((m) => ({ default: m.QuizPlayer })));
 const QuizResultScreen = lazy(() => import('./components/quizzes/QuizResultScreen').then((m) => ({ default: m.QuizResultScreen })));
+
+// Study screens (telas dedicadas da aba estudos)
+const StudyFocusScreen = lazy(() => import('./components/estudos/StudyFocusScreen').then((m) => ({ default: m.StudyFocusScreen })));
+const StudyRevisarScreen = lazy(() => import('./components/estudos/StudyRevisarScreen').then((m) => ({ default: m.StudyRevisarScreen })));
+const StudyLeiturasScreen = lazy(() => import('./components/estudos/StudyLeiturasScreen').then((m) => ({ default: m.StudyLeiturasScreen })));
+const StudyHistoricoScreen = lazy(() => import('./components/estudos/StudyHistoricoScreen').then((m) => ({ default: m.StudyHistoricoScreen })));
 
 /** Fallback discreto enquanto um chunk de view carrega (primeira visita à aba). */
 const ViewFallback = () => <ViewSkeleton rows={5} />;
@@ -70,7 +79,7 @@ const DetailPromptModal = memo(function DetailPromptModal({
     <Modal
       open={open}
       onClose={onClose}
-      className="w-full max-w-sm bg-white rounded-[28px] border border-ceci-border-default shadow-2xl p-6 space-y-4 text-ceci-primary animate-in zoom-in-95 duration-200"
+      className="w-full max-w-sm bg-white rounded-[28px] border border-ceci-border-default shadow-2xl p-6 space-y-4 text-ceci-primary"
     >
       <div className="flex items-center gap-3">
         <span className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
@@ -138,6 +147,10 @@ function AppShell() {
         a.closeCompose();
       } else if (a.isWizardOpen) {
         a.closeWizard();
+      } else if (a.isNoteTransformOpen) {
+        a.closeNoteTransform();
+      } else if (a.isNoteDetailOpen) {
+        a.closeNoteDetail();
       } else if (a.isStreakScreenOpen) {
         a.closeStreak();
       } else if (a.isInternshipDiaryOpen) {
@@ -146,6 +159,10 @@ function AppShell() {
         a.closeTccScreen();
       } else if (a.isStickersScreenOpen) {
         a.closeStickersScreen();
+      } else if (a.isQuizLoadingOpen) {
+        a.closeQuizLoading();
+      } else if (a.focusedStudyScreen) {
+        a.closeStudy();
       } else if (a.isNotesScreenOpen) {
         a.closeNotesScreen();
       } else if (a.isTempleScreenOpen) {
@@ -180,7 +197,12 @@ function AppShell() {
     closeSearch,
   } = app;
 
-  const isAuxFlow = app.isComposeScreenOpen || app.isComposeDetailsOpen || app.isWizardOpen;
+  const isAuxFlow =
+    app.isComposeScreenOpen ||
+    app.isComposeDetailsOpen ||
+    app.isWizardOpen ||
+    app.isNoteDetailOpen ||
+    app.isNoteTransformOpen;
 
   // Callbacks estáveis para os filhos memoizados (evita re-render quando dados mudam)
   const onNavigateToPerfil = useCallback(() => handleNavigate('perfil'), [handleNavigate]);
@@ -249,13 +271,29 @@ function AppShell() {
               <Suspense fallback={<ViewFallback />}>
                 <StreakView />
               </Suspense>
+            ) : app.isQuizLoadingOpen ? (
+              <Suspense fallback={<ViewFallback />}>
+                <QuizLoadingScreen
+                  config={app.currentQuizLoadingConfig!}
+                  onReady={(pool, config) => app.openQuizPlay(pool, config)}
+                  onCancel={app.closeQuizLoading}
+                />
+              </Suspense>
             ) : app.isQuizCategoryOpen ? (
               <Suspense fallback={<ViewFallback />}>
                 <QuizCategorySelector
                   questions={app.questions}
-                  onStart={(config, pool) => app.openQuizPlay(pool, config)}
+                  onStart={(config) => app.openQuizLoading(config)}
                   onClose={app.closeQuizCategory}
+                  ensureQuestionsLoaded={app.ensureQuestionsLoaded}
                 />
+              </Suspense>
+            ) : app.focusedStudyScreen ? (
+              <Suspense fallback={<ViewFallback />}>
+                {app.focusedStudyScreen === 'focus' && <StudyFocusScreen />}
+                {app.focusedStudyScreen === 'revisar' && <StudyRevisarScreen />}
+                {app.focusedStudyScreen === 'leituras' && <StudyLeiturasScreen />}
+                {app.focusedStudyScreen === 'historico' && <StudyHistoricoScreen />}
               </Suspense>
             ) : app.isQuizPlayOpen ? (
               <Suspense fallback={<ViewFallback />}>
@@ -279,7 +317,6 @@ function AppShell() {
                   onFinish={(answers, config, startTime, correctCount, totalCount) => {
                     app.openQuizResult(answers, config, startTime, correctCount, totalCount);
                   }}
-                  onClose={app.closeQuizPlay}
                 />
               </Suspense>
             ) : app.isQuizResultOpen ? (
@@ -313,9 +350,6 @@ function AppShell() {
                   onNewQuiz={() => {
                     // Volta para o seletor de assuntos
                     app.newQuizFromResult();
-                  }}
-                  onClose={() => {
-                    app.closeAllQuizScreens();
                   }}
                 />
               </Suspense>
@@ -351,6 +385,14 @@ function AppShell() {
               ) : app.isComposeDetailsOpen ? (
                 <Suspense fallback={<ViewFallback />}>
                   <ClassNoteDetailWizard />
+                </Suspense>
+              ) : app.isNoteDetailOpen ? (
+                <Suspense fallback={<ViewFallback />}>
+                  <NoteDetailWizard />
+                </Suspense>
+              ) : app.isNoteTransformOpen ? (
+                <Suspense fallback={<ViewFallback />}>
+                  <NoteTransformWizard />
                 </Suspense>
               ) : app.isWizardOpen ? (
                 <Suspense fallback={<ViewFallback />}>

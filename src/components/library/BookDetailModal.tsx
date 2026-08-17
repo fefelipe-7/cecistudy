@@ -39,7 +39,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
     <Modal
       open
       onClose={onClose}
-      className="w-full max-w-sm bg-white rounded-[28px] border border-ceci-border-default shadow-2xl overflow-hidden text-ceci-primary space-y-4 animate-in zoom-in-95 duration-200"
+      className="w-full max-w-sm bg-white rounded-[28px] border border-ceci-border-default shadow-2xl overflow-hidden text-ceci-primary space-y-4"
     >
       {/* Cover Preview Header */}
       <div

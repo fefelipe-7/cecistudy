@@ -1,4 +1,4 @@
-import type { NavTab, NavScreen, WizardFlow, QuizConfig, QuizAnswer, QuizPlayState } from '../types';
+import type { NavTab, NavScreen, WizardFlow, QuizConfig, QuizAnswer, QuizPlayState, StudyScreen } from '../types';
 
 /**
  * Rota virtual (espelho do `location.hash`).
@@ -10,6 +10,10 @@ export interface Route {
   focusedCourseId?: string | null;
   notes?: boolean;
   temple?: boolean;
+  /** Detalhe de uma nota avulsa (ex.: `#/biblioteca/notas/:noteId`). */
+  noteDetailId?: string;
+  /** Transformação de uma nota em outra entidade (ex.: `#/biblioteca/notas/:noteId/transformar`). */
+  noteTransformId?: string;
   streak?: boolean;
   /** Diário de estágio (tela cheia de todos os registros, empilhada sobre o perfil). */
   internshipDiary?: boolean;
@@ -19,10 +23,14 @@ export interface Route {
   stickers?: boolean;
   /** Quiz: tela de escolha de filtros/categoria. */
   quizCategory?: boolean;
+  /** Quiz: splash de preparação das questões (transitório, degrada ao seletor). */
+  quizLoading?: boolean;
   /** Quiz: tela de jogo (pergunta + alternativas). */
   quizPlay?: boolean;
   /** Quiz: tela de resultado/estatísticas. */
   quizResult?: boolean;
+  /** Tela dedicada de estudos empurrada sobre a aba (ex.: `#/estudos/foco`). */
+  studyScreen?: StudyScreen;
   compose?: boolean;
   composeDetails?: boolean;
   /** Wizard de criação em tela cheia (ex.: `#/novo/conceito`, `#/faculdade/c3/novo/prova`). */
@@ -44,8 +52,23 @@ export interface Route {
 /** Valores de sub-tab conhecidos por aba (usados para distinguir sub-tab de courseId na rota). */
 const SUB_TAB_BY_TAB: Record<string, string[]> = {
   faculdade: ['disciplinas', 'aulas', 'avaliacoes', 'calendario'],
-  estudos: ['sessoes', 'leituras', 'flashcards', 'questoes', 'historico'],
+  // estudos não tem mais sub-tabs — cada área virou tela dedicada (`#/estudos/<slug>`)
+  estudos: [],
   biblioteca: ['materiais', 'autores', 'conceitos', 'abordagens', 'mapa'],
+};
+
+/** Slugs das telas dedicadas de estudos (rota `#/estudos/<slug>`). */
+const STUDY_SCREEN_SLUGS: Record<string, StudyScreen> = {
+  foco: 'focus',
+  revisar: 'revisar',
+  leituras: 'leituras',
+  historico: 'historico',
+};
+const STUDY_SCREEN_TO_SLUG: Record<StudyScreen, string> = {
+  focus: 'foco',
+  revisar: 'revisar',
+  leituras: 'leituras',
+  historico: 'historico',
 };
 
 /** Sub-tab padrão de cada aba (não é codificada no hash — mantém URLs limpas). */
@@ -64,6 +87,7 @@ const WIZARD_SLUGS: Record<string, WizardFlow> = {
   tarefa: 'task',
   prova: 'exam',
   'prova-atividade': 'task-exam',
+  materia: 'course',
   leitura: 'reading',
   flashcard: 'flashcard',
   estagio: 'internship',
@@ -154,30 +178,50 @@ export function parseRoute(hash: string): Route {
     return { tab: 'faculdade', focusedCourseId: h[1] || null };
   }
   if (seg === 'biblioteca') {
-    if (h[1] === 'notas') return { tab: 'biblioteca', notes: true };
+    if (h[1] === 'notas') {
+      if (h[2] && h[3] === 'transformar') return { tab: 'biblioteca', noteTransformId: h[2] };
+      if (h[2]) return { tab: 'biblioteca', noteDetailId: h[2] };
+      return { tab: 'biblioteca', notes: true };
+    }
     if (h[1] === 'templo') return { tab: 'biblioteca', temple: true };
     const s = subtab('biblioteca');
     if (s) return { tab: 'biblioteca', subTab: s };
     return { tab: 'biblioteca' };
   }
-  if (seg === 'estudos' || seg === 'perfil') {
-    if (seg === 'perfil' && h[1] === 'estagio') {
-      return { tab: 'perfil', internshipDiary: true };
-    }
-    if (seg === 'perfil' && h[1] === 'tcc') {
-      return { tab: 'perfil', tcc: true };
-    }
-    if (seg === 'perfil' && h[1] === 'stickers') {
-      return { tab: 'perfil', stickers: true };
-    }
-    if (seg === 'estudos' && h[1] === 'quiz') {
+  if (seg === 'estudos') {
+    if (h[1] === 'quiz') {
+      // Telas de quiz (categoria, preparação, jogo, resultado) — estado transitório
+      // não é serializável, então jogo/resultado degradam ao seletor de categorias.
       return { tab: 'estudos', quizCategory: true };
     }
-    if (h[1] === 'streak') return { tab: seg as NavTab, streak: true };
-    const s = subtab(seg);
-    if (s) return { tab: seg as NavTab, subTab: s };
-    return { tab: seg as NavTab };
+    if (h[1] === 'streak') return { tab: 'estudos', streak: true };
+    // Telas dedicadas de estudo (`#/estudos/foco`, `revisar`, `leituras`, `historico`)
+    // + retrocompat das antigas sub-tabs (`flashcards` → revisar, `questoes` → quiz).
+    if (h[1] && STUDY_SCREEN_SLUGS[h[1]]) return { tab: 'estudos', studyScreen: STUDY_SCREEN_SLUGS[h[1]] };
+    if (h[1] === 'flashcards') return { tab: 'estudos', studyScreen: 'revisar' };
+    if (h[1] === 'questoes') return { tab: 'estudos', quizCategory: true };
+    return { tab: 'estudos' };
   }
+  if (seg === 'perfil') {
+    if (h[1] === 'estagio') {
+      return { tab: 'perfil', internshipDiary: true };
+    }
+    if (h[1] === 'tcc') {
+      return { tab: 'perfil', tcc: true };
+    }
+    if (h[1] === 'stickers') {
+      return { tab: 'perfil', stickers: true };
+    }
+    if (h[1] === 'streak') return { tab: 'perfil', streak: true };
+    return { tab: 'perfil' };
+  }
+
+  // Quiz transitório serializado com hash antigo (`#/quiz/play` / `#/quiz/result`)
+  // — degrada ao seletor de categorias de estudos.
+  if (seg === 'quiz' && (h[1] === 'play' || h[1] === 'result')) {
+    return { tab: 'estudos', quizCategory: true };
+  }
+
   return { tab: 'home' };
 }
 
@@ -205,6 +249,20 @@ export function routeToStack(route: Route): NavScreen[] {
   if (route.tcc) return [{ kind: 'tab', tab: 'perfil' }, { kind: 'tcc' }];
   if (route.stickers) return [{ kind: 'tab', tab: 'perfil' }, { kind: 'stickers' }];
   if (route.notes) return [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }];
+  if (route.noteTransformId) {
+    return [
+      { kind: 'tab', tab: 'biblioteca' },
+      { kind: 'notes' },
+      { kind: 'noteTransform', noteId: route.noteTransformId },
+    ];
+  }
+  if (route.noteDetailId) {
+    return [
+      { kind: 'tab', tab: 'biblioteca' },
+      { kind: 'notes' },
+      { kind: 'noteDetail', noteId: route.noteDetailId },
+    ];
+  }
   if (route.temple) return [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'temple' }];
   if (route.approachId) {
     return [...baseStackFor('biblioteca'), { kind: 'approach', approachId: route.approachId }];
@@ -215,8 +273,11 @@ export function routeToStack(route: Route): NavScreen[] {
   if (route.families) {
     return [...baseStackFor('biblioteca'), { kind: 'families' }];
   }
-  if (route.quizCategory) {
+  if (route.quizCategory || route.quizLoading) {
     return [...baseStackFor('estudos'), { kind: 'quiz-category' }];
+  }
+  if (route.studyScreen) {
+    return [{ kind: 'tab', tab: 'estudos' }, { kind: 'study', screen: route.studyScreen }];
   }
   if (route.tab === 'faculdade' && route.focusedCourseId) {
     return [{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: route.focusedCourseId }];
@@ -261,6 +322,8 @@ export function stackToHash(stack: NavScreen[], subTab?: string): string {
   if (top.kind === 'tcc') return '#/perfil/tcc';
   if (top.kind === 'stickers') return '#/perfil/stickers';
   if (top.kind === 'notes') return '#/biblioteca/notas';
+  if (top.kind === 'noteDetail') return `#/biblioteca/notas/${top.noteId}`;
+  if (top.kind === 'noteTransform') return `#/biblioteca/notas/${top.noteId}/transformar`;
   if (top.kind === 'temple') return '#/biblioteca/templo';
   if (top.kind === 'course') return `#/faculdade/${top.courseId}`;
   if (top.kind === 'approach') {
@@ -268,9 +331,10 @@ export function stackToHash(stack: NavScreen[], subTab?: string): string {
   }
   if (top.kind === 'families') return '#/biblioteca/familias';
   if (top.kind === 'family') return `#/biblioteca/familias/${top.familyId}`;
-  if (top.kind === 'quiz-category') return '#/estudos/quiz';
-  if (top.kind === 'quiz-play') return '#/quiz/play';
-  if (top.kind === 'quiz-result') return '#/quiz/result';
+  if (top.kind === 'quiz-category' || top.kind === 'quiz-loading') return '#/estudos/quiz';
+  if (top.kind === 'quiz-play') return '#/estudos/quiz/play';
+  if (top.kind === 'quiz-result') return '#/estudos/quiz/result';
+  if (top.kind === 'study') return `#/estudos/${STUDY_SCREEN_TO_SLUG[top.screen]}`;
   const base = `#/${top.tab}`;
   const subtab = subTab && subTab !== DEFAULT_SUB_TAB[top.tab] ? subTab : undefined;
   return subtab ? `${base}/${subtab}` : base;

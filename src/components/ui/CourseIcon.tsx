@@ -7,6 +7,8 @@ import {
   HeartHandshake,
   Landmark,
   Sparkles,
+  Target,
+  Trophy,
   Users,
   type LucideIcon,
 } from 'lucide-react';
@@ -20,6 +22,8 @@ const COURSE_ICON_MAP: Record<string, LucideIcon> = {
   GraduationCap,
   Landmark,
   Flame,
+  Target,
+  Trophy,
 };
 
 const COURSE_ICON_COLOR: Record<string, string> = {
@@ -31,6 +35,8 @@ const COURSE_ICON_COLOR: Record<string, string> = {
   GraduationCap: 'text-ceci-brand-strong',
   Landmark: 'text-ceci-brand-strong',
   Flame: 'text-rose-500',
+  Target: 'text-ceci-academic-strong',
+  Trophy: 'text-ceci-brand-strong',
 };
 
 interface CourseIconProps {

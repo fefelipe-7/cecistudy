@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, BookOpen, Check, FileText, Tag } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ClassNote } from '../../types';
-import { LooseNote } from '../library/notes';
+import type { LooseNote } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { usePersistentState } from '../../lib/usePersistentState';
 import { StarRating } from '../ui/StarRating';
@@ -81,7 +81,7 @@ export const ComposeNoteView: React.FC = () => {
         title: firstLine(content) || 'nota sem título',
         content,
         category,
-        date: 'Hoje, agora',
+        date: new Date().toISOString(),
       });
       closeCompose();
       showToast('nota salva nas notas avulsas ♡');
@@ -91,7 +91,7 @@ export const ComposeNoteView: React.FC = () => {
   const canSave = text.trim().length > 0;
 
   return (
-    <div className="min-h-[70vh] flex flex-col animate-in fade-in duration-300">
+    <div className="min-h-[70vh] flex flex-col">
       {/* Cabeçalho sutil da tela de captura */}
       <div className="sticky top-0 z-10 -mx-3.5 sm:-mx-5 px-3.5 sm:px-5 pt-[calc(0.5rem+env(safe-area-inset-top,0px))] pb-3 bg-canvas/95 backdrop-blur-md border-b border-ceci-border-subtle">
         <div className="max-w-md sm:max-w-xl mx-auto flex items-center justify-between gap-2">

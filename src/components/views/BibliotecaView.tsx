@@ -56,7 +56,7 @@ import { MixedCollectionBlock } from '../library/MixedCollectionBlock';
 import { useApp } from '../../context/AppContext';
 
 export const BibliotecaView: React.FC = () => {
-  const { isNotesScreenOpen, openNotesScreen, isCreatingLooseNote, setIsCreatingLooseNote, isTempleScreenOpen, openTemple, isFamiliesScreenOpen, focusedFamilyId, focusedApproachId, looseNotes, addLooseNote, deleteLooseNote, savedBookIds, toggleSaveBook, readingProgress, updateReadingProgress } = useApp();
+  const { isNotesScreenOpen, openNotesScreen, isCreatingLooseNote, setIsCreatingLooseNote, isTempleScreenOpen, openTemple, isFamiliesScreenOpen, focusedFamilyId, focusedApproachId, looseNotes, addLooseNote, deleteLooseNote, courses, concepts, authors, openNoteDetail, openNoteTransform, savedBookIds, toggleSaveBook, readingProgress, updateReadingProgress } = useApp();
   // Filter States
   const [activeCategory, setActiveCategory] = useState<string>('todos');
   const [activeStatus, setActiveStatus] = useState<string>('todos');
@@ -338,6 +338,11 @@ export const BibliotecaView: React.FC = () => {
         looseNotes={looseNotes}
         onAddNote={addLooseNote}
         onDeleteNote={deleteLooseNote}
+        onEditNote={openNoteDetail}
+        onTransformNote={openNoteTransform}
+        courses={courses}
+        concepts={concepts}
+        authors={authors}
         isCreatingNote={isCreatingLooseNote}
         setIsCreatingNote={setIsCreatingLooseNote}
       />
@@ -456,7 +461,7 @@ export const BibliotecaView: React.FC = () => {
 
         {/* Active Filter Badges */}
         {hasActiveFilters && (
-          <div className="flex flex-wrap items-center gap-1.5 pt-1 animate-in fade-in duration-200">
+          <div className="flex flex-wrap items-center gap-1.5 pt-1">
             <span className="text-[11px] font-bold text-ceci-tertiary mr-1">filtros aplicados:</span>
 
             {activeCategory !== 'todos' && (

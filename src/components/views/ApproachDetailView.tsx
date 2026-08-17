@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import {
   BookOpen,
   Sparkles,
@@ -115,7 +116,11 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
   const hasAuthors = authors.length > 0;
 
   return (
-    <div className="max-w-md sm:max-w-xl mx-auto space-y-8 pb-1 relative animate-in fade-in duration-300">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="max-w-md sm:max-w-xl mx-auto space-y-8 pb-1 relative"
+    >
       {/* Intro */}
       <div className="space-y-3 px-1">
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-ceci-primary leading-tight">
@@ -191,7 +196,7 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
                 <button
                   key={author}
                   onClick={() => setSelectedAuthor(author)}
-                  className="text-left bg-white rounded-2xl p-3 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs tap-interactive active:scale-[0.98] cursor-pointer group flex items-center justify-between"
+                  className="text-left bg-white rounded-2xl p-3 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
                 >
                   <span className="text-sm font-semibold text-ceci-primary pr-1">{author}</span>
                   <ChevronRight className="w-4 h-4 text-ceci-tertiary shrink-0 group-hover:text-ceci-brand-strong" />
@@ -244,7 +249,7 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
                     <button
                       key={rel.id}
                       onClick={() => openApproach(rel.id)}
-                      className="w-full text-left bg-white rounded-2xl p-3.5 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs tap-interactive active:scale-[0.98] cursor-pointer group flex items-center justify-between"
+                      className="w-full text-left bg-white rounded-2xl p-3.5 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
                     >
                       <span className="text-sm font-semibold text-ceci-primary pr-1">{rel.name}</span>
                       <ChevronRight className="w-4 h-4 text-ceci-tertiary shrink-0 group-hover:text-ceci-brand-strong" />
@@ -284,6 +289,6 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
           {d.origem || 'referência fundamental para a construção desta abordagem.'}
         </p>
       </Modal>
-    </div>
+    </motion.div>
   );
 };

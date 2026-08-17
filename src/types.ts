@@ -4,6 +4,9 @@ export type NavTab = 'home' | 'faculdade' | 'estudos' | 'biblioteca' | 'perfil';
 
 export type SubTabFaculdade = 'disciplinas' | 'aulas' | 'avaliacoes' | 'calendario';
 export type SubTabEstudos = 'sessoes' | 'leituras' | 'flashcards' | 'questoes' | 'historico';
+
+/** Telas dedicadas abertas a partir do feed de estudos. */
+export type StudyScreen = 'focus' | 'revisar' | 'leituras' | 'historico';
 export type SubTabBiblioteca = 'materiais' | 'autores' | 'conceitos' | 'abordagens' | 'mapa';
 
 /**
@@ -21,13 +24,18 @@ export type NavScreen =
   | { kind: 'stickers' }
   | { kind: 'compose' }
   | { kind: 'composeDetails' }
+  | { kind: 'noteDetail'; noteId: string }
+  | { kind: 'noteTransform'; noteId: string }
   | { kind: 'wizard'; type: WizardFlow }
   | { kind: 'approach'; approachId: string }
   | { kind: 'families' }
   | { kind: 'family'; familyId: string }
   | { kind: 'quiz-category' }
+  | { kind: 'quiz-loading'; config: QuizConfig }
   | { kind: 'quiz-play'; state: QuizPlayState }
-  | { kind: 'quiz-result'; answers: QuizAnswer[]; config: QuizConfig; startTime: number; correctCount: number; totalCount: number };
+  | { kind: 'quiz-result'; answers: QuizAnswer[]; config: QuizConfig; startTime: number; correctCount: number; totalCount: number }
+  /** Telas dedicadas do estudo (empurradas sobre a aba estudos pelo feed). */
+  | { kind: 'study'; screen: StudyScreen };
 
 /**
  * Tipos de wizard de criação em tela cheia (substitui o quick add em modal).
@@ -477,6 +485,40 @@ export interface StreakData {
 
 /** Progresso de leitura por obra da biblioteca (id → páginas lidas). */
 export type ReadingProgress = Record<string, number>;
+
+/**
+ * Nota avulsa transitória — rascunho que pode virar outras entidades
+ * (aula, tarefa, prova, flashcard, conceito…). Campos de vínculo são opcionais
+ * (retrocompatível com notas antigas).
+ */
+export interface LooseNote {
+  id: string;
+  title: string;
+  content: string;
+  category: 'reflexão' | 'estudo' | 'ideia' | 'lembrete';
+  /** Timestamp ISO (ex.: "2026-08-17T14:30:00-03:00"). */
+  date: string;
+  /** Última edição (timestamp ISO). */
+  updatedAt?: string;
+  // ---- vínculos opcionais (matéria, conceitos, autores, abordagens, materiais) ----
+  courseId?: string;
+  conceptIds?: string[];
+  authorIds?: string[];
+  approachIds?: string[];
+  materialIds?: string[];
+}
+
+/** Alvos possíveis ao transformar uma nota avulsa em outra entidade. */
+export type NoteTargetType =
+  | 'class'
+  | 'task'
+  | 'exam'
+  | 'flashcard'
+  | 'session'
+  | 'internship'
+  | 'concept'
+  | 'author'
+  | 'material';
 
 export type QuickType =
   | 'task'

@@ -15,7 +15,7 @@ export const OtaUpdateModal: React.FC = () => {
     <Modal
       open={open}
       onClose={dismissUpdate}
-      className="w-full max-w-sm bg-white rounded-[28px] border border-ceci-border-default shadow-2xl p-6 space-y-4 text-ceci-primary animate-in zoom-in-95 duration-200"
+      className="w-full max-w-sm bg-white rounded-[28px] border border-ceci-border-default shadow-2xl p-6 space-y-4 text-ceci-primary"
     >
       <div className="flex items-center gap-3">
         <span className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0 overflow-hidden">
