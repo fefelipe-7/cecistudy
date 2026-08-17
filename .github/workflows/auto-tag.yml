@@ -1,0 +1,59 @@
+name: auto-tag (ota)
+
+# Gera automaticamente a tag v<versão> a cada push na main.
+# A tag dispara o pipeline de release (.github/workflows/release.yml), que publica
+# APK + IPA + OTA no GitHub Pages — ou seja, todo push vira uma atualização
+# over-the-air do cecistudy ♡ (e um GitHub Release).
+#
+# Versão: v1.0.<nº de commits na HEAD> (mesma regra do dispatch manual sem versão).
+# Se a tag já existir (ex.: re-run do workflow), nada é empurrado — o release já existe.
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: auto-tag
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    name: criar tag v1.0.<nº de commits>
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: derivar versão
+        id: version
+        run: |
+          COUNT=$(git rev-list --count HEAD)
+          VERSION="1.0.$COUNT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: verificar se a tag já existe
+        id: tagcheck
+        run: |
+          if git rev-parse -q --verify "refs/tags/${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "tag ${{ steps.version.outputs.tag }} já existe — pulando"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: criar e empurrar a tag
+        if: steps.tagcheck.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "${{ steps.version.outputs.tag }}"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" "${{ steps.version.outputs.tag }}"
+          echo "→ tag ${{ steps.version.outputs.tag }} criada e empurrada (dispara o release + ota)"
