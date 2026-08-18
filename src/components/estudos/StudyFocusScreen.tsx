@@ -67,11 +67,7 @@ export const StudyFocusScreen: React.FC = () => {
   const progressPct = 100 - (timeLeft / (preset * 60)) * 100;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="max-w-md sm:max-w-xl mx-auto space-y-4"
-    >
+    <div className="max-w-md sm:max-w-xl mx-auto space-y-4">
       <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4">
         <h2 className="font-display text-xl font-bold text-ceci-primary">cantinho de foco ceci</h2>
         <p className="text-xs text-ceci-secondary -mt-2">
@@ -187,6 +183,6 @@ export const StudyFocusScreen: React.FC = () => {
           dica da ceci: sem pressa, sem culpa. cada minutinho conta no seu cantinho ♡
         </p>
       </div>
-    </motion.div>
+    </div>
   );
 };

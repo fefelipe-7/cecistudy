@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import {
   FileText,
   Search,
@@ -70,11 +69,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
     authors.filter((a) => ids.includes(a.id)).map((a) => a.name).slice(0, 3);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-1 relative"
-    >
+    <div className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-1 relative">
       {/* Counter badge (voltado para o header detail) */}
       <div className="flex items-center justify-end pt-1 px-1">
         <span className="text-xs font-semibold text-ceci-secondary bg-white px-3 py-1 rounded-full border border-ceci-border-default">
@@ -356,6 +351,6 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
           </div>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 };

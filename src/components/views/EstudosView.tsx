@@ -13,6 +13,8 @@ import {
   Timer,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { DitherDonutChart } from '../ui/dither-donut';
+import { formatCount } from '../../lib/ditherChart';
 
 /** Intervalo de revisão (dias) por nº de revisões — repetição espaçada simples. */
 const REVIEW_INTERVALS = [1, 3, 7, 14, 30];
@@ -140,23 +142,22 @@ export const EstudosView: React.FC = () => {
   const doneThisWeek = currentWeekProgress.filter((c) => c.status === 'done').length;
   const weekDaysTotal = weekStudyDays.length;
 
-  // Sessão mais recente para o "onde seu tempo foi"
-  const sortedSessions = [...sessions].sort((a, b) => b.date.localeCompare(a.date));
+  // Distribuição do tempo por disciplina (donut "onde seu tempo foi")
   const topCourseMinutes = new Map<string, number>();
   sessions.forEach((s) => {
     const key = s.courseId ?? 'geral';
     topCourseMinutes.set(key, (topCourseMinutes.get(key) ?? 0) + (s.durationMinutes || 0));
   });
-  const topFocus = [...topCourseMinutes.entries()].sort((a, b) => b[1] - a[1])[0];
-
-  const totalMinutesAll = sessions.reduce((acc, s) => acc + (s.durationMinutes || 0), 0);
+  const courseMinutes = [...topCourseMinutes.entries()]
+    .map(([courseId, mins]) => ({
+      label: courseId === 'geral' ? 'geral' : courseName(courseId),
+      value: mins,
+    }))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 6);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="max-w-md sm:max-w-xl mx-auto space-y-4 pb-1"
-    >
+    <div className="max-w-md sm:max-w-xl mx-auto space-y-4 pb-1">
       {/* Top Header Label & Title */}
       <div className="flex items-center justify-between pt-1 px-1">
         <div>
@@ -249,24 +250,23 @@ export const EstudosView: React.FC = () => {
       />
 
       {/* STAT: onde seu tempo foi */}
-      <div className="rounded-[20px] p-4 bg-white border border-ceci-border-default shadow-sm space-y-2">
-        <p className="text-xs text-ceci-tertiary font-semibold tracking-wide lowercase">onde seu tempo foi</p>
-        {topFocus ? (
-          <div className="flex items-center justify-between">
-            <p className="text-xs text-ceci-primary">
-              <span className="font-semibold">{topFocus[0] === 'geral' ? 'geral' : courseName(topFocus[0])}</span>
-              <span className="text-ceci-secondary"> · {topFocus[1]} min no total</span>
-            </p>
-            <span className="text-xs font-bold text-ceci-brand-strong bg-surface-rose px-2.5 py-1 rounded-full border border-ceci-border-brand">
-              {totalMinutesAll} min
-            </span>
-          </div>
-        ) : (
+      {courseMinutes.length > 0 ? (
+        <DitherDonutChart
+          data={courseMinutes}
+          title="onde seu tempo foi"
+          subtitle="minutos de foco por área"
+          totalLabel="min no total"
+          formatValue={(n) => `${formatCount(n)} min`}
+          icon={<Timer className="w-4 h-4" />}
+        />
+      ) : (
+        <div className="rounded-[20px] p-4 bg-white border border-ceci-border-default shadow-sm space-y-2">
+          <p className="text-xs text-ceci-tertiary font-semibold tracking-wide lowercase">onde seu tempo foi</p>
           <p className="text-xs text-ceci-secondary">
             seus primeiros focos ainda vão pintar aqui. que tal começar com 25 minutinhos? ♡
           </p>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Criar flashcard (botão avulso) */}
       <button
@@ -390,6 +390,6 @@ export const EstudosView: React.FC = () => {
           dica da ceci: começa pelos cartões rápidos, depois uma leitura leve e termina com um quiz pra fixar ♡
         </p>
       </div>
-    </motion.div>
+    </div>
   );
 };

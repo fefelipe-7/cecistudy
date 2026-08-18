@@ -360,10 +360,40 @@ function AppShell() {
               <>
                 <Suspense fallback={<ViewFallback />}>
                   {activeTab === 'home' && <HomeView />}
-                  {activeTab === 'faculdade' && <FaculdadeView />}
+                  {activeTab === 'faculdade' && <FaculdadeView course={app.focusedCourse} />}
                   {activeTab === 'estudos' && <EstudosView />}
-                  {activeTab === 'biblioteca' && <BibliotecaView />}
-                  {activeTab === 'perfil' && <PerfilView />}
+                  {activeTab === 'biblioteca' && (
+                    <BibliotecaView
+                      mode={
+                        app.isNotesScreenOpen
+                          ? 'notes'
+                          : app.isTempleScreenOpen
+                            ? 'temple'
+                            : app.isFamiliesScreenOpen
+                              ? 'families'
+                              : app.focusedFamilyId
+                                ? 'family'
+                                : app.focusedApproachId
+                                  ? 'approach'
+                                  : 'library'
+                      }
+                      familyId={app.focusedFamilyId ?? undefined}
+                      approachId={app.focusedApproachId ?? undefined}
+                    />
+                  )}
+                  {activeTab === 'perfil' && (
+                    <PerfilView
+                      mode={
+                        app.isInternshipDiaryOpen
+                          ? 'internship'
+                          : app.isTccScreenOpen
+                            ? 'tcc'
+                            : app.isStickersScreenOpen
+                              ? 'stickers'
+                              : 'profile'
+                      }
+                    />
+                  )}
                 </Suspense>
               </>
             )}

@@ -134,11 +134,7 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
   const kittyExpression = scorePct === 100 ? 'rindo' : scorePct >= 70 ? 'feliz' : scorePct >= 50 ? 'pensativa' : 'curiosa';
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="min-h-[70vh] flex flex-col pb-44"
-    >
+    <div className="min-h-[70vh] flex flex-col pb-44">
       {/* Corpo */}
       <div className="flex-1 pt-4 overflow-y-auto">
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 space-y-6">
@@ -360,6 +356,6 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };

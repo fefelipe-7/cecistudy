@@ -117,10 +117,14 @@ com ícone `Bookmark` preenchido (`fill-[#B94862]`).
 
 ## 8. Animações (framer-motion / motion)
 
-- Entrada de views: `initial={{opacity:0,y:10}} animate={{opacity:1,y:0}}`.
-- Hover de cards: `whileHover={{ y: -2 }}` com spring.
-- Nav inferior e FAB: `motion` com spring (stiffness 300–400).
-- Modais: `animate-in fade-in` (CSS) / `AnimatePresence` (React).
+- **Transição de tela centralizada** em `screenVariants`/`VIEW_PULINHO` (`src/lib/motion.ts`),
+  aplicada a **todas** as telas via `App.tsx` (`AnimatePresence mode="popLayout"`): entrada com
+  fade + sobe 10px (easeOut, 0.3s), slide horizontal preservado nos push/pop. Views **não**
+  declaram animação de entrada própria (wrapper `<div>` simples).
+- Animações de item/card ficam **por-view** (ex.: tarefas na Home, hero da streak, drag de flashcard).
+- Hover de cards: `.card-lift`/`.hover-lift` (gated por `@media (hover:hover) and (pointer: fine)`).
+- Nav inferior e FAB: `motion` com spring.
+- Modais/sheets: primitiva `ui/Modal` (`AnimatePresence` + variants por posição + drag-to-dismiss).
 
 ## 9. Checklist ao criar/editar UI
 

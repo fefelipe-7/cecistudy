@@ -7,7 +7,7 @@ import {
   AlertCircle,
   Plus,
 } from 'lucide-react';
-import { SubTabFaculdade, ClassNote } from '../../types';
+import { SubTabFaculdade, ClassNote, Course } from '../../types';
 import { CourseDetailView } from './CourseDetailView';
 import { ClassNoteModal } from '../courses/ClassNoteModal';
 import { ClassNoteListItem } from '../courses/ClassNoteListItem';
@@ -23,7 +23,12 @@ import {
   daysInMonth,
 } from '../../lib/schedule';
 
-export const FaculdadeView: React.FC = () => {
+interface FaculdadeViewProps {
+  /** Disciplina em foco (pilha `course`). Quando presente, renderiza o CourseDetailView. */
+  course?: Course;
+}
+
+export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
   const {
     profile,
     courses,
@@ -37,7 +42,6 @@ export const FaculdadeView: React.FC = () => {
     internshipLogs,
     subTabFaculdade: subTab,
     setSubTabFaculdade: setSubTab,
-    focusedCourseId,
     openCourseDetail,
     openWizard,
     handleToggleExam,
@@ -46,13 +50,11 @@ export const FaculdadeView: React.FC = () => {
 
   const [selectedClass, setSelectedClass] = useState<ClassNote | null>(null);
 
-  const focusedCourse = courses.find((c) => c.id === focusedCourseId);
-
   // If a course detail is active, render CourseDetailView
-  if (focusedCourse) {
+  if (course) {
     return (
       <CourseDetailView
-        course={focusedCourse}
+        course={course}
         classes={classes}
         exams={exams}
         tasks={tasks}

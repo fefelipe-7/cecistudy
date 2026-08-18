@@ -26,29 +26,30 @@ export const TAP_SPRING: Transition = {
 /** Fade simples e rápido para overlays de modal. */
 export const OVERLAY_FADE: Transition = { duration: 0.18, ease: 'easeOut' };
 
+/** Pulinho padrão de entrada de tela — fade + sobe 10px, curva easeOut (0.3s). Igual à EstudosView. */
+export const VIEW_PULINHO: Transition = { duration: 0.3, ease: 'easeOut' };
+
 /**
  * Variants direcionais para transição de telas (pilha push/pop).
  * Cada variante resolve pelo `custom` (direction): 1 = push (entra da direita,
  * sai pela esquerda) · -1 = pop (entra da esquerda, sai pela direita) · 0 = fade sutil.
  * Sem spring: usa a curva de timing do iOS (60fps, sem cauda de ~1s).
  *
- * direction=0 (troca de tab): só fade, sem deslocamento — evita sensação
- * de "engasgo" ao alternar entre abas.
+ * A entrada de TODA tela usa o "pulinho" padrão (`VIEW_PULINHO`): fade + sobe 10px
+ * com easeOut 0.3s. direction=0 (troca de tab) mantém o pulinho sem deslocamento x;
+ * push/pop (direction=±1) preserva o slide horizontal porque `x` parte de `direction*22`.
  */
 export const screenVariants: Variants = {
   initial: (direction: number) => ({
     x: direction === 0 ? 0 : direction * 22,
-    y: 0,
+    y: 10,
     opacity: 0,
   }),
   animate: (direction: number) => ({
     x: 0,
     y: 0,
     opacity: 1,
-    transition:
-      direction === 0
-        ? { duration: 0.18, ease: IOS_EASE_OUT }
-        : { duration: 0.24, ease: IOS_EASE },
+    transition: VIEW_PULINHO,
   }),
   exit: (direction: number) => ({
     x: direction === 0 ? 0 : direction * -14,

@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { motion } from 'framer-motion';
 import { Flame, ChevronRight, Play, Target, BookOpen } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { Kitty } from '../ui/Kitty';
@@ -37,11 +36,7 @@ export const StudyHistoricoScreen: React.FC = () => {
   const hasAnything = sessions.length > 0 || quizSessions.length > 0 || doneReadings.length > 0;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="max-w-md sm:max-w-xl mx-auto space-y-3"
-    >
+    <div className="max-w-md sm:max-w-xl mx-auto space-y-3">
       <div className="rounded-[24px] p-5 bg-surface-subtle border border-ceci-border-subtle shadow-sm flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="w-9 h-9 rounded-full bg-white border border-ceci-border-default flex items-center justify-center">
@@ -167,6 +162,6 @@ export const StudyHistoricoScreen: React.FC = () => {
       >
         <ChevronRight className="w-4 h-4" /> nova sessão de foco
       </button>
-    </motion.div>
+    </div>
   );
 };

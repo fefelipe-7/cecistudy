@@ -56,8 +56,17 @@ import { ArticleDetailModal } from '../library/ArticleDetailModal';
 import { MixedCollectionBlock } from '../library/MixedCollectionBlock';
 import { useApp } from '../../context/AppContext';
 
-export const BibliotecaView: React.FC = () => {
-  const { isNotesScreenOpen, openNotesScreen, isCreatingLooseNote, setIsCreatingLooseNote, isTempleScreenOpen, openTemple, isFamiliesScreenOpen, focusedFamilyId, focusedApproachId, looseNotes, addLooseNote, deleteLooseNote, courses, concepts, authors, openNoteDetail, openNoteTransform, savedBookIds, toggleSaveBook, readingProgress, updateReadingProgress } = useApp();
+export type BibliotecaViewMode = 'library' | 'notes' | 'temple' | 'families' | 'family' | 'approach';
+
+interface BibliotecaViewProps {
+  /** Tela derivada da pilha `biblioteca` renderizada no lugar da grade. */
+  mode?: BibliotecaViewMode;
+  familyId?: string;
+  approachId?: string;
+}
+
+export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library', familyId, approachId }) => {
+  const { openNotesScreen, isCreatingLooseNote, setIsCreatingLooseNote, openTemple, looseNotes, addLooseNote, deleteLooseNote, courses, concepts, authors, openNoteDetail, openNoteTransform, savedBookIds, toggleSaveBook, readingProgress, updateReadingProgress } = useApp();
   // Filter States
   const [activeCategory, setActiveCategory] = useState<string>('todos');
   const [activeStatus, setActiveStatus] = useState<string>('todos');
@@ -333,7 +342,7 @@ export const BibliotecaView: React.FC = () => {
   const approachCollections = filteredCollections.filter((c) => c.blockCategory === 'abordagens');
 
   // Dedicated Screen View for "Suas Notas"
-  if (isNotesScreenOpen) {
+  if (mode === 'notes') {
     return (
       <NotesScreen
         looseNotes={looseNotes}
@@ -351,23 +360,23 @@ export const BibliotecaView: React.FC = () => {
   }
 
   // Dedicated Screen View for "Templo de Conhecimento"
-  if (isTempleScreenOpen) {
+  if (mode === 'temple') {
     return <TempleScreen />;
   }
 
   // Dedicated Screen View for "Famílias de Psicoterapias"
-  if (isFamiliesScreenOpen) {
+  if (mode === 'families') {
     return <FamiliesView />;
   }
 
   // Dedicated Screen View for a Família específica
-  if (focusedFamilyId) {
-    return <FamilyDetailView familyId={focusedFamilyId} />;
+  if (mode === 'family' && familyId) {
+    return <FamilyDetailView familyId={familyId} />;
   }
 
   // Dedicated Screen View for a Abordagem específica (página de leitura)
-  if (focusedApproachId) {
-    return <ApproachDetailView approachId={focusedApproachId} />;
+  if (mode === 'approach' && approachId) {
+    return <ApproachDetailView approachId={approachId} />;
   }
 
   return (

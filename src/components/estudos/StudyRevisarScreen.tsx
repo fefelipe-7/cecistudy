@@ -77,11 +77,7 @@ export const StudyRevisarScreen: React.FC = () => {
   });
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="max-w-md sm:max-w-xl mx-auto space-y-4"
-    >
+    <div className="max-w-md sm:max-w-xl mx-auto space-y-4">
       <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4">
         {reviewQueue.length === 0 && reviewedCount === 0 ? (
           <div className="py-6 space-y-3">
@@ -177,6 +173,6 @@ export const StudyRevisarScreen: React.FC = () => {
       >
         <Plus className="w-4 h-4" /> novo flashcard
       </button>
-    </motion.div>
+    </div>
   );
 };

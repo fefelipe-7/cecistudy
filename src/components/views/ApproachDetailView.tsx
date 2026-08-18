@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import {
   BookOpen,
   Sparkles,
@@ -116,11 +115,7 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
   const hasAuthors = authors.length > 0;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="max-w-md sm:max-w-xl mx-auto space-y-8 pb-1 relative"
-    >
+    <div className="max-w-md sm:max-w-xl mx-auto space-y-8 pb-1 relative">
       {/* Intro */}
       <div className="space-y-3 px-1">
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-ceci-primary leading-tight">
@@ -289,6 +284,6 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
           {d.origem || 'referência fundamental para a construção desta abordagem.'}
         </p>
       </Modal>
-    </motion.div>
+    </div>
   );
 };

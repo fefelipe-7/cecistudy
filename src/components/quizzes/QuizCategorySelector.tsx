@@ -215,11 +215,7 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
   const hasAnyFilter = config.areas.length > 0 || config.temas.length > 0 || config.escolas.length > 0 || config.dificuldades.length > 0;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="min-h-[70vh] flex flex-col pb-44"
-    >
+    <div className="min-h-[70vh] flex flex-col pb-44">
       {isReloading && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -361,6 +357,6 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
       </div>
       </>
       )}
-    </motion.div>
+    </div>
   );
 };

@@ -19,9 +19,14 @@ import {
   Camera,
   Trash2,
   Smartphone,
-  RefreshCw
+  RefreshCw,
+  Layers,
+  Timer
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { DitherFunnelChart } from '../ui/dither-funnel';
+import { DitherGrowthChart } from '../ui/dither-growth';
+import { CHART_PASTELS, formatCount, formatShortDate } from '../../lib/ditherChart';
 import { ToggleRow } from '../ui/ToggleRow';
 import { isReminderSupported } from '../../lib/notifications';
 import { isNativePlatform } from '../../lib/storage';
@@ -133,7 +138,14 @@ const OtaSection: React.FC = () => {
   );
 };
 
-export const PerfilView: React.FC = () => {
+export type PerfilViewMode = 'profile' | 'internship' | 'tcc' | 'stickers';
+
+interface PerfilViewProps {
+  /** Tela derivada da pilha `perfil` renderizada no lugar da página. */
+  mode?: PerfilViewMode;
+}
+
+export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
   const {
     profile,
     courses,
@@ -150,10 +162,7 @@ export const PerfilView: React.FC = () => {
     handleNavigate,
     openQuickAdd,
     openInternshipDiary,
-    isInternshipDiaryOpen,
-    isTccScreenOpen,
     openTccScreen,
-    isStickersScreenOpen,
     openStickersScreen,
     reminderSettings,
     updateReminder,
@@ -170,17 +179,17 @@ export const PerfilView: React.FC = () => {
   const [dailyQuote, setDailyQuote] = useState(profile.dailyQuote);
 
   // Tela cheia do diário de estágio (empilhada sobre o perfil)
-  if (isInternshipDiaryOpen) {
+  if (mode === 'internship') {
     return <InternshipDiaryView />;
   }
 
   // Tela cheia do meu TCC (empilhada sobre o perfil)
-  if (isTccScreenOpen) {
+  if (mode === 'tcc') {
     return <TccView />;
   }
 
   // Tela cheia de stickers & conquistas (empilhada sobre o perfil)
-  if (isStickersScreenOpen) {
+  if (mode === 'stickers') {
     return <StickersView />;
   }
 
@@ -228,6 +237,31 @@ export const PerfilView: React.FC = () => {
   const tccChaptersTotal = tcc.chapters.length;
   const stickersUnlocked = stickers.filter((s) => s.unlocked).length;
   const hasTcc = tcc.title.trim().length > 0;
+
+  // ---- funil da jornada (dithered) ----
+  const doneReadings = readings.filter((r) => r.status === 'concluido').length;
+  const journeyStages = [
+    { label: 'disciplinas', value: courses.length, color: CHART_PASTELS[0] },
+    { label: 'aulas anotadas', value: classes.length, color: CHART_PASTELS[1] },
+    { label: 'leituras concluídas', value: doneReadings, color: CHART_PASTELS[2] },
+    { label: 'flashcards revisados', value: flashcardsReviewed, color: CHART_PASTELS[3] },
+  ];
+
+  // ---- minutos de foco por semana (últimas 8 semanas, dithered) ----
+  const toISODate = (d: Date) => d.toISOString().split('T')[0];
+  const focusByWeek = Array.from({ length: 8 }, (_, i) => {
+    const weeksAgo = 7 - i;
+    const end = new Date();
+    end.setDate(end.getDate() - weeksAgo * 7);
+    const endISO = toISODate(end);
+    const start = new Date();
+    start.setDate(start.getDate() - (weeksAgo + 1) * 7);
+    const startISO = toISODate(start);
+    return sessions
+      .filter((s) => s.date > startISO && s.date <= endISO)
+      .reduce((acc, s) => acc + (s.durationMinutes || 0), 0);
+  });
+  const weekLabels = Array.from({ length: 8 }, (_, i) => formatShortDate((7 - i) * 7));
 
   const tccStatusLabel =
     tcc.status === 'concluido' ? 'concluído' : tcc.status === 'revisao' ? 'em revisão' : 'em andamento';
@@ -419,6 +453,25 @@ export const PerfilView: React.FC = () => {
           </span>
         </div>
       </div>
+
+      {/* ===== Minutos de foco por semana (dithered) ===== */}
+      <DitherGrowthChart
+        data={focusByWeek}
+        dates={weekLabels}
+        title="minutos de foco"
+        subtitle="por semana, nas últimas 8 semanas"
+        unitLabel="min"
+        icon={<Timer className="w-4 h-4" />}
+      />
+
+      {/* ===== Sua jornada até aqui (funil dithered) ===== */}
+      <DitherFunnelChart
+        stages={journeyStages}
+        title="sua jornada até aqui"
+        subtitle="do começo aos revisados"
+        icon={<Layers className="w-4 h-4" />}
+        formatValue={(n) => formatCount(n)}
+      />
 
       {/* ===== Ofensiva de estudos (streak real) ===== */}
       <StudyStatsWidget />

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Plus, BookOpen } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ReaderModeModal } from '../widgets/ReaderModeModal';
@@ -21,11 +20,7 @@ export const StudyLeiturasScreen: React.FC = () => {
   const courseName = (id?: string) => courses.find((c) => c.id === id)?.name || 'geral';
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="max-w-md sm:max-w-xl mx-auto space-y-3"
-    >
+    <div className="max-w-md sm:max-w-xl mx-auto space-y-3">
       {readings.length === 0 ? (
         <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
           <Kitty expression="curiosa" className="w-14 h-14 mx-auto" decorative />
@@ -117,6 +112,6 @@ export const StudyLeiturasScreen: React.FC = () => {
         reading={readerModalReading}
         onUpdateProgress={handleUpdateReadingPages}
       />
-    </motion.div>
+    </div>
   );
 };

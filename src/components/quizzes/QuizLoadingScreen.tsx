@@ -55,11 +55,7 @@ export const QuizLoadingScreen: React.FC<QuizLoadingScreenProps> = ({ config, on
   }, []);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="min-h-[70vh] flex flex-col items-center justify-center gap-4 text-center px-6"
-    >
+    <div className="min-h-[70vh] flex flex-col items-center justify-center gap-4 text-center px-6">
       <Kitty expression="curiosa" className="w-16 h-16" decorative />
       <div>
         <h3 className="font-display font-bold text-lg text-ceci-primary">escrevendo suas questões ♡</h3>
@@ -75,6 +71,6 @@ export const QuizLoadingScreen: React.FC<QuizLoadingScreenProps> = ({ config, on
           />
         ))}
       </div>
-    </motion.div>
+    </div>
   );
 };
