@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp, Check, Target, Filter, Sparkles } from 'lucide-react';
 import { Kitty } from '../ui/Kitty';
+import { PillGroup } from '../ui/PillGroup';
 import { cn } from '../../lib/utils';
 import { filterQuestionPool } from '../../lib/quizLogic';
 import type { QuizConfig, StudyQuestion } from '../../types';
@@ -132,21 +133,12 @@ function CountSelector({ count, onChange, maxAvailable }: { count: number; onCha
         </div>
         <span className="text-xs text-ceci-secondary">máx. {maxAvailable}</span>
       </div>
-      <div className="flex gap-2">
-        {options.map((n) => (
-          <button
-            key={n}
-            onClick={() => onChange(n)}
-            className={`flex-1 py-2.5 rounded-xl text-xs font-semibold transition-all ${
-              count === n
-                ? 'bg-ceci-brand-strong text-white shadow-sm'
-                : 'bg-white border border-ceci-border-default text-ceci-primary hover:bg-surface-rose'
-            }`}
-          >
-            {n}
-          </button>
-        ))}
-      </div>
+      <PillGroup
+        variant="rose"
+        value={String(count)}
+        onChange={(v) => onChange(Number(v))}
+        options={options.map((n) => ({ value: String(n), label: `${n}` }))}
+      />
     </div>
   );
 }

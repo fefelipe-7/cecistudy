@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { X, Bookmark, Share2, Sun, Moon, Type, ChevronLeft, ChevronRight, Highlighter, List } from 'lucide-react';
+import { X, Share2, Sun, Moon, Type, ChevronLeft, ChevronRight, Highlighter, List } from 'lucide-react';
 import { ReadingItem } from '../../types';
 import { Modal } from '../ui/Modal';
+import { SegmentedControl } from '../ui/SegmentedControl';
+import { BookmarkToggle } from '../ui/BookmarkToggle';
 
 interface ReaderModeModalProps {
   isOpen: boolean;
@@ -19,6 +21,7 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
   const [theme, setTheme] = useState<'paper' | 'dark' | 'sepia'>('paper');
   const [fontSize, setFontSize] = useState<number>(18);
   const [currentPage, setCurrentPage] = useState<number>(() => reading?.readPages || 1);
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   if (!isOpen || !reading) return null;
 
@@ -75,12 +78,13 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
             >
               <Type className="w-4 h-4" />
             </button>
-            <button
-              className="p-2 rounded-full hover:bg-black/5 transition-colors cursor-pointer"
-              title="guardar marcador"
-            >
-              <Bookmark className="w-4 h-4 text-rose-500" />
-            </button>
+            <BookmarkToggle
+              active={isBookmarked}
+              onToggle={() => setIsBookmarked((s) => !s)}
+              label="guardar marcador"
+              activeLabel="marcador guardado"
+              size="sm"
+            />
             <button
               onClick={onClose}
               className="p-2 rounded-full hover:bg-black/5 transition-colors cursor-pointer"
@@ -159,32 +163,16 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
 
           {/* Bottom Theme & Nav Buttons */}
           <div className="flex items-center justify-between pt-1">
-            <div className="flex items-center gap-1 bg-black/5 p-1 rounded-full">
-              <button
-                onClick={() => setTheme('paper')}
-                className={`px-3 py-1 rounded-full text-xs font-medium tap-interactive cursor-pointer ${
-                  theme === 'paper' ? 'bg-white text-ceci-primary shadow-2xs' : 'opacity-70'
-                }`}
-              >
-                papel
-              </button>
-              <button
-                onClick={() => setTheme('sepia')}
-                className={`px-3 py-1 rounded-full text-xs font-medium tap-interactive cursor-pointer ${
-                  theme === 'sepia' ? 'bg-surface-paper text-beige-700 shadow-2xs' : 'opacity-70'
-                }`}
-              >
-                sépia
-              </button>
-              <button
-                onClick={() => setTheme('dark')}
-                className={`px-3 py-1 rounded-full text-xs font-medium tap-interactive cursor-pointer ${
-                  theme === 'dark' ? 'bg-ceci-primary text-white shadow-2xs' : 'opacity-70'
-                }`}
-              >
-                noturno
-              </button>
-            </div>
+            <SegmentedControl
+              ariaLabel="tema do leitor"
+              value={theme}
+              onChange={(v) => setTheme(v)}
+              options={[
+                { value: 'paper', label: 'papel', activeClassName: 'bg-white text-ceci-primary shadow-2xs' },
+                { value: 'sepia', label: 'sépia', activeClassName: 'bg-surface-paper text-beige-700 shadow-2xs' },
+                { value: 'dark', label: 'noturno', activeClassName: 'bg-ceci-primary text-white shadow-2xs' },
+              ]}
+            />
 
             <div className="flex items-center gap-2">
               <button

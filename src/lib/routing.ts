@@ -93,6 +93,8 @@ const WIZARD_SLUGS: Record<string, WizardFlow> = {
   estagio: 'internship',
   estudo: 'session',
   autor: 'author',
+  conceito: 'concept',
+  material: 'material',
 };
 const WIZARD_SLUG_TO_TYPE: Record<WizardFlow, string> = {
   task: 'tarefa',
@@ -104,6 +106,8 @@ const WIZARD_SLUG_TO_TYPE: Record<WizardFlow, string> = {
   internship: 'estagio',
   session: 'estudo',
   author: 'autor',
+  concept: 'conceito',
+  material: 'material',
 };
 
 export function parseRoute(hash: string): Route {

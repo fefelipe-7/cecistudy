@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Plus, Trash2, GraduationCap } from 'lucide-react';
 import { TccData } from '../../types';
 import { Modal } from '../ui/Modal';
+import { SegmentedControl } from '../ui/SegmentedControl';
 
 interface EditTccModalProps {
   isOpen: boolean;
@@ -104,22 +105,14 @@ export const EditTccModal: React.FC<EditTccModalProps> = ({ isOpen, tcc, onClose
 
             <div>
               <label className={labelClass}>situação</label>
-              <div className="flex gap-2">
-                {STATUS_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    onClick={() => setStatus(opt.value)}
-                    className={`flex-1 px-3 py-2 rounded-xl border text-xs font-medium tap-interactive cursor-pointer transition-colors ${
-                      status === opt.value
-                        ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
-                        : 'bg-white border-ceci-border-default text-ceci-secondary hover:bg-surface-muted'
-                    }`}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
+              <SegmentedControl
+                variant="rose"
+                ariaLabel="situação do tcc"
+                className="w-full [&>button]:flex-1"
+                value={status}
+                onChange={(v) => setStatus(v)}
+                options={STATUS_OPTIONS}
+              />
             </div>
           </div>
 

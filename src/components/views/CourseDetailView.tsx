@@ -15,6 +15,9 @@ import {
 import { CourseIcon } from '../ui/CourseIcon';
 import { Kitty } from '../ui/Kitty';
 import { CompletionToggle } from '../ui/CompletionToggle';
+import { UnderlineTabBar } from '../ui/UnderlineTabBar';
+import { TagList } from '../ui/TagList';
+import { ManageSurface } from '../ui/ManageSurface';
 import { ClassNoteModal } from '../courses/ClassNoteModal';
 import { ClassNoteListItem } from '../courses/ClassNoteListItem';
 import { useApp } from '../../context/AppContext';
@@ -146,40 +149,16 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
       </div>
 
       {/* 2. Sub-Tabs Bar */}
-      <div className="border-b border-ceci-border-default px-1">
-        <div className="flex items-center justify-between gap-2">
-          {[
-            { id: 'info', label: 'informações', badge: null },
-            { id: 'aulas', label: 'aulas & avaliações', badge: courseClasses.length + courseExams.length },
-            { id: 'repertorio', label: 'repertório & conteúdo', badge: courseConcepts.length + courseReadings.length },
-          ].map((tab) => {
-            const isSel = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as 'info' | 'aulas' | 'repertorio')}
-                className={`pb-3 text-xs font-semibold relative tap-interactive cursor-pointer flex items-center gap-1.5 ${
-                  isSel
-                    ? 'text-ceci-primary font-bold'
-                    : 'text-ceci-tertiary hover:text-ceci-primary'
-                }`}
-              >
-                <span>{tab.label}</span>
-                {tab.badge !== null && tab.badge > 0 && (
-                  <span className={`text-[9px] px-1.5 py-0.2 rounded-full font-bold ${
-                    isSel ? 'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand' : 'bg-surface-muted text-ceci-tertiary'
-                  }`}>
-                    {tab.badge}
-                  </span>
-                )}
-                {isSel && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-ceci-primary rounded-full" />
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      <UnderlineTabBar
+        tabs={[
+          { id: 'info', label: 'informações' },
+          { id: 'aulas', label: 'aulas & avaliações', badge: courseClasses.length + courseExams.length },
+          { id: 'repertorio', label: 'repertório & conteúdo', badge: courseConcepts.length + courseReadings.length },
+        ]}
+        active={activeTab}
+        onChange={(v) => setActiveTab(v)}
+        className="px-1"
+      />
 
       {/* ==================================================================== */}
       {/* TAB 1: INFORMAÇÕES DA MATÉRIA (Clean, inline layout without nested cards) */}
@@ -317,9 +296,11 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
             {courseExams.length > 0 ? (
               <div className="divide-y divide-ceci-border-default/70 border-y border-ceci-border-default">
                 {courseExams.map((exam) => (
-                  <div
+                  <ManageSurface
                     key={exam.id}
-                    onClick={() => onToggleExam(exam.id)}
+                    kind="exam"
+                    id={exam.id}
+                    onTap={() => onToggleExam(exam.id)}
                     className="py-3 flex items-start justify-between cursor-pointer group transition-colors"
                   >
                     <div className="space-y-1 flex-1 pr-2">
@@ -354,7 +335,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                         label={exam.completed ? `marcar prova "${exam.title}" como pendente` : `marcar prova "${exam.title}" como concluída`}
                       />
                     </div>
-                  </div>
+                  </ManageSurface>
                 ))}
               </div>
             ) : (
@@ -416,9 +397,11 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
 
               <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
                 {courseTasks.map((t) => (
-                  <div
+                  <ManageSurface
                     key={t.id}
-                    onClick={() => onToggleTask(t.id)}
+                    kind="task"
+                    id={t.id}
+                    onTap={() => onToggleTask(t.id)}
                     className="py-2.5 flex items-center justify-between text-xs cursor-pointer"
                   >
                     <div className="space-y-0.5 pr-2">
@@ -435,7 +418,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                         size="sm"
                         label={t.completed ? `marcar tarefa "${t.title}" como pendente` : `marcar tarefa "${t.title}" como concluída`}
                       />
-                  </div>
+                  </ManageSurface>
                 ))}
               </div>
             </div>
@@ -460,21 +443,19 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
             {courseConcepts.length > 0 ? (
               <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
                 {courseConcepts.map((concept) => (
-                  <div key={concept.id} className="py-3 space-y-1">
+                  <ManageSurface key={concept.id} kind="concept" id={concept.id} className="py-3 space-y-1">
                     <div className="flex items-center justify-between">
                       <h4 className="font-display font-bold text-sm text-ceci-primary">
                         {concept.name}
                       </h4>
-                      {concept.tags?.[0] && (
-                        <span className="text-[9px] font-bold bg-surface-rose text-ceci-brand-strong px-2 py-0.5 rounded-full border border-ceci-border-brand">
-                          {concept.tags[0]}
-                        </span>
-                      )}
                     </div>
                     <p className="text-xs text-ceci-secondary leading-relaxed">
                       {concept.definition}
                     </p>
-                  </div>
+                    {concept.tags && concept.tags.length > 0 && (
+                      <TagList tags={concept.tags} size="sm" className="pt-1" />
+                    )}
+                  </ManageSurface>
                 ))}
               </div>
             ) : (
@@ -495,7 +476,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
 
               <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
                 {courseAuthors.map((author) => (
-                  <div key={author.id} className="py-3 flex items-start gap-3">
+                  <ManageSurface key={author.id} kind="author" id={author.id} className="py-3 flex items-start gap-3">
                     <div className="w-9 h-9 rounded-full bg-blue-200 text-ceci-academic-strong font-display font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
                       {author.name.charAt(0)}
                     </div>
@@ -510,7 +491,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                         {author.bio}
                       </p>
                     </div>
-                  </div>
+                  </ManageSurface>
                 ))}
               </div>
             </div>
@@ -526,7 +507,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
             {courseReadings.length > 0 || courseMaterials.length > 0 ? (
               <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
                 {courseReadings.map((reading) => (
-                  <div key={reading.id} className="py-2.5 flex items-center justify-between text-xs">
+                  <ManageSurface key={reading.id} kind="reading" id={reading.id} className="py-2.5 flex items-center justify-between text-xs">
                     <div className="space-y-0.5">
                       <h5 className="font-bold text-ceci-primary">{reading.title}</h5>
                       <p className="text-[11px] text-ceci-tertiary">por {reading.author}</p>
@@ -534,11 +515,11 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                     <span className="text-[10px] font-semibold text-success-deep bg-surface-mint-soft px-2.5 py-1 rounded-full border border-ceci-border-academic">
                       {reading.readPages || 0} / {reading.totalPages ?? '—'} pág
                     </span>
-                  </div>
+                  </ManageSurface>
                 ))}
 
                 {courseMaterials.map((mat) => (
-                  <div key={mat.id} className="py-2.5 flex items-center justify-between text-xs">
+                  <ManageSurface key={mat.id} kind="material" id={mat.id} className="py-2.5 flex items-center justify-between text-xs">
                     <div className="space-y-0.5">
                       <h5 className="font-semibold text-ceci-primary">{mat.title}</h5>
                       <p className="text-[10px] text-ceci-tertiary uppercase">{mat.type} • {mat.author}</p>
@@ -546,7 +527,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                     <span className="text-[10px] font-bold text-ceci-academic-strong bg-surface-blue px-2 py-0.5 rounded border border-ceci-border-academic">
                       PDF
                     </span>
-                  </div>
+                  </ManageSurface>
                 ))}
               </div>
             ) : (

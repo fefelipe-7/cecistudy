@@ -50,7 +50,34 @@ export type WizardFlow =
   | 'flashcard'
   | 'internship'
   | 'session'
-  | 'author';
+  | 'author'
+  | 'concept'
+  | 'material';
+
+/**
+ * Entidades do usuário que podem ser editadas/excluídas pelo menu universal
+ * (long-press no card ou clique com botão direito no desktop).
+ */
+export type ManagedItemKind =
+  | 'course'
+  | 'class'
+  | 'task'
+  | 'exam'
+  | 'reading'
+  | 'flashcard'
+  | 'session'
+  | 'internship'
+  | 'concept'
+  | 'author'
+  | 'material'
+  | 'looseNote'
+  | 'quizSession';
+
+/** Item sob o menu de editar/excluir (payload fora da URL, igual `wizardNoteId`). */
+export interface ManagedItem {
+  kind: ManagedItemKind;
+  id: string;
+}
 
 export interface HeaderAction {
   label: string;

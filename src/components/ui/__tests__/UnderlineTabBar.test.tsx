@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { UnderlineTabBar } from '../UnderlineTabBar';
+import { UnderlineTabBar, type UnderlineTab } from '../UnderlineTabBar';
 
-const TABS = [
+const TABS: UnderlineTab<string>[] = [
   { id: 'aulas', label: 'aulas' },
   { id: 'avaliacoes', label: 'avaliações' },
   { id: 'calendario', label: 'calendário' },
@@ -10,7 +10,7 @@ const TABS = [
 
 describe('UnderlineTabBar', () => {
   it('renderiza todas as abas e marca a ativa', () => {
-    render(<UnderlineTabBar tabs={TABS} active="aulas" onChange={() => {}} />);
+    render(<UnderlineTabBar tabs={TABS} active={'aulas' as string} onChange={() => {}} />);
     expect(screen.getByRole('button', { name: 'aulas' })).toHaveAttribute('aria-pressed', 'true');
     expect(screen.getByRole('button', { name: 'avaliações' })).toHaveAttribute('aria-pressed', 'false');
     expect(screen.getByRole('button', { name: 'calendário' })).toBeInTheDocument();
@@ -18,14 +18,14 @@ describe('UnderlineTabBar', () => {
 
   it('chama onChange ao clicar', () => {
     const onChange = vi.fn();
-    render(<UnderlineTabBar tabs={TABS} active="aulas" onChange={onChange} />);
+    render(<UnderlineTabBar tabs={TABS} active={'aulas' as string} onChange={onChange} />);
     fireEvent.click(screen.getByRole('button', { name: 'avaliações' }));
     expect(onChange).toHaveBeenCalledWith('avaliacoes');
   });
 
   it('aceita classe customizada', () => {
     const { container } = render(
-      <UnderlineTabBar tabs={TABS} active="aulas" onChange={() => {}} className="my-custom" />
+      <UnderlineTabBar tabs={TABS} active={'aulas' as string} onChange={() => {}} className="my-custom" />
     );
     expect(container.firstChild).toHaveClass('my-custom');
   });

@@ -5,6 +5,8 @@ import { hapticSuccess } from '../../lib/haptics';
 import { StarRating } from '../ui/StarRating';
 import { WizardScaffold, type WizardStep } from '../wizards/WizardScaffold';
 import { DateInput, FieldLabel, TextArea, TextInput } from '../wizards/wizardFields';
+import { PillGroupMulti } from '../ui/PillGroupMulti';
+import { ToggleRow } from '../ui/ToggleRow';
 
 export const ClassNoteDetailWizard: React.FC = () => {
   const {
@@ -64,23 +66,6 @@ export const ClassNoteDetailWizard: React.FC = () => {
     );
   }
 
-  const toggleId = (list: string[], setList: (v: string[]) => void, id: string) => {
-    setList(list.includes(id) ? list.filter((x) => x !== id) : [...list, id]);
-  };
-
-  const Chip = ({ selected, onClick, label }: { selected: boolean; onClick: () => void; label: string }) => (
-    <button
-      onClick={onClick}
-      className={`px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
-        selected
-          ? 'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand shadow-2xs'
-          : 'bg-white text-ceci-secondary border border-ceci-border-default hover:bg-surface-rose'
-      }`}
-    >
-      {label}
-    </button>
-  );
-
   const steps: WizardStep[] = [
     {
       id: 'identificacao',
@@ -130,41 +115,21 @@ export const ClassNoteDetailWizard: React.FC = () => {
       headline: 'que teorias apareceram na aula?',
       content: (
         <div className="space-y-5">
-          <div className="space-y-2">
-            <FieldLabel>conceitos abordados</FieldLabel>
-            {concepts.length === 0 ? (
-              <span className="text-[11px] text-ceci-tertiary">ainda não há conceitos no cantinho.</span>
-            ) : (
-              <div className="flex flex-wrap gap-1.5">
-                {concepts.map((c) => (
-                  <Chip
-                    key={c.id}
-                    selected={conceptIds.includes(c.id)}
-                    onClick={() => toggleId(conceptIds, setConceptIds, c.id)}
-                    label={c.name}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
+          <PillGroupMulti
+            label="conceitos abordados"
+            variant="rose"
+            options={concepts.map((c) => ({ value: c.id, label: c.name }))}
+            value={conceptIds}
+            onChange={setConceptIds}
+          />
 
-          <div className="space-y-2">
-            <FieldLabel>abordagens presentes</FieldLabel>
-            {approaches.length === 0 ? (
-              <span className="text-[11px] text-ceci-tertiary">ainda não há abordagens registradas.</span>
-            ) : (
-              <div className="flex flex-wrap gap-1.5">
-                {approaches.map((a) => (
-                  <Chip
-                    key={a.id}
-                    selected={approachIds.includes(a.id)}
-                    onClick={() => toggleId(approachIds, setApproachIds, a.id)}
-                    label={a.shortName || a.name}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
+          <PillGroupMulti
+            label="abordagens presentes"
+            variant="rose"
+            options={approaches.map((a) => ({ value: a.id, label: a.shortName || a.name }))}
+            value={approachIds}
+            onChange={setApproachIds}
+          />
         </div>
       ),
     },
@@ -174,41 +139,21 @@ export const ClassNoteDetailWizard: React.FC = () => {
       headline: 'quais autores e materiais sustentam?',
       content: (
         <div className="space-y-5">
-          <div className="space-y-2">
-            <FieldLabel>autores citados</FieldLabel>
-            {authors.length === 0 ? (
-              <span className="text-[11px] text-ceci-tertiary">ainda não há autores no cantinho.</span>
-            ) : (
-              <div className="flex flex-wrap gap-1.5">
-                {authors.map((a) => (
-                  <Chip
-                    key={a.id}
-                    selected={authorIds.includes(a.id)}
-                    onClick={() => toggleId(authorIds, setAuthorIds, a.id)}
-                    label={a.name}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
+          <PillGroupMulti
+            label="autores citados"
+            variant="rose"
+            options={authors.map((a) => ({ value: a.id, label: a.name }))}
+            value={authorIds}
+            onChange={setAuthorIds}
+          />
 
-          <div className="space-y-2">
-            <FieldLabel>materiais de apoio</FieldLabel>
-            {materials.length === 0 ? (
-              <span className="text-[11px] text-ceci-tertiary">ainda não há materiais guardados.</span>
-            ) : (
-              <div className="flex flex-wrap gap-1.5">
-                {materials.map((m) => (
-                  <Chip
-                    key={m.id}
-                    selected={materialIds.includes(m.id)}
-                    onClick={() => toggleId(materialIds, setMaterialIds, m.id)}
-                    label={m.title}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
+          <PillGroupMulti
+            label="materiais de apoio"
+            variant="rose"
+            options={materials.map((m) => ({ value: m.id, label: m.title }))}
+            value={materialIds}
+            onChange={setMaterialIds}
+          />
         </div>
       ),
     },
@@ -224,25 +169,13 @@ export const ClassNoteDetailWizard: React.FC = () => {
             <StarRating value={rating} onChange={setRating} showLabel />
           </div>
 
-          <div className="flex items-center justify-between bg-white rounded-2xl border border-ceci-border-default px-4 py-3 shadow-2xs">
-            <div>
-              <p className="text-xs font-bold text-ceci-primary">ficou com dúvidas?</p>
-              <p className="text-[11px] text-ceci-secondary">marca aqui para revisar depois</p>
-            </div>
-            <button
-              onClick={() => setHasQuestions(!hasQuestions)}
-              className={`w-11 h-6 rounded-full transition-colors cursor-pointer relative ${
-                hasQuestions ? 'bg-ceci-brand-strong' : 'bg-ceci-border-default'
-              }`}
-              aria-label={hasQuestions ? 'tem dúvidas' : 'sem dúvidas'}
-            >
-              <span
-                className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-xs transition-all ${
-                  hasQuestions ? 'left-[22px]' : 'left-0.5'
-                }`}
-              />
-            </button>
-          </div>
+          <ToggleRow
+            label="ficou com dúvidas?"
+            description="marca aqui para revisar depois"
+            checked={hasQuestions}
+            onChange={() => setHasQuestions(!hasQuestions)}
+            className="bg-white rounded-2xl border border-ceci-border-default px-4 py-3 shadow-2xs"
+          />
         </div>
       ),
     },

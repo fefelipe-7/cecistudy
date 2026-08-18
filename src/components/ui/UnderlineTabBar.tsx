@@ -1,14 +1,15 @@
 import React from 'react';
-import { cn } from '@/lib/utils';
+import { cn, NoInfer } from '@/lib/utils';
 
 export interface UnderlineTab<T extends string> {
   id: T;
   label: string;
   icon?: React.ReactNode;
+  badge?: number;
 }
 
 interface UnderlineTabBarProps<T extends string> {
-  tabs: UnderlineTab<T>[];
+  tabs: UnderlineTab<NoInfer<T>>[];
   active: T;
   onChange: (id: T) => void;
   className?: string;
@@ -35,6 +36,11 @@ export const UnderlineTabBar = <T extends string,>({
         >
           {tab.icon}
           {tab.label}
+          {tab.badge !== undefined && tab.badge > 0 && (
+            <span className="text-[9px] font-bold bg-surface-rose text-ceci-brand-strong px-1.5 py-0.5 rounded-full border border-ceci-border-brand leading-none">
+              {tab.badge}
+            </span>
+          )}
           {isActive && (
             <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-ceci-primary rounded-full" />
           )}

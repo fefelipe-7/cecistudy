@@ -1,9 +1,10 @@
 import React from 'react';
-import { X, Bookmark, ExternalLink, Copy, FileText, Landmark } from 'lucide-react';
+import { X, ExternalLink, Copy, FileText, Landmark } from 'lucide-react';
 import { Article } from '../../data/books';
 import { PSYCHOTHERAPY_FAMILIES } from '../../data/books/families';
 import { Modal } from '../ui/Modal';
 import { Kitty } from '../ui/Kitty';
+import { BookmarkToggle } from '../ui/BookmarkToggle';
 import { copyToClipboard } from '../../lib/utils';
 import { useApp } from '../../context/AppContext';
 
@@ -133,18 +134,14 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({
 
         {/* Ações */}
         <div className="flex items-center gap-2 pt-1">
-          <button
-            onClick={onToggleSave}
-            className={`p-3 rounded-2xl border flex items-center justify-center transition-colors cursor-pointer min-h-[44px] ${
-              isSaved
-                ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
-                : 'bg-white border-ceci-border-default text-ceci-secondary hover:bg-surface-muted'
-            }`}
-            title={isSaved ? 'remover dos salvos' : 'guardar artigo'}
-            aria-label={isSaved ? 'remover artigo dos salvos' : 'guardar artigo'}
-          >
-            <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-ceci-brand-strong' : ''}`} />
-          </button>
+          <BookmarkToggle
+            active={isSaved}
+            onToggle={onToggleSave}
+            size="md"
+            label="guardar artigo"
+            activeLabel="remover artigo dos salvos"
+            ariaLabel={isSaved ? 'remover artigo dos salvos' : 'guardar artigo'}
+          />
           <button
             onClick={onClose}
             className="flex-1 bg-surface-muted text-ceci-primary py-2.5 rounded-2xl text-xs font-semibold border border-ceci-border-default hover:bg-white transition-colors cursor-pointer min-h-[44px]"

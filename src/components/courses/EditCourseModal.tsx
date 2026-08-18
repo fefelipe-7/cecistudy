@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Brain, FileText, Sparkles, Users, HeartHandshake, GraduationCap } from 'lucide-react';
+import { Brain, FileText, Sparkles, Users, HeartHandshake, GraduationCap, type LucideIcon } from 'lucide-react';
 import { Course } from '../../types';
 import { Modal } from '../ui/Modal';
+import { ColorSwatchPicker } from '../ui/ColorSwatchPicker';
+import { COURSE_ICON_OPTIONS } from '../../lib/courseOptions';
 
 interface EditCourseModalProps {
   isOpen: boolean;
@@ -10,16 +12,19 @@ interface EditCourseModalProps {
   onSave: (updated: Course) => void;
 }
 
-const COURSE_COLORS = ['#E97891', '#B94862', '#609FB8', '#4A879F', '#8BC7A2', '#AD9986', '#BD913C'];
+const ICON_MAP: Record<string, LucideIcon> = {
+  Brain,
+  FileText,
+  Sparkles,
+  Users,
+  HeartHandshake,
+  GraduationCap,
+};
 
-const COURSE_ICONS: { name: string; Icon: React.ComponentType<{ className?: string }> }[] = [
-  { name: 'Brain', Icon: Brain },
-  { name: 'FileText', Icon: FileText },
-  { name: 'Sparkles', Icon: Sparkles },
-  { name: 'Users', Icon: Users },
-  { name: 'HeartHandshake', Icon: HeartHandshake },
-  { name: 'GraduationCap', Icon: GraduationCap },
-];
+const COURSE_ICONS: { name: string; Icon: LucideIcon }[] = COURSE_ICON_OPTIONS.map((o) => ({
+  name: o.value,
+  Icon: ICON_MAP[o.value] ?? Brain,
+}));
 
 const inputClass =
   'w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500';
@@ -126,20 +131,7 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({ isOpen, course
 
           <div>
             <label className={labelClass}>cor da matéria</label>
-            <div className="flex items-center gap-2 flex-wrap">
-              {COURSE_COLORS.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => setColor(c)}
-                  className={`w-8 h-8 rounded-full tap-interactive cursor-pointer active:scale-95 ${
-                    color === c ? 'ring-2 ring-ceci-primary ring-offset-2' : 'hover:scale-105'
-                  }`}
-                  style={{ backgroundColor: c }}
-                  aria-label={`cor ${c}`}
-                />
-              ))}
-            </div>
+            <ColorSwatchPicker value={color} onChange={setColor} size="sm" />
           </div>
 
           <div>

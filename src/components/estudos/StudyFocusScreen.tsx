@@ -4,6 +4,8 @@ import { Play, Pause, RotateCcw, Timer, CheckCircle2, Sparkles } from 'lucide-re
 import { useApp } from '../../context/AppContext';
 import { celebrate } from '../../lib/celebrate';
 import { hapticSuccess } from '../../lib/haptics';
+import { PillGroup } from '../ui/PillGroup';
+import { Picker } from '../ui/Picker';
 
 const PRESETS = [25, 45, 15];
 const toISODate = (d: Date) => d.toISOString().split('T')[0];
@@ -77,20 +79,13 @@ export const StudyFocusScreen: React.FC = () => {
         </p>
 
         {/* Presets */}
-        <div className="flex items-center justify-center gap-2">
-          {PRESETS.map((mins) => (
-            <button
-              key={mins}
-              onClick={() => resetTimer(mins)}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold tap-interactive cursor-pointer border ${
-                preset === mins
-                  ? 'bg-ceci-primary text-white border-ceci-primary shadow-xs'
-                  : 'bg-white text-ceci-secondary border-ceci-border-default hover:bg-surface-muted'
-              }`}
-            >
-              {mins} min
-            </button>
-          ))}
+        <div className="flex items-center justify-center">
+          <PillGroup
+            variant="primary"
+            options={PRESETS.map((mins) => ({ value: String(mins), label: `${mins} min` }))}
+            value={String(preset)}
+            onChange={(v) => resetTimer(Number(v))}
+          />
         </div>
 
         {/* Timer */}
@@ -158,18 +153,15 @@ export const StudyFocusScreen: React.FC = () => {
           </div>
           <div>
             <label className="block text-xs font-medium text-ceci-secondary mb-1">disciplina</label>
-            <select
-              value={sessionCourseId}
-              onChange={(e) => setSessionCourseId(e.target.value)}
-              className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 focus:border-ceci-brand"
-            >
-              <option value="">geral</option>
-              {courses.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
+            <Picker
+            label="disciplina"
+            value={sessionCourseId}
+            onChange={setSessionCourseId}
+            options={[{ value: '', label: 'geral' }, ...courses.map((c) => ({ value: c.id, label: c.name }))]}
+            placeholder="geral"
+            buttonClassName="bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs"
+            sheetTitle="disciplina da sessão"
+          />
           </div>
           <div className="flex items-center justify-end gap-2 pt-1">
             <button

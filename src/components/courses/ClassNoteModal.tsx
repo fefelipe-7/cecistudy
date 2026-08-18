@@ -1,6 +1,8 @@
 import React from 'react';
+import { Pencil, Trash2 } from 'lucide-react';
 import { ClassNote } from '../../types';
 import { Modal } from '../ui/Modal';
+import { useApp } from '../../context/AppContext';
 
 interface ClassNoteModalProps {
   note: ClassNote | null;
@@ -8,7 +10,18 @@ interface ClassNoteModalProps {
 }
 
 export const ClassNoteModal: React.FC<ClassNoteModalProps> = ({ note, onClose }) => {
+  const { editManagedItem, openManageItem } = useApp();
   if (!note) return null;
+
+  const handleEdit = () => {
+    onClose();
+    editManagedItem('class', note.id);
+  };
+
+  const handleDelete = () => {
+    onClose();
+    openManageItem('class', note.id);
+  };
 
   return (
     <Modal
@@ -49,6 +62,21 @@ export const ClassNoteModal: React.FC<ClassNoteModalProps> = ({ note, onClose })
           </div>
         </div>
       )}
+
+      <div className="flex gap-2 pt-1">
+        <button
+          onClick={handleEdit}
+          className="flex-1 flex items-center justify-center gap-1.5 bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong py-2.5 rounded-2xl text-xs font-bold cursor-pointer"
+        >
+          <Pencil className="w-3.5 h-3.5" /> editar aula
+        </button>
+        <button
+          onClick={handleDelete}
+          className="flex items-center justify-center gap-1.5 bg-red-50 border border-red-200 text-red-700 py-2.5 rounded-2xl text-xs font-bold cursor-pointer"
+        >
+          <Trash2 className="w-3.5 h-3.5" /> excluir
+        </button>
+      </div>
 
       <button
         onClick={onClose}

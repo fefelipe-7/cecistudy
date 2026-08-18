@@ -4,6 +4,7 @@ import { Plus, BookOpen } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ReaderModeModal } from '../widgets/ReaderModeModal';
 import { Kitty } from '../ui/Kitty';
+import { ManageSurface } from '../ui/ManageSurface';
 import type { ReadingItem } from '../../types';
 
 const READING_STATUS_LABEL: Record<ReadingItem['status'], string> = {
@@ -46,8 +47,11 @@ export const StudyLeiturasScreen: React.FC = () => {
                 : 0;
             const isDone = r.status === 'concluido';
             return (
-              <div
+              <ManageSurface
                 key={r.id}
+                kind="reading"
+                id={r.id}
+                onTap={() => setReaderModalReading(r)}
                 data-target={r.id}
                 className={`rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-3 ${
                   isDone ? 'opacity-70' : ''
@@ -95,7 +99,7 @@ export const StudyLeiturasScreen: React.FC = () => {
                   <BookOpen className="w-4 h-4" />
                   {isDone ? 'reler leitura' : r.status === 'lendo' ? 'continuar leitura' : 'iniciar leitura'}
                 </button>
-              </div>
+              </ManageSurface>
             );
           })
       )}

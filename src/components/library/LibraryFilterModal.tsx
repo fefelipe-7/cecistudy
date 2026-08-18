@@ -1,6 +1,8 @@
 import React from 'react';
-import { Filter, Check } from 'lucide-react';
+import { Filter } from 'lucide-react';
 import { Modal } from '../ui/Modal';
+import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
+import { PillGroup } from '../ui/PillGroup';
 
 interface LibraryFilterModalProps {
   isOpen: boolean;
@@ -55,37 +57,23 @@ export const LibraryFilterModal: React.FC<LibraryFilterModalProps> = ({
           <span className="text-[11px] font-bold text-ceci-tertiary uppercase tracking-wider block">
             categoria da obra / coleção
           </span>
-          <div className="grid grid-cols-2 gap-2">
-            {[
-              { id: 'todos', label: 'todas as categorias' },
-              { id: 'mistas', label: 'categorias mistas ✨' },
-              { id: 'autores', label: 'autores & obras' },
-              { id: 'conceitos', label: 'conceitos-chave' },
-              { id: 'abordagens', label: 'abordagens terapêuticas' },
-              { id: 'psicoterapias', label: 'catálogo de psicoterapias' },
-              { id: 'testes', label: 'testes & escalas' },
-              { id: 'multidisciplinar', label: 'bagagem complementar' },
-              { id: 'artigos', label: 'artigos científicos' },
-              { id: 'salvos', label: 'salvos ♡' },
-              { id: 'em_leitura', label: 'em leitura 📖' },
-            ].map((cat) => {
-              const isSel = activeCategory === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => onCategoryChange(cat.id)}
-                  className={`p-2.5 rounded-xl border text-xs font-semibold text-left tap-interactive cursor-pointer flex items-center justify-between ${
-                    isSel
-                      ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong font-bold'
-                      : 'bg-surface-muted border-ceci-border-default text-ceci-primary hover:bg-white'
-                  }`}
-                >
-                  <span className="line-clamp-1">{cat.label}</span>
-                  {isSel && <Check className="w-3.5 h-3.5 text-ceci-brand-strong shrink-0" />}
-                </button>
-              );
-            })}
-          </div>
+          <ChoiceCardGrid
+            value={activeCategory}
+            onChange={onCategoryChange}
+            options={[
+              { value: 'todos', label: 'todas as categorias' },
+              { value: 'mistas', label: 'categorias mistas ✨' },
+              { value: 'autores', label: 'autores & obras' },
+              { value: 'conceitos', label: 'conceitos-chave' },
+              { value: 'abordagens', label: 'abordagens terapêuticas' },
+              { value: 'psicoterapias', label: 'catálogo de psicoterapias' },
+              { value: 'testes', label: 'testes & escalas' },
+              { value: 'multidisciplinar', label: 'bagagem complementar' },
+              { value: 'artigos', label: 'artigos científicos' },
+              { value: 'salvos', label: 'salvos ♡' },
+              { value: 'em_leitura', label: 'em leitura 📖' },
+            ]}
+          />
         </div>
 
         {/* Section 2: Status de Leitura */}
@@ -93,29 +81,17 @@ export const LibraryFilterModal: React.FC<LibraryFilterModalProps> = ({
           <span className="text-[11px] font-bold text-ceci-tertiary uppercase tracking-wider block">
             status de leitura
           </span>
-          <div className="flex flex-wrap gap-2">
-            {[
-              { id: 'todos', label: 'todos' },
-              { id: 'lendo', label: 'lendo' },
-              { id: 'concluido', label: 'lidos' },
-              { id: 'para_ler', label: 'não iniciados' },
-            ].map((st) => {
-              const isSel = activeStatus === st.id;
-              return (
-                <button
-                  key={st.id}
-                  onClick={() => onStatusChange(st.id)}
-                  className={`px-3 py-1.5 rounded-full border text-xs font-semibold tap-interactive cursor-pointer ${
-                    isSel
-                      ? 'bg-ceci-primary text-white border-ceci-primary'
-                      : 'bg-white border-ceci-border-default text-ceci-secondary hover:bg-surface-muted'
-                  }`}
-                >
-                  {st.label}
-                </button>
-              );
-            })}
-          </div>
+          <PillGroup
+            variant="primary"
+            value={activeStatus}
+            onChange={onStatusChange}
+            options={[
+              { value: 'todos', label: 'todos' },
+              { value: 'lendo', label: 'lendo' },
+              { value: 'concluido', label: 'lidos' },
+              { value: 'para_ler', label: 'não iniciados' },
+            ]}
+          />
         </div>
 
         {/* Section 3: Tags / Temas Rápidos */}
@@ -123,24 +99,12 @@ export const LibraryFilterModal: React.FC<LibraryFilterModalProps> = ({
           <span className="text-[11px] font-bold text-ceci-tertiary uppercase tracking-wider block">
             filtrar por tema / autor específico
           </span>
-          <div className="flex flex-wrap gap-1.5">
-            {availableTags.map((tag) => {
-              const isSel = selectedTag === tag;
-              return (
-                <button
-                  key={tag}
-                  onClick={() => onTagChange(isSel ? null : tag)}
-                  className={`px-3 py-1 rounded-full text-[11px] font-medium border tap-interactive cursor-pointer ${
-                    isSel
-                      ? 'bg-ceci-brand-strong text-white border-ceci-brand-strong'
-                      : 'bg-surface-muted text-ceci-primary border-ceci-border-default hover:bg-white'
-                  }`}
-                >
-                  {tag} {isSel && '✕'}
-                </button>
-              );
-            })}
-          </div>
+          <PillGroup
+            variant="brand"
+            value={selectedTag ?? ''}
+            onChange={(v) => onTagChange(v === selectedTag ? null : v)}
+            options={availableTags.map((tag) => ({ value: tag, label: tag }))}
+          />
         </div>
 
         {/* Footer buttons */}

@@ -5,14 +5,14 @@ import type { LooseNote } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { WizardScaffold, type WizardStep } from '../wizards/WizardScaffold';
 import {
-  ChipPicker,
   FieldLabel,
-  MultiChipPicker,
   ReviewCard,
-  SelectField,
   TextArea,
   TextInput,
 } from '../wizards/wizardFields';
+import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
+import { PillGroupMulti } from '../ui/PillGroupMulti';
+import { Picker } from '../ui/Picker';
 
 const CATEGORY_OPTIONS: { value: LooseNote['category']; label: string; emoji?: string }[] = [
   { value: 'reflexão', label: 'reflexão', emoji: '🌷' },
@@ -106,11 +106,11 @@ export const NoteDetailWizard: React.FC = () => {
             placeholder="título da nota"
             autoFocus
           />
-          <ChipPicker
+          <ChoiceCardGrid
             label="categoria"
             options={CATEGORY_OPTIONS}
             value={category}
-            onChange={setCategory}
+            onChange={(v) => setCategory(v)}
           />
           <div>
             <FieldLabel>conteúdo</FieldLabel>
@@ -130,7 +130,7 @@ export const NoteDetailWizard: React.FC = () => {
       headline: 'o que essa nota tem a ver com o cantinho?',
       content: (
         <div className="space-y-5">
-          <SelectField
+          <Picker
             label="matéria relacionada"
             value={courseId}
             onChange={setCourseId}
@@ -141,10 +141,11 @@ export const NoteDetailWizard: React.FC = () => {
 
           <div className="space-y-2">
             {concepts.length > 0 ? (
-              <MultiChipPicker
+              <PillGroupMulti
                 label="conceitos"
+                variant="rose"
                 options={concepts.map((c) => ({ value: c.id, label: c.name }))}
-                values={conceptIds}
+                value={conceptIds}
                 onChange={setConceptIds}
               />
             ) : (
@@ -154,10 +155,11 @@ export const NoteDetailWizard: React.FC = () => {
 
           <div className="space-y-2">
             {authors.length > 0 ? (
-              <MultiChipPicker
+              <PillGroupMulti
                 label="autores"
+                variant="rose"
                 options={authors.map((a) => ({ value: a.id, label: a.name }))}
-                values={authorIds}
+                value={authorIds}
                 onChange={setAuthorIds}
               />
             ) : (
@@ -167,10 +169,11 @@ export const NoteDetailWizard: React.FC = () => {
 
           <div className="space-y-2">
             {approaches.length > 0 ? (
-              <MultiChipPicker
+              <PillGroupMulti
                 label="abordagens"
+                variant="rose"
                 options={approaches.map((a) => ({ value: a.id, label: a.shortName || a.name }))}
-                values={approachIds}
+                value={approachIds}
                 onChange={setApproachIds}
               />
             ) : (
@@ -180,10 +183,11 @@ export const NoteDetailWizard: React.FC = () => {
 
           <div className="space-y-2">
             {materials.length > 0 ? (
-              <MultiChipPicker
+              <PillGroupMulti
                 label="materiais"
+                variant="rose"
                 options={materials.map((m) => ({ value: m.id, label: m.title }))}
-                values={materialIds}
+                value={materialIds}
                 onChange={setMaterialIds}
               />
             ) : (

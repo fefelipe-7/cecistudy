@@ -157,6 +157,8 @@ describe('parseRoute', () => {
     expect(parseRoute('#/novo/estudo').wizard).toBe('session');
     expect(parseRoute('#/novo/estagio').wizard).toBe('internship');
     expect(parseRoute('#/novo/autor').wizard).toBe('author');
+    expect(parseRoute('#/novo/conceito').wizard).toBe('concept');
+    expect(parseRoute('#/novo/material').wizard).toBe('material');
     // matéria (course) round-trip: o slug "materia" precisa existir no mapa reverso
     expect(parseRoute('#/novo/materia').wizard).toBe('course');
     expect(parseRoute('#/faculdade/c3/novo/materia')).toEqual({
@@ -173,8 +175,7 @@ describe('parseRoute', () => {
       baseCourseId: 'c3',
       wizard: 'exam',
     });
-    // slug removido do conceito → rota desconhecida cai em home
-    expect(parseRoute('#/novo/conceito')).toEqual({ tab: 'home' });
+    // slug desconhecido → rota cai em home sem wizard
     expect(parseRoute('#/novo/xyz').wizard).toBeUndefined();
   });
 

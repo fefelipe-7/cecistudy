@@ -29,7 +29,7 @@ export const Toggle: React.FC<ToggleProps> = ({
       onClick={onChange}
       disabled={disabled || loading}
       className={cn(
-        'relative w-12 h-7 rounded-full tap-interactive cursor-pointer shrink-0 touch-target transition-colors duration-200',
+        'relative w-11 h-6 rounded-full tap-interactive cursor-pointer shrink-0 touch-target transition-colors duration-200',
         checked ? 'bg-rose-500' : 'bg-ceci-border-strong',
         (disabled || loading) && 'opacity-50 cursor-not-allowed',
         className
@@ -37,12 +37,12 @@ export const Toggle: React.FC<ToggleProps> = ({
     >
       <span
         className={cn(
-          'absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow-xs flex items-center justify-center transition-transform duration-200',
-          checked && 'translate-x-5'
+          'absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-xs flex items-center justify-center transition-transform duration-200',
+          checked && 'translate-x-[20px]'
         )}
       >
         {loading ? (
-          <span className="text-[10px] text-ceci-secondary">…</span>
+          <span className="text-[9px] text-ceci-secondary">…</span>
         ) : (
           checked && <Check className="w-3 h-3 text-rose-500" />
         )}

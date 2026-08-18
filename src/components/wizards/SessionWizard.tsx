@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
 import { Timer } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import type { ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
-import { FieldLabel, ReviewCard, SelectField, TextInput } from './wizardFields';
+import { FieldLabel, ReviewCard, TextInput } from './wizardFields';
+import { Picker } from '../ui/Picker';
 
 const today = () => new Date().toISOString().split('T')[0];
 
-export const SessionWizard: React.FC = () => {
-  const { courses, wizardCourseId, handleAddSession, closeWizard, showToast } = useApp();
+export const SessionWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
+  const { courses, sessions, wizardCourseId, handleAddSession, handleUpdateSession, closeWizard, showToast } = useApp();
+  const editingSession = editing?.kind === 'session'
+    ? sessions.find((s) => s.id === editing.id)
+    : undefined;
   const [step, setStep] = useState(0);
-  const [topic, setTopic] = useState('');
-  const [minutes, setMinutes] = useState('25');
-  const [courseId, setCourseId] = useState(wizardCourseId || courses[0]?.id || '');
+  const [topic, setTopic] = useState(editingSession?.topic ?? '');
+  const [minutes, setMinutes] = useState(String(editingSession?.durationMinutes ?? '25'));
+  const [courseId, setCourseId] = useState(
+    editingSession?.courseId ?? (wizardCourseId || courses[0]?.id || '')
+  );
 
   const courseName = courses.find((c) => c.id === courseId)?.name ?? '';
 
@@ -51,7 +58,7 @@ export const SessionWizard: React.FC = () => {
       title: 'disciplina',
       headline: 'quer conectar a uma disciplina?',
       content: (
-        <SelectField
+        <Picker
           value={courseId}
           onChange={setCourseId}
           options={courses.map((c) => ({ value: c.id, label: c.name }))}
@@ -76,6 +83,18 @@ export const SessionWizard: React.FC = () => {
   ];
 
   const handleSave = () => {
+    if (editingSession) {
+      handleUpdateSession({
+        ...editingSession,
+        courseId: courseId || undefined,
+        topic: topic.trim(),
+        durationMinutes: parseInt(minutes) || 25,
+      });
+      hapticSuccess();
+      closeWizard();
+      showToast('sessão atualizada ♡');
+      return;
+    }
     handleAddSession({
       id: 'ss-' + Date.now(),
       courseId: courseId || undefined,
@@ -90,7 +109,7 @@ export const SessionWizard: React.FC = () => {
 
   return (
     <WizardScaffold
-      title="nova sessão de estudo"
+      title={editing ? 'editar sessão' : 'nova sessão de estudo'}
       icon={<Timer className="w-3.5 h-3.5" />}
       iconClass="bg-surface-blue border-ceci-border-academic text-ceci-academic-strong"
       steps={steps}
@@ -99,7 +118,7 @@ export const SessionWizard: React.FC = () => {
       canNext={topic.trim().length > 0}
       onSave={handleSave}
       onClose={closeWizard}
-      saveLabel="guardar sessão ♡"
+      saveLabel={editing ? 'guardar alterações ♡' : 'guardar sessão ♡'}
     />
   );
 };

@@ -15,6 +15,8 @@ import {
 } from 'lucide-react';
 import { CATEGORY_BADGE, formatNoteDate } from './notes';
 import { Kitty } from '../ui/Kitty';
+import { PillGroup } from '../ui/PillGroup';
+import { ManageSurface } from '../ui/ManageSurface';
 import { copyToClipboard } from '../../lib/utils';
 import type { LooseNote, Course, PsychologyConcept, PsychologyAuthor } from '../../types';
 
@@ -120,26 +122,19 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
       </div>
 
       {/* Category Pills */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none px-1">
-        {[
-          { id: 'todas', label: 'todas' },
-          { id: 'reflexão', label: 'reflexões' },
-          { id: 'estudo', label: 'estudo' },
-          { id: 'ideia', label: 'ideias' },
-          { id: 'lembrete', label: 'lembretes' },
-        ].map((cat) => (
-          <button
-            key={cat.id}
-            onClick={() => setNoteCategoryFilter(cat.id)}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap tap-interactive cursor-pointer ${
-              noteCategoryFilter === cat.id
-                ? 'bg-ceci-brand-strong text-white shadow-2xs'
-                : 'bg-white text-ceci-secondary border border-ceci-border-default hover:border-ceci-border-brand'
-            }`}
-          >
-            {cat.label}
-          </button>
-        ))}
+      <div className="px-1">
+        <PillGroup
+          variant="brand"
+          value={noteCategoryFilter}
+          onChange={setNoteCategoryFilter}
+          options={[
+            { value: 'todas', label: 'todas' },
+            { value: 'reflexão', label: 'reflexões' },
+            { value: 'estudo', label: 'estudo' },
+            { value: 'ideia', label: 'ideias' },
+            { value: 'lembrete', label: 'lembretes' },
+          ]}
+        />
       </div>
 
       {/* New Note Form */}
@@ -168,22 +163,12 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
 
             <div className="flex items-center gap-2 pt-1">
               <span className="text-[11px] font-medium text-ceci-secondary">categoria:</span>
-              <div className="flex gap-1.5 flex-wrap">
-                {(['reflexão', 'estudo', 'ideia', 'lembrete'] as const).map((cat) => (
-                  <button
-                    key={cat}
-                    type="button"
-                    onClick={() => setNewNoteCategory(cat)}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold capitalize cursor-pointer tap-interactive ${
-                      newNoteCategory === cat
-                        ? 'bg-ceci-brand-strong text-white'
-                        : 'bg-white text-ceci-secondary border border-ceci-border-default'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
+              <PillGroup
+                variant="brand"
+                value={newNoteCategory}
+                onChange={(v) => setNewNoteCategory(v)}
+                options={(['reflexão', 'estudo', 'ideia', 'lembrete'] as const).map((cat) => ({ value: cat, label: cat }))}
+              />
             </div>
 
             <textarea
@@ -238,8 +223,10 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
           const auths = authorNames(note.authorIds);
           const hasLinks = Boolean(cName) || cons.length > 0 || auths.length > 0;
           return (
-            <div
+            <ManageSurface
               key={note.id}
+              kind="looseNote"
+              id={note.id}
               className="bg-white rounded-[20px] p-4 border border-ceci-border-default hover:border-ceci-border-brand tap-interactive space-y-2.5 shadow-2xs flex flex-col justify-between group"
             >
               <div className="space-y-2">
@@ -353,7 +340,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
                   </button>
                 </div>
               </div>
-            </div>
+            </ManageSurface>
           );
         })}
 

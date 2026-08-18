@@ -22,7 +22,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { Toggle } from '../ui/Toggle';
+import { ToggleRow } from '../ui/ToggleRow';
 import { isReminderSupported } from '../../lib/notifications';
 import { isNativePlatform } from '../../lib/storage';
 import { pickProfilePhoto } from '../../lib/photo';
@@ -622,25 +622,18 @@ export const PerfilView: React.FC = () => {
 
         {/* Lembrete diário de estudo (app nativo) */}
         <div className={`rounded-2xl p-4 border ${isReminderSupported() ? 'bg-surface-rose border-ceci-border-brand' : 'bg-surface-muted border-ceci-border-default'} space-y-3`}>
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <h3 className="font-display font-bold text-sm text-ceci-primary">
-                lembrete diário de estudo ♡
-              </h3>
-              <p className="text-[11px] text-ceci-secondary leading-tight mt-0.5">
-                {isReminderSupported()
-                  ? 'um carinho do cecistudy na hora de estudar.'
-                  : 'ativável no aplicativo nativo (android/ios).'}
-              </p>
-            </div>
-
-            <Toggle
-              checked={reminderSettings.enabled}
-              onChange={() => updateReminder({ ...reminderSettings, enabled: !reminderSettings.enabled })}
-              disabled={!isReminderSupported()}
-              label="ativar lembrete diário de estudo"
-            />
-          </div>
+          <ToggleRow
+            label="lembrete diário de estudo ♡"
+            description={
+              isReminderSupported()
+                ? 'um carinho do cecistudy na hora de estudar.'
+                : 'ativável no aplicativo nativo (android/ios).'
+            }
+            checked={reminderSettings.enabled}
+            onChange={() => updateReminder({ ...reminderSettings, enabled: !reminderSettings.enabled })}
+            disabled={!isReminderSupported()}
+            className=""
+          />
 
           {isReminderSupported() && (
             <div className="flex items-center gap-3">

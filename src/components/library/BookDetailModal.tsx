@@ -1,8 +1,9 @@
 import React from 'react';
-import { X, Bookmark, Minus, Plus } from 'lucide-react';
+import { X, Minus, Plus } from 'lucide-react';
 import { CollectionBook } from '../../data/libraryData';
 import { Modal } from '../ui/Modal';
 import { Kitty } from '../ui/Kitty';
+import { BookmarkToggle } from '../ui/BookmarkToggle';
 import { cn } from '../../lib/utils';
 
 interface BookDetailModalProps {
@@ -168,19 +169,14 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2 pt-2">
-          <button
-            onClick={onToggleSave}
-            className={cn(
-              'p-3 rounded-2xl border flex items-center justify-center transition-colors cursor-pointer min-h-[44px]',
-              isSaved
-                ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
-                : 'bg-white border-ceci-border-default text-ceci-secondary hover:bg-surface-muted'
-            )}
-            title={isSaved ? 'remover dos salvos' : 'guardar livro'}
-            aria-label={isSaved ? 'remover livro dos salvos' : 'guardar livro'}
-          >
-            <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-ceci-brand-strong' : ''}`} />
-          </button>
+          <BookmarkToggle
+            active={isSaved}
+            onToggle={onToggleSave}
+            size="md"
+            label="guardar livro"
+            activeLabel="remover livro dos salvos"
+            ariaLabel={isSaved ? 'remover livro dos salvos' : 'guardar livro'}
+          />
 
           <button
             onClick={onClose}

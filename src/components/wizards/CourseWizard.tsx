@@ -1,19 +1,12 @@
 import React, { useMemo, useState } from 'react';
-import { BookOpen, Sparkles } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import type { Course } from '../../types';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
-import { ChipPicker, FieldLabel, ReviewCard, TextInput } from './wizardFields';
-
-const courseColors = ['#E97891', '#B94862', '#609FB8', '#4A879F', '#8BC7A2', '#AD9986', '#BD913C'];
-const courseIcons: Array<{ value: string; label: string; emoji: string }> = [
-  { value: 'Brain', label: 'psicologia', emoji: '🧠' },
-  { value: 'FileText', label: 'conteúdo', emoji: '📄' },
-  { value: 'Sparkles', label: 'inovação', emoji: '✨' },
-  { value: 'Users', label: 'grupo', emoji: '👥' },
-  { value: 'HeartHandshake', label: 'clínica', emoji: '🤝' },
-  { value: 'GraduationCap', label: 'acadêmico', emoji: '🎓' },
-];
+import { FieldLabel, ReviewCard, TextInput } from './wizardFields';
+import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
+import { ColorSwatchPicker } from '../ui/ColorSwatchPicker';
+import { COURSE_ICON_OPTIONS } from '../../lib/courseOptions';
 
 export const CourseWizard: React.FC = () => {
   const { profile, handleAddCourse, closeWizard, showToast } = useApp();
@@ -69,22 +62,11 @@ export const CourseWizard: React.FC = () => {
         <div className="space-y-5">
           <div>
             <FieldLabel>cor</FieldLabel>
-            <div className="flex flex-wrap gap-2.5">
-              {courseColors.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => setColor(c)}
-                  className={`w-9 h-9 rounded-full border-2 transition-all cursor-pointer ${color === c ? 'border-ceci-primary scale-105' : 'border-white hover:scale-105'}`}
-                  style={{ backgroundColor: c }}
-                  aria-label={`cor ${c}`}
-                />
-              ))}
-            </div>
+            <ColorSwatchPicker value={color} onChange={setColor} />
           </div>
-          <ChipPicker
+          <ChoiceCardGrid
             label="ícone"
-            options={courseIcons}
+            options={COURSE_ICON_OPTIONS}
             value={icon}
             onChange={setIcon}
           />

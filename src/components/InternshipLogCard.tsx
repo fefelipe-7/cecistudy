@@ -1,5 +1,7 @@
 import React from 'react';
 import type { InternshipLog, InternshipLogType } from '../types';
+import { useApp } from '../context/AppContext';
+import { ManageSurface } from './ui/ManageSurface';
 
 const TYPE_LABEL: Record<InternshipLogType, string> = {
   estagio: 'estágio',
@@ -43,12 +45,17 @@ interface InternshipLogCardProps {
 
 /** Card de registro de estágio renderizado por extenso (Perfil + diário completo). */
 export const InternshipLogCard: React.FC<InternshipLogCardProps> = ({ log }) => {
+  const { openManageItem } = useApp();
   const type = log.type || 'estagio';
   const isAtendimento = type === 'atendimento_clinico';
   const isSupervisao = type === 'supervisao' || type === 'intervisao';
 
   return (
-    <div className="p-4 rounded-2xl bg-white border border-ceci-border-default shadow-2xs space-y-3">
+    <ManageSurface
+      kind="internship"
+      id={log.id}
+      className="p-4 rounded-2xl bg-white border border-ceci-border-default shadow-2xs space-y-3"
+    >
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-ceci-brand-strong bg-surface-rose border border-ceci-border-brand px-2.5 py-1 rounded-full">
           {TYPE_EMOJI[type]} {TYPE_LABEL[type]}
@@ -107,6 +114,6 @@ export const InternshipLogCard: React.FC<InternshipLogCardProps> = ({ log }) => 
       {log.reflections && (
         <FieldBlock label="reflexões">{log.reflections}</FieldBlock>
       )}
-    </div>
+    </ManageSurface>
   );
 };

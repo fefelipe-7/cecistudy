@@ -35,7 +35,9 @@ import {
   QuizPlayState,
   LooseNote,
   NoteTargetType,
-  StudyScreen
+  StudyScreen,
+  ManagedItem,
+  ManagedItemKind
 } from '../types';
 import {
   emptyProfile,
@@ -65,6 +67,7 @@ import {
 import { computeStreak, getWeekProgress, isStudyDay, toDateKey, StreakStats, WeekDayCell } from '../lib/streak';
 import { applyStickerUnlocks, mergeCatalogWithProgress, countUnlocked } from '../lib/stickers';
 import { lockedStickerCatalog } from '../data/stickerCatalog';
+import { deleteManagedItem as applyDelete, MANAGED_KIND_REMOVED, ManagedDB } from '../lib/entityOps';
 
 
 export interface ReminderSettings {
@@ -199,6 +202,16 @@ export interface AppContextValue {
   openTaskExamWizard: () => void;
   closeWizard: () => void;
 
+  // menu universal de editar/excluir (long-press / clique direito)
+  managedItem: ManagedItem | null;
+  openManageItem: (kind: ManagedItemKind, id: string) => void;
+  closeManageItem: () => void;
+  deleteManagedItem: (kind: ManagedItemKind, id: string) => void;
+  editManagedItem: (kind: ManagedItemKind, id: string) => void;
+
+  // item em edição nos wizards (payload fora da URL, igual `wizardNoteId`)
+  wizardEdit: ManagedItem | null;
+
   // prompt "quer dar mais detalhes?" após salvar uma aula
   isDetailPromptOpen: boolean;
   detailNoteId: string | null;
@@ -240,7 +253,8 @@ export interface AppContextValue {
   openQuickAdd: () => void;
   closeQuickAdd: () => void;
   isEditCourseOpen: boolean;
-  openEditCourse: () => void;
+  editCourseId: string | null;
+  openEditCourse: (courseId?: string) => void;
   closeEditCourse: () => void;
   isEditTccOpen: boolean;
   openEditTcc: () => void;
@@ -277,6 +291,14 @@ export interface AppContextValue {
   handleUpdateProfile: (updated: Partial<UserProfile>) => void;
   handleUpdateTcc: (updated: TccData) => void;
   handleUpdateCourse: (updated: Course) => void;
+  handleUpdateExam: (exam: Exam) => void;
+  handleUpdateReading: (reading: ReadingItem) => void;
+  handleUpdateFlashcard: (card: Flashcard) => void;
+  handleUpdateSession: (session: StudySession) => void;
+  handleUpdateInternshipLog: (log: InternshipLog) => void;
+  handleUpdateAuthor: (author: PsychologyAuthor) => void;
+  handleUpdateConcept: (concept: PsychologyConcept) => void;
+  handleUpdateMaterial: (material: MaterialItem) => void;
   handleSaveQuizSession: (session: QuizSession) => void;
 
   // Quiz helpers (extraídos da pilha de navegação)
@@ -397,6 +419,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [isEditTccOpen, setIsEditTccOpen] = useState(false);
   const [isCreatingLooseNote, setIsCreatingLooseNote] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+
+  // Menu universal de editar/excluir (aberto por long-press no card)
+  const [managedItem, setManagedItem] = useState<ManagedItem | null>(null);
+  // Matéria em edição no EditCourseModal (payload fora da URL)
+  const [editCourseId, setEditCourseId] = useState<string | null>(null);
+  // Entidade em edição nos wizards (payload fora da URL, igual wizardNoteId)
+  const [wizardEdit, setWizardEdit] = useState<ManagedItem | null>(null);
 
   // Notas avulsas (global — a tela de composição salva fora da biblioteca)
   const [looseNotes, setLooseNotes] = usePersistentState<LooseNote[]>('looseNotes', []);
@@ -879,6 +908,38 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const handleUpdateCourse = useCallback((updated: Course) => {
     setCourses((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
   }, []);
+
+  const handleUpdateExam = (exam: Exam) => {
+    setExams((prev) => prev.map((e) => (e.id === exam.id ? exam : e)));
+  };
+
+  const handleUpdateReading = (reading: ReadingItem) => {
+    setReadings((prev) => prev.map((r) => (r.id === reading.id ? reading : r)));
+  };
+
+  const handleUpdateFlashcard = (card: Flashcard) => {
+    setFlashcards((prev) => prev.map((c) => (c.id === card.id ? card : c)));
+  };
+
+  const handleUpdateSession = (session: StudySession) => {
+    setSessions((prev) => prev.map((s) => (s.id === session.id ? session : s)));
+  };
+
+  const handleUpdateInternshipLog = (log: InternshipLog) => {
+    setInternshipLogs((prev) => prev.map((l) => (l.id === log.id ? log : l)));
+  };
+
+  const handleUpdateAuthor = (author: PsychologyAuthor) => {
+    setAuthors((prev) => prev.map((a) => (a.id === author.id ? author : a)));
+  };
+
+  const handleUpdateConcept = (concept: PsychologyConcept) => {
+    setConcepts((prev) => prev.map((c) => (c.id === concept.id ? concept : c)));
+  };
+
+  const handleUpdateMaterial = (material: MaterialItem) => {
+    setMaterials((prev) => prev.map((m) => (m.id === material.id ? material : m)));
+  };
 
   /** Aplica um banco completo (empty ou demo) a todos os estados persistidos. */
   const applyDatabase = (db: ReturnType<typeof emptyDatabase>) => {
@@ -1413,11 +1474,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setReadingProgress((prev) => ({ ...prev, [bookId]: Math.max(0, Math.floor(readPages)) }));
   }, []);
 
-  const openEditCourse = useCallback(() => {
+  const openEditCourse = useCallback((courseId?: string) => {
+    setEditCourseId(courseId ?? null);
     setIsEditCourseOpen(true);
   }, []);
   const closeEditCourse = useCallback(() => {
     setIsEditCourseOpen(false);
+    setEditCourseId(null);
   }, []);
 
   const openEditTcc = useCallback(() => {
@@ -1441,6 +1504,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const openWizard = useCallback((type: WizardFlow, courseId?: string) => {
     setWizardCourseId(courseId);
+    setWizardEdit(null);
     const top = navigationStack[navigationStack.length - 1];
     const next: NavScreen[] =
       top.kind === 'wizard' && top.type === type
@@ -1455,8 +1519,119 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const closeWizard = useCallback(() => {
     setWizardCourseId(undefined);
+    setWizardEdit(null);
     goBack();
   }, [goBack, setWizardCourseId]);
+
+  // ---- menu universal de editar/excluir (long-press / clique direito) ----
+  const openManageItem = useCallback((kind: ManagedItemKind, id: string) => {
+    setManagedItem({ kind, id });
+  }, []);
+
+  const closeManageItem = useCallback(() => {
+    setManagedItem(null);
+  }, []);
+
+  const deleteManagedItem = useCallback((kind: ManagedItemKind, id: string) => {
+    const db: ManagedDB = {
+      courses,
+      classes,
+      tasks,
+      exams,
+      authors,
+      concepts,
+      readings,
+      flashcards,
+      materials,
+      internshipLogs,
+      sessions,
+      quizSessions,
+      looseNotes,
+      bookmarkedCourseIds,
+    };
+    const next = applyDelete(db, kind, id);
+    setCourses(next.courses);
+    setClasses(next.classes);
+    setTasks(next.tasks);
+    setExams(next.exams);
+    setAuthors(next.authors);
+    setConcepts(next.concepts);
+    setReadings(next.readings);
+    setFlashcards(next.flashcards);
+    setMaterials(next.materials);
+    setInternshipLogs(next.internshipLogs);
+    setSessions(next.sessions);
+    setQuizSessions(next.quizSessions);
+    setLooseNotes(next.looseNotes);
+    setBookmarkedCourseIds(next.bookmarkedCourseIds);
+    setManagedItem(null);
+    hapticSuccess();
+    showToast(MANAGED_KIND_REMOVED[kind]);
+  }, [
+    courses, classes, tasks, exams, authors, concepts, readings, flashcards,
+    materials, internshipLogs, sessions, quizSessions, looseNotes,
+    bookmarkedCourseIds, setManagedItem, showToast,
+  ]);
+
+  /** Curso pré-selecionado ao abrir a edição de um item (quando aplicável). */
+  const resolveManageCourseId = useCallback((kind: ManagedItemKind, id: string): string | undefined => {
+    switch (kind) {
+      case 'task':
+        return tasks.find((t) => t.id === id)?.disciplineId;
+      case 'exam':
+        return exams.find((e) => e.id === id)?.courseId;
+      case 'reading':
+        return readings.find((r) => r.id === id)?.courseId;
+      case 'flashcard':
+        return flashcards.find((f) => f.id === id)?.courseId;
+      case 'session':
+        return sessions.find((s) => s.id === id)?.courseId;
+      case 'concept':
+        return concepts.find((c) => c.id === id)?.courseIds[0];
+      case 'material':
+        return materials.find((m) => m.id === id)?.courseId;
+      default:
+        return undefined;
+    }
+  }, [tasks, exams, readings, flashcards, sessions, concepts, materials]);
+
+  /** Abre a edição correta para uma entidade (wizard, modal ou tela própria). */
+  const editManagedItem = useCallback((kind: ManagedItemKind, id: string) => {
+    setManagedItem(null);
+    switch (kind) {
+      case 'course':
+        openEditCourse(id);
+        return;
+      case 'class':
+        openComposeDetails(id);
+        return;
+      case 'looseNote':
+        openNoteDetail(id);
+        return;
+      case 'quizSession':
+        // quiz não tem edição — somente exclusão
+        return;
+      default:
+        break;
+    }
+    const courseId = resolveManageCourseId(kind, id);
+    let type: WizardFlow;
+    switch (kind) {
+      case 'task': type = 'task'; break;
+      case 'exam': type = 'exam'; break;
+      case 'concept': type = 'concept'; break;
+      case 'material': type = 'material'; break;
+      case 'reading': type = 'reading'; break;
+      case 'flashcard': type = 'flashcard'; break;
+      case 'session': type = 'session'; break;
+      case 'internship': type = 'internship'; break;
+      case 'author': type = 'author'; break;
+      default: return;
+    }
+    openWizard(type, courseId);
+    setWizardEdit({ kind, id });
+  }, [openEditCourse, openComposeDetails, openNoteDetail, openWizard, resolveManageCourseId]);
+
   const openSearch = useCallback(() => {
     setIsSearchOpen(true);
   }, []);
@@ -1790,7 +1965,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     openWizard,
     openTaskExamWizard,
     closeWizard,
+    managedItem,
+    openManageItem,
+    closeManageItem,
+    deleteManagedItem,
+    editManagedItem,
+    wizardEdit,
     isEditCourseOpen,
+    editCourseId,
     openEditCourse,
     closeEditCourse,
     isEditTccOpen,
@@ -1827,6 +2009,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     handleUpdateProfile,
     handleUpdateTcc,
     handleUpdateCourse,
+    handleUpdateExam,
+    handleUpdateReading,
+    handleUpdateFlashcard,
+    handleUpdateSession,
+    handleUpdateInternshipLog,
+    handleUpdateAuthor,
+    handleUpdateConcept,
+    handleUpdateMaterial,
 
     // Quiz helpers (extraídos da pilha de navegação)
     currentQuizPlayState,

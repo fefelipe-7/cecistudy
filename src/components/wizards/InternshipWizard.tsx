@@ -7,10 +7,11 @@ import {
   Users,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import type { InternshipLogType } from '../../types';
+import type { InternshipLogType, ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
-import { DateInput, FieldLabel, ReviewCard, TagInput, TextArea, TextInput } from './wizardFields';
+import { DateInput, FieldLabel, ReviewCard, TextArea, TextInput } from './wizardFields';
+import { TagField } from '../ui/TagField';
 
 const today = () => new Date().toISOString().split('T')[0];
 
@@ -35,33 +36,36 @@ const KIND_META: Record<InternshipLogType, { title: string; icon: React.ReactNod
   outro: { title: 'novo registro', icon: <Sparkles className="w-3.5 h-3.5" /> },
 };
 
-export const InternshipWizard: React.FC = () => {
-  const { handleAddInternshipLog, closeWizard, showToast } = useApp();
+export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
+  const { internshipLogs, handleAddInternshipLog, handleUpdateInternshipLog, closeWizard, showToast } = useApp();
+  const editingLog = editing?.kind === 'internship'
+    ? internshipLogs.find((l) => l.id === editing.id)
+    : undefined;
 
-  const [kind, setKind] = useState<InternshipLogType | null>(null);
+  const [kind, setKind] = useState<InternshipLogType | null>(editingLog?.type ?? null);
   const [step, setStep] = useState(0);
 
   // comuns
-  const [activity, setActivity] = useState('');
-  const [hours, setHours] = useState('4');
-  const [date, setDate] = useState(today());
-  const [reflections, setReflections] = useState('');
+  const [activity, setActivity] = useState(editingLog?.activity ?? '');
+  const [hours, setHours] = useState(String(editingLog?.hours ?? '4'));
+  const [date, setDate] = useState(editingLog?.date ?? today());
+  const [reflections, setReflections] = useState(editingLog?.reflections ?? '');
 
   // atendimento clínico
-  const [patient, setPatient] = useState('');
-  const [sessionNumber, setSessionNumber] = useState('');
-  const [patientAge, setPatientAge] = useState('');
-  const [theme, setTheme] = useState('');
-  const [approach, setApproach] = useState('');
-  const [interventionNotes, setInterventionNotes] = useState('');
-  const [observations, setObservations] = useState('');
+  const [patient, setPatient] = useState(editingLog?.patient ?? '');
+  const [sessionNumber, setSessionNumber] = useState(editingLog?.sessionNumber ? String(editingLog.sessionNumber) : '');
+  const [patientAge, setPatientAge] = useState(editingLog?.patientAge ?? '');
+  const [theme, setTheme] = useState(editingLog?.theme ?? '');
+  const [approach, setApproach] = useState(editingLog?.approach ?? '');
+  const [interventionNotes, setInterventionNotes] = useState(editingLog?.interventionNotes ?? '');
+  const [observations, setObservations] = useState(editingLog?.observations ?? '');
 
   // supervisão / intervisão
-  const [supervisor, setSupervisor] = useState('');
-  const [topics, setTopics] = useState<string[]>([]);
-  const [orientations, setOrientations] = useState('');
-  const [doubts, setDoubts] = useState('');
-  const [nextSteps, setNextSteps] = useState('');
+  const [supervisor, setSupervisor] = useState(editingLog?.supervisor ?? '');
+  const [topics, setTopics] = useState<string[]>(editingLog?.topics ?? []);
+  const [orientations, setOrientations] = useState(editingLog?.orientations ?? '');
+  const [doubts, setDoubts] = useState(editingLog?.doubts ?? '');
+  const [nextSteps, setNextSteps] = useState(editingLog?.nextSteps ?? '');
 
   const choiceStep: WizardStep = {
     id: 'tipo',
@@ -324,7 +328,7 @@ export const InternshipWizard: React.FC = () => {
       title: 'temas',
       headline: 'o que foi discutido?',
       content: (
-        <TagInput
+        <TagField
           tags={topics}
           onChange={setTopics}
           placeholder="ex: caso de ansiedade"
@@ -466,7 +470,7 @@ export const InternshipWizard: React.FC = () => {
   const handleSave = () => {
     if (!kind) return;
     const base = {
-      id: 'ilog-' + Date.now(),
+      id: editingLog ? editingLog.id : 'ilog-' + Date.now(),
       type: kind,
       date: date || today(),
       hours: parseFloat(hours) || 4,
@@ -496,17 +500,26 @@ export const InternshipWizard: React.FC = () => {
             }
           : base;
 
+    if (editingLog) {
+      handleUpdateInternshipLog({ ...editingLog, ...log });
+      hapticSuccess();
+      closeWizard();
+      showToast('registro de estágio atualizado ♡');
+      return;
+    }
     handleAddInternshipLog(log);
     hapticSuccess();
     closeWizard();
     showToast('registro de estágio guardado ♡');
   };
 
-  const meta = kind ? KIND_META[kind] : { title: 'novo registro de estágio', icon: <Sparkles className="w-3.5 h-3.5" /> };
+  const meta = kind
+    ? KIND_META[kind]
+    : { title: 'novo registro de estágio', icon: <Sparkles className="w-3.5 h-3.5" /> };
 
   return (
     <WizardScaffold
-      title={meta.title}
+      title={editing ? `editar ${meta.title.replace('novo ', '')}` : meta.title}
       subtitle={kind === null ? 'estágio, atendimento, supervisão...' : undefined}
       icon={meta.icon}
       iconClass="bg-surface-rose border-ceci-border-brand text-ceci-brand-strong"
@@ -517,7 +530,7 @@ export const InternshipWizard: React.FC = () => {
       hideNext={kind === null}
       onSave={handleSave}
       onClose={closeWizard}
-      saveLabel="guardar registro ♡"
+      saveLabel={editing ? 'guardar alterações ♡' : 'guardar registro ♡'}
     />
   );
 };

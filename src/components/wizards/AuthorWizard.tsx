@@ -1,26 +1,30 @@
 import React, { useState } from 'react';
 import { UserCheck } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import type { ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import {
   ReviewCard,
-  SelectField,
-  TagInput,
   TextArea,
   TextInput,
 } from './wizardFields';
+import { Picker } from '../ui/Picker';
+import { TagField } from '../ui/TagField';
 
-export const AuthorWizard: React.FC = () => {
-  const { approaches, handleAddAuthor, closeWizard, showToast } = useApp();
+export const AuthorWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
+  const { approaches, authors, handleAddAuthor, handleUpdateAuthor, closeWizard, showToast } = useApp();
+  const editingAuthor = editing?.kind === 'author'
+    ? authors.find((a) => a.id === editing.id)
+    : undefined;
 
   const [step, setStep] = useState(0);
-  const [name, setName] = useState('');
-  const [bio, setBio] = useState('');
-  const [lifespan, setLifespan] = useState('');
-  const [approachId, setApproachId] = useState('');
-  const [keyConcepts, setKeyConcepts] = useState<string[]>([]);
-  const [majorWorks, setMajorWorks] = useState<string[]>([]);
+  const [name, setName] = useState(editingAuthor?.name ?? '');
+  const [bio, setBio] = useState(editingAuthor?.bio ?? '');
+  const [lifespan, setLifespan] = useState(editingAuthor?.lifespan ?? '');
+  const [approachId, setApproachId] = useState(editingAuthor?.approachId ?? '');
+  const [keyConcepts, setKeyConcepts] = useState<string[]>(editingAuthor?.keyConcepts ?? []);
+  const [majorWorks, setMajorWorks] = useState<string[]>(editingAuthor?.majorWorks ?? []);
 
   const approachName = approaches.find((a) => a.id === approachId)?.name ?? '';
 
@@ -57,7 +61,7 @@ export const AuthorWizard: React.FC = () => {
             onChange={(e) => setBio(e.target.value)}
             placeholder="a biografia e a contribuição dele para a psicologia..."
           />
-          <SelectField
+          <Picker
             label="abordagem (opcional)"
             value={approachId}
             onChange={setApproachId}
@@ -73,14 +77,14 @@ export const AuthorWizard: React.FC = () => {
       headline: 'quais obras e ideias são dele?',
       content: (
         <div className="space-y-5">
-          <TagInput
+          <TagField
             label="obras principais"
             tags={majorWorks}
             onChange={setMajorWorks}
             placeholder="ex: terapia cognitiva da depressão"
             emptyMessage="não precisa preencher tudo ♡"
           />
-          <TagInput
+          <TagField
             label="conceitos-chave"
             tags={keyConcepts}
             onChange={setKeyConcepts}
@@ -109,6 +113,21 @@ export const AuthorWizard: React.FC = () => {
   ];
 
   const handleSave = () => {
+    if (editingAuthor) {
+      handleUpdateAuthor({
+        ...editingAuthor,
+        name: name.trim(),
+        bio: bio.trim() || 'autor estudado na minha jornada de psicologia.',
+        lifespan: lifespan.trim() || undefined,
+        approachId: approachId || undefined,
+        keyConcepts,
+        majorWorks,
+      });
+      hapticSuccess();
+      closeWizard();
+      showToast('autor atualizado ♡');
+      return;
+    }
     handleAddAuthor({
       id: 'aut-' + Date.now(),
       name: name.trim(),
@@ -125,7 +144,7 @@ export const AuthorWizard: React.FC = () => {
 
   return (
     <WizardScaffold
-      title="novo autor"
+      title={editing ? 'editar autor' : 'novo autor'}
       icon={<UserCheck className="w-3.5 h-3.5" />}
       iconClass="bg-surface-blue border-ceci-border-academic text-ceci-academic-strong"
       steps={steps}
@@ -134,7 +153,7 @@ export const AuthorWizard: React.FC = () => {
       canNext={name.trim().length > 0}
       onSave={handleSave}
       onClose={closeWizard}
-      saveLabel="guardar autor ♡"
+      saveLabel={editing ? 'guardar alterações ♡' : 'guardar autor ♡'}
     />
   );
 };

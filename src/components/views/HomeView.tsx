@@ -19,12 +19,59 @@ import {
 } from 'lucide-react';
 import { Task } from '../../types';
 import { useApp } from '../../context/AppContext';
+import { useLongPress } from '../../lib/useLongPress';
 import { AnimatedNumber } from '../ui/AnimatedNumber';
 import { Kitty } from '../ui/Kitty';
 import { CompletionToggle } from '../ui/CompletionToggle';
 import { getCoursesOnWeekday, extractScheduleTime } from '../../lib/schedule';
 import { buildSuggestions } from '../../lib/suggestions';
 import { getDailyGoalMessage, getGreeting } from '../../lib/homeMeta';
+
+/** Tarefa do plano de ação: toque alterna, long-press/clique direito abre editar/excluir. */
+const TaskRow: React.FC<{ task: Task }> = ({ task }) => {
+  const { courses, handleToggleTask, openManageItem } = useApp();
+  const handlers = useLongPress({
+    onLongPress: () => openManageItem('task', task.id),
+    onClick: () => handleToggleTask(task.id),
+  });
+  const courseName = courses.find((c) => c.id === task.disciplineId)?.name;
+
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+      whileTap={{ scale: 0.98 }}
+      {...handlers}
+      className={`p-3.5 rounded-[20px] bg-white border border-ceci-border-subtle shadow-sm hover:border-ceci-border-default tap-interactive cursor-pointer flex items-center justify-between gap-3 ${
+        task.completed ? 'opacity-60 bg-surface-muted' : ''
+      }`}
+    >
+      <div className="flex items-center gap-3 min-w-0">
+        <CompletionToggle
+          checked={task.completed}
+          onChange={() => handleToggleTask(task.id)}
+          label={task.completed ? `marcar "${task.title}" como pendente` : `marcar "${task.title}" como concluída`}
+        />
+        <div className="min-w-0">
+          <p className={`text-xs sm:text-sm font-medium ${task.completed ? 'line-through text-ceci-muted' : 'text-ceci-primary'}`}>
+            {task.title}
+          </p>
+          <p className="text-[11px] text-ceci-secondary mt-0.5">
+            prazo: {task.dueDate || 'sem prazo'}
+            {courseName ? ` • ${courseName}` : ''}
+          </p>
+        </div>
+      </div>
+
+      <div className="w-8 h-8 rounded-xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-xs font-bold text-ceci-brand-strong shrink-0">
+        ♡
+      </div>
+    </motion.div>
+  );
+};
 
 export const HomeView: React.FC = () => {
   const {
@@ -397,42 +444,7 @@ export const HomeView: React.FC = () => {
         <div className="space-y-2">
           <AnimatePresence mode="popLayout">
             {tasks.map((task) => (
-              <motion.div
-                key={task.id}
-                layout
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => handleToggleTask(task.id)}
-                className={`p-3.5 rounded-[20px] bg-white border border-ceci-border-subtle shadow-sm hover:border-ceci-border-default tap-interactive cursor-pointer flex items-center justify-between gap-3 ${
-                  task.completed ? 'opacity-60 bg-surface-muted' : ''
-                }`}
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <CompletionToggle
-                    checked={task.completed}
-                    onChange={() => handleToggleTask(task.id)}
-                    label={task.completed ? `marcar "${task.title}" como pendente` : `marcar "${task.title}" como concluída`}
-                  />
-                  <div className="min-w-0">
-                    <p className={`text-xs sm:text-sm font-medium ${task.completed ? 'line-through text-ceci-muted' : 'text-ceci-primary'}`}>
-                      {task.title}
-                    </p>
-                    <p className="text-[11px] text-ceci-secondary mt-0.5">
-                      prazo: {task.dueDate || 'sem prazo'}
-                      {task.disciplineId && courses.find((c) => c.id === task.disciplineId)?.name
-                        ? ` • ${courses.find((c) => c.id === task.disciplineId)!.name}`
-                        : ''}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="w-8 h-8 rounded-xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-xs font-bold text-ceci-brand-strong shrink-0">
-                  ♡
-                </div>
-              </motion.div>
+              <TaskRow key={task.id} task={task} />
             ))}
           </AnimatePresence>
 

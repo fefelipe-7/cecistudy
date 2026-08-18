@@ -1,25 +1,34 @@
 import React, { useState } from 'react';
 import { Brain } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import type { ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
-import { ReviewCard, SelectField, TextArea, TextInput } from './wizardFields';
+import { ReviewCard, TextArea, TextInput } from './wizardFields';
+import { Picker } from '../ui/Picker';
 
-export const FlashcardWizard: React.FC = () => {
+export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
   const {
     courses,
     concepts,
+    flashcards,
     wizardCourseId,
     handleAddFlashcard,
+    handleUpdateFlashcard,
     closeWizard,
     showToast,
   } = useApp();
+  const editingCard = editing?.kind === 'flashcard'
+    ? flashcards.find((c) => c.id === editing.id)
+    : undefined;
 
   const [step, setStep] = useState(0);
-  const [question, setQuestion] = useState('');
-  const [answer, setAnswer] = useState('');
-  const [courseId, setCourseId] = useState(wizardCourseId || courses[0]?.id || '');
-  const [conceptId, setConceptId] = useState('');
+  const [question, setQuestion] = useState(editingCard?.question ?? '');
+  const [answer, setAnswer] = useState(editingCard?.answer ?? '');
+  const [courseId, setCourseId] = useState(
+    editingCard?.courseId ?? (wizardCourseId || courses[0]?.id || '')
+  );
+  const [conceptId, setConceptId] = useState(editingCard?.conceptId ?? '');
 
   const courseName = courses.find((c) => c.id === courseId)?.name ?? '';
   const conceptName = concepts.find((c) => c.id === conceptId)?.name ?? '';
@@ -57,14 +66,14 @@ export const FlashcardWizard: React.FC = () => {
       headline: 'quer conectar a um conceito ou disciplina?',
       content: (
         <div className="space-y-4">
-          <SelectField
+          <Picker
             label="conceito relacionado (opcional)"
             value={conceptId}
             onChange={setConceptId}
             options={concepts.map((c) => ({ value: c.id, label: c.name }))}
             emptyMessage="ainda não há conceitos no cantinho."
           />
-          <SelectField
+          <Picker
             label="disciplina (opcional)"
             value={courseId}
             onChange={setCourseId}
@@ -95,6 +104,19 @@ export const FlashcardWizard: React.FC = () => {
     step === 0 ? question.trim().length > 0 : step === 1 ? answer.trim().length > 0 : true;
 
   const handleSave = () => {
+    if (editingCard) {
+      handleUpdateFlashcard({
+        ...editingCard,
+        courseId: courseId || undefined,
+        conceptId: conceptId || undefined,
+        question: question.trim(),
+        answer: answer.trim(),
+      });
+      hapticSuccess();
+      closeWizard();
+      showToast('flashcard atualizado ♡');
+      return;
+    }
     handleAddFlashcard({
       id: 'f-' + Date.now(),
       courseId: courseId || undefined,
@@ -110,7 +132,7 @@ export const FlashcardWizard: React.FC = () => {
 
   return (
     <WizardScaffold
-      title="novo flashcard"
+      title={editing ? 'editar flashcard' : 'novo flashcard'}
       icon={<Brain className="w-3.5 h-3.5" />}
       iconClass="bg-surface-blue border-ceci-border-academic text-ceci-academic-strong"
       steps={steps}
@@ -119,7 +141,7 @@ export const FlashcardWizard: React.FC = () => {
       canNext={canNext}
       onSave={handleSave}
       onClose={closeWizard}
-      saveLabel="guardar flashcard ♡"
+      saveLabel={editing ? 'guardar alterações ♡' : 'guardar flashcard ♡'}
     />
   );
 };

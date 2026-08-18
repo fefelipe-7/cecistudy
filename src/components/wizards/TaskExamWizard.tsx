@@ -1,24 +1,26 @@
 import React, { useMemo, useState } from 'react';
 import { ClipboardList, CheckCircle2, Sparkles, CalendarPlus2 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import type { Task } from '../../types';
+import type { Task, Exam, ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { createTaskCalendarEvent, createExamCalendarEvent } from '../../lib/calendar';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import { Toggle } from '../ui/Toggle';
 import {
-  ChipPicker,
   DateInput,
   FieldLabel,
   ReviewCard,
-  SelectField,
-  TagInput,
   TextInput,
 } from './wizardFields';
+import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
+import { Picker } from '../ui/Picker';
+import { TagField } from '../ui/TagField';
 
 interface TaskExamWizardProps {
   /** Quando definido, pula a escolha entre tarefa e prova (vindo do picker). */
   preset?: 'task' | 'exam';
+  /** Quando presente, hidrata o formulário para editar um item existente. */
+  editing?: ManagedItem | null;
 }
 
 const TASK_CATEGORIES: { value: Task['category']; label: string; emoji?: string }[] = [
@@ -37,24 +39,41 @@ const PRIORITIES: { value: Task['priority']; label: string; emoji?: string }[] =
 
 const today = () => new Date().toISOString().split('T')[0];
 
-export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
-  const { courses, wizardCourseId, handleAddTask, handleAddExam, closeWizard, showToast } = useApp();
-  const [kind, setKind] = useState<'task' | 'exam' | null>(preset ?? null);
+export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing }) => {
+  const {
+    courses,
+    tasks,
+    exams,
+    wizardCourseId,
+    handleAddTask,
+    handleAddExam,
+    handleUpdateTask,
+    handleUpdateExam,
+    closeWizard,
+    showToast,
+  } = useApp();
+  const editingTask = editing?.kind === 'task' ? tasks.find((t) => t.id === editing.id) : undefined;
+  const editingExam = editing?.kind === 'exam' ? exams.find((e) => e.id === editing.id) : undefined;
+  const initialKind: 'task' | 'exam' | null =
+    editing?.kind === 'task' ? 'task' : editing?.kind === 'exam' ? 'exam' : preset ?? null;
+  const [kind, setKind] = useState<'task' | 'exam' | null>(initialKind);
   const [step, setStep] = useState(0);
-  const [courseId, setCourseId] = useState(wizardCourseId || courses[0]?.id || '');
+  const [courseId, setCourseId] = useState(
+    editingTask?.disciplineId ?? editingExam?.courseId ?? (wizardCourseId || courses[0]?.id || '')
+  );
 
   // tarefa
-  const [taskTitle, setTaskTitle] = useState('');
-  const [taskCategory, setTaskCategory] = useState<Task['category']>('leitura');
-  const [taskDueDate, setTaskDueDate] = useState('');
-  const [taskPriority, setTaskPriority] = useState<Task['priority']>('media');
+  const [taskTitle, setTaskTitle] = useState(editingTask?.title ?? '');
+  const [taskCategory, setTaskCategory] = useState<Task['category']>(editingTask?.category ?? 'leitura');
+  const [taskDueDate, setTaskDueDate] = useState(editingTask?.dueDate ?? '');
+  const [taskPriority, setTaskPriority] = useState<Task['priority']>(editingTask?.priority ?? 'media');
   const [addToAgenda, setAddToAgenda] = useState(false);
 
   // prova
-  const [examTitle, setExamTitle] = useState('');
-  const [examDate, setExamDate] = useState('');
-  const [examWeight, setExamWeight] = useState('1,0');
-  const [examTopics, setExamTopics] = useState<string[]>([]);
+  const [examTitle, setExamTitle] = useState(editingExam?.title ?? '');
+  const [examDate, setExamDate] = useState(editingExam?.date ?? '');
+  const [examWeight, setExamWeight] = useState(editingExam?.weight ?? '1,0');
+  const [examTopics, setExamTopics] = useState<string[]>(editingExam?.topics ?? []);
 
   const courseName = courses.find((c) => c.id === courseId)?.name ?? '';
 
@@ -164,17 +183,17 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
       headline: 'como essa tarefa se encaixa no seu dia?',
       content: (
         <div className="space-y-5">
-          <ChipPicker
+          <ChoiceCardGrid
             label="categoria"
             options={TASK_CATEGORIES}
             value={taskCategory}
-            onChange={setTaskCategory}
+            onChange={(v) => setTaskCategory(v)}
           />
-          <ChipPicker
+          <ChoiceCardGrid
             label="prioridade"
             options={PRIORITIES}
             value={taskPriority}
-            onChange={setTaskPriority}
+            onChange={(v) => setTaskPriority(v)}
           />
         </div>
       ),
@@ -185,7 +204,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
       headline: 'qual disciplina e quando precisa estar pronta?',
       content: (
         <div className="space-y-4">
-          <SelectField
+          <Picker
             label="disciplina"
             value={courseId}
             onChange={setCourseId}
@@ -242,7 +261,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
       headline: 'qual disciplina e quanto vale?',
       content: (
         <div className="space-y-4">
-          <SelectField
+          <Picker
             label="disciplina"
             value={courseId}
             onChange={setCourseId}
@@ -265,7 +284,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
       title: 'tópicos',
       headline: 'o que vai cair nessa prova?',
       content: (
-        <TagInput
+        <TagField
           tags={examTopics}
           onChange={setExamTopics}
           placeholder="ex: pensamentos automáticos"
@@ -294,6 +313,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
   ];
 
   const steps = kind === null ? [choiceStep] : kind === 'task' ? taskSteps : examSteps;
+  const stepsForEdit = editing ? steps.filter((s) => s.id !== 'agenda') : steps;
 
   const canNext =
     kind === null
@@ -303,6 +323,33 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
         : examTitle.trim().length > 0;
 
   const handleSave = async () => {
+    if (editingTask && kind === 'task') {
+      handleUpdateTask(editingTask.id, {
+        title: taskTitle.trim(),
+        disciplineId: courseId,
+        category: taskCategory,
+        dueDate: taskDueDate || today(),
+        priority: taskPriority,
+      });
+      hapticSuccess();
+      closeWizard();
+      showToast('tarefa atualizada ♡');
+      return;
+    }
+    if (editingExam && kind === 'exam') {
+      handleUpdateExam({
+        ...editingExam,
+        courseId: courseId || editingExam.courseId,
+        title: examTitle.trim(),
+        date: examDate || today(),
+        weight: examWeight.trim() || '1,0',
+        topics: examTopics,
+      });
+      hapticSuccess();
+      closeWizard();
+      showToast('prova atualizada ♡');
+      return;
+    }
     if (kind === 'task') {
       handleAddTask({
         id: 't-' + Date.now(),
@@ -353,7 +400,24 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
 
   return (
     <WizardScaffold
-      title={kind === null ? 'novo registro' : kind === 'exam' ? 'nova prova / avaliação' : 'nova tarefa'}
+      steps={stepsForEdit}
+      step={step}
+      onStepChange={setStep}
+      canNext={canNext}
+      hideNext={kind === null}
+      onSave={handleSave}
+      onClose={closeWizard}
+      title={
+        editing
+          ? kind === 'exam'
+            ? 'editar prova'
+            : 'editar tarefa'
+          : kind === null
+            ? 'novo registro'
+            : kind === 'exam'
+              ? 'nova prova / avaliação'
+              : 'nova tarefa'
+      }
       subtitle={kind === null ? 'prova ou atividade?' : undefined}
       icon={
         kind === 'exam' ? (
@@ -369,14 +433,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset }) => {
           ? 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong'
           : 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
       }
-      steps={steps}
-      step={step}
-      onStepChange={setStep}
-      canNext={canNext}
-      hideNext={kind === null}
-      onSave={handleSave}
-      onClose={closeWizard}
-      saveLabel={kind === 'task' ? 'guardar tarefa ♡' : 'guardar prova ♡'}
+      saveLabel={editing ? 'guardar alterações ♡' : kind === 'task' ? 'guardar tarefa ♡' : 'guardar prova ♡'}
     />
   );
 };

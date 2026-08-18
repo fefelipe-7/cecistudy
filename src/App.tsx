@@ -15,6 +15,7 @@ import { EditCourseModal } from './components/courses/EditCourseModal';
 import { EditTccModal } from './components/tcc/EditTccModal';
 import { Toast } from './components/ui/Toast';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
+import { ManageDataModal } from './components/ui/ManageDataModal';
 
 import { OnboardingScreen } from './components/views/OnboardingScreen';
 
@@ -133,7 +134,9 @@ function AppShell() {
     if (!Capacitor.isNativePlatform()) return;
     const handler = CapacitorApp.addListener('backButton', () => {
       const a = appRef.current;
-      if (a.isQuickAddOpen) {
+      if (a.managedItem) {
+        a.closeManageItem();
+      } else if (a.isQuickAddOpen) {
         a.closeQuickAdd();
       } else if (a.isSearchOpen) {
         a.closeSearch();
@@ -435,13 +438,18 @@ function AppShell() {
         onNavigate={handleNavigate}
       />
 
-      {/* Editar matéria (aberta pelo menu do header de disciplina) */}
+      {/* Editar matéria (aberta pelo menu do header de disciplina ou long-press) */}
       <EditCourseModalMemo
         isOpen={app.isEditCourseOpen}
-        course={app.focusedCourse}
+        course={app.editCourseId
+          ? app.courses.find((c) => c.id === app.editCourseId) ?? app.focusedCourse
+          : app.focusedCourse}
         onClose={app.closeEditCourse}
         onSave={app.handleUpdateCourse}
       />
+
+      {/* Menu universal de editar/excluir (long-press / clique direito) */}
+      <ManageDataModal />
 
       {/* Editar tcc (aberto pela tela de tcc / header detail) */}
       <EditTccModal

@@ -6,6 +6,13 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
+ * Impede que TypeScript infira um tipo genérico a partir desta posição.
+ * Usado nas props de options/tabs para que o tipo `T` seja inferido
+ * apenas de `value`/`onChange` (evita widening para `string`).
+ */
+export type NoInfer<T> = [T][T extends any ? 0 : never];
+
+/**
  * Copia texto para a área de transferência.
  * Usa a Clipboard API moderna com fallback para o `execCommand` legado,
  * que funciona dentro do webview do Capacitor.

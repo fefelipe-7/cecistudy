@@ -3,6 +3,7 @@ import { motion, useMotionValue, useTransform, type PanInfo } from 'framer-motio
 import { Plus, X, CheckCircle2, RefreshCcw } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { Kitty } from '../ui/Kitty';
+import { useLongPress } from '../../lib/useLongPress';
 import { celebrate } from '../../lib/celebrate';
 import { hapticSuccess } from '../../lib/haptics';
 import type { Flashcard } from '../../types';
@@ -18,7 +19,7 @@ const isDueToday = (card: Flashcard) =>
 
 /** Tela dedicada de revisão de flashcards (fila da sessão). */
 export const StudyRevisarScreen: React.FC = () => {
-  const { flashcards, handleReviewFlashcard, openWizard } = useApp();
+  const { flashcards, handleReviewFlashcard, openWizard, openManageItem } = useApp();
 
   const [reviewQueue, setReviewQueue] = useState<Flashcard[]>([]);
   const [queueIndex, setQueueIndex] = useState(0);
@@ -66,6 +67,14 @@ export const StudyRevisarScreen: React.FC = () => {
     dragX.set(0);
     setReviewedCount(0);
   };
+
+  const cardHandlers = useLongPress({
+    onLongPress: () => {
+      if (!activeCard) return;
+      openManageItem('flashcard', activeCard.id);
+    },
+    onClick: () => setIsFlipped((f) => !f),
+  });
 
   return (
     <motion.div
@@ -122,7 +131,7 @@ export const StudyRevisarScreen: React.FC = () => {
               onDragEnd={handleCardDragEnd}
               style={{ x: dragX, rotate: cardRotate }}
               whileTap={{ scale: 0.99 }}
-              onClick={() => setIsFlipped((f) => !f)}
+              {...cardHandlers}
               className="min-h-[180px] p-6 rounded-2xl bg-surface-rose border border-ceci-border-brand flex flex-col items-center justify-center cursor-pointer touch-pan-y"
             >
               <span className="text-xs font-semibold text-ceci-brand-strong mb-2 select-none">

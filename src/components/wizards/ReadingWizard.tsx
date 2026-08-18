@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { BookOpen } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import type { ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import {
-  ChipPicker,
   FieldLabel,
   ReviewCard,
-  SelectField,
   TextInput,
 } from './wizardFields';
+import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
+import { Picker } from '../ui/Picker';
 
 const TYPES: { value: ReadingType; label: string; emoji?: string }[] = [
   { value: 'livro', label: 'livro', emoji: '📖' },
@@ -24,16 +25,29 @@ const STATUS: { value: ReadingStatus; label: string; emoji?: string }[] = [
   { value: 'concluido', label: 'concluído', emoji: '✅' },
 ];
 
-export const ReadingWizard: React.FC = () => {
-  const { courses, wizardCourseId, handleAddReading, closeWizard, showToast } = useApp();
+export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
+  const {
+    courses,
+    readings,
+    wizardCourseId,
+    handleAddReading,
+    handleUpdateReading,
+    closeWizard,
+    showToast,
+  } = useApp();
+  const editingReading = editing?.kind === 'reading'
+    ? readings.find((r) => r.id === editing.id)
+    : undefined;
 
   const [step, setStep] = useState(0);
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [type, setType] = useState<ReadingType>('livro');
-  const [totalPages, setTotalPages] = useState('200');
-  const [courseId, setCourseId] = useState(wizardCourseId || courses[0]?.id || '');
-  const [status, setStatus] = useState<ReadingStatus>('lendo');
+  const [title, setTitle] = useState(editingReading?.title ?? '');
+  const [author, setAuthor] = useState(editingReading?.author ?? '');
+  const [type, setType] = useState<ReadingType>(editingReading?.type ?? 'livro');
+  const [totalPages, setTotalPages] = useState(String(editingReading?.totalPages ?? '200'));
+  const [courseId, setCourseId] = useState(
+    editingReading?.courseId ?? (wizardCourseId || courses[0]?.id || '')
+  );
+  const [status, setStatus] = useState<ReadingStatus>(editingReading?.status ?? 'lendo');
 
   const courseName = courses.find((c) => c.id === courseId)?.name ?? '';
 
@@ -64,11 +78,11 @@ export const ReadingWizard: React.FC = () => {
       headline: 'qual o formato e o tamanho?',
       content: (
         <div className="space-y-5">
-          <ChipPicker
+          <ChoiceCardGrid
             label="tipo"
             options={TYPES}
             value={type}
-            onChange={setType}
+            onChange={(v) => setType(v)}
           />
           <div>
             <FieldLabel>total de páginas</FieldLabel>
@@ -88,18 +102,18 @@ export const ReadingWizard: React.FC = () => {
       headline: 'onde essa leitura se encaixa?',
       content: (
         <div className="space-y-5">
-          <SelectField
+          <Picker
             label="disciplina (opcional)"
             value={courseId}
             onChange={setCourseId}
             options={courses.map((c) => ({ value: c.id, label: c.name }))}
             emptyMessage="ainda não há disciplinas cadastradas."
           />
-          <ChipPicker
+          <ChoiceCardGrid
             label="status"
             options={STATUS}
             value={status}
-            onChange={setStatus}
+            onChange={(v) => setStatus(v)}
           />
         </div>
       ),
@@ -124,6 +138,21 @@ export const ReadingWizard: React.FC = () => {
   ];
 
   const handleSave = () => {
+    if (editingReading) {
+      handleUpdateReading({
+        ...editingReading,
+        title: title.trim(),
+        author: author.trim() || 'autor não informado',
+        courseId: courseId || undefined,
+        type,
+        totalPages: parseInt(totalPages) || 200,
+        status,
+      });
+      hapticSuccess();
+      closeWizard();
+      showToast('leitura atualizada ♡');
+      return;
+    }
     handleAddReading({
       id: 'r-' + Date.now(),
       title: title.trim(),
@@ -142,7 +171,7 @@ export const ReadingWizard: React.FC = () => {
 
   return (
     <WizardScaffold
-      title="nova leitura"
+      title={editing ? 'editar leitura' : 'nova leitura'}
       icon={<BookOpen className="w-3.5 h-3.5" />}
       iconClass="bg-surface-rose border-ceci-border-brand text-ceci-brand-strong"
       steps={steps}
@@ -151,7 +180,7 @@ export const ReadingWizard: React.FC = () => {
       canNext={title.trim().length > 0}
       onSave={handleSave}
       onClose={closeWizard}
-      saveLabel="guardar leitura ♡"
+      saveLabel={editing ? 'guardar alterações ♡' : 'guardar leitura ♡'}
     />
   );
 };

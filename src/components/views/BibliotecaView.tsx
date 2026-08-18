@@ -43,6 +43,7 @@ import {
 } from '../../data/books';
 import { InlineCollectionBlock } from '../library/InlineCollectionBlock';
 import { Kitty } from '../ui/Kitty';
+import { TagChip } from '../ui/TagChip';
 import { BookDetailModal } from '../library/BookDetailModal';
 import { LibraryFilterModal } from '../library/LibraryFilterModal';
 import { NotesScreen } from '../library/NotesScreen';
@@ -483,12 +484,14 @@ export const BibliotecaView: React.FC = () => {
             )}
 
             {selectedTag && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-surface-mint-soft text-success-deep border border-ceci-border-academic rounded-full text-[11px] font-semibold">
+              <TagChip
+                variant="blue"
+                size="sm"
+                onRemove={() => setSelectedTag(null)}
+                removeLabel="limpar filtro de tag"
+              >
                 tag: {selectedTag}
-                <button onClick={() => setSelectedTag(null)} className="hover:text-black">
-                  <X className="w-3 h-3" />
-                </button>
-              </span>
+              </TagChip>
             )}
 
             {searchTerm && (

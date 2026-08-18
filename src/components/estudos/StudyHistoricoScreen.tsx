@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Flame, ChevronRight, Play, Target, BookOpen } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { Kitty } from '../ui/Kitty';
+import { ManageSurface } from '../ui/ManageSurface';
 
 const toISODate = (d: Date) => d.toISOString().split('T')[0];
 const formatPct = (n: number) => `${Math.round(n)}%`;
@@ -76,8 +77,10 @@ export const StudyHistoricoScreen: React.FC = () => {
             <div className="space-y-2">
               <p className="text-xs text-ceci-tertiary font-semibold tracking-wide lowercase px-1 pt-1">sessões de foco</p>
               {sortedSessions.map((s) => (
-                <div
+                <ManageSurface
                   key={s.id}
+                  kind="session"
+                  id={s.id}
                   className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm flex items-center justify-between gap-3"
                 >
                   <div className="min-w-0">
@@ -89,7 +92,7 @@ export const StudyHistoricoScreen: React.FC = () => {
                   <span className="text-xs font-bold text-ceci-brand-strong bg-surface-rose px-3 py-1.5 rounded-full border border-ceci-border-brand shrink-0">
                     {s.durationMinutes} min
                   </span>
-                </div>
+                </ManageSurface>
               ))}
             </div>
           )}
@@ -99,8 +102,10 @@ export const StudyHistoricoScreen: React.FC = () => {
             <div className="space-y-2">
               <p className="text-xs text-ceci-tertiary font-semibold tracking-wide lowercase px-1 pt-1">quizzes</p>
               {sortedQuizzes.map((q) => (
-                <div
+                <ManageSurface
                   key={q.id}
+                  kind="quizSession"
+                  id={q.id}
                   className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm flex items-center justify-between gap-3"
                 >
                   <div className="min-w-0 flex items-center gap-2.5">
@@ -119,7 +124,7 @@ export const StudyHistoricoScreen: React.FC = () => {
                   <span className="text-xs font-bold text-ceci-academic-strong bg-surface-blue px-3 py-1.5 rounded-full border border-ceci-border-academic shrink-0">
                     {formatPct(q.scorePct)}
                   </span>
-                </div>
+                </ManageSurface>
               ))}
             </div>
           )}
@@ -129,8 +134,10 @@ export const StudyHistoricoScreen: React.FC = () => {
             <div className="space-y-2">
               <p className="text-xs text-ceci-tertiary font-semibold tracking-wide lowercase px-1 pt-1">leituras concluídas</p>
               {doneReadings.map((r) => (
-                <div
+                <ManageSurface
                   key={r.id}
+                  kind="reading"
+                  id={r.id}
                   className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm flex items-center justify-between gap-3"
                 >
                   <div className="min-w-0 flex items-center gap-2.5">
@@ -147,7 +154,7 @@ export const StudyHistoricoScreen: React.FC = () => {
                   <span className="text-xs font-semibold text-green-700 bg-green-50 px-3 py-1.5 rounded-full border border-green-200 shrink-0">
                     concluída
                   </span>
-                </div>
+                </ManageSurface>
               ))}
             </div>
           )}

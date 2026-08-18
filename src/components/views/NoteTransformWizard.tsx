@@ -23,16 +23,16 @@ import { hapticSuccess } from '../../lib/haptics';
 import { buildClassNoteFromNote, noteFirstLine } from '../../lib/noteLogic';
 import { WizardScaffold, type WizardStep } from '../wizards/WizardScaffold';
 import {
-  ChipPicker,
   DateInput,
   FieldLabel,
-  MultiChipPicker,
   ReviewCard,
-  SelectField,
-  TagInput,
   TextArea,
   TextInput,
 } from '../wizards/wizardFields';
+import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
+import { PillGroupMulti } from '../ui/PillGroupMulti';
+import { Picker } from '../ui/Picker';
+import { TagField } from '../ui/TagField';
 
 type IconType = React.ComponentType<{ className?: string }>;
 
@@ -245,7 +245,7 @@ export const NoteTransformWizard: React.FC = () => {
   }
 
   const courseSelect = (
-    <SelectField
+    <Picker
       label="disciplina"
       value={courseId}
       onChange={setCourseId}
@@ -359,17 +359,17 @@ export const NoteTransformWizard: React.FC = () => {
                 placeholder="título da tarefa"
                 autoFocus
               />
-              <ChipPicker
+              <ChoiceCardGrid
                 label="categoria"
                 options={TASK_CATEGORIES}
                 value={taskCategory}
-                onChange={setTaskCategory}
+                onChange={(v) => setTaskCategory(v)}
               />
-              <ChipPicker
+              <ChoiceCardGrid
                 label="prioridade"
                 options={PRIORITIES}
                 value={priority}
-                onChange={setPriority}
+                onChange={(v) => setPriority(v)}
               />
               {courseSelect}
               <div>
@@ -413,7 +413,7 @@ export const NoteTransformWizard: React.FC = () => {
                   />
                 </div>
               </div>
-              <TagInput
+              <TagField
                 tags={topics}
                 onChange={setTopics}
                 placeholder="tópicos da prova (ex: transtornos de ansiedade)"
@@ -451,7 +451,7 @@ export const NoteTransformWizard: React.FC = () => {
                 />
               </div>
               {courseSelect}
-              <SelectField
+              <Picker
                 label="conceito (opcional)"
                 value={conceptId}
                 onChange={setConceptId}
@@ -516,11 +516,11 @@ export const NoteTransformWizard: React.FC = () => {
                 placeholder="o que aconteceu (atividade/evento)"
                 autoFocus
               />
-              <ChipPicker
+              <ChoiceCardGrid
                 label="tipo"
                 options={INTERNSHIP_TYPES}
                 value={internshipType}
-                onChange={setInternshipType}
+                onChange={(v) => setInternshipType(v)}
               />
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -576,7 +576,7 @@ export const NoteTransformWizard: React.FC = () => {
                   placeholder="o que é esse conceito?"
                 />
               </div>
-              <SelectField
+              <Picker
                 label="abordagem (opcional)"
                 value={approachId}
                 onChange={setApproachId}
@@ -584,19 +584,19 @@ export const NoteTransformWizard: React.FC = () => {
                 placeholder="sem abordagem"
                 emptyMessage="ainda não há abordagens registradas."
               />
-              <MultiChipPicker
+              <PillGroupMulti variant="rose"
                 label="autores relacionados"
                 options={authors.map((x) => ({ value: x.id, label: x.name }))}
-                values={authorIds}
+                value={authorIds}
                 onChange={setAuthorIds}
               />
-              <MultiChipPicker
+              <PillGroupMulti variant="rose"
                 label="disciplinas"
                 options={courses.map((x) => ({ value: x.id, label: x.name }))}
-                values={courseIds}
+                value={courseIds}
                 onChange={setCourseIds}
               />
-              <TagInput
+              <TagField
                 tags={tags}
                 onChange={setTags}
                 placeholder="tags do conceito (ex: ansiedade)"
@@ -634,7 +634,7 @@ export const NoteTransformWizard: React.FC = () => {
                   placeholder="o que você quer lembrar dele(a)?"
                 />
               </div>
-              <SelectField
+              <Picker
                 label="abordagem (opcional)"
                 value={approachId}
                 onChange={setApproachId}
@@ -642,13 +642,13 @@ export const NoteTransformWizard: React.FC = () => {
                 placeholder="sem abordagem"
                 emptyMessage="ainda não há abordagens registradas."
               />
-              <TagInput
+              <TagField
                 tags={keyConcepts}
                 onChange={setKeyConcepts}
                 placeholder="conceitos-chave"
                 emptyMessage="não precisa preencher tudo, pode deixar vazio ♡"
               />
-              <TagInput
+              <TagField
                 tags={majorWorks}
                 onChange={setMajorWorks}
                 placeholder="obras principais"
@@ -676,11 +676,11 @@ export const NoteTransformWizard: React.FC = () => {
                 placeholder="título do material"
                 autoFocus
               />
-              <ChipPicker
+              <ChoiceCardGrid
                 label="tipo"
                 options={MATERIAL_TYPES}
                 value={materialType}
-                onChange={setMaterialType}
+                onChange={(v) => setMaterialType(v)}
               />
               <TextInput
                 value={materialAuthor}
@@ -693,7 +693,7 @@ export const NoteTransformWizard: React.FC = () => {
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="link (se houver)"
               />
-              <TagInput
+              <TagField
                 tags={materialTags}
                 onChange={setMaterialTags}
                 placeholder="tags do material"

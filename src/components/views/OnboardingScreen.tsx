@@ -17,7 +17,8 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { cn } from '../../lib/utils';
-import { Toggle } from '../ui/Toggle';
+import { PillGroup } from '../ui/PillGroup';
+import { ToggleRow } from '../ui/ToggleRow';
 import { pickProfilePhoto } from '../../lib/photo';
 import {
   checkPermission,
@@ -185,42 +186,22 @@ export const OnboardingScreen: React.FC = () => {
 
               <div>
                 <p className="text-xs font-semibold text-ceci-secondary mb-2">semestre atual</p>
-                <div className="flex flex-wrap gap-2">
-                  {SEMESTER_OPTIONS.map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => setSemester(s)}
-                      className={cn(
-                        'w-10 h-10 rounded-xl border text-sm font-bold transition-colors cursor-pointer',
-                        semester === s
-                          ? 'bg-ceci-primary text-white border-ceci-primary shadow-xs'
-                          : 'bg-white text-ceci-secondary border-ceci-border-default hover:bg-surface-muted'
-                      )}
-                    >
-                      {s}º
-                    </button>
-                  ))}
-                </div>
+                <PillGroup
+                  variant="primary"
+                  options={SEMESTER_OPTIONS.map((s) => ({ value: String(s), label: `${s}º` }))}
+                  value={String(semester)}
+                  onChange={(v) => setSemester(Number(v))}
+                />
               </div>
 
               <div>
                 <p className="text-xs font-semibold text-ceci-secondary mb-2">total de semestres do curso</p>
-                <div className="flex flex-wrap gap-2">
-                  {SEMESTER_OPTIONS.map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => setTotalSemesters(s)}
-                      className={cn(
-                        'w-10 h-10 rounded-xl border text-sm font-bold transition-colors cursor-pointer',
-                        totalSemesters === s
-                          ? 'bg-ceci-academic text-white border-ceci-academic shadow-xs'
-                          : 'bg-white text-ceci-secondary border-ceci-border-default hover:bg-surface-muted'
-                      )}
-                    >
-                      {s}º
-                    </button>
-                  ))}
-                </div>
+                <PillGroup
+                  variant="academic"
+                  options={SEMESTER_OPTIONS.map((s) => ({ value: String(s), label: `${s}º` }))}
+                  value={String(totalSemesters)}
+                  onChange={(v) => setTotalSemesters(Number(v))}
+                />
               </div>
 
               <div className="flex gap-2 pt-2">
@@ -472,37 +453,32 @@ const PermissionsStep: React.FC<{ onFinish: () => void; onBack: () => void }> = 
           const granted = state === 'granted';
           const loading = state === 'loading';
           return (
-            <div
+            <ToggleRow
               key={kind}
-              className={cn(
-                'rounded-2xl p-4 border flex items-center gap-3',
+              label={title}
+              description={description}
+              icon={<Icon className="w-4.5 h-4.5" />}
+              iconClassName={
                 granted
-                  ? 'bg-surface-rose border-ceci-border-brand'
-                  : 'bg-white border-ceci-border-default'
-              )}
-            >
-              <span className={cn('w-10 h-10 rounded-2xl flex items-center justify-center shrink-0', granted ? 'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand' : 'bg-surface-muted text-ceci-secondary border border-ceci-border-default')}>
-                <Icon className="w-4.5 h-4.5" />
-              </span>
-
-              <div className="flex-1 min-w-0">
-                <h3 className="font-display font-bold text-sm text-ceci-primary">{title}</h3>
-                <p className="text-[11px] text-ceci-secondary leading-tight mt-0.5">{description}</p>
-                {state === 'denied' && (
+                  ? 'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand'
+                  : 'bg-surface-muted text-ceci-secondary border border-ceci-border-default'
+              }
+              checked={granted}
+              onChange={() => toggle(kind)}
+              disabled={!supported}
+              loading={loading}
+              extra={
+                state === 'denied' ? (
                   <p className="text-[10px] text-red-700 mt-1 flex items-center gap-1">
                     <X className="w-3 h-3" /> não concedido — dá pra ativar depois nas configurações.
                   </p>
-                )}
-              </div>
-
-              <Toggle
-                checked={granted}
-                onChange={() => toggle(kind)}
-                disabled={!supported}
-                loading={loading}
-                label={`permissão de ${title}`}
-              />
-            </div>
+                ) : undefined
+              }
+              className={cn(
+                'rounded-2xl p-4 border',
+                granted ? 'bg-surface-rose border-ceci-border-brand' : 'bg-white border-ceci-border-default'
+              )}
+            />
           );
         })}
       </div>

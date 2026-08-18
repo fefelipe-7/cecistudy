@@ -6,6 +6,8 @@ import type { LooseNote } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { usePersistentState } from '../../lib/usePersistentState';
 import { StarRating } from '../ui/StarRating';
+import { PillGroup } from '../ui/PillGroup';
+import { Picker } from '../ui/Picker';
 
 const LOOSE_CATEGORIES: LooseNote['category'][] = ['reflexão', 'estudo', 'ideia', 'lembrete'];
 
@@ -142,18 +144,14 @@ export const ComposeNoteView: React.FC = () => {
           </button>
 
           {isClassNote && (
-            <select
+            <Picker
               value={courseId}
-              onChange={(e) => setCourseId(e.target.value)}
-              className="flex-1 min-w-0 bg-white border border-ceci-border-default rounded-full px-3 py-1.5 text-[11px] font-medium text-ceci-primary focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 cursor-pointer"
-              aria-label="disciplina da aula"
-            >
-              {courses.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
+              onChange={setCourseId}
+              options={courses.map((c) => ({ value: c.id, label: c.name }))}
+              placeholder="disciplina"
+              buttonClassName="flex-1 min-w-0 bg-white border border-ceci-border-default rounded-full px-3 py-1.5 text-[11px] font-medium"
+              sheetTitle="disciplina da aula"
+            />
           )}
         </div>
 
@@ -169,22 +167,12 @@ export const ComposeNoteView: React.FC = () => {
             />
           </div>
         ) : (
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-[11px] font-medium text-ceci-tertiary">categoria:</span>
-            {LOOSE_CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setCategory(cat)}
-                className={`px-3 py-1.5 rounded-full text-[11px] font-semibold capitalize transition-all cursor-pointer ${
-                  category === cat
-                    ? 'bg-ceci-brand-strong text-white shadow-2xs'
-                    : 'bg-white text-ceci-secondary border border-ceci-border-default hover:bg-surface-rose'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+          <PillGroup
+            variant="brand"
+            options={LOOSE_CATEGORIES.map((cat) => ({ value: cat, label: cat }))}
+            value={category}
+            onChange={(v) => setCategory(v)}
+          />
         )}
 
         {isClassNote && (

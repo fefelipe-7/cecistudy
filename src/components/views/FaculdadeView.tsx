@@ -13,6 +13,7 @@ import { ClassNoteModal } from '../courses/ClassNoteModal';
 import { ClassNoteListItem } from '../courses/ClassNoteListItem';
 import { UnderlineTabBar } from '../ui/UnderlineTabBar';
 import { CompletionToggle } from '../ui/CompletionToggle';
+import { ManageSurface } from '../ui/ManageSurface';
 import { useApp } from '../../context/AppContext';
 import {
   eventsForMonth,
@@ -144,9 +145,11 @@ export const FaculdadeView: React.FC = () => {
               const nextExam = exams.find((e) => e.courseId === course.id && !e.completed);
 
               return (
-                <div
+                <ManageSurface
                   key={course.id}
-                  onClick={() => openCourseDetail(course.id)}
+                  kind="course"
+                  id={course.id}
+                  onTap={() => openCourseDetail(course.id)}
                   className="rounded-[24px] p-5 bg-white border border-ceci-border-default cursor-pointer hover:border-ceci-border-brand card-lift press-card space-y-3 shadow-sm group"
                   style={{ borderLeftWidth: '4px', borderLeftColor: course.color || '#B94862' }}
                 >
@@ -174,7 +177,7 @@ export const FaculdadeView: React.FC = () => {
                       abrir disciplina <ChevronRight className="w-3.5 h-3.5" />
                     </span>
                   </div>
-                </div>
+                </ManageSurface>
               );
             })}
           </div>
@@ -208,9 +211,11 @@ export const FaculdadeView: React.FC = () => {
 
           <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
             {filteredExams.map((ex) => (
-              <div
+              <ManageSurface
                 key={ex.id}
-                onClick={() => handleToggleExam(ex.id)}
+                kind="exam"
+                id={ex.id}
+                onTap={() => handleToggleExam(ex.id)}
                 className={`py-3 flex items-center justify-between cursor-pointer transition-colors ${
                   ex.completed ? 'opacity-60 line-through' : ''
                 }`}
@@ -224,7 +229,7 @@ export const FaculdadeView: React.FC = () => {
                   onChange={() => handleToggleExam(ex.id)}
                   label={ex.completed ? `marcar prova "${ex.title}" como pendente` : `marcar prova "${ex.title}" como concluída`}
                 />
-              </div>
+              </ManageSurface>
             ))}
           </div>
         </div>

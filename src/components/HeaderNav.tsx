@@ -3,11 +3,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import {
   Search,
   ArrowLeft,
-  Bookmark,
 } from 'lucide-react';
 import { UserProfile, DynamicHeaderConfig } from '../types';
 import { CourseIcon } from './ui/CourseIcon';
 import { HeaderActionMenu } from './ui/HeaderActionMenu';
+import { BookmarkToggle } from './ui/BookmarkToggle';
 import { fadeSlide } from '../lib/motion';
 
 interface HeaderNavProps {
@@ -111,20 +111,14 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
               {/* Bookmark Toggle */}
               {headerConfig.onToggleBookmark && (
-                <button
-                  onClick={headerConfig.onToggleBookmark}
-                  className={`w-9 h-9 rounded-2xl border flex items-center justify-center tap-interactive cursor-pointer shadow-2xs active:scale-95 ${
-                    headerConfig.isBookmarked
-                      ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
-                      : 'bg-white border-ceci-border-default text-ceci-secondary hover:bg-surface-muted'
-                  }`}
-                  title={headerConfig.isBookmarked ? 'remover dos favoritos' : 'favoritar disciplina'}
-                  aria-label={headerConfig.isBookmarked ? 'remover dos favoritos' : 'favoritar disciplina'}
-                >
-                  <Bookmark
-                    className={`w-4 h-4 ${headerConfig.isBookmarked ? 'fill-ceci-brand-strong' : ''}`}
-                  />
-                </button>
+                <BookmarkToggle
+                  active={headerConfig.isBookmarked}
+                  onToggle={headerConfig.onToggleBookmark}
+                  size="md"
+                  label="favoritar disciplina"
+                  activeLabel="remover dos favoritos"
+                  ariaLabel={headerConfig.isBookmarked ? 'remover dos favoritos' : 'favoritar disciplina'}
+                />
               )}
 
               {/* Custom Right Action (e.g. Quick Add or Action button) */}

@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Search, X, BookOpen, Brain, Sparkles, User, GraduationCap, ChevronRight } from 'lucide-react';
 import { Modal } from './ui/Modal';
 import { Kitty } from './ui/Kitty';
+import { PillGroup } from './ui/PillGroup';
 import {
   Course,
   ClassNote,
@@ -185,17 +186,12 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
             <p className="text-xs font-semibold lowercase tracking-wider text-ceci-tertiary mb-3">
               sugestões rápidas no cecistudy ♡
             </p>
-            <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-              {['ansiedade', 'aaron beck', 'freud', 'tcc', 'depressão', 'htp', 'acolhimento', 'vygotsky'].map((tag) => (
-                <button
-                  key={tag}
-                  onClick={() => setQuery(tag)}
-                  className="px-3 py-1.5 rounded-full bg-white border border-ceci-border-default text-xs text-ceci-primary hover:bg-surface-rose hover:border-ceci-border-brand transition-colors cursor-pointer"
-                >
-                  ✨ {tag}
-                </button>
-              ))}
-            </div>
+            <PillGroup
+              value={'' as string}
+              onChange={(v) => setQuery(String(v))}
+              options={['ansiedade', 'aaron beck', 'freud', 'tcc', 'depressão', 'htp', 'acolhimento', 'vygotsky'].map((tag) => ({ value: tag, label: tag, emoji: '✨' }))}
+              className="justify-center sm:justify-start"
+            />
             <div className="mt-6 pt-4 border-t border-ceci-border-subtle text-center text-xs text-ceci-secondary">
               busca tudo que você anota: conceitos, autores, leituras, aulas e disciplinas ♡
             </div>
