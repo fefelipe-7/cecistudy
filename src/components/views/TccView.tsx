@@ -3,7 +3,7 @@ import { GraduationCap, PencilLine } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ProgressBar } from '../ui/ProgressBar';
 import { CompletionToggle } from '../ui/CompletionToggle';
-import { Kitty } from '../ui/Kitty';
+import { Mascote } from '../ui/Mascote';
 
 /** Tela cheia do meu TCC — visualização + botão de edição (criar/manter). */
 export const TccView: React.FC = () => {
@@ -48,7 +48,7 @@ export const TccView: React.FC = () => {
 
       {!hasTcc ? (
         <div className="rounded-[24px] p-8 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
-          <Kitty expression="curiosa" className="w-16 h-16 mx-auto" decorative />
+          <Mascote expression="research-tcc" className="w-16 h-16 mx-auto" decorative />
           <h3 className="font-display font-bold text-lg text-ceci-primary">
             ainda não tem tcc
           </h3>
@@ -144,7 +144,7 @@ export const TccView: React.FC = () => {
               </div>
             ) : (
               <p className="text-xs text-ceci-secondary bg-surface-muted border border-ceci-border-subtle rounded-2xl p-4 text-center flex items-center justify-center gap-2">
-                <Kitty expression="pensativa" className="w-7 h-7 shrink-0" decorative />
+                <Mascote expression="writing-flow" className="w-7 h-7 shrink-0" decorative />
                 ainda não tem capítulos no cronograma — edite o tcc para adicionar os primeiros ♡
               </p>
             )}

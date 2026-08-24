@@ -43,6 +43,7 @@ const QUIZ_PLAY_SCREEN: NavScreen = { kind: 'quiz-play', state: QUIZ_PLAY_STATE 
 const QUIZ_RESULT_SCREEN: NavScreen = {
   kind: 'quiz-result',
   ...QUIZ_RESULT_ARGS,
+  pool: [QUESTION],
 };
 
 describe('parseRoute', () => {
@@ -63,8 +64,8 @@ describe('parseRoute', () => {
     expect(parseRoute('#/faculdade/c3')).toEqual({ tab: 'faculdade', focusedCourseId: 'c3' });
   });
 
-  it('distingue sub-tab de courseId em /faculdade', () => {
-    expect(parseRoute('#/faculdade/aulas')).toEqual({ tab: 'faculdade', subTab: 'aulas' });
+  it('distingue sub-tab de courseId em /faculdade (legadas aulas/avaliacoes degradam)', () => {
+    expect(parseRoute('#/faculdade/aulas')).toEqual({ tab: 'faculdade' });
     expect(parseRoute('#/faculdade/calendario')).toEqual({ tab: 'faculdade', subTab: 'calendario' });
   });
 
@@ -82,12 +83,14 @@ describe('parseRoute', () => {
     expect(parseRoute('#/perfil/xyz')).toEqual({ tab: 'perfil' });
   });
 
-  it('reconhece o diário de estágio em /perfil/estagio', () => {
-    expect(parseRoute('#/perfil/estagio')).toEqual({ tab: 'perfil', internshipDiary: true });
+  it('reconhece o diário de estágio em /faculdade/estagio (legado /perfil/estagio degrada)', () => {
+    expect(parseRoute('#/faculdade/estagio')).toEqual({ tab: 'faculdade', internshipDiary: true });
+    expect(parseRoute('#/perfil/estagio')).toEqual({ tab: 'faculdade', internshipDiary: true });
   });
 
-  it('reconhece as telas de tcc e stickers em /perfil', () => {
-    expect(parseRoute('#/perfil/tcc')).toEqual({ tab: 'perfil', tcc: true });
+  it('reconhece as telas de tcc e stickers (legados degradam; stickers segue no perfil)', () => {
+    expect(parseRoute('#/estudos/tcc')).toEqual({ tab: 'estudos', tcc: true });
+    expect(parseRoute('#/perfil/tcc')).toEqual({ tab: 'estudos', tcc: true });
     expect(parseRoute('#/perfil/stickers')).toEqual({ tab: 'perfil', stickers: true });
   });
 
@@ -181,7 +184,7 @@ describe('parseRoute', () => {
 
   it('não confunde notas (plural) da biblioteca com composição', () => {
     expect(parseRoute('#/biblioteca/notas')).toEqual({ tab: 'biblioteca', notes: true });
-    expect(parseRoute('#/faculdade/aulas')).toEqual({ tab: 'faculdade', subTab: 'aulas' });
+    expect(parseRoute('#/faculdade/calendario')).toEqual({ tab: 'faculdade', subTab: 'calendario' });
   });
 
   it('degrada rotas de quiz (jogo/resultado) ao seletor de categorias', () => {
@@ -252,11 +255,11 @@ describe('routeToStack', () => {
       { kind: 'streak' },
     ]);
     expect(routeToStack({ internshipDiary: true })).toEqual([
-      { kind: 'tab', tab: 'perfil' },
+      { kind: 'tab', tab: 'faculdade' },
       { kind: 'internshipDiary' },
     ]);
     expect(routeToStack({ tcc: true })).toEqual([
-      { kind: 'tab', tab: 'perfil' },
+      { kind: 'tab', tab: 'estudos' },
       { kind: 'tcc' },
     ]);
     expect(routeToStack({ stickers: true })).toEqual([
@@ -340,11 +343,11 @@ describe('stackToHash', () => {
   });
 
   it('serializa telas auxiliares ignorando sub-tab', () => {
-    expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c3' }], 'aulas')).toBe('#/faculdade/c3');
+    expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c3' }], 'calendario')).toBe('#/faculdade/c3');
     expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'streak' }])).toBe('#/streak');
     expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'streak' }])).toBe('#/perfil/streak');
-    expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'internshipDiary' }])).toBe('#/perfil/estagio');
-    expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'tcc' }])).toBe('#/perfil/tcc');
+    expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'internshipDiary' }])).toBe('#/faculdade/estagio');
+    expect(stackToHash([{ kind: 'tab', tab: 'estudos' }, { kind: 'tcc' }])).toBe('#/estudos/tcc');
     expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'stickers' }])).toBe('#/perfil/stickers');
     expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }])).toBe('#/biblioteca/notas');
     expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }, { kind: 'noteDetail', noteId: 'note-1' }])).toBe('#/biblioteca/notas/note-1');
@@ -380,7 +383,7 @@ describe('stackToHash', () => {
 
 describe('round-trip hash ↔ rota', () => {
   it('reconstrói a rota a partir do hash serializado (abas + sub-tabs)', () => {
-    const cases = ['#/home', '#/faculdade', '#/faculdade/c3', '#/faculdade/aulas', '#/estudos/foco', '#/estudos/revisar', '#/estudos/leituras', '#/estudos/historico', '#/biblioteca/conceitos', '#/biblioteca/notas', '#/biblioteca/notas/note-1', '#/biblioteca/notas/note-1/transformar', '#/biblioteca/templo', '#/biblioteca/familias', '#/biblioteca/familias/fam-01', '#/biblioteca/abordagens/psic-04-01', '#/streak', '#/perfil/streak', '#/perfil/estagio', '#/perfil/tcc', '#/perfil/stickers', '#/nota', '#/nota/detalhes', '#/biblioteca/nota', '#/faculdade/c3/nota', '#/biblioteca/nota/detalhes', '#/faculdade/c3/nota/detalhes', '#/novo/estagio', '#/novo/prova-atividade', '#/biblioteca/novo/leitura', '#/faculdade/c3/novo/prova', '#/novo/materia', '#/faculdade/novo/materia', '#/estudos/quiz'];
+    const cases = ['#/home', '#/faculdade', '#/faculdade/c3', '#/faculdade/calendario', '#/estudos/foco', '#/estudos/revisar', '#/estudos/leituras', '#/estudos/historico', '#/biblioteca/conceitos', '#/biblioteca/notas', '#/biblioteca/notas/note-1', '#/biblioteca/notas/note-1/transformar', '#/biblioteca/templo', '#/biblioteca/familias', '#/biblioteca/familias/fam-01', '#/biblioteca/abordagens/psic-04-01', '#/streak', '#/perfil/streak', '#/faculdade/estagio', '#/estudos/tcc', '#/perfil/stickers', '#/nota', '#/nota/detalhes', '#/biblioteca/nota', '#/faculdade/c3/nota', '#/biblioteca/nota/detalhes', '#/faculdade/c3/nota/detalhes', '#/novo/estagio', '#/novo/prova-atividade', '#/biblioteca/novo/leitura', '#/faculdade/c3/novo/prova', '#/novo/materia', '#/faculdade/novo/materia', '#/estudos/quiz'];
     for (const h of cases) {
       const route = parseRoute(h);
       const stack = routeToStack(route);

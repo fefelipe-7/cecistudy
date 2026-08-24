@@ -1,14 +1,16 @@
 import React, { Suspense, lazy, memo, useCallback, useEffect, useRef } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { App as CapacitorApp } from '@capacitor/app';
-import { AnimatePresence, MotionConfig, motion } from 'framer-motion';
+import { AnimatePresence, MotionConfig, motion, useMotionValue } from 'framer-motion';
 import { AppProvider, useApp } from './context/AppContext';
 import { setupNativeShell } from './lib/native';
 import { initOta } from './lib/ota';
 import { screenVariants, overlayVariants } from './lib/motion';
+import { nativeNavigation } from './navigation/native-navigation';
 
 import { HeaderNav } from './components/HeaderNav';
 import { BottomNav } from './components/BottomNav';
+import { DesktopSidebar } from './components/DesktopSidebar';
 import { QuickAddModal } from './components/QuickAddModal';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 import { EditCourseModal } from './components/courses/EditCourseModal';
@@ -16,6 +18,7 @@ import { EditTccModal } from './components/tcc/EditTccModal';
 import { Toast } from './components/ui/Toast';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import { ManageDataModal } from './components/ui/ManageDataModal';
+import { BootSplash } from './components/ui/BootSplash';
 
 import { OnboardingScreen } from './components/views/OnboardingScreen';
 
@@ -35,6 +38,7 @@ const WizardRouter = lazy(() => import('./components/wizards/WizardRouter').then
 import { Modal } from './components/ui/Modal';
 import { OtaUpdateModal } from './components/ui/OtaUpdateModal';
 import { ViewSkeleton } from './components/ui/Skeleton';
+import { EdgeSwipeBack } from './components/ui/EdgeSwipeBack';
 import { FileText } from 'lucide-react';
 import { QuickType, QuizPlayState, QuizConfig, QuizAnswer } from './types';
 
@@ -42,6 +46,7 @@ import { QuickType, QuizPlayState, QuizConfig, QuizAnswer } from './types';
 // re-renderiza por mudança de dados (ex.: togglar tarefa) sem que suas props mudem.
 const HeaderNavMemo = memo(HeaderNav);
 const BottomNavMemo = memo(BottomNav);
+const DesktopSidebarMemo = memo(DesktopSidebar);
 const QuickAddModalMemo = memo(QuickAddModal);
 const GlobalSearchModalMemo = memo(GlobalSearchModal);
 const EditCourseModalMemo = memo(EditCourseModal);
@@ -58,6 +63,10 @@ const StudyFocusScreen = lazy(() => import('./components/estudos/StudyFocusScree
 const StudyRevisarScreen = lazy(() => import('./components/estudos/StudyRevisarScreen').then((m) => ({ default: m.StudyRevisarScreen })));
 const StudyLeiturasScreen = lazy(() => import('./components/estudos/StudyLeiturasScreen').then((m) => ({ default: m.StudyLeiturasScreen })));
 const StudyHistoricoScreen = lazy(() => import('./components/estudos/StudyHistoricoScreen').then((m) => ({ default: m.StudyHistoricoScreen })));
+
+// Telas de domínio empilhadas sobre suas abas (estágio → faculdade, TCC → estudos)
+const InternshipDiaryView = lazy(() => import('./components/views/InternshipDiaryView').then((m) => ({ default: m.InternshipDiaryView })));
+const TccView = lazy(() => import('./components/views/TccView').then((m) => ({ default: m.TccView })));
 
 /** Fallback discreto enquanto um chunk de view carrega (primeira visita à aba). */
 const ViewFallback = () => <ViewSkeleton rows={5} />;
@@ -127,6 +136,31 @@ function AppShell() {
     setupNativeShell();
   }, []);
 
+  // Inicializa plugin de swipe-back nativo (iOS)
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+    // Habilita o plugin
+    nativeNavigation.enable();
+    // Escuta evento de conclusão do gesto para navegar logicamente
+    const handleSwipeBackCompleted = () => {
+      app.handleSystemBack();
+    };
+    // Capacitor usa window.addEventListener para eventos customizados padrão
+    window.addEventListener('swipeBackCompleted', handleSwipeBackCompleted);
+    return () => {
+      window.removeEventListener('swipeBackCompleted', handleSwipeBackCompleted);
+    };
+  }, []);
+
+  // Mantém o estado de canGoBack sincronizado com o nativo
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+    nativeNavigation.setCanGoBack(app.canGoBack);
+  }, [app.canGoBack]);
+
+  // Gesto de "voltar pela borda" (iOS): transform da camada de slide acompanha o dedo
+  const swipeX = useMotionValue(0);
+
   // Android back button: fecha modais → pop de telas → sai do app na raiz
   const appRef = useRef(app);
   appRef.current = app;
@@ -134,51 +168,8 @@ function AppShell() {
     if (!Capacitor.isNativePlatform()) return;
     const handler = CapacitorApp.addListener('backButton', () => {
       const a = appRef.current;
-      if (a.managedItem) {
-        a.closeManageItem();
-      } else if (a.isQuickAddOpen) {
-        a.closeQuickAdd();
-      } else if (a.isSearchOpen) {
-        a.closeSearch();
-      } else if (a.isEditCourseOpen) {
-        a.closeEditCourse();
-      } else if (a.isDetailPromptOpen) {
-        a.closeDetailPrompt();
-      } else if (a.isComposeDetailsOpen) {
-        a.closeComposeDetails();
-      } else if (a.isComposeScreenOpen) {
-        a.closeCompose();
-      } else if (a.isWizardOpen) {
-        a.closeWizard();
-      } else if (a.isNoteTransformOpen) {
-        a.closeNoteTransform();
-      } else if (a.isNoteDetailOpen) {
-        a.closeNoteDetail();
-      } else if (a.isStreakScreenOpen) {
-        a.closeStreak();
-      } else if (a.isInternshipDiaryOpen) {
-        a.closeInternshipDiary();
-      } else if (a.isTccScreenOpen) {
-        a.closeTccScreen();
-      } else if (a.isStickersScreenOpen) {
-        a.closeStickersScreen();
-      } else if (a.isQuizLoadingOpen) {
-        a.closeQuizLoading();
-      } else if (a.focusedStudyScreen) {
-        a.closeStudy();
-      } else if (a.isNotesScreenOpen) {
-        a.closeNotesScreen();
-      } else if (a.isTempleScreenOpen) {
-        a.closeTemple();
-      } else if (a.isFamiliesScreenOpen) {
-        a.closeFamilies();
-      } else if (a.focusedFamilyId) {
-        a.closeFamily();
-      } else if (a.focusedApproachId) {
-        a.closeApproach();
-      } else if (a.focusedCourseId) {
-        a.closeCourseDetail();
-      } else {
+      const handled = a.handleSystemBack();
+      if (!handled) {
         void CapacitorApp.exitApp();
       }
     });
@@ -240,7 +231,23 @@ function AppShell() {
   }
 
   return (
-    <div className="min-h-screen text-ceci-primary flex flex-col font-sans antialiased selection:bg-rose-100 selection:text-ceci-brand-strong">
+    <div className="min-h-screen text-ceci-primary flex flex-col font-sans antialiased selection:bg-rose-100 selection:text-ceci-brand-strong lg:pl-60">
+
+      {/* Gesto de "voltar pela borda" (iOS): desliza a camada de slide e volta um nível */}
+       {!Capacitor.isNativePlatform() && (
+         <EdgeSwipeBack swipeX={swipeX} onBack={app.handleSystemBack} canGoBack={app.canGoBack} />
+       )}
+
+      {/* Sidebar desktop (≥ lg) — espelha a visibilidade da barra inferior */}
+      {app.isBottomNavVisible && (
+        <DesktopSidebarMemo
+          activeTab={activeTab}
+          onChangeTab={handleNavigate}
+          onOpenWizard={app.openWizard}
+          onOpenTaskExamWizard={app.openTaskExamWizard}
+          onOpenCompose={openCompose}
+        />
+      )}
 
       {/* Top Header */}
       {!isAuxFlow && (
@@ -254,22 +261,23 @@ function AppShell() {
 
       {/* Main Screen Content (Mobile First App Frame Container) */}
       <main
-        className={`flex-1 max-w-md sm:max-w-xl w-full mx-auto px-3.5 py-4 sm:px-5 relative ${
+        className={`flex-1 max-w-md sm:max-w-xl lg:max-w-3xl xl:max-w-4xl w-full mx-auto px-3.5 py-4 sm:px-5 lg:px-8 relative ${
           app.isBottomNavVisible
-            ? 'pb-[calc(5rem+env(safe-area-inset-bottom,0px))]'
+            ? 'pb-[calc(5rem+env(safe-area-inset-bottom,0px))] lg:pb-10'
             : 'pb-6'
         }`}
       >
         {/* === Camada 1: slide horizontal (base + auxiliares de 1º nível) === */}
-        <AnimatePresence mode="popLayout" custom={app.navDirection} initial={false}>
-          <motion.div
-            key={app.slideKey}
-            custom={app.navDirection}
-            variants={screenVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-          >
+        <motion.div style={{ x: swipeX }} className="will-change-transform">
+          <AnimatePresence mode="popLayout" custom={app.navDirection} initial={false}>
+            <motion.div
+              key={app.slideKey}
+              custom={app.navDirection}
+              variants={screenVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
             {app.isStreakScreenOpen ? (
               <Suspense fallback={<ViewFallback />}>
                 <StreakView />
@@ -347,8 +355,13 @@ function AppShell() {
                     app.showToast('sessão de quiz guardada ♡');
                   }}
                   onRetry={() => {
-                    // Repete o mesmo quiz (mesmo pool + config)
-                    app.openQuizPlay(app.currentQuizResultPool!, app.currentQuizResultConfig!);
+                    // Repete o mesmo quiz (mesmo pool + config). Se a pool não sobreviveu
+                    // (ex.: reload direto no hash de resultado), volta ao seletor.
+                    if (!app.currentQuizResultPool || app.currentQuizResultPool.length === 0) {
+                      app.newQuizFromResult();
+                      return;
+                    }
+                    app.openQuizPlay(app.currentQuizResultPool, app.currentQuizResultConfig!);
                   }}
                   onNewQuiz={() => {
                     // Volta para o seletor de assuntos
@@ -360,8 +373,14 @@ function AppShell() {
               <>
                 <Suspense fallback={<ViewFallback />}>
                   {activeTab === 'home' && <HomeView />}
-                  {activeTab === 'faculdade' && <FaculdadeView course={app.focusedCourse} />}
-                  {activeTab === 'estudos' && <EstudosView />}
+                  {activeTab === 'faculdade' &&
+                    (app.isInternshipDiaryOpen ? (
+                      <InternshipDiaryView />
+                    ) : (
+                      <FaculdadeView course={app.focusedCourse} />
+                    ))}
+                  {activeTab === 'estudos' &&
+                    (app.isTccScreenOpen ? <TccView /> : <EstudosView />)}
                   {activeTab === 'biblioteca' && (
                     <BibliotecaView
                       mode={
@@ -382,23 +401,14 @@ function AppShell() {
                     />
                   )}
                   {activeTab === 'perfil' && (
-                    <PerfilView
-                      mode={
-                        app.isInternshipDiaryOpen
-                          ? 'internship'
-                          : app.isTccScreenOpen
-                            ? 'tcc'
-                            : app.isStickersScreenOpen
-                              ? 'stickers'
-                              : 'profile'
-                      }
-                    />
+                    <PerfilView mode={app.isStickersScreenOpen ? 'stickers' : 'profile'} />
                   )}
                 </Suspense>
               </>
             )}
           </motion.div>
         </AnimatePresence>
+        </motion.div>
 
         {/* === Camada 2: overlay (fade+scale) — compose/wizard não disputam o slide === */}
         <AnimatePresence mode="wait" initial={false}>
@@ -411,6 +421,8 @@ function AppShell() {
               exit="exit"
               className="fixed inset-0 z-40 overflow-y-auto px-3.5 py-4 sm:px-5 bg-canvas"
             >
+              {/* Desktop (≥ lg): formulários centrados numa coluna em vez de tela cheia */}
+              <div className="w-full max-w-md sm:max-w-xl lg:max-w-3xl mx-auto">
               {app.isComposeScreenOpen ? (
                 <Suspense fallback={<ViewFallback />}>
                   <ComposeNoteView />
@@ -432,20 +444,23 @@ function AppShell() {
                   <WizardRouter />
                 </Suspense>
               ) : null}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
       </main>
 
-      {/* Fixed Bottom Navigation Bar (escondida em telas auxiliares) */}
+      {/* Fixed Bottom Navigation Bar (escondida em telas auxiliares e no desktop ≥ lg) */}
       {app.isBottomNavVisible && (
-        <BottomNavMemo
-          activeTab={activeTab}
-          onChangeTab={handleNavigate}
-          onOpenWizard={app.openWizard}
-          onOpenTaskExamWizard={app.openTaskExamWizard}
-          onOpenCompose={openCompose}
-        />
+        <div className="lg:hidden">
+          <BottomNavMemo
+            activeTab={activeTab}
+            onChangeTab={handleNavigate}
+            onOpenWizard={app.openWizard}
+            onOpenTaskExamWizard={app.openTaskExamWizard}
+            onOpenCompose={openCompose}
+          />
+        </div>
       )}
 
       {/* Quick Add (escolha de tipo → abre o wizard em tela cheia) */}
@@ -476,6 +491,8 @@ function AppShell() {
           : app.focusedCourse}
         onClose={app.closeEditCourse}
         onSave={app.handleUpdateCourse}
+        classNotes={app.classes}
+        exams={app.exams}
       />
 
       {/* Menu universal de editar/excluir (long-press / clique direito) */}
@@ -513,6 +530,7 @@ export default function App() {
     <MotionConfig reducedMotion="user">
       <ErrorBoundary>
         <AppProvider>
+          <BootSplash />
           <AppShell />
         </AppProvider>
       </ErrorBoundary>

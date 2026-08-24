@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import {
   FileText,
   Search,
@@ -13,7 +13,7 @@ import {
   UserCheck,
 } from 'lucide-react';
 import { CATEGORY_BADGE, formatNoteDate } from './notes';
-import { Kitty } from '../ui/Kitty';
+import { Mascote } from '../ui/Mascote';
 import { PillGroup } from '../ui/PillGroup';
 import { ManageSurface } from '../ui/ManageSurface';
 import { copyToClipboard } from '../../lib/utils';
@@ -69,7 +69,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
     authors.filter((a) => ids.includes(a.id)).map((a) => a.name).slice(0, 3);
 
   return (
-    <div className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-1 relative">
+    <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-5 pb-1 relative">
       {/* Counter badge (voltado para o header detail) */}
       <div className="flex items-center justify-end pt-1 px-1">
         <span className="text-xs font-semibold text-ceci-secondary bg-white px-3 py-1 rounded-full border border-ceci-border-default">
@@ -341,7 +341,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
 
         {filteredNotes.length === 0 && (
           <div className="bg-white rounded-[22px] p-8 text-center border border-dashed border-ceci-border-default space-y-2">
-            <Kitty expression="curiosa" className="w-14 h-14 mx-auto" decorative />
+            <Mascote expression="no-results" className="w-14 h-14 mx-auto" decorative />
             <p className="text-xs font-bold text-ceci-primary">nenhuma nota encontrada</p>
             <p className="text-xs text-ceci-secondary">
               {noteSearchTerm || noteCategoryFilter !== 'todas'

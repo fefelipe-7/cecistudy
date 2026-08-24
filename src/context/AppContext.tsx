@@ -1,9 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { FileText, CheckCircle2, Settings2, StickyNote, HeartHandshake, GraduationCap, Sparkles } from 'lucide-react';
 import {
   NavTab,
   NavScreen,
-  HeaderAction,
   SubTabFaculdade,
   SubTabEstudos,
   SubTabBiblioteca,
@@ -19,6 +17,7 @@ import {
   Flashcard,
   MaterialItem,
   InternshipLog,
+  SupervisionNotebook,
   TccData,
   Sticker,
   StudySession,
@@ -49,21 +48,35 @@ import {
 } from '../data/empty';
 import { PSICOTERAPIA_FAMILIES } from '../data/psicoterapiaFamilies';
 import { demoDatabase } from '../data/seeds';
-import { SCHEMA_VERSION } from '../data/schema';
-import { exportAppDatabase, importAppDatabase } from '../lib/exportImport';
+import { exportAppDatabase, importAppDatabase, buildBackupPayload } from '../lib/exportImport';
 import { usePersistentState } from '../lib/usePersistentState';
-import { storage } from '../lib/storage';
+import { useSqliteState } from '../lib/useSqliteState';
+import { storage, isNativePlatform } from '../lib/storage';
+import { getCatalogApproaches, getCatalogQuestions } from '../lib/db/catalogDb';
+import { getUserDb, clearUserData } from '../lib/db/userDb';
 import { hapticTap, hapticSuccess } from '../lib/haptics';
 import { scrollToTop } from '../lib/scroll';
 import { celebrate } from '../lib/celebrate';
 import { shouldCelebrateTasks } from '../lib/taskLogic';
-import { scheduleDailyReminder, cancelDailyReminder } from '../lib/notifications';
+import { parseLegacySchedule } from '../lib/schedule';
+import { scheduleDailyReminder, cancelDailyReminder, syncClassReminders, cancelClassReminders } from '../lib/notifications';
+import { connectGcal, disconnectGcal, syncExam, syncTask, unsyncEvent, isGcalConfigured } from '../lib/gcal';
 import {
   Route,
   parseRoute,
   routeToStack,
   stackToHash
 } from '../lib/routing';
+import {
+  stackAfterOpenQuizCategory,
+  stackAfterOpenQuizLoading,
+  stackAfterOpenQuizPlay,
+  stackAfterOpenQuizResult,
+  stackAfterCloseQuizResult,
+  stackAfterCloseAllQuizScreens,
+  stackAfterNewQuizFromResult,
+} from '../lib/quizStack';
+import { buildHeaderConfig } from '../lib/headerConfig';
 import { computeStreak, getWeekProgress, isStudyDay, toDateKey, StreakStats, WeekDayCell } from '../lib/streak';
 import { applyStickerUnlocks, mergeCatalogWithProgress, countUnlocked } from '../lib/stickers';
 import { lockedStickerCatalog } from '../data/stickerCatalog';
@@ -89,6 +102,7 @@ export interface AppContextValue {
   flashcards: Flashcard[];
   materials: MaterialItem[];
   internshipLogs: InternshipLog[];
+  supervision: SupervisionNotebook[];
   tcc: TccData;
   stickers: Sticker[];
   sessions: StudySession[];
@@ -101,6 +115,8 @@ export interface AppContextValue {
   updateReadingProgress: (bookId: string, readPages: number) => void;
   reminderSettings: ReminderSettings;
   updateReminder: (settings: ReminderSettings) => void;
+  gcalEnabled: boolean;
+  setGcalEnabled: (on: boolean) => Promise<boolean>;
 
   // onboarding / ciclo de vida dos dados
   onboarding: OnboardingState;
@@ -126,6 +142,8 @@ export interface AppContextValue {
   navigationStack: NavScreen[];
   setStack: (next: NavScreen[]) => void;
   syncHash: (stack: NavScreen[]) => void;
+  /** Volta um nível (modais → telas auxiliares → pop da pilha). Retorna true se algo fechou. */
+  handleSystemBack: () => boolean;
   setActiveTab: (tab: NavTab) => void;
   subTabFaculdade: SubTabFaculdade;
   setSubTabFaculdade: (t: SubTabFaculdade) => void;
@@ -144,6 +162,8 @@ export interface AppContextValue {
   openCourseDetail: (courseId: string) => void;
   closeCourseDetail: () => void;
   isBottomNavVisible: boolean;
+  /** Se existe algo para voltar (cadeia do back do Android / gesto de borda). */
+  canGoBack: boolean;
   isNotesScreenOpen: boolean;
   openNotesScreen: () => void;
   closeNotesScreen: () => void;
@@ -282,6 +302,9 @@ export interface AppContextValue {
   handleAddFlashcard: (card: Flashcard) => void;
   handleReviewFlashcard: (id: string, correct: boolean) => void;
   handleAddInternshipLog: (log: InternshipLog) => void;
+  addSupervision: (entry: SupervisionNotebook) => void;
+  updateSupervision: (entry: SupervisionNotebook) => void;
+  deleteSupervision: (id: string) => void;
   handleAddExam: (exam: Exam) => void;
   handleAddCourse: (course: Course) => void;
   handleAddAuthor: (author: PsychologyAuthor) => void;
@@ -318,24 +341,37 @@ const AppContext = createContext<AppContextValue | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   // State — defaults vazios (produção); dados de exemplo entram via onboarding/demo
-  const [profile, setProfile] = usePersistentState<UserProfile>('profile', emptyProfile);
-  const [courses, setCourses] = usePersistentState<Course[]>('courses', []);
-  const [classes, setClasses] = usePersistentState<ClassNote[]>('classes', []);
-  const [tasks, setTasks] = usePersistentState<Task[]>('tasks', []);
-  const [exams, setExams] = usePersistentState<Exam[]>('exams', []);
-  const [authors, setAuthors] = usePersistentState<PsychologyAuthor[]>('authors', []);
-  const [concepts, setConcepts] = usePersistentState<PsychologyConcept[]>('concepts', []);
-  // Abordagens (97, ~1MB) vêm de um módulo lazy — fora do bundle inicial.
-  const [approaches, setApproaches] = usePersistentState<PsychologyApproach[]>('approaches', []);
+  // Domínio persiste via useSqliteState: web = localStorage (intacto), nativo = SQLite.
+  const [profile, setProfile] = useSqliteState<UserProfile>('profile', emptyProfile);
+  const [courses, setCourses] = useSqliteState<Course[]>('courses', []);
+
+  // normaliza schedule legado (string) persistido por versões anteriores à v9
+  useEffect(() => {
+    setCourses((prev) =>
+      prev.map((c) => (Array.isArray(c.schedule) ? c : { ...c, schedule: parseLegacySchedule(c.schedule) }))
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const [classes, setClasses] = useSqliteState<ClassNote[]>('classes', []);
+  const [tasks, setTasks] = useSqliteState<Task[]>('tasks', []);
+  const [exams, setExams] = useSqliteState<Exam[]>('exams', []);
+  const [authors, setAuthors] = useSqliteState<PsychologyAuthor[]>('authors', []);
+  const [concepts, setConcepts] = useSqliteState<PsychologyConcept[]>('concepts', []);
+  // Abordagens (97, ~1MB): banco estático do catálogo — NÃO é dado da usuária.
+  // Web: seed lazy do módulo embutido. Nativo: lido do catálogo SQLite.
+  const [approaches, setApproaches] = useState<PsychologyApproach[]>([]);
   const approachesSeededRef = useRef(false);
   useEffect(() => {
     if (approachesSeededRef.current || approaches.length > 0) return;
     let cancelled = false;
-    import('../data/psicoterapiaApproaches')
-      .then((m) => {
-        if (cancelled) return;
+    const load = isNativePlatform
+      ? getCatalogApproaches<PsychologyApproach>()
+      : import('../data/psicoterapiaApproaches').then((m) => m.PSICOTERAPIA_APPROACHES);
+    load
+      .then((data) => {
+        if (cancelled || data.length === 0) return;
         approachesSeededRef.current = true;
-        setApproaches(m.PSICOTERAPIA_APPROACHES);
+        setApproaches(data);
       })
       .catch(() => {
         approachesSeededRef.current = true;
@@ -345,27 +381,31 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
   }, [approaches.length]);
 
-  const [readings, setReadings] = usePersistentState<ReadingItem[]>('readings', []);
-  const [flashcards, setFlashcards] = usePersistentState<Flashcard[]>('flashcards', []);
-  const [materials, setMaterials] = usePersistentState<MaterialItem[]>('materials', []);
-  const [internshipLogs, setInternshipLogs] = usePersistentState<InternshipLog[]>('internship', []);
-  const [tcc, setTcc] = usePersistentState<TccData>('tcc', emptyTcc);
-  const [stickers, setStickers] = usePersistentState<Sticker[]>('stickers', lockedStickerCatalog());
-  const [sessions, setSessions] = usePersistentState<StudySession[]>('sessions', []);
-  const [questions, setQuestions] = usePersistentState<StudyQuestion[]>('questions', []);
-  const [techniques, setTechniques] = usePersistentState<Technique[]>('techniques', []);
-  const [quizSessions, setQuizSessions] = usePersistentState<QuizSession[]>('quizSessions', []);
+  const [readings, setReadings] = useSqliteState<ReadingItem[]>('readings', []);
+  const [flashcards, setFlashcards] = useSqliteState<Flashcard[]>('flashcards', []);
+  const [materials, setMaterials] = useSqliteState<MaterialItem[]>('materials', []);
+  const [internshipLogs, setInternshipLogs] = useSqliteState<InternshipLog[]>('internship', []);
+  const [supervision, setSupervision] = useSqliteState<SupervisionNotebook[]>('supervision', []);
+  const [tcc, setTcc] = useSqliteState<TccData>('tcc', emptyTcc);
+  const [stickers, setStickers] = useSqliteState<Sticker[]>('stickers', lockedStickerCatalog());
+  const [sessions, setSessions] = useSqliteState<StudySession[]>('sessions', []);
+  const [techniques, setTechniques] = useSqliteState<Technique[]>('techniques', []);
+  const [quizSessions, setQuizSessions] = useSqliteState<QuizSession[]>('quizSessions', []);
 
-  // Questões (745) — banco estático, seed lazy igual abordagens.
+  // Questões (745): banco estático do catálogo — mesmo tratamento de abordagens.
+  const [questions, setQuestions] = useState<StudyQuestion[]>([]);
   const questionsSeededRef = useRef(false);
   useEffect(() => {
     if (questionsSeededRef.current || questions.length > 0) return;
     let cancelled = false;
-    import('../data/bancoQuestoes')
-      .then((m) => {
-        if (cancelled) return;
+    const load = isNativePlatform
+      ? getCatalogQuestions<StudyQuestion>()
+      : import('../data/bancoQuestoes').then((m) => m.BANCO_QUESTOES);
+    load
+      .then((data) => {
+        if (cancelled || data.length === 0) return;
         questionsSeededRef.current = true;
-        setQuestions(m.BANCO_QUESTOES);
+        setQuestions(data);
       })
       .catch(() => {
         questionsSeededRef.current = true;
@@ -376,19 +416,23 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [questions.length]);
 
   // Streak de estudos (dias ativos; derivados calculados abaixo)
-  const [streakData, setStreakData] = usePersistentState<StreakData>('streakData', emptyStreakData);
+  const [streakData, setStreakData] = useSqliteState<StreakData>('streakData', emptyStreakData);
 
   // Lembrete diário de estudo (só efetivo no app nativo)
   const [reminderSettings, setReminderSettings] = usePersistentState<ReminderSettings>('reminder', emptyReminder);
+
+  // Integração com Google Calendar (apenas provas e tarefas; toggle próprio)
+  const [gcalEnabled, setGcalEnabledState] = usePersistentState<boolean>('gcalEnabled', false);
+  const [gcalMap, setGcalMap] = usePersistentState<Record<string, string>>('gcalMap', {});
 
   // Onboarding (primeiro acesso)
   const [onboarding, setOnboarding] = usePersistentState<OnboardingState>('onboarding', emptyOnboarding);
 
   // Livros salvos da biblioteca (no contexto → entram no export/import)
-  const [savedBookIds, setSavedBookIds] = usePersistentState<string[]>('savedBookIds', []);
+  const [savedBookIds, setSavedBookIds] = useSqliteState<string[]>('savedBookIds', []);
 
   // Progresso de leitura por obra (id → páginas lidas), registrado no modal do livro
-  const [readingProgress, setReadingProgress] = usePersistentState<Record<string, number>>(
+  const [readingProgress, setReadingProgress] = useSqliteState<Record<string, number>>(
     'readingProgress',
     {}
   );
@@ -410,7 +454,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [subTabEstudos, setSubTabEstudos] = useState<SubTabEstudos>('sessoes');
   const [subTabBiblioteca, setSubTabBiblioteca] = useState<SubTabBiblioteca>('autores');
   const [targetId, setTargetId] = useState<string | undefined>(undefined);
-  const [bookmarkedCourseIds, setBookmarkedCourseIds] = usePersistentState<string[]>('bookmarkedCourseIds', []);
+  const [bookmarkedCourseIds, setBookmarkedCourseIds] = useSqliteState<string[]>('bookmarkedCourseIds', []);
 
   // Modals
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
@@ -419,6 +463,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [isEditTccOpen, setIsEditTccOpen] = useState(false);
   const [isCreatingLooseNote, setIsCreatingLooseNote] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const toastTimerRef = useRef<number | null>(null);
 
   // Menu universal de editar/excluir (aberto por long-press no card)
   const [managedItem, setManagedItem] = useState<ManagedItem | null>(null);
@@ -428,7 +473,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [wizardEdit, setWizardEdit] = useState<ManagedItem | null>(null);
 
   // Notas avulsas (global — a tela de composição salva fora da biblioteca)
-  const [looseNotes, setLooseNotes] = usePersistentState<LooseNote[]>('looseNotes', []);
+  const [looseNotes, setLooseNotes] = useSqliteState<LooseNote[]>('looseNotes', []);
 
   // Composição de nota (tela de captura rápida)
   const [composeCourseId, setComposeCourseId] = useState<string | undefined>(undefined);
@@ -482,7 +527,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const currentQuizResultCorrectCount = (currentScreen.kind === 'quiz-result' ? currentScreen.correctCount : null) ?? null;
   const currentQuizResultTotalCount = (currentScreen.kind === 'quiz-result' ? currentScreen.totalCount : null) ?? null;
   const currentQuizResultPool =
-    (navigationStack.find((s) => s.kind === 'quiz-play') as Extract<NavScreen, { kind: 'quiz-play' }> | undefined)?.state.pool ?? null;
+    (currentScreen.kind === 'quiz-result'
+      ? currentScreen.pool
+      : (navigationStack.find((s) => s.kind === 'quiz-play') as Extract<NavScreen, { kind: 'quiz-play' }> | undefined)?.state.pool ?? null) ?? null;
   const focusedCourseId = currentScreen.kind === 'course' ? currentScreen.courseId : null;
   const focusedCourse = focusedCourseId ? courses.find((c) => c.id === focusedCourseId) : undefined;
   const focusedStudyScreen: StudyScreen | null =
@@ -750,7 +797,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (shouldCelebrateTasks(nextTasks, taskId)) {
       hapticSuccess();
       celebrate('tasks-done');
-      showToast('plano do dia completo! parabéns, Ceci 🎉');
+      showToast(`plano do dia completo! parabéns${profile.name.trim() ? `, ${profile.name.trim()}` : ''} 🎉`);
     }
   };
 
@@ -763,10 +810,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const handleAddTask = (task: Task) => {
     setTasks((prev) => [task, ...prev]);
+    void gcalSyncTask(task, 'upsert');
   };
 
   const handleUpdateTask = (taskId: string, patch: Partial<Task>) => {
     setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, ...patch } : t)));
+    if (patch.title || patch.dueDate || patch.disciplineId) {
+      const updated = tasks.find((t) => t.id === taskId);
+      if (updated) void gcalSyncTask({ ...updated, ...patch }, 'upsert');
+    }
   };
 
   const handleAddClassNote = (note: ClassNote) => {
@@ -856,8 +908,22 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setInternshipLogs((prev) => [log, ...prev]);
   };
 
+  const addSupervision = (entry: SupervisionNotebook) => {
+    setSupervision((prev) => [entry, ...prev]);
+  };
+
+  const updateSupervision = (entry: SupervisionNotebook) => {
+    setSupervision((prev) => prev.map((s) => (s.id === entry.id ? entry : s)));
+  };
+
+  const deleteSupervision = (id: string) => {
+    setSupervision((prev) => prev.filter((s) => s.id !== id));
+  };
+
+
   const handleAddExam = (exam: Exam) => {
     setExams((prev) => [exam, ...prev]);
+    void gcalSyncExam(exam, 'upsert');
   };
 
   const handleAddCourse = useCallback((course: Course) => {
@@ -900,10 +966,77 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       void scheduleDailyReminder(settings.time).then((scheduled) => {
         if (scheduled) hapticSuccess();
       });
+      void syncClassReminders(courses);
     } else {
       void cancelDailyReminder();
+      void cancelClassReminders();
     }
   };
+
+  // mantém os lembretes de aula em dia quando o horário das matérias muda
+  useEffect(() => {
+    if (reminderSettings.enabled) void syncClassReminders(courses);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courses]);
+
+  const setGcalEnabled = async (on: boolean) => {
+    if (on) {
+      const ok = await connectGcal();
+      setGcalEnabledState(ok);
+      if (!ok) {
+        showToast('configura o client id do google para usar a agenda ♡');
+      }
+      return ok;
+    }
+    disconnectGcal();
+    setGcalEnabledState(false);
+    return false;
+  };
+
+  const gcalSyncExam = async (exam: Exam, op: 'upsert' | 'delete') => {
+    if (!gcalEnabled) return;
+    try {
+      if (op === 'upsert') {
+        const gid = await syncExam(exam, courses);
+        if (gid) setGcalMap((m) => ({ ...m, [`exam-${exam.id}`]: gid }));
+      } else {
+        const gid = gcalMap[`exam-${exam.id}`];
+        if (gid) {
+          await unsyncEvent(gid);
+          setGcalMap((m) => {
+            const next = { ...m };
+            delete next[`exam-${exam.id}`];
+            return next;
+          });
+        }
+      }
+    } catch {
+      /* falha silenciosa: a agenda é um espelho opcional */
+    }
+  };
+
+  const gcalSyncTask = async (task: Task, op: 'upsert' | 'delete') => {
+    if (!gcalEnabled) return;
+    try {
+      if (op === 'upsert') {
+        const gid = await syncTask(task, courses);
+        if (gid) setGcalMap((m) => ({ ...m, [`task-${task.id}`]: gid }));
+      } else {
+        const gid = gcalMap[`task-${task.id}`];
+        if (gid) {
+          await unsyncEvent(gid);
+          setGcalMap((m) => {
+            const next = { ...m };
+            delete next[`task-${task.id}`];
+            return next;
+          });
+        }
+      }
+    } catch {
+      /* falha silenciosa */
+    }
+  };
+
 
   const handleUpdateCourse = useCallback((updated: Course) => {
     setCourses((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
@@ -911,6 +1044,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const handleUpdateExam = (exam: Exam) => {
     setExams((prev) => prev.map((e) => (e.id === exam.id ? exam : e)));
+    void gcalSyncExam(exam, 'upsert');
   };
 
   const handleUpdateReading = (reading: ReadingItem) => {
@@ -954,28 +1088,52 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setFlashcards(db.flashcards);
     setMaterials(db.materials);
     setInternshipLogs(db.internshipLogs);
+    setSupervision(db.supervision);
     setTcc(db.tcc);
     setStickers(mergeCatalogWithProgress(db.stickers));
     setSessions(db.sessions);
-    // questions/techniques são bancos estáticos (seed lazy, igual approaches):
-    // NÃO são resetados — zerar aqui apagaria o acervo de questões/quiz.
+    setTechniques(db.techniques);
+    setQuizSessions(db.quizSessions);
+    // approaches/questions são bancos estáticos (seed lazy): não são aplicados
+    // aqui — backups não os trazem e o catálogo é re-semeado sob demanda.
     setStreakData(db.streakData);
     setReminderSettings(db.reminder);
     setLooseNotes(db.looseNotes as LooseNote[]);
     setSavedBookIds(db.savedBookIds);
     setReadingProgress(db.readingProgress ?? {});
     setBookmarkedCourseIds(db.bookmarkedCourseIds);
+    setOnboarding(db.onboarding);
   };
 
   /** Carrega os dados de exemplo (onboarding "começar com exemplo" / Perfil → configurações). */
   const loadDemoData = () => {
+    const currentOnboarding = onboarding;
     applyDatabase(demoDatabase());
+    // `demoDatabase()` parte do onboarding não-concluído; aqui preservamos o
+    // estado atual (Perfil → carregar exemplos não deve voltar ao primeiro acesso).
+    setOnboarding(currentOnboarding);
     showToast('prontinho, carreguei os exemplos ♡');
   };
 
-  /** Limpa tudo e volta ao estado inicial (zerado). */
+  /** Limpa tudo e volta ao estado inicial (zerado) — onboarding é reaberto. */
   const resetApp = () => {
     applyDatabase(emptyDatabase());
+    // Bancos estáticos (aproaches/questions) também são zerados para refletir o
+    // "primeiro acesso"; os refs de seed são resetados para re-semear sob demanda.
+    approachesSeededRef.current = false;
+    questionsSeededRef.current = false;
+    setApproaches([]);
+    setQuestions([]);
+    // Nativo: apaga também a base SQLite (conteúdo + mapa de import legado —
+    // assim uma futura reinstalação reimporta do Preferences, se houver).
+    void (async () => {
+      try {
+        const db = await getUserDb();
+        if (db) await clearUserData(db);
+      } catch (e) {
+        console.error('[resetApp] falha ao limpar SQLite', e);
+      }
+    })();
     showToast('cantinho resetado — vamos começar de novo? ♡');
   };
 
@@ -993,19 +1151,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   /** Coleta todos os estados persistidos num payload versionado (backup). */
-  const exportData = () => {
-    const payload = {
-      version: SCHEMA_VERSION,
-      exportedAt: new Date().toISOString(),
-      data: {
-        profile, courses, classes, tasks, exams, authors, concepts, approaches,
-        readings, flashcards, materials, internshipLogs, tcc, stickers, sessions,
-        questions, techniques, streakData,
-        reminder: reminderSettings, looseNotes, savedBookIds, bookmarkedCourseIds, onboarding,
-        readingProgress,
-      },
-    };
-    exportAppDatabase(payload);
+  const exportData = async () => {
+    const payload = await buildBackupPayload({
+      profile, courses, classes, tasks, exams, authors, concepts, approaches,
+      readings, flashcards, materials, internshipLogs, supervision, tcc, stickers, sessions,
+      streakData, reminder: reminderSettings, looseNotes, savedBookIds,
+      bookmarkedCourseIds, readingProgress, questions, techniques, quizSessions,
+      onboarding,
+    });
+    await exportAppDatabase(payload);
   };
 
   /** Restaura um payload exportado (backup/migração), validando a versão do schema. */
@@ -1076,6 +1230,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     syncHash(next);
     scrollToTop();
   }, [navigationStack, setStack, setTargetId, syncHash]);
+
+  const canGoBack = navigationStack.length > 1;
+
+  const handleSystemBack = useCallback((): boolean => {
+    if (isQuickAddOpen) { setIsQuickAddOpen(false); return true; }
+    if (isSearchOpen) { setIsSearchOpen(false); return true; }
+    if (isEditCourseOpen) { setIsEditCourseOpen(false); return true; }
+    if (isEditTccOpen) { setIsEditTccOpen(false); return true; }
+    if (isDetailPromptOpen) { setIsDetailPromptOpen(false); return true; }
+    if (navigationStack.length > 1) { goBack(); return true; }
+    return false;
+  }, [isQuickAddOpen, isSearchOpen, isEditCourseOpen, isEditTccOpen, isDetailPromptOpen, navigationStack, goBack]);
 
   const handleNavigate = useCallback((tab: NavTab, subTab?: string, target?: string) => {
     if (tab === 'faculdade' && subTab) setSubTabFaculdade(subTab as SubTabFaculdade);
@@ -1242,7 +1408,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const next: NavScreen[] =
       top.kind === 'internshipDiary'
         ? navigationStack
-        : [{ kind: 'tab', tab: 'perfil' as NavTab }, { kind: 'internshipDiary' }];
+        : [{ kind: 'tab', tab: 'faculdade' as NavTab }, { kind: 'internshipDiary' }];
     setStack(next);
     syncHash(next);
     scrollToTop();
@@ -1253,7 +1419,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const openTccScreen = useCallback(() => {
     const top = navigationStack[navigationStack.length - 1];
     const next: NavScreen[] =
-      top.kind === 'tcc' ? navigationStack : [{ kind: 'tab', tab: 'perfil' as NavTab }, { kind: 'tcc' } as const];
+      top.kind === 'tcc' ? navigationStack : [{ kind: 'tab', tab: 'estudos' as NavTab }, { kind: 'tcc' } as const];
     setStack(next);
     syncHash(next);
     scrollToTop();
@@ -1274,13 +1440,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const closeStickersScreen = useCallback(() => goBack(), [goBack]);
 
-  const openQuizCategory = useCallback((config?: Partial<QuizConfig>) => {
-    const top = navigationStack[navigationStack.length - 1];
-    const base: readonly NavScreen[] = top.kind === 'tab' && top.tab === 'estudos'
-      ? navigationStack
-      : [{ kind: 'tab' as const, tab: 'estudos' as NavTab }];
-    const next: NavScreen[] =
-      top.kind === 'quiz-category' ? navigationStack : [...base, { kind: 'quiz-category' as const }];
+  const openQuizCategory = useCallback((_config?: Partial<QuizConfig>) => {
+    const next = stackAfterOpenQuizCategory(navigationStack);
     setStack(next);
     syncHash(next);
     scrollToTop();
@@ -1290,12 +1451,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   /** Splash de preparação do quiz: empilha a tela que garante o acervo em memória. */
   const openQuizLoading = useCallback((config: QuizConfig) => {
-    const top = navigationStack[navigationStack.length - 1];
-    const base: readonly NavScreen[] = top.kind === 'tab' && top.tab === 'estudos'
-      ? navigationStack
-      : [{ kind: 'tab' as const, tab: 'estudos' as NavTab }];
-    const next: NavScreen[] =
-      top.kind === 'quiz-loading' ? navigationStack : [...base, { kind: 'quiz-loading' as const, config }];
+    const next = stackAfterOpenQuizLoading(navigationStack, config);
     setStack(next);
     syncHash(next);
     scrollToTop();
@@ -1304,11 +1460,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const closeQuizLoading = useCallback(() => goBack(), [goBack]);
 
   /**
-   * Garante que o banco de questões está em memória — recarrega do módulo estático
-   * sempre que o estado estiver zerado/vazio (cobre o bug legado do onboarding em
-   * contas com `questions` vazia). Retorna o banco completo.
+   * Garante que o banco de questões está em memória — no web recarrega do
+   * módulo estático; no nativo lê do catálogo SQLite (fallback: módulo).
+   * Retorna o banco completo.
    */
   const ensureQuestionsLoaded = useCallback(async (): Promise<StudyQuestion[]> => {
+    if (isNativePlatform) {
+      const fromCatalog = await getCatalogQuestions<StudyQuestion>();
+      if (fromCatalog.length > 0) {
+        if (questions.length === 0) setQuestions(fromCatalog);
+        return fromCatalog;
+      }
+    }
     const m = await import('../data/bancoQuestoes');
     const bank = m.BANCO_QUESTOES;
     if (questions.length === 0) setQuestions(bank);
@@ -1332,19 +1495,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const closeStudy = useCallback(() => goBack(), [goBack]);
 
   const openQuizPlay = useCallback((pool: StudyQuestion[], config: QuizConfig) => {
-    const top = navigationStack[navigationStack.length - 1];
-    const base: readonly NavScreen[] = navigationStack.find(s => s.kind === 'quiz-category')
-      ? navigationStack.slice(0, navigationStack.findIndex(s => s.kind === 'quiz-category') + 1)
-      : [{ kind: 'tab' as const, tab: 'estudos' as NavTab }, { kind: 'quiz-category' as const }];
-    const playState: QuizPlayState = {
-      pool,
-      config,
-      answers: [],
-      currentIdx: 0,
-      startTime: Date.now(),
-      questionStartTime: Date.now(),
-    };
-    const next: NavScreen[] = [...base, { kind: 'quiz-play' as const, state: playState }];
+    const next = stackAfterOpenQuizPlay(navigationStack, pool, config, Date.now());
     setStack(next);
     syncHash(next);
     scrollToTop();
@@ -1359,18 +1510,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     correctCount: number,
     totalCount: number
   ) => {
-    const top = navigationStack[navigationStack.length - 1];
-    const base = navigationStack.slice(0, navigationStack.findIndex(s => s.kind === 'quiz-play') + 1);
-    const next: NavScreen[] = [
-      ...base,
-      { kind: 'quiz-result', answers, config, startTime, correctCount, totalCount }
-    ];
+    const next = stackAfterOpenQuizResult(navigationStack, {
+      answers, config, startTime, correctCount, totalCount,
+    });
     setStack(next);
     syncHash(next);
     scrollToTop();
   }, [navigationStack, setStack, syncHash]);
 
-  const closeQuizResult = useCallback(() => goBack(), [goBack]);
+  /** Volta do resultado para o seletor de assuntos (mantém quiz-category; política de back nativo). */
+  const closeQuizResult = useCallback(() => {
+    const next = stackAfterCloseQuizResult(navigationStack);
+    setStack(next);
+    syncHash(next);
+    scrollToTop();
+  }, [navigationStack, setStack, syncHash]);
 
   /** Atualiza o estado do quiz em jogo (adiciona resposta ou avança questão). */
   const updateQuizPlayState = useCallback((updates: Partial<QuizPlayState>) => {
@@ -1384,39 +1538,23 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       screen.kind === 'quiz-play' ? { ...screen, state: updatedState } : screen
     );
     setStack(stack);
-    syncHash(stack);
-  }, [navigationStack, setStack, syncHash]);
+  }, [navigationStack, setStack]);
 
   /** Volta de todas as telas de quiz para tab de estudos em um só goBack. */
   const closeAllQuizScreens = useCallback(() => {
-    // Encontra o índice da quiz-category e volta a ela
-    const quizCategoryIdx = navigationStack.findIndex((s) => s.kind === 'quiz-category');
-    if (quizCategoryIdx === -1) {
-      // Não há quiz-category, apenas volta
-      goBack();
-      return;
-    }
-
-    // Remove tudo a partir de quiz-category (volta para tab anterior)
-    const base = navigationStack.slice(0, quizCategoryIdx);
-    if (base.length === 0) {
-      // Se base está vazia, volta para tab estudos
-      setStack([{ kind: 'tab' as const, tab: 'estudos' as NavTab }]);
-    } else {
-      setStack(base);
-    }
-    syncHash(base.length > 0 ? base : [{ kind: 'tab' as const, tab: 'estudos' as NavTab }]);
+    const next = stackAfterCloseAllQuizScreens(navigationStack);
+    setStack(next);
+    syncHash(next);
     scrollToTop();
-  }, [navigationStack, setStack, syncHash, goBack]);
+  }, [navigationStack, setStack, syncHash]);
 
   /** Volta do resultado para o seletor de assuntos (mantém quiz-category). */
   const newQuizFromResult = useCallback(() => {
-    const quizCategoryIdx = navigationStack.findIndex((s) => s.kind === 'quiz-category');
-    if (quizCategoryIdx === -1) {
+    const next = stackAfterNewQuizFromResult(navigationStack);
+    if (!next) {
       openQuizCategory();
       return;
     }
-    const next = navigationStack.slice(0, quizCategoryIdx + 1);
     setStack(next);
     syncHash(next);
     scrollToTop();
@@ -1492,7 +1630,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const showToast = useCallback((message: string) => {
     setToast(message);
-    window.setTimeout(() => setToast(null), 2600);
+    if (toastTimerRef.current !== null) window.clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = window.setTimeout(() => {
+      toastTimerRef.current = null;
+      setToast(null);
+    }, 2600);
+  }, []);
+
+  // Limpa o timer do toast ao desmontar o provider.
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current !== null) window.clearTimeout(toastTimerRef.current);
+    };
   }, []);
 
   const openQuickAdd = useCallback(() => {
@@ -1647,180 +1796,26 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // Header dinâmico (memoizado: não recria entre renders de dados)
   const headerConfig = useMemo<DynamicHeaderConfig | null>(() => {
-  // Dynamic Header Configuration
-  let headerConfig: DynamicHeaderConfig | null = null;
-
-  if (currentScreen.kind === 'streak') {
-    headerConfig = {
-      type: 'detail',
-      title: 'sua ofensiva de estudos',
-      subtitle: 'a chama dos seus estudos ♡',
-      icon: 'Flame',
-      color: '#D85F79',
-      onBack: () => goBack(),
-    };
-  } else if (currentScreen.kind === 'internshipDiary') {
-    headerConfig = {
-      type: 'detail',
-      title: 'diário de estágio',
-      subtitle: 'todos os registros por extenso',
-      icon: 'HeartHandshake',
-      color: '#D85F79',
-      onBack: () => goBack(),
-      actions: [
-        { label: 'nova anotação', Icon: HeartHandshake, onClick: () => openWizard('internship') },
-      ],
-    };
-  } else if (currentScreen.kind === 'tcc') {
-    headerConfig = {
-      type: 'detail',
-      title: 'meu tcc',
-      subtitle: tcc.title ? 'criando e mantendo seu trabalho' : 'ainda sem título',
-      icon: 'GraduationCap',
-      color: '#D85F79',
-      onBack: () => goBack(),
-      actions: [
-        { label: 'editar tcc', Icon: FileText, onClick: () => openEditTcc() },
-      ],
-    };
-  } else if (currentScreen.kind === 'stickers') {
-    headerConfig = {
-      type: 'detail',
-      title: 'stickers & conquistas',
-      subtitle: 'celebrando cada passo do cantinho ♡',
-      icon: 'Sparkles',
-      color: '#D85F79',
-      onBack: () => goBack(),
-    };
-  } else if (currentScreen.kind === 'notes') {
-    headerConfig = {
-      type: 'detail',
-      title: 'suas notas avulsas',
-      subtitle: 'anotações rápidas e pensamentos soltos',
-      icon: 'FileText',
-      color: '#D85F79',
-      onBack: () => goBack(),
-      actions: [
-        { label: 'nova nota avulsa', Icon: StickyNote, onClick: () => setIsCreatingLooseNote(true) },
-      ],
-    };
-  } else if (currentScreen.kind === 'temple') {
-    headerConfig = {
-      type: 'detail',
-      title: 'templo de conhecimento',
-      subtitle: 'mapa de famílias, conceitos, autores e técnicas',
-      icon: 'Landmark',
-      color: '#B94862',
-      onBack: () => goBack(),
-    };
-  } else if (currentScreen.kind === 'families') {
-    headerConfig = {
-      type: 'detail',
-      title: 'famílias de psicoterapias',
-      subtitle: '10 grupos de teorias e correntes clínicas',
-      icon: 'Landmark',
-      color: '#B94862',
-      onBack: () => goBack(),
-    };
-  } else if (currentScreen.kind === 'family' && focusedFamily) {
-    headerConfig = {
-      type: 'detail',
-      title: focusedFamily.name,
-      subtitle: `${focusedFamily.approachCount} abordagens nesta família`,
-      code: String(focusedFamily.order).padStart(2, '0'),
-      icon: 'Landmark',
-      color: focusedFamily.color,
-      onBack: () => goBack(),
-    };
-  } else if (currentScreen.kind === 'approach' && focusedApproach) {
-    headerConfig = {
-      type: 'detail',
-      title: focusedApproach.name,
-      subtitle: focusedApproach.family ?? 'abordagem de psicoterapia',
-      icon: 'Brain',
-      color: focusedApproach.color,
-      onBack: () => goBack(),
-    };
-  } else if (currentScreen.kind === 'quiz-category') {
-    headerConfig = {
-      type: 'detail',
-      title: 'novo quiz',
-      subtitle: `${questions.length} questões no acervo`,
-      icon: 'Target',
-      color: '#D85F79',
-      onBack: () => goBack(),
-    };
-  } else if (currentScreen.kind === 'quiz-loading') {
-    headerConfig = {
-      type: 'detail',
-      title: 'preparando o quiz',
-      subtitle: 'escrevendo suas questões',
-      icon: 'Sparkles',
-      color: '#D85F79',
-      onBack: () => goBack(),
-    };
-  } else if (currentScreen.kind === 'study') {
-    const studyTitles: Record<StudyScreen, { title: string; subtitle: string; icon: string; color: string }> = {
-      focus: { title: 'sessão de foco', subtitle: 'timer em tela cheia, sem distrações', icon: 'Clock', color: '#D85F79' },
-      revisar: { title: 'para revisar', subtitle: `${dueCardsCount} cartões esperando por você`, icon: 'Brain', color: '#D85F79' },
-      leituras: { title: 'leituras', subtitle: 'continue de onde você parou', icon: 'BookOpen', color: '#4A879F' },
-      historico: { title: 'histórico', subtitle: 'tudo que você já estudou por aqui', icon: 'History', color: '#B94862' },
-    };
-    const meta = studyTitles[currentScreen.screen];
-    headerConfig = {
-      type: 'detail',
-      title: meta.title,
-      subtitle: meta.subtitle,
-      icon: meta.icon,
-      color: meta.color,
-      onBack: () => goBack(),
-    };
-  } else if (currentScreen.kind === 'quiz-play') {
-    const playState = currentQuizPlayState;
-    headerConfig = {
-      type: 'detail',
-      title: 'quiz',
-      subtitle:
-        playState && playState.pool.length > 0
-          ? `questão ${playState.currentIdx + 1} de ${playState.pool.length}`
-          : 'só um minutinho...',
-      icon: 'Target',
-      color: '#4A879F',
-      onBack: () => goBack(),
-    };
-  } else if (currentScreen.kind === 'quiz-result') {
-    headerConfig = {
-      type: 'detail',
-      title: 'resultado do quiz',
-      subtitle:
-        currentQuizResultTotalCount && currentQuizResultTotalCount > 0
-          ? `${currentQuizResultCorrectCount} de ${currentQuizResultTotalCount} • ${Math.round((currentQuizResultCorrectCount / currentQuizResultTotalCount) * 100)}% de acerto`
-          : 'quiz finalizado ♡',
-      icon: 'Trophy',
-      color: '#B94862',
-      onBack: () => goBack(),
-    };
-  } else if (currentScreen.kind === 'course' && focusedCourse) {
-    const isBookmarked = bookmarkedCourseIds.includes(focusedCourse.id);
-    const courseActions: HeaderAction[] = [
-      { label: 'nova anotação de aula', Icon: FileText, onClick: () => openCompose(focusedCourse.id) },
-      { label: 'nova prova / avaliação', Icon: CheckCircle2, onClick: () => openWizard('exam', focusedCourse.id) },
-      { label: 'editar detalhes da matéria', Icon: Settings2, onClick: () => openEditCourse() },
-    ];
-    headerConfig = {
-      type: 'detail',
-      title: focusedCourse.name,
-      subtitle: `${focusedCourse.code || 'sem código'} • ${focusedCourse.professor}`,
-      code: focusedCourse.code || 'sem código',
-      icon: focusedCourse.icon,
-      color: focusedCourse.color,
-      onBack: () => goBack(),
-      isBookmarked,
-      onToggleBookmark: () => toggleBookmarkCourse(focusedCourse.id),
-      actions: courseActions,
-    };
-  }
-  return headerConfig;
+    return buildHeaderConfig({
+      currentScreen,
+      focusedFamily,
+      focusedApproach,
+      focusedCourse,
+      bookmarkedCourseIds,
+      tccTitle: tcc.title,
+      questionsCount: questions.length,
+      currentQuizPlayState,
+      quizResultCorrectCount: currentQuizResultCorrectCount,
+      quizResultTotalCount: currentQuizResultTotalCount,
+      dueCardsCount,
+      onBack: goBack,
+      openWizard,
+      openCompose,
+      openEditCourse,
+      openEditTcc,
+      toggleBookmarkCourse,
+      setIsCreatingLooseNote,
+    });
   }, [currentScreen, focusedFamily, focusedApproach, focusedCourse, bookmarkedCourseIds, setIsCreatingLooseNote, goBack, openCompose, openWizard, openEditCourse, toggleBookmarkCourse, openEditTcc, tcc.title, questions.length, currentQuizPlayState, currentQuizResultCorrectCount, currentQuizResultTotalCount, dueCardsCount]);
 
   const value: AppContextValue = {
@@ -1836,6 +1831,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     flashcards,
     materials,
     internshipLogs,
+    supervision,
     tcc,
     stickers,
     sessions,
@@ -1848,6 +1844,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     updateReadingProgress,
     reminderSettings,
     updateReminder,
+    gcalEnabled,
+    setGcalEnabled,
     onboarding,
     completeOnboarding,
     loadDemoData,
@@ -1865,6 +1863,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     navigationStack,
     setStack,
     syncHash,
+    handleSystemBack,
     setActiveTab,
     subTabFaculdade,
     setSubTabFaculdade,
@@ -1883,6 +1882,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     openCourseDetail,
     closeCourseDetail,
     isBottomNavVisible,
+    canGoBack,
     isNotesScreenOpen,
     openNotesScreen,
     closeNotesScreen,
@@ -1999,6 +1999,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     handleAddFlashcard,
     handleReviewFlashcard,
     handleAddInternshipLog,
+    addSupervision,
+    updateSupervision,
+    deleteSupervision,
     handleAddExam,
     handleAddCourse,
     handleAddAuthor,

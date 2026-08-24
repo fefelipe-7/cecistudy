@@ -97,8 +97,8 @@ export const ClassNoteDetailWizard: React.FC = () => {
       ),
     },
     {
-      id: 'anotacoes',
-      title: 'anotações',
+      id: 'conteudo',
+      title: 'conteúdo',
       headline: 'o que você quer guardar da aula?',
       content: (
         <TextArea
@@ -110,9 +110,10 @@ export const ClassNoteDetailWizard: React.FC = () => {
       ),
     },
     {
-      id: 'teoria',
-      title: 'teoria',
-      headline: 'que teorias apareceram na aula?',
+      // §5.9: teoria + referências + avaliação fundidos num único passo opcional
+      id: 'enriquecer',
+      title: 'enriquecer',
+      headline: 'quer conectar com o seu repertório?',
       content: (
         <div className="space-y-5">
           <PillGroupMulti
@@ -130,15 +131,7 @@ export const ClassNoteDetailWizard: React.FC = () => {
             value={approachIds}
             onChange={setApproachIds}
           />
-        </div>
-      ),
-    },
-    {
-      id: 'referencias',
-      title: 'referências',
-      headline: 'quais autores e materiais sustentam?',
-      content: (
-        <div className="space-y-5">
+
           <PillGroupMulti
             label="autores citados"
             variant="rose"
@@ -154,15 +147,7 @@ export const ClassNoteDetailWizard: React.FC = () => {
             value={materialIds}
             onChange={setMaterialIds}
           />
-        </div>
-      ),
-    },
-    {
-      id: 'avaliacao',
-      title: 'avaliação',
-      headline: 'como foi essa aula pra você?',
-      content: (
-        <div className="space-y-4">
+
           <div className="bg-white rounded-2xl border border-ceci-border-default px-4 py-4 shadow-2xs space-y-2">
             <p className="text-xs font-bold text-ceci-primary">sua avaliação da aula</p>
             <p className="text-[11px] text-ceci-secondary">ajuda a classificar melhor as aulas no seu diário.</p>
@@ -182,6 +167,8 @@ export const ClassNoteDetailWizard: React.FC = () => {
   ];
 
   const canNext = step === 0 ? title.trim().length > 0 : true;
+  const blockedReason =
+    step === 0 ? 'dê um título à aula para continuar' : undefined;
 
   const handleSave = () => {
     hapticSuccess();
@@ -208,10 +195,12 @@ export const ClassNoteDetailWizard: React.FC = () => {
       title="detalhes da aula"
       icon={<FileText className="w-3.5 h-3.5" />}
       iconClass="bg-surface-rose border-ceci-border-brand text-ceci-brand-strong"
+      mascote="class-ready"
       steps={steps}
       step={step}
       onStepChange={setStep}
       canNext={canNext}
+      blockedReason={blockedReason}
       onSave={handleSave}
       onClose={closeComposeDetails}
       saveLabel="concluir & guardar ♡"

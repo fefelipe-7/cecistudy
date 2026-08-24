@@ -7,6 +7,7 @@ import { createTaskCalendarEvent, createExamCalendarEvent } from '../../lib/cale
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import { Toggle } from '../ui/Toggle';
 import {
+  DateField,
   DateInput,
   FieldLabel,
   ReviewCard,
@@ -50,6 +51,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
     handleUpdateTask,
     handleUpdateExam,
     closeWizard,
+    openEditCourse,
     showToast,
   } = useApp();
   const editingTask = editing?.kind === 'task' ? tasks.find((t) => t.id === editing.id) : undefined;
@@ -77,40 +79,26 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
 
   const courseName = courses.find((c) => c.id === courseId)?.name ?? '';
 
-  const agendaStep: WizardStep = {
-    id: 'agenda',
-    title: 'agenda',
-    headline: 'quer guardar isso direto na sua agenda do Google?',
-    content: (
-      <div className="space-y-4">
-        <div className="rounded-[22px] border border-ceci-border-default bg-white p-4 space-y-3">
-          <div className="flex items-start gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-surface-blue border border-ceci-border-academic flex items-center justify-center text-ceci-academic-strong shrink-0">
-              <CalendarPlus2 className="w-5 h-5" />
-            </div>
-            <div className="space-y-1">
-              <p className="font-display font-bold text-base text-ceci-primary">lembrete para a agenda</p>
-              <p className="text-xs text-ceci-secondary leading-relaxed">
-                adiciona esse compromisso no Google Agenda com o título, data e disciplina.
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <p className="text-sm font-medium text-ceci-primary">
-                {addToAgenda ? 'sim, adicionar ao Google Agenda' : 'não, só guardar no app'}
-              </p>
-            </div>
-            <Toggle
-              checked={addToAgenda}
-              onChange={() => setAddToAgenda((prev) => !prev)}
-              label="adicionar ao Google Agenda"
-            />
-          </div>
-        </div>
-      </div>
-    ),
+  /** Criação contextual de matéria (§4.1): abre o cadastro e avisa que ela aparece aqui ao voltar. */
+  const createCourseInline = () => {
+    showToast('cadastre a matéria — quando voltar, ela aparece aqui ♡');
+    openEditCourse();
   };
+
+  /** Toggle de agenda agora vive na revisão (§5.3): opção posterior, não etapa para todos. */
+  const agendaRow = (
+    <div className="flex items-center justify-between gap-3 rounded-2xl border border-ceci-border-default bg-white px-4 py-3">
+      <div className="min-w-0">
+        <p className="text-xs font-semibold text-ceci-primary">marcar no Google Agenda</p>
+        <p className="text-[11px] text-ceci-secondary">opcional — só se fizer sentido</p>
+      </div>
+      <Toggle
+        checked={addToAgenda}
+        onChange={() => setAddToAgenda((prev) => !prev)}
+        label="adicionar ao Google Agenda"
+      />
+    </div>
+  );
 
   const choiceStep: WizardStep = {
     id: 'tipo',
@@ -210,30 +198,35 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
             onChange={setCourseId}
             options={courses.map((c) => ({ value: c.id, label: c.name }))}
             emptyMessage="ainda não há disciplinas cadastradas."
+            createLabel="criar matéria agora"
+            onCreate={createCourseInline}
           />
-          <div>
-            <FieldLabel>data limite (prazo)</FieldLabel>
-            <DateInput value={taskDueDate} onChange={(e) => setTaskDueDate(e.target.value)} />
-          </div>
+          <DateField
+            label="data limite (prazo)"
+            value={taskDueDate}
+            onChange={setTaskDueDate}
+            placeholder="sem prazo é um estado válido ♡"
+          />
         </div>
       ),
     },
-    agendaStep,
     {
       id: 'tarefa-revisar',
       title: 'revisar',
       headline: 'confere se está tudo certinho ♡',
       content: (
-        <ReviewCard
-          rows={[
-            { label: 'tarefa', value: taskTitle.trim() },
-            { label: 'categoria', value: taskCategory },
-            { label: 'disciplina', value: courseName },
-            { label: 'prazo', value: taskDueDate ? new Date(taskDueDate).toLocaleDateString('pt-BR') : 'sem prazo definido' },
-            { label: 'prioridade', value: taskPriority },
-            { label: 'agenda', value: addToAgenda ? 'sim' : 'não' },
-          ]}
-        />
+        <div className="space-y-3">
+          <ReviewCard
+            rows={[
+              { label: 'tarefa', value: taskTitle.trim() },
+              { label: 'categoria', value: taskCategory },
+              { label: 'disciplina', value: courseName },
+              { label: 'prazo', value: taskDueDate ? new Date(taskDueDate).toLocaleDateString('pt-BR') : 'sem prazo definido' },
+              { label: 'prioridade', value: taskPriority },
+            ]}
+          />
+          {!editing && agendaRow}
+        </div>
       ),
     },
   ];
@@ -267,6 +260,8 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
             onChange={setCourseId}
             options={courses.map((c) => ({ value: c.id, label: c.name }))}
             emptyMessage="ainda não há disciplinas cadastradas."
+            createLabel="criar matéria agora"
+            onCreate={createCourseInline}
           />
           <div>
             <FieldLabel>peso</FieldLabel>
@@ -292,22 +287,23 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
         />
       ),
     },
-    agendaStep,
     {
       id: 'prova-revisar',
       title: 'revisar',
       headline: 'confere se está tudo certinho ♡',
       content: (
-        <ReviewCard
-          rows={[
-            { label: 'prova', value: examTitle.trim() },
-            { label: 'disciplina', value: courseName },
-            { label: 'data', value: examDate ? new Date(examDate).toLocaleDateString('pt-BR') : 'a confirmar' },
-            { label: 'peso', value: examWeight.trim() || '1,0' },
-            { label: 'tópicos', value: examTopics.length ? examTopics.join(' · ') : 'ainda sem tópicos' },
-            { label: 'agenda', value: addToAgenda ? 'sim' : 'não' },
-          ]}
-        />
+        <div className="space-y-3">
+          <ReviewCard
+            rows={[
+              { label: 'prova', value: examTitle.trim() },
+              { label: 'disciplina', value: courseName },
+              { label: 'data', value: examDate ? new Date(examDate).toLocaleDateString('pt-BR') : 'a confirmar' },
+              { label: 'peso', value: examWeight.trim() || '1,0' },
+              { label: 'tópicos', value: examTopics.length ? examTopics.join(' · ') : 'ainda sem tópicos' },
+            ]}
+          />
+          {!editing && agendaRow}
+        </div>
       ),
     },
   ];
@@ -321,6 +317,12 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       : kind === 'task'
         ? taskTitle.trim().length > 0
         : examTitle.trim().length > 0;
+  const blockedReason =
+    kind === null
+      ? undefined
+      : kind === 'task'
+        ? 'preencha o título da tarefa para continuar'
+        : 'preencha o título da prova para continuar';
 
   const handleSave = async () => {
     if (editingTask && kind === 'task') {
@@ -328,7 +330,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
         title: taskTitle.trim(),
         disciplineId: courseId,
         category: taskCategory,
-        dueDate: taskDueDate || today(),
+        dueDate: taskDueDate || undefined,
         priority: taskPriority,
       });
       hapticSuccess();
@@ -341,7 +343,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
         ...editingExam,
         courseId: courseId || editingExam.courseId,
         title: examTitle.trim(),
-        date: examDate || today(),
+        date: examDate || undefined,
         weight: examWeight.trim() || '1,0',
         topics: examTopics,
       });
@@ -356,12 +358,12 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
         title: taskTitle.trim(),
         disciplineId: courseId,
         category: taskCategory,
-        dueDate: taskDueDate || today(),
+        dueDate: taskDueDate || undefined,
         completed: false,
         priority: taskPriority,
       });
-      if (addToAgenda) {
-        const ok = await createTaskCalendarEvent(taskTitle.trim(), courseName, taskDueDate || today());
+      if (addToAgenda && taskDueDate) {
+        const ok = await createTaskCalendarEvent(taskTitle.trim(), courseName, taskDueDate);
         if (ok) {
           showToast('tarefa salva e marcada na sua agenda ♡');
         } else {
@@ -404,6 +406,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       step={step}
       onStepChange={setStep}
       canNext={canNext}
+      blockedReason={blockedReason}
       hideNext={kind === null}
       onSave={handleSave}
       onClose={closeWizard}

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Flame, Trophy, CalendarDays, CheckCircle2 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { AnimatedNumber } from '../ui/AnimatedNumber';
-import { Kitty } from '../ui/Kitty';
+import { Mascote } from '../ui/Mascote';
 import { addDays, getRecentWeeks, toDateKey } from '../../lib/streak';
 
 const fmtShort = (key: string): string => {
@@ -72,8 +72,8 @@ export const StreakView: React.FC = () => {
               : 'cada dia conta, comece hoje ♡ uma atividade por dia útil é o suficiente.'}
         </p>
 
-        <Kitty
-          expression={streakStats.alive ? 'rindo' : todayPending ? 'curiosa' : 'sonolenta'}
+        <Mascote
+          expression={streakStats.alive ? 'celebrate-small' : todayPending ? 'focus-ready' : 'pause-kind'}
           className="w-16 h-16 mx-auto"
           decorative
         />

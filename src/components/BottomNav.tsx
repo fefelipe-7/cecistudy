@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, GraduationCap, Brain, Library, User, FileText, BookOpen, Check, HeartHandshake } from 'lucide-react';
+import { Home, GraduationCap, Brain, Library, FileText, BookOpen, Check, HeartHandshake } from 'lucide-react';
 import { NavTab, WizardFlow } from '../types';
 import { BottomNavBar, NavItem } from '@/components/ui/bottom-nav-bar';
 import FloatingActionMenu from '@/components/ui/floating-action-menu';
@@ -24,7 +24,6 @@ export const BottomNav: React.FC<BottomNavProps> = ({
     { id: 'faculdade', label: 'faculdade', icon: GraduationCap },
     { id: 'estudos', label: 'estudos', icon: Brain },
     { id: 'biblioteca', label: 'biblioteca', icon: Library },
-    { id: 'perfil', label: 'perfil', icon: User },
   ];
 
   const activeIndex = tabs.findIndex((t) => t.id === activeTab);

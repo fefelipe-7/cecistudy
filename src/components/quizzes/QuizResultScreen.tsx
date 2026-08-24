@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, X, RotateCcw, Target, BarChart2, Clock, Brain } from 'lucide-react';
-import { Kitty } from '../ui/Kitty';
+import { Mascote } from '../ui/Mascote';
 import { cn } from '../../lib/utils';
 import type { StudyQuestion, QuizConfig, QuizAnswer } from '../../types';
 
@@ -131,7 +131,7 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
       .slice(0, 5);
   }, [answers]);
 
-  const kittyExpression = scorePct === 100 ? 'rindo' : scorePct >= 70 ? 'feliz' : scorePct >= 50 ? 'pensativa' : 'curiosa';
+  const mascoteExpression = scorePct === 100 ? 'celebrate-small' : scorePct >= 70 ? 'correct-soft' : scorePct >= 50 ? 'review-card' : 'try-again';
 
   return (
     <div className="min-h-[70vh] flex flex-col pb-44">
@@ -145,11 +145,11 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
             transition={{ duration: 0.4 }}
             className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4"
           >
-            <Kitty expression={kittyExpression} className="w-20 h-20 mx-auto" decorative />
+            <Mascote expression={mascoteExpression} className="w-20 h-20 mx-auto" decorative />
             <div>
               <h3 className="font-display font-bold text-xl text-ceci-primary">quiz finalizado ♡</h3>
               <p className="text-xs text-ceci-secondary mt-1">
-                {totalCount} questões • {totalTimeMin} min {totalTimeMin > 1 ? 'minutos' : 'minuto'} total
+                {totalCount} questões • {totalTimeMin} {totalTimeMin === 1 ? 'minuto' : 'minutos'} no total
               </p>
             </div>
             <div className="flex items-center justify-center gap-4 text-3xl font-display font-bold">

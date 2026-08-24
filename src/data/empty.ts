@@ -17,6 +17,7 @@ import {
   Flashcard,
   MaterialItem,
   InternshipLog,
+  SupervisionNotebook,
   TccData,
   Sticker,
   UserProfile,
@@ -25,6 +26,7 @@ import {
   StudyQuestion,
   Technique,
   OnboardingState,
+  QuizSession,
 } from '../types';
 
 export const emptyProfile: UserProfile = {
@@ -68,6 +70,7 @@ export interface EmptyDatabase {
   flashcards: Flashcard[];
   materials: MaterialItem[];
   internshipLogs: InternshipLog[];
+  supervision: SupervisionNotebook[];
   tcc: TccData;
   stickers: Sticker[];
   sessions: StudySession[];
@@ -79,6 +82,7 @@ export interface EmptyDatabase {
   questions: StudyQuestion[];
   techniques: Technique[];
   onboarding: OnboardingState;
+  quizSessions: QuizSession[];
   readingProgress: Record<string, number>;
 }
 
@@ -96,6 +100,7 @@ export function emptyDatabase(): EmptyDatabase {
     flashcards: [],
     materials: [],
     internshipLogs: [],
+    supervision: [],
     tcc: emptyTcc,
     stickers: lockedStickerCatalog(),
     sessions: [],
@@ -107,6 +112,7 @@ export function emptyDatabase(): EmptyDatabase {
     questions: [],
     techniques: [],
     onboarding: emptyOnboarding,
+    quizSessions: [],
     readingProgress: {},
   };
 }

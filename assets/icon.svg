@@ -1,7 +1,0 @@
-<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1024" height="1024" fill="#FFFFFF"/>
-  <circle cx="512" cy="512" r="170" fill="#D85F79"/>
-  <circle cx="512" cy="512" r="170" fill="none" stroke="#FFD3DD" stroke-width="14"/>
-  <text x="512" y="596" font-family="Plus Jakarta Sans, Inter, sans-serif" font-size="240" font-weight="800" text-anchor="middle" fill="#FFFFFF">C</text>
-  <text x="650" y="300" font-size="80" text-anchor="middle" fill="#FFF5F7">♡</text>
-</svg>

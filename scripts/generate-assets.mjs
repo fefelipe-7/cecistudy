@@ -1,27 +1,35 @@
 #!/usr/bin/env node
 /**
  * Regenera todos os assets de ícone/splash do cecistudy a partir de
- * `assets/new icon.jpeg` e rasteriza as expressões da bonequinha (Hello Kitty)
- * de `assets/hello_kitty_expressoes_svgs/` para `src/assets/kitty/*.png`.
+ * `assets/icon-n.jpeg`, rasteriza os sprites da mascote 3D
+ * (`assets/mascote_expressoes_svgs/`) para `src/assets/mascote/*.png`
+ * e compõe a splash estática a partir de um frame do vídeo
+ * `assets/splash.mp4` (extraído via ffmpeg).
  *
  * Alvos:
  *  - Web/PWA:        public/icon.png, public/icon-192.png, public/icons/icon-*.webp
  *  - Android:        mipmaps ic_launcher{,_round,_foreground,_background}
  *                    + buckets de splash (drawable splashes) + ic_launcher.xml
  *  - iOS:            AppIcon-512@2x.png (1024) + Splash.imageset (2732²)
- *  - Bonequinha:     src/assets/kitty/<emoção>.png (512², PNG otimizado)
+ *  - Mascote:        src/assets/mascote/<expressão>.png (384², PNG otimizado)
  *
  * Uso: npm run assets   (ou: node scripts/generate-assets.mjs)
- * Requer: sharp (devDependency).
+ * Requer: sharp + @ffmpeg-installer/ffmpeg (devDependencies).
  */
 import sharp from 'sharp';
+import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
+import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const ICON_SRC = join(root, 'assets', 'new icon.jpeg');
-const KITTY_DIR = join(root, 'assets', 'hello_kitty_expressoes_svgs');
+const ICON_SRC = join(root, 'assets', 'icon-n.jpeg');
+const MASCOTE_DIR = join(root, 'assets', 'mascote_expressoes_svgs');
+const SPLASH_VIDEO = join(root, 'assets', 'splash.mp4');
+
+/** Cor de fundo do vídeo/splash (creme quente da marca). */
+const SPLASH_BG = { r: 254, g: 246, b: 235 };
 
 const ANDROID_RES = join(root, 'android', 'app', 'src', 'main', 'res');
 const IOS_XCASSETS = join(root, 'ios', 'App', 'App', 'Assets.xcassets');
@@ -35,10 +43,14 @@ const MIPMAP_SIZES = {
   'mipmap-xxxhdpi': 192,
 };
 
-// Expressões → nome do arquivo SVG (e do PNG gerado)
-const KITTY_EXPRESSIONS = [
-  'apaixonada', 'curiosa', 'decepcionada', 'feliz', 'nervosa', 'pensativa',
-  'rindo', 'sonolenta', 'surpresa', 'triste', 'zangada',
+// Expressões da mascote usadas no app → sufixo do arquivo SVG em MASCOTE_DIR
+const MASCOTE_EXPRESSIONS = [
+  'welcome-wave', 'listening-hello', 'focus-ready', 'reading-curious',
+  'library-shelf', 'writing-note', 'review-card', 'quiz-ready',
+  'correct-soft', 'try-again', 'empty-invite', 'done-calm',
+  'celebrate-small', 'class-ready', 'field-prepare', 'supervision-reflect',
+  'connection-link', 'research-tcc', 'writing-flow', 'boundaries-care',
+  'sync-wait', 'loading-patient', 'no-results', 'pause-kind',
 ];
 
 const log = (...a) => console.log(...a);
@@ -47,60 +59,71 @@ function ensureDir(p) {
   if (!existsSync(p)) mkdirSync(p, { recursive: true });
 }
 
-/** Ícone do app: fundo branco cheio + conteúdo da fonte centralizado em 1/3 do tamanho. */
-async function renderIcon(size) {
-  const iconSize = Math.round(size * 0.33);
-  const icon = await sharp(ICON_SRC)
-    .resize(iconSize, iconSize, { fit: 'contain', background: { r: 255, g: 255, b: 255, alpha: 1 } })
+/** Ícone do app: imagem full-bleed (o icon-n.jpeg já tem fundo próprio). */
+function renderIcon(size) {
+  return sharp(ICON_SRC)
+    .resize(size, size, { fit: 'cover' })
     .png()
     .toBuffer();
-  const canvas = sharp({
-    create: { width: size, height: size, channels: 3, background: { r: 255, g: 255, b: 255 } },
-  });
-  return canvas.composite([{ input: icon, gravity: 'centre' }]).png().toBuffer();
 }
 
-/** Composição da splash: fundo branco cheio + ícone centralizado (1/3 do tamanho) + Kitty "feliz" abaixo. */
-async function renderSplash(width, height) {
-  const iconSize = Math.round(Math.min(width, height) * 0.33); // Ícone em 1/3 do tamanho
-  const kittySize = Math.round(Math.min(width, height) * 0.25); // Kitty em 1/4 do tamanho
-  
-  // Procura pela SVG da Kitty "feliz" para a splash
-  const kittySvgPath = join(KITTY_DIR, 'hello_kitty_feliz.svg');
-  const kittyExists = existsSync(kittySvgPath);
-  
-  const icon = await sharp(ICON_SRC).resize(iconSize, iconSize).png().toBuffer();
-  
-  // Cria fundo branco
-  let canvas = sharp({
-    create: { width, height, channels: 3, background: { r: 255, g: 255, b: 255 } },
-  });
-  
-  // Composição de camadas: ícone no meio-alto, Kitty abaixo
-  const layers = [
-    // Ícone centralizado (posição 30% da altura)
-    { input: icon, gravity: 'centre' },
-  ];
-  
-  // Adiciona Kitty se o SVG "feliz" existir
-  if (kittyExists) {
-    try {
-      const kittyPng = await sharp(kittySvgPath)
-        .resize(kittySize, kittySize, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
-        .png()
-        .toBuffer();
-      
-      layers.push({
-        input: kittyPng,
-        gravity: 'south',
-        offset: { left: 0, top: -Math.round(height * 0.1) } // 10% from bottom
-      });
-    } catch (e) {
-      console.warn(`⚠ Kitty SVG não encontrado em ${kittySvgPath}, usando apenas ícone`);
-    }
-  }
-  
-  return canvas.composite(layers).png().toBuffer();
+/** Extrai um frame do vídeo de splash (ffmpeg) e recorta o conteúdo (mascote + spinner). */
+async function extractSplashContent() {
+  const frameBuf = execFileSync(
+    ffmpegInstaller.path,
+    [
+      '-y',
+      '-ss', '0.67', // ~frame 20: mascote centralizada com spinner
+      '-i', SPLASH_VIDEO,
+      '-vf', 'scale=1080:1920:flags=lanczos',
+      '-frames:v', '1',
+      '-f', 'image2pipe', '-vcodec', 'png',
+      '-',
+    ],
+    { maxBuffer: 64 * 1024 * 1024 },
+  );
+  const trimmed = await sharp(frameBuf)
+    .trim({ background: SPLASH_BG, threshold: 16 })
+    .png()
+    .toBuffer();
+
+  // Feather nas bordas: o vídeo tem gradiente sutil, então o recorte ganha
+  // uma máscara de alpha suave para fundir com o fundo chapado da splash.
+  const meta = await sharp(trimmed).metadata();
+  const feather = Math.max(16, Math.round(Math.min(meta.width, meta.height) * 0.08));
+  const inset = Math.round(feather / 2);
+  const maskSvg = Buffer.from(
+    `<svg width="${meta.width}" height="${meta.height}">` +
+      `<rect x="${inset}" y="${inset}" width="${meta.width - inset * 2}" height="${meta.height - inset * 2}" ` +
+      `rx="${feather}" ry="${feather}" fill="white"/>` +
+    `</svg>`,
+  );
+  const mask = await sharp(maskSvg).blur(Math.round(feather / 3)).png().toBuffer();
+
+  return sharp(trimmed)
+    .ensureAlpha()
+    .composite([{ input: mask, blend: 'dest-in' }])
+    .png()
+    .toBuffer();
+}
+
+/** Composição da splash: fundo creme do vídeo + mascote centralizada. */
+async function renderSplash(width, height, contentBuf) {
+  const contentSize = Math.round(Math.min(width, height) * 0.42);
+  const content = await sharp(contentBuf)
+    .resize(contentSize, contentSize, { fit: 'inside' })
+    .png()
+    .toBuffer();
+
+  return sharp({
+    create: {
+      width, height, channels: 3,
+      background: SPLASH_BG,
+    },
+  })
+    .composite([{ input: content, gravity: 'centre' }])
+    .png()
+    .toBuffer();
 }
 
 async function generateWeb() {
@@ -118,7 +141,7 @@ async function generateWeb() {
   }
 }
 
-async function generateAndroid() {
+async function generateAndroid(contentBuf) {
   log('→ android (mipmaps + splash)');
   for (const [bucket, size] of Object.entries(MIPMAP_SIZES)) {
     const dir = join(ANDROID_RES, bucket);
@@ -126,13 +149,16 @@ async function generateAndroid() {
     const resized = await renderIcon(size);
     writeFileSync(join(dir, 'ic_launcher.png'), resized);
     writeFileSync(join(dir, 'ic_launcher_round.png'), resized);
-    // Adaptativo: fundo branco cheio + foreground com o ícone em 1/3 (transparente ao redor)
-    const background = await sharp({
-      create: { width: size, height: size, channels: 3, background: { r: 255, g: 255, b: 255 } },
-    }).png().toBuffer();
+    // Adaptativo: fundo desfocado (ambient) + foreground com o ícone em ~70% (transparente ao redor)
+    const background = await sharp(ICON_SRC)
+      .resize(Math.round(size * 1.5), Math.round(size * 1.5), { fit: 'cover' })
+      .blur(Math.max(4, Math.round(size / 24)))
+      .resize(size, size)
+      .png()
+      .toBuffer();
     writeFileSync(join(dir, 'ic_launcher_background.png'), background);
-    const iconSize = Math.round(size * 0.33);
-    const iconSmall = await sharp(ICON_SRC).resize(iconSize, iconSize).png().toBuffer();
+    const iconSize = Math.round(size * 0.7);
+    const iconSmall = await sharp(ICON_SRC).resize(iconSize, iconSize, { fit: 'cover' }).png().toBuffer();
     const transparent = await sharp({
       create: { width: size, height: size, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
     }).composite([{ input: iconSmall, gravity: 'centre' }]).png().toBuffer();
@@ -146,7 +172,7 @@ async function generateAndroid() {
     const target = join(bucketDir, 'splash.png');
     if (!existsSync(target)) continue;
     const meta = await sharp(target).metadata();
-    const buf = await renderSplash(meta.width, meta.height);
+    const buf = await renderSplash(meta.width, meta.height, contentBuf);
     writeFileSync(target, buf);
   }
 
@@ -160,7 +186,7 @@ async function generateAndroid() {
   writeFileSync(join(ANDROID_RES, 'mipmap-anydpi-v26', 'ic_launcher.xml'), xml);
 }
 
-async function generateIos() {
+async function generateIos(contentBuf) {
   log('→ ios (AppIcon + splash)');
   const appIcon = await renderIcon(1024);
   writeFileSync(
@@ -169,30 +195,37 @@ async function generateIos() {
   );
 
   const splashDir = join(IOS_XCASSETS, 'Splash.imageset');
-  const splash = await renderSplash(2732, 2732);
+  const splash = await renderSplash(2732, 2732, contentBuf);
   for (const f of readdirSync(splashDir)) {
     if (f.endsWith('.png')) writeFileSync(join(splashDir, f), splash);
   }
 }
 
-async function generateKitty() {
-  log('→ bonequinha (src/assets/kitty/)');
-  const outDir = join(root, 'src', 'assets', 'kitty');
+async function generateMascote() {
+  log('→ mascote (src/assets/mascote/)');
+  const files = readdirSync(MASCOTE_DIR);
+  const outDir = join(root, 'src', 'assets', 'mascote');
   ensureDir(outDir);
-  for (const name of KITTY_EXPRESSIONS) {
-    const svg = join(KITTY_DIR, `hello_kitty_${name}.svg`);
-    const buf = await sharp(svg).resize(512, 512).png({ compressionLevel: 9 }).toBuffer();
-    writeFileSync(join(outDir, `${name}.png`), buf);
-    log(`  ✓ ${name}.png (${(buf.length / 1024).toFixed(0)}KB)`);
+  for (const key of MASCOTE_EXPRESSIONS) {
+    const svgFile = files.find((f) => f.endsWith(`_${key}.svg`));
+    if (!svgFile) throw new Error(`sprite da mascote não encontrado: *_${key}.svg`);
+    const buf = await sharp(join(MASCOTE_DIR, svgFile))
+      .resize(320, 320, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+      .webp({ quality: 82, alphaQuality: 90 })
+      .toBuffer();
+    writeFileSync(join(outDir, `${key}.webp`), buf);
+    log(`  ✓ ${key}.webp (${(buf.length / 1024).toFixed(0)}KB)`);
   }
 }
 
 async function main() {
   if (!existsSync(ICON_SRC)) throw new Error(`fonte do ícone não encontrada: ${ICON_SRC}`);
+  if (!existsSync(SPLASH_VIDEO)) throw new Error(`vídeo de splash não encontrado: ${SPLASH_VIDEO}`);
+  const splashContent = await extractSplashContent();
   await generateWeb();
-  await generateAndroid();
-  await generateIos();
-  await generateKitty();
+  await generateAndroid(splashContent);
+  await generateIos(splashContent);
+  await generateMascote();
   log('prontinho ♡ assets regenerados');
 }
 

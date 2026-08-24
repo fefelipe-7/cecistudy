@@ -16,3 +16,14 @@ export const STREAK_WHAT_COUNTS = [
 
 /** Labels dos dias da semana (streak/home). */
 export const WEEKDAY_LABELS = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+
+/** Labels completos dos dias da semana (grade semanal/calendário). */
+export const WEEKDAY_FULL_LABELS = [
+  'domingo',
+  'segunda',
+  'terça',
+  'quarta',
+  'quinta',
+  'sexta',
+  'sábado',
+];

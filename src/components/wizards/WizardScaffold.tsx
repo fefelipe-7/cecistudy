@@ -1,8 +1,9 @@
-import React, { useRef } from 'react';
+﻿import React, { useRef, useState } from 'react';
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
-import { ArrowLeft, Check, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Check, ChevronRight, Loader2 } from 'lucide-react';
 import { IOS_EASE } from '../../lib/motion';
 import { cn } from '../../lib/utils';
+import { Mascote, type MascoteExpression } from '../ui/Mascote';
 
 export interface WizardStep {
   id: string;
@@ -25,6 +26,11 @@ interface WizardScaffoldProps {
   onStepChange: (step: number) => void;
   /** Habilita o botão "continuar" (validação do step atual). */
   canNext?: boolean;
+  /**
+   * Motivo pelo qual o passo atual não pode avançar — exibido abaixo do botão
+   * desabilitado (§5.1: "o botão não deve ficar silenciosamente desabilitado").
+   */
+  blockedReason?: string;
   /** Habilita o botão "guardar" no último step (default: canNext). */
   canSave?: boolean;
   /** Esconde o botão principal (usado em steps de escolha, ex.: tarefa × prova). */
@@ -32,6 +38,23 @@ interface WizardScaffoldProps {
   saveLabel?: string;
   onSave: () => void;
   onClose: () => void;
+  /** Mascotinha ao lado do título (companhia da usuária no fluxo). */
+  mascote?: MascoteExpression;
+  /** Mostra estado "salvando..." e impede duplo envio (§5.1). */
+  saving?: boolean;
+  /** Exibe o indicador "2 de 4" ao lado do título (default: true). */
+  showStepCount?: boolean;
+  /**
+   * Ação de salvamento mínimo disponível antes do último passo
+   * (§5.7: registro essencial salvável sozinho).
+   */
+  onSaveMinimal?: () => void;
+  saveMinimalLabel?: string;
+  /**
+   * Confirma descarte ao fechar somente quando há alteração real
+   * (§5.1: "fechamento: confirmar descarte apenas se houver alteração real").
+   */
+  isDirty?: boolean;
 }
 
 /** Transição lateral entre steps: avançar desliza da direita, voltar da esquerda. */
@@ -50,13 +73,21 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
   step,
   onStepChange,
   canNext = true,
+  blockedReason,
   canSave,
   hideNext = false,
   saveLabel = 'guardar ♡',
   onSave,
   onClose,
+  mascote = 'writing-note',
+  saving = false,
+  showStepCount = true,
+  onSaveMinimal,
+  saveMinimalLabel = 'guardar só o essencial ♡',
+  isDirty = false,
 }) => {
   const dirRef = useRef<number>(1);
+  const [confirmingDiscard, setConfirmingDiscard] = useState(false);
   const isLast = step === steps.length - 1;
   const canConfirm = isLast ? canSave ?? canNext : canNext;
 
@@ -66,21 +97,33 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
     onStepChange(clamped);
   };
 
+  const requestClose = () => {
+    if (isDirty && !confirmingDiscard) {
+      setConfirmingDiscard(true);
+      return;
+    }
+    onClose();
+  };
+
   const handleNext = () => {
+    if (saving) return;
     if (isLast) onSave();
     else goTo(step + 1);
   };
+
+  const showBlockedHint =
+    !hideNext && !canConfirm && !!blockedReason && !confirmingDiscard;
 
   return (
     <div className="min-h-[70vh] flex flex-col pb-44">
       {/* Header */}
       <div className="sticky top-0 z-10 -mx-3.5 sm:-mx-5 px-3.5 sm:px-5 pt-[calc(0.5rem+env(safe-area-inset-top,0px))] pb-3 bg-canvas/95 backdrop-blur-md border-b border-ceci-border-subtle">
-        <div className="max-w-md sm:max-w-xl mx-auto flex items-center justify-between gap-2">
+        <div className="max-w-md sm:max-w-xl lg:max-w-2xl mx-auto flex items-center justify-between gap-2">
           <button
-            onClick={onClose}
+            onClick={requestClose}
             className="w-9 h-9 rounded-2xl bg-white border border-ceci-border-default hover:bg-surface-rose flex items-center justify-center text-ceci-primary shadow-2xs transition-all active:scale-95 cursor-pointer"
             title="voltar"
-            aria-label="voltar"
+            aria-label={isLast ? 'voltar' : 'cancelar'}
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
@@ -94,17 +137,33 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
             >
               {icon}
             </span>
-            <div className="min-w-0">
+            <div className="min-w-0 text-center">
               <h1 className="font-display font-bold text-sm text-ceci-primary truncate leading-tight">{title}</h1>
               {subtitle && <p className="text-[11px] text-ceci-secondary truncate">{subtitle}</p>}
             </div>
+            {mascote && (
+              <Mascote
+                expression={mascote}
+                decorative
+                className="w-8 h-8 shrink-0 -mr-0.5 hidden min-[380px]:block"
+              />
+            )}
           </div>
 
-          <span className="w-9 h-9 shrink-0" aria-hidden />
+          {/* indicador de etapa — "a usuária sabe em que passo está" */}
+          {showStepCount && (
+            <span
+              className="w-9 h-9 shrink-0 flex items-center justify-center text-[10px] font-bold text-ceci-tertiary tabular-nums"
+              aria-label={`etapa ${step + 1} de ${steps.length}`}
+            >
+              {step + 1}/{steps.length}
+            </span>
+          )}
+          {!showStepCount && <span className="w-9 h-9 shrink-0" aria-hidden />}
         </div>
 
         {/* Barra de progresso linear fina (o único indicador de progresso) */}
-        <div className="max-w-md sm:max-w-xl mx-auto mt-3 h-0.5 rounded-full bg-ceci-border-subtle overflow-hidden">
+        <div className="max-w-md sm:max-w-xl lg:max-w-2xl mx-auto mt-3 h-0.5 rounded-full bg-ceci-border-subtle overflow-hidden">
           <motion.div
             className="h-full rounded-full bg-ceci-brand-strong"
             initial={false}
@@ -137,39 +196,86 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
 
       {/* Barra de ação fixa na base da tela (sticky footer) */}
       <div className="fixed bottom-0 inset-x-0 z-10 bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(64,56,58,0.06)]">
-        <div className="max-w-md sm:max-w-xl mx-auto flex flex-col gap-1.5 px-3.5 sm:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
-          {!hideNext && (
-            <button
-              onClick={handleNext}
-              disabled={!canConfirm}
-              className={cn(
-                'w-full min-h-[56px] rounded-[14px] text-sm font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition-transform active:scale-[0.98] cursor-pointer',
-                isLast
-                  ? 'bg-rose-500 hover:bg-ceci-brand-strong text-white'
-                  : 'bg-ceci-primary hover:bg-ceci-primary-hover text-white',
-                !canConfirm && 'opacity-40 cursor-not-allowed'
-              )}
-            >
-              {isLast ? (
+        <div className="max-w-md sm:max-w-xl lg:max-w-2xl mx-auto flex flex-col gap-1.5 px-3.5 sm:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
+          {/* confirmação de descarte com alteração real */}
+          {confirmingDiscard ? (
+            <div className="rounded-2xl bg-white border border-ceci-border-default p-3 space-y-2">
+              <p className="text-xs font-semibold text-ceci-primary text-center">
+                tem coisas escritas aqui — sair sem guardar?
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setConfirmingDiscard(false)}
+                  className="flex-1 min-h-[44px] rounded-xl bg-ceci-primary text-white text-xs font-semibold active:scale-[0.98] transition-transform cursor-pointer"
+                >
+                  continuar editando
+                </button>
+                <button
+                  onClick={onClose}
+                  className="flex-1 min-h-[44px] rounded-xl border border-ceci-border-default bg-white text-red-700 text-xs font-semibold active:scale-[0.98] transition-transform cursor-pointer"
+                >
+                  descartar
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              {!hideNext && (
                 <>
-                  <Check className="w-5 h-5 stroke-[2.5]" />
-                  <span>{saveLabel}</span>
-                </>
-              ) : (
-                <>
-                  <span>continuar</span>
-                  <ChevronRight className="w-5 h-5" />
-                </>
-              )}
-            </button>
-          )}
+                  <button
+                    onClick={handleNext}
+                    disabled={!canConfirm || saving}
+                    className={cn(
+                      'w-full min-h-[56px] rounded-[14px] text-sm font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition-transform active:scale-[0.98] cursor-pointer',
+                      isLast
+                        ? 'bg-rose-500 hover:bg-ceci-brand-strong text-white'
+                        : 'bg-ceci-primary hover:bg-ceci-primary-hover text-white',
+                      (!canConfirm || saving) && 'opacity-40 cursor-not-allowed'
+                    )}
+                  >
+                    {saving ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span>salvando...</span>
+                      </>
+                    ) : isLast ? (
+                      <>
+                        <Check className="w-5 h-5 stroke-[2.5]" />
+                        <span>{saveLabel}</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>continuar</span>
+                        <ChevronRight className="w-5 h-5" />
+                      </>
+                    )}
+                  </button>
 
-          <button
-            onClick={() => (step === 0 ? onClose() : goTo(step - 1))}
-            className="w-full min-h-[40px] rounded-xl text-xs font-medium text-ceci-tertiary hover:text-ceci-primary hover:bg-surface-muted transition-colors cursor-pointer"
-          >
-            {step === 0 ? 'cancelar' : 'voltar'}
-          </button>
+                  {/* motivo explicado do bloqueio — nunca um botão mudo */}
+                  {showBlockedHint && (
+                    <p className="text-[11px] text-ceci-tertiary text-center">{blockedReason}</p>
+                  )}
+
+                  {/* salvamento mínimo antes do fim (registro essencial) */}
+                  {!isLast && onSaveMinimal && canNext && (
+                    <button
+                      onClick={onSaveMinimal}
+                      className="w-full min-h-[36px] rounded-lg text-[11px] font-semibold text-ceci-academic-strong hover:bg-surface-blue transition-colors cursor-pointer"
+                    >
+                      {saveMinimalLabel}
+                    </button>
+                  )}
+                </>
+              )}
+
+              <button
+                onClick={() => (step === 0 ? requestClose() : goTo(step - 1))}
+                className="w-full min-h-[40px] rounded-xl text-xs font-medium text-ceci-tertiary hover:text-ceci-primary hover:bg-surface-muted transition-colors cursor-pointer"
+              >
+                {step === 0 ? 'cancelar' : 'voltar'}
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

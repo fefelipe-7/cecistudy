@@ -18,7 +18,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSaved, onSe
   return (
     <button
       onClick={onSelect}
-      className="card-lift relative w-[105px] sm:w-[115px] h-[145px] sm:h-[155px] rounded-2xl p-2.5 flex flex-col justify-between shrink-0 shadow-xs cursor-pointer overflow-hidden border border-black/5 select-none text-left"
+      className="card-lift relative w-full h-[150px] sm:h-[160px] rounded-2xl p-3 flex flex-col justify-between shadow-xs cursor-pointer overflow-hidden border border-black/5 select-none text-left"
       style={{ backgroundColor: color }}
       aria-label={`abrir artigo ${article.titulo}`}
     >
@@ -36,7 +36,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSaved, onSe
       {/* Badge + salvos */}
       <div className="relative flex items-center justify-between gap-1">
         <span
-          className="text-[8px] font-extrabold uppercase tracking-wider bg-white/90 px-1.5 py-0.5 rounded shadow-2xs line-clamp-1 max-w-[70px]"
+          className="text-[8px] font-extrabold uppercase tracking-wider bg-white/90 px-1.5 py-0.5 rounded shadow-2xs line-clamp-1 max-w-[80px]"
           style={{ color: accent }}
         >
           artigo

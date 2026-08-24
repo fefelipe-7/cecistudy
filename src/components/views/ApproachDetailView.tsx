@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import {
   BookOpen,
   Sparkles,
@@ -66,7 +66,7 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
 
   if (!approach) {
     return (
-      <div className="max-w-md sm:max-w-xl mx-auto px-1 py-10 text-center text-sm text-ceci-secondary">
+      <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto px-1 py-10 text-center text-sm text-ceci-secondary">
         não achei essa abordagem por aqui ♡
       </div>
     );
@@ -115,7 +115,7 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
   const hasAuthors = authors.length > 0;
 
   return (
-    <div className="max-w-md sm:max-w-xl mx-auto space-y-8 pb-1 relative">
+    <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-8 pb-1 relative">
       {/* Intro */}
       <div className="space-y-3 px-1">
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-ceci-primary leading-tight">

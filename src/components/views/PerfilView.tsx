@@ -20,16 +20,23 @@ import {
   Trash2,
   Smartphone,
   RefreshCw,
-  Layers,
-  Timer
+  Layers
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { deriveCourseProgress } from '../../lib/courseProgress';
 import { DitherFunnelChart } from '../ui/dither-funnel';
-import { DitherGrowthChart } from '../ui/dither-growth';
-import { CHART_PASTELS, formatCount, formatShortDate } from '../../lib/ditherChart';
+import { CHART_PASTELS, formatCount } from '../../lib/ditherChart';
 import { ToggleRow } from '../ui/ToggleRow';
+import { Modal } from '../ui/Modal';
 import { isReminderSupported } from '../../lib/notifications';
+import { isGcalConfigured } from '../../lib/gcal';
 import { isNativePlatform } from '../../lib/storage';
+import { isDesktop } from '../../lib/platform';
+import {
+  desktopCheckForUpdate,
+  desktopDownloadAndInstallUpdate,
+  desktopRelaunch,
+} from '../../lib/desktop';
 import { pickProfilePhoto } from '../../lib/photo';
 import {
   applyNow,
@@ -40,10 +47,6 @@ import {
 import { StudyStatsWidget } from '../widgets/StudyStatsWidget';
 import { AnimatedNumber } from '../ui/AnimatedNumber';
 import { ProgressBar } from '../ui/ProgressBar';
-import { Kitty } from '../ui/Kitty';
-import { InternshipLogCard } from '../InternshipLogCard';
-import { InternshipDiaryView } from './InternshipDiaryView';
-import { TccView } from './TccView';
 import { StickersView } from './StickersView';
 
 /** Formata minutos de estudo em "Xh Ymin" / "Xmin". */
@@ -138,8 +141,103 @@ const OtaSection: React.FC = () => {
   );
 };
 
-export type PerfilViewMode = 'profile' | 'internship' | 'tcc' | 'stickers';
+/** Card de atualização no desktop (Tauri updater via GitHub Releases). */
+const DesktopUpdateSection: React.FC = () => {
+  const { showToast } = useApp();
+  const [status, setStatus] = useState<'idle' | 'checking' | 'downloading' | 'ready' | 'error'>('idle');
+  const [version, setVersion] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
 
+  const busy = status === 'checking' || status === 'downloading';
+
+  const check = async () => {
+    setStatus('checking');
+    try {
+      const info = await desktopCheckForUpdate();
+      if (info) {
+        setVersion(info.version);
+        setStatus('ready');
+      } else {
+        showToast('tudo em dia ✨');
+        setStatus('idle');
+      }
+    } catch {
+      setStatus('error');
+    }
+  };
+
+  const install = async () => {
+    setStatus('downloading');
+    setProgress(0);
+    try {
+      await desktopDownloadAndInstallUpdate(setProgress);
+      showToast('atualização instalada ♡ reiniciando…');
+      setTimeout(() => void desktopRelaunch(), 1200);
+    } catch {
+      setStatus('error');
+    }
+  };
+
+  const statusText =
+    status === 'checking'
+      ? 'procurando novidades…'
+      : status === 'downloading'
+        ? `baixando atualização (${progress}%)…`
+        : status === 'ready'
+          ? version
+            ? `a versão ${version} está pronta ♡`
+            : 'atualização disponível ♡'
+          : status === 'error'
+            ? 'não consegui verificar agora — tenta de novo.'
+            : 'tudo em dia ✨';
+
+  return (
+    <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
+      <div className="flex items-center gap-2">
+        <Smartphone className="w-4 h-4 text-ceci-academic-strong" />
+        <h2 className="font-display font-bold text-xl text-ceci-primary">
+          atualização do app
+        </h2>
+      </div>
+
+      <div className="rounded-2xl p-4 border bg-surface-blue border-ceci-border-academic space-y-3">
+        <div>
+          <p className="text-[11px] text-ceci-secondary leading-tight mt-0.5">
+            {statusText}
+          </p>
+        </div>
+
+        {status === 'downloading' && <ProgressBar value={progress} className="h-2" />}
+
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => void check()}
+            disabled={busy}
+            className="flex items-center gap-2 bg-white border border-ceci-border-default text-ceci-primary px-4 py-2.5 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer hover:border-ceci-border-brand transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <RefreshCw className={`w-4 h-4 ${status === 'checking' ? 'animate-spin' : ''}`} />
+            verificar atualização
+          </button>
+
+          {status === 'ready' && (
+            <button
+              onClick={() => void install()}
+              className="flex items-center gap-2 bg-ceci-primary hover:bg-ceci-primary-hover text-white px-4 py-2.5 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer transition-colors"
+            >
+              baixar e instalar
+            </button>
+          )}
+        </div>
+      </div>
+
+      <p className="text-[11px] text-ceci-tertiary -mt-1">
+        o cantinho se atualiza sozinho pelo github releases; instalar pode pedir para reiniciar o app.
+      </p>
+    </div>
+  );
+};
+
+export type PerfilViewMode = 'profile' | 'stickers';
 interface PerfilViewProps {
   /** Tela derivada da pilha `perfil` renderizada no lugar da página. */
   mode?: PerfilViewMode;
@@ -160,12 +258,13 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
     stickers,
     handleUpdateProfile,
     handleNavigate,
-    openQuickAdd,
     openInternshipDiary,
     openTccScreen,
     openStickersScreen,
     reminderSettings,
     updateReminder,
+    gcalEnabled,
+    setGcalEnabled,
     showToast,
     loadDemoData,
     resetApp,
@@ -177,16 +276,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
   const [semester, setSemester] = useState(profile.semester);
   const [university, setUniversity] = useState(profile.university);
   const [dailyQuote, setDailyQuote] = useState(profile.dailyQuote);
-
-  // Tela cheia do diário de estágio (empilhada sobre o perfil)
-  if (mode === 'internship') {
-    return <InternshipDiaryView />;
-  }
-
-  // Tela cheia do meu TCC (empilhada sobre o perfil)
-  if (mode === 'tcc') {
-    return <TccView />;
-  }
+  const [pendingAction, setPendingAction] = useState<'demos' | 'reset' | null>(null);
 
   // Tela cheia de stickers & conquistas (empilhada sobre o perfil)
   if (mode === 'stickers') {
@@ -230,13 +320,17 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
   const tasksDone = tasks.filter((t) => t.completed).length;
   const examsPending = exams.filter((e) => !e.completed).length;
   const avgCourseProgress = courses.length
-    ? Math.round(courses.reduce((acc, c) => acc + c.progress, 0) / courses.length)
+    ? Math.round(
+        courses.reduce(
+          (acc, c) => acc + deriveCourseProgress(c, { classNotes: classes, exams }).value,
+          0
+        ) / courses.length
+      )
     : 0;
   const totalInternshipHours = internshipLogs.reduce((acc, l) => acc + l.hours, 0);
   const tccChaptersDone = tcc.chapters.filter((ch) => ch.completed).length;
   const tccChaptersTotal = tcc.chapters.length;
   const stickersUnlocked = stickers.filter((s) => s.unlocked).length;
-  const hasTcc = tcc.title.trim().length > 0;
 
   // ---- funil da jornada (dithered) ----
   const doneReadings = readings.filter((r) => r.status === 'concluido').length;
@@ -246,25 +340,6 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
     { label: 'leituras concluídas', value: doneReadings, color: CHART_PASTELS[2] },
     { label: 'flashcards revisados', value: flashcardsReviewed, color: CHART_PASTELS[3] },
   ];
-
-  // ---- minutos de foco por semana (últimas 8 semanas, dithered) ----
-  const toISODate = (d: Date) => d.toISOString().split('T')[0];
-  const focusByWeek = Array.from({ length: 8 }, (_, i) => {
-    const weeksAgo = 7 - i;
-    const end = new Date();
-    end.setDate(end.getDate() - weeksAgo * 7);
-    const endISO = toISODate(end);
-    const start = new Date();
-    start.setDate(start.getDate() - (weeksAgo + 1) * 7);
-    const startISO = toISODate(start);
-    return sessions
-      .filter((s) => s.date > startISO && s.date <= endISO)
-      .reduce((acc, s) => acc + (s.durationMinutes || 0), 0);
-  });
-  const weekLabels = Array.from({ length: 8 }, (_, i) => formatShortDate((7 - i) * 7));
-
-  const tccStatusLabel =
-    tcc.status === 'concluido' ? 'concluído' : tcc.status === 'revisao' ? 'em revisão' : 'em andamento';
 
   const tiles: {
     Icon: React.ComponentType<{ className?: string }>;
@@ -285,7 +360,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
       label: 'anotações de aula',
       display: classes.length,
       animate: true,
-      onClick: () => handleNavigate('faculdade', 'aulas')
+      onClick: () => handleNavigate('faculdade')
     },
     {
       Icon: BookOpen,
@@ -312,7 +387,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
       label: 'provas pendentes',
       display: examsPending,
       animate: true,
-      onClick: () => handleNavigate('faculdade', 'avaliacoes')
+      onClick: () => handleNavigate('faculdade')
     },
     {
       Icon: GraduationCap,
@@ -326,13 +401,13 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
       label: 'horas de estágio',
       display: totalInternshipHours,
       animate: true,
-      onClick: () => scrollToSection('perfil-estagio')
+      onClick: () => openInternshipDiary()
     },
     {
       Icon: ListChecks,
       label: 'capítulos do tcc',
       display: `${tccChaptersDone}/${tccChaptersTotal}`,
-      onClick: () => scrollToSection('perfil-tcc')
+      onClick: () => openTccScreen()
     },
     {
       Icon: Sparkles,
@@ -454,16 +529,6 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
         </div>
       </div>
 
-      {/* ===== Minutos de foco por semana (dithered) ===== */}
-      <DitherGrowthChart
-        data={focusByWeek}
-        dates={weekLabels}
-        title="minutos de foco"
-        subtitle="por semana, nas últimas 8 semanas"
-        unitLabel="min"
-        icon={<Timer className="w-4 h-4" />}
-      />
-
       {/* ===== Sua jornada até aqui (funil dithered) ===== */}
       <DitherFunnelChart
         stages={journeyStages}
@@ -524,98 +589,6 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
             “{getJourneyReflection(profile.semester, profile.totalSemesters)}”
           </p>
         </div>
-      </div>
-
-      {/* ===== Diário de estágio ===== */}
-      <div id="perfil-estagio" className="scroll-mt-4 rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <h2 className="font-display font-bold text-xl text-ceci-primary">
-              diário de estágio
-            </h2>
-            <p className="text-xs text-ceci-secondary">
-              horas, diário de campo e reflexões da clínica escola.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="bg-surface-blue px-3.5 py-1.5 rounded-2xl border border-ceci-border-academic text-xs text-right">
-              <p className="text-[10px] lowercase font-bold text-ceci-secondary">total de horas</p>
-              <p className="font-bold text-ceci-academic-strong text-sm">{totalInternshipHours} horas anotadas</p>
-            </div>
-
-            <button
-              onClick={openQuickAdd}
-              className="bg-rose-500 hover:bg-ceci-brand text-white px-3.5 py-2 rounded-xl text-xs font-medium cursor-pointer shadow-2xs"
-            >
-              + nova anotação
-            </button>
-          </div>
-        </div>
-
-        <div className="space-y-3 pt-1">
-          {internshipLogs.slice(0, 2).map((log) => (
-            <InternshipLogCard key={log.id} log={log} />
-          ))}
-
-          {internshipLogs.length > 2 && (
-            <button
-              onClick={openInternshipDiary}
-              className="w-full flex items-center justify-center gap-1.5 px-4 py-3 rounded-2xl bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong text-xs font-bold tap-interactive hover:bg-ceci-border-brand/40 active:scale-[0.98] cursor-pointer"
-            >
-              ver mais {internshipLogs.length - 2} registros
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          )}
-
-          {internshipLogs.length === 0 && (
-            <p className="text-xs text-ceci-secondary bg-surface-muted border border-ceci-border-subtle rounded-2xl p-4 text-center flex items-center justify-center gap-2">
-              <Kitty expression="feliz" className="w-7 h-7 shrink-0" decorative />
-              ainda não tem registro de estágio — que tal anotar o primeiro? ♡
-            </p>
-          )}
-        </div>
-      </div>
-
-      {/* ===== Meu TCC ===== */}
-      <div id="perfil-tcc" className="scroll-mt-4 rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-3">
-        <div className="flex items-center justify-between gap-2">
-          <div>
-            <h2 className="font-display font-bold text-xl text-ceci-primary">
-              meu tcc
-            </h2>
-            <p className="text-xs text-ceci-secondary">
-              plantando e cuidando do seu trabalho ♡
-            </p>
-          </div>
-          <button
-            onClick={openTccScreen}
-            className="flex items-center gap-1 text-xs font-bold text-ceci-brand-strong bg-surface-rose border border-ceci-border-brand px-3.5 py-2 rounded-xl tap-interactive cursor-pointer hover:bg-ceci-border-brand/40 active:scale-[0.98] transition-colors shrink-0"
-          >
-            {hasTcc ? 'ver tcc' : 'criar tcc'}
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-
-        {hasTcc ? (
-          <>
-            <div className="flex items-center gap-2">
-              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand shrink-0">
-                {tccStatusLabel}
-              </span>
-              <span className="text-xs text-ceci-primary font-semibold truncate">{tcc.title}</span>
-            </div>
-            <ProgressBar value={tccChaptersTotal ? Math.round((tccChaptersDone / tccChaptersTotal) * 100) : 0} />
-            <p className="text-[11px] text-ceci-secondary">
-              {tccChaptersDone}/{tccChaptersTotal} capítulos concluídos
-            </p>
-          </>
-        ) : (
-          <p className="text-xs text-ceci-secondary bg-surface-muted border border-ceci-border-subtle rounded-2xl p-4 text-center flex items-center justify-center gap-2">
-            <Kitty expression="curiosa" className="w-7 h-7 shrink-0" decorative />
-            ainda não tem tcc — que tal começar a plantar o seu? ♡
-          </p>
-        )}
       </div>
 
       {/* ===== Stickers & conquistas ===== */}
@@ -703,6 +676,27 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
           )}
         </div>
 
+        {/* Agenda do Google (provas e tarefas) */}
+        <div className={`rounded-2xl p-4 border ${gcalEnabled ? 'bg-surface-blue border-ceci-border-academic' : 'bg-surface-muted border-ceci-border-default'} space-y-3`}>
+          <ToggleRow
+            label="agenda do google ♡"
+            description={
+              isGcalConfigured()
+                ? 'suas provas e tarefas viram eventos na agenda.'
+                : 'precisa configurar o client id do google primeiro.'
+            }
+            checked={gcalEnabled}
+            onChange={() => void setGcalEnabled(!gcalEnabled)}
+            disabled={!isGcalConfigured()}
+            className=""
+          />
+          {!isGcalConfigured() && (
+            <p className="text-[11px] text-ceci-tertiary">
+              adicione <code className="rounded bg-white px-1 border border-ceci-border-default">VITE_GOOGLE_CLIENT_ID_WEB</code> no ambiente.
+            </p>
+          )}
+        </div>
+
         <form onSubmit={handleSaveProfile} className="space-y-4 max-w-lg">
           <div>
             <label className="block text-xs font-medium text-ceci-secondary mb-1">seu nome</label>
@@ -755,8 +749,9 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
         </form>
       </div>
 
-      {/* ===== Atualização do app (OTA — só no app nativo) ===== */}
+      {/* ===== Atualização do app (OTA no nativo · updater no desktop) ===== */}
       {isNativePlatform && <OtaSection />}
+      {isDesktop && <DesktopUpdateSection />}
 
       {/* ===== Dados do cantinho (backup / exemplos / reset) ===== */}
       <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
@@ -798,9 +793,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
           </label>
 
           <button
-            onClick={() => {
-              if (confirm('quer carregar os dados de exemplo? isso substitui o conteúdo atual do cantinho.')) loadDemoData();
-            }}
+            onClick={() => setPendingAction('demos')}
             className="flex items-center gap-2 bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong px-4 py-3 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer hover:bg-ceci-brand-strong hover:text-white transition-colors"
           >
             <Sparkles className="w-4 h-4" />
@@ -808,14 +801,51 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
           </button>
 
           <button
-            onClick={() => {
-              if (confirm('tem certeza? isso apaga todo o conteúdo do cantinho e não dá para desfazer.')) resetApp();
-            }}
+            onClick={() => setPendingAction('reset')}
             className="flex items-center gap-2 bg-white border border-ceci-border-default text-ceci-secondary px-4 py-3 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer hover:border-red-400 hover:text-red-700 transition-colors"
           >
             <RotateCcw className="w-4 h-4" />
             resetar cantinho
           </button>
+
+          <Modal
+            open={pendingAction !== null}
+            onClose={() => setPendingAction(null)}
+            closeOnBackdrop={false}
+          >
+            <div className="w-full max-w-sm bg-white rounded-[24px] shadow-[0_20px_40px_rgba(64,56,58,0.15)] p-6">
+              <h3 className="font-display font-bold text-lg text-ceci-primary mb-2">
+                {pendingAction === 'demos' ? 'carregar exemplos?' : 'resetar cantinho?'}
+              </h3>
+              <p className="text-sm text-ceci-secondary leading-relaxed mb-5">
+                {pendingAction === 'demos'
+                  ? 'isso substitui o conteúdo atual do cantinho por dados de exemplo. a sua evolução atual será perdida.'
+                  : 'isso apaga todo o conteúdo do cantinho e não dá para desfazer. tem certeza?'}
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setPendingAction(null)}
+                  className="flex-1 py-3 rounded-2xl text-sm font-semibold text-ceci-secondary bg-white border border-ceci-border-default cursor-pointer active:scale-95 transition-transform"
+                >
+                  cancelar
+                </button>
+                <button
+                  onClick={() => {
+                    if (pendingAction === 'demos') loadDemoData();
+                    else resetApp();
+                    setPendingAction(null);
+                  }}
+                  className={`flex-1 py-3 rounded-2xl text-sm font-semibold text-white cursor-pointer active:scale-95 transition-transform ${
+                    pendingAction === 'demos'
+                      ? 'bg-ceci-brand hover:bg-ceci-brand-strong'
+                      : 'bg-red-500 hover:bg-red-600'
+                  }`}
+                >
+                  confirmar
+                </button>
+              </div>
+            </div>
+          </Modal>
         </div>
       </div>
 

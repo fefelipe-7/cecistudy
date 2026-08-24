@@ -1,6 +1,7 @@
-import React from 'react';
+﻿import React from 'react';
 import { Bookmark } from 'lucide-react';
 import { ContextCollection, CollectionBook } from '../../data/libraryData';
+import { ManageSurface } from '../ui/ManageSurface';
 
 interface InlineCollectionBlockProps {
   collection: ContextCollection;
@@ -9,6 +10,10 @@ interface InlineCollectionBlockProps {
   onSelectBook: (book: CollectionBook) => void;
 }
 
+/**
+ * Bloco de coleção com apresentação expandida: grade de capas grandes
+ * (título/autor abaixo da capa) em vez de prateleira horizontal compacta.
+ */
 export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = ({
   collection,
   savedBookIds,
@@ -32,8 +37,8 @@ export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = ({
         </p>
       </div>
 
-      {/* Books horizontal shelf */}
-      <div className="flex items-stretch gap-3 overflow-x-auto pb-2 scrollbar-none pt-1">
+      {/* Grade expandida de livros */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-3 gap-y-4">
         {collection.books.map((book) => {
           const isSaved = savedBookIds.includes(book.id);
           const readPages = readProgress?.[book.id];
@@ -44,45 +49,62 @@ export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = ({
               : 0;
 
           return (
-            <div
+            <ManageSurface
               key={book.id}
-              onClick={() => onSelectBook(book)}
-              className="group/book card-lift relative w-[105px] sm:w-[115px] h-[145px] sm:h-[155px] rounded-2xl p-2.5 flex flex-col justify-between shrink-0 shadow-xs cursor-pointer overflow-hidden border border-black/5 select-none"
-              style={{ backgroundColor: book.coverColor }}
+              kind="catalogBook"
+              id={book.id}
+              onTap={() => onSelectBook(book)}
+              className="group/book cursor-pointer select-none space-y-1.5"
             >
-              {/* Realistic Spine Line */}
-              <div className="absolute left-0 top-0 bottom-0 w-2.5 bg-black/10 border-r border-black/10" />
+              {/* Capa grande */}
+              <div
+                className="w-full h-[150px] sm:h-[165px] rounded-2xl p-3 flex flex-col justify-between relative overflow-hidden shadow-xs border border-black/5 card-lift"
+                style={{ backgroundColor: book.coverColor }}
+              >
+                {/* Lombada */}
+                <div className="absolute left-0 top-0 bottom-0 w-2.5 bg-black/10 border-r border-black/10" />
 
-              <div className="pl-2 flex items-center justify-between">
-                <span className="text-[8px] font-extrabold uppercase tracking-wider bg-white/90 text-ceci-primary px-1.5 py-0.5 rounded shadow-2xs line-clamp-1 max-w-[70px]">
-                  {book.badge || 'Livro'}
-                </span>
-                {isSaved && (
-                  <Bookmark className="w-3 h-3 fill-ceci-primary text-ceci-primary" />
-                )}
+                <div className="pl-1.5 flex items-center justify-between">
+                  <span className="text-[8px] font-extrabold uppercase tracking-wider bg-white/90 text-ceci-primary px-1.5 py-0.5 rounded shadow-2xs line-clamp-1 max-w-[80px]">
+                    {book.badge || 'Livro'}
+                  </span>
+                  {isSaved && (
+                    <Bookmark className="w-3.5 h-3.5 fill-ceci-primary text-ceci-primary" />
+                  )}
+                </div>
+
+                <div className="pl-1.5 my-auto">
+                  <p className="font-display font-bold text-xs sm:text-[13px] leading-tight text-ceci-primary line-clamp-4">
+                    {book.title}
+                  </p>
+                </div>
+
+                <div className="pl-1.5">
+                  <p className="text-[9px] font-semibold text-ceci-primary/80 line-clamp-1">
+                    {book.author}
+                  </p>
+
+                  {isReading && book.totalPages && readPages && (
+                    <div className="mt-1 w-full bg-black/10 h-1 rounded-full overflow-hidden">
+                      <div
+                        className="bg-ceci-primary h-full rounded-full"
+                        style={{ width: `${progressPercent}%` }}
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
 
-              <div className="pl-2 my-auto">
-                <p className="font-display font-bold text-[11px] sm:text-[12px] leading-tight text-ceci-primary line-clamp-3">
+              {/* Título/autor expandidos sob a capa */}
+              <div className="px-0.5 space-y-0.5">
+                <p className="font-display font-bold text-xs text-ceci-primary line-clamp-2 leading-snug group-hover:text-ceci-brand-strong transition-colors">
                   {book.title}
                 </p>
-              </div>
-
-              <div className="pl-2 space-y-1">
-                <p className="text-[9px] font-semibold text-ceci-primary/80 line-clamp-1">
+                <p className="text-[10px] text-ceci-tertiary line-clamp-1">
                   {book.author}
                 </p>
-
-                {isReading && book.totalPages && readPages && (
-                  <div className="w-full bg-black/10 h-1 rounded-full overflow-hidden">
-                    <div
-                      className="bg-ceci-primary h-full rounded-full"
-                      style={{ width: `${progressPercent}%` }}
-                    />
-                  </div>
-                )}
               </div>
-            </div>
+            </ManageSurface>
           );
         })}
       </div>

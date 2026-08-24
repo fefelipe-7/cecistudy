@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import {
   BookOpen,
   User,
@@ -33,16 +33,29 @@ import {
   ContextCollection,
 } from '../../data/libraryData';
 import {
-  psychotherapyCollections,
-  complementaryCollections,
-  articleGroups,
-  catalogBooks,
-  mixedCollections,
+  psychotherapyCollections as staticPsychotherapyCollections,
+  complementaryCollections as staticComplementaryCollections,
+  articleGroups as staticArticleGroups,
+  catalogBooks as staticCatalogBooks,
+  mixedCollections as staticMixedCollections,
   Article,
   MixedCollection,
 } from '../../data/books';
+import type { LibraryDataset } from '../../data/books/curate';
+import { loadNativeLibraryDataset } from '../../lib/catalogLibrary';
+
+/** Fonte do acervo: facade estático; no nativo, troca pelo catálogo SQLite. */
+const staticLibrary: LibraryDataset = {
+  catalogBooks: staticCatalogBooks,
+  interdisciplinaryBooks: [],
+  articles: [],
+  psychotherapyCollections: staticPsychotherapyCollections,
+  complementaryCollections: staticComplementaryCollections,
+  articleGroups: staticArticleGroups,
+  mixedCollections: staticMixedCollections,
+};
 import { InlineCollectionBlock } from '../library/InlineCollectionBlock';
-import { Kitty } from '../ui/Kitty';
+import { Mascote } from '../ui/Mascote';
 import { TagChip } from '../ui/TagChip';
 import { BookDetailModal } from '../library/BookDetailModal';
 import { LibraryFilterModal } from '../library/LibraryFilterModal';
@@ -54,9 +67,69 @@ import { ApproachDetailView } from './ApproachDetailView';
 import { ArticleCard } from '../library/ArticleCard';
 import { ArticleDetailModal } from '../library/ArticleDetailModal';
 import { MixedCollectionBlock } from '../library/MixedCollectionBlock';
+import { ManageSurface } from '../ui/ManageSurface';
 import { useApp } from '../../context/AppContext';
 
 export type BibliotecaViewMode = 'library' | 'notes' | 'temple' | 'families' | 'family' | 'approach';
+
+/** Card compacto de livro para as prateleiras de "meus materiais". */
+const MiniBookCard: React.FC<{
+  book: CollectionBook;
+  progressPct?: number;
+  onSelect: () => void;
+}> = ({ book, progressPct, onSelect }) => (
+  <ManageSurface kind="catalogBook" id={book.id} onTap={onSelect} className="shrink-0">
+    <button
+      aria-label={`abrir ${book.title}`}
+      className="w-[130px] sm:w-[145px] text-left space-y-1 group cursor-pointer"
+    >
+    <div
+      className="w-full h-[120px] rounded-2xl p-2.5 flex flex-col justify-between relative overflow-hidden shadow-xs border border-black/5 card-lift"
+      style={{ backgroundColor: book.coverColor }}
+    >
+      <div className="absolute left-0 top-0 bottom-0 w-2 bg-black/10 border-r border-black/10" />
+      <p className="pl-1.5 font-display font-bold text-[10px] text-ceci-primary line-clamp-3 leading-tight my-auto">
+        {book.title}
+      </p>
+      <p className="pl-1.5 text-[8px] font-semibold text-ceci-primary/80 line-clamp-1">{book.author}</p>
+    </div>
+    {progressPct !== undefined && (
+      <div className="h-1.5 rounded-full bg-surface-muted overflow-hidden">
+        <div className="h-full rounded-full bg-gradient-to-r from-ceci-brand to-ceci-brand-strong" style={{ width: `${Math.min(100, progressPct)}%` }} />
+      </div>
+    )}
+    </button>
+  </ManageSurface>
+);
+
+/** Seção colapsável do acervo (explorar). Filtros ativos forçam abertura. */
+const ExploreSection: React.FC<{
+  id: string;
+  icon: React.ReactNode;
+  title: string;
+  badge?: React.ReactNode;
+  open: boolean;
+  onToggle: () => void;
+  children: React.ReactNode;
+}> = ({ id, icon, title, badge, open, onToggle, children }) => (
+  <div data-section={id} className="cv-shelf space-y-3 pt-3 px-1 border-t border-ceci-border-default">
+    <button
+      onClick={onToggle}
+      aria-expanded={open}
+      className="w-full flex items-center justify-between gap-2 cursor-pointer tap-interactive"
+    >
+      <div className="flex items-center gap-2 min-w-0">
+        {icon}
+        <h2 className="font-display font-bold text-base text-ceci-primary truncate">{title}</h2>
+      </div>
+      <span className="flex items-center gap-2 shrink-0">
+        {badge}
+        <ChevronRight className={`w-4 h-4 text-ceci-secondary transition-transform ${open ? 'rotate-90' : ''}`} />
+      </span>
+    </button>
+    {open && <div className="pt-1">{children}</div>}
+  </div>
+);
 
 interface BibliotecaViewProps {
   /** Tela derivada da pilha `biblioteca` renderizada no lugar da grade. */
@@ -66,7 +139,7 @@ interface BibliotecaViewProps {
 }
 
 export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library', familyId, approachId }) => {
-  const { openNotesScreen, isCreatingLooseNote, setIsCreatingLooseNote, openTemple, looseNotes, addLooseNote, deleteLooseNote, courses, concepts, authors, openNoteDetail, openNoteTransform, savedBookIds, toggleSaveBook, readingProgress, updateReadingProgress } = useApp();
+  const { openNotesScreen, isCreatingLooseNote, setIsCreatingLooseNote, openTemple, looseNotes, addLooseNote, deleteLooseNote, courses, concepts, authors, openNoteDetail, openNoteTransform, savedBookIds, toggleSaveBook, readingProgress, updateReadingProgress, openApproach } = useApp();
   // Filter States
   const [activeCategory, setActiveCategory] = useState<string>('todos');
   const [activeStatus, setActiveStatus] = useState<string>('todos');
@@ -77,6 +150,55 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
   // Detail & Modal States
   const [selectedBook, setSelectedBook] = useState<CollectionBook | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+
+  // Seções do "explorar" — abertas por padrão (apresentação expandida do acervo);
+  // a usuária pode colapsar. Filtros ativos mantêm tudo aberto.
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
+
+  // Fase F — nativo lê o acervo do catálogo SQLite (fallback: facade estático).
+  const [nativeLibrary, setNativeLibrary] = useState<LibraryDataset | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    void loadNativeLibraryDataset().then((dataset) => {
+      if (!cancelled && dataset) setNativeLibrary(dataset);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+  const library = nativeLibrary ?? staticLibrary;
+  const { psychotherapyCollections, complementaryCollections, articleGroups, catalogBooks, mixedCollections } = library;
+  const toggleSection = (id: string) =>
+    setOpenSections((prev) => ({ ...prev, [id]: !prev[id] }));
+  const isOpen = (id: string) => hasActiveFilters || openSections[id] !== false;
+
+  // Pool único de livros do catálogo para montar "meus materiais"
+  const allBooksById = useMemo(() => {
+    const map = new Map<string, CollectionBook>();
+    const pool: CollectionBook[] = [
+      ...initialTrendingBooks,
+      ...initialContextCollections.flatMap((c) => c.books),
+      ...psychotherapyCollections.flatMap((c) => c.books),
+      ...complementaryCollections.flatMap((c) => c.books),
+      ...mixedCollections.flatMap((c) => c.books),
+    ];
+    pool.forEach((b) => {
+      if (!map.has(b.id)) map.set(b.id, b);
+    });
+    return map;
+  }, []);
+
+  const savedBooks = useMemo(
+    () => [...allBooksById.values()].filter((b) => savedBookIds.includes(b.id)),
+    [allBooksById, savedBookIds]
+  );
+  const readingBooks = useMemo(
+    () => [...allBooksById.values()].filter((b) => {
+      const p = readingProgress[b.id];
+      return p !== undefined && p > 0;
+    }),
+    [allBooksById, readingProgress]
+  );
 
   const renderBottomAction = null;
 
@@ -380,7 +502,7 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
   }
 
   return (
-    <div className="max-w-md sm:max-w-xl mx-auto space-y-6 pb-1 relative">
+    <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-6 pb-1 relative">
 
       {/* 1. Top Header Label & Title */}
       <div className="flex items-center justify-between pt-1 px-1">
@@ -403,6 +525,14 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
           </button>
         </div>
       </div>
+
+      {/* ==================================================================== */}
+      {/* ZONA 1: MEUS MATERIAIS (acesso pessoal primeiro)                      */}
+      {/* ==================================================================== */}
+      <section className="space-y-3">
+        <h2 className="font-display font-bold text-sm text-ceci-tertiary uppercase tracking-wider px-1">
+          meus materiais
+        </h2>
 
       {/* Simple Navigation Card "suas notas" */}
       <button
@@ -429,6 +559,66 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
         </div>
         <ChevronRight className="w-5 h-5 text-ceci-brand-strong group-hover:translate-x-1 transition-transform shrink-0" />
       </button>
+
+      {/* Em andamento — prateleira com progresso */}
+      {readingBooks.length > 0 && (
+        <div className="space-y-2 px-1">
+          <div className="flex items-center gap-2">
+            <BookOpen className="w-4 h-4 text-ceci-academic-strong" />
+            <h3 className="text-xs font-bold text-ceci-primary font-display">continuar lendo</h3>
+            <span className="text-[10px] font-bold text-ceci-academic-strong bg-surface-blue px-2 py-0.5 rounded-full border border-ceci-border-academic">
+              {readingBooks.length}
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {readingBooks.map((book) => {
+              const total = book.totalPages;
+              const read = readingProgress[book.id] ?? 0;
+              return (
+                <MiniBookCard
+                  key={book.id}
+                  book={book}
+                  progressPct={total ? Math.round((read / total) * 100) : undefined}
+                  onSelect={() => setSelectedBook(book)}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Salvos — prateleira */}
+      {savedBooks.length > 0 && (
+        <div className="space-y-2 px-1">
+          <div className="flex items-center gap-2">
+            <Bookmark className="w-4 h-4 text-ceci-brand-strong" />
+            <h3 className="text-xs font-bold text-ceci-primary font-display">salvos pra depois</h3>
+            <span className="text-[10px] font-bold text-ceci-brand-strong bg-surface-rose px-2 py-0.5 rounded-full border border-ceci-border-brand">
+              {savedBooks.length}
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {savedBooks.map((book) => (
+              <MiniBookCard key={book.id} book={book} onSelect={() => setSelectedBook(book)} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {readingBooks.length === 0 && savedBooks.length === 0 && (
+        <p className="text-xs text-ceci-secondary px-1">
+          salve obras do acervo ♡ elas aparecem aqui, pertinho de você.
+        </p>
+      )}
+      </section>
+
+      {/* ==================================================================== */}
+      {/* ZONA 2: EXPLORAR O ACERVO                                             */}
+      {/* ==================================================================== */}
+      <section className="space-y-4">
+        <h2 className="font-display font-bold text-sm text-ceci-tertiary uppercase tracking-wider px-1 pt-2 border-t border-ceci-border-default">
+          explorar o acervo
+        </h2>
 
       {/* 3. Search Bar + Filter Toggle Button */}
       <div className="space-y-3 px-1">
@@ -524,35 +714,39 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
       </div>
 
       {/* ==================================================================== */}
-      {/* INLINE SECTION 1: REPERTÓRIO & LEITURAS RECOMENDADAS               */}
+      {/* EXPLORAR: REPERTÔRIO & LEITURAS RECOMENDADAS                        */}
       {/* ==================================================================== */}
       {filteredTrendingBooks.length > 0 && (
-        <div className="cv-shelf space-y-3 pt-2 px-1 border-t border-ceci-border-default">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-ceci-brand-strong" />
-              <h2 className="font-display font-bold text-base text-ceci-primary">
-                repertório & leituras recomendadas
-              </h2>
-            </div>
+        <ExploreSection
+          id="repertorio"
+          icon={<TrendingUp className="w-4 h-4 text-ceci-brand-strong" />}
+          title="repertório & leituras recomendadas"
+          badge={
             <span className="text-[10px] font-bold text-ceci-brand-strong bg-surface-rose px-2.5 py-0.5 rounded-full border border-ceci-border-brand">
               bagagem extra
             </span>
-          </div>
-
+          }
+          open={isOpen('repertorio')}
+          onToggle={() => toggleSection('repertorio')}
+        >
           <p className="text-xs text-ceci-secondary leading-relaxed">
             obras de finanças comportamentais, design de experiência, literatura e decisão para enriquecer sua visão clínica.
           </p>
 
-          {/* Horizontal Bookshelf directly on canvas */}
-          <div className="flex items-stretch gap-3 overflow-x-auto pb-2 scrollbar-none pt-1">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 pt-1">
             {filteredTrendingBooks.map((book) => {
               const isSaved = savedBookIds.includes(book.id);
               return (
-                <div
+                <ManageSurface
                   key={book.id}
-                  onClick={() => setSelectedBook(book)}
-                  className="w-[145px] sm:w-[160px] cursor-pointer group shrink-0 space-y-2"
+                  kind="catalogBook"
+                  id={book.id}
+                  onTap={() => setSelectedBook(book)}
+                  className="contents"
+                >
+                <button
+                  aria-label={`abrir ${book.title}`}
+                  className="w-full cursor-pointer group space-y-2 text-left"
                 >
                   <div
                     className="w-full h-[145px] sm:h-[155px] rounded-2xl p-3 flex flex-col justify-between relative overflow-hidden shadow-xs border border-black/5 card-lift"
@@ -590,30 +784,30 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
                       {book.author}
                     </p>
                   </div>
-                </div>
+                </button>
+                </ManageSurface>
               );
             })}
           </div>
-        </div>
+        </ExploreSection>
       )}
 
       {/* ==================================================================== */}
-      {/* INLINE SECTION: CATÁLOGO DE PSICOTERAPIAS (10 famílias)             */}
+      {/* EXPLORAR: CATÁLOGO DE PSICOTERAPIAS (10 famílias)                    */}
       {/* ==================================================================== */}
       {filteredCatalogCollections.length > 0 && (
-        <div data-section="psicoterapias" className="cv-shelf space-y-4 pt-4 px-1 border-t border-ceci-border-default">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Brain className="w-4 h-4 text-ceci-brand-strong" />
-              <h2 className="font-display font-bold text-base text-ceci-primary">
-                catálogo de psicoterapias
-              </h2>
-            </div>
+        <ExploreSection
+          id="psicoterapias"
+          icon={<Brain className="w-4 h-4 text-ceci-brand-strong" />}
+          title="catálogo de psicoterapias"
+          badge={
             <span className="text-[10px] font-bold text-ceci-brand-strong bg-surface-rose px-2.5 py-0.5 rounded-full border border-ceci-border-brand">
               {catalogBooks.length} obras · {psychotherapyCollections.length} famílias
             </span>
-          </div>
-
+          }
+          open={isOpen('psicoterapias')}
+          onToggle={() => toggleSection('psicoterapias')}
+        >
           <p className="text-xs text-ceci-secondary leading-relaxed">
             as grandes obras de cada abordagem terapêutica — da psicanálise à terapia pragmática, com resumo e trecho memorável para navegar o repertório.
           </p>
@@ -629,26 +823,25 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
               />
             ))}
           </div>
-        </div>
+        </ExploreSection>
       )}
 
       {/* ==================================================================== */}
-      {/* INLINE SECTION: CATEGORIAS MISTAS (livros + artigos)                 */}
+      {/* EXPLORAR: CATEGORIAS MISTAS (livros + artigos)                       */}
       {/* ==================================================================== */}
       {filteredMixedCollections.length > 0 && (
-        <div data-section="mistas" className="cv-shelf space-y-4 pt-4 px-1 border-t border-ceci-border-default">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-ceci-brand-strong" />
-              <h2 className="font-display font-bold text-base text-ceci-primary">
-                categorias mistas
-              </h2>
-            </div>
+        <ExploreSection
+          id="mistas"
+          icon={<Sparkles className="w-4 h-4 text-ceci-brand-strong" />}
+          title="categorias mistas"
+          badge={
             <span className="text-[10px] font-bold text-ceci-brand-strong bg-surface-rose px-2.5 py-0.5 rounded-full border border-ceci-border-brand">
               {filteredMixedCollections.length} trilhas
             </span>
-          </div>
-
+          }
+          open={isOpen('mistas')}
+          onToggle={() => toggleSection('mistas')}
+        >
           <p className="text-xs text-ceci-secondary leading-relaxed">
             trilhas temáticas que cruzam obras e artigos de diferentes abordagens — toque para abrir e registrar suas páginas lidas.
           </p>
@@ -665,26 +858,25 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
               />
             ))}
           </div>
-        </div>
+        </ExploreSection>
       )}
 
       {/* ==================================================================== */}
-      {/* INLINE SECTION 2: TESTES & INSTRUMENTOS PSICOLÓGICOS               */}
+      {/* EXPLORAR: TESTES & INSTRUMENTOS PSICOLÔGICOS                         */}
       {/* ==================================================================== */}
       {(activeCategory === 'todos' || activeCategory === 'testes') && testCollections.length > 0 && (
-        <div data-section="testes" className="cv-shelf space-y-4 pt-4 px-1 border-t border-ceci-border-default">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <BrainCircuit className="w-4 h-4 text-success-deep" />
-              <h2 className="font-display font-bold text-base text-ceci-primary">
-                testes, escalas & avaliação clínica
-              </h2>
-            </div>
+        <ExploreSection
+          id="testes"
+          icon={<BrainCircuit className="w-4 h-4 text-success-deep" />}
+          title="testes, escalas & avaliação clínica"
+          badge={
             <span className="text-[11px] text-ceci-tertiary">
               {testCollections.length} coleções
             </span>
-          </div>
-
+          }
+          open={isOpen('testes')}
+          onToggle={() => toggleSection('testes')}
+        >
           <div className="space-y-6">
             {testCollections.map((col) => (
               <InlineCollectionBlock
@@ -696,26 +888,25 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
               />
             ))}
           </div>
-        </div>
+        </ExploreSection>
       )}
 
       {/* ==================================================================== */}
-      {/* INLINE SECTION 3: AUTORES DA PSICOLOGIA                              */}
+      {/* EXPLORAR: AUTORES DA PSICOLOGIA                                      */}
       {/* ==================================================================== */}
       {(activeCategory === 'todos' || activeCategory === 'autores') && authorCollections.length > 0 && (
-        <div data-section="autores" className="cv-shelf space-y-4 pt-4 px-1 border-t border-ceci-border-default">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <User className="w-4 h-4 text-ceci-brand-strong" />
-              <h2 className="font-display font-bold text-base text-ceci-primary">
-                autores & grandes obras
-              </h2>
-            </div>
+        <ExploreSection
+          id="autores"
+          icon={<User className="w-4 h-4 text-ceci-brand-strong" />}
+          title="autores & grandes obras"
+          badge={
             <span className="text-[11px] text-ceci-tertiary">
               {authorCollections.length} coleções
             </span>
-          </div>
-
+          }
+          open={isOpen('autores')}
+          onToggle={() => toggleSection('autores')}
+        >
           <div className="space-y-6">
             {authorCollections.map((col) => (
               <InlineCollectionBlock
@@ -727,26 +918,25 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
               />
             ))}
           </div>
-        </div>
+        </ExploreSection>
       )}
 
       {/* ==================================================================== */}
-      {/* INLINE SECTION 4: CONCEITOS-CHAVE & FICHAMENTOS                    */}
+      {/* EXPLORAR: CONCEITOS-CHAVE & FICHAMENTOS                              */}
       {/* ==================================================================== */}
       {(activeCategory === 'todos' || activeCategory === 'conceitos') && conceptCollections.length > 0 && (
-        <div data-section="conceitos" className="cv-shelf space-y-4 pt-4 px-1 border-t border-ceci-border-default">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-ceci-academic-strong" />
-              <h2 className="font-display font-bold text-base text-ceci-primary">
-                conceitos-chave & fichamentos
-              </h2>
-            </div>
+        <ExploreSection
+          id="conceitos"
+          icon={<Sparkles className="w-4 h-4 text-ceci-academic-strong" />}
+          title="conceitos-chave & fichamentos"
+          badge={
             <span className="text-[11px] text-ceci-tertiary">
               {conceptCollections.length} coleções
             </span>
-          </div>
-
+          }
+          open={isOpen('conceitos')}
+          onToggle={() => toggleSection('conceitos')}
+        >
           <div className="space-y-6">
             {conceptCollections.map((col) => (
               <InlineCollectionBlock
@@ -758,26 +948,25 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
               />
             ))}
           </div>
-        </div>
+        </ExploreSection>
       )}
 
       {/* ==================================================================== */}
-      {/* INLINE SECTION 5: ABORDAGENS DA PSICOLOGIA                           */}
+      {/* EXPLORAR: ABORDAGENS DA PSICOLOGIA                                   */}
       {/* ==================================================================== */}
       {(activeCategory === 'todos' || activeCategory === 'abordagens') && approachCollections.length > 0 && (
-        <div data-section="abordagens" className="cv-shelf space-y-4 pt-4 px-1 border-t border-ceci-border-default">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Bookmark className="w-4 h-4 text-beige-700" />
-              <h2 className="font-display font-bold text-base text-ceci-primary">
-                abordagens & correntes da psicologia
-              </h2>
-            </div>
+        <ExploreSection
+          id="abordagens"
+          icon={<Bookmark className="w-4 h-4 text-beige-700" />}
+          title="abordagens & correntes da psicologia"
+          badge={
             <span className="text-[11px] text-ceci-tertiary">
               {approachCollections.length} coleções
             </span>
-          </div>
-
+          }
+          open={isOpen('abordagens')}
+          onToggle={() => toggleSection('abordagens')}
+        >
           <div className="space-y-6">
             {approachCollections.map((col) => (
               <InlineCollectionBlock
@@ -785,34 +974,33 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
                 collection={col}
                 savedBookIds={savedBookIds}
                 onSelectBook={(book) => {
-                  // For approach collections, navigate to approach detail view
-                  // Assuming the collection's books contain approach info or we can use col.id
-                  // We'll use the collection id as approachId for navigation
-                  window.location.hash = `#/biblioteca/abordagens/${col.id}`;
+                  // Coleção de abordagem → abre a abordagem real do catálogo (se mapeada).
+                  if (col.approachId) {
+                    openApproach(col.approachId);
+                  }
                 }}
               />
             ))}
           </div>
-        </div>
+        </ExploreSection>
       )}
 
       {/* ==================================================================== */}
-      {/* INLINE SECTION 6: BAGAGEM MULTIDISCIPLINAR COMPLETA                  */}
+      {/* EXPLORAR: BAGAGEM MULTIDISCIPLINAR COMPLETA                          */}
       {/* ==================================================================== */}
       {(activeCategory === 'todos' || activeCategory === 'multidisciplinar') && multidisciplinaryCollections.length > 0 && (
-        <div data-section="multidisciplinar" className="cv-shelf space-y-4 pt-4 px-1 border-t border-ceci-border-default">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Compass className="w-4 h-4 text-gold" />
-              <h2 className="font-display font-bold text-base text-ceci-primary">
-                bagagem complementar & visão expandida
-              </h2>
-            </div>
+        <ExploreSection
+          id="multidisciplinar"
+          icon={<Compass className="w-4 h-4 text-gold" />}
+          title="bagagem complementar & visão expandida"
+          badge={
             <span className="text-[10px] font-bold text-success-deep bg-surface-mint-soft px-2.5 py-0.5 rounded-full border border-ceci-border-academic">
               100 obras · 10 áreas
             </span>
-          </div>
-
+          }
+          open={isOpen('multidisciplinar')}
+          onToggle={() => toggleSection('multidisciplinar')}
+        >
           <p className="text-xs text-ceci-secondary leading-relaxed">
             filosofia, literatura, sociologia, história, neurociência e mais — o repertório que enriquece seu olhar clínico.
           </p>
@@ -828,26 +1016,25 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
               />
             ))}
           </div>
-        </div>
+        </ExploreSection>
       )}
 
       {/* ==================================================================== */}
-      {/* INLINE SECTION 7: ARTIGOS CIENTÍFICOS (150, 15 por família)        */}
+      {/* EXPLORAR: ARTIGOS CIENTÍFICOS (150, 15 por família)                  */}
       {/* ==================================================================== */}
       {filteredArticleGroups.length > 0 && (
-        <div data-section="artigos" className="cv-shelf space-y-4 pt-4 px-1 border-t border-ceci-border-default">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Newspaper className="w-4 h-4 text-ceci-academic-strong" />
-              <h2 className="font-display font-bold text-base text-ceci-primary">
-                artigos científicos
-              </h2>
-            </div>
+        <ExploreSection
+          id="artigos"
+          icon={<Newspaper className="w-4 h-4 text-ceci-academic-strong" />}
+          title="artigos científicos"
+          badge={
             <span className="text-[10px] font-bold text-ceci-academic-strong bg-surface-blue px-2.5 py-0.5 rounded-full border border-ceci-border-academic">
               {totalFilteredArticles} artigos
             </span>
-          </div>
-
+          }
+          open={isOpen('artigos')}
+          onToggle={() => toggleSection('artigos')}
+        >
           <p className="text-xs text-ceci-secondary leading-relaxed">
             referências reais com DOI — toque para ler o resumo e abrir o artigo onde ele está disponível.
           </p>
@@ -867,7 +1054,7 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
                     {group.articles.length}
                   </span>
                 </div>
-                <div className="flex items-stretch gap-3 overflow-x-auto pb-2 scrollbar-none">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                   {group.articles.map((article) => (
                     <ArticleCard
                       key={article.id}
@@ -880,7 +1067,7 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
               </div>
             ))}
           </div>
-        </div>
+        </ExploreSection>
       )}
 
       {/* Empty Filter State */}
@@ -891,7 +1078,7 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
         filteredMixedCollections.length === 0 &&
         filteredArticleGroups.length === 0 && (
         <div className="py-12 text-center space-y-3 px-1 border-t border-ceci-border-default">
-          <Kitty expression="surpresa" className="w-16 h-16 mx-auto" decorative />
+          <Mascote expression="no-results" className="w-16 h-16 mx-auto" decorative />
           <h3 className="font-display font-bold text-base text-ceci-primary">
             nenhuma coleção ou obra encontrada
           </h3>
@@ -906,6 +1093,7 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
           </button>
         </div>
       )}
+      </section>
 
       {/* Filter Modal / Drawer */}
       <LibraryFilterModal

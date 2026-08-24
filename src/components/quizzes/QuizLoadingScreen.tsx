@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Kitty } from '../ui/Kitty';
+import { Mascote } from '../ui/Mascote';
 import { useApp } from '../../context/AppContext';
 import { buildQuizPool } from '../../lib/quizLogic';
 import type { QuizConfig, StudyQuestion } from '../../types';
@@ -56,7 +56,7 @@ export const QuizLoadingScreen: React.FC<QuizLoadingScreenProps> = ({ config, on
 
   return (
     <div className="min-h-[70vh] flex flex-col items-center justify-center gap-4 text-center px-6">
-      <Kitty expression="curiosa" className="w-16 h-16" decorative />
+      <Mascote expression="loading-patient" className="w-16 h-16" decorative />
       <div>
         <h3 className="font-display font-bold text-lg text-ceci-primary">escrevendo suas questões ♡</h3>
         <p className="text-xs text-ceci-secondary mt-2">{message}</p>

@@ -347,6 +347,100 @@ re-run do workflow num commit antigo; `available` guarda as últimas 5 versões.
 
 ---
 
+## Fase 12 — Auditoria `docs/auditor.md` (contrato de banco, backup, quiz, ícones, OTA) (implementada)
+
+> **Status: `[x]` implementada.** Correções estruturais dirigidas pelo relatório de
+> auditoria (`docs/auditor.md`), todas verificadas no código antes de corrigir.
+> Gate final: `npm run lint` + `npm run test` + `npm run build` verdes (235 testes).
+
+- [x] **12.1** **Contrato único de banco + backup/reset/import (P1-1 + Zod):**
+  - `src/lib/persistentData.ts` — contrato único (`PersistedDatabase`), bancos estáticos
+    (`approaches`/`questions` **não** exportados — catálogos re-seedados sob demanda),
+    snapshot de estado (`readDatabaseFromState`), `buildBackupData`, `resetDatabase`.
+  - `src/lib/backupSchema.ts` — validação Zod por entidade (+ `.passthrough()` p/ campos
+    legados); `backupDataSchema` tolera coleções ausentes (merge com `emptyDatabase()`)
+    mas rejeita payloads malformados.
+  - `src/lib/exportImport.ts` — `importAppDatabase` valida JSON → migra → valida Zod →
+    merge; `buildBackupPayload(snapshot)`; re-export de `SCHEMA_VERSION`.
+  - `src/data/schema.ts` — `SCHEMA_VERSION` 6→**7**; `MIGRATIONS[7]` adiciona `quizSessions`.
+  - `src/context/AppContext.tsx` — `applyDatabase` também aplica `techniques`/`quizSessions`/
+    `onboarding`; `loadDemoData` preserva onboarding; `resetApp` limpa seeds estáticos e
+    refs; `exportData` usa `buildBackupPayload`.
+  - Testes: `src/lib/__tests__/exportImport.test.ts` (13 testes: round-trip, reset, backup
+    antigo schema 6, payload inválido, coleção malformada, passthrough).
+- [x] **12.2** **Back do quiz + pilha de resultado (P1-2 + P2-5):**
+  - `quiz-result` agora carrega a `pool` no próprio screen (não depende do `quiz-play`
+    na pilha) — `openQuizResult` **remove** o jogo da pilha (P2-5) e o back volta ao
+    seletor de categorias (P1-2). Handler de back nativo em `App.tsx` cobre
+    result/play/loading/category; `onRetry` com guard de pool vazia.
+- [x] **12.3** **Coleções de abordagens (P1-3):** `ContextCollection.approachId` +
+    `col-app-tcc`→`psic-04-01` e `col-app-psicanalise`→`psic-01-01`; `BibliotecaView`
+    troca o bypass `window.location.hash` por `openApproach(col.approachId)`.
+- [x] **12.4** **Ícones tipados (P2-2):** `CourseIconName` (união em `types.ts`),
+    mapa tipado `Record<CourseIconName, LucideIcon>` com `Clock`/`BookOpen`/`History`,
+    `COURSE_ICON_NAMES` exportado + teste. Header de estudos agora resolve os ícones.
+- [x] **12.5** **Toast estável (P2-3):** `toastTimerRef` cancela o timer anterior e limpa
+    no unmount do provider.
+- [x] **12.6** **Texto do quiz (P2-4):** resultado usa `X minuto(s) no total` (sem duplicação).
+- [x] **12.7** **OTA manual real (P2-6):** `checkForUpdates({ manual })` — manual seta erro
+    visível no Perfil; background silencioso preserva `ready`/volta a `idle` sem alarme.
+- [x] **12.8** **Refatoração de `AppContext.tsx` (concisão):**
+  - `src/lib/quizStack.ts` — funções puras da pilha do quiz (`stackAfter*`) + 12 testes.
+  - `src/lib/headerConfig.ts` — `buildHeaderConfig` puro (header dinâmico) + 5 testes.
+  - `AppContext.tsx` 2084 → **1884** linhas.
+- [x] **12.9** **Empacotamento (P-perf):** import de `@capacitor/filesystem` em
+  `permissions.ts` alinhado ao padrão dinâmico do `exportImport.ts` (warning de chunk
+  resolvido). Dados pesados (`psicoterapiaApproaches`/`bancoQuestoes`) já eram lazy.
+- [x] **12.10** **Runtime (P-qualidade):** `engines: ">=22"` em `package.json` + `.nvmrc`
+  (`22`) alinhado ao CI.
+
+**Follow-ups documentados (não executados nesta fase):**
+- Split por recurso do facade `src/data/books/index.ts` (BibliotecaView ~516 kB gzip 128 kB
+  na primeira abertura; lazy por coleção/família exigiria reestruturar o facade).
+- ESLint/Prettier como gate de PR (hoje `lint` = só `tsc --noEmit`).
+- `uuid@7.0.3` (transitivo de `@capacitor/cli`→`xcode`): 3 vulns moderadas; aguardar
+  atualização controlada da cadeia de CLI (não rodar `npm audit fix --force`).
+
+---
+
+## Fase 13 — Gesto de voltar pela borda (Edge Swipe-Back) no iOS (implementada)
+
+> **Status: `[x]` implementada.** Voltar pela borda (arrastar da borda esquerda para a
+> direita) no iPhone, no estilo de app nativo: o conteúdo acompanha o dedo e o commit/cancel
+> decide. Implementado **100% em JS/framer-motion** (camada web) — chega por OTA, sem
+> rebuild nativo. **Gate:** `npm run lint` + `npm run test` (31 arquivos / **284 testes**) +
+> `npm run build` verdes. Doc completo: `.context/docs/edge-swipe-back.md`.
+
+**O que foi feito**
+- `AppContext.tsx`: extraída a cadeia de 25 passos do back do Android para
+  **`handleSystemBack()`** (fonte única — Android **e** gesto iOS a chamam; retorna `true`
+  se fechou algo) + **`canGoBack`** derivado (gesto inerte quando não há o que voltar).
+- `App.tsx`: handler `backButton` do Android reduzido a `handleSystemBack()` + `exitApp`;
+  `AppShell` cria `swipeX` (`useMotionValue(0)`) e envolve a camada de slide
+  (`<motion.div style={{ x: swipeX }}>`); `<EdgeSwipeBack />` renderizado.
+- **`src/lib/swipe.ts`** (novo, testável): `EDGE_WIDTH` 24px, `ENGAGE_THRESHOLD` 12,
+  `COMMIT_THRESHOLD` 72, `MAX_DRAG_FRACTION` 0.42, `shouldIgnoreTarget`
+  (interativos de verdade + `overflow-x` scroll/auto + `[data-no-swipe]`, até 6 níveis;
+  **cards clicáveis NÃO ignoram** — o gesto vence o tap após movimento, como iOS),
+  `isEngaged` (dx >= 12 e mais que vertical), `shouldCommit`, `clampDrag`, `supportsEdgeSwipe`.
+- **`src/components/ui/EdgeSwipeBack.tsx`** (novo): pointer events no `window` (passive,
+  no-op em desktop/`mouse`), drag → `swipeX`, release commit (`onBack`) ou spring de volta,
+  `pointercancel` → spring.
+- `index.css`: `overscroll-behavior-x: none` no body (evita rubber-band horizontal).
+- **17 testes** em `src/lib/__tests__/swipe.test.ts`.
+
+**Contexto p/ agentes futuros**
+- A **Fase 9** (swipe entre abas/pager) continua **revertida**; este gesto é só o **back
+  pela borda** sobre a pilha push/pop existente.
+- Sem conflito de duplo back: o WKWebView nativo não reconhece o gesto
+  (`allowsBackForwardNavigationGestures = false`) e a eco-guard do `applyRoute` cobre o eco.
+- Limite: a **tela atual** acompanha o dedo; a transição interativa **nativa plena**
+  (tela anterior visível + sombra/elevação UIKit) exigiria plugin Capacitor em Swift +
+  **rebuild nativo** (IPA) via CI — esta máquina Windows não compila iOS. Se evoluir,
+  reusar `handleSystemBack`/`canGoBack` como ponte.
+
+---
+
 ## Sugestão de ordem de execução
 
 1. **Fase 1** (correção de Hooks + fundações) → destrava as próximas fases.
@@ -358,3 +452,71 @@ re-run do workflow num commit antigo; `available` guarda as últimas 5 versões.
 7. **Fase 7** (navegação native-first por pilha — implementada; ver acima).
 8. **Fase 8** (temas A/D/F: tokens, deep-link e testes — implementada; ver acima).
 9. **Fase 10** (remoção do humor — implementada; ver acima) e **Fase 11** (OTA self-hosted — implementada; ver acima).
+10. **Fase 12** (auditoria `docs/auditor.md` — contrato de banco/backup, quiz, ícones, OTA, refatoração — implementada; ver acima).
+11. **Fase 21** (correções de QA manual — `docs/manual-findings.md` + `docs/manual-tests.md` — implementada; ver abaixo).
+12. **Fase 13** (gesto de voltar pela borda iOS — implementada; ver acima).
+
+---
+
+## Fase 21 — correções de QA manual (`docs/manual-findings.md` + `docs/manual-tests.md`) (implementada)
+
+> **Status: `[x]` implementada.** O P0 (quiz travado) e os P1/P2 prioritários dos manuais de QA foram corrigidos.
+> **Gate:** `npm run lint` + `npm run test` (29 arquivos / 238 testes) + `npm run build` verdes.
+
+**O que foi feito**
+
+- **[P0 — F1] Quiz trava após resposta incorreta:**
+  - Adicionado `src/components/quizzes/__tests__/QuizPlayer.test.tsx` (3 testes TDD: resposta errada marca vermelho e libera continuação; resposta correta avança questão; última questão chama onFinish). Testes passam em isolamento.
+  - Diagnóstico: `updateQuizPlayState` chamava `syncHash(stack)` a cada resposta. `syncHash` atualizava `location.hash` → disparava `hashchange` → `applyRoute` lia o hash → `routeToStack` reconstrói a pilha. Para rotas de quiz, o roteador **degrada** `quiz-play`/`quiz-result` para `quiz-category` (ver `src/lib/routing.ts:280-282,339`). Resultado: o estado do jogo era apagado no meio da jogada, `selectedOption` local do `QuizPlayer` era resetado pelo `useEffect` de `currentIdx`, e a usuária ficava sem feedback.
+  - Correção: removida a chamada `syncHash(stack)` de `updateQuizPlayState` (hash já estava sincronizado na abertura do quiz via `openQuizPlay`). Estado de jogo agora persiste durante toda a sessão.
+
+- **[P1 — F2] Tarefa “sem prazo” vira data atual:**
+  - `src/components/wizards/TaskExamWizard.tsx:331,359`: `taskDueDate || today()` → `taskDueDate || undefined`.
+  - `src/components/wizards/TaskExamWizard.tsx:344`: `examDate || today()` → `examDate || undefined` (edição de prova).
+  - `src/components/wizards/TaskExamWizard.tsx:363-364`: `if (addToAgenda)` agora verifica `taskDueDate` antes de criar evento no calendário.
+  - `src/components/views/NoteTransformWizard.tsx:773`: `dueDate || today()` → `dueDate || undefined`.
+  - HomeView já exibia `sem prazo` corretamente; `schedule.ts` filtra `if (t.dueDate)` — OK.
+  - **Sem migração:** `dueDate?: string` já existe em `types.ts`.
+
+- **[P1 — F3] “Carregar exemplos” e “Resetar” bloqueiam com `window.confirm()`:**
+  - `src/components/views/PerfilView.tsx:800-818`: substituídos os dois `confirm()` nativos por estado local `pendingAction` + primitiva `ui/Modal` com textos explícitos, botões `cancelar`/`confirmar`, e `closeOnBackdrop={false}` (força decisão consciente).
+
+- **[P1 — F4] Cards de livros sem semântica de botão:**
+  - `src/components/views/BibliotecaView.tsx:552-594`: trocado `<div onClick>` por `<button>` com `aria-label="abrir {título}"` e suporte a teclado nativo. Tag de fechamento corrigida.
+
+- **[P2 — F5] “Ver anotação” como affordance de ação:**
+  - `src/components/courses/ClassNoteListItem.tsx:25-29`: adicionados `role="button"`, `tabIndex={0}`, `aria-label="ver anotação: {título}"` e `onKeyDown` (Enter/Space) no container clicável. `useLongPress` preservado (abre menu de gerenciamento no longo toque; clique normal abre a anotação).
+
+- **[P2 — F6] Transformar nota em tarefa não navega ao item criado:**
+  - `src/components/views/NoteTransformWizard.tsx`: após salvar tarefa, chama `setActiveTab('faculdade')` (se disciplina) ou `setActiveTab('home')` (se sem disciplina). Import de `setActiveTab` adicionado.
+
+- **[P2 — F7] Reiniciar timer apaga sessão sem confirmação:**
+  - `src/components/estudos/StudyFocusScreen.tsx`: adicionado estado `pendingReset` + `Modal` de confirmação. Botão de reinício agora abre o modal; `descarta`/`reset` do fluxo de sessão concluída também usa o modal quando há tempo decorrido.
+
+- **[P3 — F8] Pausa retorna label “iniciar” ao invés de “retomar”:**
+  - `src/components/estudos/StudyFocusScreen.tsx:118`: label agora é `toggleLabel = isRunning ? 'pausar' : preset\*60 - timeLeft > 0 ? 'retomar' : 'iniciar'`.
+
+- **[P3 — F9/F10] Permissões web e estratégia de busca:**
+  - Permissões web como controles desabilitados: **não alterado** nesta fase (recomendar manter como-info-visual em fase futura ou aceitar o padrão atual).
+  - Estratégia de busca (item vs coleção): **decisão de produto** — documentar antes de alterar.
+
+**Validação final**
+- `npm run lint` ✓
+- `npm run test` ✓ (29 arquivos / 238 testes)
+- `npm run build` ✓ (`dist/` gerado em ~5.2s; avisos de chunk grande são pré-existentes)
+
+**Arquivos alterados**
+- `src/components/quizzes/__tests__/QuizPlayer.test.tsx` (novo)
+- `src/context/AppContext.tsx` (remoção de `syncHash` de `updateQuizPlayState`)
+- `src/components/wizards/TaskExamWizard.tsx`
+- `src/components/views/NoteTransformWizard.tsx`
+- `src/components/views/PerfilView.tsx`
+- `src/components/views/BibliotecaView.tsx`
+- `src/components/courses/ClassNoteListItem.tsx`
+- `src/components/estudos/StudyFocusScreen.tsx`
+
+**Follow-ups não executados (futuro)**
+- Validação manual do quiz em ambiente real (reproduzir cenário P0).
+- Ajustar `NoteTransformWizard` para também usar `undefined` em `examDate`/`sessionDate`/`internshipDate` (padronizar "sem data" em todas as transformações).
+- Revisar permissões do onboarding (F9) — tornar switches informativos sem affordance de toggle na web.
+- Documentar estratégia de busca da Biblioteca (F10).

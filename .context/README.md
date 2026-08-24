@@ -19,11 +19,14 @@ Ele é carregado pelo opencode via `instructions` em `opencode.json`.
 | [`copy-and-voice.md`](./copy-and-voice.md) | Voz/tom pt-BR, lowercase, branding `cecistudy ♡`, emojis |
 | [`backlog.md`](./backlog.md) | Pontos de melhoria e débito técnico priorizados |
 | [`animations.md`](./animations.md) | Plano de animações/transições iOS-like, celebrações (confete), diagnóstico e progresso |
+| [`themes.md`](./themes.md) | Arquitetura do sistema de temas (tipos, applyTheme, ordem de implementação) |
+| [`themes/README.md`](./themes/README.md) | Catálogo dos 10 temas com ficha completa de cada um |
+| [`themes/01-rosa-claro.md`](./themes/01-rosa-claro.md) ~ [`themes/10-neon.md`](./themes/10-neon.md) | Fichas individuais: paleta, sombras, mapeamento, WCAG, comportamento especial |
 
 ## Visão geral (resumo de 1 minuto)
 
 - **Produto:** organizador acadêmico de Psicologia, extremamente pessoal e acolhedor
-  ("cantinho", "carinho", "dica da ceci", emojis, tom afetuoso).
+  ("cantinho", "carinho", "dica do cecinho", emojis, tom afetuoso).
 - **Público:** a própria usuária (Ceci) — uso individual, mobile-first.
 - **Idioma da UI:** português do Brasil, com textos **minúsculos** e fofos.
 - **Plataforma:** React SPA (web/Vercel) **+ app nativo Android/iOS via Capacitor** (assets

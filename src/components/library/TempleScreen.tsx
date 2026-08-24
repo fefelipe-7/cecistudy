@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import {
   Landmark,
   Network,
@@ -86,7 +86,7 @@ export const TempleScreen: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-1 relative">
+    <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-5 pb-1 relative">
       {/* Screen Title Banner */}
       <div className="bg-white rounded-[24px] p-5 border border-ceci-border-default space-y-1.5 shadow-2xs">
         <div className="flex items-center gap-2.5">

@@ -72,3 +72,39 @@ export function getDailyGoalMessage(
 
   return pickForDay(MIXED_PHRASES, date)(pendingTasks, pendingExams);
 }
+
+export type DueUrgency = 'overdue' | 'today' | 'tomorrow' | 'soon' | 'later' | 'none';
+
+export interface DueLabel {
+  label: string;
+  urgency: DueUrgency;
+}
+
+/**
+ * Prazo relativo para os cards da Home ("vence hoje", "amanhã", "em 3 dias"...).
+ * Puro e testável — a urgência guia as cores do card (vermelho/âmbar/neutro).
+ */
+export function formatDueLabel(dueDate: string | undefined, today = new Date()): DueLabel {
+  if (!dueDate) return { label: 'sem prazo', urgency: 'none' };
+
+  const d = new Date(`${dueDate}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return { label: dueDate, urgency: 'none' };
+
+  const start = new Date(today);
+  start.setHours(0, 0, 0, 0);
+  const diff = Math.round((d.getTime() - start.getTime()) / 86400000);
+
+  if (diff < 0) {
+    return {
+      label: diff === -1 ? 'atrasada desde ontem' : `atrasada há ${-diff} dias`,
+      urgency: 'overdue',
+    };
+  }
+  if (diff === 0) return { label: 'vence hoje!', urgency: 'today' };
+  if (diff === 1) return { label: 'amanhã', urgency: 'tomorrow' };
+  if (diff <= 7) return { label: `em ${diff} dias`, urgency: 'soon' };
+  return {
+    label: d.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace('.', ''),
+    urgency: 'later',
+  };
+}

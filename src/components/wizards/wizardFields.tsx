@@ -22,6 +22,83 @@ export const DateInput: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = 
   <input type="date" {...props} className={cn(inputClass, 'text-sm', props.className)} />
 );
 
+/** Seletor de hora nativo (HH:MM). */
+export const TimeInput: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = (props) => (
+  <input type="time" {...props} className={cn(inputClass, 'text-sm', props.className)} />
+);
+
+const isoDay = (offsetDays: number): string => {
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
+  return d.toISOString().split('T')[0];
+};
+
+/**
+ * Campo de data com atalhos explícitos ("hoje", "amanhã", "sem data") — §4.6:
+ * nunca preencher hoje silenciosamente; o campo começa vazio e os atalhos são
+ * escolhas intencionais da usuária.
+ */
+export const DateField: React.FC<{
+  label?: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+}> = ({ label, value, onChange, placeholder }) => {
+  const chipBase =
+    'px-3 py-1.5 rounded-full border text-[11px] font-semibold tap-interactive cursor-pointer transition-all active:scale-95';
+  return (
+    <div>
+      {label && <FieldLabel>{label}</FieldLabel>}
+      <DateInput value={value} onChange={(e) => onChange(e.target.value)} />
+      <div className="flex flex-wrap gap-1.5 mt-1.5">
+        <button
+          type="button"
+          onClick={() => onChange(isoDay(0))}
+          className={`${chipBase} ${
+            value === isoDay(0)
+              ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
+              : 'bg-white border-ceci-border-default text-ceci-secondary hover:bg-surface-muted'
+          }`}
+        >
+          hoje
+        </button>
+        <button
+          type="button"
+          onClick={() => onChange(isoDay(1))}
+          className={`${chipBase} ${
+            value === isoDay(1)
+              ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
+              : 'bg-white border-ceci-border-default text-ceci-secondary hover:bg-surface-muted'
+          }`}
+        >
+          amanhã
+        </button>
+        {value && (
+          <button
+            type="button"
+            onClick={() => onChange('')}
+            className={`${chipBase} bg-white border-ceci-border-default text-red-700 hover:bg-surface-rose`}
+          >
+            sem data
+          </button>
+        )}
+        {!value && placeholder && (
+          <span className="text-[11px] text-ceci-faded self-center">{placeholder}</span>
+        )}
+      </div>
+    </div>
+  );
+};
+
+/** Input numérico com teclado numérico no mobile. */
+export const NumberInput: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = (props) => (
+  <input
+    inputMode="numeric"
+    {...props}
+    className={cn(inputClass, 'text-sm', props.className)}
+  />
+);
+
 interface ReviewCardProps {
   rows: { label: string; value: string }[];
 }

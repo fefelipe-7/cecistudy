@@ -1,25 +1,17 @@
-import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
 import { motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion';
 import { Plus, X, CheckCircle2, RefreshCcw } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { Kitty } from '../ui/Kitty';
+import { Mascote } from '../ui/Mascote';
 import { useLongPress } from '../../lib/useLongPress';
 import { celebrate } from '../../lib/celebrate';
 import { hapticSuccess } from '../../lib/haptics';
+import { isDueToday, intervalFor } from '../../lib/review';
 import type { Flashcard } from '../../types';
-
-/** Intervalo de revisão (dias) por nº de revisões — repetição espaçada simples. */
-const REVIEW_INTERVALS = [1, 3, 7, 14, 30];
-const intervalFor = (timesReviewed = 0) =>
-  REVIEW_INTERVALS[Math.min(timesReviewed, REVIEW_INTERVALS.length - 1)];
-const daysSince = (iso: string) => Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
-
-const isDueToday = (card: Flashcard) =>
-  !card.lastReviewed || daysSince(card.lastReviewed) >= intervalFor(card.timesReviewed);
 
 /** Tela dedicada de revisão de flashcards (fila da sessão). */
 export const StudyRevisarScreen: React.FC = () => {
-  const { flashcards, handleReviewFlashcard, openWizard, openManageItem } = useApp();
+  const { flashcards, profile, handleReviewFlashcard, openWizard, openManageItem } = useApp();
 
   const [reviewQueue, setReviewQueue] = useState<Flashcard[]>([]);
   const [queueIndex, setQueueIndex] = useState(0);
@@ -39,6 +31,23 @@ export const StudyRevisarScreen: React.FC = () => {
     setReviewedCount(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Mantém a fila coerente com o estado: remove cartões excluídos durante a sessão.
+  useEffect(() => {
+    setReviewQueue((q) => {
+      const ids = new Set(flashcards.map((c) => c.id));
+      const kept = q.filter((c) => ids.has(c.id));
+      return kept.length === q.length ? q : kept;
+    });
+  }, [flashcards]);
+
+  // Próxima rodada: menor intervalo entre os cartões recém-revisados (estado já atualizado).
+  const nextRoundInDays = useMemo(() => {
+    const reviewedIds = new Set(reviewQueue.map((c) => c.id));
+    const reviewed = flashcards.filter((c) => reviewedIds.has(c.id) && c.lastReviewed);
+    if (reviewed.length === 0) return null;
+    return Math.min(...reviewed.map((c) => intervalFor(c.timesReviewed)));
+  }, [flashcards, reviewQueue]);
 
   const handleReview = (correct: boolean) => {
     if (!activeCard) return;
@@ -77,11 +86,11 @@ export const StudyRevisarScreen: React.FC = () => {
   });
 
   return (
-    <div className="max-w-md sm:max-w-xl mx-auto space-y-4">
+    <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-4">
       <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4">
         {reviewQueue.length === 0 && reviewedCount === 0 ? (
           <div className="py-6 space-y-3">
-            <Kitty expression="rindo" className="w-14 h-14 mx-auto" decorative />
+            <Mascote expression="done-calm" className="w-14 h-14 mx-auto" decorative />
             <div>
               <h3 className="font-display font-bold text-base text-ceci-primary">tudo em dia por aqui!</h3>
               <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
@@ -99,11 +108,13 @@ export const StudyRevisarScreen: React.FC = () => {
           </div>
         ) : queueIndex >= reviewQueue.length ? (
           <div className="py-6 space-y-3">
-            <Kitty expression="rindo" className="w-14 h-14 mx-auto" decorative />
+            <Mascote expression="celebrate-small" className="w-14 h-14 mx-auto" decorative />
             <div>
-              <h3 className="font-display font-bold text-base text-ceci-primary">revisão concluída, parabéns Ceci! ♡</h3>
+              <h3 className="font-display font-bold text-base text-ceci-primary">revisão concluída{profile.name.trim() ? `, parabéns ${profile.name.trim()}` : ', parabéns'}! ♡</h3>
               <p className="text-xs text-ceci-secondary mt-1.5">
                 você revisou {reviewedCount} {reviewedCount === 1 ? 'cartão' : 'cartões'} hoje.
+                {nextRoundInDays !== null &&
+                  ` a próxima rodada volta em ${nextRoundInDays} ${nextRoundInDays === 1 ? 'dia' : 'dias'} ♡`}
               </p>
             </div>
             <button
@@ -148,7 +159,7 @@ export const StudyRevisarScreen: React.FC = () => {
                 </button>
                 <button
                   onClick={() => handleReview(true)}
-                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-green-700 hover:bg-green-700 cursor-pointer"
+                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-green-700 hover:bg-green-600 cursor-pointer"
                 >
                   <CheckCircle2 className="w-4 h-4" /> acertei
                 </button>

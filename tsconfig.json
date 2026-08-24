@@ -24,5 +24,6 @@
     },
     "allowImportingTsExtensions": true,
     "noEmit": true
-  }
+  },
+  "exclude": ["desktop/src-tauri/target", "node_modules", "dist", "android", "ios"]
 }

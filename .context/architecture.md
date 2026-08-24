@@ -111,10 +111,18 @@ As funções de roteamento vivem em **`src/lib/routing.ts`** (`parseRoute`, `rou
 O hash é **espelho**: a pilha é a fonte da verdade; o hash permite deep-link, o botão
 voltar/avançar do browser e o histórico do webview (swipe-back do iOS).
 
-Rotas: `#/home`, `#/faculdade`, `#/faculdade/:courseId`, `#/faculdade/:subTab`, `#/estudos`,
-`#/estudos/:subTab`, `#/biblioteca`, `#/biblioteca/:subTab`, `#/biblioteca/notas`,
-`#/biblioteca/templo`, `#/perfil`,
+Rotas: `#/home`, `#/faculdade`, `#/faculdade/:courseId`, `#/faculdade/:subTab`,
+`#/faculdade/estagio`, `#/estudos`, `#/estudos/tcc`, `#/biblioteca`, `#/biblioteca/:subTab`,
+`#/biblioteca/notas`, `#/biblioteca/templo`, `#/perfil` (fora da barra inferior — acesso
+pelo avatar do header), `#/perfil/stickers`,
 `#/nota`, `#/<tab>/nota`, `#/faculdade/:courseId/nota` (+ sufixo `/detalhes`).
+
+> **Redesign de navegação (2026):** a barra inferior tem **4 abas** (home, faculdade,
+> estudos, biblioteca); o Perfil é acessado pelo avatar. O diário de estágio empilha sobre
+> **faculdade** (`#/faculdade/estagio`; legado `#/perfil/estagio` degrada) e o TCC sobre
+> **estudos** (`#/estudos/tcc`; legado `#/perfil/tcc` degrada). Sub-tabs legadas de
+> faculdade (`aulas`/`avaliacoes`) foram fundidas no detalhe da disciplina — só
+> `disciplinas` e `calendario` existem no topo.
 
 - `NavScreen` = `{kind:'tab', tab} | {kind:'course', courseId} | {kind:'notes'} | {kind:'temple'} | {kind:'compose'} | {kind:'composeDetails'}`
   (em `src/types.ts`). Base = tab; telas auxiliares são **empurradas** por cima.
@@ -235,6 +243,34 @@ npm run cap:assets     → regenera ícones/splash a partir de assets/*.svg
 > **Limitação do ambiente:** esta máquina (Linux) **não compila** os apps (sem JDK/SDK/Xcode).
 > Os builds nativos rodam no CI; para gerar APK/IPA **instaláveis** (assinados) é preciso
 > configurar keystore (Android) e signing/provisioning (iOS) — ver `backlog.md`.
+
+## 6.1 Desktop (`desktop/` — Tauri 2)
+
+Terceira casca sobre o **mesmo bundle web** (`dist/` da raiz):
+
+- **Estrutura:** `desktop/src-tauri` (Rust: `main.rs`/`lib.rs` + plugins
+  `notification`, `updater`, `process`) · `desktop/package.json` com a CLI do Tauri
+  isolada (scripts `dev`/`build` só ali). Nenhuma dependência Tauri entra na raiz.
+- **Config:** `tauri.conf.json` com `frontendDist: "../../dist"`,
+  `devUrl: http://localhost:3000` (HMR usa o dev server da raiz),
+  `withGlobalTauri: true`, janela 1180×780 (min 420×720), identifier `ceci.study.desktop`.
+- **Detecção:** `isDesktop` em `src/lib/platform.ts` (`window.__TAURI_INTERNALS__`);
+  ponte de recursos via `window.__TAURI__` (`src/lib/desktop.ts`: notificações,
+  updater, relaunch) — sem pacotes npm novos.
+- **Lembrete diário:** no desktop é **timer JS** (`src/lib/notifications.ts`) —
+  dispara no horário de `reminderSettings` com o app aberto; no nativo continua o
+  plugin Capacitor.
+- **Auto-update:** tauri-plugin-updater apontando para
+  `releases/latest/download/latest.json`; chaves minisign em `desktop/keyring/`
+  (pública commitada no config; privada fora do git → secret
+  `TAURI_SIGNING_PRIVATE_KEY`). Manifest montado por
+  `.github/scripts/desktop-update-manifest.mjs`. UI: branch desktop do card
+  "atualização do app" no Perfil.
+- **CI:** job `desktop` (matrix windows/macos/ubuntu) no `release.yml` builda e anexa
+  `.msi`/`.dmg`/`.AppImage`/`.deb` ao mesmo Release.
+- **Layout ≥ lg:** sidebar fixa à esquerda (`src/components/DesktopSidebar.tsx`)
+  substitui BottomNav/FAB; container alarga (`lg:max-w-3xl xl:max-w-4xl`). Abaixo
+  de `lg:` tudo idêntico ao mobile/web.
 
 ## 7. Pontos de atenção arquitetural (resumo)
 

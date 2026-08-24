@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, ChevronRight } from 'lucide-react';
+import { BookOpen, ChevronRight, HelpCircle } from 'lucide-react';
 import { ClassNote } from '../../types';
 import { StarRating } from '../ui/StarRating';
 import { useApp } from '../../context/AppContext';
@@ -25,7 +25,16 @@ export const ClassNoteListItem: React.FC<ClassNoteListItemProps> = ({
     <div
       {...handlers}
       data-target={note.id}
-      className="py-3.5 space-y-1.5 cursor-pointer group hover:bg-surface-muted/50 px-1 rounded-lg transition-colors"
+      role="button"
+      tabIndex={0}
+      aria-label={`ver anotação: ${note.title}`}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      className="py-3.5 space-y-1.5 cursor-pointer group hover:bg-surface-muted/50 px-1 rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ceci-brand focus-visible:ring-offset-1"
     >
       <div className="flex items-center justify-between text-xs">
         <div className="flex items-center gap-2">
@@ -46,8 +55,20 @@ export const ClassNoteListItem: React.FC<ClassNoteListItemProps> = ({
       {showExtras && (
         <div className="flex items-center justify-between text-[11px] pt-1">
           <span className="text-ceci-academic-strong font-medium flex items-center gap-1">
-            <BookOpen className="w-3 h-3" />
-            <span>{note.materials?.length || 1} material anexo</span>
+            {note.materials && note.materials.length > 0 ? (
+              <>
+                <BookOpen className="w-3 h-3" />
+                <span>
+                  {note.materials.length}{' '}
+                  {note.materials.length === 1 ? 'material anexo' : 'materiais anexos'}
+                </span>
+              </>
+            ) : note.hasQuestions ? (
+              <>
+                <HelpCircle className="w-3 h-3" />
+                <span>com dúvidas pra tirar</span>
+              </>
+            ) : null}
           </span>
           <span className="font-semibold text-ceci-brand-strong flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
             ver anotação <ChevronRight className="w-3 h-3" />

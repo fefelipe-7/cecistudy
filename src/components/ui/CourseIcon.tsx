@@ -1,10 +1,13 @@
 import React from 'react';
 import {
+  BookOpen,
   Brain,
+  Clock,
   FileText,
   Flame,
   GraduationCap,
   HeartHandshake,
+  History,
   Landmark,
   Sparkles,
   Target,
@@ -12,8 +15,9 @@ import {
   Users,
   type LucideIcon,
 } from 'lucide-react';
+import type { CourseIconName } from '../../types';
 
-const COURSE_ICON_MAP: Record<string, LucideIcon> = {
+const COURSE_ICON_MAP: Record<CourseIconName, LucideIcon> = {
   Brain,
   FileText,
   Sparkles,
@@ -24,9 +28,15 @@ const COURSE_ICON_MAP: Record<string, LucideIcon> = {
   Flame,
   Target,
   Trophy,
+  Clock,
+  BookOpen,
+  History,
 };
 
-const COURSE_ICON_COLOR: Record<string, string> = {
+/** Mapa nome → componente (para pickers de ícone, ex.: EditCourseModal). */
+export const COURSE_ICON_COMPONENTS: Record<string, LucideIcon> = COURSE_ICON_MAP;
+
+const COURSE_ICON_COLOR: Record<CourseIconName, string> = {
   Brain: 'text-ceci-brand-strong',
   FileText: 'text-ceci-academic-strong',
   Sparkles: 'text-beige-700',
@@ -37,7 +47,27 @@ const COURSE_ICON_COLOR: Record<string, string> = {
   Flame: 'text-rose-500',
   Target: 'text-ceci-academic-strong',
   Trophy: 'text-ceci-brand-strong',
+  Clock: 'text-ceci-academic-strong',
+  BookOpen: 'text-beige-700',
+  History: 'text-ceci-brand-strong',
 };
+
+/** Nomes de ícones resolvíveis (ordem estável p/ testes). */
+export const COURSE_ICON_NAMES: readonly CourseIconName[] = [
+  'Brain',
+  'FileText',
+  'Sparkles',
+  'Users',
+  'HeartHandshake',
+  'GraduationCap',
+  'Landmark',
+  'Flame',
+  'Target',
+  'Trophy',
+  'Clock',
+  'BookOpen',
+  'History',
+];
 
 interface CourseIconProps {
   icon?: string;
@@ -48,7 +78,7 @@ export const CourseIcon: React.FC<CourseIconProps> = ({
   icon,
   className = 'w-4 h-4',
 }) => {
-  const Icon = COURSE_ICON_MAP[icon || ''] ?? GraduationCap;
-  const color = COURSE_ICON_COLOR[icon || ''] ?? COURSE_ICON_COLOR.GraduationCap;
+  const Icon = COURSE_ICON_MAP[icon as CourseIconName] ?? GraduationCap;
+  const color = COURSE_ICON_COLOR[icon as CourseIconName] ?? COURSE_ICON_COLOR.GraduationCap;
   return <Icon className={`${color} ${className}`} />;
 };

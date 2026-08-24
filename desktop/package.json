@@ -1,0 +1,13 @@
+{
+  "name": "cecistudy-desktop",
+  "private": true,
+  "version": "0.1.0",
+  "description": "cecistudy ♡ — versão desktop (Tauri 2) empacotando o bundle web da raiz",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2"
+  }
+}

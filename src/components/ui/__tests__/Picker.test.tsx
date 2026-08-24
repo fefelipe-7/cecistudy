@@ -38,4 +38,44 @@ describe('Picker', () => {
     fireEvent.click(screen.getByRole('button', { name: 'opção b' }));
     expect(screen.getByRole('option', { name: 'opção b' })).toHaveAttribute('aria-selected', 'true');
   });
+
+  it('mostra busca e filtra opções individualmente em listas grandes', () => {
+    const many = Array.from({ length: 12 }, (_, i) => ({ value: `v${i}`, label: `matéria ${i + 1}` }));
+    render(<Picker value="" onChange={() => {}} options={many} />);
+    fireEvent.click(screen.getByRole('button', { name: 'escolher...' }));
+    const search = screen.getByLabelText(/buscar em/i);
+    fireEvent.change(search, { target: { value: 'matéria 7' } });
+    expect(screen.getByRole('option', { name: 'matéria 7' })).toBeInTheDocument();
+    expect(screen.queryByRole('option', { name: 'matéria 2' })).not.toBeInTheDocument();
+  });
+
+  it('não mostra busca em listas curtas', () => {
+    render(<Picker value="" onChange={() => {}} options={OPTIONS} />);
+    fireEvent.click(screen.getByRole('button', { name: 'escolher...' }));
+    expect(screen.queryByLabelText(/buscar em/i)).not.toBeInTheDocument();
+  });
+
+  it('oferece "sem vínculo" para limpar a seleção quando clearable', () => {
+    const onChange = vi.fn();
+    render(<Picker value="a" onChange={onChange} options={OPTIONS} clearable />);
+    fireEvent.click(screen.getByRole('button', { name: 'opção a' }));
+    fireEvent.click(screen.getByRole('button', { name: 'sem vínculo' }));
+    expect(onChange).toHaveBeenCalledWith('');
+  });
+
+  it('empty state com onCreate exibe CTA de criação contextual', () => {
+    const onCreate = vi.fn();
+    render(
+      <Picker
+        value=""
+        onChange={() => {}}
+        options={[]}
+        emptyMessage="ainda não há disciplinas."
+        createLabel="criar matéria agora"
+        onCreate={onCreate}
+      />
+    );
+    fireEvent.click(screen.getByRole('button', { name: /criar matéria agora/i }));
+    expect(onCreate).toHaveBeenCalledTimes(1);
+  });
 });

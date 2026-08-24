@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Plus, BookOpen } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ReaderModeModal } from '../widgets/ReaderModeModal';
-import { Kitty } from '../ui/Kitty';
+import { Mascote } from '../ui/Mascote';
 import { ManageSurface } from '../ui/ManageSurface';
 import type { ReadingItem } from '../../types';
 
@@ -19,11 +19,35 @@ export const StudyLeiturasScreen: React.FC = () => {
 
   const courseName = (id?: string) => courses.find((c) => c.id === id)?.name || 'geral';
 
+  // ---- estatísticas agregadas ----
+  const inProgressCount = readings.filter((r) => r.status === 'lendo').length;
+  const doneCount = readings.filter((r) => r.status === 'concluido').length;
+  const pagesRead = readings.reduce(
+    (acc, r) => acc + (r.totalPages ? Math.min(r.readPages || 0, r.totalPages) : 0),
+    0
+  );
+
   return (
-    <div className="max-w-md sm:max-w-xl mx-auto space-y-3">
+    <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-3">
+      {readings.length > 0 && (
+        <div className="rounded-[24px] p-4 bg-surface-subtle border border-ceci-border-subtle shadow-sm grid grid-cols-3 divide-x divide-ceci-border-subtle text-center">
+          <div className="px-1">
+            <p className="font-display font-bold text-lg text-ceci-academic-strong">{inProgressCount}</p>
+            <p className="text-[10px] text-ceci-secondary leading-tight">em andamento</p>
+          </div>
+          <div className="px-1">
+            <p className="font-display font-bold text-lg text-ceci-brand-strong">{pagesRead}</p>
+            <p className="text-[10px] text-ceci-secondary leading-tight">páginas lidas</p>
+          </div>
+          <div className="px-1">
+            <p className="font-display font-bold text-lg text-green-700">{doneCount}</p>
+            <p className="text-[10px] text-ceci-secondary leading-tight">concluídos</p>
+          </div>
+        </div>
+      )}
       {readings.length === 0 ? (
         <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
-          <Kitty expression="curiosa" className="w-14 h-14 mx-auto" decorative />
+          <Mascote expression="reading-curious" className="w-14 h-14 mx-auto" decorative />
           <p className="text-xs text-ceci-secondary leading-relaxed">
             nenhuma leitura anotada ainda. que tal adicionar seu primeiro livro ou artigo ♡
           </p>

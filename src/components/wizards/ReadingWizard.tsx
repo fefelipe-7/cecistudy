@@ -33,6 +33,7 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
     handleAddReading,
     handleUpdateReading,
     closeWizard,
+    openEditCourse,
     showToast,
   } = useApp();
   const editingReading = editing?.kind === 'reading'
@@ -43,11 +44,19 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
   const [title, setTitle] = useState(editingReading?.title ?? '');
   const [author, setAuthor] = useState(editingReading?.author ?? '');
   const [type, setType] = useState<ReadingType>(editingReading?.type ?? 'livro');
-  const [totalPages, setTotalPages] = useState(String(editingReading?.totalPages ?? '200'));
+  // §5.5: cadastro ≠ progresso — total começa vazio e páginas lidas em zero
+  const [totalPages, setTotalPages] = useState(
+    editingReading?.totalPages ? String(editingReading.totalPages) : ''
+  );
   const [courseId, setCourseId] = useState(
     editingReading?.courseId ?? (wizardCourseId || courses[0]?.id || '')
   );
-  const [status, setStatus] = useState<ReadingStatus>(editingReading?.status ?? 'lendo');
+  const [status, setStatus] = useState<ReadingStatus>(editingReading?.status ?? 'nao_iniciado');
+
+  const createCourseInline = () => {
+    showToast('cadastre a matéria — quando voltar, ela aparece aqui ♡');
+    openEditCourse();
+  };
 
   const courseName = courses.find((c) => c.id === courseId)?.name ?? '';
 
@@ -85,7 +94,7 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
             onChange={(v) => setType(v)}
           />
           <div>
-            <FieldLabel>total de páginas</FieldLabel>
+            <FieldLabel>total de páginas (opcional)</FieldLabel>
             <TextInput
               type="number"
               value={totalPages}
@@ -108,6 +117,8 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
             onChange={setCourseId}
             options={courses.map((c) => ({ value: c.id, label: c.name }))}
             emptyMessage="ainda não há disciplinas cadastradas."
+            createLabel="criar matéria agora"
+            onCreate={createCourseInline}
           />
           <ChoiceCardGrid
             label="status"
@@ -128,7 +139,7 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
             { label: 'obra', value: title.trim() },
             { label: 'autor', value: author.trim() || 'autor não informado' },
             { label: 'tipo', value: type },
-            { label: 'páginas', value: `${totalPages || '200'} páginas` },
+            { label: 'páginas', value: totalPages ? `${totalPages} páginas` : 'total a descobrir' },
             { label: 'disciplina', value: courseName || 'sem disciplina' },
             { label: 'status', value: status },
           ]}
@@ -145,7 +156,7 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
         author: author.trim() || 'autor não informado',
         courseId: courseId || undefined,
         type,
-        totalPages: parseInt(totalPages) || 200,
+        totalPages: parseInt(totalPages) || editingReading.totalPages,
         status,
       });
       hapticSuccess();
@@ -159,7 +170,7 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       author: author.trim() || 'autor não informado',
       courseId: courseId || undefined,
       type,
-      totalPages: parseInt(totalPages) || 200,
+      totalPages: parseInt(totalPages) || undefined,
       readPages: 0,
       status,
       highlights: [],
@@ -174,10 +185,12 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       title={editing ? 'editar leitura' : 'nova leitura'}
       icon={<BookOpen className="w-3.5 h-3.5" />}
       iconClass="bg-surface-rose border-ceci-border-brand text-ceci-brand-strong"
+      mascote="reading-curious"
       steps={steps}
       step={step}
       onStepChange={setStep}
       canNext={title.trim().length > 0}
+      blockedReason="dê um título à obra para continuar"
       onSave={handleSave}
       onClose={closeWizard}
       saveLabel={editing ? 'guardar alterações ♡' : 'guardar leitura ♡'}

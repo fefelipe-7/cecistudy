@@ -31,6 +31,20 @@ export interface ManagedDB {
   quizSessions: QuizSession[];
   looseNotes: LooseNote[];
   bookmarkedCourseIds: string[];
+  /** Ids de livros salvos da biblioteca (usado por `catalogBook`). */
+  savedBookIds?: string[];
+  /** Progresso de leitura do catálogo (bookId → páginas). */
+  readingProgress?: Record<string, number>;
+  /** Referências leves do catálogo estático (para resolver nome/total de páginas). */
+  catalogBooks?: CatalogBookRef[];
+}
+
+/** Referência leve a um livro do catálogo estático da biblioteca. */
+export interface CatalogBookRef {
+  id: string;
+  title: string;
+  author?: string;
+  totalPages?: number;
 }
 
 /** Rótulo curto de cada entidade (menu editar/excluir). */
@@ -48,6 +62,7 @@ export const MANAGED_KIND_LABEL: Record<ManagedItemKind, string> = {
   material: 'material',
   looseNote: 'nota avulsa',
   quizSession: 'quiz',
+  catalogBook: 'livro',
 };
 
 /** Toast de confirmação após excluir cada entidade. */
@@ -65,6 +80,7 @@ export const MANAGED_KIND_REMOVED: Record<ManagedItemKind, string> = {
   material: 'material excluído ♡',
   looseNote: 'nota avulsa excluída ♡',
   quizSession: 'quiz excluído do histórico ♡',
+  catalogBook: 'livro removido dos salvos ♡',
 };
 
 const removeId = <T extends { id: string }>(list: T[], id: string): T[] =>
@@ -121,6 +137,12 @@ export function deleteManagedItem(
       return { ...db, sessions: removeId(db.sessions, id) };
     case 'quizSession':
       return { ...db, quizSessions: removeId(db.quizSessions, id) };
+    case 'catalogBook':
+      // Livro do catálogo é estático — "excluir" só o tira dos salvos.
+      return {
+        ...db,
+        savedBookIds: (db.savedBookIds ?? []).filter((x) => x !== id),
+      };
     case 'internship':
       return { ...db, internshipLogs: removeId(db.internshipLogs, id) };
     case 'looseNote':

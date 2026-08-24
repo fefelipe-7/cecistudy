@@ -44,6 +44,8 @@ export interface ContextCollection {
   readersCount: number;
   readersAvatars: { name: string; bg: string; text: string }[];
   books: CollectionBook[];
+  /** Id da abordagem real (catálogo psicoterapia) para coleções de abordagens. */
+  approachId?: string;
 }
 
 export const initialTrendingBooks: CollectionBook[] = [
@@ -496,6 +498,7 @@ export const initialContextCollections: ContextCollection[] = [
     id: 'col-app-tcc',
     blockType: 'approach',
     blockCategory: 'abordagens',
+    approachId: 'psic-04-01',
     title: 'Terapia Cognitivo-Comportamental (TCC)',
     subtitle: 'A tríade pensamento, emoção e comportamento com intervenções empíricas baseadas em evidências.',
     readersCount: 72,
@@ -547,6 +550,7 @@ export const initialContextCollections: ContextCollection[] = [
     id: 'col-app-psicanalise',
     blockType: 'approach',
     blockCategory: 'abordagens',
+    approachId: 'psic-01-01',
     title: 'Psicanálise & Teoria do Inconsciente',
     subtitle: 'Estudo do desejo, transferência, estrutura sintomática e psicanálise pós-freudiana.',
     readersCount: 58,

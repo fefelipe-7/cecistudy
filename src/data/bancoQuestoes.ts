@@ -2,7 +2,7 @@
 import type { StudyQuestion } from '../types';
 
 // Carrega JSON (resolveJsonModule = true no tsconfig)
-import questoesJson from './questions/cecistudy_banco_745_questoes.json' assert { type: 'json' };
+import questoesJson from './questions/cecistudy_banco_745_questoes.json' with { type: 'json' };
 
 interface BancoQuestaoRaw {
   id: string;

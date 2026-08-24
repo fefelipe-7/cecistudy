@@ -1,3 +1,5 @@
+import { parseLegacySchedule } from '../lib/schedule';
+
 /**
  * Versão do esquema de dados persistido.
  *
@@ -5,7 +7,10 @@
  * incremente esta versão e registre a migração correspondente em `MIGRATIONS`.
  * O export/import carrega a versão junto; o app recusa/avisa dados de versão desconhecida.
  */
-export const SCHEMA_VERSION = 6;
+export const SCHEMA_VERSION = 9;
+
+/** Versão de schema da base da usuária (antigo scaffold SQLite, hoje mantida por compatibilidade de import). */
+export const USER_SCHEMA_VERSION = 1;
 
 /** Chave persistida que guarda a versão do schema em uso. */
 export const SCHEMA_VERSION_KEY = 'schemaVersion';
@@ -68,6 +73,32 @@ export const MIGRATIONS: Record<number, Migration> = {
       delete (next.profile as Record<string, unknown>).avatarMood;
     }
     return next;
+  },
+  // 6 → 7: sessões de quiz entram no contrato do banco (export/import/reset).
+  // Backups antigos sem a coleção recebem `[]` (default).
+  7: (data) => ({
+    quizSessions: [],
+    ...data,
+  }),
+  // 7 → 8: caderno de supervisão (nova coleção persistida). Backups antigos
+  // sem a coleção recebem `[]` (default). Campos novos de InternshipLog
+  // (phase/prepChecklist) são opcionais e não precisam de backfill.
+  8: (data) => ({
+    supervision: [],
+    ...data,
+  }),
+  // 8 → 9: `Course.schedule` deixa de ser texto livre e vira `CourseScheduleSlot[]`.
+  // Backups antigos têm `schedule: string`; convertemos via parser de horários.
+  9: (data) => {
+    const courses = (data.courses ?? []) as Record<string, unknown>[];
+    const normalized = courses.map((c) => {
+      const schedule = c.schedule;
+      if (typeof schedule === 'string') {
+        return { ...c, schedule: parseLegacySchedule(schedule) };
+      }
+      return c;
+    });
+    return { ...data, courses: normalized };
   },
 };
 

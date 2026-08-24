@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import {
   UserCheck,
   Clock,
@@ -13,7 +13,7 @@ import {
   ClipboardList
 } from 'lucide-react';
 import { CourseIcon } from '../ui/CourseIcon';
-import { Kitty } from '../ui/Kitty';
+import { Mascote } from '../ui/Mascote';
 import { CompletionToggle } from '../ui/CompletionToggle';
 import { UnderlineTabBar } from '../ui/UnderlineTabBar';
 import { TagList } from '../ui/TagList';
@@ -21,48 +21,31 @@ import { ManageSurface } from '../ui/ManageSurface';
 import { ClassNoteModal } from '../courses/ClassNoteModal';
 import { ClassNoteListItem } from '../courses/ClassNoteListItem';
 import { useApp } from '../../context/AppContext';
-import {
-  Course,
-  ClassNote,
-  Exam,
-  Task,
-  PsychologyConcept,
-  PsychologyAuthor,
-  ReadingItem,
-  MaterialItem,
-  InternshipLog,
-  WizardFlow
-} from '../../types';
+import { formatCourseSchedule, formatShortDate } from '../../lib/schedule';
+import { Course, ClassNote, WizardFlow } from '../../types';
 
 interface CourseDetailViewProps {
   course: Course;
-  classes: ClassNote[];
-  exams: Exam[];
-  tasks: Task[];
-  concepts: PsychologyConcept[];
-  authors: PsychologyAuthor[];
-  readings: ReadingItem[];
-  materials: MaterialItem[];
-  internshipLogs?: InternshipLog[];
-  onToggleExam: (examId: string) => void;
-  onToggleTask: (taskId: string) => void;
 }
 
-export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
-  course,
-  classes,
-  exams,
-  tasks,
-  concepts,
-  authors,
-  readings,
-  materials,
-  onToggleExam,
-  onToggleTask,
-}) => {
+export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) => {
   const [activeTab, setActiveTab] = useState<'info' | 'aulas' | 'repertorio'>('info');
   const [selectedClassNote, setSelectedClassNote] = useState<ClassNote | null>(null);
-  const { openWizard, openCompose } = useApp();
+  const [showDoneTasks, setShowDoneTasks] = useState(false);
+  const {
+    classes,
+    exams,
+    tasks,
+    concepts,
+    authors,
+    readings,
+    materials,
+    sessions,
+    openWizard,
+    openCompose,
+    handleToggleExam,
+    handleToggleTask,
+  } = useApp();
 
   // Filter items specific to this course
   const courseClasses = classes.filter((c) => c.courseId === course.id);
@@ -70,6 +53,10 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
   const courseTasks = tasks.filter((t) => t.disciplineId === course.id);
   const courseReadings = readings.filter((r) => r.courseId === course.id);
   const courseMaterials = materials.filter((m) => m.courseId === course.id);
+
+  // Sessões de foco da disciplina
+  const courseSessions = sessions.filter((s) => s.courseId === course.id);
+  const focusMinutes = courseSessions.reduce((acc, s) => acc + (s.durationMinutes || 0), 0);
 
   // Frequência e pesos derivados dos dados reais
   const attendance =
@@ -95,7 +82,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
   const courseAuthors = authors.filter((a) => relatedAuthorIds.has(a.id));
 
   return (
-    <div className="max-w-md sm:max-w-xl mx-auto space-y-6 pb-1 relative">
+    <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-6 pb-1 relative">
 
       {/* Top Navigation & Header directly on canvas */}
       <div className="space-y-3 px-1">
@@ -161,7 +148,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
       />
 
       {/* ==================================================================== */}
-      {/* TAB 1: INFORMAÇÕES DA MATÉRIA (Clean, inline layout without nested cards) */}
+      {/* TAB 1: INFORMAÇÖES DA MATÉRIA (Clean, inline layout without nested cards) */}
       {/* ==================================================================== */}
       {activeTab === 'info' && (
         <div className="space-y-6 px-1">
@@ -174,7 +161,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
 
             <span className="inline-flex items-center gap-1 px-3 py-1 bg-white rounded-full text-[11px] font-semibold text-ceci-primary border border-ceci-border-default">
               <Clock className="w-3 h-3 text-ceci-academic-strong" />
-              <span>{course.schedule || 'horário a definir'}</span>
+              <span>{formatCourseSchedule(course.schedule) || 'horário a definir'}</span>
             </span>
 
             <span className="inline-flex items-center gap-1 px-3 py-1 bg-surface-rose text-ceci-brand-strong rounded-full text-[11px] font-semibold border border-ceci-border-brand">
@@ -189,7 +176,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
               <span>o que essa disciplina ensina</span>
             </h3>
             <div className="border-l-3 border-ceci-brand-strong pl-3.5 py-1 text-xs text-ceci-text-soft leading-relaxed font-medium bg-gradient-to-r from-surface-rose/70 to-transparent rounded-r-xl flex items-start gap-2">
-              {!course.description && <Kitty expression="pensativa" className="w-7 h-7 shrink-0 -mt-1" decorative />}
+              {!course.description && <Mascote expression="writing-note" className="w-7 h-7 shrink-0 -mt-1" decorative />}
               {course.description ||
                 'esta disciplina ainda não tem ementa anotada. edite os detalhes da matéria para registrar os objetivos.'}
             </div>
@@ -209,7 +196,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
 
               <div>
                 <span className="text-[10px] font-bold text-ceci-tertiary uppercase tracking-wider block">Horário Semanal</span>
-                <p className="font-semibold text-xs text-ceci-primary mt-0.5">{course.schedule || 'horário a definir'}</p>
+                <p className="font-semibold text-xs text-ceci-primary mt-0.5">{formatCourseSchedule(course.schedule) || 'horário a definir'}</p>
               </div>
 
               <div>
@@ -228,36 +215,60 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
 
           {/* Fórmulas de Avaliação / Pesos (derivadas das provas anotadas) */}
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-2">
               <h3 className="font-display font-bold text-sm text-ceci-primary">
                 como você é avaliada
               </h3>
-              <span className="text-[11px] font-semibold text-ceci-brand-strong bg-surface-rose px-2.5 py-0.5 rounded-full border border-ceci-border-brand">
-                média mínima: 7,0
-              </span>
+              {typeof course.minGrade === 'number' && (
+                <span className="text-[11px] font-semibold text-ceci-brand-strong bg-surface-rose px-2.5 py-0.5 rounded-full border border-ceci-border-brand shrink-0">
+                  média mínima:{' '}
+                  {course.minGrade.toLocaleString('pt-BR', { minimumFractionDigits: 1 })}
+                </span>
+              )}
             </div>
 
             {assessment.length > 0 ? (
               <div className="divide-y divide-ceci-border-default/70 border-t border-ceci-border-default">
                 {assessment.map((ex) => (
                   <div key={ex.id} className="flex items-center justify-between py-2.5 text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-ceci-brand-strong" />
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="w-2 h-2 rounded-full bg-ceci-brand-strong shrink-0" />
                       <span className="font-semibold text-ceci-primary line-clamp-1">{ex.title}</span>
                     </div>
-                    <span className="font-bold text-ceci-primary bg-surface-muted px-2 py-0.5 rounded border border-ceci-border-default shrink-0">
-                      peso {ex.weightValue}%
-                    </span>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {typeof ex.grade === 'number' && (
+                        <span className="font-bold text-success-deep bg-surface-mint-soft px-2 py-0.5 rounded border border-green-200">
+                          nota {ex.grade}
+                        </span>
+                      )}
+                      <span className="font-bold text-ceci-primary bg-surface-muted px-2 py-0.5 rounded border border-ceci-border-default">
+                        peso {ex.weightValue}%
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>
             ) : (
               <p className="text-xs text-ceci-tertiary py-1 flex items-center gap-1.5">
-                <Kitty expression="curiosa" className="w-6 h-6 shrink-0" decorative />
+                <Mascote expression="class-ready" className="w-6 h-6 shrink-0" decorative />
                 ainda não tem prova com peso anotada — registre as avaliações para ver a composição da média.
               </p>
             )}
           </div>
+
+          {/* Sessões de foco da disciplina */}
+          {courseSessions.length > 0 && (
+            <div className="pl-3.5 py-2.5 border-l-2 border-ceci-brand space-y-1">
+              <h4 className="font-display font-bold text-xs text-ceci-brand-strong flex items-center gap-1.5">
+                <Timer className="w-3.5 h-3.5" />
+                <span>foco nesta disciplina</span>
+              </h4>
+              <p className="text-xs text-ceci-secondary leading-relaxed">
+                {focusMinutes >= 60 ? `${Math.floor(focusMinutes / 60)}h` : ''}{focusMinutes % 60 > 0 ? ` ${focusMinutes % 60}min` : focusMinutes === 0 ? '0min' : ''} de foco ·{' '}
+                {courseSessions.length} {courseSessions.length === 1 ? 'sessão' : 'sessões'}
+              </p>
+            </div>
+          )}
 
           {/* Horário de Atendimento e Monitoria (vem dos dados da disciplina) */}
           {course.officeHours && (
@@ -276,7 +287,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
       )}
 
       {/* ==================================================================== */}
-      {/* TAB 2: AULAS & AVALIAÇÕES (Inline Journal & Exam List)              */}
+      {/* TAB 2: AULAS & AVALIAÇÖES (Inline Journal & Exam List)              */}
       {/* ==================================================================== */}
       {activeTab === 'aulas' && (
         <div className="space-y-6 px-1">
@@ -300,17 +311,23 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                     key={exam.id}
                     kind="exam"
                     id={exam.id}
-                    onTap={() => onToggleExam(exam.id)}
+                    data-target={exam.id}
+                    onTap={() => handleToggleExam(exam.id)}
                     className="py-3 flex items-start justify-between cursor-pointer group transition-colors"
                   >
                     <div className="space-y-1 flex-1 pr-2">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-[10px] font-bold text-ceci-brand-strong bg-surface-rose px-2 py-0.5 rounded-full border border-ceci-border-brand">
-                          {exam.date}
+                          {formatShortDate(exam.date)}
                         </span>
                         <span className="text-[10px] font-semibold text-ceci-secondary">
                           {exam.weight}
                         </span>
+                        {typeof exam.grade === 'number' && (
+                          <span className="text-[10px] font-bold text-success-deep bg-surface-mint-soft px-2 py-0.5 rounded-full border border-green-200">
+                            nota: {exam.grade}
+                          </span>
+                        )}
                       </div>
 
                       <h4 className={`font-display font-bold text-sm text-ceci-primary ${exam.completed ? 'line-through text-ceci-tertiary' : ''}`}>
@@ -331,7 +348,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                     <div className="pt-1">
                       <CompletionToggle
                         checked={exam.completed}
-                        onChange={() => onToggleExam(exam.id)}
+                        onChange={() => handleToggleExam(exam.id)}
                         label={exam.completed ? `marcar prova "${exam.title}" como pendente` : `marcar prova "${exam.title}" como concluída`}
                       />
                     </div>
@@ -340,7 +357,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
               </div>
             ) : (
               <p className="text-xs text-ceci-tertiary py-2 flex items-center gap-1.5">
-                <Kitty expression="curiosa" className="w-6 h-6 shrink-0" decorative />
+                <Mascote expression="class-ready" className="w-6 h-6 shrink-0" decorative />
                 ainda não tem prova anotada para esta disciplina.
               </p>
             )}
@@ -375,7 +392,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
               </div>
             ) : (
               <div className="py-6 text-center space-y-2">
-                <Kitty expression="sonolenta" className="w-14 h-14 mx-auto" decorative />
+                <Mascote expression="empty-invite" className="w-14 h-14 mx-auto" decorative />
                 <p className="text-xs font-semibold text-ceci-primary">ainda não tem aula anotada</p>
                 <button
                   onClick={() => openCompose(course.id)}
@@ -390,18 +407,29 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
           {/* Section C: Tarefas & Trabalhos */}
           {courseTasks.length > 0 && (
             <div className="space-y-3 pt-2">
-              <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-success-deep" />
-                <span>tarefas & entregas pendentes</span>
-              </h3>
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-success-deep" />
+                  <span>tarefas & entregas</span>
+                </h3>
+                {courseTasks.some((t) => t.completed) && (
+                  <button
+                    onClick={() => setShowDoneTasks((s) => !s)}
+                    className="text-[11px] font-semibold text-ceci-brand-strong hover:underline cursor-pointer shrink-0"
+                  >
+                    {showDoneTasks ? 'esconder concluídas' : 'mostrar concluídas'}
+                  </button>
+                )}
+              </div>
 
               <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
-                {courseTasks.map((t) => (
+                {(showDoneTasks ? courseTasks : courseTasks.filter((t) => !t.completed)).map((t) => (
                   <ManageSurface
                     key={t.id}
                     kind="task"
                     id={t.id}
-                    onTap={() => onToggleTask(t.id)}
+                    data-target={t.id}
+                    onTap={() => handleToggleTask(t.id)}
                     className="py-2.5 flex items-center justify-between text-xs cursor-pointer"
                   >
                     <div className="space-y-0.5 pr-2">
@@ -409,17 +437,22 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
                         {t.title}
                       </p>
                       {t.dueDate && (
-                        <span className="text-[10px] text-ceci-tertiary">prazo: {t.dueDate}</span>
+                        <span className="text-[10px] text-ceci-tertiary">prazo: {formatShortDate(t.dueDate)}</span>
                       )}
                     </div>
                     <CompletionToggle
                         checked={t.completed}
-                        onChange={() => onToggleTask(t.id)}
+                        onChange={() => handleToggleTask(t.id)}
                         size="sm"
                         label={t.completed ? `marcar tarefa "${t.title}" como pendente` : `marcar tarefa "${t.title}" como concluída`}
                       />
                   </ManageSurface>
                 ))}
+                {!showDoneTasks && courseTasks.every((t) => t.completed) && (
+                  <p className="py-3 text-xs text-success-deep flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4" /> todas as tarefas desta disciplina estão concluídas ♡
+                  </p>
+                )}
               </div>
             </div>
           )}
@@ -428,7 +461,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
       )}
 
       {/* ==================================================================== */}
-      {/* TAB 3: REPERTÓRIO & CONTEÚDO (Inline Glossary & Author list)        */}
+      {/* TAB 3: REPERTÔRIO & CONTEÚDO (Inline Glossary & Author list)        */}
       {/* ==================================================================== */}
       {activeTab === 'repertorio' && (
         <div className="space-y-6 px-1">
@@ -460,7 +493,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
               </div>
             ) : (
               <p className="text-xs text-ceci-tertiary py-2 flex items-center gap-1.5">
-                <Kitty expression="pensativa" className="w-6 h-6 shrink-0" decorative />
+                <Mascote expression="connection-link" className="w-6 h-6 shrink-0" decorative />
                 ainda não tem conceito ligado a esta disciplina.
               </p>
             )}
@@ -532,7 +565,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({
               </div>
             ) : (
               <p className="text-xs text-ceci-tertiary py-2 flex items-center gap-1.5">
-                <Kitty expression="feliz" className="w-6 h-6 shrink-0" decorative />
+                <Mascote expression="reading-curious" className="w-6 h-6 shrink-0" decorative />
                 ainda não tem leitura vinculada a esta disciplina.
               </p>
             )}

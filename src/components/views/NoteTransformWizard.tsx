@@ -36,17 +36,22 @@ import { TagField } from '../ui/TagField';
 
 type IconType = React.ComponentType<{ className?: string }>;
 
+/** Os três destinos principais (§5.11) — o resto fica em "mais opções". */
+const MAIN_TARGET_TYPES: NoteTargetType[] = ['task', 'flashcard', 'class'];
+
 const TARGETS: { type: NoteTargetType; label: string; caption: string; Icon: IconType; accent: string }[] = [
-  { type: 'class', label: 'aula', caption: 'anotação de aula no diário', Icon: FileText, accent: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong' },
   { type: 'task', label: 'tarefa', caption: 'prazo ou atividade', Icon: CheckCircle2, accent: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong' },
-  { type: 'exam', label: 'prova / avaliação', caption: 'avaliação que vale nota', Icon: ClipboardList, accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong' },
   { type: 'flashcard', label: 'flashcard', caption: 'pergunta & resposta', Icon: Brain, accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong' },
+  { type: 'class', label: 'aula', caption: 'anotação de aula no diário', Icon: FileText, accent: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong' },
+  { type: 'exam', label: 'prova / avaliação', caption: 'avaliação que vale nota', Icon: ClipboardList, accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong' },
   { type: 'session', label: 'sessão de estudo', caption: 'foco no cantinho', Icon: Timer, accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong' },
   { type: 'internship', label: 'estágio', caption: 'registro de campo', Icon: HeartHandshake, accent: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong' },
   { type: 'concept', label: 'conceito', caption: 'conceito psicológico', Icon: Sparkles, accent: 'bg-amber-bg border-amber-border text-amber-text' },
   { type: 'author', label: 'autor', caption: 'estudado na jornada', Icon: UserCheck, accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong' },
   { type: 'material', label: 'material', caption: 'livro, artigo ou link', Icon: BookOpen, accent: 'bg-surface-muted border-ceci-border-default text-ceci-secondary' },
 ];
+
+const MORE_TARGETS = TARGETS.filter((t) => !MAIN_TARGET_TYPES.includes(t.type));
 
 const TASK_CATEGORIES: { value: Task['category']; label: string; emoji?: string }[] = [
   { value: 'leitura', label: 'leitura', emoji: '📚' },
@@ -103,11 +108,16 @@ export const NoteTransformWizard: React.FC = () => {
     deleteLooseNote,
     closeAllNoteScreens,
     openComposeDetails,
+    setActiveTab,
+    openEditCourse,
     showToast,
   } = useApp();
 
   const [step, setStep] = useState(0);
   const [target, setTarget] = useState<NoteTargetType | null>(null);
+  const [moreOpen, setMoreOpen] = useState(false);
+  /** Item criado com sucesso — mostra a tela final "abrir item criado" (§5.11). */
+  const [created, setCreated] = useState<{ label: string; onOpen?: () => void } | null>(null);
 
   // ---- campos compartilhados (preenchidos a partir da nota) ----
   const [title, setTitle] = useState('');
@@ -252,6 +262,11 @@ export const NoteTransformWizard: React.FC = () => {
       options={courses.map((x) => ({ value: x.id, label: x.name }))}
       placeholder="nenhuma disciplina"
       emptyMessage="ainda não há disciplinas cadastradas."
+      createLabel="criar matéria agora"
+      onCreate={() => {
+        showToast('cadastre a matéria — quando voltar, ela aparece aqui ♡');
+        openEditCourse();
+      }}
     />
   );
 
@@ -260,12 +275,14 @@ export const NoteTransformWizard: React.FC = () => {
     title: 'transformar em',
     headline: 'em que essa nota vira?',
     content: (
-      <div className="space-y-3">
+      <div className="space-y-4">
         <p className="text-[11px] text-ceci-tertiary leading-relaxed">
           suas notas são rascunhos transitórios — escolhe para onde essa vai.
         </p>
-        <div className="grid grid-cols-2 gap-2.5">
-          {TARGETS.map((opt) => {
+
+        {/* três destinos principais (§5.11) */}
+        <div className="space-y-2.5">
+          {TARGETS.filter((t) => MAIN_TARGET_TYPES.includes(t.type)).map((opt) => {
             const Icon = opt.Icon;
             return (
               <button
@@ -274,23 +291,57 @@ export const NoteTransformWizard: React.FC = () => {
                   setTarget(opt.type);
                   setStep(1);
                 }}
-                className="w-full flex flex-col items-start gap-2 p-3.5 rounded-[20px] bg-white border border-ceci-border-default hover:border-ceci-border-brand text-left transition-all active:scale-[0.98] cursor-pointer shadow-2xs"
+                className="w-full flex items-center gap-3.5 p-4 rounded-[22px] bg-white border-2 border-ceci-border-default hover:border-ceci-border-brand text-left transition-all active:scale-[0.98] cursor-pointer shadow-sm"
               >
-                <span className={`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 ${opt.accent}`}>
-                  <Icon className="w-4 h-4" />
+                <span className={`w-11 h-11 rounded-2xl border flex items-center justify-center shrink-0 ${opt.accent}`}>
+                  <Icon className="w-5 h-5" />
                 </span>
                 <span>
-                  <span className="block font-display font-bold text-xs text-ceci-primary leading-tight">
-                    {opt.label}
-                  </span>
-                  <span className="block text-[10px] text-ceci-secondary mt-0.5 leading-snug">
-                    {opt.caption}
-                  </span>
+                  <span className="block font-display font-bold text-sm text-ceci-primary">{opt.label}</span>
+                  <span className="block text-[11px] text-ceci-secondary mt-0.5 leading-snug">{opt.caption}</span>
                 </span>
               </button>
             );
           })}
         </div>
+
+        {/* mais opções — colapsável */}
+        <button
+          onClick={() => setMoreOpen((v) => !v)}
+          aria-expanded={moreOpen}
+          className="w-full py-2.5 text-xs font-bold text-ceci-academic-strong hover:bg-surface-blue/40 rounded-xl transition-colors cursor-pointer"
+        >
+          {moreOpen ? '− menos opções' : '+ mais opções'}
+        </button>
+        {moreOpen && (
+          <div className="grid grid-cols-2 gap-2.5">
+            {MORE_TARGETS.map((opt) => {
+              const Icon = opt.Icon;
+              return (
+                <button
+                  key={opt.type}
+                  onClick={() => {
+                    setTarget(opt.type);
+                    setStep(1);
+                  }}
+                  className="w-full flex flex-col items-start gap-2 p-3.5 rounded-[20px] bg-white border border-ceci-border-default hover:border-ceci-border-brand text-left transition-all active:scale-[0.98] cursor-pointer shadow-2xs"
+                >
+                  <span className={`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 ${opt.accent}`}>
+                    <Icon className="w-4 h-4" />
+                  </span>
+                  <span>
+                    <span className="block font-display font-bold text-xs text-ceci-primary leading-tight">
+                      {opt.label}
+                    </span>
+                    <span className="block text-[10px] text-ceci-secondary mt-0.5 leading-snug">
+                      {opt.caption}
+                    </span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
     ),
   };
@@ -299,7 +350,15 @@ export const NoteTransformWizard: React.FC = () => {
     id: 'revisar',
     title: 'revisar',
     headline: 'confere se está tudo certinho ♡',
-    content: <ReviewCard rows={rows} />,
+    content: (
+      <div className="space-y-3">
+        <ReviewCard rows={rows} />
+        {/* §5.11: explicar o que acontece com a nota original */}
+        <p className="text-[11px] text-ceci-tertiary leading-relaxed px-1">
+          ao transformar, a nota original sai das suas notas avulsas — o conteúdo vai junto para o novo registro ♡
+        </p>
+      </div>
+    ),
   });
 
   const formStep = (id: string, headline: string, content: React.ReactNode): WizardStep => ({
@@ -748,6 +807,14 @@ export const NoteTransformWizard: React.FC = () => {
     if (!focusedNote || !target) return;
     const label = TARGETS.find((t) => t.type === target)?.label ?? '';
 
+    /** Cria o item, remove a nota e mostra a tela final (§5.11: "abrir item criado"). */
+    const finalize = (onOpen?: () => void) => {
+      deleteLooseNote(focusedNote.id);
+      hapticSuccess();
+      setCreated({ label, onOpen });
+      showToast(`nota transformada em ${label} ♡`);
+    };
+
     switch (target) {
       case 'class': {
         const cn = buildClassNoteFromNote(focusedNote, {
@@ -757,24 +824,25 @@ export const NoteTransformWizard: React.FC = () => {
         });
         const withDate = { ...cn, date: classDate || today() };
         handleAddClassNote(withDate);
-        deleteLooseNote(focusedNote.id);
-        hapticSuccess();
-        closeAllNoteScreens();
-        openComposeDetails(withDate.id);
-        showToast('nota transformada em aula ♡');
+        finalize(() => openComposeDetails(withDate.id));
         return;
       }
-      case 'task':
+      case 'task': {
+        const taskId = 't-' + Date.now();
         handleAddTask({
-          id: 't-' + Date.now(),
+          id: taskId,
           title: title.trim(),
           disciplineId: courseId || undefined,
           category: taskCategory,
-          dueDate: dueDate || today(),
+          dueDate: dueDate || undefined,
           completed: false,
           priority,
         });
-        break;
+        finalize(() =>
+          setTimeout(() => setActiveTab(courseId ? 'faculdade' : 'home'), 50)
+        );
+        return;
+      }
       case 'exam':
         handleAddExam({
           id: 'e-' + Date.now(),
@@ -852,17 +920,53 @@ export const NoteTransformWizard: React.FC = () => {
         break;
     }
 
-    deleteLooseNote(focusedNote.id);
-    hapticSuccess();
-    closeAllNoteScreens();
-    showToast(`nota transformada em ${label} ♡`);
+    finalize();
   };
+
+  // ---- tela final de sucesso: "prontinho ♡ abrir item criado" ----
+  if (created) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-4 px-6 text-center">
+        <span className="w-16 h-16 rounded-3xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong">
+          <CheckCircle2 className="w-8 h-8" />
+        </span>
+        <div className="space-y-1">
+          <h2 className="font-display font-bold text-xl text-ceci-primary">
+            prontinho! sua nota virou {created.label} ♡
+          </h2>
+          <p className="text-xs text-ceci-secondary leading-relaxed">
+            a nota original saiu das avulsas — o conteúdo foi junto.
+          </p>
+        </div>
+        <div className="w-full max-w-xs space-y-2 pt-2">
+          {created.onOpen && (
+            <button
+              onClick={() => {
+                closeAllNoteScreens();
+                created.onOpen?.();
+              }}
+              className="w-full min-h-[48px] rounded-2xl bg-ceci-brand-strong text-white text-sm font-semibold active:scale-[0.98] transition-transform cursor-pointer"
+            >
+              abrir item criado
+            </button>
+          )}
+          <button
+            onClick={closeAllNoteScreens}
+            className="w-full min-h-[44px] rounded-2xl border border-ceci-border-default bg-white text-ceci-secondary text-sm font-semibold active:scale-[0.98] transition-transform cursor-pointer"
+          >
+            voltar para as notas
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <WizardScaffold
       title="transformar nota"
       icon={<Wand2 className="w-3.5 h-3.5" />}
       iconClass="bg-surface-rose border-ceci-border-brand text-ceci-brand-strong"
+      mascote="writing-flow"
       steps={steps}
       step={step}
       onStepChange={setStep}

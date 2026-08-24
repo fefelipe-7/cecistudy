@@ -15,9 +15,9 @@ export interface Route {
   /** Transformação de uma nota em outra entidade (ex.: `#/biblioteca/notas/:noteId/transformar`). */
   noteTransformId?: string;
   streak?: boolean;
-  /** Diário de estágio (tela cheia de todos os registros, empilhada sobre o perfil). */
+  /** Diário de estágio (tela cheia de todos os registros, empilhada sobre a faculdade). */
   internshipDiary?: boolean;
-  /** Tela cheia do meu TCC (criar/manter), empilhada sobre o perfil. */
+  /** Tela cheia do meu TCC (criar/manter), empilhada sobre os estudos. */
   tcc?: boolean;
   /** Tela cheia de stickers & conquistas, empilhada sobre o perfil. */
   stickers?: boolean;
@@ -51,11 +51,14 @@ export interface Route {
 
 /** Valores de sub-tab conhecidos por aba (usados para distinguir sub-tab de courseId na rota). */
 const SUB_TAB_BY_TAB: Record<string, string[]> = {
-  faculdade: ['disciplinas', 'aulas', 'avaliacoes', 'calendario'],
+  faculdade: ['disciplinas', 'calendario'],
   // estudos não tem mais sub-tabs — cada área virou tela dedicada (`#/estudos/<slug>`)
   estudos: [],
   biblioteca: ['materiais', 'autores', 'conceitos', 'abordagens', 'mapa'],
 };
+
+/** Sub-tabs legadas da faculdade (fusão no detalhe da disciplina) → degradam à padrão. */
+const LEGACY_SUB_TABS_FACULDADE = ['aulas', 'avaliacoes'];
 
 /** Slugs das telas dedicadas de estudos (rota `#/estudos/<slug>`). */
 const STUDY_SCREEN_SLUGS: Record<string, StudyScreen> = {
@@ -177,6 +180,10 @@ export function parseRoute(hash: string): Route {
 
   if (!seg || seg === 'home') return { tab: 'home' };
   if (seg === 'faculdade') {
+    // Diário de estágio: `#/faculdade/estagio`
+    if (h[1] === 'estagio') return { tab: 'faculdade', internshipDiary: true };
+    // Sub-tabs legadas (aulas/avaliacoes fundidas no detalhe da disciplina)
+    if (h[1] && LEGACY_SUB_TABS_FACULDADE.includes(h[1])) return { tab: 'faculdade' };
     const s = subtab('faculdade');
     if (s) return { tab: 'faculdade', subTab: s };
     return { tab: 'faculdade', focusedCourseId: h[1] || null };
@@ -204,14 +211,17 @@ export function parseRoute(hash: string): Route {
     if (h[1] && STUDY_SCREEN_SLUGS[h[1]]) return { tab: 'estudos', studyScreen: STUDY_SCREEN_SLUGS[h[1]] };
     if (h[1] === 'flashcards') return { tab: 'estudos', studyScreen: 'revisar' };
     if (h[1] === 'questoes') return { tab: 'estudos', quizCategory: true };
+    // Meu TCC: `#/estudos/tcc`
+    if (h[1] === 'tcc') return { tab: 'estudos', tcc: true };
     return { tab: 'estudos' };
   }
   if (seg === 'perfil') {
+    // Rotas legadas (perfil era aba primária) → degradam para o novo destino.
     if (h[1] === 'estagio') {
-      return { tab: 'perfil', internshipDiary: true };
+      return { tab: 'faculdade', internshipDiary: true };
     }
     if (h[1] === 'tcc') {
-      return { tab: 'perfil', tcc: true };
+      return { tab: 'estudos', tcc: true };
     }
     if (h[1] === 'stickers') {
       return { tab: 'perfil', stickers: true };
@@ -249,8 +259,8 @@ export function routeToStack(route: Route): NavScreen[] {
     return [...baseStackFor(route.baseTab ?? 'home', route.baseCourseId), { kind: 'wizard', type: route.wizard }];
   }
   if (route.streak) return [...baseStackFor(route.tab ?? 'home'), { kind: 'streak' }];
-  if (route.internshipDiary) return [{ kind: 'tab', tab: 'perfil' }, { kind: 'internshipDiary' }];
-  if (route.tcc) return [{ kind: 'tab', tab: 'perfil' }, { kind: 'tcc' }];
+  if (route.internshipDiary) return [{ kind: 'tab', tab: 'faculdade' }, { kind: 'internshipDiary' }];
+  if (route.tcc) return [{ kind: 'tab', tab: 'estudos' }, { kind: 'tcc' }];
   if (route.stickers) return [{ kind: 'tab', tab: 'perfil' }, { kind: 'stickers' }];
   if (route.notes) return [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }];
   if (route.noteTransformId) {
@@ -322,8 +332,8 @@ export function stackToHash(stack: NavScreen[], subTab?: string): string {
     const tab = base?.kind === 'tab' ? base.tab : 'home';
     return tab === 'home' ? '#/streak' : `#/${tab}/streak`;
   }
-  if (top.kind === 'internshipDiary') return '#/perfil/estagio';
-  if (top.kind === 'tcc') return '#/perfil/tcc';
+  if (top.kind === 'internshipDiary') return '#/faculdade/estagio';
+  if (top.kind === 'tcc') return '#/estudos/tcc';
   if (top.kind === 'stickers') return '#/perfil/stickers';
   if (top.kind === 'notes') return '#/biblioteca/notas';
   if (top.kind === 'noteDetail') return `#/biblioteca/notas/${top.noteId}`;

@@ -1,11 +1,13 @@
 import React, { useMemo, useState } from 'react';
 import { BookOpen } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import type { Course } from '../../types';
+import type { Course, CourseScheduleSlot } from '../../types';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import { FieldLabel, ReviewCard, TextInput } from './wizardFields';
 import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
 import { ColorSwatchPicker } from '../ui/ColorSwatchPicker';
+import { SchedulePicker } from '../ui/SchedulePicker';
+import { formatCourseSchedule } from '../../lib/schedule';
 import { COURSE_ICON_OPTIONS } from '../../lib/courseOptions';
 
 export const CourseWizard: React.FC = () => {
@@ -14,7 +16,7 @@ export const CourseWizard: React.FC = () => {
   const [code, setCode] = useState('');
   const [professor, setProfessor] = useState('');
   const [semester, setSemester] = useState(() => (profile.semester ? `${profile.semester}º sem` : ''));
-  const [schedule, setSchedule] = useState('');
+  const [schedule, setSchedule] = useState<CourseScheduleSlot[]>([]);
   const [room, setRoom] = useState('');
   const [description, setDescription] = useState('');
   const [color, setColor] = useState<Course['color']>('#E97891');
@@ -49,7 +51,10 @@ export const CourseWizard: React.FC = () => {
       content: (
         <div className="space-y-4">
           <TextInput value={professor} onChange={(e) => setProfessor(e.target.value)} placeholder="ex: profa. mariana santos" />
-          <TextInput value={schedule} onChange={(e) => setSchedule(e.target.value)} placeholder="ex: segunda 09:00 - 12:00" />
+          <div>
+            <FieldLabel>dias e horários</FieldLabel>
+            <SchedulePicker value={schedule} onChange={setSchedule} />
+          </div>
           <TextInput value={room} onChange={(e) => setRoom(e.target.value)} placeholder="ex: bloco c • sala 2" />
         </div>
       ),
@@ -93,7 +98,7 @@ export const CourseWizard: React.FC = () => {
             { label: 'matéria', value: name.trim() || 'sem nome' },
             { label: 'código', value: code.trim() || 'sem código' },
             { label: 'professor', value: professor.trim() || 'a definir' },
-            { label: 'horário', value: schedule.trim() || 'a definir' },
+            { label: 'horário', value: formatCourseSchedule(schedule) || 'a definir' },
             { label: 'sala', value: room.trim() || 'a definir' },
             { label: 'semestre', value: semester.trim() || 'a definir' },
           ]}
@@ -112,7 +117,7 @@ export const CourseWizard: React.FC = () => {
       code: code.trim() || undefined,
       professor: professor.trim() || 'a definir',
       semester: semester.trim() || 'semestre livre',
-      schedule: schedule.trim() || 'horário a definir',
+      schedule: schedule.length ? schedule : [],
       room: room.trim() || undefined,
       color,
       icon,

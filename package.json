@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "build": "vite build",
@@ -12,12 +15,19 @@
     "lint": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "content:build": "node content/build-catalog.mjs",
+    "content:check": "node content/check-content.mjs",
+    "content:report": "node content/report-content.mjs",
+    "content:diff": "node content/diff-content.mjs",
+    "db:verify": "node scripts/db-verify.mjs",
+    "db:legacy-import": "node scripts/db-legacy-import.mjs",
     "cap:sync": "npm run build && cap sync",
     "cap:sync:web": "cap copy web",
     "cap:open:android": "cap open android",
     "cap:open:ios": "cap open ios"
   },
   "dependencies": {
+    "@capacitor-community/sqlite": "^8.1.1",
     "@capacitor/android": "^8.5.0",
     "@capacitor/app": "^8.1.1",
     "@capacitor/calendar": "^1.0.0",
@@ -47,11 +57,15 @@
     "lucide-react": "^0.546.0",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
+    "sql.js": "^1.14.2",
     "tailwind-merge": "^3.6.0",
-    "vite": "^6.2.3"
+    "tw-animate-css": "^1.4.0",
+    "vite": "^6.2.3",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.5.0",
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.4",

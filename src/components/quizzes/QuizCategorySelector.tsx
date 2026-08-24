@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp, Check, Target, Filter, Sparkles } from 'lucide-react';
-import { Kitty } from '../ui/Kitty';
+import { Mascote } from '../ui/Mascote';
 import { PillGroup } from '../ui/PillGroup';
 import { cn } from '../../lib/utils';
 import { filterQuestionPool } from '../../lib/quizLogic';
@@ -222,7 +222,7 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col items-center justify-center gap-3 py-16 text-center"
         >
-          <Kitty expression="curiosa" className="w-14 h-14" decorative />
+          <Mascote expression="loading-patient" className="w-14 h-14" decorative />
           <div>
             <h3 className="font-display font-bold text-base text-ceci-primary">escrevendo suas questões ♡</h3>
             <p className="text-xs text-ceci-secondary mt-1.5">
@@ -242,7 +242,7 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
             transition={{ duration: 0.3, delay: 0.1 }}
             className="rounded-[20px] p-4 bg-white border border-ceci-border-default shadow-sm text-center space-y-3"
           >
-            <Kitty expression="pensativa" className="w-12 h-12 mx-auto" decorative />
+            <Mascote expression="quiz-ready" className="w-12 h-12 mx-auto" decorative />
             <div>
               <h3 className="font-display font-bold text-base text-ceci-primary">monte seu quiz ♡</h3>
               <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">

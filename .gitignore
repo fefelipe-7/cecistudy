@@ -22,3 +22,6 @@ cecistudy/
 
 # Site OTA gerado pelo workflow (.github/workflows/ota.yml)
 ota-site/
+desktop/keyring/*.key
+desktop/src-tauri/target/
+assets/mascote_expressoes_svgs/

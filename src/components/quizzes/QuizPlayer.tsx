@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, Trophy, CheckCircle2, X, Clock } from 'lucide-react';
-import { Kitty } from '../ui/Kitty';
 import { QuizExplanationOverlay } from './QuizExplanationOverlay';
 import { cn } from '../../lib/utils';
 import type { StudyQuestion, QuizConfig, QuizAnswer, QuizPlayState } from '../../types';

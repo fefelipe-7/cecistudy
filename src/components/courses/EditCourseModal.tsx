@@ -1,46 +1,52 @@
 import React, { useEffect, useState } from 'react';
-import { Brain, FileText, Sparkles, Users, HeartHandshake, GraduationCap, type LucideIcon } from 'lucide-react';
-import { Course } from '../../types';
+import { Course, CourseScheduleSlot } from '../../types';
 import { Modal } from '../ui/Modal';
 import { ColorSwatchPicker } from '../ui/ColorSwatchPicker';
+import { SchedulePicker } from '../ui/SchedulePicker';
+import { formatCourseSchedule } from '../../lib/schedule';
 import { COURSE_ICON_OPTIONS } from '../../lib/courseOptions';
+import { COURSE_ICON_COMPONENTS } from '../ui/CourseIcon';
+import { deriveCourseProgress } from '../../lib/courseProgress';
 
 interface EditCourseModalProps {
   isOpen: boolean;
   course: Course | undefined;
   onClose: () => void;
   onSave: (updated: Course) => void;
+  /** Anotações de aula (para o progresso sugerido). */
+  classNotes?: { courseId: string }[];
+  /** Provas (para o progresso sugerido). */
+  exams?: { courseId: string; completed: boolean }[];
 }
-
-const ICON_MAP: Record<string, LucideIcon> = {
-  Brain,
-  FileText,
-  Sparkles,
-  Users,
-  HeartHandshake,
-  GraduationCap,
-};
-
-const COURSE_ICONS: { name: string; Icon: LucideIcon }[] = COURSE_ICON_OPTIONS.map((o) => ({
-  name: o.value,
-  Icon: ICON_MAP[o.value] ?? Brain,
-}));
 
 const inputClass =
   'w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500';
 const labelClass = 'block text-xs font-medium text-ceci-secondary mb-1';
 
-export const EditCourseModal: React.FC<EditCourseModalProps> = ({ isOpen, course, onClose, onSave }) => {
+export const EditCourseModal: React.FC<EditCourseModalProps> = ({
+  isOpen,
+  course,
+  onClose,
+  onSave,
+  classNotes,
+  exams,
+}) => {
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
   const [professor, setProfessor] = useState('');
   const [semester, setSemester] = useState('');
-  const [schedule, setSchedule] = useState('');
+  const [schedule, setSchedule] = useState<CourseScheduleSlot[]>([]);
   const [room, setRoom] = useState('');
   const [color, setColor] = useState('#E97891');
   const [icon, setIcon] = useState('Brain');
-  const [progress, setProgress] = useState('0');
+  const [useManualProgress, setUseManualProgress] = useState(false);
+  const [manualProgress, setManualProgress] = useState('0');
+  const [minGrade, setMinGrade] = useState('7');
   const [description, setDescription] = useState('');
+  const [category, setCategory] = useState<'obrigatoria' | 'complementar'>('obrigatoria');
+  const [officeHours, setOfficeHours] = useState('');
+  const [attended, setAttended] = useState('0');
+  const [attendanceTotal, setAttendanceTotal] = useState('0');
 
   useEffect(() => {
     if (isOpen && course) {
@@ -48,31 +54,49 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({ isOpen, course
       setCode(course.code || '');
       setProfessor(course.professor);
       setSemester(course.semester);
-      setSchedule(course.schedule);
+      setSchedule(Array.isArray(course.schedule) ? course.schedule : []);
       setRoom(course.room || '');
       setColor(course.color);
       setIcon(course.icon);
-      setProgress(String(course.progress));
+      setUseManualProgress(typeof course.progressOverride === 'number');
+      setManualProgress(String(course.progressOverride ?? 0));
+      setMinGrade(String(course.minGrade ?? 7));
       setDescription(course.description || '');
+      setCategory(course.category === 'complementar' ? 'complementar' : 'obrigatoria');
+      setOfficeHours(course.officeHours || '');
+      setAttended(String(course.attendance?.attended ?? 0));
+      setAttendanceTotal(String(course.attendance?.total ?? 0));
     }
   }, [isOpen, course]);
+
+  // Progresso sugerido a partir dos dados reais (frequência + provas + aulas anotadas)
+  const suggestedProgress = course
+    ? deriveCourseProgress(course, { classNotes, exams }).value
+    : 0;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!course) return;
     if (!name.trim()) return;
+    const att = parseInt(attendanceTotal) || 0;
+    const manualValue = Math.max(0, Math.min(100, parseInt(manualProgress) || 0));
     onSave({
       ...course,
       name: name.trim(),
       code: code.trim(),
       professor: professor.trim(),
       semester: semester.trim(),
-      schedule: schedule.trim(),
+      schedule: schedule,
       room: room.trim(),
       color,
       icon,
-      progress: Math.max(0, Math.min(100, parseInt(progress) || 0)),
+      progress: useManualProgress ? manualValue : suggestedProgress,
+      progressOverride: useManualProgress ? manualValue : undefined,
+      minGrade: Math.max(0, Math.min(10, parseFloat(minGrade.replace(',', '.'))) || 0),
       description: description.trim(),
+      category,
+      officeHours: officeHours.trim() || undefined,
+      attendance: att > 0 ? { attended: Math.max(0, Math.min(att, parseInt(attended) || 0)), total: att } : undefined,
     });
     onClose();
   };
@@ -115,8 +139,15 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({ isOpen, course
               <input type="text" value={semester} onChange={(e) => setSemester(e.target.value)} className={inputClass} placeholder="ex: 6º semestre" />
             </div>
             <div>
-              <label className={labelClass}>horário</label>
-              <input type="text" value={schedule} onChange={(e) => setSchedule(e.target.value)} className={inputClass} placeholder="ex: segunda 09:00 - 12:00" />
+              <label className={labelClass}>categoria</label>
+              <select value={category} onChange={(e) => setCategory(e.target.value as 'obrigatoria' | 'complementar')} className={inputClass}>
+                <option value="obrigatoria">obrigatória</option>
+                <option value="complementar">complementar</option>
+              </select>
+            </div>
+            <div className="col-span-2">
+              <label className={labelClass}>dias e horários</label>
+              <SchedulePicker value={schedule} onChange={setSchedule} />
             </div>
 
             <div>
@@ -124,8 +155,63 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({ isOpen, course
               <input type="text" value={room} onChange={(e) => setRoom(e.target.value)} className={inputClass} placeholder="ex: bloco c" />
             </div>
             <div>
-              <label className={labelClass}>progresso (%)</label>
-              <input type="number" min={0} max={100} value={progress} onChange={(e) => setProgress(e.target.value)} className={inputClass} />
+              <label className={labelClass}>média mínima (0–10)</label>
+              <input
+                type="number"
+                min={0}
+                max={10}
+                step={0.5}
+                value={minGrade}
+                onChange={(e) => setMinGrade(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+
+            <div className="col-span-2 rounded-xl border border-ceci-border-default bg-surface-subtle p-3 space-y-2">
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold text-ceci-primary">progresso da disciplina</p>
+                  <p className="text-[11px] text-ceci-secondary mt-0.5">
+                    {useManualProgress
+                      ? 'ajuste manual ativo.'
+                      : `calculado com carinho a partir das suas aulas e provas: ${suggestedProgress}%.`}
+                  </p>
+                </div>
+                <label className="flex items-center gap-1.5 text-[11px] font-semibold text-ceci-secondary cursor-pointer shrink-0">
+                  <input
+                    type="checkbox"
+                    checked={useManualProgress}
+                    onChange={(e) => setUseManualProgress(e.target.checked)}
+                    className="accent-rose-500"
+                  />
+                  manual
+                </label>
+              </div>
+              {useManualProgress && (
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={manualProgress}
+                  onChange={(e) => setManualProgress(e.target.value)}
+                  className={inputClass}
+                  aria-label="progresso manual (%)"
+                />
+              )}
+            </div>
+
+            <div className="col-span-2">
+              <label className={labelClass}>atendimento & monitoria</label>
+              <input type="text" value={officeHours} onChange={(e) => setOfficeHours(e.target.value)} className={inputClass} placeholder="ex: quartas, 14h - 15h30, sala dos professores" />
+            </div>
+
+            <div>
+              <label className={labelClass}>aulas assistidas</label>
+              <input type="number" min={0} value={attended} onChange={(e) => setAttended(e.target.value)} className={inputClass} />
+            </div>
+            <div>
+              <label className={labelClass}>total de aulas</label>
+              <input type="number" min={0} value={attendanceTotal} onChange={(e) => setAttendanceTotal(e.target.value)} className={inputClass} placeholder="0 = não registrar" />
             </div>
           </div>
 
@@ -137,21 +223,26 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({ isOpen, course
           <div>
             <label className={labelClass}>ícone da matéria</label>
             <div className="flex items-center gap-2 flex-wrap">
-              {COURSE_ICONS.map(({ name: iconName, Icon }) => (
-                <button
-                  key={iconName}
-                  type="button"
-                  onClick={() => setIcon(iconName)}
-                  className={`w-10 h-10 rounded-xl border flex items-center justify-center tap-interactive cursor-pointer active:scale-95 ${
-                    icon === iconName
-                      ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
-                      : 'bg-white border-ceci-border-default text-ceci-secondary hover:bg-surface-muted'
-                  }`}
-                  aria-label={`ícone ${iconName}`}
-                >
-                  <Icon className="w-4 h-4" />
-                </button>
-              ))}
+              {COURSE_ICON_OPTIONS.map(({ value: iconName, label }) => {
+                const Icon = COURSE_ICON_COMPONENTS[iconName];
+                if (!Icon) return null;
+                return (
+                  <button
+                    key={iconName}
+                    type="button"
+                    onClick={() => setIcon(iconName)}
+                    className={`w-10 h-10 rounded-xl border flex items-center justify-center tap-interactive cursor-pointer active:scale-95 ${
+                      icon === iconName
+                        ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
+                        : 'bg-white border-ceci-border-default text-ceci-secondary hover:bg-surface-muted'
+                    }`}
+                    aria-label={`ícone ${label}`}
+                    title={label}
+                  >
+                    <Icon className="w-4 h-4" />
+                  </button>
+                );
+              })}
             </div>
           </div>
 

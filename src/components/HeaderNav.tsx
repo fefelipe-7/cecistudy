@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   Search,
@@ -45,13 +45,13 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
 
   return (
     <header
-      className={`sticky top-0 z-40 bg-canvas/95 border-b border-ceci-border-subtle px-3.5 sm:px-4 transition-[padding,box-shadow,background-color,border-color] duration-300 ease-in-out ${
+      className={`sticky top-0 z-40 liquid-glass-nav border-b border-b-[color-mix(in_srgb,white_50%,transparent)] px-3.5 sm:px-4 transition-[padding,box-shadow,background-color,border-color] duration-300 ease-in-out ${
         scrolled
-          ? 'pt-[calc(0.5rem+env(safe-area-inset-top,0px))] pb-2 shadow-xs'
+          ? 'pt-[calc(0.5rem+env(safe-area-inset-top,0px))] pb-2 shadow-sm'
           : 'pt-[calc(0.75rem+env(safe-area-inset-top,0px))] sm:pt-[calc(0.875rem+env(safe-area-inset-top,0px))] pb-3 sm:pb-3.5'
       }`}
     >
-      <div className="max-w-md sm:max-w-xl mx-auto flex items-center justify-between gap-2 sm:gap-3">
+      <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto flex items-center justify-between gap-2 sm:gap-3">
         <AnimatePresence mode="wait" initial={false}>
         {isDetailMode ? (
           /* ================================================================ */
@@ -207,7 +207,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             {/* Center Search Trigger */}
             <button
               onClick={onOpenSearch}
-              className={`flex-1 max-w-sm hidden md:flex items-center gap-2 bg-white/90 hover:bg-white text-ceci-secondary px-3.5 rounded-full border border-ceci-border-default shadow-2xs transition-colors duration-300 cursor-pointer ${
+              className={`flex-1 max-w-sm hidden md:flex items-center gap-2 bg-white/60 backdrop-blur-sm text-ceci-secondary px-3.5 rounded-full border border-white/70 shadow-2xs transition-colors duration-300 cursor-pointer ${
                 scrolled ? 'py-1 text-[11px] min-h-[32px]' : 'py-2 text-xs min-h-[40px]'
               }`}
             >

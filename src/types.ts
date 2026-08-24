@@ -2,7 +2,7 @@ import type { ComponentType, ReactNode } from 'react';
 
 export type NavTab = 'home' | 'faculdade' | 'estudos' | 'biblioteca' | 'perfil';
 
-export type SubTabFaculdade = 'disciplinas' | 'aulas' | 'avaliacoes' | 'calendario';
+export type SubTabFaculdade = 'disciplinas' | 'calendario';
 export type SubTabEstudos = 'sessoes' | 'leituras' | 'flashcards' | 'questoes' | 'historico';
 
 /** Telas dedicadas abertas a partir do feed de estudos. */
@@ -33,7 +33,7 @@ export type NavScreen =
   | { kind: 'quiz-category' }
   | { kind: 'quiz-loading'; config: QuizConfig }
   | { kind: 'quiz-play'; state: QuizPlayState }
-  | { kind: 'quiz-result'; answers: QuizAnswer[]; config: QuizConfig; startTime: number; correctCount: number; totalCount: number }
+  | { kind: 'quiz-result'; answers: QuizAnswer[]; config: QuizConfig; startTime: number; correctCount: number; totalCount: number; pool: StudyQuestion[] }
   /** Telas dedicadas do estudo (empurradas sobre a aba estudos pelo feed). */
   | { kind: 'study'; screen: StudyScreen };
 
@@ -71,7 +71,9 @@ export type ManagedItemKind =
   | 'author'
   | 'material'
   | 'looseNote'
-  | 'quizSession';
+  | 'quizSession'
+  /** Livro do catálogo estático da biblioteca (não é dado da usuária — sem editar/excluir). */
+  | 'catalogBook';
 
 /** Item sob o menu de editar/excluir (payload fora da URL, igual `wizardNoteId`). */
 export interface ManagedItem {
@@ -85,6 +87,22 @@ export interface HeaderAction {
   onClick: () => void;
 }
 
+/** Nomes de ícones suportados pelo resolver `CourseIcon` (mapa em `components/ui/CourseIcon.tsx`). */
+export type CourseIconName =
+  | 'Brain'
+  | 'FileText'
+  | 'Sparkles'
+  | 'Users'
+  | 'HeartHandshake'
+  | 'GraduationCap'
+  | 'Landmark'
+  | 'Flame'
+  | 'Target'
+  | 'Trophy'
+  | 'Clock'
+  | 'BookOpen'
+  | 'History';
+
 export interface DynamicHeaderConfig {
   type?: 'default' | 'detail' | 'custom';
   title?: string;
@@ -92,7 +110,7 @@ export interface DynamicHeaderConfig {
   code?: string;
   badge?: string;
   badgeColor?: string;
-  icon?: string;
+  icon?: CourseIconName;
   color?: string;
   onBack?: () => void;
   isBookmarked?: boolean;
@@ -113,18 +131,32 @@ export interface Task {
   category: 'leitura' | 'trabalho' | 'revisao' | 'estagio' | 'outro';
 }
 
+export interface CourseScheduleSlot {
+  /** Dia da semana: 0=domingo … 6=sábado (mesma convenção de Date.getDay()). */
+  day: number;
+  /** Hora de início no formato HH:MM. */
+  start: string;
+  /** Hora de término opcional no formato HH:MM. */
+  end?: string;
+}
+
 export interface Course {
   id: string;
   name: string;
   code?: string;
   professor: string;
   semester: string; // e.g. "6º Semestre"
-  schedule: string; // e.g. "Segunda 09:00 - 12:00"
+  /** Horários estruturados da disciplina (dias da semana + início/término). */
+  schedule: CourseScheduleSlot[];
   room?: string;
   category?: 'obrigatoria' | 'complementar';
   color: string; // hex code or style class
   icon: string; // Lucide icon name
-  progress: number; // 0-100%
+  progress: number; // 0-100% (derivado do estado real quando progressOverride ausente)
+  /** Ajuste manual do progresso (0-100); se ausente, o valor é derivado dos dados. */
+  progressOverride?: number;
+  /** Média mínima para aprovação (0-10, ex.: 7). Fallback de exibição: 7. */
+  minGrade?: number;
   description?: string;
   /** Atendimento & monitoria (ex.: "quartas, 14h - 15h30, sala dos professores"). */
   officeHours?: string;
@@ -383,6 +415,14 @@ export type InternshipLogType =
   | 'intervisao'
   | 'outro';
 
+/** Fase do ciclo de formação de um registro de estágio (Estágio 2.0). */
+export type InternshipPhase =
+  | 'preparar'
+  | 'registrar'
+  | 'refletir'
+  | 'supervisionar'
+  | 'entregar';
+
 export interface InternshipLog {
   id: string;
   /** Tipo do registro (default `'estagio'` para dados antigos). */
@@ -392,6 +432,10 @@ export interface InternshipLog {
   /** Resumo curto do registro — usado como título/evento. */
   activity: string;
   reflections: string;
+  /** Fase do ciclo de formação (Estágio 2.0). Opcional p/ retroativos. */
+  phase?: InternshipPhase;
+  /** Checklist de preparação para o campo (Estágio 2.0). */
+  prepChecklist?: string[];
   conceptIds?: string[];
 
   // ---- atendimento clínico ----
@@ -422,6 +466,31 @@ export interface InternshipLog {
 
   // ---- legado (dados antigos sem `type`) ----
   supervisionNotes?: string;
+}
+
+/**
+ * Caderno de supervisão — encontro próprio que conecta teoria, prática e
+ * responsabilidade, sem guardar dados identificáveis de atendidos.
+ * `beforeNotes` / `afterNotes` formam a coluna "antes/depois da supervisão".
+ */
+export interface SupervisionNotebook {
+  id: string;
+  date: string;
+  supervisor?: string;
+  /** Perguntas levadas para a conversa (preparação). */
+  questions: string[];
+  conceptIds: string[];
+  referenceIds: string[];
+  /** Próximos passos combinados (viram tarefa/leitura/foco). */
+  nextSteps: string[];
+  /** Autoavaliação breve da estudante. */
+  selfAssessment: {
+    confidence?: string;
+    limits?: string;
+    themes?: string;
+  };
+  beforeNotes?: string;
+  afterNotes?: string;
 }
 
 export interface TccData {

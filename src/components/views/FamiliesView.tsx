@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Network, Search, ChevronRight, Landmark } from 'lucide-react';
 import { PSICOTERAPIA_FAMILIES } from '../../data/psicoterapiaFamilies';
 import { useApp } from '../../context/AppContext';
-import { Kitty } from '../ui/Kitty';
+import { Mascote } from '../ui/Mascote';
 
 export const FamiliesView: React.FC = () => {
   const { openFamily } = useApp();
@@ -14,7 +14,7 @@ export const FamiliesView: React.FC = () => {
   );
 
   return (
-    <div className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-1 relative">
+    <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-5 pb-1 relative">
       {/* Intro */}
       <div className="bg-white rounded-[24px] p-5 border border-ceci-border-default space-y-1.5 shadow-2xs">
         <div className="flex items-center gap-2.5">
@@ -48,7 +48,7 @@ export const FamiliesView: React.FC = () => {
       <div className="space-y-3 px-1">
         {families.length === 0 && (
           <div className="text-center py-8 space-y-2">
-            <Kitty expression="surpresa" className="w-14 h-14 mx-auto" decorative />
+            <Mascote expression="no-results" className="w-14 h-14 mx-auto" decorative />
             <p className="text-sm text-ceci-secondary">
               nada por aqui com esse nome ♡
             </p>

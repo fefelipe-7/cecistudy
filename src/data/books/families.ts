@@ -1,4 +1,4 @@
-import { BookCategoryMeta } from './types';
+import type { BookCategoryMeta } from './types';
 
 /**
  * Metadados das 10 famílias de psicoterapia (catálogo de 150 livros) e das

@@ -163,7 +163,10 @@ export type CheckResult = 'up-to-date' | 'downloaded' | 'failed';
 
 /**
  * Consulta o manifest no GitHub Pages e baixa o bundle quando há versão nova.
- * `manual: true` marca o estado como erro para feedback explícito (Perfil).
+ *
+ * - `manual: true` (Perfil) → feedback explícito: falha vira estado de erro visível.
+ * - sem `manual` (checagem em segundo plano) → falha não contamina a UI: mantém
+ *   o estado anterior (ex.: um `ready` já baixado) ou volta a `idle` silencioso.
  */
 export async function checkForUpdates(opts: { manual?: boolean } = {}): Promise<CheckResult> {
   if (!isNativePlatform) return 'up-to-date';
@@ -198,8 +201,13 @@ export async function checkForUpdates(opts: { manual?: boolean } = {}): Promise<
     return 'downloaded';
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);
-    setState({ status: 'error', error: 'não consegui verificar atualizações agora.' });
     console.warn('[ota] falha ao checar atualização:', message);
+    if (opts.manual) {
+      setState({ status: 'error', error: 'não consegui verificar atualizações agora.' });
+    } else if (state.status !== 'ready') {
+      // Background silencioso: preserva um bundle já pronto e evita alarme no Perfil.
+      setState({ status: 'idle' });
+    }
     return 'failed';
   }
 }

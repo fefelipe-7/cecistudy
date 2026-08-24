@@ -100,3 +100,13 @@ Dono de todo o estado global (`usePersistentState`) + navegação + modais. Orqu
 - 🧹 Callbacks do `QuickAddModal` já tipados com as interfaces de `types.ts` (sem `any`).
 - 🧹 Extrair padrão de overlay de modal para um componente reutilizável.
 - 🧹 Unificar o modal de anotação de aula duplicado em `FaculdadeView` e `CourseDetailView`.
+
+---
+
+## Redesign de layout (2026-08-22) — mudanças de status
+
+- **FormationPlanWidget** — sem uso (removido da HomeView no redesign "Hoje"); arquivo mantido para uso futuro.
+- **InternshipDiaryView / TccView** — montados diretamente pelo AppShell (App.tsx): estágio sobre a aba faculdade (#/faculdade/estagio), TCC sobre estudos (#/estudos/tcc); não passam mais por PerfilView.
+- **PerfilView** — modas reduzidos a 'profile' | 'stickers'; sem cards de estágio/TCC e sem DitherGrowthChart (foi para StudyHistoricoScreen); mantém funil dithered e linha do tempo.
+- **BibliotecaView** — dividida em "meus materiais" (notas + continuar lendo + salvos) e seções colapsáveis ExploreSection no "explorar" (abertas automaticamente com filtros ativos).
+- **HomeView** — virou "Hoje": atenção do dia (tarefas+provas fundidas, máx. 3), ações rápidas (foco/revisar), ritmo compacto; sem sugestões dummy nem progresso semanal grande.

@@ -16,6 +16,7 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
     handleAddFlashcard,
     handleUpdateFlashcard,
     closeWizard,
+    openEditCourse,
     showToast,
   } = useApp();
   const editingCard = editing?.kind === 'flashcard'
@@ -32,6 +33,11 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
 
   const courseName = courses.find((c) => c.id === courseId)?.name ?? '';
   const conceptName = concepts.find((c) => c.id === conceptId)?.name ?? '';
+
+  const createCourseInline = () => {
+    showToast('cadastre a matéria — quando voltar, ela aparece aqui ♡');
+    openEditCourse();
+  };
 
   const steps: WizardStep[] = [
     {
@@ -79,6 +85,8 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
             onChange={setCourseId}
             options={courses.map((c) => ({ value: c.id, label: c.name }))}
             emptyMessage="ainda não há disciplinas cadastradas."
+            createLabel="criar matéria agora"
+            onCreate={createCourseInline}
           />
         </div>
       ),
@@ -102,6 +110,12 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
 
   const canNext =
     step === 0 ? question.trim().length > 0 : step === 1 ? answer.trim().length > 0 : true;
+  const blockedReason =
+    step === 0
+      ? 'escreva a pergunta do card para continuar'
+      : step === 1
+        ? 'escreva a resposta para continuar'
+        : undefined;
 
   const handleSave = () => {
     if (editingCard) {
@@ -135,10 +149,12 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
       title={editing ? 'editar flashcard' : 'novo flashcard'}
       icon={<Brain className="w-3.5 h-3.5" />}
       iconClass="bg-surface-blue border-ceci-border-academic text-ceci-academic-strong"
+      mascote="review-card"
       steps={steps}
       step={step}
       onStepChange={setStep}
       canNext={canNext}
+      blockedReason={blockedReason}
       onSave={handleSave}
       onClose={closeWizard}
       saveLabel={editing ? 'guardar alterações ♡' : 'guardar flashcard ♡'}

@@ -1,6 +1,5 @@
 import { Camera, CameraPermissionState } from '@capacitor/camera';
 import { Calendar } from '@capacitor/calendar';
-import { Filesystem } from '@capacitor/filesystem';
 import { LocalNotifications, PermissionStatus as NotificationsPermissionStatus } from '@capacitor/local-notifications';
 import { isNativePlatform } from './storage';
 
@@ -17,6 +16,7 @@ export async function checkPermission(kind: AppPermissionKind): Promise<AppPermi
 
   try {
     if (kind === 'files') {
+      const { Filesystem } = await import('@capacitor/filesystem');
       const status = await Filesystem.checkPermissions();
       const s = status.publicStorage;
       return s === 'granted' ? 'granted' : s === 'denied' ? 'denied' : 'prompt';
@@ -45,6 +45,7 @@ export async function requestPermission(kind: AppPermissionKind): Promise<AppPer
 
   try {
     if (kind === 'files') {
+      const { Filesystem } = await import('@capacitor/filesystem');
       await Filesystem.requestPermissions();
       return checkPermission('files');
     }

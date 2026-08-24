@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { PSICOTERAPIA_FAMILIES } from '../../data/psicoterapiaFamilies';
 import { useApp } from '../../context/AppContext';
@@ -11,7 +11,7 @@ export const FamilyDetailView: React.FC<{ familyId: string }> = ({ familyId }) =
   const family = PSICOTERAPIA_FAMILIES.find((f) => f.id === familyId);
   if (!family) {
     return (
-      <div className="max-w-md sm:max-w-xl mx-auto px-1 py-10 text-center text-sm text-ceci-secondary">
+      <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto px-1 py-10 text-center text-sm text-ceci-secondary">
         não achei essa família por aqui ♡
       </div>
     );
@@ -21,7 +21,7 @@ export const FamilyDetailView: React.FC<{ familyId: string }> = ({ familyId }) =
   const loadingApproaches = approaches.length === 0;
 
   return (
-    <div className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-1 relative">
+    <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-5 pb-1 relative">
       {/* Título da família */}
       <div
         className="bg-white rounded-[24px] p-5 border space-y-1.5 shadow-2xs"

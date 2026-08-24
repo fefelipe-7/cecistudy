@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal } from './Modal';
-import { Kitty } from './Kitty';
+import { Mascote } from './Mascote';
 import { applyNow, dismissUpdate, useOtaStatus } from '@/lib/ota';
 
 /**
@@ -19,7 +19,7 @@ export const OtaUpdateModal: React.FC = () => {
     >
       <div className="flex items-center gap-3">
         <span className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0 overflow-hidden">
-          <Kitty expression="rindo" className="w-9 h-9" decorative />
+          <Mascote expression="sync-wait" className="w-9 h-9" decorative />
         </span>
         <div>
           <h3 className="font-display font-bold text-lg text-ceci-primary leading-tight">

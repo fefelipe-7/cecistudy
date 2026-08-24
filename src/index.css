@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 @theme {
   /* cecistudy DESIGN SYSTEM PRIMITIVE TOKENS */
@@ -170,6 +171,7 @@
     background-color: var(--color-canvas);
     color: var(--color-ceci-primary);
     overflow-x: hidden;
+    overscroll-behavior-x: none;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -300,4 +302,70 @@
 }
 
 
+/* ============================================================ */
+/* LIQUID GLASS — efeito "vidro líquido" morphing (Apple-like) */
+/* Aplicado nas barras de navegação (HeaderNav + BottomNav).     */
+/* Combinado com SVG filters feDisplacementMap (inline no App).  */
+/* ============================================================ */
+
+/* Keyframes de scale p/ sincronizar morph com troca de seleção */
+@keyframes scaleToggle {
+  0% { scale: 1 1; }
+  50% { scale: 1.1 1; }
+  100% { scale: 1 1; }
+}
+
+@keyframes scaleToggle2 {
+  0% { scale: 1 1; }
+  50% { scale: 1.2 1; }
+  100% { scale: 1 1; }
+}
+
+@keyframes scaleToggle3 {
+  0% { scale: 1 1; }
+  50% { scale: 1.1 1; }
+  100% { scale: 1 1; }
+}
+
+/* Container glass — usado no <header> e no <nav> do bottom nav.
+   `color-mix` = Canvas 75% + transparente; borda branca translúcida;
+   backdrop-blur + saturate fazem o "frosted" (vidro fosco puro em CSS,
+   sem filtro SVG — barato, robusto e idêntico entre navegadores). */
+.liquid-glass-nav {
+  background-color: color-mix(in srgb, var(--color-canvas) 75%, transparent);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  border-color: color-mix(in srgb, white 60%, transparent);
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* Pill ativo do bottom nav — vidro mais denso (topo branco) p/ destacar
+   a aba selecionada. Gradiente estático: o indicador precisa ser SEMPRE
+   visível, sem depender de filtros. */
+.liquid-glass-pill {
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in srgb, white 90%, transparent),
+    color-mix(in srgb, white 50%, transparent)
+  );
+  border-color: color-mix(in srgb, white 70%, transparent);
+  box-shadow:
+    var(--shadow-xs),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* FAB — vidro fosco na cor da marca: mesma receita do container
+   (blur + saturate sobre fundo translúcido), mas com o rosa
+   ceci-brand-strong no lugar do canvas + highlights internos de vidro. */
+.liquid-glass-fab {
+  background-color: color-mix(in srgb, var(--color-ceci-brand-strong) 85%, transparent);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-color: color-mix(in srgb, white 45%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(64, 56, 58, 0.15);
+}
 

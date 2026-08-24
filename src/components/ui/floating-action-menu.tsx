@@ -32,7 +32,7 @@ const FloatingActionMenu = ({
         onClick={toggleMenu}
         aria-label={isOpen ? 'fechar menu de atalhos' : 'abrir menu de atalhos'}
         aria-expanded={isOpen}
-        className="w-10 h-10 rounded-full bg-ceci-brand-strong hover:bg-ceci-brand-hover active:scale-95 shadow-brand tap-interactive cursor-pointer border border-ceci-border-brand/30"
+        className="liquid-glass-fab w-10 h-10 rounded-full hover:brightness-110 active:scale-95 shadow-brand tap-interactive cursor-pointer border transition-[filter,transform] duration-200"
       >
         <motion.div
           animate={{ rotate: isOpen ? 45 : 0 }}

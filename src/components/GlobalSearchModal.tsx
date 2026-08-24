@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Search, X, BookOpen, Brain, Sparkles, User, GraduationCap, ChevronRight } from 'lucide-react';
 import { Modal } from './ui/Modal';
-import { Kitty } from './ui/Kitty';
+import { Mascote } from './ui/Mascote';
 import { PillGroup } from './ui/PillGroup';
 import {
   Course,
@@ -49,7 +49,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       type: 'concept' | 'author' | 'course' | 'class' | 'reading' | 'approach';
       badge: string;
       tab: NavTab;
-      subTab: string;
+      subTab?: string;
     }[] = [];
 
     // Search Concepts
@@ -106,8 +106,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
           subtitle: `aula ${cl.number} • ${cl.summary.slice(0, 60)}...`,
           type: 'class',
           badge: 'aula',
-          tab: 'faculdade',
-          subTab: 'aulas'
+          tab: 'faculdade'
         });
       }
     });
@@ -203,7 +202,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
           <div className="max-h-[60vh] overflow-y-auto p-3 divide-y divide-ceci-border-subtle">
             {searchResults.length === 0 ? (
               <div className="p-8 text-center text-ceci-secondary">
-                <Kitty expression="pensativa" className="w-16 h-16 mx-auto mb-2" decorative />
+                <Mascote expression="no-results" className="w-16 h-16 mx-auto mb-2" decorative />
                 <p className="font-display text-base text-ceci-primary mb-1">nenhum resultado encontrado para "{query}"</p>
                 <p className="text-xs">tente pesquisar por autores (ex: beck), transtornos ou técnicas.</p>
               </div>

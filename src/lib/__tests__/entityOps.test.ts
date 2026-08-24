@@ -21,7 +21,7 @@ const course: Course = {
   name: 'Psicopatologia',
   professor: 'Prof',
   semester: '6º',
-  schedule: 'Seg 09h',
+  schedule: [{ day: 1, start: '09:00' }],
   color: '#E97891',
   icon: 'Brain',
   progress: 50,

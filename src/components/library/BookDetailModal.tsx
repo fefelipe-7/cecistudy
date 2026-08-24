@@ -2,7 +2,7 @@ import React from 'react';
 import { X, Minus, Plus } from 'lucide-react';
 import { CollectionBook } from '../../data/libraryData';
 import { Modal } from '../ui/Modal';
-import { Kitty } from '../ui/Kitty';
+import { Mascote } from '../ui/Mascote';
 import { BookmarkToggle } from '../ui/BookmarkToggle';
 import { cn } from '../../lib/utils';
 
@@ -85,7 +85,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
 
         {/* Bonequinha apaixonada — companhia na leitura */}
         <div className="flex justify-center -my-1">
-          <Kitty expression="apaixonada" className="w-14 h-14" decorative />
+          <Mascote expression="library-shelf" className="w-14 h-14" decorative />
         </div>
 
         {/* Páginas lidas — seletor */}

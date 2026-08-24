@@ -1,395 +1,337 @@
-import React from 'react';
+﻿import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import {
   Brain,
   BookOpen,
   HelpCircle,
-  History,
   Sparkles,
   Plus,
   ChevronRight,
   Flame,
-  Target,
-  Timer,
+  Clock,
+  Activity,
+  GraduationCap,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { DitherDonutChart } from '../ui/dither-donut';
-import { formatCount } from '../../lib/ditherChart';
+import { isDueToday, intervalFor } from '../../lib/review';
+import { toDateKey, type WeekDayStatus } from '../../lib/streak';
+import { pickTip } from '../../lib/tips';
+import { Mascote } from '../ui/Mascote';
+import { SectionTitle } from '../ui/SectionTitle';
 
-/** Intervalo de revisão (dias) por nº de revisões — repetição espaçada simples. */
-const REVIEW_INTERVALS = [1, 3, 7, 14, 30];
-const intervalFor = (timesReviewed = 0) =>
-  REVIEW_INTERVALS[Math.min(timesReviewed, REVIEW_INTERVALS.length - 1)];
-const daysSince = (iso: string) => Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
-
-const toISODate = (d: Date) => d.toISOString().split('T')[0];
-
-const isDueToday = (card: { lastReviewed?: string; timesReviewed?: number }) =>
-  !card.lastReviewed || daysSince(card.lastReviewed) >= intervalFor(card.timesReviewed);
-
-/** Card de portal que empurra uma tela dedicada na pilha nativa. */
-function PortalCard({
-  icon,
-  title,
-  subtitle,
-  bg,
-  border,
-  text,
-  onClick,
-  badge,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  subtitle: string;
-  bg: string;
-  border: string;
-  text: string;
-  onClick: () => void;
-  badge?: React.ReactNode;
-}) {
-  return (
-    <motion.button
-      whileTap={{ scale: 0.98 }}
-      onClick={onClick}
-      className={`w-full flex items-center justify-between gap-3 p-4 rounded-[20px] ${bg} border ${border} cursor-pointer text-left`}
-    >
-      <div className="flex items-center gap-3 min-w-0">
-        <span className={`w-10 h-10 rounded-2xl bg-white border ${border} flex items-center justify-center shrink-0 ${text}`}>
-          {icon}
-        </span>
-        <div className="min-w-0">
-          <h3 className="font-semibold text-xs text-ceci-primary truncate">{title}</h3>
-          <p className="text-[11px] text-ceci-secondary mt-0.5 line-clamp-1">{subtitle}</p>
-        </div>
-      </div>
-      <span className="flex items-center gap-1.5 shrink-0">
-        {badge}
-        <ChevronRight className={`w-4 h-4 ${text}`} />
-      </span>
-    </motion.button>
-  );
-}
-
-/** Mini estatística (quadradinho branco) do feed. */
-function StatPill({ value, label, accent }: { value: string; label: string; accent?: string }) {
-  return (
-    <div className="p-3 bg-white rounded-2xl border border-ceci-border-default text-center">
-      <p className={`font-display font-bold text-sm sm:text-base text-ceci-primary ${accent ?? ''}`}>{value}</p>
-      <p className="text-[10px] text-ceci-secondary mt-0.5">{label}</p>
-    </div>
-  );
-}
-
-/** Barra de semanas recentes (sparkline do feed). */
-function WeekSparkline({ counts, max }: { counts: number[]; max: number }) {
-  return (
-    <div className="flex items-end justify-between gap-1.5 h-12">
-      {counts.map((c, i) => (
-        <div key={i} className="flex-1 flex flex-col items-center gap-1">
-          <span className="text-[9px] text-ceci-muted leading-none">{c > 0 ? c : ''}</span>
-          <div
-            className="w-full rounded-full bg-gradient-to-t from-ceci-brand to-ceci-brand-strong"
-            style={{ height: `${max > 0 ? Math.max(8, (c / max) * 100) : 8}%` }}
-          />
-        </div>
-      ))}
-    </div>
-  );
-}
+/** Bolinha de um dia na linha do ritmo semanal (mesmo padrão da HomeView). */
+const WEEK_CELL_STYLE: Record<WeekDayStatus, string> = {
+  done: 'bg-rose-500 text-white border-rose-500',
+  today: 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand ring-2 ring-rose-300/50',
+  upcoming: 'bg-white text-ceci-muted border-ceci-border-default',
+  weekend: 'bg-surface-muted text-ceci-faded border-ceci-border-subtle',
+};
 
 export const EstudosView: React.FC = () => {
   const {
     flashcards,
     readings,
     sessions,
-    quizSessions,
+    tcc,
     courses,
     questions,
     streakStats,
     currentWeekProgress,
     openStudy,
     openQuizCategory,
+    openTccScreen,
     openWizard,
   } = useApp();
 
-  const courseName = (id?: string) => courses.find((c) => c.id === id)?.name || 'geral';
+  // ---- dados reais derivados do estado ----
+  const dueCards = useMemo(() => flashcards.filter(isDueToday), [flashcards]);
+  const nextDueCard = dueCards[0];
+  const nextDueCourse = courses.find((c) => c.id === nextDueCard?.courseId);
 
-  // ---- Dados reais derivados do estado ----
-  const dueCards = flashcards.filter(isDueToday);
-  const inProgressReadings = readings.filter((r) => r.status === 'lendo');
-  const doneReadings = readings.filter((r) => r.status === 'concluido');
+  const todayKey = toDateKey(new Date());
+  const todayFocusMinutes = sessions
+    .filter((s) => s.date === todayKey)
+    .reduce((acc, s) => acc + (s.durationMinutes || 0), 0);
+  const weekAgoKey = toDateKey(new Date(Date.now() - 7 * 86400000));
+  const weekFocusMinutes = sessions
+    .filter((s) => s.date > weekAgoKey)
+    .reduce((acc, s) => acc + (s.durationMinutes || 0), 0);
 
-  const weekAgoISO = toISODate(new Date(Date.now() - 7 * 86400000));
-  const weekSessions = sessions.filter((s) => s.date >= weekAgoISO);
-  const weekFocusMinutes = weekSessions.reduce((acc, s) => acc + (s.durationMinutes || 0), 0);
-  const focusDaysCount = new Set(weekSessions.map((s) => s.date)).size;
+  const readingInProgress = readings.find((r) => r.status === 'lendo');
+  const readingPct = readingInProgress?.totalPages
+    ? Math.round(((readingInProgress.readPages || 0) / readingInProgress.totalPages) * 100)
+    : 0;
 
-  const totalFocusMinutes = sessions.reduce((acc, s) => acc + (s.durationMinutes || 0), 0);
-  const totalQuizCount = quizSessions.length;
-  const avgQuizScore =
-    quizSessions.length > 0
-      ? Math.round(quizSessions.reduce((acc, q) => acc + q.scorePct, 0) / quizSessions.length)
-      : 0;
+  // TCC: progresso de capítulos concluídos
+  const tccChapters = tcc.chapters ?? [];
+  const tccDone = tccChapters.filter((c) => c.completed).length;
+  const tccPct = tccChapters.length > 0 ? Math.round((tccDone / tccChapters.length) * 100) : 0;
 
-  // Sparkline: minutos de foco por dia na semana corrente (seg–sex)
-  const weekCells = currentWeekProgress.filter((d) => d.status !== 'weekend');
-  const minutesByDate = new Map<string, number>();
-  weekSessions.forEach((s) => minutesByDate.set(s.date, (minutesByDate.get(s.date) ?? 0) + (s.durationMinutes || 0)));
-  const focusSpark = weekCells.map((c) => minutesByDate.get(c.dateKey) ?? 0);
-  const focusSparkMax = Math.max(...focusSpark, 1);
+  const daySummary = [
+    todayFocusMinutes > 0 ? `${todayFocusMinutes} min de foco` : null,
+    dueCards.length > 0
+      ? `${dueCards.length} ${dueCards.length === 1 ? 'cartão' : 'cartões'} pra revisar`
+      : null,
+  ].filter(Boolean);
 
-  const weekStudyDays = currentWeekProgress.filter((d) => d.status !== 'weekend');
-  const doneThisWeek = currentWeekProgress.filter((c) => c.status === 'done').length;
-  const weekDaysTotal = weekStudyDays.length;
-
-  // Distribuição do tempo por disciplina (donut "onde seu tempo foi")
-  const topCourseMinutes = new Map<string, number>();
-  sessions.forEach((s) => {
-    const key = s.courseId ?? 'geral';
-    topCourseMinutes.set(key, (topCourseMinutes.get(key) ?? 0) + (s.durationMinutes || 0));
-  });
-  const courseMinutes = [...topCourseMinutes.entries()]
-    .map(([courseId, mins]) => ({
-      label: courseId === 'geral' ? 'geral' : courseName(courseId),
-      value: mins,
-    }))
-    .sort((a, b) => b.value - a.value)
-    .slice(0, 6);
+  // Dica contextual do cecinho (derivada do estado real do dia)
+  const cecinhoTip = useMemo(
+    () =>
+      pickTip({
+        dueCards: dueCards.length,
+        readingInProgress: !!readingInProgress,
+        focusMinutesToday: todayFocusMinutes,
+        streakDays: streakStats.current,
+      }),
+    [dueCards.length, readingInProgress, todayFocusMinutes, streakStats.current]
+  );
 
   return (
-    <div className="max-w-md sm:max-w-xl mx-auto space-y-4 pb-1">
-      {/* Top Header Label & Title */}
-      <div className="flex items-center justify-between pt-1 px-1">
-        <div>
-          <p className="text-xs text-ceci-secondary font-medium lowercase tracking-wide">estudos</p>
-          <h1 className="font-display text-2xl sm:text-3xl text-ceci-primary font-bold mt-0.5 tracking-tight">
-            seu study corner
-          </h1>
-        </div>
-        <span className="w-8 h-8 rounded-full bg-surface-rose border border-ceci-border-brand flex items-center justify-center">
-          <Sparkles className="w-4 h-4 text-ceci-brand-strong" />
-        </span>
-      </div>
-
-      {/* HERO: ofensiva + pulso semanal */}
-      <div className="rounded-[24px] p-6 bg-surface-rose border border-ceci-border-brand shadow-sm relative overflow-hidden space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <span className="text-xs text-ceci-brand-strong font-semibold tracking-wide lowercase">
-              sua ofensiva de estudos
-            </span>
-            <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
-              tudo aqui nasce do que você anota: revisão, leitura e foco sempre conectados entre si ♡
-            </p>
+    <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-6 pb-1">
+      {/* ================================================================ */}
+      {/* 1. HERO — study corner + resumo real do dia                       */}
+      {/* ================================================================ */}
+      <section className="rounded-[26px] bg-gradient-to-br from-white to-surface-rose border border-ceci-border-subtle shadow-sm p-5 relative overflow-hidden">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-xs text-ceci-secondary font-medium lowercase tracking-wide">estudos</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-ceci-primary mt-0.5 tracking-tight font-display">
+              seu study corner
+            </h1>
           </div>
-          <span className="flex items-center gap-1 bg-white px-3 py-1.5 rounded-full border border-ceci-border-brand shrink-0">
+          <span className="flex items-center gap-1 bg-white/80 px-3 py-1.5 rounded-full border border-ceci-border-brand shrink-0">
             <Flame className={`w-4 h-4 ${streakStats.alive ? 'fill-rose-500 text-rose-500' : 'text-ceci-muted'}`} />
             <span className="text-xs font-bold text-ceci-brand-strong">
               {streakStats.current} {streakStats.current === 1 ? 'dia' : 'dias'}
-              {streakStats.alive ? ' 🔥' : ''}
             </span>
           </span>
         </div>
-
-        {/* Pulso semanal (seg–sex) */}
-        <div className="grid grid-cols-5 gap-1.5 pt-1">
-          {weekStudyDays.map((item) => (
-            <div
-              key={item.dateKey}
-              className={`p-2 rounded-[18px] border text-center flex flex-col items-center justify-between ${
-                item.status === 'done'
-                  ? 'bg-white border-ceci-border-brand'
-                  : item.status === 'today'
-                    ? 'bg-white border-rose-500 shadow-2xs'
-                    : 'bg-surface-subtle border-ceci-border-subtle'
-              }`}
-            >
-              <span className="text-[10px] font-medium lowercase text-ceci-secondary">{item.label}</span>
-              <span
-                className={`mt-1 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                  item.status === 'done'
-                    ? 'bg-rose-500 text-white'
-                    : item.status === 'today'
-                      ? 'border border-rose-500 text-rose-500'
-                      : 'bg-white border border-ceci-border-default text-ceci-tertiary'
-                }`}
-              >
-                {item.status === 'done' ? '✓' : item.status === 'today' ? 'hoje' : '·'}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        <div className="text-[11px] text-ceci-secondary">
-          {doneThisWeek} de {weekDaysTotal} dias úteis com estudo nesta semana
-          {streakStats.longest > 0 ? ` · recorde: ${streakStats.longest} dias` : ''}
-        </div>
-      </div>
-
-      {/* Stat Pills */}
-      <div className="grid grid-cols-3 gap-2">
-        <StatPill value={`${weekFocusMinutes} min`} label="de foco na semana" />
-        <StatPill value={`${dueCards.length}`} label="cartões hoje" />
-        <StatPill value={`${inProgressReadings.length}`} label="leituras abertas" />
-      </div>
-
-      {/* PORTAL: sessão de foco */}
-      <PortalCard
-        icon={<Timer className="w-5 h-5" />}
-        title="sessão de foco"
-        subtitle="timer em tela cheia, sem distrações"
-        bg="bg-surface-rose"
-        border="border-ceci-border-brand"
-        text="text-ceci-brand-strong"
-        onClick={() => openStudy('focus')}
-        badge={
-          <span className="text-[10px] font-semibold text-white bg-ceci-brand px-2.5 py-1 rounded-full">
-            bora focar
-          </span>
-        }
-      />
-
-      {/* STAT: onde seu tempo foi */}
-      {courseMinutes.length > 0 ? (
-        <DitherDonutChart
-          data={courseMinutes}
-          title="onde seu tempo foi"
-          subtitle="minutos de foco por área"
-          totalLabel="min no total"
-          formatValue={(n) => `${formatCount(n)} min`}
-          icon={<Timer className="w-4 h-4" />}
-        />
-      ) : (
-        <div className="rounded-[20px] p-4 bg-white border border-ceci-border-default shadow-sm space-y-2">
-          <p className="text-xs text-ceci-tertiary font-semibold tracking-wide lowercase">onde seu tempo foi</p>
-          <p className="text-xs text-ceci-secondary">
-            seus primeiros focos ainda vão pintar aqui. que tal começar com 25 minutinhos? ♡
-          </p>
-        </div>
-      )}
-
-      {/* Criar flashcard (botão avulso) */}
-      <button
-        onClick={() => openWizard('flashcard')}
-        className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-ceci-brand-strong bg-surface-rose border border-ceci-border-brand cursor-pointer"
-      >
-        <Plus className="w-4 h-4" /> novo flashcard
-      </button>
-
-      {/* PORTAL: revisar */}
-      <PortalCard
-        icon={<Brain className="w-5 h-5" />}
-        title="para revisar"
-        subtitle={
-          dueCards.length > 0
-            ? `${dueCards.length} ${dueCards.length === 1 ? 'cartão' : 'cartões'} esperando por você`
-            : 'tudo em dia por aqui, eita!'
-        }
-        bg="bg-surface-subtle"
-        border="border-ceci-border-subtle"
-        text="text-ceci-primary"
-        onClick={() => openStudy('revisar')}
-        badge={
-          dueCards.length > 0 ? (
-            <span className="text-[10px] font-bold text-ceci-primary bg-surface-rose px-2.5 py-1 rounded-full border border-ceci-border-brand">
-              {dueCards.length}
-            </span>
-          ) : undefined
-        }
-      />
-
-      {/* STAT: leituras */}
-      <div className="rounded-[20px] p-4 bg-white border border-ceci-border-default shadow-sm space-y-2">
-        <p className="text-xs text-ceci-tertiary font-semibold tracking-wide lowercase">leituras</p>
-        <div className="flex items-center justify-between">
-          <p className="text-xs text-ceci-primary">
-            <span className="font-semibold">{inProgressReadings.length} em andamento</span>
-            {doneReadings.length > 0 && (
-              <span className="text-ceci-secondary"> · {doneReadings.length} concluídas</span>
-            )}
-          </p>
-          {inProgressReadings.length > 0 && (
-            <span className="text-[10px] font-medium text-ceci-academic-strong bg-surface-blue px-2.5 py-1 rounded-full border border-ceci-border-academic">
-              {inProgressReadings[0].title}
-            </span>
+        <p className="text-xs sm:text-[13px] text-ceci-secondary leading-relaxed mt-2.5 max-w-[92%]">
+          {daySummary.length > 0 ? (
+            <>hoje: {daySummary.join(' · ')}. bora continuar? ♡</>
+          ) : (
+            <>nada pendente por aqui hoje — dia perfeito pra uma sessão de foco leve ♡</>
           )}
+        </p>
+        <Mascote
+          expression="focus-ready"
+          className="w-16 h-16 absolute -bottom-2 -right-2 opacity-95 pointer-events-none"
+          decorative
+        />
+      </section>
+
+      {/* Desktop (≥ lg): grade 12 colunas — esquerda: agora/leitura · direita: ritmo/portais/dica */}
+      <div className="lg:grid lg:grid-cols-12 lg:gap-6 lg:items-start">
+
+      {/* coluna esquerda */}
+      <div className="lg:col-span-7 space-y-6">
+
+      {/* ================================================================ */}
+      {/* 2. PRA AGORA — foco + revisão                                     */}
+      {/* ================================================================ */}
+      <section className="space-y-3 px-0.5">
+        <SectionTitle icon={<Clock className="w-4 h-4 text-ceci-brand-strong" />}>
+          pra agora
+        </SectionTitle>
+        <div className="grid grid-cols-2 gap-3 pt-3">
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={() => openStudy('focus')}
+            className="bg-ceci-primary hover:bg-ceci-ink text-white rounded-[24px] p-5 text-left tap-interactive cursor-pointer space-y-2 shadow-sm min-h-[110px]"
+          >
+            <Brain className="w-6 h-6 text-rose-200" />
+            <p className="text-base font-bold font-display">bora focar?</p>
+            <p className="text-[11px] text-white/70">
+              {weekFocusMinutes > 0
+                ? `${weekFocusMinutes} min nesta semana`
+                : 'timer em tela cheia, sem distrações'}
+            </p>
+          </motion.button>
+
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={() => openStudy('revisar')}
+            className="bg-white hover:border-ceci-border-brand rounded-[24px] p-5 text-left border border-ceci-border-default tap-interactive cursor-pointer space-y-2 shadow-sm min-h-[110px]"
+          >
+            <Sparkles className="w-6 h-6 text-ceci-brand-strong" />
+            <div className="flex items-center gap-2">
+              <p className="text-base font-bold font-display text-ceci-primary">revisar</p>
+              {dueCards.length > 0 && (
+                <span className="text-[10px] font-bold text-ceci-brand-strong bg-surface-rose px-2 py-0.5 rounded-full border border-ceci-border-brand">
+                  {dueCards.length}
+                </span>
+              )}
+            </div>
+            <p className="text-[11px] text-ceci-secondary truncate">
+              {nextDueCard
+                ? `${nextDueCourse?.name ?? 'geral'} · volta em ${intervalFor(nextDueCard.timesReviewed)}d`
+                : dueCards.length === 0 && flashcards.length > 0
+                  ? 'cartões em dia ♡'
+                  : 'crie seu primeiro cartão'}
+            </p>
+          </motion.button>
         </div>
-      </div>
+      </section>
 
-      {/* PORTAL: leituras */}
-      <PortalCard
-        icon={<BookOpen className="w-5 h-5" />}
-        title="leituras"
-        subtitle={
-          inProgressReadings[0]
-            ? `continue "${inProgressReadings[0].title}"`
-            : 'adicione um livro ou artigo pra começar'
-        }
-        bg="bg-surface-blue"
-        border="border-ceci-border-academic"
-        text="text-ceci-academic-strong"
-        onClick={() => openStudy('leituras')}
-      />
-
-      {/* PORTAL: quizzes */}
-      <PortalCard
-        icon={<HelpCircle className="w-5 h-5" />}
-        title="quiz de questões"
-        subtitle={`${questions.length} questões no acervo, por área, tema e escola`}
-        bg="bg-surface-rose"
-        border="border-ceci-border-brand"
-        text="text-ceci-brand-strong"
-        onClick={() => openQuizCategory()}
-        badge={
-          <span className="text-[10px] font-semibold text-white bg-ceci-brand px-2.5 py-1 rounded-full">
-            treinar
-          </span>
-        }
-      />
-
-      {/* STAT: sparkline de quizzes */}
-      {quizSessions.length > 0 && (
-        <div className="rounded-[20px] p-4 bg-white border border-ceci-border-default shadow-sm space-y-2">
-          <div className="flex items-center justify-between">
-            <p className="text-xs text-ceci-tertiary font-semibold tracking-wide lowercase">seus quizzes</p>
-            <span className="text-xs font-bold text-ceci-academic-strong bg-surface-blue px-2.5 py-1 rounded-full border border-ceci-border-academic">
-              média {avgQuizScore}%
-            </span>
+      {/* ================================================================ */}
+      {/* 3. LEITURA EM ANDAMENTO — card real com progresso                 */}
+      {/* ================================================================ */}
+      <section className="space-y-3 px-0.5">
+        <SectionTitle icon={<BookOpen className="w-4 h-4 text-ceci-academic-strong" />}>
+          leitura
+        </SectionTitle>
+        <motion.button
+          whileTap={{ scale: 0.98 }}
+          onClick={() => openStudy('leituras')}
+          className={`w-full rounded-[24px] p-5 border shadow-sm cursor-pointer text-left space-y-3 tap-interactive ${
+            readingInProgress
+              ? 'bg-white border-ceci-border-default hover:border-ceci-border-academic'
+              : 'bg-surface-subtle border-dashed border-ceci-border-default hover:border-ceci-border-academic'
+          }`}
+        >
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <span className="w-10 h-10 rounded-2xl bg-surface-blue border border-ceci-border-academic flex items-center justify-center shrink-0">
+                <BookOpen className="w-5 h-5 text-ceci-academic-strong" />
+              </span>
+              <div className="min-w-0">
+                <h3 className="font-semibold text-sm text-ceci-primary leading-snug line-clamp-1">
+                  {readingInProgress ? readingInProgress.title : 'nenhuma leitura em andamento'}
+                </h3>
+                <p className="text-[11px] text-ceci-secondary mt-0.5 truncate">
+                  {readingInProgress
+                    ? `${readingInProgress.author} · ${readingInProgress.readPages || 0} de ${readingInProgress.totalPages} páginas`
+                    : 'que tal começar um livro ou artigo?'}
+                </p>
+              </div>
+            </div>
+            {readingInProgress && (
+              <span className="text-xs font-bold text-ceci-academic-strong shrink-0">{readingPct}%</span>
+            )}
           </div>
-          <div className="flex items-center gap-3">
-            <div className="flex-1">
-              <WeekSparkline
-                counts={quizSessions
-                  .slice(-7)
-                  .map((q) => q.scorePct)}
-                max={100}
+          {readingInProgress?.totalPages ? (
+            <div className="w-full h-2 bg-surface-muted border border-ceci-border-subtle rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-ceci-brand to-ceci-brand-strong rounded-full transition-all"
+                style={{ width: `${readingPct}%` }}
               />
             </div>
-            <div className="text-right shrink-0">
-              <p className="font-display font-bold text-lg text-ceci-primary">{totalQuizCount}</p>
-              <p className="text-[10px] text-ceci-secondary">{totalQuizCount === 1 ? 'quiz feito' : 'quizzes feitos'}</p>
+          ) : null}
+        </motion.button>
+      </section>
+
+      </div>
+
+      {/* coluna direita */}
+      <div className="lg:col-span-5 space-y-6">
+
+      {/* ================================================================ */}
+      {/* 4. SEU RITMO — semana visual → abre o histórico                   */}
+      {/* ================================================================ */}
+      <section className="px-0.5 pt-5 lg:pt-0">
+        <motion.button
+          whileTap={{ scale: 0.98 }}
+          onClick={() => openStudy('historico')}
+          aria-label="ver seu histórico e estatísticas de estudo"
+          className="w-full bg-white rounded-[22px] p-5 border border-ceci-border-default hover:border-ceci-border-brand shadow-sm cursor-pointer space-y-4 tap-interactive text-left"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Activity className="w-4 h-4 text-rose-500" />
+              <h2 className="text-xs font-bold text-ceci-primary font-display uppercase tracking-wider">
+                seu ritmo
+              </h2>
             </div>
+            <span className="text-[11px] text-ceci-secondary flex items-center gap-1">
+              recorde: {streakStats.longest > 0 ? streakStats.longest : '—'}
+              <ChevronRight className="w-3.5 h-3.5" />
+            </span>
           </div>
+
+          <div className="flex items-center justify-between gap-1.5">
+            {currentWeekProgress.map((cell) => (
+              <div key={cell.dateKey} className="flex flex-col items-center gap-1 flex-1">
+                <span
+                  className={`w-full max-w-[34px] aspect-square rounded-xl border flex items-center justify-center text-[11px] font-bold ${WEEK_CELL_STYLE[cell.status]}`}
+                >
+                  {cell.active ? '✓' : cell.label.slice(0, 1).toUpperCase()}
+                </span>
+                <span className={`text-[10px] font-semibold ${
+                  cell.status === 'today' ? 'text-ceci-brand-strong' : 'text-ceci-muted'
+                }`}>
+                  {cell.label.slice(0, 3)}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-xs text-ceci-secondary flex items-center gap-1.5 border-t border-ceci-border-subtle pt-3.5 -mb-0.5">
+            <Flame className={`w-4 h-4 shrink-0 ${streakStats.alive ? 'fill-rose-500 text-rose-500' : 'text-ceci-muted'}`} />
+            <span>
+              sequência de {streakStats.current} {streakStats.current === 1 ? 'dia' : 'dias'}
+              {streakStats.alive ? ' — bora manter! 🔥' : ' — hoje é um bom dia para recomeçar ♡'}
+            </span>
+          </p>
+        </motion.button>
+      </section>
+
+      {/* ================================================================ */}
+      {/* 5. PORTAIS SECUNDÁRIOS — quiz + tcc                               */}
+      {/* ================================================================ */}
+      <section className="space-y-3 px-0.5 lg:pt-0 pt-5">
+        <SectionTitle icon={<HelpCircle className="w-4 h-4 text-ceci-academic-strong" />}>
+          treinar & concluir
+        </SectionTitle>
+        <div className="grid grid-cols-2 gap-3 pt-3">
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={() => openQuizCategory()}
+            className="bg-surface-subtle hover:border-ceci-border-academic rounded-[24px] p-4 text-left border border-ceci-border-subtle tap-interactive cursor-pointer space-y-1.5 min-h-[96px]"
+          >
+            <HelpCircle className="w-5 h-5 text-ceci-academic-strong" />
+            <p className="text-sm font-bold font-display text-ceci-primary">quiz de questões</p>
+            <p className="text-[11px] text-ceci-secondary">{questions.length} questões no acervo</p>
+          </motion.button>
+
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={openTccScreen}
+            className="bg-surface-subtle hover:border-ceci-border-brand rounded-[24px] p-4 text-left border border-ceci-border-subtle tap-interactive cursor-pointer space-y-1.5 min-h-[96px]"
+          >
+            <GraduationCap className="w-5 h-5 text-ceci-brand-strong" />
+            <p className="text-sm font-bold font-display text-ceci-primary">meu tcc</p>
+            <p className="text-[11px] text-ceci-secondary">{tccPct}% dos capítulos</p>
+          </motion.button>
         </div>
-      )}
 
-      {/* PORTAL: histórico */}
-      <PortalCard
-        icon={<History className="w-5 h-5" />}
-        title="histórico"
-        subtitle="tudo que você já estudou por aqui"
-        bg="bg-surface-subtle"
-        border="border-ceci-border-subtle"
-        text="text-ceci-primary"
-        onClick={() => openStudy('historico')}
-      />
+        <button
+          onClick={() => openWizard('flashcard')}
+          className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-2xl text-xs font-semibold text-ceci-brand-strong bg-white border border-dashed border-ceci-border-default hover:border-ceci-border-brand cursor-pointer"
+        >
+          <Plus className="w-4 h-4" /> novo flashcard
+        </button>
+      </section>
 
-      <div className="rounded-[20px] p-4 bg-surface-subtle border border-ceci-border-subtle flex items-center gap-3">
-        <Target className="w-5 h-5 text-ceci-brand-strong shrink-0" />
-        <p className="text-xs text-ceci-secondary leading-relaxed">
-          dica da ceci: começa pelos cartões rápidos, depois uma leitura leve e termina com um quiz pra fixar ♡
-        </p>
+      {/* ================================================================ */}
+      {/* 6. DICA DO CECINHO                                                */}
+      {/* ================================================================ */}
+      <div className="p-4 rounded-[22px] bg-white border border-ceci-border-subtle shadow-sm flex items-center gap-3 px-0.5 lg:px-4">
+        <Mascote expression="celebrate-small" className="w-12 h-12 shrink-0 ml-0.5 lg:ml-0" decorative />
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 text-xs font-semibold text-ceci-primary font-display">
+            <Sparkles className="w-4 h-4 text-rose-500" />
+            <span>dica do cecinho ✨</span>
+          </div>
+          <p className="text-xs text-ceci-secondary leading-relaxed mt-0.5">
+            {cecinhoTip}
+          </p>
+        </div>
+      </div>
+
+      </div>
       </div>
     </div>
   );
 };
+
+export default EstudosView;

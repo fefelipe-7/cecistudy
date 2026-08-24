@@ -1,0 +1,28 @@
+{
+  "cecistudy_courses": [
+    {
+      "id": "c1",
+      "name": "Psicopatologia I",
+      "professor": "Ana",
+      "semester": "6º semestre",
+      "schedule": "seg 9h",
+      "color": "#FFD3DD",
+      "icon": "Brain",
+      "progress": 40
+    }
+  ],
+  "cecistudy_tasks": [
+    { "id": "t1", "title": "ler cap 2", "completed": false, "priority": "media", "category": "leitura" }
+  ],
+  "cecistudy_profile": {
+    "name": "Ceci",
+    "semester": 6,
+    "totalSemesters": 8,
+    "university": "UFRJ",
+    "targetCareer": "clínica",
+    "dailyQuote": "com leveza",
+    "stickersCollected": 3,
+    "photoUrl": ""
+  },
+  "cecistudy_nao_dominio": "ignorado"
+}

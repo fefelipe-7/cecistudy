@@ -39,6 +39,7 @@ export function demoDatabase(): EmptyDatabase {
     flashcards: initialFlashcards,
     materials: initialMaterials,
     internshipLogs: initialInternshipLogs,
+    supervision: [],
     tcc: initialTcc,
     stickers: initialStickers,
     sessions: initialStudySessions,
@@ -50,6 +51,7 @@ export function demoDatabase(): EmptyDatabase {
     questions: [],
     techniques: [],
     onboarding: { completed: false },
+    quizSessions: [],
     readingProgress: {},
   };
 }

@@ -55,4 +55,70 @@ describe('Modal', () => {
     fireEvent.click(panel!);
     expect(onClose).not.toHaveBeenCalled();
   });
+
+  it('replica labelledBy em aria-labelledby no diálogo', () => {
+    render(
+      <Modal open onClose={() => {}} labelledBy="titulo-modal">
+        <h2 id="titulo-modal">título</h2>
+        <p>conteúdo</p>
+      </Modal>
+    );
+    expect(screen.getByRole('dialog')).toHaveAttribute('aria-labelledby', 'titulo-modal');
+  });
+
+  it('move o foco para o painel ao abrir e devolve ao disparador ao fechar', () => {
+    const { rerender } = render(
+      <>
+        <button>abrir modal</button>
+        <Modal open={false} onClose={() => {}}>
+          <button>dentro</button>
+        </Modal>
+      </>
+    );
+    const trigger = screen.getByText('abrir modal');
+    trigger.focus();
+    expect(document.activeElement).toBe(trigger);
+
+    rerender(
+      <>
+        <button>abrir modal</button>
+        <Modal open onClose={() => {}}>
+          <button>dentro</button>
+        </Modal>
+      </>
+    );
+    const panel = screen.getByRole('dialog').querySelector('.relative') as HTMLElement;
+    expect(document.activeElement).toBe(panel);
+
+    rerender(
+      <>
+        <button>abrir modal</button>
+        <Modal open={false} onClose={() => {}}>
+          <button>dentro</button>
+        </Modal>
+      </>
+    );
+    expect(document.activeElement).toBe(trigger);
+  });
+
+  it('focus trap: Tab cicla dentro do painel sem escapar', () => {
+    render(
+      <Modal open onClose={() => {}}>
+        <div>
+          <button>primeiro</button>
+          <button>último</button>
+        </div>
+      </Modal>
+    );
+    const first = screen.getByText('primeiro');
+    const last = screen.getByText('último');
+
+    last.focus();
+    fireEvent.keyDown(document, { key: 'Tab', shiftKey: false });
+    expect(document.activeElement).toBe(first);
+
+    first.focus();
+    fireEvent.keyDown(document, { key: 'Tab', shiftKey: true });
+    expect(document.activeElement).toBe(last);
+  });
 });
