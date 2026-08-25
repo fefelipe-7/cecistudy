@@ -37,6 +37,7 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "createUpdaterArtifacts": true,
     "category": "Education",
     "shortDescription": "cantinho acadêmico de psicologia",
     "longDescription": "cecistudy ♡ — organizador acadêmico de Psicologia: aulas, provas, estudos, biblioteca e jornada até virar psicóloga.",
