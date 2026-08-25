@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "multiple_choice",
+      "name": "Múltipla escolha"
+    },
+    {
+      "id": "true_false",
+      "name": "Certo ou errado"
+    }
+  ]
+}

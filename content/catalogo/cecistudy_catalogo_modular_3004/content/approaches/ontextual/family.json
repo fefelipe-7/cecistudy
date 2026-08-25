@@ -1,0 +1,10 @@
+{
+  "id": "family-contextual",
+  "name": "Contextuais e aplicadas",
+  "status": "published",
+  "approachIds": [
+    "app-psicologia-escolar-e-educacional",
+    "app-psicologia-organizacional-e-do-trabalho",
+    "app-psicologia-social-e-comunitaria"
+  ]
+}

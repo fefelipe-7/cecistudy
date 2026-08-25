@@ -29,12 +29,8 @@ export const StreakView: React.FC = () => {
 
   return (
     <div className="space-y-5">
-      {/* Hero: a chama */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="rounded-[28px] p-6 bg-surface-rose border border-ceci-border-brand shadow-floating text-center space-y-4"
-      >
+      {/* Hero: a chama (sem entrada própria — a shell cuida da transição de tela) */}
+      <div className="rounded-[28px] p-6 bg-surface-rose border border-ceci-border-brand shadow-floating text-center space-y-4">
         <motion.div
           animate={streakStats.alive ? { scale: [1, 1.08, 1] } : undefined}
           transition={{ duration: 1.6, repeat: Infinity, repeatType: 'reverse' }}
@@ -109,7 +105,7 @@ export const StreakView: React.FC = () => {
             </p>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Sua semana */}
       <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">

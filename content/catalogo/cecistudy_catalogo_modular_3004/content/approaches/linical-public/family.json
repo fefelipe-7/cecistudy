@@ -1,0 +1,11 @@
+{
+  "id": "family-clinical-public",
+  "name": "Clínicas, direitos e políticas públicas",
+  "status": "published",
+  "approachIds": [
+    "app-psicologia-juridica-e-forense",
+    "app-psicologia-da-saude-e-politicas-publicas",
+    "app-psicopatologia-e-clinica",
+    "app-etica-direitos-humanos-e-regulamentacao"
+  ]
+}

@@ -33,7 +33,6 @@ function makeSnapshot(overrides: Partial<PersistedStateSnapshot> = {}): Persiste
         schedule: [{ day: 1, start: '09:00' }],
         color: '#FFD3DD',
         icon: 'Brain',
-        progress: 40,
       },
     ],
     classes: [
@@ -104,6 +103,7 @@ function makeSnapshot(overrides: Partial<PersistedStateSnapshot> = {}): Persiste
       },
     ],
     onboarding: { completed: true, completedAt: '2026-08-01', loadedDemo: true },
+    syncIndex: { stamps: {}, records: {}, tombstones: {} },
     ...overrides,
   };
 }
@@ -222,7 +222,7 @@ describe('validação de backup v2 (P2-1)', () => {
     expect(importAppDatabase(JSON.stringify(bad))).toBeNull();
   });
 
-  it('rejeita entidade com campos obrigatórios ausentes (course sem progress)', async () => {
+  it('rejeita entidade com campos obrigatórios ausentes (course sem cor)', async () => {
     const payload = await buildBackupPayload(makeSnapshot());
     const bad = {
       ...payload,

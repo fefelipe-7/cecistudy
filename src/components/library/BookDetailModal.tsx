@@ -17,6 +17,9 @@ interface BookDetailModalProps {
 
 const QUICK_STEPS = [5, 10, 25];
 
+const chip =
+  'text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-surface-muted text-ceci-secondary border border-ceci-border-subtle shadow-2xs';
+
 export const BookDetailModal: React.FC<BookDetailModalProps> = ({
   book,
   isSaved,
@@ -34,72 +37,77 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
   const step = (delta: number) => onUpdateProgress(Math.min(Math.max(clamped + delta, 0), maxPages));
 
   const stepperBtn =
-    'w-11 h-11 rounded-2xl border border-ceci-border-default bg-white text-ceci-primary font-bold flex items-center justify-center transition-all active:scale-90 tap-interactive cursor-pointer disabled:opacity-35 disabled:pointer-events-none';
+    'w-11 h-11 rounded-full border border-ceci-border-default bg-white text-ceci-primary flex items-center justify-center transition-all active:scale-90 tap-interactive cursor-pointer disabled:opacity-35 disabled:pointer-events-none';
 
   return (
     <Modal
       open
       onClose={onClose}
-      className="w-full max-w-sm bg-white rounded-[28px] border border-ceci-border-default shadow-2xl overflow-hidden text-ceci-primary space-y-4"
+      className="w-full max-w-sm bg-white rounded-[28px] border border-ceci-border-default shadow-2xl overflow-hidden text-ceci-primary flex flex-col max-h-[85dvh]"
     >
-      {/* Cover Preview Header */}
+      {/* Hero da capa */}
       <div
-        className="p-6 text-center relative flex flex-col items-center justify-center space-y-2"
-        style={{ backgroundColor: book.coverColor }}
+        className="relative shrink-0 pt-7"
+        style={{
+          backgroundColor: book.coverColor,
+          backgroundImage: 'linear-gradient(to bottom, rgba(255,255,255,0.28), rgba(0,0,0,0.08))',
+        }}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/80 hover:bg-white text-ceci-primary flex items-center justify-center cursor-pointer shadow-2xs tap-interactive"
+          className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-ceci-primary flex items-center justify-center cursor-pointer shadow-2xs tap-interactive"
           aria-label="fechar livro"
         >
           <X className="w-4 h-4" />
         </button>
 
-        {/* Mini Book Cover Card */}
-        <div className="w-24 h-32 rounded-xl p-3 bg-white/90 shadow-lg border border-black/10 flex flex-col justify-between text-left relative">
-          <div className="absolute left-0 top-0 bottom-0 w-2 bg-black/10 rounded-l-xl" />
-          <span className="pl-1 text-[8px] font-bold uppercase text-ceci-tertiary">
-            {book.badge || 'livro'}
-          </span>
-          <p className="pl-1 font-display font-bold text-xs leading-tight text-ceci-primary line-clamp-3">
-            {book.title}
-          </p>
-          <p className="pl-1 text-[9px] text-ceci-secondary line-clamp-1">
-            {book.author}
-          </p>
+        {/* Capa sobrepondo a fronteira com o corpo */}
+        <div className="relative flex justify-center">
+          <div className="relative z-10 w-28 h-40 -mb-16 rounded-r-xl rounded-l-md p-3 bg-white/95 shadow-lg border border-black/10 flex flex-col justify-between text-left -rotate-2 transition-transform duration-300">
+            <div className="absolute left-0 top-0 bottom-0 w-2.5 bg-black/10 rounded-l-md border-r border-black/5" />
+            <span className="pl-1.5 text-[8px] font-bold uppercase tracking-wider text-ceci-tertiary">
+              {book.badge || 'livro'}
+            </span>
+            <p className="pl-1.5 font-display font-bold text-xs leading-tight text-ceci-primary line-clamp-4">
+              {book.title}
+            </p>
+            <p className="pl-1.5 text-[9px] text-ceci-secondary line-clamp-1">
+              {book.author}
+            </p>
+          </div>
         </div>
-
-        <span className="text-[10px] font-bold uppercase tracking-wider bg-white/90 text-ceci-primary px-2.5 py-0.5 rounded-full shadow-2xs">
-          {book.courseName || 'psicologia'}
-        </span>
       </div>
 
-      {/* Modal Content */}
-      <div className="px-6 space-y-4 pb-6">
-        <div>
-          <h3 className="font-display font-bold text-lg text-ceci-primary leading-tight">
+      {/* Corpo rolável */}
+      <div className="px-6 pt-[72px] pb-4 space-y-4 flex-1 min-h-0 overflow-y-auto overscroll-contain">
+        <div className="text-center">
+          <h3 className="font-display font-bold text-lg text-ceci-primary leading-snug">
             {book.title}
           </h3>
           <p className="text-xs text-ceci-tertiary mt-0.5 font-medium">por {book.author}</p>
         </div>
 
-        {/* Bonequinha apaixonada — companhia na leitura */}
-        <div className="flex justify-center -my-1">
-          <Mascote expression="library-shelf" className="w-14 h-14" decorative />
+        <div className="flex items-center justify-center gap-2 flex-wrap">
+          <span className={chip}>{book.badge || 'livro'}</span>
+          <span className={cn(chip, 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand')}>
+            {book.courseName || 'psicologia'}
+          </span>
         </div>
 
-        {/* Páginas lidas — seletor */}
-        <div className="p-3.5 rounded-2xl bg-surface-muted border border-ceci-border-default space-y-2.5">
-          <div className="flex items-center justify-between">
+        {/* Progresso compacto */}
+        <div className="rounded-2xl bg-surface-muted p-3.5 space-y-2.5">
+          <div className="flex items-baseline justify-between">
             <span className="text-[11px] font-bold text-ceci-tertiary lowercase">
-              páginas lidas
+              seu progresso
             </span>
-            <span className="text-xs font-bold text-ceci-brand-strong">
-              {book.totalPages ? `${clamped} / ${book.totalPages}` : `${clamped} págs`}
+            <span className="text-[11px] font-bold text-ceci-brand-strong tabular-nums">
+              {book.totalPages
+                ? `${clamped} de ${book.totalPages} págs · ${progressPercent}%`
+                : `${clamped} págs`}
             </span>
           </div>
 
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => step(-1)}
               disabled={clamped <= 0}
@@ -109,13 +117,19 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
               <Minus className="w-4 h-4" />
             </button>
 
-            <div className="flex flex-col items-center w-16">
-              <span className="font-display font-bold text-2xl text-ceci-primary tabular-nums">
-                {clamped}
-              </span>
-              <span className="text-[9px] text-ceci-tertiary">
-                {book.totalPages ? `de ${book.totalPages} págs` : 'páginas'}
-              </span>
+            <div className="flex-1 min-w-0">
+              {book.totalPages ? (
+                <div className="w-full bg-ceci-border-default h-2 rounded-full overflow-hidden">
+                  <div
+                    className={cn('h-full rounded-full transition-all duration-300', clamped > 0 ? 'bg-ceci-brand-strong' : '')}
+                    style={{ width: `${progressPercent}%` }}
+                  />
+                </div>
+              ) : (
+                <p className="text-xs text-ceci-secondary font-medium text-center">
+                  quantas páginas você já leu?
+                </p>
+              )}
             </div>
 
             <button
@@ -128,63 +142,63 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
             </button>
           </div>
 
-          {/* Atalhos rápidos p/ contar */}
           <div className="flex items-center justify-center gap-2">
             {QUICK_STEPS.map((n) => (
               <button
                 key={n}
                 onClick={() => step(n)}
                 disabled={book.totalPages !== undefined && clamped >= book.totalPages}
-                className="px-3 py-1.5 rounded-full border border-ceci-border-default bg-white text-ceci-secondary text-[11px] font-semibold hover:bg-surface-rose hover:text-ceci-brand-strong hover:border-ceci-border-brand transition-colors tap-interactive cursor-pointer disabled:opacity-35 disabled:pointer-events-none"
+                className="px-3 py-1 rounded-full bg-white border border-ceci-border-subtle text-ceci-secondary text-[11px] font-semibold hover:bg-surface-rose hover:text-ceci-brand-strong hover:border-ceci-border-brand transition-colors tap-interactive cursor-pointer disabled:opacity-35 disabled:pointer-events-none"
               >
                 +{n}
               </button>
             ))}
           </div>
-
-          {book.totalPages && (
-            <div className="w-full bg-ceci-border-default h-2 rounded-full overflow-hidden pt-0">
-              <div
-                className={cn('h-full rounded-full transition-all duration-300', clamped > 0 ? 'bg-ceci-brand-strong' : '')}
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
-          )}
         </div>
 
-        {/* Book Description */}
+        {/* Resumo da obra — com scroll próprio */}
         <div className="space-y-1">
           <span className="text-[11px] font-bold text-ceci-tertiary lowercase">resumo da obra</span>
-          <p className="text-xs text-ceci-secondary leading-relaxed bg-surface-muted p-3 rounded-2xl border border-ceci-border-subtle">
-            {book.description}
-          </p>
+          <div className="max-h-40 overflow-y-auto overscroll-contain bg-surface-muted p-3.5 rounded-2xl">
+            <p className="text-xs text-ceci-secondary leading-relaxed">
+              {book.description}
+            </p>
+          </div>
         </div>
 
-        {/* Quote Highlight */}
+        {/* Citação como pull-quote, com companhia do cecinho */}
         {book.quote && (
-          <div className="p-3 rounded-2xl bg-surface-rose border-l-4 border-rose-500 text-xs italic text-beige-700">
-            "{book.quote}"
+          <div className="flex items-start gap-3 rounded-2xl bg-surface-rose p-4">
+            <Mascote expression="library-shelf" className="w-10 h-10 shrink-0" decorative />
+            <div className="min-w-0">
+              <p className="font-serif-academic italic text-sm text-beige-700 leading-relaxed">
+                "{book.quote}"
+              </p>
+              <p className="text-[10px] text-ceci-tertiary mt-1.5 lowercase">
+                te acompanho nessa leitura ♡
+              </p>
+            </div>
           </div>
         )}
+      </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-center gap-2 pt-2">
-          <BookmarkToggle
-            active={isSaved}
-            onToggle={onToggleSave}
-            size="md"
-            label="guardar livro"
-            activeLabel="remover livro dos salvos"
-            ariaLabel={isSaved ? 'remover livro dos salvos' : 'guardar livro'}
-          />
+      {/* Rodapé fixo — sempre visível */}
+      <div className="shrink-0 flex items-center gap-2 px-6 py-4 border-t border-ceci-border-subtle bg-white">
+        <BookmarkToggle
+          active={isSaved}
+          onToggle={onToggleSave}
+          size="md"
+          label="guardar livro"
+          activeLabel="remover livro dos salvos"
+          ariaLabel={isSaved ? 'remover livro dos salvos' : 'guardar livro'}
+        />
 
-          <button
-            onClick={onClose}
-            className="flex-1 bg-ceci-primary hover:bg-ceci-primary-hover text-white py-2.5 rounded-2xl text-xs font-semibold flex items-center justify-center gap-2 shadow-2xs transition-transform active:scale-98 cursor-pointer min-h-[44px]"
-          >
-            voltar para a biblioteca
-          </button>
-        </div>
+        <button
+          onClick={onClose}
+          className="flex-1 bg-ceci-primary hover:bg-ceci-primary-hover text-white py-2.5 rounded-2xl text-xs font-semibold flex items-center justify-center gap-2 shadow-2xs transition-transform active:scale-98 cursor-pointer min-h-[44px]"
+        >
+          voltar para a biblioteca
+        </button>
       </div>
     </Modal>
   );

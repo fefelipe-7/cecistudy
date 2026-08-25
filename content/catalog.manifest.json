@@ -1,0 +1,29 @@
+{
+  "format": "cecistudy-techniques-content",
+  "schemaVersion": 1,
+  "catalogRelease": "2026.08.0",
+  "generatedAt": "2026-08-20T19:40:41.380316+00:00",
+  "counts": {
+    "categories": 10,
+    "nominalPositions": 142,
+    "canonicalTechniques": 135,
+    "sources": 15,
+    "techniqueApproachRelations": 407,
+    "techniqueSourceRelations": 256
+  },
+  "scopeFiles": [
+    "cecistudy_pesquisa_tecnicas_escopo.json"
+  ],
+  "paths": {
+    "categories": "content/techniques/**/category.json",
+    "techniques": "content/techniques/**/tec-*.json",
+    "sources": "content/sources/src-*.json",
+    "relations": "content/relations/*.json",
+    "schemas": "content/schemas/*.schema.json"
+  },
+  "notes": [
+    "A lista nominal tem 142 posições; a meta aproximada do documento era 122.",
+    "Duplicidades entre categorias foram normalizadas por canonicalKey e preservadas em dominioIds.",
+    "Relações com abordagem usam IDs estáveis compatíveis com o catálogo anterior; relações com modelo ficam reservadas até o catálogo de modelos ser definido."
+  ]
+}

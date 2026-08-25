@@ -1,0 +1,16 @@
+{
+  "id": "cat-psicologia-cognitiva-e-tcc",
+  "slug": "psicologia-cognitiva-e-tcc",
+  "title": "Psicologia Cognitiva e TCC",
+  "displayOrder": 13,
+  "questionCount": 154,
+  "approachIds": [
+    "app-psicologia-cognitiva-e-tcc"
+  ],
+  "groupCount": 2,
+  "status": "published",
+  "allowedFormats": [
+    "multiple_choice",
+    "true_false"
+  ]
+}

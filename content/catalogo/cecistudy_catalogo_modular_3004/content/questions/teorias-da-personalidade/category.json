@@ -1,0 +1,16 @@
+{
+  "id": "cat-teorias-da-personalidade",
+  "slug": "teorias-da-personalidade",
+  "title": "Teorias da Personalidade",
+  "displayOrder": 6,
+  "questionCount": 157,
+  "approachIds": [
+    "app-teorias-da-personalidade"
+  ],
+  "groupCount": 3,
+  "status": "published",
+  "allowedFormats": [
+    "multiple_choice",
+    "true_false"
+  ]
+}

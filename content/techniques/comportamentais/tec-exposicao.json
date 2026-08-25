@@ -1,0 +1,65 @@
+{
+  "id": "tec-exposicao",
+  "nome": "Exposição",
+  "canonicalKey": "exposicao",
+  "emUmaFrase": "Exposição é uma prática clínica ou recurso de estudo usado para trabalhar aprendizagem por consequências, exposição a contingências e construção de repertórios.",
+  "definicao": "Exposição é uma prática clínica ou recurso de estudo usado para trabalhar aprendizagem por consequências, exposição a contingências e construção de repertórios. Em sentido técnico, sua definição deve ser vinculada ao tipo de tarefa, atitude ou processo que organiza a sessão, e não apenas ao nome da escola.",
+  "objetivo": "Utilizar exposição para apoiar objetivos clínicos definidos colaborativamente, sempre considerando a formulação do caso, a preferência da pessoa e o contexto.",
+  "comoFunciona": "O mecanismo proposto depende da categoria: aprendizagem por consequências, exposição a contingências e construção de repertórios. No caso de exposição, o terapeuta deve explicitar qual aprendizagem ou processo está sendo buscado e como será observado.",
+  "quandoEUtilizada": "Pode ser considerada quando a formulação clínica indicar que exposição é compatível com o problema, os objetivos, a fase do tratamento, a capacidade de participação e as preferências da pessoa. Não é uma indicação universal.",
+  "comoEAplicada": "O uso de exposição começa com explicação e acordo sobre o objetivo, segue com aplicação graduada e observação da resposta, e termina com integração da aprendizagem e planejamento de continuidade. O foco é descrever o comportamento, seus antecedentes e consequências, sem reduzir a pessoa ao comportamento-alvo.",
+  "origem": "Deriva da análise experimental do comportamento, da teoria da aprendizagem e da tradução clínica de princípios de contingência, reforço, extinção e exposição.",
+  "desenvolvimentoHistorico": "No desenvolvimento histórico, exposição passou de uma prática situada em determinadas escolas a um recurso que pode ser adaptado ou questionado em outros modelos. A migração entre abordagens deve preservar contexto, finalidade e limites.",
+  "exemploPratico": "Em um exemplo didático, o terapeuta apresenta exposição a uma pessoa com uma dificuldade previamente formulada, combina um pequeno exercício, observa o que ocorre e pergunta o que foi aprendido, sem tratar o exemplo como protocolo universal.",
+  "fundamentacaoTeorica": "A fundamentação editorial desta técnica é organizada pela categoria “comportamentais”: aprendizagem por consequências, exposição a contingências e construção de repertórios. A fonte deve ser lida para distinguir descrição histórica, hipótese de mecanismo e evidência de resultado.",
+  "evidencias": "A evidência comportamental é forte para alguns procedimentos e indicações, especialmente quando o alvo, a função e o resultado são definidos operacionalmente. A eficácia varia por problema, dose, adesão, contexto e qualidade de implementação; não se deve generalizar o suporte de uma intervenção para todas as práticas listadas na categoria.",
+  "limitacoes": "Riscos incluem metas impostas, foco estreito no comportamento, uso inadequado de reforço/punição e baixa generalização. É necessário consentimento, validade social e monitoramento de efeitos adversos.",
+  "contextoClinico": "Pode aparecer em terapias comportamentais, TCC e intervenções baseadas em análise funcional, mas a mesma técnica também pode atravessar outras escolas quando seu objetivo e sua função clínica forem preservados.",
+  "observacoes": "Classificação interna: intervencao. O nome pode designar técnica, procedimento, habilidade, atitude ou processo conforme o modelo; o registro separa o tipo para evitar equivalências artificiais.",
+  "tipoTecnica": "intervencao",
+  "classificacaoEstatuto": "recurso clínico estudado em contexto de abordagem; o estatuto específico pode ser técnica, procedimento, habilidade, estratégia, exercício ou atitude terapêutica.",
+  "slug": "exposicao",
+  "dominioId": "domain-comportamentais",
+  "dominioIds": [
+    "domain-comportamentais"
+  ],
+  "dominioNomes": [
+    "Técnicas Comportamentais"
+  ],
+  "ordemExibicao": 26,
+  "posicoesNominais": [
+    {
+      "categoryId": "domain-comportamentais",
+      "categoryName": "Técnicas Comportamentais",
+      "ordem": 26,
+      "nomeOriginal": "Exposição"
+    }
+  ],
+  "abordagemIds": [
+    "app-comportamental-terapia-comportamental-classica",
+    "app-comportamental-analise-do-comportamento-aplicada-aba",
+    "app-cognitiva_tcc-tcc-integrada-geral"
+  ],
+  "modeloIds": [],
+  "fonteIds": [
+    "src-evidence-psychotherapy-2017"
+  ],
+  "tecnicasRelacionadasIds": [
+    "tec-reforco-positivo",
+    "tec-reforco-negativo",
+    "tec-extincao",
+    "tec-modelagem",
+    "tec-encadeamento",
+    "tec-economia-de-fichas",
+    "tec-ativacao-comportamental",
+    "tec-automonitoramento",
+    "tec-programacao-de-atividades",
+    "tec-treinamento-de-habilidades",
+    "tec-prevencao-de-resposta",
+    "tec-dessensibilizacao"
+  ],
+  "dataCadastro": "2026-08-20T19:40:41.311908+00:00",
+  "dataUltimaRevisao": "2026-08-20T19:40:41.311915+00:00",
+  "status": "published",
+  "sourcePath": "content/techniques/comportamentais/tec-exposicao.json"
+}

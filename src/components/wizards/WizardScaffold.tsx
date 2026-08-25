@@ -173,9 +173,11 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
         </div>
       </div>
 
-      {/* Corpo — um passo por vez, com pergunta em destaque */}
+      {/* Corpo — um passo por vez, com pergunta em destaque. Troca CONCORRENTE
+          (popLayout): o passo que sai desliza enquanto o novo entra — sem o
+          "vazio" do mode="wait" entre passos. */}
       <div className="flex-1 pt-4">
-        <AnimatePresence mode="wait" initial={false} custom={dirRef.current}>
+        <AnimatePresence mode="popLayout" initial={false} custom={dirRef.current}>
           <motion.div
             key={steps[step].id}
             custom={dirRef.current}

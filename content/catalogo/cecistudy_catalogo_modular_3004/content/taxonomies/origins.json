@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "autoral",
+      "name": "Autoral"
+    },
+    {
+      "id": "prova_real",
+      "name": "Prova pública real"
+    }
+  ]
+}

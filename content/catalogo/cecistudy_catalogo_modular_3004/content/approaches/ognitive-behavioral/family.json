@@ -1,0 +1,9 @@
+{
+  "id": "family-cognitive-behavioral",
+  "name": "Cognitivas e comportamentais",
+  "status": "published",
+  "approachIds": [
+    "app-behaviorismo-e-teorias-da-aprendizagem",
+    "app-psicologia-cognitiva-e-tcc"
+  ]
+}

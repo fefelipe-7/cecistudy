@@ -1,0 +1,66 @@
+{
+  "id": "tec-desfusao-cognitiva",
+  "nome": "Desfusão cognitiva",
+  "canonicalKey": "desfusao cognitiva",
+  "emUmaFrase": "Procedimentos da ACT que ajudam a observar pensamentos como eventos linguísticos, e não como ordens ou fatos que precisam governar a ação.",
+  "definicao": "Procedimentos da ACT que ajudam a observar pensamentos como eventos linguísticos, e não como ordens ou fatos que precisam governar a ação. Em sentido técnico, sua definição deve ser vinculada ao tipo de tarefa, atitude ou processo que organiza a sessão, e não apenas ao nome da escola.",
+  "objetivo": "Aumentar flexibilidade psicológica e escolha orientada por valores.",
+  "comoFunciona": "O mecanismo proposto depende da categoria: atenção ao presente, aceitação, desfusão, valores e regulação da relação com a experiência. No caso de desfusão cognitiva, o terapeuta deve explicitar qual aprendizagem ou processo está sendo buscado e como será observado.",
+  "quandoEUtilizada": "Pode ser considerada quando a formulação clínica indicar que desfusão cognitiva é compatível com o problema, os objetivos, a fase do tratamento, a capacidade de participação e as preferências da pessoa. Não é uma indicação universal.",
+  "comoEAplicada": "O terapeuta convida a nomear “estou tendo o pensamento de que...”, repetir uma frase de modo não literal ou observá-la como produto da mente, sempre conectando o exercício a uma ação escolhida.",
+  "origem": "Combina práticas contemplativas secularizadas com terapias comportamentais contextuais, modelos de regulação emocional, compaixão e aceitação.",
+  "desenvolvimentoHistorico": "No desenvolvimento histórico, desfusão cognitiva passou de uma prática situada em determinadas escolas a um recurso que pode ser adaptado ou questionado em outros modelos. A migração entre abordagens deve preservar contexto, finalidade e limites.",
+  "exemploPratico": "Em vez de “sou um fracasso”, a pessoa pratica “estou percebendo o pensamento de que sou um fracasso” e decide qual ação valorosa cabe agora.",
+  "fundamentacaoTeorica": "A fundamentação editorial desta técnica é organizada pela categoria “mindfulness-aceitacao-regulacao”: atenção ao presente, aceitação, desfusão, valores e regulação da relação com a experiência. A fonte deve ser lida para distinguir descrição histórica, hipótese de mecanismo e evidência de resultado.",
+  "evidencias": "Revisões indicam associações e efeitos promissores de intervenções baseadas em mindfulness, aceitação e autocompaixão, mas os resultados variam por protocolo, treinamento, comparação e medida. Atenção plena não é sinônimo de relaxamento e requer cuidado com trauma, dissociação, dor e expectativas excessivas.",
+  "limitacoes": "Práticas podem aumentar contato com memórias ou sensações difíceis, e não são apropriadas de modo automático para todos. Aceitação não deve justificar tolerância a violência, negligência ou condições modificáveis.",
+  "contextoClinico": "Pode aparecer em MBCT, ACT, DBT, CFT e intervenções baseadas em mindfulness, mas a mesma técnica também pode atravessar outras escolas quando seu objetivo e sua função clínica forem preservados.",
+  "observacoes": "Classificação interna: exercicio. O nome pode designar técnica, procedimento, habilidade, atitude ou processo conforme o modelo; o registro separa o tipo para evitar equivalências artificiais.",
+  "tipoTecnica": "exercicio",
+  "classificacaoEstatuto": "recurso clínico estudado em contexto de abordagem; o estatuto específico pode ser técnica, procedimento, habilidade, estratégia, exercício ou atitude terapêutica.",
+  "slug": "desfusao-cognitiva",
+  "dominioId": "domain-mindfulness-aceitacao-regulacao",
+  "dominioIds": [
+    "domain-mindfulness-aceitacao-regulacao"
+  ],
+  "dominioNomes": [
+    "Mindfulness, Aceitação e Regulação"
+  ],
+  "ordemExibicao": 128,
+  "posicoesNominais": [
+    {
+      "categoryId": "domain-mindfulness-aceitacao-regulacao",
+      "categoryName": "Mindfulness, Aceitação e Regulação",
+      "ordem": 134,
+      "nomeOriginal": "Desfusão cognitiva"
+    }
+  ],
+  "abordagemIds": [
+    "app-cognitiva_tcc-terapia-cognitiva-baseada-em-mindfulness-mbct",
+    "app-cognitiva_tcc-terapia-de-aceitacao-e-compromisso-act",
+    "app-comportamental-terapia-comportamental-dialetica-dbt"
+  ],
+  "modeloIds": [],
+  "fonteIds": [
+    "src-mindfulness-2011",
+    "src-mindfulness-regulation-2017"
+  ],
+  "tecnicasRelacionadasIds": [
+    "tec-regulacao-emocional",
+    "tec-atencao-plena",
+    "tec-respiracao-consciente",
+    "tec-body-scan",
+    "tec-meditacao-sentada",
+    "tec-observacao-de-pensamentos",
+    "tec-aceitacao-experiencial",
+    "tec-exercicios-de-valores",
+    "tec-self-como-contexto",
+    "tec-pratica-de-autocompaixao",
+    "tec-tolerancia-ao-mal-estar",
+    "tec-grounding"
+  ],
+  "dataCadastro": "2026-08-20T19:40:41.342086+00:00",
+  "dataUltimaRevisao": "2026-08-20T19:40:41.342091+00:00",
+  "status": "published",
+  "sourcePath": "content/techniques/mindfulness-aceitacao-regulacao/tec-desfusao-cognitiva.json"
+}

@@ -1,0 +1,1286 @@
+{
+  "schemaVersion": 1,
+  "count": 256,
+  "items": [
+    {
+      "tecnicaId": "tec-identificacao-de-pensamentos-automaticos",
+      "fonteId": "src-cognitive-restructuring-2023",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-pensamentos-automaticos",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-registro-de-pensamentos",
+      "fonteId": "src-cognitive-restructuring-2023",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-reestruturacao-cognitiva",
+      "fonteId": "src-cognitive-restructuring-2023",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-questionamento-socratico",
+      "fonteId": "src-cognitive-restructuring-2023",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-questionamento-socratico",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-busca-de-evidencias",
+      "fonteId": "src-cognitive-restructuring-2023",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-distorcoes-cognitivas",
+      "fonteId": "src-cognitive-restructuring-2023",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-descatastrofizacao",
+      "fonteId": "src-cognitive-restructuring-2023",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-descatastrofizacao",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-continuum-cognitivo",
+      "fonteId": "src-cognitive-restructuring-2023",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-continuum-cognitivo",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-flecha-descendente",
+      "fonteId": "src-cognitive-restructuring-2023",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-flecha-descendente",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-reatribuicao",
+      "fonteId": "src-cognitive-restructuring-2023",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-reatribuicao",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-avaliacao-de-crencas",
+      "fonteId": "src-cognitive-restructuring-2023",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-avaliacao-de-crencas",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-experimentos-comportamentais",
+      "fonteId": "src-cognitive-restructuring-2023",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-cartoes-de-enfrentamento",
+      "fonteId": "src-cognitive-restructuring-2023",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-cartoes-de-enfrentamento",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-resolucao-de-problemas",
+      "fonteId": "src-cognitive-restructuring-2023",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-resolucao-de-problemas",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-treino-metacognitivo",
+      "fonteId": "src-cognitive-restructuring-2023",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-treino-metacognitivo",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-reforco-positivo",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-reforco-negativo",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-extincao",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-modelagem",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-encadeamento",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-economia-de-fichas",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-ativacao-comportamental",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-automonitoramento",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-programacao-de-atividades",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-treinamento-de-habilidades",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exposicao",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-prevencao-de-resposta",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-dessensibilizacao",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-ensaio-comportamental",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-generalizacao",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exposicao-ao-vivo",
+      "fonteId": "src-erp-2019",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exposicao-ao-vivo",
+      "fonteId": "src-exposure-inhibitory-2008",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exposicao-imaginaria",
+      "fonteId": "src-erp-2019",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exposicao-imaginaria",
+      "fonteId": "src-exposure-inhibitory-2008",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exposicao-interoceptiva",
+      "fonteId": "src-erp-2019",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exposicao-interoceptiva",
+      "fonteId": "src-exposure-inhibitory-2008",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exposicao-gradual",
+      "fonteId": "src-erp-2019",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exposicao-gradual",
+      "fonteId": "src-exposure-inhibitory-2008",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exposicao-prolongada",
+      "fonteId": "src-erp-2019",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exposicao-prolongada",
+      "fonteId": "src-exposure-inhibitory-2008",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exposicao-com-prevencao-de-resposta",
+      "fonteId": "src-erp-2019",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exposicao-com-prevencao-de-resposta",
+      "fonteId": "src-exposure-inhibitory-2008",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exposicao-em-realidade-virtual",
+      "fonteId": "src-erp-2019",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exposicao-em-realidade-virtual",
+      "fonteId": "src-exposure-inhibitory-2008",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-habitacao",
+      "fonteId": "src-erp-2019",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-habitacao",
+      "fonteId": "src-exposure-inhibitory-2008",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-experimentos-de-exposicao",
+      "fonteId": "src-erp-2019",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-experimentos-de-exposicao",
+      "fonteId": "src-exposure-inhibitory-2008",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-processamento-emocional-durante-exposicao",
+      "fonteId": "src-erp-2019",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-processamento-emocional-durante-exposicao",
+      "fonteId": "src-exposure-inhibitory-2008",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-focalizacao",
+      "fonteId": "src-experiential-dynamic-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-focalizacao",
+      "fonteId": "src-chairwork-2026",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-focalizacao",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-evocacao-emocional",
+      "fonteId": "src-experiential-dynamic-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-evocacao-emocional",
+      "fonteId": "src-chairwork-2026",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-evocacao-emocional",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-processamento-emocional",
+      "fonteId": "src-experiential-dynamic-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-processamento-emocional",
+      "fonteId": "src-chairwork-2026",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-processamento-emocional",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-experimentos-experienciais",
+      "fonteId": "src-experiential-dynamic-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-experimentos-experienciais",
+      "fonteId": "src-chairwork-2026",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-experimentos-experienciais",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-cadeira-vazia",
+      "fonteId": "src-experiential-dynamic-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-cadeira-vazia",
+      "fonteId": "src-chairwork-2026",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-cadeira-vazia",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-duas-cadeiras",
+      "fonteId": "src-experiential-dynamic-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-duas-cadeiras",
+      "fonteId": "src-chairwork-2026",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-duas-cadeiras",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-trabalho-com-emocoes",
+      "fonteId": "src-experiential-dynamic-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-trabalho-com-emocoes",
+      "fonteId": "src-chairwork-2026",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-trabalho-com-emocoes",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-acesso-a-experiencia",
+      "fonteId": "src-experiential-dynamic-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-acesso-a-experiencia",
+      "fonteId": "src-chairwork-2026",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-acesso-a-experiencia",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-expressao-emocional",
+      "fonteId": "src-experiential-dynamic-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-expressao-emocional",
+      "fonteId": "src-chairwork-2026",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-expressao-emocional",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-regulacao-emocional",
+      "fonteId": "src-mindfulness-2011",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-regulacao-emocional",
+      "fonteId": "src-mindfulness-regulation-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-amplificacao",
+      "fonteId": "src-experiential-dynamic-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-amplificacao",
+      "fonteId": "src-chairwork-2026",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-amplificacao",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-reconhecimento-emocional",
+      "fonteId": "src-experiential-dynamic-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-reconhecimento-emocional",
+      "fonteId": "src-chairwork-2026",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-reconhecimento-emocional",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-escuta-ativa",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-escuta-ativa",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-reflexao-de-sentimentos",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-reflexao-de-sentimentos",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-reflexao-de-conteudo",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-reflexao-de-conteudo",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-parafraseamento",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-parafraseamento",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-confrontacao",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-confrontacao",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-presenca-terapeutica",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-presenca-terapeutica",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-congruencia",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-congruencia",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-empatia-terapeutica",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-empatia-terapeutica",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-consideracao-positiva-incondicional",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-consideracao-positiva-incondicional",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exploracao-fenomenologica",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exploracao-fenomenologica",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-clarificacao",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-clarificacao",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-dialogo-socratico",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-dialogo-socratico",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-valores",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-valores",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-sentido",
+      "fonteId": "src-humanistic-research",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-sentido",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-associacao-livre",
+      "fonteId": "src-psychodynamic-techniques-2007",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-associacao-livre",
+      "fonteId": "src-transference-2024",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-interpretacao",
+      "fonteId": "src-psychodynamic-techniques-2007",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-interpretacao",
+      "fonteId": "src-transference-2024",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-interpretacao-de-sonhos",
+      "fonteId": "src-psychodynamic-techniques-2007",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-interpretacao-de-sonhos",
+      "fonteId": "src-transference-2024",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-analise-da-transferencia",
+      "fonteId": "src-psychodynamic-techniques-2007",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-analise-da-transferencia",
+      "fonteId": "src-transference-2024",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-analise-da-contratransferencia",
+      "fonteId": "src-psychodynamic-techniques-2007",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-analise-da-contratransferencia",
+      "fonteId": "src-transference-2024",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-elaboracao",
+      "fonteId": "src-psychodynamic-techniques-2007",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-elaboracao",
+      "fonteId": "src-transference-2024",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-manejo-da-resistencia",
+      "fonteId": "src-psychodynamic-techniques-2007",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-manejo-da-resistencia",
+      "fonteId": "src-transference-2024",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-interpretacao-de-defesas",
+      "fonteId": "src-psychodynamic-techniques-2007",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-interpretacao-de-defesas",
+      "fonteId": "src-transference-2024",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-conflitos",
+      "fonteId": "src-psychodynamic-techniques-2007",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-conflitos",
+      "fonteId": "src-transference-2024",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-insight",
+      "fonteId": "src-psychodynamic-techniques-2007",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-insight",
+      "fonteId": "src-transference-2024",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-holding",
+      "fonteId": "src-psychodynamic-techniques-2007",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-holding",
+      "fonteId": "src-transference-2024",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-enactment",
+      "fonteId": "src-psychodynamic-techniques-2007",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-enactment",
+      "fonteId": "src-transference-2024",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-escuta-analitica",
+      "fonteId": "src-psychodynamic-techniques-2007",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-escuta-analitica",
+      "fonteId": "src-transference-2024",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-genograma",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-genograma",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-perguntas-circulares",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-perguntas-circulares",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-reenquadramento",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-reenquadramento",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-conotacao-positiva",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-conotacao-positiva",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-prescricao-de-tarefas",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-prescricao-de-tarefas",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-escultura-familiar",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-escultura-familiar",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-dramatizacao",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-dramatizacao",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-externalizacao",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-externalizacao",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-perguntas-reflexivas",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-perguntas-reflexivas",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-intervencoes-estruturais",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-intervencoes-estruturais",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-joining",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-joining",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-mapeamento-estrutural",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-mapeamento-estrutural",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-prescricao-paradoxal",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-prescricao-paradoxal",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-intervencoes-estrategicas",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-intervencoes-estrategicas",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-perguntas-de-excecao",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-perguntas-de-excecao",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-perguntas-de-escala",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-perguntas-de-escala",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-perguntas-de-coping",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-perguntas-de-coping",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-mapeamento-da-influencia",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-mapeamento-da-influencia",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-reautoria",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-reautoria",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-documentos-terapeuticos",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-documentos-terapeuticos",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-testemunhas-externas",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-testemunhas-externas",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-perguntas-de-perspectiva",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-perguntas-de-perspectiva",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-desconstrucao",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-desconstrucao",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-resultados-unicos",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-resultados-unicos",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-construcao-de-significado",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-construcao-de-significado",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-construtos-pessoais",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-construtos-pessoais",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-tecnica-da-grade-de-repertorio",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-tecnica-da-grade-de-repertorio",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-reconstrucao-narrativa",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-reconstrucao-narrativa",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-dialogo-colaborativo",
+      "fonteId": "src-family-perspectives-2025",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-dialogo-colaborativo",
+      "fonteId": "src-apa-approaches",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-entrevista-motivacional",
+      "fonteId": "src-mi-2021",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-perguntas-abertas",
+      "fonteId": "src-mi-2021",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-reflexao",
+      "fonteId": "src-mi-2021",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-afirmacoes",
+      "fonteId": "src-mi-2021",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-sumarios",
+      "fonteId": "src-mi-2021",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-evocacao",
+      "fonteId": "src-mi-2021",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-escuta-reflexiva",
+      "fonteId": "src-mi-2021",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-ambivalencia",
+      "fonteId": "src-mi-2021",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-balanca-decisional",
+      "fonteId": "src-mi-2021",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-balanca-decisional",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-pergunta-do-milagre",
+      "fonteId": "src-mi-2021",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-pergunta-do-milagre",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-excecoes",
+      "fonteId": "src-mi-2021",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-excecoes",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-recursos",
+      "fonteId": "src-mi-2021",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-recursos",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-estabelecimento-de-metas",
+      "fonteId": "src-mi-2021",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-estabelecimento-de-metas",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-planejamento-de-mudanca",
+      "fonteId": "src-mi-2021",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-planejamento-de-mudanca",
+      "fonteId": "src-evidence-psychotherapy-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-atencao-plena",
+      "fonteId": "src-mindfulness-2011",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-atencao-plena",
+      "fonteId": "src-mindfulness-regulation-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-respiracao-consciente",
+      "fonteId": "src-mindfulness-2011",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-respiracao-consciente",
+      "fonteId": "src-mindfulness-regulation-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-body-scan",
+      "fonteId": "src-mindfulness-2011",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-body-scan",
+      "fonteId": "src-mindfulness-regulation-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-meditacao-sentada",
+      "fonteId": "src-mindfulness-2011",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-meditacao-sentada",
+      "fonteId": "src-mindfulness-regulation-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-observacao-de-pensamentos",
+      "fonteId": "src-mindfulness-2011",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-observacao-de-pensamentos",
+      "fonteId": "src-mindfulness-regulation-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-desfusao-cognitiva",
+      "fonteId": "src-mindfulness-2011",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-desfusao-cognitiva",
+      "fonteId": "src-mindfulness-regulation-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-aceitacao-experiencial",
+      "fonteId": "src-mindfulness-2011",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-aceitacao-experiencial",
+      "fonteId": "src-mindfulness-regulation-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exercicios-de-valores",
+      "fonteId": "src-mindfulness-2011",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exercicios-de-valores",
+      "fonteId": "src-mindfulness-regulation-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-exercicios-de-valores",
+      "fonteId": "src-self-compassion-2018",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-self-como-contexto",
+      "fonteId": "src-mindfulness-2011",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-self-como-contexto",
+      "fonteId": "src-mindfulness-regulation-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-self-como-contexto",
+      "fonteId": "src-self-compassion-2018",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-pratica-de-autocompaixao",
+      "fonteId": "src-mindfulness-2011",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-pratica-de-autocompaixao",
+      "fonteId": "src-mindfulness-regulation-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-tolerancia-ao-mal-estar",
+      "fonteId": "src-mindfulness-2011",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-tolerancia-ao-mal-estar",
+      "fonteId": "src-mindfulness-regulation-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-tolerancia-ao-mal-estar",
+      "fonteId": "src-self-compassion-2018",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-grounding",
+      "fonteId": "src-mindfulness-2011",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-grounding",
+      "fonteId": "src-mindfulness-regulation-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-urge-surfing",
+      "fonteId": "src-mindfulness-2011",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    },
+    {
+      "tecnicaId": "tec-urge-surfing",
+      "fonteId": "src-mindfulness-regulation-2017",
+      "trechoCitado": "Fonte associada à categoria, à técnica ou ao mecanismo; consultar o texto integral."
+    }
+  ]
+}

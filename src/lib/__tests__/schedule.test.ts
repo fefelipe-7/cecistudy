@@ -19,7 +19,6 @@ const mkCourse = (id: string, schedule: Course['schedule']): Course =>
     semester: '1',
     color: '#E97891',
     icon: 'Brain',
-    progress: 0,
     category: 'obrigatoria',
     schedule,
   }) as Course;

@@ -1,0 +1,66 @@
+{
+  "id": "tec-analise-da-transferencia",
+  "nome": "Análise da transferência",
+  "canonicalKey": "analise da transferencia",
+  "emUmaFrase": "Exame colaborativo de expectativas, sentimentos e padrões relacionais que se atualizam na relação terapêutica e podem iluminar formas de vínculo.",
+  "definicao": "Exame colaborativo de expectativas, sentimentos e padrões relacionais que se atualizam na relação terapêutica e podem iluminar formas de vínculo. Em sentido técnico, sua definição deve ser vinculada ao tipo de tarefa, atitude ou processo que organiza a sessão, e não apenas ao nome da escola.",
+  "objetivo": "Compreender e transformar padrões repetitivos sem tratar a percepção do cliente como mero erro.",
+  "comoFunciona": "O mecanismo proposto depende da categoria: exploração de conflitos, defesas, transferência, fantasias e padrões relacionais. No caso de análise da transferência, o terapeuta deve explicitar qual aprendizagem ou processo está sendo buscado e como será observado.",
+  "quandoEUtilizada": "Pode ser considerada quando a formulação clínica indicar que análise da transferência é compatível com o problema, os objetivos, a fase do tratamento, a capacidade de participação e as preferências da pessoa. Não é uma indicação universal.",
+  "comoEAplicada": "O terapeuta descreve o fenômeno com tato, verifica a experiência do cliente, diferencia passado e presente e trabalha a interação como dado clínico.",
+  "origem": "Origina-se na psicanálise e se transforma nas psicoterapias psicodinâmicas, relacionais e interpessoais, com diferenças de enquadre, técnica e teoria da mudança.",
+  "desenvolvimentoHistorico": "No desenvolvimento histórico, análise da transferência passou de uma prática situada em determinadas escolas a um recurso que pode ser adaptado ou questionado em outros modelos. A migração entre abordagens deve preservar contexto, finalidade e limites.",
+  "exemploPratico": "Quando o cliente espera ser abandonado após uma pequena mudança de agenda, o tema é explorado sem invalidar a preocupação concreta.",
+  "fundamentacaoTeorica": "A fundamentação editorial desta técnica é organizada pela categoria “psicodinamicas”: exploração de conflitos, defesas, transferência, fantasias e padrões relacionais. A fonte deve ser lida para distinguir descrição histórica, hipótese de mecanismo e evidência de resultado.",
+  "evidencias": "A literatura psicodinâmica apoia algumas técnicas e processos em contextos delimitados, mas a relação entre interpretação, transferência, aliança e resultado não é linear. Revisões sistemáticas ressaltam heterogeneidade de frequência, timing, intensidade, população e formação do terapeuta.",
+  "limitacoes": "Interpretações prematuras, postura autoritária e leitura intrapsíquica de violência ou desigualdade podem prejudicar o cuidado. O enquadre, a formação e a aliança são determinantes.",
+  "contextoClinico": "Pode aparecer em psicanálise, psicoterapias psicodinâmicas, relacionais e interpessoais, mas a mesma técnica também pode atravessar outras escolas quando seu objetivo e sua função clínica forem preservados.",
+  "observacoes": "Classificação interna: tecnica. O nome pode designar técnica, procedimento, habilidade, atitude ou processo conforme o modelo; o registro separa o tipo para evitar equivalências artificiais.",
+  "tipoTecnica": "tecnica",
+  "classificacaoEstatuto": "recurso clínico estudado em contexto de abordagem; o estatuto específico pode ser técnica, procedimento, habilidade, estratégia, exercício ou atitude terapêutica.",
+  "slug": "analise-da-transferencia",
+  "dominioId": "domain-psicodinamicas",
+  "dominioIds": [
+    "domain-psicodinamicas"
+  ],
+  "dominioNomes": [
+    "Técnicas Psicodinâmicas"
+  ],
+  "ordemExibicao": 70,
+  "posicoesNominais": [
+    {
+      "categoryId": "domain-psicodinamicas",
+      "categoryName": "Técnicas Psicodinâmicas",
+      "ordem": 70,
+      "nomeOriginal": "Análise da transferência"
+    }
+  ],
+  "abordagemIds": [
+    "app-psicanalitica_psicodinamica-psicanalise-freudiana-classica",
+    "app-psicanalitica_psicodinamica-psicanalise-relacional",
+    "app-psicanalitica_psicodinamica-psicoterapia-psicodinamica-contemporanea-integrativa"
+  ],
+  "modeloIds": [],
+  "fonteIds": [
+    "src-psychodynamic-techniques-2007",
+    "src-transference-2024"
+  ],
+  "tecnicasRelacionadasIds": [
+    "tec-confrontacao",
+    "tec-clarificacao",
+    "tec-associacao-livre",
+    "tec-interpretacao",
+    "tec-interpretacao-de-sonhos",
+    "tec-analise-da-contratransferencia",
+    "tec-elaboracao",
+    "tec-manejo-da-resistencia",
+    "tec-interpretacao-de-defesas",
+    "tec-exploracao-de-conflitos",
+    "tec-insight",
+    "tec-holding"
+  ],
+  "dataCadastro": "2026-08-20T19:40:41.324656+00:00",
+  "dataUltimaRevisao": "2026-08-20T19:40:41.324661+00:00",
+  "status": "published",
+  "sourcePath": "content/techniques/psicodinamicas/tec-analise-da-transferencia.json"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "cat-pesquisa-metodologia-e-estatistica",
+  "slug": "pesquisa-metodologia-e-estatistica",
+  "title": "Pesquisa, Metodologia e Estatística",
+  "displayOrder": 8,
+  "questionCount": 156,
+  "approachIds": [
+    "app-pesquisa-metodologia-e-estatistica"
+  ],
+  "groupCount": 1,
+  "status": "published",
+  "allowedFormats": [
+    "multiple_choice",
+    "true_false"
+  ]
+}

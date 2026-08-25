@@ -2,8 +2,11 @@ import {
   CheckCircle2,
   FileText,
   HeartHandshake,
+  Lightbulb,
   Settings2,
   StickyNote,
+  User,
+  Wrench,
 } from 'lucide-react';
 import type {
   Course,
@@ -15,8 +18,37 @@ import type {
   PsychologyApproach,
   QuizPlayState,
   StudyScreen,
+  TempleSection,
   WizardFlow,
 } from '../types';
+
+/** Metadados das seções do templo (título/ícone/cor do header detail). */
+export const TEMPLE_SECTION_META: Record<
+  TempleSection,
+  { title: string; subtitle: string; icon: CourseIconName; color: string; Icon: typeof Lightbulb }
+> = {
+  conceitos: {
+    title: 'conceitos',
+    subtitle: 'ideias-chave da psicologia, por domínio',
+    icon: 'Lightbulb',
+    color: '#4A879F',
+    Icon: Lightbulb,
+  },
+  autores: {
+    title: 'autores',
+    subtitle: 'pensadores e instituições do acervo',
+    icon: 'User',
+    color: '#756354',
+    Icon: User,
+  },
+  tecnicas: {
+    title: 'técnicas',
+    subtitle: 'instrumentos clínicos e como aplicá-los',
+    icon: 'Wrench',
+    color: '#43805B',
+    Icon: Wrench,
+  },
+};
 
 export interface HeaderConfigActions {
   onBack: () => void;
@@ -138,6 +170,16 @@ export function buildHeaderConfig(input: HeaderConfigInput): DynamicHeaderConfig
       subtitle: 'mapa de famílias, conceitos, autores e técnicas',
       icon: 'Landmark',
       color: '#B94862',
+      onBack,
+    };
+  } else if (currentScreen.kind === 'templeSection') {
+    const meta = TEMPLE_SECTION_META[currentScreen.section];
+    headerConfig = {
+      type: 'detail',
+      title: meta.title,
+      subtitle: meta.subtitle,
+      icon: meta.icon,
+      color: meta.color,
       onBack,
     };
   } else if (currentScreen.kind === 'families') {

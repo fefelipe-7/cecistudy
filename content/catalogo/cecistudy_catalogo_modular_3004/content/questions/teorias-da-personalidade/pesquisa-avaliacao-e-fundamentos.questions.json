@@ -1,0 +1,648 @@
+{
+  "schemaVersion": 1,
+  "group": {
+    "id": "qg-teorias-da-personalidade-pesquisa-avaliacao-e-fundamentos",
+    "title": "Teorias da Personalidade — Pesquisa, Avaliação e Fundamentos",
+    "categoryId": "cat-teorias-da-personalidade",
+    "categoryTitle": "Teorias da Personalidade",
+    "block": "Pesquisa, Avaliação e Fundamentos",
+    "status": "published",
+    "source": "Cecistudy content catalog",
+    "sourcePath": "content/questions/teorias-da-personalidade/pesquisa-avaliacao-e-fundamentos.questions.json"
+  },
+  "questions": [
+    {
+      "id": "PSI-BANCO-0181",
+      "stem": "Na perspectiva baseada em traços, a personalidade é entendida principalmente como:",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "Os traços referem-se a disposições estáveis que influenciam o comportamento em diferentes situações. Teóricos como Allport defenderam a ideia de traços; Costa & McCrae contribuíram para o modelo dos Cinco Grandes, que sustenta a consistência de traços ao longo do tempo.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Apenas mudanças situacionais em resposta a estímulos do ambiente",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "Padrões estáveis de pensamentos, sentimentos e comportamentos que persistem ao longo do tempo",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "Conflitos inconscientes que moldam a experiência consciente",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "Expressões de aprendizados socialmente mediado",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "Variações temporárias de humor dependendo do ambiente",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-definicao-e-fundamentos-da-abordagem-de-tracos",
+        "topic-tracos"
+      ],
+      "approachIds": [
+        "app-teorias-da-personalidade"
+      ],
+      "authorIds": [
+        "author-autoria-propria"
+      ],
+      "referenceIds": [
+        "work-627c290bde41"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-teorias-da-personalidade",
+      "areaId": "area-personalidade",
+      "legacyOriginId": "PSI-BANCO-0181",
+      "legacy": {
+        "categoriaFinal": "Teorias da Personalidade",
+        "abordagemFinal": "Teorias da Personalidade",
+        "area": "Personalidade",
+        "tema": "traços",
+        "subtema": "Definição e fundamentos da abordagem de traços",
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0184",
+      "stem": "Sobre temperamento, qual afirmação descreve melhor esse constructo na psicologia do desenvolvimento?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "Temperamento envolve predisposições biológicas herdadas, que se manifestam desde a infância e influenciam a forma como a pessoa reage a estímulos. Modelos clássicos incluem Thomas & Chess e Rothbart & Bates.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Temperamento é aprendido apenas na idade adulta",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "Temperamento é um conjunto de disposições biológicas herdadas, que se manifestam na infância e influenciam respostas aos estímulos",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "Temperamento é o mesmo que traços de personalidade desenvolvidos ao longo da vida",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "Temperamento é definido apenas pela sociabilidade",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "Temperamento é um conjunto de atitudes ensinadas pela escola",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-bases-biologicas-do-temperamento",
+        "topic-temperamento"
+      ],
+      "approachIds": [
+        "app-teorias-da-personalidade"
+      ],
+      "authorIds": [
+        "author-autoria-propria"
+      ],
+      "referenceIds": [
+        "work-9b949661f367"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-teorias-da-personalidade",
+      "areaId": "area-personalidade",
+      "legacyOriginId": "PSI-BANCO-0184",
+      "legacy": {
+        "categoriaFinal": "Teorias da Personalidade",
+        "abordagemFinal": "Teorias da Personalidade",
+        "area": "Personalidade",
+        "tema": "temperamento",
+        "subtema": "Bases biológicas do temperamento",
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0186",
+      "stem": "Questão 1 – Área: Personalidade. Tema: traços. Subtema: Definição de traços de personalidade. Em relação à perspectiva dos traços, a personalidade é vista como estável ao longo do tempo e contextualmente consistente. Qual afirmação descreve com maior precisão a natureza dos traços de personalidade?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "Traços referem-se a disposições estáveis que caracterizam a personalidade de cada pessoa, gerando padrões de resposta relativamente consistentes entre diferentes situações e ao longo do tempo. Essa estabilidade não elimina a influência situacional, mas distingue traços de estados.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Traços são estados transitórios variáveis com a situação.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Traços são padrões duradouros de comportamento, sentimento e pensamento que permanecem estáveis ao longo do tempo e em contextos diferentes.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Traços são apenas predisposições genéticas sem influência ambiental.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Traços são o mesmo que intuição ou estilo de vida.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Traços são sinônimos de habilidades específicas aprendidas na escola.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-definicao-de-tracos-de-personalidade",
+        "topic-tracos"
+      ],
+      "approachIds": [
+        "app-teorias-da-personalidade"
+      ],
+      "authorIds": [
+        "author-gordon-allport",
+        "author-hans-eysenck",
+        "author-robert-mccrae",
+        "author-paul-costa"
+      ],
+      "referenceIds": [
+        "work-78faff841972",
+        "work-dcbefd1068a8"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-teorias-da-personalidade",
+      "areaId": "area-personalidade",
+      "legacyOriginId": "PSI-BANCO-0186",
+      "legacy": {
+        "categoriaFinal": "Teorias da Personalidade",
+        "abordagemFinal": "Teorias da Personalidade",
+        "area": "Personalidade",
+        "tema": "traços",
+        "subtema": "Definição de traços de personalidade",
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0190",
+      "stem": "Questão 5 – Área: Personalidade. Tema: temperamento. Subtema: Bases biológicas e continuidade do temperamento. O temperamento descreve predisposições biológicas estáveis desde a infância que influenciam reações emocionais. Qual afirmação é verdadeira sobre o temperamento?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "O temperamento envolve predisposições biológicas que aparecem precoce e têm continuidade ao longo da vida, influenciando como reagimos emocionalmente. Embora possa ser modulável pela experiência, ele não se reduz a fatores puramente aprendidos.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Temperamento é totalmente modificado pela educação.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Temperamento não é observável antes de 2 anos de idade.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Temperamento está ligado a traços de personalidade e prediz padrões de reatividade emocional ao longo da vida.",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "D) Temperamento desaparece na adolescência.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Temperamento é sinônimo de personalidade adquirida pela cultura.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-bases-biologicas-e-continuidade-do-temperamento",
+        "topic-temperamento"
+      ],
+      "approachIds": [
+        "app-teorias-da-personalidade"
+      ],
+      "authorIds": [
+        "author-alexander-thomas",
+        "author-stella-chess",
+        "author-mary-rothbart"
+      ],
+      "referenceIds": [
+        "work-1a3515a3389c",
+        "work-8ec3affe9323"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-teorias-da-personalidade",
+      "areaId": "area-personalidade",
+      "legacyOriginId": "PSI-BANCO-0190",
+      "legacy": {
+        "categoriaFinal": "Teorias da Personalidade",
+        "abordagemFinal": "Teorias da Personalidade",
+        "area": "Personalidade",
+        "tema": "temperamento",
+        "subtema": "Bases biológicas e continuidade do temperamento",
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0191",
+      "stem": "Qual afirmação descreve adequadamente traços de personalidade na psicologia da personalidade?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "Traços referem-se a padrões estáveis de comportamento, pensamento e emoção que tendem a permanecer ao longo do tempo e entre situações, distinguindo-se de estados transitórios, situações específicas ou influências puramente ambientais.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Traços são padrões estáveis de comportamento, pensamento e emoção que tendem a persistir ao longo do tempo e em diferentes situações.",
+          "isCorrect": true
+        },
+        {
+          "id": "b",
+          "text": "B) Traços são estados transitórios de humor que mudam diariamente.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Traços são apenas regras sociais que não dependem do indivíduo.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Traços correspondem apenas a traços físicos e capacidades cognitivas.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Traços são unicamente determinados por o ambiente, sem contribuição biológica.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-modelos-de-tracos-big-five-e-estabilidade-dos-tracos",
+        "topic-tracos"
+      ],
+      "approachIds": [
+        "app-teorias-da-personalidade"
+      ],
+      "authorIds": [
+        "author-gordon-w-allport",
+        "author-costa-p-t-e-mccrae-r-r"
+      ],
+      "referenceIds": [
+        "work-ea2df2252c77",
+        "work-f8166ef665d6"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-teorias-da-personalidade",
+      "areaId": "area-personalidade",
+      "legacyOriginId": "PSI-BANCO-0191",
+      "legacy": {
+        "categoriaFinal": "Teorias da Personalidade",
+        "abordagemFinal": "Teorias da Personalidade",
+        "area": "Personalidade",
+        "tema": "Traços",
+        "subtema": "Modelos de traços (Big Five) e estabilidade dos traços",
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0195",
+      "stem": "Em termos de temperamento, qual afirmação está correta?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "Temperamento envolve predisposições biológicas que influenciam a reatividade e a regulação emocional desde a infância, apresentando estabilidade parcial; não é sinônimo de traços adultos nem de patologia.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Temperamento refere-se a estilos de regulação emocional presentes desde a infância e com base biológica, relativamente estáveis ao longo do tempo.",
+          "isCorrect": true
+        },
+        {
+          "id": "b",
+          "text": "B) Temperamento é a mesma coisa que traços de personalidade adulta.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Temperamento é determinado exclusivamente pela educação e pelo ambiente social.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Temperamento apenas descreve características físicas.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Temperamento é um conceito patológico.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-temperamento",
+        "topic-temperamento-infantil-thomas-e-chess"
+      ],
+      "approachIds": [
+        "app-teorias-da-personalidade"
+      ],
+      "authorIds": [
+        "author-alexander-thomas",
+        "author-stella-chess"
+      ],
+      "referenceIds": [
+        "work-af0e4790e3ed"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-teorias-da-personalidade",
+      "areaId": "area-personalidade",
+      "legacyOriginId": "PSI-BANCO-0195",
+      "legacy": {
+        "categoriaFinal": "Teorias da Personalidade",
+        "abordagemFinal": "Teorias da Personalidade",
+        "area": "Personalidade",
+        "tema": "Temperamento",
+        "subtema": "Temperamento infantil (Thomas & Chess)",
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0196",
+      "stem": "Qual modelo de personalidade descreve cinco grandes traços: Abertura, Conscienciosidade, Extroversão, Amabilidade e Neuroticismo?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "O Modelo dos Cinco Grandes (Big Five) descreve cinco dimensões estáveis da personalidade: Abertura, Conscienciosidade, Extroversão, Amabilidade e Neuroticismo. As demais opções correspondem a outras abordagens e não descrevem esse modelo.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Teoria dos traços de Allport",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Teoria dos temperamentos de Kretschmer",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Modelo dos Cinco Grandes (Big Five)",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "D) Teoria psicanalítica de Freud",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Teoria da Aprendizagem Social",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-big-five-cinco-grandes",
+        "topic-tracos"
+      ],
+      "approachIds": [
+        "app-teorias-da-personalidade"
+      ],
+      "authorIds": [
+        "author-costa-e-mccrae-2"
+      ],
+      "referenceIds": [
+        "work-4a3ca75ed1a3"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-teorias-da-personalidade",
+      "areaId": "area-personalidade",
+      "legacyOriginId": "PSI-BANCO-0196",
+      "legacy": {
+        "categoriaFinal": "Teorias da Personalidade",
+        "abordagemFinal": "Teorias da Personalidade",
+        "area": "Personalidade",
+        "tema": "traços",
+        "subtema": "Big Five / Cinco Grandes",
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "real-cebraspe_hub_2021-067-256b14ff2d8e",
+      "stem": "Os aspectos psicológicos individuais expressos no processo\noncológico envolvem a personalidade, o estresse, o distress e\no enfretamento, enquanto os aspectos comportamentais\nenvolvem o estilo de vida e a adesão ao tratamento.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "a_revisar",
+      "explanation": "Item real de prova oficial; comentário ainda não produzido.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-a-classificar-na-revisao-tematica"
+      ],
+      "approachIds": [
+        "app-teorias-da-personalidade"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-179a13535f8a",
+        "work-ef6c4c1bc9c3"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Cebraspe",
+      "exam": "Residência Multiprofissional HUB 2021 — Psicologia — Conhecimentos Específicos",
+      "year": 2020,
+      "questionNumber": 67,
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/hub_21_multiprofissional/arquivos/MATRIZ_CARGO_6.PDF",
+      "answerKeyUrl": "https://cdn.cebraspe.org.br/concursos/hub_21_multiprofissional/arquivos/GAB_DEFINITIVO_MATRIZ_563_RMULTI_006_00_PAG_3.PDF",
+      "officialAnswerStatus": null,
+      "categoryId": "cat-teorias-da-personalidade",
+      "areaId": "area-psicologia-da-saude-e-politicas-publicas",
+      "legacyOriginId": "real-cebraspe_hub_2021-067-256b14ff2d8e",
+      "legacy": {
+        "categoriaFinal": "Teorias da Personalidade",
+        "abordagemFinal": "Teorias da Personalidade",
+        "area": "Psicologia da Saúde e Políticas Públicas",
+        "tema": "A classificar na revisão temática",
+        "subtema": "A classificar na revisão temática",
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-cebraspe_hub_2021-069-ffa4a1d50b7e",
+      "stem": "Estados de saúde podem ser afetados por padrões de\ncomportamento e personalidade.\nCEBRASPE | UnB | HUB – RMULTI – Edital: 2020\nA respeito dos aspectos multifatoriais e interdisciplinares que\nenvolvem o adoecimento e o processo de tratamento do câncer,\njulgue os itens que se seguem.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "a_revisar",
+      "explanation": "Item real de prova oficial; comentário ainda não produzido.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-a-classificar-na-revisao-tematica"
+      ],
+      "approachIds": [
+        "app-teorias-da-personalidade"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-179a13535f8a",
+        "work-ef6c4c1bc9c3"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Cebraspe",
+      "exam": "Residência Multiprofissional HUB 2021 — Psicologia — Conhecimentos Específicos",
+      "year": 2020,
+      "questionNumber": 69,
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/hub_21_multiprofissional/arquivos/MATRIZ_CARGO_6.PDF",
+      "answerKeyUrl": "https://cdn.cebraspe.org.br/concursos/hub_21_multiprofissional/arquivos/GAB_DEFINITIVO_MATRIZ_563_RMULTI_006_00_PAG_3.PDF",
+      "officialAnswerStatus": null,
+      "categoryId": "cat-teorias-da-personalidade",
+      "areaId": "area-psicologia-da-saude-e-politicas-publicas",
+      "legacyOriginId": "real-cebraspe_hub_2021-069-ffa4a1d50b7e",
+      "legacy": {
+        "categoriaFinal": "Teorias da Personalidade",
+        "abordagemFinal": "Teorias da Personalidade",
+        "area": "Psicologia da Saúde e Políticas Públicas",
+        "tema": "A classificar na revisão temática",
+        "subtema": "A classificar na revisão temática",
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": true
+      }
+    }
+  ]
+}

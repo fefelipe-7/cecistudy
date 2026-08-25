@@ -27,7 +27,9 @@ import {
   Technique,
   OnboardingState,
   QuizSession,
+  SyncIndex,
 } from '../types';
+import { emptySyncIndex } from '../lib/sync/stamp';
 
 export const emptyProfile: UserProfile = {
   name: '',
@@ -84,6 +86,8 @@ export interface EmptyDatabase {
   onboarding: OnboardingState;
   quizSessions: QuizSession[];
   readingProgress: Record<string, number>;
+  /** Carimbos de alteração p/ sincronização entre dispositivos (Fase Sync). */
+  syncIndex: SyncIndex;
 }
 
 export function emptyDatabase(): EmptyDatabase {
@@ -114,5 +118,6 @@ export function emptyDatabase(): EmptyDatabase {
     onboarding: emptyOnboarding,
     quizSessions: [],
     readingProgress: {},
+    syncIndex: emptySyncIndex(),
   };
 }

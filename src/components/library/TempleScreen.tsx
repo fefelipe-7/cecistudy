@@ -10,6 +10,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import type { TempleSection } from '../../types';
 
 interface TempleCard {
   id: string;
@@ -19,8 +20,8 @@ interface TempleCard {
   bubble: string;
   titleHover: string;
   chevron: string;
-  toast: string;
-  action?: 'familias';
+  toast?: string;
+  action?: 'familias' | TempleSection;
 }
 
 const TEMPLE_CARDS: TempleCard[] = [
@@ -43,7 +44,7 @@ const TEMPLE_CARDS: TempleCard[] = [
     bubble: 'bg-surface-blue border border-ceci-border-academic text-ceci-academic-strong group-hover:bg-ceci-academic-strong group-hover:text-white',
     titleHover: 'group-hover:text-ceci-academic-strong',
     chevron: 'text-ceci-academic-strong',
-    toast: 'em breve: conceitos ♡',
+    action: 'conceitos',
   },
   {
     id: 'autores',
@@ -53,7 +54,7 @@ const TEMPLE_CARDS: TempleCard[] = [
     bubble: 'bg-surface-muted border border-ceci-border-default text-beige-700 group-hover:bg-beige-700 group-hover:text-white',
     titleHover: 'group-hover:text-beige-700',
     chevron: 'text-beige-700',
-    toast: 'em breve: autores ♡',
+    action: 'autores',
   },
   {
     id: 'tecnicas',
@@ -63,7 +64,7 @@ const TEMPLE_CARDS: TempleCard[] = [
     bubble: 'bg-surface-mint-soft border border-ceci-border-academic text-success-deep group-hover:bg-success-deep group-hover:text-white',
     titleHover: 'group-hover:text-success-deep',
     chevron: 'text-success-deep',
-    toast: 'em breve: técnicas ♡',
+    action: 'tecnicas',
   },
   {
     id: 'comparacoes',
@@ -78,11 +79,13 @@ const TEMPLE_CARDS: TempleCard[] = [
 ];
 
 export const TempleScreen: React.FC = () => {
-  const { showToast, openFamilies } = useApp();
+  const { showToast, openFamilies, openTempleSection } = useApp();
 
   const handleCardClick = (card: TempleCard) => {
     if (card.action === 'familias') openFamilies();
-    else showToast(card.toast);
+    else if (card.action === 'conceitos' || card.action === 'autores' || card.action === 'tecnicas')
+      openTempleSection(card.action);
+    else showToast(card.toast ?? 'em breve ♡');
   };
 
   return (

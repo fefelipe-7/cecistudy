@@ -1,0 +1,11 @@
+{
+  "id": "domain-comportamentais",
+  "nome": "Técnicas Comportamentais",
+  "slug": "comportamentais",
+  "descricaoCurta": "Aprendizagem por consequências, exposição a contingências e construção de repertórios.",
+  "ordemExibicao": 2,
+  "quantidadeDeclarada": 15,
+  "quantidadeNominal": 15,
+  "status": "published",
+  "sourcePath": "content/techniques/comportamentais/category.json"
+}

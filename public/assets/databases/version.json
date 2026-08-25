@@ -1,14 +1,21 @@
 {
   "database": "cecistudy_catalog.db",
-  "version": "2026.08.20.1",
-  "contentHash": "0bc2a5d7bf064647745f4aeb53ee0ed1f5702e0dc9943ab021f24c2f50650f09",
-  "builtAt": "2026-08-23T18:24:31.257Z",
+  "version": "2026.08.24.1",
+  "contentHash": "8e4cf2e2f04fecf7fe108d6648143d64e90ebc106dfaa629fbb3763f0ef701cb",
+  "builtAt": "2026-08-25T13:33:01.924Z",
   "sourceSchemaVersion": 1,
   "counts": {
-    "areas": 36,
+    "areas": 18,
     "approachFamilies": 10,
     "approaches": 97,
-    "questions": 745,
-    "works": 262
+    "questions": 3002,
+    "works": 262,
+    "conceptDomains": 12,
+    "concepts": 225,
+    "authors": 139,
+    "techniqueCategories": 10,
+    "techniques": 135,
+    "questionCategories": 18,
+    "topics": 1518
   }
 }

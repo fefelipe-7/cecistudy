@@ -15,7 +15,6 @@ import { CourseDetailView } from './CourseDetailView';
 import { UnderlineTabBar } from '../ui/UnderlineTabBar';
 import { ManageSurface } from '../ui/ManageSurface';
 import { useApp } from '../../context/AppContext';
-import { deriveCourseProgress } from '../../lib/courseProgress';
 import { SectionTitle } from '../ui/SectionTitle';
 import { CourseIcon } from '../ui/CourseIcon';
 import { Mascote } from '../ui/Mascote';
@@ -302,10 +301,6 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
             {courses.map((c) => {
               const courseClassCount = classes.filter((cl) => cl.courseId === c.id).length;
               const nextExam = exams.find((e) => e.courseId === c.id && !e.completed);
-              const { value: courseProgress } = deriveCourseProgress(c, {
-                classNotes: classes,
-                exams,
-              });
 
               return (
                 <ManageSurface
@@ -345,20 +340,6 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
                       </span>
                     )}
                   </div>
-
-                  {courseProgress > 0 && (
-                    <div className="flex items-center gap-2">
-                      <div className="flex-1 h-1.5 rounded-full bg-surface-muted overflow-hidden">
-                        <div
-                          className="h-full rounded-full transition-all"
-                          style={{ width: `${Math.max(0, Math.min(100, courseProgress))}%`, backgroundColor: c.color || '#B94862' }}
-                        />
-                      </div>
-                      <span className="text-[10px] font-bold shrink-0" style={{ color: c.color || '#B94862' }}>
-                        {courseProgress}%
-                      </span>
-                    </div>
-                  )}
 
                   <div className="flex items-center justify-between gap-2">
                     <div className="min-w-0">

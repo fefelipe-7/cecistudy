@@ -1,0 +1,303 @@
+{
+  "schemaVersion": 1,
+  "group": {
+    "id": "qg-psicopatologia-clinica-e-saude-mental-psicanalise-humanismo-e-clinica",
+    "title": "Psicopatologia, Clínica e Saúde Mental — Psicanálise, Humanismo e Clínica",
+    "categoryId": "cat-psicopatologia-clinica-e-saude-mental",
+    "categoryTitle": "Psicopatologia, Clínica e Saúde Mental",
+    "block": "Psicanálise, Humanismo e Clínica",
+    "status": "published",
+    "source": "Cecistudy content catalog",
+    "sourcePath": "content/questions/psicopatologia-clinica-e-saude-mental/psicanalise-humanismo-e-clinica.questions.json"
+  },
+  "questions": [
+    {
+      "id": "real_marinha_2025_psicologia_verde_q18",
+      "stem": "De acordo com Rodrigues et a!. (2022), na base cognitiva do preconceito estão as crenças sobre características pessoais que atribuímos a pessoas ou grupos, chamadas de estereótipos. Sobre esse tópico, assinale a opção correta.",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial da Marinha identificado. A explicação pedagógica individual será revisada com base no enunciado e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Na ativação automática temos controle de crenças muito disseminadas culturalmente ao nos depararmos com certas pessoas em dadas circunstâncias.",
+          "isCorrect": true
+        },
+        {
+          "id": "b",
+          "text": "B) A ativação controlada poria um freio no processo de discriminação, sem, entretanto, impedilo de prosseguir adiante.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) A “ameaça estereotípica\" consiste em uma das causas do preconceito.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Os estereótipos podem ser corretos ou incorretos e também positivos, neutros ou negativos.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Os preconceitos possuem um componente afetivo, a saber, os sentimentos negativos, e um componente comportamental caracterizado pela agressão. CP-T/2025 Página: 4/11",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-psicologia-clinica-e-psicoterapias",
+        "topic-psicopatologia-e-clinica"
+      ],
+      "approachIds": [
+        "app-psicopatologia-e-clinica"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-62eb39700ad2",
+        "work-fc29b6f4e6ce"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Marinha",
+      "exam": "CP-T 2025 — Quadro Técnico — Psicologia — Prova Verde",
+      "year": 2025,
+      "questionNumber": 18,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "gabarito oficial Marinha",
+      "categoryId": "cat-psicopatologia-clinica-e-saude-mental",
+      "areaId": "area-psicologia-clinica-e-psicoterapias",
+      "legacyOriginId": "real_marinha_2025_psicologia_verde_q18",
+      "legacy": {
+        "categoriaFinal": "Psicopatologia, Clínica e Saúde Mental",
+        "abordagemFinal": "Psicopatologia e Clínica",
+        "area": "Psicologia Clínica e Psicoterapias",
+        "tema": "Psicopatologia e Clínica",
+        "subtema": "Psicologia Clínica e Psicoterapias",
+        "blocoQuiz": "Psicanálise, Humanismo e Clínica",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_marinha_2025_psicologia_verde_q21",
+      "stem": "Toledo et al. (in: Franco, 2015) abordam os sentimentos contratransferenciais intensos que podem aparecer no psicoterapeuta de vítimas de traumas. Dentre os conteúdos contratransferenciais que mais podem se manifestar de modo inconsciente está um sentimento extremamente desagradável para um cuidador e, a fim de evitá-lo, o profissional pode criar um distanciamento daquele que está sofrendo ou tornar-se muito envolvido. Assim, assinale a opção que apresenta o conteúdo contratransferecial supracitado.",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial da Marinha identificado. A explicação pedagógica individual será revisada com base no enunciado e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Impotência.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Inquietação.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Raiva e hostilidade.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Negação.",
+          "isCorrect": true
+        },
+        {
+          "id": "e",
+          "text": "E) Vergonha e embaraço.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-psicologia-clinica-e-psicoterapias",
+        "topic-psicopatologia-e-clinica"
+      ],
+      "approachIds": [
+        "app-psicopatologia-e-clinica"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-62eb39700ad2",
+        "work-fc29b6f4e6ce"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Marinha",
+      "exam": "CP-T 2025 — Quadro Técnico — Psicologia — Prova Verde",
+      "year": 2025,
+      "questionNumber": 21,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "gabarito oficial Marinha",
+      "categoryId": "cat-psicopatologia-clinica-e-saude-mental",
+      "areaId": "area-psicologia-clinica-e-psicoterapias",
+      "legacyOriginId": "real_marinha_2025_psicologia_verde_q21",
+      "legacy": {
+        "categoriaFinal": "Psicopatologia, Clínica e Saúde Mental",
+        "abordagemFinal": "Psicopatologia e Clínica",
+        "area": "Psicologia Clínica e Psicoterapias",
+        "tema": "Psicopatologia e Clínica",
+        "subtema": "Psicologia Clínica e Psicoterapias",
+        "blocoQuiz": "Psicanálise, Humanismo e Clínica",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_marinha_2025_psicologia_verde_q24",
+      "stem": "Zimerman (2000) lista os principais requisitos que, em termos ideais, são indispensáveis na formação e prática de um grupoterapeuta. Com base nesses critérios, assinale a opção que apresenta o requisito que afirma que o grupoterapeuta não tem o direito de invadir o espaço autêntico de seus pacientes, impondo-lhes valores e expectativas.",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial da Marinha identificado. A explicação pedagógica individual será revisada com base no enunciado e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Capacidade de empatia.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Respeito.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Capacidade de intuição.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Capacidade de ser “continente”.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Senso de ética.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-psicologia-clinica-e-psicoterapias",
+        "topic-psicopatologia-e-clinica"
+      ],
+      "approachIds": [
+        "app-psicopatologia-e-clinica"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-62eb39700ad2",
+        "work-fc29b6f4e6ce"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Marinha",
+      "exam": "CP-T 2025 — Quadro Técnico — Psicologia — Prova Verde",
+      "year": 2025,
+      "questionNumber": 24,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "gabarito oficial Marinha",
+      "categoryId": "cat-psicopatologia-clinica-e-saude-mental",
+      "areaId": "area-psicologia-clinica-e-psicoterapias",
+      "legacyOriginId": "real_marinha_2025_psicologia_verde_q24",
+      "legacy": {
+        "categoriaFinal": "Psicopatologia, Clínica e Saúde Mental",
+        "abordagemFinal": "Psicopatologia e Clínica",
+        "area": "Psicologia Clínica e Psicoterapias",
+        "tema": "Psicopatologia e Clínica",
+        "subtema": "Psicologia Clínica e Psicoterapias",
+        "blocoQuiz": "Psicanálise, Humanismo e Clínica",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_marinha_2025_psicologia_verde_q44",
+      "stem": "Como Freud (In: Garcia-Roza, 2008) denominou a região psíquica inconsciente, na qual não há negação, obediência à não contradição, vontade coletiva, juízo de valor, bem, mal, moralidade, assim como também não há temporalidade?",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial da Marinha identificado. A explicação pedagógica individual será revisada com base no enunciado e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Superego.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Princípio do Prazer.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Imaginário.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) ld.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Real.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-psicologia-clinica-e-psicoterapias",
+        "topic-psicopatologia-e-clinica"
+      ],
+      "approachIds": [
+        "app-psicopatologia-e-clinica"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-62eb39700ad2",
+        "work-fc29b6f4e6ce"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Marinha",
+      "exam": "CP-T 2025 — Quadro Técnico — Psicologia — Prova Verde",
+      "year": 2025,
+      "questionNumber": 44,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "gabarito oficial Marinha",
+      "categoryId": "cat-psicopatologia-clinica-e-saude-mental",
+      "areaId": "area-psicologia-clinica-e-psicoterapias",
+      "legacyOriginId": "real_marinha_2025_psicologia_verde_q44",
+      "legacy": {
+        "categoriaFinal": "Psicopatologia, Clínica e Saúde Mental",
+        "abordagemFinal": "Psicopatologia e Clínica",
+        "area": "Psicologia Clínica e Psicoterapias",
+        "tema": "Psicopatologia e Clínica",
+        "subtema": "Psicologia Clínica e Psicoterapias",
+        "blocoQuiz": "Psicanálise, Humanismo e Clínica",
+        "anulada": false,
+        "reviewNote": true
+      }
+    }
+  ]
+}

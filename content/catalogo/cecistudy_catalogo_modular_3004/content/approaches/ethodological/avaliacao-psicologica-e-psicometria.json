@@ -1,0 +1,10 @@
+{
+  "id": "app-avaliacao-psicologica-e-psicometria",
+  "familyId": "family-methodological",
+  "name": "Avaliação Psicológica e Psicometria",
+  "shortName": "Avaliação Psicológica e Psicometria",
+  "summary": "Abordagem editorial do Cecistudy: Avaliação Psicológica e Psicometria.",
+  "questionCount": 156,
+  "status": "published",
+  "sourcePath": "content/approaches/ethodological/avaliacao-psicologica-e-psicometria.json"
+}

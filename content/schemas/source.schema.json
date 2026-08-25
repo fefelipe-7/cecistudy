@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CeciStudy fonte de tecnica",
+  "type": "object",
+  "required": [
+    "id",
+    "titulo",
+    "tipo",
+    "url"
+  ],
+  "additionalProperties": true
+}

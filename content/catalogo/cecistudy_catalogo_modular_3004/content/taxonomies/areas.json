@@ -1,0 +1,737 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "area-psicologia",
+      "name": "Psicologia",
+      "displayOrder": 1,
+      "questionCount": 317
+    },
+    {
+      "id": "area-a-classificar-na-revisao-tematica",
+      "name": "A classificar na revisão temática",
+      "displayOrder": 2,
+      "questionCount": 240
+    },
+    {
+      "id": "area-psicologia-escolar-e-educacional",
+      "name": "Psicologia Escolar e Educacional",
+      "displayOrder": 3,
+      "questionCount": 220
+    },
+    {
+      "id": "area-fundamentos-teorias-e-etica",
+      "name": "Fundamentos, Teorias e Ética",
+      "displayOrder": 4,
+      "questionCount": 209
+    },
+    {
+      "id": "area-psicologia-organizacional-e-do-trabalho",
+      "name": "Psicologia Organizacional e do Trabalho",
+      "displayOrder": 5,
+      "questionCount": 121
+    },
+    {
+      "id": "area-psicologia-juridica-e-forense",
+      "name": "Psicologia Jurídica e Forense",
+      "displayOrder": 6,
+      "questionCount": 118
+    },
+    {
+      "id": "area-avaliacao-psicologica-e-psicometria",
+      "name": "Avaliação Psicológica e Psicometria",
+      "displayOrder": 7,
+      "questionCount": 111
+    },
+    {
+      "id": "area-psicologia-da-saude-e-politicas-publicas",
+      "name": "Psicologia da Saúde e Políticas Públicas",
+      "displayOrder": 8,
+      "questionCount": 99
+    },
+    {
+      "id": "area-desenvolvimento",
+      "name": "Desenvolvimento",
+      "displayOrder": 9,
+      "questionCount": 83
+    },
+    {
+      "id": "area-neuropsicologia-e-psicobiologia",
+      "name": "Neuropsicologia e Psicobiologia",
+      "displayOrder": 10,
+      "questionCount": 82
+    },
+    {
+      "id": "area-psicanalise",
+      "name": "Psicanálise",
+      "displayOrder": 11,
+      "questionCount": 79
+    },
+    {
+      "id": "area-psicologia-clinica-e-psicoterapias",
+      "name": "Psicologia Clínica e Psicoterapias",
+      "displayOrder": 12,
+      "questionCount": 79
+    },
+    {
+      "id": "area-psicologia-da-saude",
+      "name": "Psicologia da Saúde",
+      "displayOrder": 13,
+      "questionCount": 74
+    },
+    {
+      "id": "area-pesquisa-metodologia-e-estatistica",
+      "name": "Pesquisa, Metodologia e Estatística",
+      "displayOrder": 14,
+      "questionCount": 65
+    },
+    {
+      "id": "area-neuropsicologia",
+      "name": "Neuropsicologia",
+      "displayOrder": 15,
+      "questionCount": 62
+    },
+    {
+      "id": "area-psicopatologia",
+      "name": "Psicopatologia",
+      "displayOrder": 16,
+      "questionCount": 54
+    },
+    {
+      "id": "area-psicologia-juridica-familiar-e-do-desenvolvimento",
+      "name": "Psicologia Jurídica, Familiar e do Desenvolvimento",
+      "displayOrder": 17,
+      "questionCount": 52
+    },
+    {
+      "id": "area-psicologia-da-personalidade",
+      "name": "Psicologia da Personalidade",
+      "displayOrder": 18,
+      "questionCount": 48
+    },
+    {
+      "id": "area-psicologia-clinica-2",
+      "name": "Psicologia clínica",
+      "displayOrder": 19,
+      "questionCount": 43
+    },
+    {
+      "id": "area-psicanalise-e-psicodinamica",
+      "name": "Psicanálise e Psicodinâmica",
+      "displayOrder": 20,
+      "questionCount": 41
+    },
+    {
+      "id": "area-etica-e-legislacao-profissional",
+      "name": "Ética e Legislação Profissional",
+      "displayOrder": 21,
+      "questionCount": 40
+    },
+    {
+      "id": "area-psicologia-social",
+      "name": "Psicologia Social",
+      "displayOrder": 22,
+      "questionCount": 39
+    },
+    {
+      "id": "area-psicologia-cognitiva",
+      "name": "Psicologia Cognitiva",
+      "displayOrder": 23,
+      "questionCount": 36
+    },
+    {
+      "id": "area-avaliacao-psicologica",
+      "name": "Avaliação Psicológica",
+      "displayOrder": 24,
+      "questionCount": 31
+    },
+    {
+      "id": "area-psicologia-clinica-e-saude",
+      "name": "Psicologia Clínica e Saúde",
+      "displayOrder": 25,
+      "questionCount": 31
+    },
+    {
+      "id": "area-psicopatologia-e-saude-mental",
+      "name": "Psicopatologia e Saúde Mental",
+      "displayOrder": 26,
+      "questionCount": 31
+    },
+    {
+      "id": "area-aprendizagem-e-behaviorismo",
+      "name": "Aprendizagem e Behaviorismo",
+      "displayOrder": 27,
+      "questionCount": 30
+    },
+    {
+      "id": "area-fundamentos-e-historia",
+      "name": "Fundamentos e História",
+      "displayOrder": 28,
+      "questionCount": 30
+    },
+    {
+      "id": "area-personalidade",
+      "name": "Personalidade",
+      "displayOrder": 29,
+      "questionCount": 25
+    },
+    {
+      "id": "area-psicologia-do-transito",
+      "name": "Psicologia do Trânsito",
+      "displayOrder": 30,
+      "questionCount": 25
+    },
+    {
+      "id": "area-deficiencia-reabilitacao-e-inclusao",
+      "name": "Deficiência, Reabilitação e Inclusão",
+      "displayOrder": 31,
+      "questionCount": 20
+    },
+    {
+      "id": "area-humanista-existencial-e-fenomenologica",
+      "name": "Humanista, Existencial e Fenomenológica",
+      "displayOrder": 32,
+      "questionCount": 20
+    },
+    {
+      "id": "area-organizacional-e-do-trabalho",
+      "name": "Organizacional e do Trabalho",
+      "displayOrder": 33,
+      "questionCount": 20
+    },
+    {
+      "id": "area-psicologia-sistemica-e-familiar",
+      "name": "Psicologia Sistêmica e Familiar",
+      "displayOrder": 34,
+      "questionCount": 20
+    },
+    {
+      "id": "area-psicologia-do-esporte",
+      "name": "Psicologia do Esporte",
+      "displayOrder": 35,
+      "questionCount": 20
+    },
+    {
+      "id": "area-saude-e-psicologia-hospitalar",
+      "name": "Saúde e Psicologia Hospitalar",
+      "displayOrder": 36,
+      "questionCount": 20
+    },
+    {
+      "id": "area-fundamentos-e-teorias-da-psicologia",
+      "name": "Fundamentos e Teorias da Psicologia",
+      "displayOrder": 37,
+      "questionCount": 16
+    },
+    {
+      "id": "area-psicologia-clinica",
+      "name": "Psicologia Clínica",
+      "displayOrder": 38,
+      "questionCount": 16
+    },
+    {
+      "id": "area-psicologia-social-e-grupos",
+      "name": "Psicologia Social e Grupos",
+      "displayOrder": 39,
+      "questionCount": 16
+    },
+    {
+      "id": "area-escolar-e-educacional",
+      "name": "Escolar e Educacional",
+      "displayOrder": 40,
+      "questionCount": 15
+    },
+    {
+      "id": "area-pesquisa",
+      "name": "Pesquisa",
+      "displayOrder": 41,
+      "questionCount": 15
+    },
+    {
+      "id": "area-psicologia-de-grupos",
+      "name": "Psicologia de Grupos",
+      "displayOrder": 42,
+      "questionCount": 15
+    },
+    {
+      "id": "area-trauma-crises-e-emergencias",
+      "name": "Trauma, Crises e Emergências",
+      "displayOrder": 43,
+      "questionCount": 15
+    },
+    {
+      "id": "area-psicologia-do-envelhecimento",
+      "name": "Psicologia do Envelhecimento",
+      "displayOrder": 44,
+      "questionCount": 14
+    },
+    {
+      "id": "area-saude-sus-e-politicas-publicas",
+      "name": "Saúde, SUS e Políticas Públicas",
+      "displayOrder": 45,
+      "questionCount": 14
+    },
+    {
+      "id": "area-psicopatologia-e-clinica",
+      "name": "Psicopatologia e Clínica",
+      "displayOrder": 46,
+      "questionCount": 11
+    },
+    {
+      "id": "area-comunitaria-e-politicas-publicas",
+      "name": "Comunitária e Políticas Públicas",
+      "displayOrder": 47,
+      "questionCount": 10
+    },
+    {
+      "id": "area-conhecimentos-gerais",
+      "name": "Conhecimentos Gerais",
+      "displayOrder": 48,
+      "questionCount": 10
+    },
+    {
+      "id": "area-fundamentos-historia-e-teorias",
+      "name": "Fundamentos, História e Teorias",
+      "displayOrder": 49,
+      "questionCount": 10
+    },
+    {
+      "id": "area-juridica-e-forense",
+      "name": "Jurídica e Forense",
+      "displayOrder": 50,
+      "questionCount": 10
+    },
+    {
+      "id": "area-psicologia-ambiental",
+      "name": "Psicologia Ambiental",
+      "displayOrder": 51,
+      "questionCount": 10
+    },
+    {
+      "id": "area-fundamentos-da-neuropsicologia",
+      "name": "Fundamentos da Neuropsicologia",
+      "displayOrder": 52,
+      "questionCount": 9
+    },
+    {
+      "id": "area-estatistica",
+      "name": "Estatística",
+      "displayOrder": 53,
+      "questionCount": 8
+    },
+    {
+      "id": "area-humanista-existencial-fenomenologica",
+      "name": "Humanista-Existencial-Fenomenológica",
+      "displayOrder": 54,
+      "questionCount": 8
+    },
+    {
+      "id": "area-comportamento-aprendizagem",
+      "name": "Comportamento/Aprendizagem",
+      "displayOrder": 55,
+      "questionCount": 5
+    },
+    {
+      "id": "area-genero-raca-diversidade-e-direitos-humanos",
+      "name": "Gênero, Raça, Diversidade e Direitos Humanos",
+      "displayOrder": 56,
+      "questionCount": 5
+    },
+    {
+      "id": "area-legislacao-e-administracao-em-saude",
+      "name": "Legislação e Administração em Saúde",
+      "displayOrder": 57,
+      "questionCount": 5
+    },
+    {
+      "id": "area-pesquisa-e-metodologia",
+      "name": "Pesquisa e Metodologia",
+      "displayOrder": 58,
+      "questionCount": 5
+    },
+    {
+      "id": "area-psicologia-comportamental",
+      "name": "Psicologia - Comportamental",
+      "displayOrder": 59,
+      "questionCount": 5
+    },
+    {
+      "id": "area-psicologia-pesquisa-metodologia-e-estatistica",
+      "name": "Psicologia - Pesquisa, Metodologia e Estatística",
+      "displayOrder": 60,
+      "questionCount": 5
+    },
+    {
+      "id": "area-psicologia-ambiental-e-sustentabilidade",
+      "name": "Psicologia Ambiental e Sustentabilidade",
+      "displayOrder": 61,
+      "questionCount": 5
+    },
+    {
+      "id": "area-psicologia-clinica-abordagens-humanista-existencial-e-fenomenologica",
+      "name": "Psicologia clínica – Abordagens Humanista, Existencial e Fenomenológica",
+      "displayOrder": 62,
+      "questionCount": 5
+    },
+    {
+      "id": "area-psicologia-clinica-humana",
+      "name": "Psicologia clínica/humana",
+      "displayOrder": 63,
+      "questionCount": 5
+    },
+    {
+      "id": "area-psicologia-pesquisa-metodologia-e-estatistica-2",
+      "name": "Psicologia – Pesquisa, Metodologia e Estatística",
+      "displayOrder": 64,
+      "questionCount": 5
+    },
+    {
+      "id": "area-psicologia-do-envelhecimento-2",
+      "name": "psicologia_do_envelhecimento",
+      "displayOrder": 65,
+      "questionCount": 5
+    },
+    {
+      "id": "area-neuropsicologia-clinica",
+      "name": "Neuropsicologia clínica",
+      "displayOrder": 66,
+      "questionCount": 4
+    },
+    {
+      "id": "area-psicologia-social-e-comunitaria",
+      "name": "Psicologia Social e Comunitária",
+      "displayOrder": 67,
+      "questionCount": 4
+    },
+    {
+      "id": "area-psicologia-do-desenvolvimento",
+      "name": "Psicologia do Desenvolvimento",
+      "displayOrder": 68,
+      "questionCount": 4
+    },
+    {
+      "id": "area-psicometria-e-validade-2",
+      "name": "Psicometria e validade",
+      "displayOrder": 69,
+      "questionCount": 4
+    },
+    {
+      "id": "area-desenvolvimento-humano",
+      "name": "Desenvolvimento Humano",
+      "displayOrder": 70,
+      "questionCount": 3
+    },
+    {
+      "id": "area-linguagem",
+      "name": "Linguagem",
+      "displayOrder": 71,
+      "questionCount": 3
+    },
+    {
+      "id": "area-metodologia-de-pesquisa",
+      "name": "Metodologia de Pesquisa",
+      "displayOrder": 72,
+      "questionCount": 3
+    },
+    {
+      "id": "area-neuroanatomia",
+      "name": "Neuroanatomia",
+      "displayOrder": 73,
+      "questionCount": 3
+    },
+    {
+      "id": "area-psicologia-humanista",
+      "name": "Psicologia Humanista",
+      "displayOrder": 74,
+      "questionCount": 3
+    },
+    {
+      "id": "area-psicometria",
+      "name": "Psicometria",
+      "displayOrder": 75,
+      "questionCount": 3
+    },
+    {
+      "id": "area-teorias-da-personalidade",
+      "name": "Teorias da Personalidade",
+      "displayOrder": 76,
+      "questionCount": 3
+    },
+    {
+      "id": "area-etica-direitos-humanos-e-regulamentacao",
+      "name": "Ética, Direitos Humanos e Regulamentação",
+      "displayOrder": 77,
+      "questionCount": 3
+    },
+    {
+      "id": "area-amostragem",
+      "name": "Amostragem",
+      "displayOrder": 78,
+      "questionCount": 2
+    },
+    {
+      "id": "area-atencao",
+      "name": "Atenção",
+      "displayOrder": 79,
+      "questionCount": 2
+    },
+    {
+      "id": "area-funcoes-executivas",
+      "name": "Funções executivas",
+      "displayOrder": 80,
+      "questionCount": 2
+    },
+    {
+      "id": "area-memoria",
+      "name": "Memória",
+      "displayOrder": 81,
+      "questionCount": 2
+    },
+    {
+      "id": "area-pesquisa-e-metodos",
+      "name": "Pesquisa e Métodos",
+      "displayOrder": 82,
+      "questionCount": 2
+    },
+    {
+      "id": "area-psicodrama",
+      "name": "Psicodrama",
+      "displayOrder": 83,
+      "questionCount": 2
+    },
+    {
+      "id": "area-saude-mental-e-reforma-psiquiatrica",
+      "name": "Saúde Mental e Reforma Psiquiátrica",
+      "displayOrder": 84,
+      "questionCount": 2
+    },
+    {
+      "id": "area-abordagens-humanistas-e-existenciais",
+      "name": "Abordagens Humanistas e Existenciais",
+      "displayOrder": 85,
+      "questionCount": 1
+    },
+    {
+      "id": "area-avaliacao-da-personalidade",
+      "name": "Avaliação da personalidade",
+      "displayOrder": 86,
+      "questionCount": 1
+    },
+    {
+      "id": "area-comportamento-e-analise-funcional",
+      "name": "Comportamento e Análise Funcional",
+      "displayOrder": 87,
+      "questionCount": 1
+    },
+    {
+      "id": "area-crises",
+      "name": "Crises",
+      "displayOrder": 88,
+      "questionCount": 1
+    },
+    {
+      "id": "area-crises-e-emergencias",
+      "name": "Crises e emergências",
+      "displayOrder": 89,
+      "questionCount": 1
+    },
+    {
+      "id": "area-delineamentos",
+      "name": "Delineamentos",
+      "displayOrder": 90,
+      "questionCount": 1
+    },
+    {
+      "id": "area-desastres",
+      "name": "Desastres",
+      "displayOrder": 91,
+      "questionCount": 1
+    },
+    {
+      "id": "area-desenvolvimento-da-personalidade",
+      "name": "Desenvolvimento da personalidade",
+      "displayOrder": 92,
+      "questionCount": 1
+    },
+    {
+      "id": "area-existencial-fenomenologica",
+      "name": "Existencial-Fenomenológica",
+      "displayOrder": 93,
+      "questionCount": 1
+    },
+    {
+      "id": "area-fenomenologica-existencial",
+      "name": "Fenomenológica-Existencial",
+      "displayOrder": 94,
+      "questionCount": 1
+    },
+    {
+      "id": "area-fundamentos-da-psicologia",
+      "name": "Fundamentos da Psicologia",
+      "displayOrder": 95,
+      "questionCount": 1
+    },
+    {
+      "id": "area-generalizacao-e-discriminacao",
+      "name": "Generalização e Discriminação",
+      "displayOrder": 96,
+      "questionCount": 1
+    },
+    {
+      "id": "area-gestalt-terapia",
+      "name": "Gestalt-terapia",
+      "displayOrder": 97,
+      "questionCount": 1
+    },
+    {
+      "id": "area-luto",
+      "name": "Luto",
+      "displayOrder": 98,
+      "questionCount": 1
+    },
+    {
+      "id": "area-metodologia",
+      "name": "Metodologia",
+      "displayOrder": 99,
+      "questionCount": 1
+    },
+    {
+      "id": "area-metodologia-de-pesquisa-2",
+      "name": "Metodologia de pesquisa",
+      "displayOrder": 100,
+      "questionCount": 1
+    },
+    {
+      "id": "area-neuroanatomia-funcional",
+      "name": "Neuroanatomia Funcional",
+      "displayOrder": 101,
+      "questionCount": 1
+    },
+    {
+      "id": "area-pesquisa-qualitativa",
+      "name": "Pesquisa Qualitativa",
+      "displayOrder": 102,
+      "questionCount": 1
+    },
+    {
+      "id": "area-politicas-publicas-e-sus",
+      "name": "Políticas Públicas e SUS",
+      "displayOrder": 103,
+      "questionCount": 1
+    },
+    {
+      "id": "area-psicofarmacologia",
+      "name": "Psicofarmacologia",
+      "displayOrder": 104,
+      "questionCount": 1
+    },
+    {
+      "id": "area-psicologia-analitica",
+      "name": "Psicologia Analítica",
+      "displayOrder": 105,
+      "questionCount": 1
+    },
+    {
+      "id": "area-psicologia-clinica-comportamental",
+      "name": "Psicologia Clínica / Comportamental",
+      "displayOrder": 106,
+      "questionCount": 1
+    },
+    {
+      "id": "area-psicologia-cognitiva-e-tcc",
+      "name": "Psicologia Cognitiva e TCC",
+      "displayOrder": 107,
+      "questionCount": 1
+    },
+    {
+      "id": "area-psicologia-existencial",
+      "name": "Psicologia Existencial",
+      "displayOrder": 108,
+      "questionCount": 1
+    },
+    {
+      "id": "area-psicologia-existencial-humanista",
+      "name": "Psicologia Existencial-Humanista",
+      "displayOrder": 109,
+      "questionCount": 1
+    },
+    {
+      "id": "area-psicologia-social-e-aprendizagem",
+      "name": "Psicologia Social e Aprendizagem",
+      "displayOrder": 110,
+      "questionCount": 1
+    },
+    {
+      "id": "area-psicologia-clinica-fenomenologia-gestalt",
+      "name": "Psicologia clínica / fenomenologia / gestalt",
+      "displayOrder": 111,
+      "questionCount": 1
+    },
+    {
+      "id": "area-psicologia-clinica-psicoterapia-de-grupo",
+      "name": "Psicologia clínica / psicoterapia de grupo",
+      "displayOrder": 112,
+      "questionCount": 1
+    },
+    {
+      "id": "area-psicologia-clinica-humanista-existencial-e-fenomenologica",
+      "name": "Psicologia clínica – Humanista/Existencial e Fenomenológica",
+      "displayOrder": 113,
+      "questionCount": 1
+    },
+    {
+      "id": "area-psicologia-da-aprendizagem",
+      "name": "Psicologia da Aprendizagem",
+      "displayOrder": 114,
+      "questionCount": 1
+    },
+    {
+      "id": "area-psicologia-da-aprendizagem-social",
+      "name": "Psicologia da Aprendizagem Social",
+      "displayOrder": 115,
+      "questionCount": 1
+    },
+    {
+      "id": "area-psicologia-da-educacao-comportamental",
+      "name": "Psicologia da Educação / Comportamental",
+      "displayOrder": 116,
+      "questionCount": 1
+    },
+    {
+      "id": "area-psicologia-comportamento-e-aprendizagem",
+      "name": "Psicologia – comportamento e aprendizagem",
+      "displayOrder": 117,
+      "questionCount": 1
+    },
+    {
+      "id": "area-psicometria-e-validade",
+      "name": "Psicometria e Validade",
+      "displayOrder": 118,
+      "questionCount": 1
+    },
+    {
+      "id": "area-punicao-e-extincao-no-condicionamento-operante",
+      "name": "Punição e Extinção no Condicionamento Operante",
+      "displayOrder": 119,
+      "questionCount": 1
+    },
+    {
+      "id": "area-reforcamento-e-condicionamento-operante",
+      "name": "Reforçamento e Condicionamento Operante",
+      "displayOrder": 120,
+      "questionCount": 1
+    },
+    {
+      "id": "area-terapia-cognitivo-comportamental",
+      "name": "Terapia Cognitivo-Comportamental",
+      "displayOrder": 121,
+      "questionCount": 1
+    },
+    {
+      "id": "area-trauma",
+      "name": "Trauma",
+      "displayOrder": 122,
+      "questionCount": 1
+    }
+  ]
+}

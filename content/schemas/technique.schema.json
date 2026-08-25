@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CeciStudy tecnica",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "dominioId",
+    "dominioIds",
+    "nome",
+    "slug",
+    "emUmaFrase",
+    "definicao",
+    "objetivo",
+    "comoFunciona",
+    "quandoEUtilizada",
+    "comoEAplicada",
+    "origem",
+    "desenvolvimentoHistorico",
+    "exemploPratico",
+    "fundamentacaoTeorica",
+    "evidencias",
+    "limitacoes",
+    "contextoClinico",
+    "observacoes",
+    "tipoTecnica",
+    "abordagemIds",
+    "modeloIds",
+    "fonteIds",
+    "tecnicasRelacionadasIds",
+    "ordemExibicao",
+    "status",
+    "sourcePath"
+  ],
+  "properties": {
+    "dominioIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "abordagemIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "modeloIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "fonteIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tecnicasRelacionadasIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "id": {
+      "type": "string"
+    },
+    "dominioId": {
+      "type": "string"
+    },
+    "nome": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "emUmaFrase": {
+      "type": "string"
+    },
+    "definicao": {
+      "type": "string"
+    },
+    "objetivo": {
+      "type": "string"
+    },
+    "comoFunciona": {
+      "type": "string"
+    },
+    "quandoEUtilizada": {
+      "type": "string"
+    },
+    "comoEAplicada": {
+      "type": "string"
+    },
+    "origem": {
+      "type": "string"
+    },
+    "desenvolvimentoHistorico": {
+      "type": "string"
+    },
+    "exemploPratico": {
+      "type": "string"
+    },
+    "fundamentacaoTeorica": {
+      "type": "string"
+    },
+    "evidencias": {
+      "type": "string"
+    },
+    "limitacoes": {
+      "type": "string"
+    },
+    "contextoClinico": {
+      "type": "string"
+    },
+    "observacoes": {
+      "type": "string"
+    },
+    "tipoTecnica": {
+      "type": "string",
+      "enum": [
+        "tecnica",
+        "procedimento",
+        "intervencao",
+        "habilidade",
+        "estrategia",
+        "exercicio",
+        "atitude_terapeutica"
+      ]
+    },
+    "classificacaoEstatuto": {
+      "type": "string"
+    },
+    "ordemExibicao": {
+      "type": "integer"
+    },
+    "status": {
+      "type": "string"
+    },
+    "sourcePath": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "group": {
+    "id": "qg-etica-direitos-humanos-e-regulamentacao-psicologia-social-grupos-e-diversidade",
+    "title": "Ética, Direitos Humanos e Regulamentação — Psicologia Social, Grupos e Diversidade",
+    "categoryId": "cat-etica-direitos-humanos-e-regulamentacao",
+    "categoryTitle": "Ética, Direitos Humanos e Regulamentação",
+    "block": "Psicologia Social, Grupos e Diversidade",
+    "status": "published",
+    "source": "Cecistudy content catalog",
+    "sourcePath": "content/questions/etica-direitos-humanos-e-regulamentacao/psicologia-social-grupos-e-diversidade.questions.json"
+  },
+  "questions": [
+    {
+      "id": "real-ibfc_mgs_2024_psicologo-021",
+      "stem": "O Decreto nº 7.053/2009 instituiu a Política Nacional para a População em Situação de Rua. Analise: I. A Política busca reintegrar a população em situação de rua ao âmbito familiar e comunitário. II. Um de seus objetivos é garantir o acesso do indivíduo aos direitos de cidadão. III. A Política considera as particularidades de vivência na rua. Estão corretas:",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "conceitual",
+      "explanation": "Questão real de prova oficial; comentário pedagógico individual ainda não produzido.",
+      "options": [
+        {
+          "id": "a",
+          "text": "I apenas.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "II e III apenas.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "I e II apenas.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "I, II e III.",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-direitos-humanos",
+        "topic-politica-nacional-para-a-populacao-em-situacao-de-rua"
+      ],
+      "approachIds": [
+        "app-psicologia-social-e-comunitaria"
+      ],
+      "authorIds": [
+        "author-brasil",
+        "author-decreto-no-7-053-2009"
+      ],
+      "referenceIds": [
+        "work-8a0815d91523",
+        "work-8ca28ba8ded5"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "IBFC",
+      "exam": "MGS — Processo Seletivo Público Simplificado, Edital nº 07/2023 — Psicólogo",
+      "year": 2024,
+      "questionNumber": 21,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/105120/ibfc-2024-mgs-psicologo-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/105120/ibfc-2024-mgs-psicologo-gabarito.pdf",
+      "officialAnswerStatus": "gabarito_oficial_pos_recurso",
+      "categoryId": "cat-etica-direitos-humanos-e-regulamentacao",
+      "areaId": "area-psicologia-social-e-comunitaria",
+      "legacyOriginId": "real-ibfc_mgs_2024_psicologo-021",
+      "legacy": {
+        "categoriaFinal": "Ética, Direitos Humanos e Regulamentação",
+        "abordagemFinal": "Psicologia Social e Comunitária",
+        "area": "Psicologia Social e Comunitária",
+        "tema": "direitos humanos",
+        "subtema": "Política Nacional para a População em Situação de Rua",
+        "blocoQuiz": "Psicologia Social, Grupos e Diversidade",
+        "anulada": false,
+        "reviewNote": true
+      }
+    }
+  ]
+}

@@ -7,7 +7,7 @@ import { parseLegacySchedule } from '../lib/schedule';
  * incremente esta versão e registre a migração correspondente em `MIGRATIONS`.
  * O export/import carrega a versão junto; o app recusa/avisa dados de versão desconhecida.
  */
-export const SCHEMA_VERSION = 9;
+export const SCHEMA_VERSION = 11;
 
 /** Versão de schema da base da usuária (antigo scaffold SQLite, hoje mantida por compatibilidade de import). */
 export const USER_SCHEMA_VERSION = 1;
@@ -97,6 +97,26 @@ export const MIGRATIONS: Record<number, Migration> = {
         return { ...c, schedule: parseLegacySchedule(schedule) };
       }
       return c;
+    });
+    return { ...data, courses: normalized };
+  },
+  // 9 → 10: índice de sincronização entre dispositivos (pareamento P2P).
+  // Bancos antigos não têm carimbos — tudo é tratado como "nunca alterado"
+  // (ts 0) até a primeira edição pós-upgrade, que passa a vencer no merge LWW.
+  10: (data) => ({
+    syncIndex: { stamps: {}, records: {}, tombstones: {} },
+    ...data,
+  }),
+  // 10 → 11: remoção do "progresso da disciplina" (`progress`/`progressOverride`).
+  // O app não exibe mais progresso; descartamos os campos dos courses salvos.
+  11: (data) => {
+    const courses = (data.courses ?? []) as Record<string, unknown>[];
+    const normalized = courses.map((c) => {
+      if (!('progress' in c) && !('progressOverride' in c)) return c;
+      const nextCourse = { ...c };
+      delete nextCourse.progress;
+      delete nextCourse.progressOverride;
+      return nextCourse;
     });
     return { ...data, courses: normalized };
   },

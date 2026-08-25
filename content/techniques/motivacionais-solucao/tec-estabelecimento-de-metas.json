@@ -1,0 +1,66 @@
+{
+  "id": "tec-estabelecimento-de-metas",
+  "nome": "Estabelecimento de metas",
+  "canonicalKey": "estabelecimento de metas",
+  "emUmaFrase": "Estabelecimento de metas é uma prática clínica ou recurso de estudo usado para trabalhar autonomia, ambivalência, recursos, exceções e metas escolhidas pelo cliente.",
+  "definicao": "Estabelecimento de metas é uma prática clínica ou recurso de estudo usado para trabalhar autonomia, ambivalência, recursos, exceções e metas escolhidas pelo cliente. Em sentido técnico, sua definição deve ser vinculada ao tipo de tarefa, atitude ou processo que organiza a sessão, e não apenas ao nome da escola.",
+  "objetivo": "Utilizar estabelecimento de metas para apoiar objetivos clínicos definidos colaborativamente, sempre considerando a formulação do caso, a preferência da pessoa e o contexto.",
+  "comoFunciona": "O mecanismo proposto depende da categoria: autonomia, ambivalência, recursos, exceções e metas escolhidas pelo cliente. No caso de estabelecimento de metas, o terapeuta deve explicitar qual aprendizagem ou processo está sendo buscado e como será observado.",
+  "quandoEUtilizada": "Pode ser considerada quando a formulação clínica indicar que estabelecimento de metas é compatível com o problema, os objetivos, a fase do tratamento, a capacidade de participação e as preferências da pessoa. Não é uma indicação universal.",
+  "comoEAplicada": "O uso de estabelecimento de metas começa com explicação e acordo sobre o objetivo, segue com aplicação graduada e observação da resposta, e termina com integração da aprendizagem e planejamento de continuidade. A direção da mudança é negociada; persuasão, confronto moralizante e prescrição prematura podem gerar resistência.",
+  "origem": "Reúne tradições de aconselhamento, entrevista motivacional, terapia breve e terapia focada em soluções, com ênfase em autonomia, recursos, metas e mudança possível.",
+  "desenvolvimentoHistorico": "No desenvolvimento histórico, estabelecimento de metas passou de uma prática situada em determinadas escolas a um recurso que pode ser adaptado ou questionado em outros modelos. A migração entre abordagens deve preservar contexto, finalidade e limites.",
+  "exemploPratico": "Em um exemplo didático, o terapeuta apresenta estabelecimento de metas a uma pessoa com uma dificuldade previamente formulada, combina um pequeno exercício, observa o que ocorre e pergunta o que foi aprendido, sem tratar o exemplo como protocolo universal.",
+  "fundamentacaoTeorica": "A fundamentação editorial desta técnica é organizada pela categoria “motivacionais-solucao”: autonomia, ambivalência, recursos, exceções e metas escolhidas pelo cliente. A fonte deve ser lida para distinguir descrição histórica, hipótese de mecanismo e evidência de resultado.",
+  "evidencias": "A entrevista motivacional possui evidência para mudança de comportamentos em diferentes contextos, com efeitos geralmente pequenos a moderados e maior heterogeneidade quando comparada a outras intervenções ativas. Técnicas focadas em solução têm evidência variável e devem ser vinculadas a metas, população e desfechos concretos.",
+  "limitacoes": "A técnica perde o espírito quando vira persuasão, manipulação, checklist ou pressão para mudança. Ambivalência pode ser racional diante de riscos reais e deve ser respeitada.",
+  "contextoClinico": "Pode aparecer em Entrevista Motivacional, Terapia Focada em Soluções e modelos breves, mas a mesma técnica também pode atravessar outras escolas quando seu objetivo e sua função clínica forem preservados.",
+  "observacoes": "Classificação interna: estrategia. O nome pode designar técnica, procedimento, habilidade, atitude ou processo conforme o modelo; o registro separa o tipo para evitar equivalências artificiais.",
+  "tipoTecnica": "estrategia",
+  "classificacaoEstatuto": "recurso clínico estudado em contexto de abordagem; o estatuto específico pode ser técnica, procedimento, habilidade, estratégia, exercício ou atitude terapêutica.",
+  "slug": "estabelecimento-de-metas",
+  "dominioId": "domain-motivacionais-solucao",
+  "dominioIds": [
+    "domain-motivacionais-solucao"
+  ],
+  "dominioNomes": [
+    "Técnicas Motivacionais e Focadas em Solução"
+  ],
+  "ordemExibicao": 121,
+  "posicoesNominais": [
+    {
+      "categoryId": "domain-motivacionais-solucao",
+      "categoryName": "Técnicas Motivacionais e Focadas em Solução",
+      "ordem": 127,
+      "nomeOriginal": "Estabelecimento de metas"
+    }
+  ],
+  "abordagemIds": [
+    "app-pragmaticos_objetivo-entrevista-motivacional",
+    "app-pragmaticos_objetivo-terapia-focada-em-solucoes",
+    "app-cognitiva_tcc-tcc-integrada-geral"
+  ],
+  "modeloIds": [],
+  "fonteIds": [
+    "src-mi-2021",
+    "src-evidence-psychotherapy-2017"
+  ],
+  "tecnicasRelacionadasIds": [
+    "tec-perguntas-de-escala",
+    "tec-entrevista-motivacional",
+    "tec-perguntas-abertas",
+    "tec-reflexao",
+    "tec-afirmacoes",
+    "tec-sumarios",
+    "tec-evocacao",
+    "tec-escuta-reflexiva",
+    "tec-exploracao-de-ambivalencia",
+    "tec-balanca-decisional",
+    "tec-pergunta-do-milagre",
+    "tec-identificacao-de-excecoes"
+  ],
+  "dataCadastro": "2026-08-20T19:40:41.340233+00:00",
+  "dataUltimaRevisao": "2026-08-20T19:40:41.340238+00:00",
+  "status": "published",
+  "sourcePath": "content/techniques/motivacionais-solucao/tec-estabelecimento-de-metas.json"
+}

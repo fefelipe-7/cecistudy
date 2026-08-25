@@ -61,7 +61,7 @@ describe('buildHeaderConfig', () => {
       currentScreen: { kind: 'course', courseId: 'c1' },
       focusedCourse: {
         id: 'c1', name: 'TCC', code: 'PSI-300', professor: 'Prof. Ana',
-        semester: '6º Semestre', schedule: [{ day: 1, start: '09:00', end: '12:00' }], progress: 50,
+        semester: '6º Semestre', schedule: [{ day: 1, start: '09:00', end: '12:00' }],
         icon: 'Brain', color: '#D85F79',
       } as HeaderConfigInput['focusedCourse'],
       bookmarkedCourseIds: ['c1'],

@@ -1,0 +1,11 @@
+{
+  "id": "domain-humanistas-existenciais",
+  "nome": "Técnicas Humanistas e Existenciais",
+  "slug": "humanistas-existenciais",
+  "descricaoCurta": "Presença, compreensão empática, autenticidade, liberdade e construção de sentido.",
+  "ordemExibicao": 5,
+  "quantidadeDeclarada": 10,
+  "quantidadeNominal": 14,
+  "status": "published",
+  "sourcePath": "content/techniques/humanistas-existenciais/category.json"
+}

@@ -8,13 +8,15 @@ import { UserProfile, DynamicHeaderConfig } from '../types';
 import { CourseIcon } from './ui/CourseIcon';
 import { HeaderActionMenu } from './ui/HeaderActionMenu';
 import { BookmarkToggle } from './ui/BookmarkToggle';
-import { fadeSlide } from '../lib/motion';
+import { headerSwapVariants } from '../lib/motion';
 
 interface HeaderNavProps {
   profile: UserProfile;
   onOpenSearch: () => void;
   onNavigateToPerfil: () => void;
   headerConfig?: DynamicHeaderConfig | null;
+  /** Direção da navegação (push=1, pop=-1, troca de tab=0) — sincroniza a troca brand↔detail. */
+  direction?: number;
 }
 
 export const HeaderNav: React.FC<HeaderNavProps> = ({
@@ -22,6 +24,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   onOpenSearch,
   onNavigateToPerfil,
   headerConfig,
+  direction = 0,
 }) => {
   const [scrolled, setScrolled] = useState(false);
 
@@ -44,7 +47,10 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   const isDetailMode = !!(headerConfig && (headerConfig.title || headerConfig.onBack));
 
   return (
-    <header
+    <motion.header
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0, transition: { duration: 0.2, ease: 'easeOut' } }}
+      exit={{ opacity: 0, y: -10, transition: { duration: 0.15, ease: 'easeIn' } }}
       className={`sticky top-0 z-40 liquid-glass-nav border-b border-b-[color-mix(in_srgb,white_50%,transparent)] px-3.5 sm:px-4 transition-[padding,box-shadow,background-color,border-color] duration-300 ease-in-out ${
         scrolled
           ? 'pt-[calc(0.5rem+env(safe-area-inset-top,0px))] pb-2 shadow-sm'
@@ -52,14 +58,17 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
       }`}
     >
       <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto flex items-center justify-between gap-2 sm:gap-3">
-        <AnimatePresence mode="wait" initial={false}>
+        {/* Troca concorrente (popLayout): o header sai e entra JUNTOS, em tempo com o slide
+            das telas — antes era mode="wait" (sequencial), que piscava fora de sincronia. */}
+        <AnimatePresence mode="popLayout" initial={false} custom={direction}>
         {isDetailMode ? (
           /* ================================================================ */
           /* DYNAMIC DETAIL HEADER MODE (replaces standard brand header)      */
           /* ================================================================ */
           <motion.div
             key="detail"
-            variants={fadeSlide}
+            custom={direction}
+            variants={headerSwapVariants}
             initial="initial"
             animate="animate"
             exit="exit"
@@ -144,7 +153,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
           /* ================================================================ */
           <motion.div
             key="brand"
-            variants={fadeSlide}
+            custom={direction}
+            variants={headerSwapVariants}
             initial="initial"
             animate="animate"
             exit="exit"
@@ -236,6 +246,6 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
         )}
         </AnimatePresence>
       </div>
-    </header>
+    </motion.header>
   );
 };

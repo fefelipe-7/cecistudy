@@ -1,0 +1,532 @@
+{
+  "schemaVersion": 1,
+  "group": {
+    "id": "qg-neuropsicologia-e-psicobiologia-pesquisa-avaliacao-e-fundamentos",
+    "title": "Neuropsicologia e Psicobiologia — Pesquisa, Avaliação e Fundamentos",
+    "categoryId": "cat-neuropsicologia-e-psicobiologia",
+    "categoryTitle": "Neuropsicologia e Psicobiologia",
+    "block": "Pesquisa, Avaliação e Fundamentos",
+    "status": "published",
+    "source": "Cecistudy content catalog",
+    "sourcePath": "content/questions/neuropsicologia-e-psicobiologia/pesquisa-avaliacao-e-fundamentos.questions.json"
+  },
+  "questions": [
+    {
+      "id": "real-cebraspe_ebserh_2018_neuro-041",
+      "stem": "A neuropsicologia tem por objeto o estudo dos distúrbios cognitivos e emocionais, bem como o estudo dos distúrbios de personalidade provocados por lesões do cérebro.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "conceitual",
+      "explanation": "Item real de prova oficial; comentário pedagógico individual ainda não produzido.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-neuropsicologia",
+        "topic-objeto-e-escopo"
+      ],
+      "approachIds": [
+        "app-neuropsicologia-e-psicobiologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-0bc540b5357a",
+        "work-84dab6c9e41a"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Cebraspe",
+      "exam": "EBSERH 2018 — Psicólogo — Área: Neuropsicologia — Aplicação 06/05/2018",
+      "year": 2018,
+      "questionNumber": 41,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/prova-psicologo-neuropsicologia-ebserh-2018.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/gabarito-prova-psicologo-neuropsicologia-ebserh-2018.pdf",
+      "officialAnswerStatus": "gabarito_oficial_preliminar",
+      "categoryId": "cat-neuropsicologia-e-psicobiologia",
+      "areaId": "area-fundamentos-da-neuropsicologia",
+      "legacyOriginId": "real-cebraspe_ebserh_2018_neuro-041",
+      "legacy": {
+        "categoriaFinal": "Neuropsicologia e Psicobiologia",
+        "abordagemFinal": "Neuropsicologia e Psicobiologia",
+        "area": "Fundamentos da Neuropsicologia",
+        "tema": "objeto e escopo",
+        "subtema": [
+          "Neuropsicologia"
+        ],
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-cebraspe_ebserh_2018_neuro-042",
+      "stem": "A neuropsicologia é também chamada de neurologia comportamental devido ao fato de receber e interpretar as informações sensoriais, comunicar-se com os outros e agir no mundo pela linguagem e pela motricidade.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "conceitual",
+      "explanation": "Item real de prova oficial; comentário pedagógico individual ainda não produzido.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-neurologia-comportamental",
+        "topic-neuropsicologia"
+      ],
+      "approachIds": [
+        "app-neuropsicologia-e-psicobiologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-0bc540b5357a",
+        "work-84dab6c9e41a"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Cebraspe",
+      "exam": "EBSERH 2018 — Psicólogo — Área: Neuropsicologia — Aplicação 06/05/2018",
+      "year": 2018,
+      "questionNumber": 42,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/prova-psicologo-neuropsicologia-ebserh-2018.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/gabarito-prova-psicologo-neuropsicologia-ebserh-2018.pdf",
+      "officialAnswerStatus": "gabarito_oficial_preliminar",
+      "categoryId": "cat-neuropsicologia-e-psicobiologia",
+      "areaId": "area-fundamentos-da-neuropsicologia",
+      "legacyOriginId": "real-cebraspe_ebserh_2018_neuro-042",
+      "legacy": {
+        "categoriaFinal": "Neuropsicologia e Psicobiologia",
+        "abordagemFinal": "Neuropsicologia e Psicobiologia",
+        "area": "Fundamentos da Neuropsicologia",
+        "tema": "neurologia comportamental",
+        "subtema": [
+          "Neuropsicologia"
+        ],
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-cebraspe_ebserh_2018_neuro-043",
+      "stem": "A análise semiológica dos distúrbios permite propor uma sistematização sindrômica da disfunção do comportamento e do pensamento, firmar o substrato das lesões e formular hipóteses sobre sua topografia, sendo suficiente para a localização das lesões.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "conceitual",
+      "explanation": "Item real de prova oficial; comentário pedagógico individual ainda não produzido.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-localizacao-de-lesoes",
+        "topic-semiologia"
+      ],
+      "approachIds": [
+        "app-neuropsicologia-e-psicobiologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-0bc540b5357a",
+        "work-84dab6c9e41a"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Cebraspe",
+      "exam": "EBSERH 2018 — Psicólogo — Área: Neuropsicologia — Aplicação 06/05/2018",
+      "year": 2018,
+      "questionNumber": 43,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/prova-psicologo-neuropsicologia-ebserh-2018.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/gabarito-prova-psicologo-neuropsicologia-ebserh-2018.pdf",
+      "officialAnswerStatus": "gabarito_oficial_preliminar",
+      "categoryId": "cat-neuropsicologia-e-psicobiologia",
+      "areaId": "area-fundamentos-da-neuropsicologia",
+      "legacyOriginId": "real-cebraspe_ebserh_2018_neuro-043",
+      "legacy": {
+        "categoriaFinal": "Neuropsicologia e Psicobiologia",
+        "abordagemFinal": "Neuropsicologia e Psicobiologia",
+        "area": "Fundamentos da Neuropsicologia",
+        "tema": "semiologia",
+        "subtema": "localização de lesões",
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-cebraspe_ebserh_2018_neuro-044",
+      "stem": "Dos três objetivos da neuropsicologia — diagnósticos, terapêuticos e cognitivos —, o objetivo cognitivo é aquele que cria um vínculo entre a neurologia do comportamento e as ciências humanas.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "conceitual",
+      "explanation": "Item real de prova oficial; comentário pedagógico individual ainda não produzido.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-objetivos",
+        "topic-objetivos-diagnosticos-terapeuticos-e-cognitivos"
+      ],
+      "approachIds": [
+        "app-neuropsicologia-e-psicobiologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-0bc540b5357a",
+        "work-84dab6c9e41a"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Cebraspe",
+      "exam": "EBSERH 2018 — Psicólogo — Área: Neuropsicologia — Aplicação 06/05/2018",
+      "year": 2018,
+      "questionNumber": 44,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/prova-psicologo-neuropsicologia-ebserh-2018.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/gabarito-prova-psicologo-neuropsicologia-ebserh-2018.pdf",
+      "officialAnswerStatus": "gabarito_oficial_preliminar",
+      "categoryId": "cat-neuropsicologia-e-psicobiologia",
+      "areaId": "area-fundamentos-da-neuropsicologia",
+      "legacyOriginId": "real-cebraspe_ebserh_2018_neuro-044",
+      "legacy": {
+        "categoriaFinal": "Neuropsicologia e Psicobiologia",
+        "abordagemFinal": "Neuropsicologia e Psicobiologia",
+        "area": "Fundamentos da Neuropsicologia",
+        "tema": "objetivos",
+        "subtema": "objetivos diagnósticos, terapêuticos e cognitivos",
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-cebraspe_ebserh_2018_neuro-071",
+      "stem": "A neuropsicologia é uma área da psicologia que se interessa pelas relações entre funções psicológicas e desempenho das funções cognitivas.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "conceitual",
+      "explanation": "Item real de prova oficial; comentário pedagógico individual ainda não produzido.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-objeto-e-escopo",
+        "topic-relacoes-entre-funcoes"
+      ],
+      "approachIds": [
+        "app-neuropsicologia-e-psicobiologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-0bc540b5357a",
+        "work-84dab6c9e41a"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Cebraspe",
+      "exam": "EBSERH 2018 — Psicólogo — Área: Neuropsicologia — Aplicação 06/05/2018",
+      "year": 2018,
+      "questionNumber": 71,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/prova-psicologo-neuropsicologia-ebserh-2018.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/gabarito-prova-psicologo-neuropsicologia-ebserh-2018.pdf",
+      "officialAnswerStatus": "gabarito_oficial_preliminar",
+      "categoryId": "cat-neuropsicologia-e-psicobiologia",
+      "areaId": "area-fundamentos-da-neuropsicologia",
+      "legacyOriginId": "real-cebraspe_ebserh_2018_neuro-071",
+      "legacy": {
+        "categoriaFinal": "Neuropsicologia e Psicobiologia",
+        "abordagemFinal": "Neuropsicologia e Psicobiologia",
+        "area": "Fundamentos da Neuropsicologia",
+        "tema": "objeto e escopo",
+        "subtema": "relações entre funções",
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-cebraspe_ebserh_2018_neuro-073",
+      "stem": "As contribuições do neurologista Alexander Luria foram fundamentais para ampliar a noção de sintoma e lesão como algo complexo e dinâmico, em contraposição à visão mais localizacionista das neurociências.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "conceitual",
+      "explanation": "Item real de prova oficial; comentário pedagógico individual ainda não produzido.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-luria",
+        "topic-sistemas-funcionais"
+      ],
+      "approachIds": [
+        "app-neuropsicologia-e-psicobiologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-0bc540b5357a",
+        "work-84dab6c9e41a"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Cebraspe",
+      "exam": "EBSERH 2018 — Psicólogo — Área: Neuropsicologia — Aplicação 06/05/2018",
+      "year": 2018,
+      "questionNumber": 73,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/prova-psicologo-neuropsicologia-ebserh-2018.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/gabarito-prova-psicologo-neuropsicologia-ebserh-2018.pdf",
+      "officialAnswerStatus": "gabarito_oficial_preliminar",
+      "categoryId": "cat-neuropsicologia-e-psicobiologia",
+      "areaId": "area-fundamentos-da-neuropsicologia",
+      "legacyOriginId": "real-cebraspe_ebserh_2018_neuro-073",
+      "legacy": {
+        "categoriaFinal": "Neuropsicologia e Psicobiologia",
+        "abordagemFinal": "Neuropsicologia e Psicobiologia",
+        "area": "Fundamentos da Neuropsicologia",
+        "tema": "Luria",
+        "subtema": "sistemas funcionais",
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-cebraspe_ebserh_2018_neuro-074",
+      "stem": "Processos mentais complexos são fenômenos fixos, organizados em sistemas que envolvem funções e zonas cerebrais distintas.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "conceitual",
+      "explanation": "Item real de prova oficial; comentário pedagógico individual ainda não produzido.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-luria",
+        "topic-processos-mentais-complexos"
+      ],
+      "approachIds": [
+        "app-neuropsicologia-e-psicobiologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-0bc540b5357a",
+        "work-84dab6c9e41a"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Cebraspe",
+      "exam": "EBSERH 2018 — Psicólogo — Área: Neuropsicologia — Aplicação 06/05/2018",
+      "year": 2018,
+      "questionNumber": 74,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/prova-psicologo-neuropsicologia-ebserh-2018.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/gabarito-prova-psicologo-neuropsicologia-ebserh-2018.pdf",
+      "officialAnswerStatus": "gabarito_oficial_preliminar",
+      "categoryId": "cat-neuropsicologia-e-psicobiologia",
+      "areaId": "area-fundamentos-da-neuropsicologia",
+      "legacyOriginId": "real-cebraspe_ebserh_2018_neuro-074",
+      "legacy": {
+        "categoriaFinal": "Neuropsicologia e Psicobiologia",
+        "abordagemFinal": "Neuropsicologia e Psicobiologia",
+        "area": "Fundamentos da Neuropsicologia",
+        "tema": "Luria",
+        "subtema": "processos mentais complexos",
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-cebraspe_ebserh_2018_neuro-075",
+      "stem": "De acordo com Alexander Luria, as funções cognitivas são decorrentes da experiência social.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "conceitual",
+      "explanation": "Item real de prova oficial; comentário pedagógico individual ainda não produzido.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-experiencia-social",
+        "topic-luria"
+      ],
+      "approachIds": [
+        "app-neuropsicologia-e-psicobiologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-0bc540b5357a",
+        "work-84dab6c9e41a"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Cebraspe",
+      "exam": "EBSERH 2018 — Psicólogo — Área: Neuropsicologia — Aplicação 06/05/2018",
+      "year": 2018,
+      "questionNumber": 75,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/prova-psicologo-neuropsicologia-ebserh-2018.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/gabarito-prova-psicologo-neuropsicologia-ebserh-2018.pdf",
+      "officialAnswerStatus": "gabarito_oficial_preliminar",
+      "categoryId": "cat-neuropsicologia-e-psicobiologia",
+      "areaId": "area-fundamentos-da-neuropsicologia",
+      "legacyOriginId": "real-cebraspe_ebserh_2018_neuro-075",
+      "legacy": {
+        "categoriaFinal": "Neuropsicologia e Psicobiologia",
+        "abordagemFinal": "Neuropsicologia e Psicobiologia",
+        "area": "Fundamentos da Neuropsicologia",
+        "tema": "Luria",
+        "subtema": "experiência social",
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-cebraspe_ebserh_2018_neuro-081",
+      "stem": "De acordo com Alexander Luria, são dois os sistemas funcionais do cérebro humano: o sistema de recepção, elaboração e conservação de informações; e o sistema de ativação e controle da atividade.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "conceitual",
+      "explanation": "Item real de prova oficial; comentário pedagógico individual ainda não produzido.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-luria",
+        "topic-sistemas-funcionais"
+      ],
+      "approachIds": [
+        "app-neuropsicologia-e-psicobiologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-0bc540b5357a",
+        "work-84dab6c9e41a"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Cebraspe",
+      "exam": "EBSERH 2018 — Psicólogo — Área: Neuropsicologia — Aplicação 06/05/2018",
+      "year": 2018,
+      "questionNumber": 81,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/prova-psicologo-neuropsicologia-ebserh-2018.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/gabarito-prova-psicologo-neuropsicologia-ebserh-2018.pdf",
+      "officialAnswerStatus": "gabarito_oficial_preliminar",
+      "categoryId": "cat-neuropsicologia-e-psicobiologia",
+      "areaId": "area-fundamentos-da-neuropsicologia",
+      "legacyOriginId": "real-cebraspe_ebserh_2018_neuro-081",
+      "legacy": {
+        "categoriaFinal": "Neuropsicologia e Psicobiologia",
+        "abordagemFinal": "Neuropsicologia e Psicobiologia",
+        "area": "Fundamentos da Neuropsicologia",
+        "tema": "Luria",
+        "subtema": "sistemas funcionais",
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": true
+      }
+    }
+  ]
+}

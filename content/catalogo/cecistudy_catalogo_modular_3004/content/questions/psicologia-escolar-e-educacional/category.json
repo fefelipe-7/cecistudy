@@ -1,0 +1,17 @@
+{
+  "id": "cat-psicologia-escolar-e-educacional",
+  "slug": "psicologia-escolar-e-educacional",
+  "title": "Psicologia Escolar e Educacional",
+  "displayOrder": 4,
+  "questionCount": 229,
+  "approachIds": [
+    "app-fundamentos-da-psicologia",
+    "app-psicologia-escolar-e-educacional"
+  ],
+  "groupCount": 3,
+  "status": "published",
+  "allowedFormats": [
+    "multiple_choice",
+    "true_false"
+  ]
+}

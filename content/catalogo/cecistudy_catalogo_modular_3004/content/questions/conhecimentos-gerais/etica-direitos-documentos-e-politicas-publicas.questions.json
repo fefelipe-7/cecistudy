@@ -1,0 +1,725 @@
+{
+  "schemaVersion": 1,
+  "group": {
+    "id": "qg-conhecimentos-gerais-etica-direitos-documentos-e-politicas-publicas",
+    "title": "Conhecimentos Gerais — Ética, Direitos, Documentos e Políticas Públicas",
+    "categoryId": "cat-conhecimentos-gerais",
+    "categoryTitle": "Conhecimentos Gerais",
+    "block": "Ética, Direitos, Documentos e Políticas Públicas",
+    "status": "published",
+    "source": "Cecistudy content catalog",
+    "sourcePath": "content/questions/conhecimentos-gerais/etica-direitos-documentos-e-politicas-publicas.questions.json"
+  },
+  "questions": [
+    {
+      "id": "real_fgv_2025_ebserh_psicologia_tipo1_q01",
+      "stem": "O primeiro parágrafo do texto, que serve de introdução, tem a finalidade básica de",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito definitivo da FGV identificado. A explicação pedagógica individual será revisada com base no item e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) resumir o texto que aparece a seguir, consubstanciado num só parágrafo.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) indicar, de forma geral, o conteúdo de todo o livro cujo título é dado logo ao início do parágrafo.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) mostrar previamente as injustiças de que o padre Antônio Vieira foi vítima no processo da Inquisição.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) demonstrar a inconsistência das acusações de que o padre Antônio Vieira foi alvo, antecipando sua defesa.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) informar aos leitores a situação de prisioneiro do autor do texto a fim de angariar simpatias pelo que vai ser dito.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-lingua-portuguesa"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-064a186b8a40",
+        "work-1c1fbb177b6d"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "FGV",
+      "exam": "EBSERH 2025 — Grupo Psicologia — Tipo 1",
+      "year": 2025,
+      "questionNumber": 1,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/129217/fgv-2025-ebserh-grupo-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/129217/fgv-2025-ebserh-grupo-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "definitivo FGV",
+      "categoryId": "cat-conhecimentos-gerais",
+      "areaId": "area-conhecimentos-gerais",
+      "legacyOriginId": "real_fgv_2025_ebserh_psicologia_tipo1_q01",
+      "legacy": {
+        "categoriaFinal": "Conhecimentos Gerais",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Conhecimentos Gerais",
+        "tema": "Língua Portuguesa",
+        "subtema": "Língua Portuguesa",
+        "blocoQuiz": "Ética, Direitos, Documentos e Políticas Públicas",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_fgv_2025_ebserh_psicologia_tipo1_q02",
+      "stem": "Podemos inferir algumas informações de outras que são dadas no texto. Assinale a única inferência a seguir que se mostra inadequada.",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito definitivo da FGV identificado. A explicação pedagógica individual será revisada com base no item e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) “respostas das proposições censuradas pelos senhores inquisidores” / já tinha ocorrido um julgamento negativo pela Inquisição sobre proposições do padre Antônio Vieira.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) “estando recluso nos cárceres do Santo Ofício de Coimbra” / o processo de que é alvo o padre Antônio Vieira é de cunho religioso.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) “...e porque a última doença (de que estou mal convalescido) me não deixou com forças nem alento para poder falar em público” / outras doenças já haviam acometido o padre Antônio Vieira.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) “Protesto pois do modo que me é possível, diante desses senhores” / as condições de estar preso impedem uma melhor defesa no processo por parte do padre Antônio Vieira.",
+          "isCorrect": true
+        },
+        {
+          "id": "e",
+          "text": "E) “antes disso queriam ouvir de mim tudo o que tivesse que dizer ou alegar para bem dela” / o processo está ainda na fase inicial.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-lingua-portuguesa"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-064a186b8a40",
+        "work-1c1fbb177b6d"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "FGV",
+      "exam": "EBSERH 2025 — Grupo Psicologia — Tipo 1",
+      "year": 2025,
+      "questionNumber": 2,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/129217/fgv-2025-ebserh-grupo-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/129217/fgv-2025-ebserh-grupo-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "definitivo FGV",
+      "categoryId": "cat-conhecimentos-gerais",
+      "areaId": "area-conhecimentos-gerais",
+      "legacyOriginId": "real_fgv_2025_ebserh_psicologia_tipo1_q02",
+      "legacy": {
+        "categoriaFinal": "Conhecimentos Gerais",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Conhecimentos Gerais",
+        "tema": "Língua Portuguesa",
+        "subtema": "Língua Portuguesa",
+        "blocoQuiz": "Ética, Direitos, Documentos e Políticas Públicas",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_fgv_2025_ebserh_psicologia_tipo1_q03",
+      "stem": "Observe o seguinte fragmento textual, primeiras palavras do padre Antônio Vieira diante das acusações da Inquisição: Sendo ontem chamado à mesa, me foi dito que estavam nela os senhores inquisidores para sentenciarem a minha causa, e que antes disso queriam ouvir de mim tudo o que tivesse que dizer ou alegar para bem dela; e porque a última doença (de que estou mal convalescido) me não deixou com forças nem alento para poder falar em público, pedi licença para falar por papel, que me foi concedida. Nesse fragmento estão sublinhados cinco termos, na ordem de aparecimento no texto, que se referem coesivamente a termos anteriores. Assinale a opção em que o termo anterior foi mal identificado.",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito definitivo da FGV identificado. A explicação pedagógica individual será revisada com base no item e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) nela – mesa.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) disso – sentenciarem a minha causa.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) dela – a minha causa.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) que – última doença.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) que – falar em público.",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-lingua-portuguesa"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-064a186b8a40",
+        "work-1c1fbb177b6d"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "FGV",
+      "exam": "EBSERH 2025 — Grupo Psicologia — Tipo 1",
+      "year": 2025,
+      "questionNumber": 3,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/129217/fgv-2025-ebserh-grupo-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/129217/fgv-2025-ebserh-grupo-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "definitivo FGV",
+      "categoryId": "cat-conhecimentos-gerais",
+      "areaId": "area-conhecimentos-gerais",
+      "legacyOriginId": "real_fgv_2025_ebserh_psicologia_tipo1_q03",
+      "legacy": {
+        "categoriaFinal": "Conhecimentos Gerais",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Conhecimentos Gerais",
+        "tema": "Língua Portuguesa",
+        "subtema": "Língua Portuguesa",
+        "blocoQuiz": "Ética, Direitos, Documentos e Políticas Públicas",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_fgv_2025_ebserh_psicologia_tipo1_q04",
+      "stem": "Sendo ontem chamado à mesa, me foi dito que estavam nela os senhores inquisidores para sentenciarem a minha causa... O advérbio “ontem” se refere",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito definitivo da FGV identificado. A explicação pedagógica individual será revisada com base no item e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) ao dia anterior da escritura do texto.",
+          "isCorrect": true
+        },
+        {
+          "id": "b",
+          "text": "B) à véspera da leitura do texto.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) ao dia que precede a sentença da causa.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) ao dia que vem antes da prisão do religioso.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) à véspera da decisão de escrever o livro.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-lingua-portuguesa"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-064a186b8a40",
+        "work-1c1fbb177b6d"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "FGV",
+      "exam": "EBSERH 2025 — Grupo Psicologia — Tipo 1",
+      "year": 2025,
+      "questionNumber": 4,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/129217/fgv-2025-ebserh-grupo-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/129217/fgv-2025-ebserh-grupo-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "definitivo FGV",
+      "categoryId": "cat-conhecimentos-gerais",
+      "areaId": "area-conhecimentos-gerais",
+      "legacyOriginId": "real_fgv_2025_ebserh_psicologia_tipo1_q04",
+      "legacy": {
+        "categoriaFinal": "Conhecimentos Gerais",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Conhecimentos Gerais",
+        "tema": "Língua Portuguesa",
+        "subtema": "Língua Portuguesa",
+        "blocoQuiz": "Ética, Direitos, Documentos e Políticas Públicas",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_fgv_2025_ebserh_psicologia_tipo1_q05",
+      "stem": "A oração reduzida “para sentenciarem a minha causa” poderia ser corretamente substituída pela seguinte oração desenvolvida:",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito definitivo da FGV identificado. A explicação pedagógica individual será revisada com base no item e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) para que sentenciassem a minha causa.",
+          "isCorrect": true
+        },
+        {
+          "id": "b",
+          "text": "B) para a sentença da minha causa.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) para que sentenciem a minha causa.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) para que seja sentenciada a minha causa.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) para que a sentença da minha causa seja dada.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-lingua-portuguesa"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-064a186b8a40",
+        "work-1c1fbb177b6d"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "FGV",
+      "exam": "EBSERH 2025 — Grupo Psicologia — Tipo 1",
+      "year": 2025,
+      "questionNumber": 5,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/129217/fgv-2025-ebserh-grupo-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/129217/fgv-2025-ebserh-grupo-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "definitivo FGV",
+      "categoryId": "cat-conhecimentos-gerais",
+      "areaId": "area-conhecimentos-gerais",
+      "legacyOriginId": "real_fgv_2025_ebserh_psicologia_tipo1_q05",
+      "legacy": {
+        "categoriaFinal": "Conhecimentos Gerais",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Conhecimentos Gerais",
+        "tema": "Língua Portuguesa",
+        "subtema": "Língua Portuguesa",
+        "blocoQuiz": "Ética, Direitos, Documentos e Políticas Públicas",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_fgv_2025_ebserh_psicologia_tipo1_q06",
+      "stem": "A forma adequada de reescrever-se a frase “me não deixou com forças nem alento”, com a retirada do advérbio “não”, mantendo- se o sentido original, é:",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito definitivo da FGV identificado. A explicação pedagógica individual será revisada com base no item e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) me deixou sem forças nem sem alento.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) me deixou enfraquecido e com dificuldades respiratórias.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) me deixou pálido e desanimado.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) me deixou abatido e sem coragem.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) me deixou fraco e desalentado. EMPRESA BRASILEIRA DE SERVIÇOS HOSPITALARES – EBSERH FGV CONHECIMENTO GRUPO PSICOLOGIA – MANHÃ TIPO BRANCA – PÁGINA 4 Atenção: use o Texto 2 para responder às próximas quatro questões. Texto 2 Observe o seguinte texto argumentativo: Esquecemos frequentemente que gengivas saudáveis constituem a base para dentes saudáveis. É por isso que os dentistas recomendam Parodontax. De fato, os estudos clínicos provaram sua eficácia sobre as gengivas. Sua composição única compreende cinco produtos naturais extraídos de plantas e um sal mineral especialmente tratado para neutralizar as bactérias que ameaçam as gengivas. O resultado? Gengivas naturalmente fortes. Dentes naturalmente fortes.",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-lingua-portuguesa"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-064a186b8a40",
+        "work-1c1fbb177b6d"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "FGV",
+      "exam": "EBSERH 2025 — Grupo Psicologia — Tipo 1",
+      "year": 2025,
+      "questionNumber": 6,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/129217/fgv-2025-ebserh-grupo-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/129217/fgv-2025-ebserh-grupo-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "definitivo FGV",
+      "categoryId": "cat-conhecimentos-gerais",
+      "areaId": "area-conhecimentos-gerais",
+      "legacyOriginId": "real_fgv_2025_ebserh_psicologia_tipo1_q06",
+      "legacy": {
+        "categoriaFinal": "Conhecimentos Gerais",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Conhecimentos Gerais",
+        "tema": "Língua Portuguesa",
+        "subtema": "Língua Portuguesa",
+        "blocoQuiz": "Ética, Direitos, Documentos e Políticas Públicas",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_fgv_2025_ebserh_psicologia_tipo1_q07",
+      "stem": "Nesse fragmento textual, os argumentos são apoiados por",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito definitivo da FGV identificado. A explicação pedagógica individual será revisada com base no item e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) opinião pessoal do autor do texto.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) testemunhos de autoridades pertinentes.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) composição de material inédito.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) raciocínio lógico de base indutiva.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) tradição do produto anunciado.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-lingua-portuguesa"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-064a186b8a40",
+        "work-1c1fbb177b6d"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "FGV",
+      "exam": "EBSERH 2025 — Grupo Psicologia — Tipo 1",
+      "year": 2025,
+      "questionNumber": 7,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/129217/fgv-2025-ebserh-grupo-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/129217/fgv-2025-ebserh-grupo-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "definitivo FGV",
+      "categoryId": "cat-conhecimentos-gerais",
+      "areaId": "area-conhecimentos-gerais",
+      "legacyOriginId": "real_fgv_2025_ebserh_psicologia_tipo1_q07",
+      "legacy": {
+        "categoriaFinal": "Conhecimentos Gerais",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Conhecimentos Gerais",
+        "tema": "Língua Portuguesa",
+        "subtema": "Língua Portuguesa",
+        "blocoQuiz": "Ética, Direitos, Documentos e Políticas Públicas",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_fgv_2025_ebserh_psicologia_tipo1_q08",
+      "stem": "Se trocarmos o verbo “esquecer” da primeira frase por sua forma pronominal “esquecer-se”, a forma correta da nova frase será:",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito definitivo da FGV identificado. A explicação pedagógica individual será revisada com base no item e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Esquecemo-nos frequentemente de que gengivas saudáveis constituem a base para dentes saudáveis.",
+          "isCorrect": true
+        },
+        {
+          "id": "b",
+          "text": "B) Nos esquecemos frequentemente que gengivas saudáveis constituem a base para dentes saudáveis.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Esquecemo-nos frequentemente que gengivas saudáveis constituem a base para dentes saudáveis.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Esquecemos-nos frequentemente de que gengivas saudáveis constituem a base para dentes saudáveis.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Nos esquecemos frequentemente de que gengivas saudáveis constituem a base para dentes saudáveis.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-lingua-portuguesa"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-064a186b8a40",
+        "work-1c1fbb177b6d"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "FGV",
+      "exam": "EBSERH 2025 — Grupo Psicologia — Tipo 1",
+      "year": 2025,
+      "questionNumber": 8,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/129217/fgv-2025-ebserh-grupo-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/129217/fgv-2025-ebserh-grupo-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "definitivo FGV",
+      "categoryId": "cat-conhecimentos-gerais",
+      "areaId": "area-conhecimentos-gerais",
+      "legacyOriginId": "real_fgv_2025_ebserh_psicologia_tipo1_q08",
+      "legacy": {
+        "categoriaFinal": "Conhecimentos Gerais",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Conhecimentos Gerais",
+        "tema": "Língua Portuguesa",
+        "subtema": "Língua Portuguesa",
+        "blocoQuiz": "Ética, Direitos, Documentos e Políticas Públicas",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_fgv_2025_ebserh_psicologia_tipo1_q09",
+      "stem": "A parte final do texto diz: Gengivas naturalmente fortes. Dentes naturalmente fortes. Assinale a opção que apresenta a relação lógica correta entre essas frases.",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito definitivo da FGV identificado. A explicação pedagógica individual será revisada com base no item e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) A primeira frase é consequência da segunda.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) As duas frases são logicamente independentes.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) A segunda frase é condição da primeira.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) A primeira frase é causa da segunda.",
+          "isCorrect": true
+        },
+        {
+          "id": "e",
+          "text": "E) A segunda frase é explicação da primeira.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-lingua-portuguesa"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-064a186b8a40",
+        "work-1c1fbb177b6d"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "FGV",
+      "exam": "EBSERH 2025 — Grupo Psicologia — Tipo 1",
+      "year": 2025,
+      "questionNumber": 9,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/129217/fgv-2025-ebserh-grupo-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/129217/fgv-2025-ebserh-grupo-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "definitivo FGV",
+      "categoryId": "cat-conhecimentos-gerais",
+      "areaId": "area-conhecimentos-gerais",
+      "legacyOriginId": "real_fgv_2025_ebserh_psicologia_tipo1_q09",
+      "legacy": {
+        "categoriaFinal": "Conhecimentos Gerais",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Conhecimentos Gerais",
+        "tema": "Língua Portuguesa",
+        "subtema": "Língua Portuguesa",
+        "blocoQuiz": "Ética, Direitos, Documentos e Políticas Públicas",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_fgv_2025_ebserh_psicologia_tipo1_q10",
+      "stem": "“Esquecemos frequentemente que gengivas saudáveis consti- tuem a base para dentes saudáveis”; nessa frase há a repetição de um adjetivo (saudáveis) com o mesmo sentido. A frase abaixo em que os adjetivos repetidos mostram sentidos diferentes é:",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito definitivo da FGV identificado. A explicação pedagógica individual será revisada com base no item e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Existe apenas um momento exato para ir pescar, e esse momento exato é sempre que você puder.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Nada que foi dito já não foi dito antes.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) O homem inteligente é o que nunca confunde os inteligentes pontos de vista.",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "D) Não há nenhum médico competente que seja absolutamente competente.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Sabão e educação não agem tão rápido a longo prazo, mas são igualmente eficientes num prazo longo. Legislação EBSERH",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-lingua-portuguesa"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-064a186b8a40",
+        "work-1c1fbb177b6d"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "FGV",
+      "exam": "EBSERH 2025 — Grupo Psicologia — Tipo 1",
+      "year": 2025,
+      "questionNumber": 10,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/129217/fgv-2025-ebserh-grupo-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/129217/fgv-2025-ebserh-grupo-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "definitivo FGV",
+      "categoryId": "cat-conhecimentos-gerais",
+      "areaId": "area-conhecimentos-gerais",
+      "legacyOriginId": "real_fgv_2025_ebserh_psicologia_tipo1_q10",
+      "legacy": {
+        "categoriaFinal": "Conhecimentos Gerais",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Conhecimentos Gerais",
+        "tema": "Língua Portuguesa",
+        "subtema": "Língua Portuguesa",
+        "blocoQuiz": "Ética, Direitos, Documentos e Políticas Públicas",
+        "anulada": false,
+        "reviewNote": true
+      }
+    }
+  ]
+}

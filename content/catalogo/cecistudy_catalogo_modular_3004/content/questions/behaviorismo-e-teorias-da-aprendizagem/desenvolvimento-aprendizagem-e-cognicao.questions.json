@@ -1,0 +1,4111 @@
+{
+  "schemaVersion": 1,
+  "group": {
+    "id": "qg-behaviorismo-e-teorias-da-aprendizagem-desenvolvimento-aprendizagem-e-cognicao",
+    "title": "Behaviorismo e Teorias da Aprendizagem — Desenvolvimento, Aprendizagem e Cognição",
+    "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+    "categoryTitle": "Behaviorismo e Teorias da Aprendizagem",
+    "block": "Desenvolvimento, Aprendizagem e Cognição",
+    "status": "published",
+    "source": "Cecistudy content catalog",
+    "sourcePath": "content/questions/behaviorismo-e-teorias-da-aprendizagem/desenvolvimento-aprendizagem-e-cognicao.questions.json"
+  },
+  "questions": [
+    {
+      "id": "PSI-BANCO-0021",
+      "stem": "No condicionamento clássico, qual das alternativas descreve corretamente a relação entre estímulo incondicionado (EI), estímulo condicionado (EC) e resposta condicionada (RC)?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "No condicionamento clássico, o estímulo condicionado (EC) é originalmente neutro. Após emparelhamentos repetidos com o estímulo incondicionado (EI), que evoca naturalmente uma resposta, o EC passa a evocar uma resposta similar, chamada resposta condicionada (RC).",
+      "options": [
+        {
+          "id": "a",
+          "text": "O EI é inicialmente neutro; após emparelhamentos com o EC passa a evocar a RC.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "O EC é inicialmente neutro; após ser pareado repetidamente com o EI, o EC passa a evocar a RC.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "A RC ocorre somente quando o EI é apresentado sem qualquer associação prévia.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "O EC e o EI são sempre idênticos em intensidade e função na produção da RC.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "A RC é uma resposta aprendida que surge antes de qualquer emparelhamento com estímulos.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conceitos-basicos-ei-ec-rc",
+        "topic-condicionamento-classico"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-ivan-pavlov"
+      ],
+      "referenceIds": [
+        "work-0173833e6b54",
+        "work-bc7b81598c9f"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0021",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Condicionamento clássico",
+        "subtema": "Conceitos básicos (EI, EC, RC)",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0022",
+      "stem": "Criança A foi mordida por um cachorro e desenvolveu medo intenso daquele cão específico. Com o tempo, ela começou a chorar e evitar todos os cães, inclusive os de estimação que são dóceis. Qual fenômeno do condicionamento clássico melhor explica esse quadro?",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "interpretacao_de_caso",
+      "explanation": "A generalização de estímulo ocorre quando uma resposta condicionada se estende a estímulos semelhantes ao estímulo condicionado original; aqui, o medo do cão que mordeu generaliza para outros cães.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Extinção",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "Reforço diferencial",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "Generalização de estímulo",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "Condicionamento operante",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "Contracondicionamento",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-condicionamento-classico",
+        "topic-generalizacao-de-estimulos"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-ivan-pavlov"
+      ],
+      "referenceIds": [
+        "work-0173833e6b54",
+        "work-bc7b81598c9f"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0022",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Condicionamento clássico",
+        "subtema": "Generalização de estímulos",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0023",
+      "stem": "Qual das alternativas melhor caracteriza o comportamento operante, segundo a tradição behaviorista skinneriana?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "O comportamento operante é emitido pelo organismo e sua frequência é determinada pelas consequências que o seguem (reforço ou punição), conforme a formulação de Skinner.",
+      "options": [
+        {
+          "id": "a",
+          "text": "É uma resposta reflexa desencadeada por estímulos incondicionados.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "É um comportamento voluntário emitido por um organismo e influenciado por suas consequências.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "Consiste exclusivamente em respostas cognitivas internas não observáveis.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "É produzido apenas por modelagem social sem relação com consequências.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "Refere-se a qualquer comportamento que não pode ser modificado por reforçamento.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-condicionamento-operante",
+        "topic-definicao-de-comportamento-operante"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-b-f-skinner",
+        "author-edward-l-thorndike"
+      ],
+      "referenceIds": [
+        "work-6c773d2762e5",
+        "work-f590bab461dc"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0023",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Condicionamento operante",
+        "subtema": "Definição de comportamento operante",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0024",
+      "stem": "Sobre programas de reforçamento em condicionamento operante, qual afirmação é mais consistente com a literatura experimental?",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "teorico",
+      "explanation": "Programas de razão variável (RV) geralmente produzem altas taxas de resposta estáveis e são resistentes à extinção; programas de razão fixa (RF) frequentemente apresentam pausas pós-reforço. As demais alternativas simplificam ou contrariam evidências experimentais clássicas.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Um programa de razão fixa (RF) produz taxas de resposta baixas e constantes sem pausas pós-reforço.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "Um programa de razão variável (RV) tende a gerar taxas de resposta altas e estáveis, com poucas pausas pós-reforço.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "Um programa de intervalo fixo (IF) elimina completamente quaisquer variações temporais nas respostas.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "Programas de reforçamento contínuo sempre mantêm comportamento ao longo do tempo melhor do que programas intermitentes.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "Programas de intervalo variável (IV) produzem longas pausas imediatamente após cada reforço.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-condicionamento-operante",
+        "topic-programas-de-reforcamento"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-b-f-skinner"
+      ],
+      "referenceIds": [
+        "work-6c773d2762e5",
+        "work-dde4020c1be3"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0024",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Condicionamento operante",
+        "subtema": "Programas de reforçamento",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0025",
+      "stem": "Um professor interrompe de imediato uma cobrança repetida de um colega (criticar o aluno) assim que o aluno se senta e começa a fazer a tarefa. Como podemos classificar a função do evento que faz com que o aluno passe a sentar-se e iniciar a tarefa com mais frequência?",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "aplicado",
+      "explanation": "Quando o comportamento do aluno (sentar-se e começar a tarefa) aumenta porque uma estimulação aversiva (a cobrança do colega) é removida imediatamente, trata-se de reforço negativo (escape/evitamento do aversivo).",
+      "options": [
+        {
+          "id": "a",
+          "text": "Reforço positivo (apresentação de estímulo apetitivo)",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "Reforço negativo (removal de estímulo aversivo)",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "Punição positiva (apresentação de estímulo aversivo)",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "Punição negativa (remoção de estímulo apetitivo)",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "Extinção (ausência de contingência)",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-reforco",
+        "topic-reforco-negativo-escape-evitamento"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-b-f-skinner",
+        "author-alan-e-kazdin"
+      ],
+      "referenceIds": [
+        "work-6c773d2762e5",
+        "work-e1b561afaafc"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0025",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Reforço",
+        "subtema": "Reforço negativo (escape/evitamento)",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0026",
+      "stem": "Qual das alternativas exemplifica melhor a diferença entre reforçador primário e reforçador secundário?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "Reforçadores primários são inatos e satisfazem necessidades biológicas (como comida, água). Reforçadores secundários (ou condicionados) adquirem valor por associação com reforçadores primários (como dinheiro, elogios).",
+      "options": [
+        {
+          "id": "a",
+          "text": "Um reforçador primário é sempre social; um secundário é sempre material.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "Um reforçador primário tem valor inato (por exemplo, comida); um reforçador secundário adquiriu valor por associação (por exemplo, dinheiro).",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "Reforçadores secundários funcionam apenas se combinados com reforçadores primários e nunca têm efeito por si só.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "Reforçadores primários são sempre mais eficazes que secundários em todas as idades e contextos.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "A distinção primário/ secundário refere-se exclusivamente à intensidade do estímulo, não à sua origem.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-reforcadores-primarios-vs-secundarios",
+        "topic-reforco"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-b-f-skinner",
+        "author-ivan-pavlov"
+      ],
+      "referenceIds": [
+        "work-0173833e6b54",
+        "work-6c773d2762e5"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0026",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Reforço",
+        "subtema": "Reforçadores primários vs. secundários",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0027",
+      "stem": "Um pai retira temporariamente privilégios (brinquedos e recreio) sempre que o filho agride o irmão. Qual é a classificação mais adequada dessa intervenção e qual efeito imediato ela tende a produzir sobre o comportamento agressivo?",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "aplicado",
+      "explanation": "A remoção de privilégios é uma punição negativa (remoção de estímulos positivos). Geralmente reduz a frequência do comportamento, mas a redução pode ser temporária e não garante eliminação permanente sem reforço de alternativas e consistência.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Reforço positivo; aumento da agressividade a curto prazo.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "Punição positiva; eliminação permanente do comportamento.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "Punição negativa; redução temporária da frequência do comportamento.",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "Extinção; aumento gradual do comportamento até desaparecer.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "Modelagem; ensino de comportamento alternativo.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-punicao",
+        "topic-punicao-negativa-remocao-de-reforcadores"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-b-f-skinner",
+        "author-alan-e-kazdin"
+      ],
+      "referenceIds": [
+        "work-6c773d2762e5",
+        "work-e1b561afaafc"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0027",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Punição",
+        "subtema": "Punição negativa (remoção de reforçadores)",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0028",
+      "stem": "Do ponto de vista teórico-experimental, qual das afirmações sobre o uso de punição é mais coerente com a literatura behaviorista contemporânea?",
+      "format": "multiple_choice",
+      "difficulty": "advanced",
+      "knowledgeType": "teorico",
+      "explanation": "A pesquisa indica que a punição tende a suprimir comportamentos, mas frequentemente tem efeitos colaterais (medo, agressão, evasão). Sua eficácia é maior e com menos efeitos adversos quando usada junto com o ensino e reforço de comportamentos alternativos e estratégias preventivas.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Punição é a estratégia mais eficaz a longo prazo se aplicada de forma inconsistente.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "Punição elimina uma resposta definitivamente sem necessidade de ensinar comportamentos alternativos.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "Punição pode suprimir um comportamento, mas sua eficácia e segurança aumentam quando combinada com reforçamento de respostas alternativas e intervenções preventivas.",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "Punição nunca produz efeitos colaterais indesejáveis, como medo ou agressão.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "A eficácia da punição independe da temporalidade; reforços e punições atrasados têm o mesmo efeito.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-efeitos-e-aplicacao-etica-da-punicao",
+        "topic-punicao"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-b-f-skinner",
+        "author-alan-e-kazdin"
+      ],
+      "referenceIds": [
+        "work-1b6e6e3a41b1",
+        "work-59ff7402c3ca",
+        "work-6c773d2762e5",
+        "work-cf0879943326",
+        "work-e1b561afaafc"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0028",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Punição",
+        "subtema": "Efeitos e aplicação ética da punição",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0029",
+      "stem": "Qual elemento é central na teoria da aprendizagem social de Bandura e distingue essa abordagem do behaviorismo estrito?",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "comparativo",
+      "explanation": "A teoria da aprendizagem social (Bandura) enfatiza que as pessoas podem aprender observando modelos e imitando comportamentos, mesmo sem reforçamento direto; processos cognitivos (atenção, retenção, reprodução e motivação) são centrais.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Aprendizagem só ocorre se houver reforçamento direto imediatamente após a resposta.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "Observação e modelagem permitindo aprendizagem por imitação mesmo sem reforço direto.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "Comportamentos são sempre reflexos inatos desencadeados por estímulos incondicionados.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "Apenas mecanismos fisiológicos explicam a aquisição de comportamentos complexos.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "A aprendizagem não envolve processos cognitivos como atenção ou retenção.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-aprendizagem-social",
+        "topic-observacao-e-modelagem"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-albert-bandura"
+      ],
+      "referenceIds": [
+        "work-e79e1073cdf5"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0029",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Aprendizagem social",
+        "subtema": "Observação e modelagem",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0030",
+      "stem": "Uma criança observa um colega ser elogiado pelos professores por compartilhar brinquedos e, pouco depois, começa a compartilhar com frequência. Segundo a teoria de Bandura, quais processos explicam essa mudança comportamental?",
+      "format": "multiple_choice",
+      "difficulty": "advanced",
+      "knowledgeType": "interpretacao_de_caso",
+      "explanation": "Bandura descreve que a observação de um modelo sendo recompensado (reforço vicário) pode aumentar a probabilidade de o observador imitar o comportamento. Esse processo envolve atenção ao modelo, retenção do que foi observado, capacidade de reproduzir a ação e motivação para fazê-lo.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Condicionamento clássico: emparelhamento entre brinquedo e elogio imediato.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "Modelagem e reforço vicário (vicarious reinforcement) associados a processos como atenção, retenção, reprodução e motivação.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "Punição negativa, pela remoção de estímulos aversivos ao compartilhar.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "Extinção do comportamento anterior sem qualquer influência social.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "Aumento espontâneo de comportamento sem necessidade de observação ou recompensa.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-aprendizagem-social",
+        "topic-reforco-vicario-e-processos-cognitivos"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-albert-bandura"
+      ],
+      "referenceIds": [
+        "work-e79e1073cdf5"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0030",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Aprendizagem social",
+        "subtema": "Reforço vicário e processos cognitivos",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0101",
+      "stem": "Um cão é exposto repetidamente a um estímulo neutro (campainha) seguido pela apresentação de um estímulo não condicionado (comida). Após várias associações, o estímulo neutro provoca salivação. Qual é o tipo de condicionamento demonstrado?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "Tratando-se de condicionamento clássico, o estímulo neutro passa a prever o estímulo incondicionado, levando a uma resposta reflexa condicionada sem necessidade de comportamento voluntário.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Condicionamento clássico",
+          "isCorrect": true
+        },
+        {
+          "id": "b",
+          "text": "B) Condicionamento operante",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Reforço negativo",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Punição",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Extinção",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-associacao-estimulo-estimulo-reflexo-condicionado",
+        "topic-condicionamento-classico"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao"
+      ],
+      "referenceIds": [
+        "work-10cf491b7e31",
+        "work-7c13657893c9"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0101",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Condicionamento clássico",
+        "subtema": "Associação estímulo-Estímulo (reflexo condicionado)",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0102",
+      "stem": "Em uma gaiola, um rato pressiona uma alavanca para receber comida. Cada acionamento bem-sucedido é seguido de alimento, o que aumenta a frequência do comportamento. Qual princípio de aprendizagem está sendo demonstrado?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "No condicionamento operante, o comportamento (pressionar a alavanca) é seguido por reforço (comida), aumentando a probabilidade de repetição.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Reforço positivo",
+          "isCorrect": true
+        },
+        {
+          "id": "b",
+          "text": "B) Reforço negativo",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Punição",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Extinção",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Esquiva",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-condicionamento-operante",
+        "topic-reforco-positivo-contingencia"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao"
+      ],
+      "referenceIds": [
+        "work-7c13657893c9"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0102",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Condicionamento operante",
+        "subtema": "Reforço positivo/contingência",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0103",
+      "stem": "Na sala de aula, o professor utiliza reforço intermitente para manter o desempenho de estudo: ele premia apenas algumas respostas certas, de forma não previsível. Qual tipo de schedule está sendo utilizado?",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "aplicado",
+      "explanation": "O reforço intermitente com variação (VR) produz resistência maior à extinção porque é menos previsível, mantendo o comportamento ativo por mais tempo.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Reforço contínuo",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Reforço fixo de razão (FR)",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Reforço variável de razão (VR)",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "D) Reforço fixo de intervalo (FI)",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Reforço variável de intervalo (VI)",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-programas-de-reforco",
+        "topic-reforco"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao"
+      ],
+      "referenceIds": [
+        "work-68be5027ea60",
+        "work-a8a6ce1af846"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0103",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Reforço",
+        "subtema": "Programas de reforço",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0104",
+      "stem": "Em contextos educacionais, o uso de punição para gerenciar comportamentos problemáticos deve considerar princípios éticos da prática profissional. Qual afirmação está mais alinhada com a ética profissional?",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "etico_profissional",
+      "explanation": "Princípios éticos da prática profissional enfatizam minimizar danos, buscar estratégias menos intrusivas e avaliar riscos e benefícios; quando usada, deve ser proporcional, breve e acompanhada de reforços positivos.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Punição deve ser a primeira opção para gerenciar qualquer comportamento inadequado.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Punição deve ser evitada sempre que possível; se necessária, deve ser proporcional, temporária, acompanhada de estratégias alternativas e documentada.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Punição nunca deve ser utilizada.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Punição e reforço positivo devem ser usados de forma equivalente em todas as situações.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Punição deve ser pública para manter a ordem na sala.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-etica-na-pratica-de-manejo-de-comportamento",
+        "topic-punicao"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao"
+      ],
+      "referenceIds": [
+        "work-59ff7402c3ca",
+        "work-7c13657893c9",
+        "work-cf0879943326",
+        "work-e81dfa661cb2"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0104",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Punição",
+        "subtema": "Ética na prática de manejo de comportamento",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0105",
+      "stem": "Caso: uma aluna observa uma colega resolver problemas de matemática usando passos claros e organizados, e, ao praticar, a aluna começa a empregar a mesma abordagem. Qual processo de aprendizagem social está envolvido e quais fatores podem influenciar a eficácia da modelagem?",
+      "format": "multiple_choice",
+      "difficulty": "advanced",
+      "knowledgeType": "interpretacao_de_caso",
+      "explanation": "A situação ilustra aprendizagem social (modelagem) proposta por Bandura: observação de um modelo, retenção da estratégia e reprodução na prática, com influência de fatores como atenção, retenção, motivação e valor do modelo.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Condicionamento clássico",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Condicionamento operante",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Aprendizagem social",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "D) Esquiva",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Reforço direto",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-aprendizagem-social",
+        "topic-observacao-modelagem-e-reforco-vicario"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao"
+      ],
+      "referenceIds": [
+        "work-10cf491b7e31",
+        "work-7c13657893c9",
+        "work-e81dfa661cb2"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0105",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Aprendizagem social",
+        "subtema": "Observação, modelagem e reforço vicário",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0106",
+      "stem": "Qual afirmação descreve com maior precisão o condicionamento clássico, conforme as ideias de Pavlov?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "No condicionamento clássico, um estímulo neutro é emparelhado repetidamente com um estímulo que provoca uma resposta; após esse emparelhamento, o estímulo neutro passa a tornar-se estímulo condicionado capaz de evocar a resposta condicionada, sem o estímulo incondicionado. Esse processo envolve associação entre estímulos, não depende de reforços ou punições.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Um estímulo neutro, quando emparelhado com um estímulo incondicionado repetidamente, passa a evocar a mesma resposta que o estímulo incondicionado.",
+          "isCorrect": true
+        },
+        {
+          "id": "b",
+          "text": "B) O comportamento é moldado apenas por consequências positivas.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) A aprendizagem ocorre exclusivamente pela observação de modelos.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) A resposta aprendida depende da punição constante do comportamento.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) O reforço ocorre apenas após respostas voluntárias.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conceitos-basicos-do-condicionamento-classico",
+        "topic-condicionamento-classico"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao-de-questoes-psicologia"
+      ],
+      "referenceIds": [
+        "work-2abcaf60f86b",
+        "work-7f11c0819ada",
+        "work-9f925a228bac"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-psicologia-cognitiva",
+      "legacyOriginId": "PSI-BANCO-0106",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Psicologia Cognitiva",
+        "tema": "condicionamento clássico",
+        "subtema": "Conceitos básicos do condicionamento clássico",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0107",
+      "stem": "No condicionamento operante, qual afirmação descreve com precisão como as consequências influenciam a frequência de um comportamento?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "O condicionamento operante descreve como as consequências aumentam (reforço) ou diminuem (punição) a probabilidade de uma resposta se repetir. Reforços positivos/negativos aumentam, punições reduzem a probabilidade, mas punição nem sempre ensina a conduta desejada.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) O comportamento é modulado apenas por estímulos internos.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Consequências fortalecem (reforço) ou enfraquecem (punição) a probabilidade de repetição do comportamento.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Reforços sempre aumentam a probabilidade de ocorrência.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) A aprendizagem ocorre somente por observação de modelos.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) A punição é o único meio de reduzir comportamentos.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-condicionamento-operante",
+        "topic-reforco-e-punicao-no-condicionamento-operante"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao-de-questoes-psicologia"
+      ],
+      "referenceIds": [
+        "work-9119ffc12cdc",
+        "work-c0bbde9cf2a7"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-psicologia-cognitiva",
+      "legacyOriginId": "PSI-BANCO-0107",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Psicologia Cognitiva",
+        "tema": "condicionamento operante",
+        "subtema": "Reforço e punição no condicionamento operante",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0108",
+      "stem": "Durante uma tarefa, o pesquisador desliga um alarme barulhento assim que a pessoa responde corretamente. Esse tipo de reforço é chamado de:",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "aplicado",
+      "explanation": "O reforço negativo envolve a remoção de um estímulo aversivo para aumentar a probabilidade de uma resposta. Aqui, o alarme é removido quando a resposta correta ocorre, fortalecendo a conduta sem introduzir um estímulo agradável diretamente.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Reforço positivo",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Reforço negativo",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Punição positiva",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Punição negativa",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Reforço intermitente",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-reforco",
+        "topic-reforco-negativo"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao-de-questoes-psicologia"
+      ],
+      "referenceIds": [
+        "work-9119ffc12cdc"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-psicologia-cognitiva",
+      "legacyOriginId": "PSI-BANCO-0108",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Psicologia Cognitiva",
+        "tema": "reforço",
+        "subtema": "Reforço negativo",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0109",
+      "stem": "Caso educativo: Um professor utiliza punição como principal estratégia disciplinar para reduzir comportamentos disruptivos. Quais são desvantagens éticas e de aprendizagem associadas a esse uso?",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "etico_profissional",
+      "explanation": "Punição pode reduzir a frequência do comportamento, porém não ensina comportamentos alternativos funcionais. Pode gerar efeitos adversos como medo, agressão, evasão e deterioração da relação professor-aluno. Do ponto de vista ético-profissional, recomenda-se o uso de reforços positivos e estratégias que promovam condutas funcionais.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Pode reduzir o comportamento indesejado rapidamente, mas não ensina estratégias de resposta adequadas e pode gerar efeitos colaterais como medo, evasão e deterioração da relação aluno-professor.",
+          "isCorrect": true
+        },
+        {
+          "id": "b",
+          "text": "B) Não tem impactos éticos.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Promove uma aprendizagem de longa duração sem efeitos colaterais.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) É a melhor abordagem para todos os contextos.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Substitui necessidade de reforço positivo.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-punicao",
+        "topic-punicao-e-etica-no-manejo-comportamental"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao-de-questoes-psicologia"
+      ],
+      "referenceIds": [
+        "work-06500486e021",
+        "work-59ff7402c3ca",
+        "work-9119ffc12cdc",
+        "work-9f925a228bac",
+        "work-cf0879943326"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-psicologia-cognitiva",
+      "legacyOriginId": "PSI-BANCO-0109",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Psicologia Cognitiva",
+        "tema": "punição",
+        "subtema": "Punição e ética no manejo comportamental",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0110",
+      "stem": "Caso: João observa Maria, que evita uma tarefa difícil ao fingir estar ocupada; Maria recebe aprovação de colegas por esquivar-se sem enfrentar a tarefa. Em seguida, João também começa a evitar a tarefa sem experimentá-la. Qual mecanismo de aprendizagem está envolvido nessa situação?",
+      "format": "multiple_choice",
+      "difficulty": "advanced",
+      "knowledgeType": "interpretacao_de_caso",
+      "explanation": "Trata-se de aprendizagem social (modelagem) com reforço vicário: o observador adquire a conduta ao observar o modelo ser reforçado ou premiado por evitar a tarefa; o comportamento de esquiva pode ser aprendido pela observação de consequências para o modelo sem necessidade de experiência direta. Bandura descreve esse processo como modelagem com reforço vicário.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Condicionamento clássico",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Condicionamento operante",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Aprendizagem social (modelagem) com reforço vicário",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "D) Esquiva operante",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Punição",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-aprendizagem-social",
+        "topic-modelagem-e-reforco-vicario"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao-de-questoes-psicologia"
+      ],
+      "referenceIds": [
+        "work-7f11c0819ada",
+        "work-9119ffc12cdc",
+        "work-9f925a228bac"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-psicologia-cognitiva",
+      "legacyOriginId": "PSI-BANCO-0110",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Psicologia Cognitiva",
+        "tema": "aprendizagem social",
+        "subtema": "Modelagem e reforço vicário",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0111",
+      "stem": "Em condicionamento clássico, qual é o papel do estímulo neutro que, após emparelhamento repetido com um estímulo incondicionado, passa a provocar a resposta condicionada?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "O estímulo neutro torna-se estímulo condicionado ao ser pareado com um estímulo incondicionado; com o tempo, ele sozinho evoca a resposta condicionada. Esse processo é a essência do condicionamento clássico segundo Pavlov.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Estímulo incondicionado",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Resposta condicionada",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Estímulo condicionado",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "D) Reforço",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Estímulo neutro de novo",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-condicionamento-classico",
+        "topic-estimulo-condicionado-e-estimulo-incondicionado"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao-psicologia"
+      ],
+      "referenceIds": [
+        "work-0387b242980a",
+        "work-26171f000431"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0111",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Condicionamento clássico",
+        "subtema": "Estímulo condicionado e estímulo incondicionado",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0112",
+      "stem": "Qual afirmação descreve corretamente o reforço positivo no condicionamento operante?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "Reforço positivo envolve a apresentação de um estímulo agradável logo após a resposta, o que aumenta a probabilidade de repetição da ação. Esse é um princípio central do condicionamento operante de Skinner.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Aumento da probabilidade de resposta pela adição de um estímulo aversivo.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Aumento da probabilidade de resposta pela apresentação de um estímulo agradável após a resposta.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Diminuição da probabilidade de resposta pela retirada de estímulo agradável.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Diminuição da probabilidade de resposta pela apresentação de estímulo aversivo.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Reforço decorrente da interrupção de qualquer estímulo.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-reforco",
+        "topic-reforco-positivo"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao-psicologia"
+      ],
+      "referenceIds": [
+        "work-012adecd0ba0",
+        "work-6a5913db1b9a"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0112",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Reforço",
+        "subtema": "Reforço positivo",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0113",
+      "stem": "Qual é a diferença entre punição positiva e punição negativa no condicionamento operante?",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "teorico",
+      "explanation": "Punição positiva envolve a apresentação de estímulo aversivo após a resposta; punição negativa envolve a retirada de estímulo agradável após a resposta. Ambas visam reduzir a probabilidade de recorrência da resposta, mas por vias diferentes.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Pun. positiva aumenta o comportamento; Pun. negativa diminui.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Pun. positiva envolve retirada de estímulo agradável após a resposta; Pun. negativa envolve a adição de estímulo aversivo.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Pun. positiva envolve apresentação de estímulo aversivo após a resposta; Pun. negativa envolve a remoção de estímulo agradável após a resposta.",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "D) Pun. positiva fortalece o comportamento; Pun. negativa enfraquece o comportamento.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Não há diferença; são termos sinônimos.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-punicao",
+        "topic-punicao-positiva-vs-negativa"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao-psicologia"
+      ],
+      "referenceIds": [
+        "work-42ce8d1aca33",
+        "work-6a5913db1b9a"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0113",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Punição",
+        "subtema": "Punição positiva vs negativa",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0114",
+      "stem": "Na aprendizagem social, observar um modelo recebendo reforço por uma ação aumenta a probabilidade de imitação da mesma ação pelo observador, mesmo sem reforço direto?",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "aplicado",
+      "explanation": "A teoria da aprendizagem social de Bandura afirma que a imitação depende da observação, da avaliação do modelo e de reforços vicários. Reforço direto não é estritamente necessário para a imitação, embora possa aumentar a probabilidade de reprodução da ação.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Sim, sempre imita independentemente de reforços.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Não, a observação não afeta a imitação.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Em geral, a observação de consequências e a avaliação do modelo influenciam a probabilidade de imitação.",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "D) Apenas se o observador já possuir a habilidade.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Só quando o modelo é parente próximo.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-aprendizagem-social",
+        "topic-modelagem-e-aprendizagem-vicaria"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao-psicologia"
+      ],
+      "referenceIds": [
+        "work-625a3312e0ce",
+        "work-e81dfa661cb2"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0114",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Aprendizagem social",
+        "subtema": "Modelagem e aprendizagem vicária",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0115",
+      "stem": "Esquiva (evitamento) é um tipo de aprendizado operante em que a resposta é emitida para evitar ou adiar a apresentação de um estímulo aversivo, sendo reforçada pela remoção desse estímulo.",
+      "format": "multiple_choice",
+      "difficulty": "advanced",
+      "knowledgeType": "aplicado",
+      "explanation": "Esquiva ou evitância é um tipo de aprendizado operante em que a resposta impede a ocorrência do estímulo aversivo (ou adia sua chegada). O reforço é a remoção do estímulo aversivo, o que pode tornar a extinção mais lenta e manter comportamentos de evasão em situações futuras.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) É um tipo de condicionamento clássico.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) O reforço ocorre apenas após a retirada do estímulo aversivo.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) O comportamento é emitido para evitar ativamente o estímulo aversivo antes que ele apareça; é reforçado pela remoção do estímulo aversivo e pode dificultar a extinção.",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "D) Não envolve consequências externas.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Trata-se apenas de aprendizado por observação.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-esquiva",
+        "topic-esquiva-evitamento-em-condicionamento-operante"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao-psicologia"
+      ],
+      "referenceIds": [
+        "work-18db5c6db169",
+        "work-6e998daf5d91",
+        "work-cfd7ae7168db"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0115",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Esquiva",
+        "subtema": "Esquiva/evitamento em condicionamento operante",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0116",
+      "stem": "No condicionamento clássico, o que ocorre quando um estímulo neutro é repetidamente apresentado junto de um estímulo que já provoca uma resposta reflexa, até que o neutro por si só passe a provocar a resposta?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "A aquisição, ou aprendizagem associativa, ocorre quando o estímulo neutro (agora CS) começa a evocar a resposta (CR) após repetidas parcerias com o estímulo inato (US). Extinção é a apresentação do CS sem o US, generalização é responder a CSs parecidos, discriminação é diferenciar CSs, e recondicionamento envolve novo emparelhamento.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Extinção",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Generalização",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Aquisição",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "D) Discriminação",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Recondicionamento",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-aquisicao-associacao-cs-us",
+        "topic-condicionamento-classico"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-ivan-pavlov",
+        "author-john-b-watson"
+      ],
+      "referenceIds": [
+        "work-88c4b64e051b",
+        "work-f3bd3e03e019"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0116",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Condicionamento clássico",
+        "subtema": "Aquisição (associação CS-US)",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0117",
+      "stem": "Segundo o condicionamento operante, comportamentos são moldados por consequências. Qual tipo de consequência aumenta a probabilidade de uma resposta ocorrer novamente?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "Reforço positivo é a apresentação de algo agradável após a resposta, o que aumenta a probabilidade de a resposta ocorrer novamente. Punição positiva/negativa reduzem a probabilidade; reforço negativo envolve a remoção de estímulo aversivo; extinção é a ausência de consequências que mantenham a resposta.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Punição positiva",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Reforço negativo",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Reforço positivo",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "D) Punição negativa",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Extinção",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-condicionamento-operante",
+        "topic-reforco"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-b-f-skinner",
+        "author-edward-thorndike"
+      ],
+      "referenceIds": [
+        "work-9516c6df87ae",
+        "work-a439997fbe3c"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0117",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Condicionamento operante",
+        "subtema": "Reforço",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0118",
+      "stem": "Em uma tarefa de esquiva (evitação), o participante realiza uma ação para evitar a apresentação de um estímulo aversivo que ainda não começou. Qual o tipo de processo envolvido?",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "interpretacao_de_caso",
+      "explanation": "Esquiva (evitação) é uma resposta que evita o estímulo aversivo antes que ele tenha início. É frequentemente fortalecida por reforço negativo, pois a resposta evita o estímulo desagradável. Extinção e generalização não descrevem a função da resposta neste caso; o reforço negativo poderia ser parte do processo, mas a essência é a esquiva em si.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Esquecimento",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Extinção",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Esquiva",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "D) Reforço negativo",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Generalização",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-condicionamento-operante",
+        "topic-esquiva-evitacao"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-orval-s-mowrer",
+        "author-b-f-skinner"
+      ],
+      "referenceIds": [
+        "work-5ad6a088c443",
+        "work-74f434c4e628"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0118",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Condicionamento operante",
+        "subtema": "Esquiva (evitação)",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0119",
+      "stem": "Reforço é uma consequência que aumenta a probabilidade de uma resposta ocorrer novamente. Qual afirmação descreve reforço negativo?",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "aplicado",
+      "explanation": "Reforço negativo envolve a remoção de um estímulo aversivo após a resposta, aumentando a probabilidade de repetição da resposta. As outras opções descrevem reforço positivo (A), punição (C) ou remoção de estímulo agradável (D) ou ausência de mudança (E).",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) A apresentação de um estímulo agradável após a resposta",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) A remoção de um estímulo aversivo após a resposta",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) A apresentação de um estímulo aversivo após a resposta",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) A remoção de um estímulo agradável após a resposta",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Manter o estímulo inalterado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-reforco",
+        "topic-reforco-negativo"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-b-f-skinner",
+        "author-edward-thorndike"
+      ],
+      "referenceIds": [
+        "work-9516c6df87ae",
+        "work-a439997fbe3c"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0119",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Reforço",
+        "subtema": "Reforço negativo",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0120",
+      "stem": "De acordo com a aprendizagem social de Bandura, a aquisição de comportamentos observados depende de fatores que modulam a reprodução do comportamento. Em termos de autoeficácia, qual afirmação está mais alinhada com a teoria?",
+      "format": "multiple_choice",
+      "difficulty": "advanced",
+      "knowledgeType": "teorico",
+      "explanation": "Bandura propõe que a autoeficácia modera a reprodução do comportamento observado: indivíduos com alta autoeficácia tendem a reproduzir comportamentos observados com maior probabilidade, desde que também haja atenção, retenção e motivação. As outras afirmações subestimam ou confundem o papel da autoeficácia e dos processos de observação.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Autoeficácia não influencia a imitação de comportamentos observados.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Autoeficácia modera a reprodução do comportamento observado, aumentando a probabilidade de imitação se a pessoa acreditar na própria capacidade.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) A autoeficácia substitui a necessidade de atenção e retenção ao comportamento observado.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) A aprendizagem social ocorre apenas com reforço direto, não com observação.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) A autoeficácia impede a generalização de comportamentos aprendidos por observação.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-aprendizagem-social",
+        "topic-autoeficacia-e-modelagem"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-albert-bandura"
+      ],
+      "referenceIds": [
+        "work-292206070fb1",
+        "work-bcc5f5aa5ba5"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0120",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Aprendizagem social",
+        "subtema": "Autoeficácia e modelagem",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0121",
+      "stem": "Qual afirmação descreve corretamente o condicionamento clássico?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "No condicionamento clássico, o estímulo neutro torna-se condicionado quando pareado repetidamente com um estímulo incondicionado, levando a uma resposta condicionada semelhante à resposta incondicionada.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Um estímulo neutro é apresentado com um reforço positivo para aumentar uma resposta.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Um estímulo neutro repetidamente pareado com um estímulo incondicionado torna-se capaz de evocar a resposta condicionada.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) A resposta é emitida apenas após punição.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) A quantidade de reforço determina o tamanho da resposta.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) A aprendizagem ocorre apenas em humanos.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-associacao-estimulo-resposta-csus",
+        "topic-condicionamento-classico"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-ivan-pavlov"
+      ],
+      "referenceIds": [
+        "work-c6249d2e120e"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-psicologia-cognitiva",
+      "legacyOriginId": "PSI-BANCO-0121",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Psicologia Cognitiva",
+        "tema": "condicionamento clássico",
+        "subtema": "Associação estímulo-resposta (CS–US)",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0122",
+      "stem": "No condicionamento operante, qual das alternativas descreve corretamente o reforço positivo?",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "aplicado",
+      "explanation": "Reforço positivo envolve a apresentação de um estímulo agradável após uma resposta, aumentando a probabilidade de que essa resposta se repita.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Remover um estímulo aversivo após a resposta.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Adicionar um estímulo agradável após a resposta, aumentando a probabilidade de repetição.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Remover consequências após a resposta.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Aplicar punição para reduzir a probabilidade da resposta.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Apenas imitar modelos.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-condicionamento-operante",
+        "topic-reforco-positivo"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-b-f-skinner",
+        "author-skinner"
+      ],
+      "referenceIds": [
+        "work-022929933221"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-psicologia-cognitiva",
+      "legacyOriginId": "PSI-BANCO-0122",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Psicologia Cognitiva",
+        "tema": "condicionamento operante",
+        "subtema": "Reforço positivo",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0123",
+      "stem": "Qual é a diferença entre reforço negativo e punição positiva?",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "teorico",
+      "explanation": "Reforço negativo aumenta a probabilidade de uma resposta ao remover um estímulo aversivo; punição positiva diminui a probabilidade de emitir a resposta ao adicionar um estímulo aversivo.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Reforço negativo aumenta a probabilidade de repetição da resposta ao remover um estímulo aversivo; punição positiva diminui a probabilidade ao adicionar um estímulo aversivo.",
+          "isCorrect": true
+        },
+        {
+          "id": "b",
+          "text": "B) Reforço negativo reduz a probabilidade de emissão da resposta.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Punição positiva aumenta a probabilidade da resposta.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Reforço positivo e punição positiva são a mesma coisa.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Reforço negativo implica sempre punição de estímulos.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-reforco",
+        "topic-reforco-negativo-vs-punicao-conceitos"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-b-f-skinner"
+      ],
+      "referenceIds": [
+        "work-022929933221"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-psicologia-cognitiva",
+      "legacyOriginId": "PSI-BANCO-0123",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Psicologia Cognitiva",
+        "tema": "reforço",
+        "subtema": "Reforço negativo vs punição (conceitos)",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0124",
+      "stem": "Esquiva: uma resposta que evita a apresentação de um estímulo aversivo que poderia ocorrer.",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "interpretacao_de_caso",
+      "explanation": "Esquiva envolve evitar a apresentação de um estímulo aversivo ao realizar uma resposta, de modo que o estímulo não ocorre. Difere de escape, que interrompe o estímulo já presente.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) A resposta ocorre apenas após a apresentação do estímulo aversivo.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) A resposta evita que o estímulo aversivo seja apresentado.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) A resposta remove o estímulo aversivo após a sua apresentação.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) A resposta é reforçada apenas quando o estímulo aversivo já começou.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) A resposta é imitada a partir de um modelo.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-esquiva",
+        "topic-evitacao-de-estimulos-aversivos-condicionamento-operante"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-melvin-mowrer"
+      ],
+      "referenceIds": [
+        "work-8b2e578165d2"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-psicologia-cognitiva",
+      "legacyOriginId": "PSI-BANCO-0124",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Psicologia Cognitiva",
+        "tema": "esquiva",
+        "subtema": "Evitação de estímulos aversivos (condicionamento operante)",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0125",
+      "stem": "Aprendizagem social: observação de modelos e imitação está associada principalmente a Bandura. Qual fator facilita a replicação de comportamento observado?",
+      "format": "multiple_choice",
+      "difficulty": "advanced",
+      "knowledgeType": "comparativo",
+      "explanation": "Segundo a teoria da aprendizagem social de Bandura, a imitação é facilitada pela identificação com o modelo, pela percepção de competência do modelo e pelas consequências observadas das ações do modelo (reforço/viciante).",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Reforço direto apenas para o modelo.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Identificação com o modelo, percepção de competência do modelo e consequências observadas.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Exposição simples ao modelo sem qualquer reforço.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Punir o observador para promover a imitação.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Observação de repetições sem reforço.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-aprendizagem-social",
+        "topic-modelagem-e-autoeficacia"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-albert-bandura"
+      ],
+      "referenceIds": [
+        "work-dc17e34363cb"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-psicologia-cognitiva",
+      "legacyOriginId": "PSI-BANCO-0125",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Psicologia Cognitiva",
+        "tema": "aprendizagem social",
+        "subtema": "Modelagem e autoeficácia",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0126",
+      "stem": "No condicionamento clássico, depois de repetidos pareamentos entre um tom neutro e a apresentação de comida que provoca salivação, qual é o papel do tom na organização da resposta após o pareamento?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "O tom, inicialmente neutro, torna-se estímulo condicionado capaz de evocar a resposta condicionada (salivação) após o pareamento com o estímulo incondicionado (comida).",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Estímulo incondicionado",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Estímulo condicionado",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Resposta incondicionada",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Reforço",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Extinção",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-condicionamento-classico",
+        "topic-papel-do-estimulo-condicionado"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao"
+      ],
+      "referenceIds": [
+        "work-d9b1f379a611"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0126",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Condicionamento clássico",
+        "subtema": "Papel do estímulo condicionado",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0127",
+      "stem": "De acordo com a Aprendizagem Social de Bandura, a observação de um modelo pode levar à aquisição de comportamentos sem prática direta. Qual elemento central dessa teoria explica como alguém aprende apenas observando?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "teorico",
+      "explanation": "A teoria da aprendizagem social enfatiza a modelagem e a observação (atenção, retenção, reprodução e motivação) como vias pela qual comportamentos são adquiridos sem prática direta.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Condicionamento clássico",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Aprendizagem social (modelagem)",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Reforço direto",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Extinção",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Tentativa e erro",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-aprendizagem-social",
+        "topic-modelagem-e-observacao"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao"
+      ],
+      "referenceIds": [
+        "work-9aa99a5669cd"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0127",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Aprendizagem social",
+        "subtema": "Modelagem e observação",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0128",
+      "stem": "Em sala de aula, o professor utiliza reforço positivo para aumentar a frequência de entrega de tarefas. Qual cenário descreve corretamente um reforço positivo aplicado ao comportamento de entregar tarefas?",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "aplicado",
+      "explanation": "Reforço positivo consiste em apresentar um estímulo agradável (pontos extras) para aumentar a probabilidade de repetição do comportamento (entregar a tarefa).",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Remover uma tarefa de casa se a entrega ocorrer",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Conceder pontos extras toda vez que a tarefa é entregue",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Aplicar tempo fora após atraso",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Ignorar a entrega",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Recompensar com uma atividade adicional apenas se a turma ficar quieta",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-condicionamento-operante-e-reforco",
+        "topic-reforco-positivo"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao"
+      ],
+      "referenceIds": [
+        "work-bfc0871fd633"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0128",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Condicionamento operante e reforço",
+        "subtema": "Reforço positivo",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0129",
+      "stem": "No condicionamento operante, qual afirmação está correta sobre punição?",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "conceitual",
+      "explanation": "Punição positiva consiste em adicionar um estímulo aversivo logo após o comportamento indesejado para reduzir a probabilidade de recorrência.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Punição positiva envolve retirar estímulo agradável",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Punição positiva envolve apresentar estímulo aversivo",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Punição negativa envolve retirar estímulo aversivo após o comportamento",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Punição negativa aumenta a probabilidade de repetição do comportamento",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Reforço positivo é um tipo de punição",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-punicao-no-condicionamento-operante",
+        "topic-punicao-positiva-vs-punicao-negativa"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao"
+      ],
+      "referenceIds": [
+        "work-bfc0871fd633"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0129",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Punição no condicionamento operante",
+        "subtema": "Punição positiva vs. punição negativa",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0130",
+      "stem": "Caso clínico hipotético: uma pessoa com ansiedade social evita situações sociais; a esquiva reduz temporariamente a ansiedade, mantendo-se a esquiva a longo prazo. Qual intervenção baseada na esquiva é mais eficaz para reduzir esse comportamento a longo prazo?",
+      "format": "multiple_choice",
+      "difficulty": "advanced",
+      "knowledgeType": "interpretacao_de_caso",
+      "explanation": "A exposição gradual (com hierarquia de ansiedade) e reforço de aproximação ajudam a reduzir a esquiva, promovendo dessensibilização progressiva à ansiedade social.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Exposição gradual com reforço de aproximação a cada passo",
+          "isCorrect": true
+        },
+        {
+          "id": "b",
+          "text": "B) Reforçar cada esquiva com elogios",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Proibir totalmente qualquer situação social",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Utilizar punição severa se a pessoa falar em público",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Reforçar a esquiva mantendo o reforço negativo",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-esquiva-e-reforco-na-ansiedade",
+        "topic-esquiva-exposicao-gradual"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao"
+      ],
+      "referenceIds": [
+        "work-6d13792afa47"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-aprendizagem-e-behaviorismo",
+      "legacyOriginId": "PSI-BANCO-0130",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Aprendizagem e Behaviorismo",
+        "tema": "Esquiva e reforço na ansiedade",
+        "subtema": "Esquiva; exposição gradual",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0369",
+      "stem": "Em um laudo de avaliação psicológica de uma criança com suspeita de transtorno de aprendizagem, quais práticas éticas e profissionais devem orientar a elaboração do laudo, especialmente na integração de dados de entrevista, observação e testes e na comunicação de recomendações?",
+      "format": "multiple_choice",
+      "difficulty": "advanced",
+      "knowledgeType": "etico_profissional",
+      "explanation": "A prática recomendada é integrar dados de diferentes fontes, distinguir entre resultados e interpretação, esclarecer limitações e fornecer recomendações práticas dentro do escopo do psicólogo, em alinhamento com ética profissional (confidencialidade, consentimento, competência). Certas informações devem ficar para outros profissionais, conforme o caso.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Apresentar apenas o diagnóstico e uma lista de testes utilizados, sem discutir limitações ou recomendações",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Integrar dados de entrevista, observação e testes, separar resultados de interpretação, explicitar limitações, e oferecer recomendações práticas dentro do escopo",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Incluir diagnósticos médicos e prescrição de tratamento sem fundamentação",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Repetir os mesmos resultados de cada instrumento sem síntese interpretativa",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Esconder informações relevantes para evitar responsabilização",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-etica-profissional-integracao-de-dados-e-interpretacao-de-caso",
+        "topic-laudos"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao-de-questoes-psicologia"
+      ],
+      "referenceIds": [
+        "work-5316a460533c",
+        "work-59ff7402c3ca",
+        "work-5c352a6df0d1",
+        "work-958d9fc202ad",
+        "work-a4129137fcf8",
+        "work-c6daab1b5295",
+        "work-cf0879943326"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-avaliacao-psicologica-e-psicometria",
+      "legacyOriginId": "PSI-BANCO-0369",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Avaliação Psicológica e Psicometria",
+        "tema": "laudos",
+        "subtema": "Ética profissional, integração de dados e interpretação de caso",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0431",
+      "stem": "Qual prática é mais coerente com a intervenção educacional voltada a dificuldades de aprendizagem?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "aplicado",
+      "explanation": "A intervenção eficaz para dificuldades de aprendizagem envolve avaliação formativa, intervenções específicas adaptadas às necessidades e monitoramento do progresso. As outras alternativas são inadequadas, estigmatizantes ou isolam o aluno.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A rotulagem diagnóstica para justificar intervenções.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "Aplicar o mesmo ritmo de ensino para todos sem ajuste.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "Realizar avaliação formativa, usar intervenções específicas (por exemplo, instrução explícita, apoio individualizado) e monitorar o progresso.",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "Esperar que o aluno melhore por conta própria.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "Transferir o aluno para classe de apoio sem participação na turma.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-dificuldades-de-aprendizagem",
+        "topic-intervencao-educacional-para-dificuldades-de-aprendizagem"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao-autorial"
+      ],
+      "referenceIds": [
+        "work-9d0736d3983d",
+        "work-b95926fcf6b8"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-escolar-e-educacional",
+      "legacyOriginId": "PSI-BANCO-0431",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Escolar e Educacional",
+        "tema": "dificuldades de aprendizagem",
+        "subtema": "Intervenção educacional para dificuldades de aprendizagem",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0436",
+      "stem": "Caso: uma estudante apresenta dificuldades persistentes de leitura e escrita, especialmente na decodificação, apesar de acompanhamento pedagógico, e mostra boa compreensão quando lê em voz alta. Qual estratégia de intervenção é indicada neste contexto?",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "aplicado",
+      "explanation": "Dificuldades persistentes de leitura, como dificuldades de decodificação, costumam responder bem a intervenções baseadas em evidências que trabalham fonologia, decodificação e prática de leitura com monitoramento de progresso e ajustes conforme o andamento.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Reforçar apenas a leitura repetitiva sem treino fonológico.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Promover intervenção fonológica e de decodificação com monitoramento de progresso.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Remover a estudante para atendimento especializado.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Atribuir menos tarefas de leitura.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Esperar que melhore por conta própria.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-dificuldades-de-aprendizagem",
+        "topic-dificuldades-de-aprendizagem-especificas-e-intervencoes"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao"
+      ],
+      "referenceIds": [
+        "work-046e5f1acdbe",
+        "work-362cd2b3f2ef"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-escolar-e-educacional",
+      "legacyOriginId": "PSI-BANCO-0436",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Escolar e Educacional",
+        "tema": "dificuldades de aprendizagem",
+        "subtema": "Dificuldades de aprendizagem específicas e intervenções",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0441",
+      "stem": "Em sala de ensino fundamental, uma criança apresenta dificuldades significativas de decodificação fonêmica, com desempenho abaixo do esperado. Qual intervenção prática com base em evidências é mais adequada para apoiar esse aluno?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "aplicado",
+      "explanation": "Intervenções de leitura baseadas em evidências enfatizam instrução fonêmica explícita, treino de decodificação e monitoramento de progresso para dificuldades de leitura. Tais práticas aumentam a probabilidade de ganhos na decodificação e fluência leitora, especialmente quando combinadas com o currículo adequado e feedback frequente.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Intensificar prática de leitura no nível da turma sem instrução explícita.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Implementar intervenção de leitura baseada em fonética estruturada, com instrução explícita de fonemas e monitoramento regular do progresso.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Transferir o aluno para sala de apoio sem integração com a turma.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Aguardar que o aluno se adapte ao ritmo da turma.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Focar apenas em matemática.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-dificuldades-de-aprendizagem",
+        "topic-dificuldades-de-leitura"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-ehri-l",
+        "author-moats-l"
+      ],
+      "referenceIds": [
+        "work-2cbae0823be5",
+        "work-af34de80a992"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-escolar-e-educacional",
+      "legacyOriginId": "PSI-BANCO-0441",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Escolar e Educacional",
+        "tema": "dificuldades de aprendizagem",
+        "subtema": "dificuldades de leitura",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0616",
+      "stem": "Qual critério diferencia TEPT de ASD?",
+      "format": "multiple_choice",
+      "difficulty": "advanced",
+      "knowledgeType": "conceitual",
+      "explanation": "TEPT exige persistência dos sintomas por mais de 1 mês após o evento; ASD ocorre de forma aguda (até 1 mês).",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) TEPT requer que os sintomas comecem apenas dentro de 24 horas após o evento.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) ASD dura mais de 6 meses, enquanto TEPT dura menos de 1 mês.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) TEPT requer que os sintomas persistam por mais de 1 mês após o evento traumático.",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "D) ASD não envolve reexperiência de traumas.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) TEPT não envolve sintomas de hiperexcitação.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-em-revisao-tematica",
+        "topic-trauma"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao-de-questoes-trauma-crises-e-emergencias"
+      ],
+      "referenceIds": [],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-trauma-crises-e-emergencias",
+      "legacyOriginId": "PSI-BANCO-0616",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Trauma, Crises e Emergências",
+        "tema": "trauma",
+        "subtema": "Em revisão temática",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0725",
+      "stem": "Sobre treinamento esportivo, qual estratégia favorece a aprendizagem de motor e a retenção a longo prazo?",
+      "format": "multiple_choice",
+      "difficulty": "advanced",
+      "knowledgeType": "aplicado",
+      "explanation": "Prática deliberada com feedback informativo e variação de contexto favorece a aquisição de habilidades motoras e a retenção a longo prazo, conforme Ericsson e colaboradores. A prática distribuída reduz a fadiga e reforça a consolidação de memória motora.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Prática massed sem feedback nem variação de contexto.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Prática distribuída com feedback informativo e variação de contexto.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Prática apenas em ambiente estático e sem feedback.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Treinamento sem planejamento nem progressão de dificuldade.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Treinamento baseado apenas em repetição mecânica.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-pratica-deliberada-feedback-pratica-distribuida-variacao-de-contexto",
+        "topic-treinamento"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao-de-questoes-psicologia-do-esporte-autoria-propria"
+      ],
+      "referenceIds": [
+        "work-3f5994a09bd1"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-psicologia-do-esporte",
+      "legacyOriginId": "PSI-BANCO-0725",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Psicologia do Esporte",
+        "tema": "treinamento",
+        "subtema": "Prática deliberada; feedback; prática distribuída; variação de contexto",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "real-cebraspe_hub_2017-014-31fa3a2237a8",
+      "stem": "Na perspectiva behaviorista, é fundamental a presença de um\nmodelo para que o comportamento aconteça. Nesse sentido,\ndar-se-iam também as cognições e as crenças.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "a_revisar",
+      "explanation": "Item real de prova oficial; comentário ainda não produzido.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-a-classificar-na-revisao-tematica"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-7822ec4d5ee3",
+        "work-e8075bd8f13d"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Cebraspe",
+      "exam": "Residência Multiprofissional HUB 2017 — Multiprofissional em Atenção Oncológica — Psicologia",
+      "year": 2017,
+      "questionNumber": 14,
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/HUB_17_MULTIPROFISSIONAL/arquivos/289RMULTHUB_003_01.pdf",
+      "answerKeyUrl": "https://cdn.cebraspe.org.br/concursos/HUB_17_MULTIPROFISSIONAL/arquivos/Gab_Definitivo_289RMULTHUB_003_01.pdf",
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-a-classificar-na-revisao-tematica",
+      "legacyOriginId": "real-cebraspe_hub_2017-014-31fa3a2237a8",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "A classificar na revisão temática",
+        "tema": "A classificar na revisão temática",
+        "subtema": "A classificar na revisão temática",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-cebraspe_hub_2017-045-b5f2d3e2190f",
+      "stem": "A vítima que sofre violência psicológica costuma desenvolver,\nde forma concomitante, a síndrome do pânico, o que resulta em\ndificuldades de aprendizagem.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "a_revisar",
+      "explanation": "Item real de prova oficial; comentário ainda não produzido.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-a-classificar-na-revisao-tematica"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-7822ec4d5ee3",
+        "work-e8075bd8f13d"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Cebraspe",
+      "exam": "Residência Multiprofissional HUB 2017 — Multiprofissional em Atenção Oncológica — Psicologia",
+      "year": 2017,
+      "questionNumber": 45,
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/HUB_17_MULTIPROFISSIONAL/arquivos/289RMULTHUB_003_01.pdf",
+      "answerKeyUrl": "https://cdn.cebraspe.org.br/concursos/HUB_17_MULTIPROFISSIONAL/arquivos/Gab_Definitivo_289RMULTHUB_003_01.pdf",
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-a-classificar-na-revisao-tematica",
+      "legacyOriginId": "real-cebraspe_hub_2017-045-b5f2d3e2190f",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "A classificar na revisão temática",
+        "tema": "A classificar na revisão temática",
+        "subtema": "A classificar na revisão temática",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-cebraspe_hub_2017-094-6d3d626226ac",
+      "stem": "Em estudos nos quais se pretende avaliar a relação entre o\nprograma de reforço e a frequência do comportamento,\nconsideram-se como variável independente o programa de\nreforço e como variável dependente a frequência do\ncomportamento.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "a_revisar",
+      "explanation": "Item real de prova oficial; comentário ainda não produzido.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-a-classificar-na-revisao-tematica"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-7822ec4d5ee3",
+        "work-e8075bd8f13d"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Cebraspe",
+      "exam": "Residência Multiprofissional HUB 2017 — Multiprofissional em Atenção Oncológica — Psicologia",
+      "year": 2017,
+      "questionNumber": 94,
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/HUB_17_MULTIPROFISSIONAL/arquivos/289RMULTHUB_003_01.pdf",
+      "answerKeyUrl": "https://cdn.cebraspe.org.br/concursos/HUB_17_MULTIPROFISSIONAL/arquivos/Gab_Definitivo_289RMULTHUB_003_01.pdf",
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-a-classificar-na-revisao-tematica",
+      "legacyOriginId": "real-cebraspe_hub_2017-094-6d3d626226ac",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "A classificar na revisão temática",
+        "tema": "A classificar na revisão temática",
+        "subtema": "A classificar na revisão temática",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-cebraspe_hub_2017-101-b1951962300d",
+      "stem": "De acordo com a teoria do declínio, o esquecimento decorre\nda dificuldade em acessar a informação pela ausência de uma\npista eficaz.\nAcerca dos processos de aprendizagem, julgue os itens a seguir.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "a_revisar",
+      "explanation": "Item real de prova oficial; comentário ainda não produzido.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-a-classificar-na-revisao-tematica"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-7822ec4d5ee3",
+        "work-e8075bd8f13d"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Cebraspe",
+      "exam": "Residência Multiprofissional HUB 2017 — Multiprofissional em Atenção Oncológica — Psicologia",
+      "year": 2017,
+      "questionNumber": 101,
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/HUB_17_MULTIPROFISSIONAL/arquivos/289RMULTHUB_003_01.pdf",
+      "answerKeyUrl": "https://cdn.cebraspe.org.br/concursos/HUB_17_MULTIPROFISSIONAL/arquivos/Gab_Definitivo_289RMULTHUB_003_01.pdf",
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-a-classificar-na-revisao-tematica",
+      "legacyOriginId": "real-cebraspe_hub_2017-101-b1951962300d",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "A classificar na revisão temática",
+        "tema": "A classificar na revisão temática",
+        "subtema": "A classificar na revisão temática",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-cebraspe_hub_2017-102-29b39ce2027e",
+      "stem": "A punição negativa é caracterizada pela ruptura da\ncontingência entre comportamento e reforço negativo.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "a_revisar",
+      "explanation": "Item real de prova oficial; comentário ainda não produzido.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-a-classificar-na-revisao-tematica"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-7822ec4d5ee3",
+        "work-e8075bd8f13d"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Cebraspe",
+      "exam": "Residência Multiprofissional HUB 2017 — Multiprofissional em Atenção Oncológica — Psicologia",
+      "year": 2017,
+      "questionNumber": 102,
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/HUB_17_MULTIPROFISSIONAL/arquivos/289RMULTHUB_003_01.pdf",
+      "answerKeyUrl": "https://cdn.cebraspe.org.br/concursos/HUB_17_MULTIPROFISSIONAL/arquivos/Gab_Definitivo_289RMULTHUB_003_01.pdf",
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-a-classificar-na-revisao-tematica",
+      "legacyOriginId": "real-cebraspe_hub_2017-102-29b39ce2027e",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "A classificar na revisão temática",
+        "tema": "A classificar na revisão temática",
+        "subtema": "A classificar na revisão temática",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-cebraspe_hub_2017-103-0ee3035cbc38",
+      "stem": "No condicionamento clássico, dois estímulos condicionados\ndevem ser emparelhados para que uma resposta condicionada\nseja instalada.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "a_revisar",
+      "explanation": "Item real de prova oficial; comentário ainda não produzido.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-a-classificar-na-revisao-tematica"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-7822ec4d5ee3",
+        "work-e8075bd8f13d"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Cebraspe",
+      "exam": "Residência Multiprofissional HUB 2017 — Multiprofissional em Atenção Oncológica — Psicologia",
+      "year": 2017,
+      "questionNumber": 103,
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/HUB_17_MULTIPROFISSIONAL/arquivos/289RMULTHUB_003_01.pdf",
+      "answerKeyUrl": "https://cdn.cebraspe.org.br/concursos/HUB_17_MULTIPROFISSIONAL/arquivos/Gab_Definitivo_289RMULTHUB_003_01.pdf",
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-a-classificar-na-revisao-tematica",
+      "legacyOriginId": "real-cebraspe_hub_2017-103-0ee3035cbc38",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "A classificar na revisão temática",
+        "tema": "A classificar na revisão temática",
+        "subtema": "A classificar na revisão temática",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-cebraspe_hub_2018-074-a20b39a389e3",
+      "stem": "No contexto da quimioterapia, entende-se a náusea\nantecipatória como uma resposta reflexa apreendida pelo\nprocesso de condicionamento pavloviano.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "a_revisar",
+      "explanation": "Item real de prova oficial; comentário ainda não produzido.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-a-classificar-na-revisao-tematica"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-4737f93ef5ee",
+        "work-d0c509791812"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Cebraspe",
+      "exam": "Residência Multiprofissional HUB 2018 — Programa Multiprofissional em Atenção Oncológica — Psicologia",
+      "year": 2018,
+      "questionNumber": 74,
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/HUB_18_MULTIPROFISSIONAL/arquivos/370_RMULT_009_01.PDF",
+      "answerKeyUrl": "https://cdn.cebraspe.org.br/concursos/HUB_18_MULTIPROFISSIONAL/arquivos/GAB_DEFINITIVO_370_RMULT_009_01.PDF",
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-a-classificar-na-revisao-tematica",
+      "legacyOriginId": "real-cebraspe_hub_2018-074-a20b39a389e3",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "A classificar na revisão temática",
+        "tema": "A classificar na revisão temática",
+        "subtema": "A classificar na revisão temática",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-fgv_enare_2024_2025-023-068630f99ec3",
+      "stem": "A Portaria nº 1.996 GM/MS/2007 definiu as novas diretrizes e as\nestratégias para a implementação da Política Nacional de\nEducação Permanente em Saúde, com o objetivo de evidenciar a\nimportância da formação de recursos humanos para a\nconsolidação do Sistema Único de Saúde.\nA portaria reforçou o conceito de educação permanente como\nprática educativa",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "a_revisar",
+      "explanation": "Questão real de prova oficial; comentário ainda não produzido.",
+      "options": [
+        {
+          "id": "a",
+          "text": "ancorada no trabalho e no conhecimento prévio dos\ntrabalhadores, na problematização da realidade, na\naprendizagem significativa e na transformação das práticas.",
+          "isCorrect": true
+        },
+        {
+          "id": "b",
+          "text": "ancorada no conhecimento técnico-científico das Instituições\nformadoras, na aprendizagem significativa e na\ntransformação das práticas.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "continuada, ancorada no conhecimento técnico-científico das\nInstituições formadoras, na aprendizagem significativa e na\ntransformação das práticas.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "definida e voltada para a especificidade de cada grupo\nprofissional do campo da saúde, ancorada no conhecimento\ntécnico-científico das Instituições formadoras e na\naprendizagem significativa.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "permanente, ancorada no acúmulo de conhecimentos\ntécnico-científicos pelos trabalhadores, com o objetivo de\npromover a transformação das práticas de saúde.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-a-classificar-na-revisao-tematica"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-958d9fc202ad",
+        "work-a4129137fcf8",
+        "work-eca562bd2e10",
+        "work-eefc8ed3a272"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "FGV",
+      "exam": "ENARE — Exame Nacional de Residência, edição 2024/2025, Psicologia (PSICOLT01), Tipo 1",
+      "year": 2024,
+      "questionNumber": 23,
+      "sourceUrl": "https://mapa-vagas-enare-ebserh.conhecimento.fgv.br/provas-gabaritos/multiuni/Provas/PSICOLOGIA%20(PSICOLT01).pdf",
+      "answerKeyUrl": "https://mapa-vagas-enare-ebserh.conhecimento.fgv.br/provas-gabaritos/multiuni/ENARE2024%20Gabarito%20Definitivo%20-%20Multi_Uniprofissional.pdf",
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-psicologia-da-saude-e-politicas-publicas",
+      "legacyOriginId": "real-fgv_enare_2024_2025-023-068630f99ec3",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Psicologia da Saúde e Políticas Públicas",
+        "tema": "A classificar na revisão temática",
+        "subtema": "A classificar na revisão temática",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-fgv_tjgo_2014-030-4398c8e30ba4",
+      "stem": "Com o advento das sociedades disciplinares, a prisão desponta\ncomo sendo a punição por excelência. Contudo, o projeto da\ntécnica corretiva que acompanhou a lógica da detenção punitiva\né simultâneo à crítica da prisão e de seus métodos. Assim,\nsegundo Foucault, a promessa de regenerar o apenado através\ndo encarceramento corresponde a uma utopia fracassada, haja\nvista a prisão:",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "a_revisar",
+      "explanation": "Questão real de prova oficial; comentário ainda não produzido.",
+      "options": [
+        {
+          "id": "a",
+          "text": "reduzir a criminalidade sem modificar a desigualdade social;",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "ficar subordinada à autoridade da figura do juiz penal;",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "objetivar a delinquência e consolidá-la no fluxo das\nilegalidades;",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "combater o tráfico de drogas e reduzir a prostituição;",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "atender aos anseios da classe burguesa frente ao\nproletariado.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-a-classificar-na-revisao-tematica"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-33b2394ee15a",
+        "work-59ff7402c3ca",
+        "work-cf0879943326",
+        "work-d8fd1b2e0cd8"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "FGV",
+      "exam": "Tribunal de Justiça do Estado de Goiás — Concurso Público 2014 — Analista Judiciário — Área Especializada Psicólogo — Tipo 1",
+      "year": 2014,
+      "questionNumber": 30,
+      "sourceUrl": "https://conhecimento.fgv.br/sites/default/files/concursos/tjgo/TJGO_Analista_Judiciario_-_Area_Especializada_-_Psicologo_(ANJUD-PSI)_Tipo_1.pdf",
+      "answerKeyUrl": "https://conhecimento.fgv.br/sites/default/files/concursos/tjgo/tjgo_gabarito_definitivo_atualizado_2014_12_08.pdf",
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-fundamentos-teorias-e-etica",
+      "legacyOriginId": "real-fgv_tjgo_2014-030-4398c8e30ba4",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Fundamentos, Teorias e Ética",
+        "tema": "A classificar na revisão temática",
+        "subtema": "A classificar na revisão temática",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-fgv_tjrj_2014-066-2b09d39c534b",
+      "stem": "Tem chamado atenção no Brasil o alarde em relação às drogas\nilícitas, bem como as campanhas envolvendo grandes somas de\ndinheiro público para tratamento, no caso de algumas delas.\nEntretanto, ao avanço da utilização das drogas lícitas não se tem\natribuído a mesma importância.\nAtualmente o Brasil é o segundo maior consumidor mundial do\nmetilfenidato, a Ritalina, droga ministrada a crianças e\nadolescentes com dificuldades na escolarização, sejam de\ncomportamento, sejam de aprendizagem.\nEssas informações são extraídas de publicação do Conselho\nFederal de Psicologia, que pretende trazer para discussão na\nsociedade uma reflexão sobre:",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "a_revisar",
+      "explanation": "Questão real de prova oficial; comentário ainda não produzido.",
+      "options": [
+        {
+          "id": "a",
+          "text": "a medicalização da vida e da educação;",
+          "isCorrect": true
+        },
+        {
+          "id": "b",
+          "text": "a psicopatologia da vida cotidiana;",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "a judicialização do TDAH;",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "a descriminalização das drogas;",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "o acesso universal e igualitário à assistência farmacêutica.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-a-classificar-na-revisao-tematica"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-5588ea178f4e",
+        "work-b8c200a33200"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "FGV",
+      "exam": "Tribunal de Justiça do Estado do Rio de Janeiro — Concurso Público 2014 — Analista Judiciário — Especialidade Psicólogo — Tipo 1",
+      "year": 2014,
+      "questionNumber": 66,
+      "sourceUrl": "https://conhecimento.fgv.br/sites/default/files/concursos/tjrj_analista/TJRJ_Analista_Judiciario_-_Especialidade_Psicologo_(Analista_Judiciario_-_Especialidade_Psicologo)_Tipo_1.pdf",
+      "answerKeyUrl": "https://conhecimento.fgv.br/sites/default/files/concursos/tjrj_analista/tjrj_analista_gabarito_preliminar_psicologo.pdf",
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-psicologia-juridica-familiar-e-do-desenvolvimento",
+      "legacyOriginId": "real-fgv_tjrj_2014-066-2b09d39c534b",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Psicologia Jurídica, Familiar e do Desenvolvimento",
+        "tema": "A classificar na revisão temática",
+        "subtema": "A classificar na revisão temática",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-fgv_tjro_2015-048-536ed3046ef7",
+      "stem": "A diretora de recursos humanos de uma empresa fabricante de\nautopeças quer avaliar os resultados dos projetos de\ndesenvolvimento de pessoas realizados no ano anterior. O foco\nprincipal desses projetos foi o treinamento para melhoria do\ndesempenho no nível dos cargos, e os projetos utilizaram\nmétodos diversos, como participação em cursos externos,\naprendizagem prática e exercícios de simulação. A diretora\npoderia utilizar como indicadores de avaliação dos resultados\ndessas iniciativas, no nível dos cargos:",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "a_revisar",
+      "explanation": "Questão real de prova oficial; comentário ainda não produzido.",
+      "options": [
+        {
+          "id": "a",
+          "text": "melhoria da qualidade e redução do índice de acidentes de\ntrabalho;",
+          "isCorrect": true
+        },
+        {
+          "id": "b",
+          "text": "melhoria do clima organizacional e melhoria da qualidade de\nvida no trabalho;",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "melhoria da imagem da empresa e redução do absenteísmo;",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "redução da rotatividade e alcance dos objetivos de\ntreinamento;",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "aumento da produtividade e aumento da eficácia\norganizacional.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-a-classificar-na-revisao-tematica"
+      ],
+      "approachIds": [
+        "app-behaviorismo-e-teorias-da-aprendizagem"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-32f7cd48f980",
+        "work-59ff7402c3ca",
+        "work-67c5a7189440",
+        "work-cf0879943326"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "FGV",
+      "exam": "Tribunal de Justiça do Estado de Rondônia — Concurso Público 2015 — Analista Judiciário — Especialidade Psicólogo — Tipo 1",
+      "year": 2015,
+      "questionNumber": 48,
+      "sourceUrl": "https://conhecimento.fgv.br/sites/default/files/concursos/tjro/TJ_RO_Analista_Judiciario_-_Especialidade_-_Psicologo_(AJ-PSI)_Tipo_1.pdf",
+      "answerKeyUrl": "https://conhecimento.fgv.br/sites/default/files/concursos/tjro/tjro_gabarito_preliminar_gdf6gdf465g4df65g4df5g.pdf",
+      "officialAnswerStatus": null,
+      "categoryId": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "areaId": "area-fundamentos-teorias-e-etica",
+      "legacyOriginId": "real-fgv_tjro_2015-048-536ed3046ef7",
+      "legacy": {
+        "categoriaFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "abordagemFinal": "Behaviorismo e Teorias da Aprendizagem",
+        "area": "Fundamentos, Teorias e Ética",
+        "tema": "A classificar na revisão temática",
+        "subtema": "A classificar na revisão temática",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    }
+  ]
+}

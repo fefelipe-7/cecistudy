@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { CheckCircle2, X, RotateCcw, Target, BarChart2, Clock, Brain } from 'lucide-react';
 import { Mascote } from '../ui/Mascote';
 import { cn } from '../../lib/utils';
@@ -139,10 +139,7 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
       <div className="flex-1 pt-4 overflow-y-auto">
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 space-y-6">
           {/* Hero card com score */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
+          <div
             className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4"
           >
             <Mascote expression={mascoteExpression} className="w-20 h-20 mx-auto" decorative />
@@ -167,15 +164,10 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
                 {scorePct}%
               </span>
             </div>
-          </motion.div>
+          </div>
 
           {/* Grid de stats principais */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-            className="grid grid-cols-2 gap-3"
-          >
+          <div className="grid grid-cols-2 gap-3">
             <StatCard
               icon={<CheckCircle2 className="w-4 h-4" />}
               label="acertos"
@@ -204,16 +196,11 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
               colorClass="text-ceci-brand"
               bgClass="bg-surface-rose text-ceci-brand-strong"
             />
-          </motion.div>
+          </div>
 
           {/* Detalhamento por área */}
           {statsByArea.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.2 }}
-              className="rounded-[20px] p-4 bg-white border border-ceci-border-default shadow-sm space-y-3"
-            >
+            <div className="rounded-[20px] p-4 bg-white border border-ceci-border-default shadow-sm space-y-3">
               <SectionTitle title="por área" icon={<BarChart2 className="w-4 h-4" />} />
               <div className="space-y-2">
                 {statsByArea.map(([area, data]) => (
@@ -227,17 +214,12 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
                   />
                 ))}
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Detalhamento por dificuldade */}
           {statsByDificuldade.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.25 }}
-              className="rounded-[20px] p-4 bg-white border border-ceci-border-default shadow-sm space-y-3"
-            >
+            <div className="rounded-[20px] p-4 bg-white border border-ceci-border-default shadow-sm space-y-3">
               <SectionTitle title="por dificuldade" icon={<Target className="w-4 h-4" />} />
               <div className="space-y-2">
                 {statsByDificuldade.map(([dif, data]) => (
@@ -251,17 +233,12 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
                   />
                 ))}
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Detalhamento por escola */}
           {statsByEscola.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.3 }}
-              className="rounded-[20px] p-4 bg-white border border-ceci-border-default shadow-sm space-y-3"
-            >
+            <div className="rounded-[20px] p-4 bg-white border border-ceci-border-default shadow-sm space-y-3">
               <SectionTitle title="por escola/abordagem" icon={<Brain className="w-4 h-4" />} />
               <div className="space-y-2">
                 {statsByEscola.map(([escola, data]) => (
@@ -275,16 +252,11 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
                   />
                 ))}
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Revisão detalhada (colapsável) */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.35 }}
-            className="rounded-[20px] p-4 bg-white border border-ceci-border-default shadow-sm space-y-3"
-          >
+          <div className="rounded-[20px] p-4 bg-white border border-ceci-border-default shadow-sm space-y-3">
             <SectionTitle title="revisão das respostas" icon={<RotateCcw className="w-4 h-4" />} />
             <div className="space-y-2 max-h-64 overflow-y-auto">
               {answers.map((a, i) => {
@@ -324,7 +296,7 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
                 );
               })}
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
 

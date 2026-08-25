@@ -53,5 +53,6 @@ export function demoDatabase(): EmptyDatabase {
     onboarding: { completed: false },
     quizSessions: [],
     readingProgress: {},
+    syncIndex: { stamps: {}, records: {}, tombstones: {} },
   };
 }

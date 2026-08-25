@@ -236,10 +236,7 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
       <div className="flex-1 pt-4 overflow-y-auto">
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 space-y-4">
           {/* Card explicativo */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
+          <div
             className="rounded-[20px] p-4 bg-white border border-ceci-border-default shadow-sm text-center space-y-3"
           >
             <Mascote expression="quiz-ready" className="w-12 h-12 mx-auto" decorative />
@@ -249,15 +246,10 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
                 escolha áreas, temas, escolas e dificuldade. o pool filtra em tempo real.
               </p>
             </div>
-          </motion.div>
+          </div>
 
           {/* Filtros */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.15 }}
-            className="space-y-3"
-          >
+          <div className="space-y-3">
             <FilterSection
               label="áreas"
               icon={<Sparkles className="w-4 h-4" />}
@@ -298,38 +290,26 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
               onToggleOpen={() => toggleSection('dificuldades')}
               count={config.dificuldades.length}
             />
-          </motion.div>
+          </div>
 
           {/* Selector de quantidade */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.25 }}
-          >
+          <div>
             <CountSelector count={config.count} onChange={(n) => setConfig((c) => ({ ...c, count: n }))} maxAvailable={pool.length} />
-          </motion.div>
+          </div>
 
           {/* Badge de filtro ativo */}
           {hasAnyFilter && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.3 }}
+            <div
               className="rounded-xl p-3 bg-surface-rose border border-ceci-border-brand text-center"
             >
               <p className="text-xs text-ceci-brand-strong">
                 {pool.length} questões correspondem aos filtros
               </p>
-            </motion.div>
+            </div>
           )}
 
           {/* Botão começar */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.35 }}
-            className="pt-2"
-          >
+          <div className="pt-2">
             <button
               onClick={handleStart}
               disabled={pool.length === 0}
@@ -341,7 +321,7 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
             >
               <Target className="w-4 h-4" /> {pool.length === 0 ? 'nenhuma questão com esses filtros' : `começar quiz (${config.count} questões)`}
             </button>
-          </motion.div>
+          </div>
         </div>
       </div>
 

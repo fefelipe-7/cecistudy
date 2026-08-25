@@ -2,6 +2,15 @@ import type { ComponentType, ReactNode } from 'react';
 
 export type NavTab = 'home' | 'faculdade' | 'estudos' | 'biblioteca' | 'perfil';
 
+/** Seções do templo de conhecimento acessíveis pela pilha (`#/biblioteca/templo/<slug>`). */
+export type TempleSection = 'conceitos' | 'autores' | 'tecnicas';
+
+export const TEMPLE_SECTION_SLUGS: Record<TempleSection, string> = {
+  conceitos: 'conceitos',
+  autores: 'autores',
+  tecnicas: 'tecnicas',
+};
+
 export type SubTabFaculdade = 'disciplinas' | 'calendario';
 export type SubTabEstudos = 'sessoes' | 'leituras' | 'flashcards' | 'questoes' | 'historico';
 
@@ -18,6 +27,8 @@ export type NavScreen =
   | { kind: 'course'; courseId: string }
   | { kind: 'notes' }
   | { kind: 'temple' }
+  /** Seção interna do templo (`#/biblioteca/templo/<slug>`), empilhada sobre o templo. */
+  | { kind: 'templeSection'; section: TempleSection }
   | { kind: 'streak' }
   | { kind: 'internshipDiary' }
   | { kind: 'tcc' }
@@ -34,6 +45,8 @@ export type NavScreen =
   | { kind: 'quiz-loading'; config: QuizConfig }
   | { kind: 'quiz-play'; state: QuizPlayState }
   | { kind: 'quiz-result'; answers: QuizAnswer[]; config: QuizConfig; startTime: number; correctCount: number; totalCount: number; pool: StudyQuestion[] }
+  /** Sincronização entre dispositivos (pareamento P2P), empilhada sobre o perfil. */
+  | { kind: 'sync' }
   /** Telas dedicadas do estudo (empurradas sobre a aba estudos pelo feed). */
   | { kind: 'study'; screen: StudyScreen };
 
@@ -101,7 +114,10 @@ export type CourseIconName =
   | 'Trophy'
   | 'Clock'
   | 'BookOpen'
-  | 'History';
+  | 'History'
+  | 'Lightbulb'
+  | 'User'
+  | 'Wrench';
 
 export interface DynamicHeaderConfig {
   type?: 'default' | 'detail' | 'custom';
@@ -152,9 +168,6 @@ export interface Course {
   category?: 'obrigatoria' | 'complementar';
   color: string; // hex code or style class
   icon: string; // Lucide icon name
-  progress: number; // 0-100% (derivado do estado real quando progressOverride ausente)
-  /** Ajuste manual do progresso (0-100); se ausente, o valor é derivado dos dados. */
-  progressOverride?: number;
   /** Média mínima para aprovação (0-10, ex.: 7). Fallback de exibição: 7. */
   minGrade?: number;
   description?: string;
@@ -664,9 +677,134 @@ export interface Technique {
   color?: string;
 }
 
+/**
+ * ===== Templo de Conhecimento (catálogo estático) =====
+ * Entidades somente-leitura da pipeline editorial (`content/`): conceitos,
+ * autores curados e técnicas canônicas. Na web vêm dos facades lazy
+ * (`src/data/temple/`); no nativo, do `.db` embutido (`catalogDb.ts`).
+ */
+
+/**
+ * Autor canônico do acervo editorial — entidade de CONSULTA, separada das
+ * questões. Fonte: 139 fichas editoriais (`content/authors-curated/`),
+ * parseadas por `content/build-authors-fichas.mjs`.
+ */
+export interface TempleAuthorSection {
+  /** título original da seção (ex.: "A grande ideia", "Principais obras") */
+  title: string;
+  /** corpo em markdown (parágrafos, tabelas, listas, diagramas em code block) */
+  body: string;
+}
+
+export interface TempleAuthor {
+  id: string; // author-<slug>
+  name: string;
+  slug: string;
+  /** ordem canônica do corpus editorial */
+  order: number;
+  /** famílias teóricas (1+ por autor, ex.: "Psicanalítica e Psicodinâmica") */
+  families: string[];
+  aliases: string[];
+  /** "Em uma frase" do topo da ficha */
+  oneLiner?: string | null;
+  fullName?: string;
+  born?: string;
+  died?: string;
+  origin?: string;
+  family?: string;
+  mainWork?: string;
+  sections: TempleAuthorSection[];
+}
+
+/** Conceito oficial (fonte: content/concepts/, 12 domínios). */
+export interface TempleConcept {
+  id: string; // concept-01-fundamentos-psicologicos-<slug>
+  name: string;
+  slug?: string | null;
+  domainId: string; // domain-01-…
+  domainName?: string | null;
+  definition: string;
+  sections?: Record<string, string>;
+  authorIds: string[];
+  approachIds: string[];
+  topicIds: string[];
+  relatedConceptIds: string[];
+  relationStatus?: string | null;
+  status?: string | null;
+  reviewStatus?: string | null;
+}
+
+/** Entrada leve do índice de conceitos (fica no chunk inicial do templo). */
+export interface TempleConceptIndexEntry {
+  id: string;
+  name: string;
+  domainId: string;
+  domainName: string | null;
+  definition: string; // resumo curto p/ lista
+}
+
+/** Domínio de conceitos ("fundamentos psicológicos", "cognição"…). */
+export interface TempleConceptDomain {
+  id: string;
+  name: string;
+}
+
+/** Categoria de técnicas clínicas (10 domínios editoriais). */
+export interface TempleTechniqueCategory {
+  id: string; // domain-cognitivas…
+  nome: string;
+  slug?: string;
+  descricaoCurta?: string | null;
+  ordemExibicao?: number;
+}
+
+/** Técnica clínica canônica (135, fonte oficial content/techniques/). */
+export interface TempleTechnique {
+  id: string; // tec-…
+  nome: string;
+  emUmaFrase?: string | null;
+  definicao?: string | null;
+  objetivo?: string | null;
+  comoFunciona?: string | null;
+  quandoEUtilizada?: string | null;
+  comoEAplicada?: string | null;
+  origem?: string | null;
+  exemploPratico?: string | null;
+  evidencias?: string | null;
+  limitacoes?: string | null;
+  slug?: string;
+  dominioId: string;
+  dominioNomes?: string[];
+  ordemExibicao?: number;
+  abordagemIds?: string[];
+  modeloIds?: string[];
+  fonteIds?: string[];
+  tecnicasRelacionadasIds?: string[];
+  status?: string;
+}
+
 /** Estado de onboarding (primeiro acesso). */
 export interface OnboardingState {
   completed: boolean;
   completedAt?: string;
   loadedDemo?: boolean;
+}
+
+/**
+ * Índice de sincronização entre dispositivos (pareamento P2P).
+ *
+ * Os timestamps de alteração NÃO vivem nas entidades — vivem aqui, num mapa
+ * paralelo mantido automaticamente pela camada de persistência
+ * (`useStampedState`). Isso evita tocar em ~20 interfaces e mantém o formato
+ * dos backups compatível (o índice viaja junto como campo opcional).
+ *
+ * - `stamps`: última alteração por coleção (LWW para valores únicos, ex.: profile).
+ * - `records`: última alteração por registro (`[coleção][id]`), para merge LWW por item.
+ * - `tombstones`: deleções propagáveis (`[coleção][id]`) — impedem que um registro
+ *   apagado num dispositivo "ressuscite" vindo do outro.
+ */
+export interface SyncIndex {
+  stamps: Record<string, number>;
+  records: Record<string, Record<string, number>>;
+  tombstones: Record<string, Record<string, number>>;
 }

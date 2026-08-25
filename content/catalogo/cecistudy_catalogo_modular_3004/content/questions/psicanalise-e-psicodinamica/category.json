@@ -1,0 +1,16 @@
+{
+  "id": "cat-psicanalise-e-psicodinamica",
+  "slug": "psicanalise-e-psicodinamica",
+  "title": "Psicanálise e Psicodinâmica",
+  "displayOrder": 5,
+  "questionCount": 157,
+  "approachIds": [
+    "app-psicanalise-e-psicodinamica"
+  ],
+  "groupCount": 1,
+  "status": "published",
+  "allowedFormats": [
+    "multiple_choice",
+    "true_false"
+  ]
+}

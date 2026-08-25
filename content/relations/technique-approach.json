@@ -1,0 +1,2041 @@
+{
+  "schemaVersion": 1,
+  "count": 407,
+  "items": [
+    {
+      "tecnicaId": "tec-identificacao-de-pensamentos-automaticos",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-beck",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-pensamentos-automaticos",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-pensamentos-automaticos",
+      "abordagemId": "app-cognitiva_tcc-terapia-do-esquema",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-registro-de-pensamentos",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-beck",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-registro-de-pensamentos",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-registro-de-pensamentos",
+      "abordagemId": "app-cognitiva_tcc-terapia-do-esquema",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reestruturacao-cognitiva",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-beck",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reestruturacao-cognitiva",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reestruturacao-cognitiva",
+      "abordagemId": "app-cognitiva_tcc-terapia-do-esquema",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-questionamento-socratico",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-beck",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-questionamento-socratico",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-questionamento-socratico",
+      "abordagemId": "app-cognitiva_tcc-terapia-do-esquema",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-busca-de-evidencias",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-beck",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-busca-de-evidencias",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-busca-de-evidencias",
+      "abordagemId": "app-cognitiva_tcc-terapia-do-esquema",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-distorcoes-cognitivas",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-beck",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-distorcoes-cognitivas",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-distorcoes-cognitivas",
+      "abordagemId": "app-cognitiva_tcc-terapia-do-esquema",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-descatastrofizacao",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-beck",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-descatastrofizacao",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-descatastrofizacao",
+      "abordagemId": "app-cognitiva_tcc-terapia-do-esquema",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-continuum-cognitivo",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-beck",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-continuum-cognitivo",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-continuum-cognitivo",
+      "abordagemId": "app-cognitiva_tcc-terapia-do-esquema",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-flecha-descendente",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-beck",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-flecha-descendente",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-flecha-descendente",
+      "abordagemId": "app-cognitiva_tcc-terapia-do-esquema",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reatribuicao",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-beck",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reatribuicao",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reatribuicao",
+      "abordagemId": "app-cognitiva_tcc-terapia-do-esquema",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-avaliacao-de-crencas",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-beck",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-avaliacao-de-crencas",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-avaliacao-de-crencas",
+      "abordagemId": "app-cognitiva_tcc-terapia-do-esquema",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-experimentos-comportamentais",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-beck",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-experimentos-comportamentais",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-experimentos-comportamentais",
+      "abordagemId": "app-cognitiva_tcc-terapia-do-esquema",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-cartoes-de-enfrentamento",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-beck",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-cartoes-de-enfrentamento",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-cartoes-de-enfrentamento",
+      "abordagemId": "app-cognitiva_tcc-terapia-do-esquema",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-resolucao-de-problemas",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-beck",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-resolucao-de-problemas",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-resolucao-de-problemas",
+      "abordagemId": "app-cognitiva_tcc-terapia-do-esquema",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-treino-metacognitivo",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-beck",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-treino-metacognitivo",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-treino-metacognitivo",
+      "abordagemId": "app-cognitiva_tcc-terapia-do-esquema",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Cognitivas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reforco-positivo",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reforco-positivo",
+      "abordagemId": "app-comportamental-analise-do-comportamento-aplicada-aba",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reforco-positivo",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reforco-negativo",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reforco-negativo",
+      "abordagemId": "app-comportamental-analise-do-comportamento-aplicada-aba",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reforco-negativo",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-extincao",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-extincao",
+      "abordagemId": "app-comportamental-analise-do-comportamento-aplicada-aba",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-extincao",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-modelagem",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-modelagem",
+      "abordagemId": "app-comportamental-analise-do-comportamento-aplicada-aba",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-modelagem",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-encadeamento",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-encadeamento",
+      "abordagemId": "app-comportamental-analise-do-comportamento-aplicada-aba",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-encadeamento",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-economia-de-fichas",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-economia-de-fichas",
+      "abordagemId": "app-comportamental-analise-do-comportamento-aplicada-aba",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-economia-de-fichas",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-ativacao-comportamental",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-ativacao-comportamental",
+      "abordagemId": "app-comportamental-analise-do-comportamento-aplicada-aba",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-ativacao-comportamental",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-automonitoramento",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-automonitoramento",
+      "abordagemId": "app-comportamental-analise-do-comportamento-aplicada-aba",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-automonitoramento",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-programacao-de-atividades",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-programacao-de-atividades",
+      "abordagemId": "app-comportamental-analise-do-comportamento-aplicada-aba",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-programacao-de-atividades",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-treinamento-de-habilidades",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-treinamento-de-habilidades",
+      "abordagemId": "app-comportamental-analise-do-comportamento-aplicada-aba",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-treinamento-de-habilidades",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exposicao",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exposicao",
+      "abordagemId": "app-comportamental-analise-do-comportamento-aplicada-aba",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exposicao",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-prevencao-de-resposta",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-prevencao-de-resposta",
+      "abordagemId": "app-comportamental-analise-do-comportamento-aplicada-aba",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-prevencao-de-resposta",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-dessensibilizacao",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-dessensibilizacao",
+      "abordagemId": "app-comportamental-analise-do-comportamento-aplicada-aba",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-dessensibilizacao",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-ensaio-comportamental",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-ensaio-comportamental",
+      "abordagemId": "app-comportamental-analise-do-comportamento-aplicada-aba",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-ensaio-comportamental",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-generalizacao",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-generalizacao",
+      "abordagemId": "app-comportamental-analise-do-comportamento-aplicada-aba",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-generalizacao",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Comportamentais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exposicao-ao-vivo",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas de Exposição e Aprendizagem e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exposicao-ao-vivo",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas de Exposição e Aprendizagem e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exposicao-imaginaria",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas de Exposição e Aprendizagem e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exposicao-imaginaria",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas de Exposição e Aprendizagem e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exposicao-interoceptiva",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas de Exposição e Aprendizagem e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exposicao-interoceptiva",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas de Exposição e Aprendizagem e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exposicao-gradual",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas de Exposição e Aprendizagem e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exposicao-gradual",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas de Exposição e Aprendizagem e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exposicao-prolongada",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas de Exposição e Aprendizagem e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exposicao-prolongada",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas de Exposição e Aprendizagem e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exposicao-com-prevencao-de-resposta",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas de Exposição e Aprendizagem e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exposicao-com-prevencao-de-resposta",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas de Exposição e Aprendizagem e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exposicao-em-realidade-virtual",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas de Exposição e Aprendizagem e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exposicao-em-realidade-virtual",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas de Exposição e Aprendizagem e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-habitacao",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas de Exposição e Aprendizagem e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-habitacao",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas de Exposição e Aprendizagem e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-experimentos-de-exposicao",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas de Exposição e Aprendizagem e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-experimentos-de-exposicao",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas de Exposição e Aprendizagem e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-processamento-emocional-durante-exposicao",
+      "abordagemId": "app-comportamental-terapia-comportamental-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas de Exposição e Aprendizagem e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-processamento-emocional-durante-exposicao",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas de Exposição e Aprendizagem e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-focalizacao",
+      "abordagemId": "app-existencial_humanista-terapia-experiencial",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-focalizacao",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-focalizacao",
+      "abordagemId": "app-existencial_humanista-terapia-focada-nas-emocoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-focalizacao",
+      "abordagemId": "app-integrativa_ecletica-psicoterapia-integrativa-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-evocacao-emocional",
+      "abordagemId": "app-existencial_humanista-terapia-experiencial",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-evocacao-emocional",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-evocacao-emocional",
+      "abordagemId": "app-existencial_humanista-terapia-focada-nas-emocoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-evocacao-emocional",
+      "abordagemId": "app-integrativa_ecletica-psicoterapia-integrativa-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-processamento-emocional",
+      "abordagemId": "app-existencial_humanista-terapia-experiencial",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-processamento-emocional",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-processamento-emocional",
+      "abordagemId": "app-existencial_humanista-terapia-focada-nas-emocoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-processamento-emocional",
+      "abordagemId": "app-integrativa_ecletica-psicoterapia-integrativa-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-experimentos-experienciais",
+      "abordagemId": "app-existencial_humanista-terapia-experiencial",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-experimentos-experienciais",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-experimentos-experienciais",
+      "abordagemId": "app-existencial_humanista-terapia-focada-nas-emocoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-experimentos-experienciais",
+      "abordagemId": "app-integrativa_ecletica-psicoterapia-integrativa-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-cadeira-vazia",
+      "abordagemId": "app-existencial_humanista-terapia-experiencial",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-cadeira-vazia",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-cadeira-vazia",
+      "abordagemId": "app-existencial_humanista-terapia-focada-nas-emocoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-cadeira-vazia",
+      "abordagemId": "app-integrativa_ecletica-psicoterapia-integrativa-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-duas-cadeiras",
+      "abordagemId": "app-existencial_humanista-terapia-experiencial",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-duas-cadeiras",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-duas-cadeiras",
+      "abordagemId": "app-existencial_humanista-terapia-focada-nas-emocoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-duas-cadeiras",
+      "abordagemId": "app-integrativa_ecletica-psicoterapia-integrativa-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-trabalho-com-emocoes",
+      "abordagemId": "app-existencial_humanista-terapia-experiencial",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-trabalho-com-emocoes",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-trabalho-com-emocoes",
+      "abordagemId": "app-existencial_humanista-terapia-focada-nas-emocoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-trabalho-com-emocoes",
+      "abordagemId": "app-integrativa_ecletica-psicoterapia-integrativa-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-acesso-a-experiencia",
+      "abordagemId": "app-existencial_humanista-terapia-experiencial",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-acesso-a-experiencia",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-acesso-a-experiencia",
+      "abordagemId": "app-existencial_humanista-terapia-focada-nas-emocoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-acesso-a-experiencia",
+      "abordagemId": "app-integrativa_ecletica-psicoterapia-integrativa-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-expressao-emocional",
+      "abordagemId": "app-existencial_humanista-terapia-experiencial",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-expressao-emocional",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-expressao-emocional",
+      "abordagemId": "app-existencial_humanista-terapia-focada-nas-emocoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-expressao-emocional",
+      "abordagemId": "app-integrativa_ecletica-psicoterapia-integrativa-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-regulacao-emocional",
+      "abordagemId": "app-existencial_humanista-terapia-experiencial",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-regulacao-emocional",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-regulacao-emocional",
+      "abordagemId": "app-existencial_humanista-terapia-focada-nas-emocoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-regulacao-emocional",
+      "abordagemId": "app-integrativa_ecletica-psicoterapia-integrativa-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-amplificacao",
+      "abordagemId": "app-existencial_humanista-terapia-experiencial",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-amplificacao",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-amplificacao",
+      "abordagemId": "app-existencial_humanista-terapia-focada-nas-emocoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-amplificacao",
+      "abordagemId": "app-integrativa_ecletica-psicoterapia-integrativa-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reconhecimento-emocional",
+      "abordagemId": "app-existencial_humanista-terapia-experiencial",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reconhecimento-emocional",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reconhecimento-emocional",
+      "abordagemId": "app-existencial_humanista-terapia-focada-nas-emocoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reconhecimento-emocional",
+      "abordagemId": "app-integrativa_ecletica-psicoterapia-integrativa-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Emocionais e Experienciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-escuta-ativa",
+      "abordagemId": "app-existencial_humanista-terapia-centrada-na-pessoa-rogers",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-escuta-ativa",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-escuta-ativa",
+      "abordagemId": "app-existencial_humanista-terapia-existencial-humanista",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reflexao-de-sentimentos",
+      "abordagemId": "app-existencial_humanista-terapia-centrada-na-pessoa-rogers",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reflexao-de-sentimentos",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reflexao-de-sentimentos",
+      "abordagemId": "app-existencial_humanista-terapia-existencial-humanista",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reflexao-de-conteudo",
+      "abordagemId": "app-existencial_humanista-terapia-centrada-na-pessoa-rogers",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reflexao-de-conteudo",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reflexao-de-conteudo",
+      "abordagemId": "app-existencial_humanista-terapia-existencial-humanista",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-parafraseamento",
+      "abordagemId": "app-existencial_humanista-terapia-centrada-na-pessoa-rogers",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-parafraseamento",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-parafraseamento",
+      "abordagemId": "app-existencial_humanista-terapia-existencial-humanista",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-confrontacao",
+      "abordagemId": "app-existencial_humanista-terapia-centrada-na-pessoa-rogers",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-confrontacao",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-confrontacao",
+      "abordagemId": "app-existencial_humanista-terapia-existencial-humanista",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-presenca-terapeutica",
+      "abordagemId": "app-existencial_humanista-terapia-centrada-na-pessoa-rogers",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-presenca-terapeutica",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-presenca-terapeutica",
+      "abordagemId": "app-existencial_humanista-terapia-existencial-humanista",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-congruencia",
+      "abordagemId": "app-existencial_humanista-terapia-centrada-na-pessoa-rogers",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-congruencia",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-congruencia",
+      "abordagemId": "app-existencial_humanista-terapia-existencial-humanista",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-empatia-terapeutica",
+      "abordagemId": "app-existencial_humanista-terapia-centrada-na-pessoa-rogers",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-empatia-terapeutica",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-empatia-terapeutica",
+      "abordagemId": "app-existencial_humanista-terapia-existencial-humanista",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-consideracao-positiva-incondicional",
+      "abordagemId": "app-existencial_humanista-terapia-centrada-na-pessoa-rogers",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-consideracao-positiva-incondicional",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-consideracao-positiva-incondicional",
+      "abordagemId": "app-existencial_humanista-terapia-existencial-humanista",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exploracao-fenomenologica",
+      "abordagemId": "app-existencial_humanista-terapia-centrada-na-pessoa-rogers",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exploracao-fenomenologica",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exploracao-fenomenologica",
+      "abordagemId": "app-existencial_humanista-terapia-existencial-humanista",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-clarificacao",
+      "abordagemId": "app-existencial_humanista-terapia-centrada-na-pessoa-rogers",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-clarificacao",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-clarificacao",
+      "abordagemId": "app-existencial_humanista-terapia-existencial-humanista",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-dialogo-socratico",
+      "abordagemId": "app-existencial_humanista-terapia-centrada-na-pessoa-rogers",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-dialogo-socratico",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-dialogo-socratico",
+      "abordagemId": "app-existencial_humanista-terapia-existencial-humanista",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-valores",
+      "abordagemId": "app-existencial_humanista-terapia-centrada-na-pessoa-rogers",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-valores",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-valores",
+      "abordagemId": "app-existencial_humanista-terapia-existencial-humanista",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-sentido",
+      "abordagemId": "app-existencial_humanista-terapia-centrada-na-pessoa-rogers",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-sentido",
+      "abordagemId": "app-existencial_humanista-gestalt-terapia",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-sentido",
+      "abordagemId": "app-existencial_humanista-terapia-existencial-humanista",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Humanistas e Existenciais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-associacao-livre",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-freudiana-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-associacao-livre",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-relacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-associacao-livre",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicoterapia-psicodinamica-contemporanea-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-interpretacao",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-freudiana-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-interpretacao",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-relacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-interpretacao",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicoterapia-psicodinamica-contemporanea-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-interpretacao-de-sonhos",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-freudiana-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-interpretacao-de-sonhos",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-relacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-interpretacao-de-sonhos",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicoterapia-psicodinamica-contemporanea-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-analise-da-transferencia",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-freudiana-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-analise-da-transferencia",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-relacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-analise-da-transferencia",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicoterapia-psicodinamica-contemporanea-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-analise-da-contratransferencia",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-freudiana-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-analise-da-contratransferencia",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-relacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-analise-da-contratransferencia",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicoterapia-psicodinamica-contemporanea-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-elaboracao",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-freudiana-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-elaboracao",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-relacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-elaboracao",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicoterapia-psicodinamica-contemporanea-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-manejo-da-resistencia",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-freudiana-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-manejo-da-resistencia",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-relacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-manejo-da-resistencia",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicoterapia-psicodinamica-contemporanea-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-interpretacao-de-defesas",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-freudiana-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-interpretacao-de-defesas",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-relacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-interpretacao-de-defesas",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicoterapia-psicodinamica-contemporanea-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-conflitos",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-freudiana-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-conflitos",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-relacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-conflitos",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicoterapia-psicodinamica-contemporanea-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-insight",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-freudiana-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-insight",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-relacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-insight",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicoterapia-psicodinamica-contemporanea-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-holding",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-freudiana-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-holding",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-relacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-holding",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicoterapia-psicodinamica-contemporanea-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-enactment",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-freudiana-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-enactment",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-relacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-enactment",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicoterapia-psicodinamica-contemporanea-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-escuta-analitica",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-freudiana-classica",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-escuta-analitica",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicanalise-relacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-escuta-analitica",
+      "abordagemId": "app-psicanalitica_psicodinamica-psicoterapia-psicodinamica-contemporanea-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Psicodinâmicas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-genograma",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-genograma",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-estrutural",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-genograma",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-de-casais-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-circulares",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-circulares",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-estrutural",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-circulares",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-de-casais-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reenquadramento",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reenquadramento",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-estrutural",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reenquadramento",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-de-casais-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-conotacao-positiva",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-conotacao-positiva",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-estrutural",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-conotacao-positiva",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-de-casais-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-prescricao-de-tarefas",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-prescricao-de-tarefas",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-estrutural",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-prescricao-de-tarefas",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-de-casais-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-escultura-familiar",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-escultura-familiar",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-estrutural",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-escultura-familiar",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-de-casais-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-dramatizacao",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-dramatizacao",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-estrutural",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-dramatizacao",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-de-casais-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-externalizacao",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-externalizacao",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-estrutural",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-externalizacao",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-de-casais-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-reflexivas",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-reflexivas",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-estrutural",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-reflexivas",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-de-casais-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-intervencoes-estruturais",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-intervencoes-estruturais",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-estrutural",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-intervencoes-estruturais",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-de-casais-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-joining",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-joining",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-estrutural",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-joining",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-de-casais-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-mapeamento-estrutural",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-mapeamento-estrutural",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-estrutural",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-mapeamento-estrutural",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-de-casais-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-prescricao-paradoxal",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-prescricao-paradoxal",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-estrutural",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-prescricao-paradoxal",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-de-casais-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-intervencoes-estrategicas",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-intervencoes-estrategicas",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-estrutural",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-intervencoes-estrategicas",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-de-casais-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-de-excecao",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-de-excecao",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-estrutural",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-de-excecao",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-de-casais-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-de-escala",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-de-escala",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-estrutural",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-de-escala",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-de-casais-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-de-coping",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-de-coping",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-familiar-estrutural",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-de-coping",
+      "abordagemId": "app-sistemica_familiar_casais-terapia-de-casais-integrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Sistêmicas, Familiares e de Casais e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-mapeamento-da-influencia",
+      "abordagemId": "app-construtivista_narrativa-terapia-narrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-mapeamento-da-influencia",
+      "abordagemId": "app-construtivista_narrativa-psicoterapias-construtivas",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-mapeamento-da-influencia",
+      "abordagemId": "app-construtivista_narrativa-terapia-colaborativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reautoria",
+      "abordagemId": "app-construtivista_narrativa-terapia-narrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reautoria",
+      "abordagemId": "app-construtivista_narrativa-psicoterapias-construtivas",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reautoria",
+      "abordagemId": "app-construtivista_narrativa-terapia-colaborativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-documentos-terapeuticos",
+      "abordagemId": "app-construtivista_narrativa-terapia-narrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-documentos-terapeuticos",
+      "abordagemId": "app-construtivista_narrativa-psicoterapias-construtivas",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-documentos-terapeuticos",
+      "abordagemId": "app-construtivista_narrativa-terapia-colaborativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-testemunhas-externas",
+      "abordagemId": "app-construtivista_narrativa-terapia-narrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-testemunhas-externas",
+      "abordagemId": "app-construtivista_narrativa-psicoterapias-construtivas",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-testemunhas-externas",
+      "abordagemId": "app-construtivista_narrativa-terapia-colaborativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-de-perspectiva",
+      "abordagemId": "app-construtivista_narrativa-terapia-narrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-de-perspectiva",
+      "abordagemId": "app-construtivista_narrativa-psicoterapias-construtivas",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-de-perspectiva",
+      "abordagemId": "app-construtivista_narrativa-terapia-colaborativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-desconstrucao",
+      "abordagemId": "app-construtivista_narrativa-terapia-narrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-desconstrucao",
+      "abordagemId": "app-construtivista_narrativa-psicoterapias-construtivas",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-desconstrucao",
+      "abordagemId": "app-construtivista_narrativa-terapia-colaborativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-resultados-unicos",
+      "abordagemId": "app-construtivista_narrativa-terapia-narrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-resultados-unicos",
+      "abordagemId": "app-construtivista_narrativa-psicoterapias-construtivas",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-resultados-unicos",
+      "abordagemId": "app-construtivista_narrativa-terapia-colaborativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-construcao-de-significado",
+      "abordagemId": "app-construtivista_narrativa-terapia-narrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-construcao-de-significado",
+      "abordagemId": "app-construtivista_narrativa-psicoterapias-construtivas",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-construcao-de-significado",
+      "abordagemId": "app-construtivista_narrativa-terapia-colaborativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-construtos-pessoais",
+      "abordagemId": "app-construtivista_narrativa-terapia-narrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-construtos-pessoais",
+      "abordagemId": "app-construtivista_narrativa-psicoterapias-construtivas",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-construtos-pessoais",
+      "abordagemId": "app-construtivista_narrativa-terapia-colaborativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-tecnica-da-grade-de-repertorio",
+      "abordagemId": "app-construtivista_narrativa-terapia-narrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-tecnica-da-grade-de-repertorio",
+      "abordagemId": "app-construtivista_narrativa-psicoterapias-construtivas",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-tecnica-da-grade-de-repertorio",
+      "abordagemId": "app-construtivista_narrativa-terapia-colaborativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reconstrucao-narrativa",
+      "abordagemId": "app-construtivista_narrativa-terapia-narrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reconstrucao-narrativa",
+      "abordagemId": "app-construtivista_narrativa-psicoterapias-construtivas",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reconstrucao-narrativa",
+      "abordagemId": "app-construtivista_narrativa-terapia-colaborativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-dialogo-colaborativo",
+      "abordagemId": "app-construtivista_narrativa-terapia-narrativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-dialogo-colaborativo",
+      "abordagemId": "app-construtivista_narrativa-psicoterapias-construtivas",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-dialogo-colaborativo",
+      "abordagemId": "app-construtivista_narrativa-terapia-colaborativa",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Narrativas e Construtivistas e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-entrevista-motivacional",
+      "abordagemId": "app-pragmaticos_objetivo-entrevista-motivacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-entrevista-motivacional",
+      "abordagemId": "app-pragmaticos_objetivo-terapia-focada-em-solucoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-entrevista-motivacional",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-abertas",
+      "abordagemId": "app-pragmaticos_objetivo-entrevista-motivacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-abertas",
+      "abordagemId": "app-pragmaticos_objetivo-terapia-focada-em-solucoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-perguntas-abertas",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reflexao",
+      "abordagemId": "app-pragmaticos_objetivo-entrevista-motivacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reflexao",
+      "abordagemId": "app-pragmaticos_objetivo-terapia-focada-em-solucoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-reflexao",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-afirmacoes",
+      "abordagemId": "app-pragmaticos_objetivo-entrevista-motivacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-afirmacoes",
+      "abordagemId": "app-pragmaticos_objetivo-terapia-focada-em-solucoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-afirmacoes",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-sumarios",
+      "abordagemId": "app-pragmaticos_objetivo-entrevista-motivacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-sumarios",
+      "abordagemId": "app-pragmaticos_objetivo-terapia-focada-em-solucoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-sumarios",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-evocacao",
+      "abordagemId": "app-pragmaticos_objetivo-entrevista-motivacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-evocacao",
+      "abordagemId": "app-pragmaticos_objetivo-terapia-focada-em-solucoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-evocacao",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-escuta-reflexiva",
+      "abordagemId": "app-pragmaticos_objetivo-entrevista-motivacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-escuta-reflexiva",
+      "abordagemId": "app-pragmaticos_objetivo-terapia-focada-em-solucoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-escuta-reflexiva",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-ambivalencia",
+      "abordagemId": "app-pragmaticos_objetivo-entrevista-motivacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-ambivalencia",
+      "abordagemId": "app-pragmaticos_objetivo-terapia-focada-em-solucoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exploracao-de-ambivalencia",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-balanca-decisional",
+      "abordagemId": "app-pragmaticos_objetivo-entrevista-motivacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-balanca-decisional",
+      "abordagemId": "app-pragmaticos_objetivo-terapia-focada-em-solucoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-balanca-decisional",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-pergunta-do-milagre",
+      "abordagemId": "app-pragmaticos_objetivo-entrevista-motivacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-pergunta-do-milagre",
+      "abordagemId": "app-pragmaticos_objetivo-terapia-focada-em-solucoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-pergunta-do-milagre",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-excecoes",
+      "abordagemId": "app-pragmaticos_objetivo-entrevista-motivacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-excecoes",
+      "abordagemId": "app-pragmaticos_objetivo-terapia-focada-em-solucoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-excecoes",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-recursos",
+      "abordagemId": "app-pragmaticos_objetivo-entrevista-motivacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-recursos",
+      "abordagemId": "app-pragmaticos_objetivo-terapia-focada-em-solucoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-identificacao-de-recursos",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-estabelecimento-de-metas",
+      "abordagemId": "app-pragmaticos_objetivo-entrevista-motivacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-estabelecimento-de-metas",
+      "abordagemId": "app-pragmaticos_objetivo-terapia-focada-em-solucoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-estabelecimento-de-metas",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-planejamento-de-mudanca",
+      "abordagemId": "app-pragmaticos_objetivo-entrevista-motivacional",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-planejamento-de-mudanca",
+      "abordagemId": "app-pragmaticos_objetivo-terapia-focada-em-solucoes",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-planejamento-de-mudanca",
+      "abordagemId": "app-cognitiva_tcc-tcc-integrada-geral",
+      "notaContextual": "Relação editorial derivada da categoria Técnicas Motivacionais e Focadas em Solução e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-atencao-plena",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-baseada-em-mindfulness-mbct",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-atencao-plena",
+      "abordagemId": "app-cognitiva_tcc-terapia-de-aceitacao-e-compromisso-act",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-atencao-plena",
+      "abordagemId": "app-comportamental-terapia-comportamental-dialetica-dbt",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-respiracao-consciente",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-baseada-em-mindfulness-mbct",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-respiracao-consciente",
+      "abordagemId": "app-cognitiva_tcc-terapia-de-aceitacao-e-compromisso-act",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-respiracao-consciente",
+      "abordagemId": "app-comportamental-terapia-comportamental-dialetica-dbt",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-body-scan",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-baseada-em-mindfulness-mbct",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-body-scan",
+      "abordagemId": "app-cognitiva_tcc-terapia-de-aceitacao-e-compromisso-act",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-body-scan",
+      "abordagemId": "app-comportamental-terapia-comportamental-dialetica-dbt",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-meditacao-sentada",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-baseada-em-mindfulness-mbct",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-meditacao-sentada",
+      "abordagemId": "app-cognitiva_tcc-terapia-de-aceitacao-e-compromisso-act",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-meditacao-sentada",
+      "abordagemId": "app-comportamental-terapia-comportamental-dialetica-dbt",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-observacao-de-pensamentos",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-baseada-em-mindfulness-mbct",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-observacao-de-pensamentos",
+      "abordagemId": "app-cognitiva_tcc-terapia-de-aceitacao-e-compromisso-act",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-observacao-de-pensamentos",
+      "abordagemId": "app-comportamental-terapia-comportamental-dialetica-dbt",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-desfusao-cognitiva",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-baseada-em-mindfulness-mbct",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-desfusao-cognitiva",
+      "abordagemId": "app-cognitiva_tcc-terapia-de-aceitacao-e-compromisso-act",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-desfusao-cognitiva",
+      "abordagemId": "app-comportamental-terapia-comportamental-dialetica-dbt",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-aceitacao-experiencial",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-baseada-em-mindfulness-mbct",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-aceitacao-experiencial",
+      "abordagemId": "app-cognitiva_tcc-terapia-de-aceitacao-e-compromisso-act",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-aceitacao-experiencial",
+      "abordagemId": "app-comportamental-terapia-comportamental-dialetica-dbt",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exercicios-de-valores",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-baseada-em-mindfulness-mbct",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exercicios-de-valores",
+      "abordagemId": "app-cognitiva_tcc-terapia-de-aceitacao-e-compromisso-act",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-exercicios-de-valores",
+      "abordagemId": "app-comportamental-terapia-comportamental-dialetica-dbt",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-self-como-contexto",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-baseada-em-mindfulness-mbct",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-self-como-contexto",
+      "abordagemId": "app-cognitiva_tcc-terapia-de-aceitacao-e-compromisso-act",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-self-como-contexto",
+      "abordagemId": "app-comportamental-terapia-comportamental-dialetica-dbt",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-pratica-de-autocompaixao",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-baseada-em-mindfulness-mbct",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-pratica-de-autocompaixao",
+      "abordagemId": "app-cognitiva_tcc-terapia-de-aceitacao-e-compromisso-act",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-pratica-de-autocompaixao",
+      "abordagemId": "app-comportamental-terapia-comportamental-dialetica-dbt",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-tolerancia-ao-mal-estar",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-baseada-em-mindfulness-mbct",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-tolerancia-ao-mal-estar",
+      "abordagemId": "app-cognitiva_tcc-terapia-de-aceitacao-e-compromisso-act",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-tolerancia-ao-mal-estar",
+      "abordagemId": "app-comportamental-terapia-comportamental-dialetica-dbt",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-grounding",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-baseada-em-mindfulness-mbct",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-grounding",
+      "abordagemId": "app-cognitiva_tcc-terapia-de-aceitacao-e-compromisso-act",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-grounding",
+      "abordagemId": "app-comportamental-terapia-comportamental-dialetica-dbt",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-urge-surfing",
+      "abordagemId": "app-cognitiva_tcc-terapia-cognitiva-baseada-em-mindfulness-mbct",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-urge-surfing",
+      "abordagemId": "app-cognitiva_tcc-terapia-de-aceitacao-e-compromisso-act",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    },
+    {
+      "tecnicaId": "tec-urge-surfing",
+      "abordagemId": "app-comportamental-terapia-comportamental-dialetica-dbt",
+      "notaContextual": "Relação editorial derivada da categoria Mindfulness, Aceitação e Regulação e revisável por modelo específico."
+    }
+  ]
+}

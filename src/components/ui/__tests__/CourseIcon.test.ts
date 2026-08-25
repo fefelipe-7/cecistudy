@@ -18,6 +18,9 @@ const ALL_ICON_NAMES: readonly CourseIconName[] = [
   'Clock',
   'BookOpen',
   'History',
+  'Lightbulb',
+  'User',
+  'Wrench',
 ];
 
 describe('CourseIcon', () => {

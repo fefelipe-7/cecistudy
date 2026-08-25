@@ -1,0 +1,17 @@
+{
+  "id": "cat-psicopatologia-clinica-e-saude-mental",
+  "slug": "psicopatologia-clinica-e-saude-mental",
+  "title": "Psicopatologia, Clínica e Saúde Mental",
+  "displayOrder": 3,
+  "questionCount": 236,
+  "approachIds": [
+    "app-psicologia-da-saude-e-politicas-publicas",
+    "app-psicopatologia-e-clinica"
+  ],
+  "groupCount": 2,
+  "status": "published",
+  "allowedFormats": [
+    "multiple_choice",
+    "true_false"
+  ]
+}

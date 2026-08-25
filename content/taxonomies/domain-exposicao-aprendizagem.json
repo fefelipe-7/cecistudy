@@ -1,0 +1,11 @@
+{
+  "id": "domain-exposicao-aprendizagem",
+  "nome": "Técnicas de Exposição e Aprendizagem",
+  "slug": "exposicao-aprendizagem",
+  "descricaoCurta": "Aprendizagem de segurança, tolerância à incerteza e redução de esquiva.",
+  "ordemExibicao": 3,
+  "quantidadeDeclarada": 8,
+  "quantidadeNominal": 10,
+  "status": "published",
+  "sourcePath": "content/techniques/exposicao-aprendizagem/category.json"
+}

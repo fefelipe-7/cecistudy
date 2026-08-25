@@ -1,0 +1,62 @@
+{
+  "id": "tec-exposicao-imaginaria",
+  "nome": "Exposição imaginária",
+  "canonicalKey": "exposicao imaginaria",
+  "emUmaFrase": "Exposição imaginária é uma prática clínica ou recurso de estudo usado para trabalhar aprendizagem de segurança, tolerância à incerteza e redução de esquiva.",
+  "definicao": "Exposição imaginária é uma prática clínica ou recurso de estudo usado para trabalhar aprendizagem de segurança, tolerância à incerteza e redução de esquiva. Em sentido técnico, sua definição deve ser vinculada ao tipo de tarefa, atitude ou processo que organiza a sessão, e não apenas ao nome da escola.",
+  "objetivo": "Utilizar exposição imaginária para apoiar objetivos clínicos definidos colaborativamente, sempre considerando a formulação do caso, a preferência da pessoa e o contexto.",
+  "comoFunciona": "O mecanismo proposto depende da categoria: aprendizagem de segurança, tolerância à incerteza e redução de esquiva. No caso de exposição imaginária, o terapeuta deve explicitar qual aprendizagem ou processo está sendo buscado e como será observado.",
+  "quandoEUtilizada": "Pode ser considerada quando a formulação clínica indicar que exposição imaginária é compatível com o problema, os objetivos, a fase do tratamento, a capacidade de participação e as preferências da pessoa. Não é uma indicação universal.",
+  "comoEAplicada": "O uso de exposição imaginária começa com explicação e acordo sobre o objetivo, segue com aplicação graduada e observação da resposta, e termina com integração da aprendizagem e planejamento de continuidade. Exposição não é simplesmente obrigar a pessoa a enfrentar medo; requer formulação, colaboração, gradação quando indicada e segurança clínica.",
+  "origem": "Tem raízes em condicionamento clássico e operante, dessensibilização, exposição comportamental e modelos contemporâneos de extinção e aprendizagem inibitória.",
+  "desenvolvimentoHistorico": "No desenvolvimento histórico, exposição imaginária passou de uma prática situada em determinadas escolas a um recurso que pode ser adaptado ou questionado em outros modelos. A migração entre abordagens deve preservar contexto, finalidade e limites.",
+  "exemploPratico": "Em um exemplo didático, o terapeuta apresenta exposição imaginária a uma pessoa com uma dificuldade previamente formulada, combina um pequeno exercício, observa o que ocorre e pergunta o que foi aprendido, sem tratar o exemplo como protocolo universal.",
+  "fundamentacaoTeorica": "A fundamentação editorial desta técnica é organizada pela categoria “exposicao-aprendizagem”: aprendizagem de segurança, tolerância à incerteza e redução de esquiva. A fonte deve ser lida para distinguir descrição histórica, hipótese de mecanismo e evidência de resultado.",
+  "evidencias": "Exposição possui suporte robusto em transtornos de ansiedade e OCD quando bem indicada e aplicada com avaliação, colaboração e monitoramento. A literatura contemporânea enfatiza aprendizagem inibitória, violação de expectativas e tolerância ao desconforto, não uma promessa de que a ansiedade precise desaparecer durante cada exercício.",
+  "limitacoes": "Exposição mal indicada, coercitiva ou sem prevenção de comportamentos de segurança pode aumentar abandono e sofrimento. Risco, trauma, dissociação, condições médicas e capacidade de consentir precisam ser avaliados.",
+  "contextoClinico": "Pode aparecer em terapias comportamentais e cognitivo-comportamentais, mas a mesma técnica também pode atravessar outras escolas quando seu objetivo e sua função clínica forem preservados.",
+  "observacoes": "Classificação interna: intervencao. O nome pode designar técnica, procedimento, habilidade, atitude ou processo conforme o modelo; o registro separa o tipo para evitar equivalências artificiais.",
+  "tipoTecnica": "intervencao",
+  "classificacaoEstatuto": "recurso clínico estudado em contexto de abordagem; o estatuto específico pode ser técnica, procedimento, habilidade, estratégia, exercício ou atitude terapêutica.",
+  "slug": "exposicao-imaginaria",
+  "dominioId": "domain-exposicao-aprendizagem",
+  "dominioIds": [
+    "domain-exposicao-aprendizagem"
+  ],
+  "dominioNomes": [
+    "Técnicas de Exposição e Aprendizagem"
+  ],
+  "ordemExibicao": 32,
+  "posicoesNominais": [
+    {
+      "categoryId": "domain-exposicao-aprendizagem",
+      "categoryName": "Técnicas de Exposição e Aprendizagem",
+      "ordem": 32,
+      "nomeOriginal": "Exposição imaginária"
+    }
+  ],
+  "abordagemIds": [
+    "app-comportamental-terapia-comportamental-classica",
+    "app-cognitiva_tcc-tcc-integrada-geral"
+  ],
+  "modeloIds": [],
+  "fonteIds": [
+    "src-erp-2019",
+    "src-exposure-inhibitory-2008"
+  ],
+  "tecnicasRelacionadasIds": [
+    "tec-exposicao-ao-vivo",
+    "tec-exposicao-interoceptiva",
+    "tec-exposicao-gradual",
+    "tec-exposicao-prolongada",
+    "tec-exposicao-com-prevencao-de-resposta",
+    "tec-exposicao-em-realidade-virtual",
+    "tec-habitacao",
+    "tec-experimentos-de-exposicao",
+    "tec-processamento-emocional-durante-exposicao"
+  ],
+  "dataCadastro": "2026-08-20T19:40:41.313451+00:00",
+  "dataUltimaRevisao": "2026-08-20T19:40:41.313456+00:00",
+  "status": "published",
+  "sourcePath": "content/techniques/exposicao-aprendizagem/tec-exposicao-imaginaria.json"
+}

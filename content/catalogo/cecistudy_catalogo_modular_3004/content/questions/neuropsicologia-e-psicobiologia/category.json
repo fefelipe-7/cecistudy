@@ -1,0 +1,17 @@
+{
+  "id": "cat-neuropsicologia-e-psicobiologia",
+  "slug": "neuropsicologia-e-psicobiologia",
+  "title": "Neuropsicologia e Psicobiologia",
+  "displayOrder": 11,
+  "questionCount": 155,
+  "approachIds": [
+    "app-neuropsicologia-e-psicobiologia",
+    "app-psicopatologia-e-clinica"
+  ],
+  "groupCount": 2,
+  "status": "published",
+  "allowedFormats": [
+    "multiple_choice",
+    "true_false"
+  ]
+}

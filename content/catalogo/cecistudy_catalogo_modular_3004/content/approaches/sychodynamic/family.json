@@ -1,0 +1,9 @@
+{
+  "id": "family-psychodynamic",
+  "name": "Psicodinâmicas",
+  "status": "published",
+  "approachIds": [
+    "app-psicanalise-e-psicodinamica",
+    "app-teorias-da-personalidade"
+  ]
+}

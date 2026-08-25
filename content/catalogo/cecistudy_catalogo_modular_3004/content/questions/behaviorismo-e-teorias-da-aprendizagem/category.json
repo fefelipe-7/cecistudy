@@ -1,0 +1,16 @@
+{
+  "id": "cat-behaviorismo-e-teorias-da-aprendizagem",
+  "slug": "behaviorismo-e-teorias-da-aprendizagem",
+  "title": "Behaviorismo e Teorias da Aprendizagem",
+  "displayOrder": 9,
+  "questionCount": 155,
+  "approachIds": [
+    "app-behaviorismo-e-teorias-da-aprendizagem"
+  ],
+  "groupCount": 2,
+  "status": "published",
+  "allowedFormats": [
+    "multiple_choice",
+    "true_false"
+  ]
+}

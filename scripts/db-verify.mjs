@@ -26,14 +26,28 @@ const EXPECTED_TABLES = [
   'approach',
   'question',
   'work',
+  'concept_domain',
+  'concept',
+  'catalog_author',
+  'technique_category',
+  'technique',
+  'question_category',
+  'topic',
 ];
 
 const MIN_COUNTS = {
   area: 1,
   approach_family: 1,
   approach: 1,
-  question: 1,
+  question: 1000,
   work: 1,
+  concept_domain: 10,
+  concept: 200,
+  catalog_author: 120,
+  technique_category: 10,
+  technique: 130,
+  question_category: 18,
+  topic: 1400,
 };
 
 async function main() {
@@ -87,7 +101,10 @@ async function main() {
   console.log(
     `[db:verify] release ${dbVersion} (hash ${dbHash.slice(0, 12)}…) · ` +
       `${counts.area} áreas · ${counts.approach_family} famílias · ${counts.approach} abordagens · ` +
-      `${counts.question} questões · ${counts.work} obras`
+      `${counts.question} questões · ${counts.work} obras · ` +
+      `${counts.concept_domain} domínios · ${counts.concept} conceitos · ` +
+      `${counts.catalog_author} autores · ${counts.technique} técnicas · ` +
+      `${counts.question_category} categorias de questão · ${counts.topic} tópicos`
   );
 }
 

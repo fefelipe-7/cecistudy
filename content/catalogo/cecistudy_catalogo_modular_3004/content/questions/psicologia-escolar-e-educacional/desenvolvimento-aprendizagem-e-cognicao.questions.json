@@ -1,0 +1,2865 @@
+{
+  "schemaVersion": 1,
+  "group": {
+    "id": "qg-psicologia-escolar-e-educacional-desenvolvimento-aprendizagem-e-cognicao",
+    "title": "Psicologia Escolar e Educacional — Desenvolvimento, Aprendizagem e Cognição",
+    "categoryId": "cat-psicologia-escolar-e-educacional",
+    "categoryTitle": "Psicologia Escolar e Educacional",
+    "block": "Desenvolvimento, Aprendizagem e Cognição",
+    "status": "published",
+    "source": "Cecistudy content catalog",
+    "sourcePath": "content/questions/psicologia-escolar-e-educacional/desenvolvimento-aprendizagem-e-cognicao.questions.json"
+  },
+  "questions": [
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q001",
+      "stem": "nuanças e prismas diferentes que geram energias ou estímulos que são percebidos e recebidos pelo outro, mediante os quais a comunicação se processa. Um olhar, um",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 1,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q001",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q002",
+      "stem": "Deduz-se do texto que o olhar, a voz embargada, o cenho franzido expressam sentimentos mais sinceros que os manifestados em palavras.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 2,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q002",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q003",
+      "stem": "Em “os problemas são relativamente simples e de fácil solução até para pessoas que se dizem com grandes problemas de comunicação” (R.11-13), para se evitar a repetição, a segunda ocorrência da palavra “problemas” poderia ser substituída por dificuldades.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 3,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q003",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q004",
+      "stem": "tom de voz um pouco diferente, um franzir de cenho, um levantar de sobrancelhas podem comunicar muito mais do que está contido em uma mensagem manifestada por meio",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 4,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q004",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q005",
+      "stem": "Noterceiroparágrafo,oautorapresentaalgunsdospequenos problemas que, quando reunidos, dificultam a força comunicacional. São eles: boa cultura, desinibição, habilidade gestual, vocabulário rico e fluência verbal. Julgue as frases apresentadas nos itens subseqüentes quanto à grafia das palavras e à pontuação.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 5,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q005",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q006",
+      "stem": "A pergunta ideal para se ter a evidencia se, de fato, o outro entendeu o que se disse é “O que você entendeu do que eu disse?”.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 6,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q006",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q007",
+      "stem": "das palavras. Tenho observado algumas curiosidades que creio interessantes para que cada um possa refletir e tirar algum proveito.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 7,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q007",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q008",
+      "stem": "Medo de olhar nos olhos, expressão facial em desacordo com o conteúdo, aparência malcuidada, ausência de gestos ou excessiva gesticulação bem como posturas inadequadas são suficientes para tirarem o brilho de um processo de comunicação.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 8,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q008",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q009",
+      "stem": "Sevocênãopode mudar as atitudes, nem os comportamentos de outras pessoas; assuma: que você é responsável apenas por o que está ao seu alcance, e pelas mudanças que pode proporcionar a você mesmo.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 9,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q009",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q010",
+      "stem": "Uma dessas constatações é que os problemas são relativamente simples e de fácil solução até para pessoas que se dizem com grandes problemas de comunicação. Uma",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 10,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q010",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q011",
+      "stem": "Em I, na segunda e terceira colunas, são encontrados apenas três adjetivos para “Ser”: “tímido”, “ótimo”, “adequados”.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 11,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q011",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q012",
+      "stem": "Todas asexpressõesdasegundacoluna estão em paralelismo sintático, por iniciarem-se com uma forma verbal, e semântico, por apresentarem características que facilitam a comunicação com fluidez e naturalidade.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 12,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q012",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q013",
+      "stem": "pessoa pode ter boa cultura, ser extrovertida e desinibida, saber usar bem as mãos, possuir um rico vocabulário e dominar uma boa fluência verbal, mas se falar de forma",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 13,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q013",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q014",
+      "stem": "Em II, na terceira coluna, a descrição “a habilidade de se colocar no lugar do outro e prestar muita atenção no significado das palavras” tanto pode relacionar-se a “Saber ouvir” quanto a “Ter empatia”.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 14,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q014",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q015",
+      "stem": "Uma das caracterizações para o que seja “Expressar auto- estima” (em IV) encontra-se na terceira coluna, em III: “confiança que deposita em seus atos”. Considerando a figura acima, julgue os próximos itens, relativos ao sistema operacional Windows XP.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 15,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q015",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q016",
+      "stem": "linear, com voz monótona, irá provocar desinteresse e sonolêncianosouvintese,conseqüentemente,acomunicação ficará limitada.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 16,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q016",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q017",
+      "stem": "Ao se clicar a seta ao lado da ferramenta , serão apresentadas as formas de visualização de pastas, tal como miniatura, lado a lado, ícone, listas e detalhes.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 17,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q017",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q018",
+      "stem": "Para criar uma cópia de segurança da pasta , é suficiente clicar esse ícone e arrastá-lo para o desktop, onde os arquivos contidos na referida pasta serão compactados e criptografados.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 18,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q018",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q019",
+      "stem": "O somatório desses pequenos problemas impede que uma pessoa se comunique com fluidez e naturalidade. É o princípio de “A união faz a força”, ou seja, o conjunto",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 19,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q019",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q020",
+      "stem": "O endereço www.unb.br mostrado na figura está incorreto; o endereço correto seria www.unb.gov.br.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 20,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q020",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q021",
+      "stem": "A opção é uma interface da World Wide Web que permite ao usuário ler e escrever e-mail usando o navegador IE6.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 21,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q021",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q022",
+      "stem": "dessas dificuldades neutraliza o efeito que a comunicação poderia provocar, impedindo a pessoa de mostrar o seu potencial e a sua competência, gerando frustrações na vida",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 22,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q022",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q023",
+      "stem": "Para se fazer varredura de vírus no disco rígido do computador, é suficiente clicar o botão . Considerando a figura acima, que ilustra uma janela do Word 2003, julgue os itens subseqüentes.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 23,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q023",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q024",
+      "stem": "O efeito de formatação dos três parágrafos mostrados foi obtido por meio dos seguintes procedimentos: cada parágrafo foi selecionado individualmente e, a seguir, clicaram-se, respectivamente, os botões , e .",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 24,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q024",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q025",
+      "stem": "pessoal e profissional. Internet: <www.gestaoerh.com.br> (com adaptações). Com referência ao texto acima, julgue os itens de 1 a 5.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 25,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q025",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q026",
+      "stem": "Para se iniciar o processo de verificação ortográfica no documento em edição, é suficiente clicar o botão .",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 26,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q026",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q027",
+      "stem": "A partir das informações da figura, é correto afirmar que o tamanho da letra do segundo parágrafo é 11. Considerando a figura acima, julgue os itens a seguir, acerca do Excel 2003.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 27,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q027",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q028",
+      "stem": "Se o número de alunos do Departamento de Matemática for igual à metade do número de alunos do Departamento de Letras, a fórmula que pode ser usada para preencher a célula B2 é =B4/2.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 28,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q028",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q029",
+      "stem": "Caso as células de B2 a B5 contenham os números de alunos dos 4 cursos mostrados, o total de alunos desses 4 cursos pode ser calculado usando-se a fórmula =soma(B2:B5).",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 29,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q029",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q030",
+      "stem": "Caso as células de B2 a B5 contenham os números de alunos dos 4 cursos mostrados, a média aritmética dos números contidos nessas 4 células pode ser calculada, e exibida na célula B7, clicando-se nessa célula e utilizando-se uma das opções apresentadas ao se clicar a seta ao lado da ferramenta . A detenção e a expulsão de brasileiros no aeroporto internacional de Madri geraram protestos do governo Lula, que expressou “profundo desagrado” em nota do ministro das Relações Exteriores, Celso Amorim. O Itamaraty convocou o embaixador espanhol em Brasília e ameaçou aplicar o mesmo tratamento a espanhóis que venham ao Brasil. Um grupo de brasileiros ficou detido em uma sala do aeroporto e teve de voltar ao Brasil. Entre eles estavam dois alunos de mestrado em trânsito para Lisboa, onde participariam de congresso científico. Há duas semanas, Amorim havia se queixado diretamente às autoridades espanholas sobre o tratamento dispensado aos brasileiros. Só em fevereiro, 452 brasileiros foram barrados no aeroporto de Madri e repatriados. O Globo, 7/3/2008, capa (com adaptações). Tendo o texto acima como referência inicial e considerando a abrangência do tema por ele focalizado, julgue os itens subseqüentes.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 30,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q030",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q031",
+      "stem": "Tal como relatado no texto, a atuação do serviço de controle de migrações da Espanha diverge frontalmente das diretrizes da União Européia, que adota, em geral, nítida política de estímulo à entrada de imigrantes em seu território.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 31,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q031",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q032",
+      "stem": "Os países da Comunidade Européia, em especial a Espanha, são, na atualidade, o destino praticamente exclusivo de brasileiros que tentam emigrar ilegalmente em busca de oportunidades de trabalho.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 32,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q032",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q033",
+      "stem": "O temor quanto às ações terroristas, cada vez mais freqüentes e transnacionalizadas, é a razão dada pelas autoridades européias para o aumento da rigidez na fiscalização das fronteiras entre os países que compõem a União Européia, como se pode inferir do texto.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 33,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q033",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q034",
+      "stem": "A ameaça feita pelo Itamaraty de adotar o princípio diplomático da reciprocidade e dificultar a entrada de espanhóis no território brasileiro não surtiu efeito prático, haja vista a inexistência de casos de repatriação de espanhóis desde o início da crise.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 34,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q034",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q035",
+      "stem": "A ação da Espanha contra estrangeiros que tentavam entrar no país, como foi o caso dos brasileiros citados no texto, teve reflexos na política interna e ajuda a explicar a fragorosa derrota do partido socialista nas recentes eleições.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 35,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q035",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q036",
+      "stem": "Noplanoeconômico-financeiro,émarcante,naeconomia brasileira nos últimos anos, a presença do capital espanhol, da qual são exemplos, entre outros, os grandes investimentos em setores como o da telefonia e o de bancos.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 36,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q036",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q037",
+      "stem": "As relações econômicas entre a União Européia e os países em desenvolvimento ou considerados emergentes, como o Brasil, envolvem tensões que derivam, entre outros motivos, das práticas de protecionismo e subsídios adotadas pelas economias mais poderosas.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 37,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q037",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q038",
+      "stem": "Tradicionaldestinodeimigrantesvindosdeváriasregiões do planeta, o Brasil vem se transformando em país de emigrantes, em geral pessoas que partem em busca de melhores condições de vida no exterior. O presidente Luiz Inácio Lula da Silva disse, na abertura do Fórum Brasil – México, que ligou para o colega norte-americano George Bush e o mandou cuidar da crise dos Estados Unidos da América (EUA). “Eu disse para o Bush: o problema é o seguinte, meu filho, nós ficamos 26 anos sem crescer, agora você vem atrapalhar? Resolve tua crise”. Empolgado com os indicadores da economia brasileira, entre os quais a expansão do crédito e do consumo, Lula ainda comparou o Bolsa Família ao milagre da multiplicação dos pães. Jornal do Brasil, 28/3/2008, capa (com adaptações). Tendo o texto acima como referência inicial e considerando os múltiplos aspectos que o tema suscita, julgue os itens que se seguem.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 38,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q038",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q039",
+      "stem": "A economia norte-americana passa, no momento, por crise preocupante, cujo primeiro grande sintoma foi o denominado estouro da bolha imobiliária, ou seja, a demonstração de crescente incapacidade de pagamento da dívida contraída por adquirentes de imóveis.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 39,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q039",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q040",
+      "stem": "Reduzindodramaticamenteoconsumodebensindustrializados, a atual crise norte-americana ainda não conseguiu afetar o sistema financeiro propriamente dito, deixando a salvo, pelo menos por ora, bancos e instituições similares.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 40,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q040",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q041",
+      "stem": "Uma das características da globalização é a interdependência dos mercados, o que permite supor que uma crise de grandes proporções em um importante país pode se expandir e arrastar consigo muitos outros países.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 41,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q041",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q042",
+      "stem": "Citado no texto, o Bolsa Família é um programa de distribuição derendaconduzidopelogovernofederalevoltadoparafamílias identificadas como carentes, delas exigindo-se a regular freqüência às aulas dos filhos em idade escolar.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 42,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q042",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q043",
+      "stem": "OentusiasmodopresidentedaRepública,mencionadonotexto, se justifica pelo fato de que, nos três últimos anos, os índices de crescimento econômico do Brasil são praticamente idênticos aos apresentados pela China.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 43,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q043",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q044",
+      "stem": "Citado por Lula, Bush vê aproximar o fim de seu governo com índices decrescentes de aprovação popular, em larga medida determinados pela desgastante guerra contra o Iraque, na qual morreram milhares de norte-americanos.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 44,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q044",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q045",
+      "stem": "Entre as novidades presentes na atual campanha presidencial norte-americana, ainda em sua fase primária, está a presença de dois postulantes à candidatura pelo partido democrata que fogem ao padrão do país: um negro (Barak Obama) e uma mulher (Hillary Clinton). A Lein.º8.112/1990, que instituiu o Regime Jurídico dos Servidores Públicos Civis da União, das autarquias e das fundações públicas federais, tem por objetivo conferir direitos e deveres a pessoa legalmente investida em cargo público. Considerando o texto originário da citada lei e as alterações posteriores, julgue os itens que se seguem.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 45,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q045",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q046",
+      "stem": "Nomeação, promoção, readaptação e lotação são algumas das formas de provimento em cargo público.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 46,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q046",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q047",
+      "stem": "A posse e o exercício no cargo público são atos distintos. A posse é ato subseqüente à nomeação e ocorrerá no prazo de quinze dias contados da publicação do ato de provimento.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 47,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q047",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q048",
+      "stem": "O exercício, que ocorre após a posse no cargo ou função pública, é a execução ativa da função ou do cargo.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 48,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q048",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q049",
+      "stem": "O servidor público em exercício no cargo será avaliado por meio de estágio probatório e, se aprovado, adquirirá estabilidade funcional.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": true
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 49,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q049",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_cespe_2008_fub_psicologo_escolar_q050",
+      "stem": "A vacância do cargo público decorrerá somente no caso de exoneração a pedido. CONHECIMENTOS ESPECÍFICOS Uma estudante, de 12 anos de idade, chegou ao serviço de psicologia, acompanhada pela mãe, referindo dificuldades de aprendizagem. A menina relatou, e a mãe confirmou, que erra muito ao pontuar frases e acentuar palavras, ao somar e subtrair e que não memoriza dados de história e geografia. Além disso, a menina relatou dificuldade para permanecer sentada durante uma aula inteira e a mãe queixou-se de que a filha não fazia as refeições sem se levantar da mesa pelo menos três vezes, que quebrava e perdia muitos objetos e que era desobediente. A psicóloga levantou a hipótese de que a menina pudesse ser portadora de transtorno do deficit de atenção com hiperatividade (TDAH). Com relação a essa situação hipotética, julgue os itens a seguir.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial definitivo identificado. A explicação pedagógica individual será revisada com base no item e na bibliografia da categoria.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-conhecimentos-gerais",
+        "topic-psicologo-escolar"
+      ],
+      "approachIds": [
+        "app-fundamentos-da-psicologia"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-2d5456c2cfe0",
+        "work-86f8927bcc6c"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "CESPE/CEBRASPE",
+      "exam": "FUB 2008 — Psicólogo/Área Escolar",
+      "year": 2008,
+      "questionNumber": 50,
+      "sourceUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-prova.pdf",
+      "answerKeyUrl": "https://www.estudegratis.com.br/images/provas/7153-cespe-2008-fub-psicologo-escolar-gabarito.pdf",
+      "officialAnswerStatus": "oficial definitivo",
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-psicologia-escolar-e-educacional",
+      "legacyOriginId": "real_cespe_2008_fub_psicologo_escolar_q050",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Fundamentos da Psicologia",
+        "area": "Psicologia Escolar e Educacional",
+        "tema": "Psicólogo Escolar",
+        "subtema": "Conhecimentos gerais",
+        "blocoQuiz": "Desenvolvimento, Aprendizagem e Cognição",
+        "anulada": false,
+        "reviewNote": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "id": "tec-tolerancia-ao-mal-estar",
+  "nome": "Tolerância ao mal-estar",
+  "canonicalKey": "tolerancia ao mal estar",
+  "emUmaFrase": "Tolerância ao mal-estar é uma prática clínica ou recurso de estudo usado para trabalhar atenção ao presente, aceitação, desfusão, valores e regulação da relação com a experiência.",
+  "definicao": "Tolerância ao mal-estar é uma prática clínica ou recurso de estudo usado para trabalhar atenção ao presente, aceitação, desfusão, valores e regulação da relação com a experiência. Em sentido técnico, sua definição deve ser vinculada ao tipo de tarefa, atitude ou processo que organiza a sessão, e não apenas ao nome da escola.",
+  "objetivo": "Utilizar tolerância ao mal-estar para apoiar objetivos clínicos definidos colaborativamente, sempre considerando a formulação do caso, a preferência da pessoa e o contexto.",
+  "comoFunciona": "O mecanismo proposto depende da categoria: atenção ao presente, aceitação, desfusão, valores e regulação da relação com a experiência. No caso de tolerância ao mal-estar, o terapeuta deve explicitar qual aprendizagem ou processo está sendo buscado e como será observado.",
+  "quandoEUtilizada": "Pode ser considerada quando a formulação clínica indicar que tolerância ao mal-estar é compatível com o problema, os objetivos, a fase do tratamento, a capacidade de participação e as preferências da pessoa. Não é uma indicação universal.",
+  "comoEAplicada": "O uso de tolerância ao mal-estar começa com explicação e acordo sobre o objetivo, segue com aplicação graduada e observação da resposta, e termina com integração da aprendizagem e planejamento de continuidade. Aceitação não equivale a resignação, passividade ou abandono de mudanças necessárias.",
+  "origem": "Combina práticas contemplativas secularizadas com terapias comportamentais contextuais, modelos de regulação emocional, compaixão e aceitação.",
+  "desenvolvimentoHistorico": "No desenvolvimento histórico, tolerância ao mal-estar passou de uma prática situada em determinadas escolas a um recurso que pode ser adaptado ou questionado em outros modelos. A migração entre abordagens deve preservar contexto, finalidade e limites.",
+  "exemploPratico": "Em um exemplo didático, o terapeuta apresenta tolerância ao mal-estar a uma pessoa com uma dificuldade previamente formulada, combina um pequeno exercício, observa o que ocorre e pergunta o que foi aprendido, sem tratar o exemplo como protocolo universal.",
+  "fundamentacaoTeorica": "A fundamentação editorial desta técnica é organizada pela categoria “mindfulness-aceitacao-regulacao”: atenção ao presente, aceitação, desfusão, valores e regulação da relação com a experiência. A fonte deve ser lida para distinguir descrição histórica, hipótese de mecanismo e evidência de resultado.",
+  "evidencias": "Revisões indicam associações e efeitos promissores de intervenções baseadas em mindfulness, aceitação e autocompaixão, mas os resultados variam por protocolo, treinamento, comparação e medida. Atenção plena não é sinônimo de relaxamento e requer cuidado com trauma, dissociação, dor e expectativas excessivas.",
+  "limitacoes": "Práticas podem aumentar contato com memórias ou sensações difíceis, e não são apropriadas de modo automático para todos. Aceitação não deve justificar tolerância a violência, negligência ou condições modificáveis.",
+  "contextoClinico": "Pode aparecer em MBCT, ACT, DBT, CFT e intervenções baseadas em mindfulness, mas a mesma técnica também pode atravessar outras escolas quando seu objetivo e sua função clínica forem preservados.",
+  "observacoes": "Classificação interna: exercicio. O nome pode designar técnica, procedimento, habilidade, atitude ou processo conforme o modelo; o registro separa o tipo para evitar equivalências artificiais.",
+  "tipoTecnica": "exercicio",
+  "classificacaoEstatuto": "recurso clínico estudado em contexto de abordagem; o estatuto específico pode ser técnica, procedimento, habilidade, estratégia, exercício ou atitude terapêutica.",
+  "slug": "tolerancia-ao-mal-estar",
+  "dominioId": "domain-mindfulness-aceitacao-regulacao",
+  "dominioIds": [
+    "domain-mindfulness-aceitacao-regulacao"
+  ],
+  "dominioNomes": [
+    "Mindfulness, Aceitação e Regulação"
+  ],
+  "ordemExibicao": 133,
+  "posicoesNominais": [
+    {
+      "categoryId": "domain-mindfulness-aceitacao-regulacao",
+      "categoryName": "Mindfulness, Aceitação e Regulação",
+      "ordem": 140,
+      "nomeOriginal": "Tolerância ao mal-estar"
+    }
+  ],
+  "abordagemIds": [
+    "app-cognitiva_tcc-terapia-cognitiva-baseada-em-mindfulness-mbct",
+    "app-cognitiva_tcc-terapia-de-aceitacao-e-compromisso-act",
+    "app-comportamental-terapia-comportamental-dialetica-dbt"
+  ],
+  "modeloIds": [],
+  "fonteIds": [
+    "src-mindfulness-2011",
+    "src-mindfulness-regulation-2017",
+    "src-self-compassion-2018"
+  ],
+  "tecnicasRelacionadasIds": [
+    "tec-regulacao-emocional",
+    "tec-atencao-plena",
+    "tec-respiracao-consciente",
+    "tec-body-scan",
+    "tec-meditacao-sentada",
+    "tec-observacao-de-pensamentos",
+    "tec-desfusao-cognitiva",
+    "tec-aceitacao-experiencial",
+    "tec-exercicios-de-valores",
+    "tec-self-como-contexto",
+    "tec-pratica-de-autocompaixao",
+    "tec-grounding"
+  ],
+  "dataCadastro": "2026-08-20T19:40:41.343551+00:00",
+  "dataUltimaRevisao": "2026-08-20T19:40:41.343556+00:00",
+  "status": "published",
+  "sourcePath": "content/techniques/mindfulness-aceitacao-regulacao/tec-tolerancia-ao-mal-estar.json"
+}

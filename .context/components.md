@@ -70,7 +70,11 @@ Dono de todo o estado global (`usePersistentState`) + navegação + modais. Orqu
 | `FaculdadeView.tsx` | Grade de disciplinas, diário de aulas, avaliações, calendário | ✅ |
 | `CourseDetailView.tsx` | Detalhe de disciplina (info/aulas/repertório) + ação inferior | ✅ (via Faculdade) |
 | `EstudosView.tsx` | Study corner: timer pomodoro, flashcards, leituras | ✅ |
-| `BibliotecaView.tsx` | Catálogo + filtros + coleções + notas avulsas + modais (book/reader/filter) | ✅ |
+| `BibliotecaView.tsx` | Catálogo + filtros + coleções + notas avulsas + modais (book/reader/filter); modas agora incluem as seções do templo (`conceitos`/`autores`/`tecnicas`) | ✅ |
+| `TempleScreen.tsx` | Hub do templo de conhecimento (famílias/conceitos/autores/técnicas/comparações) — conceitos, autores e técnicas navegam via `openTempleSection` | ✅ |
+| `temple/ConceptsScreen.tsx` | 225 conceitos por 12 domínios (busca + acordeão + detalhe com seções; corpo em lazy chunk) | ✅ |
+| `temple/AuthorsScreen.tsx` | ~700 autores curados (mais citados / A–Z, busca, ficha inline) | ✅ |
+| `temple/TechniquesScreen.tsx` | 135 técnicas clínicas em 10 categorias (detalhe com campos editoriais e relacionadas) | ✅ |
 | `PerfilView.tsx` | Página única inline: resumo da jornada (métricas reais), timeline, streak, estágio, TCC, stickers, personalização | ✅ |
 
 ---
@@ -90,6 +94,8 @@ Dono de todo o estado global (`usePersistentState`) + navegação + modais. Orqu
 |---|---|
 | `utils.ts` | `cn()` — junta `clsx` + `tailwind-merge`; `copyToClipboard()` com fallback p/ webview Capacitor |
 | `routing.ts` | Roteamento hash → pilha (`parseRoute`, `routeToStack`, `stackToHash`, `DEFAULT_SUB_TAB`) — testado por vitest |
+| `templeData.ts` | Loader dual do templo (nativo = `.db` via `catalogDb`; web = facades lazy de `src/data/temple/`), memoizado |
+| `db/catalogDb.ts` | Queries do catálogo SQLite somente-leitura (abordagens, questões, obras + templo: conceitos/autores/técnicas) — no-op no web |
 
 ---
 

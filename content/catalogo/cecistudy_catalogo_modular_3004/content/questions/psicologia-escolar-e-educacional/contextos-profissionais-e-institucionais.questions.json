@@ -1,0 +1,667 @@
+{
+  "schemaVersion": 1,
+  "group": {
+    "id": "qg-psicologia-escolar-e-educacional-contextos-profissionais-e-institucionais",
+    "title": "Psicologia Escolar e Educacional — Contextos Profissionais e Institucionais",
+    "categoryId": "cat-psicologia-escolar-e-educacional",
+    "categoryTitle": "Psicologia Escolar e Educacional",
+    "block": "Contextos Profissionais e Institucionais",
+    "status": "published",
+    "source": "Cecistudy content catalog",
+    "sourcePath": "content/questions/psicologia-escolar-e-educacional/contextos-profissionais-e-institucionais.questions.json"
+  },
+  "questions": [
+    {
+      "id": "PSI-BANCO-0430",
+      "stem": "Qual afirmação está alinhada com os princípios da educação inclusiva na prática escolar?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "A alternativa B reflete o princípio central da educação inclusiva: adaptar o currículo e as práticas de ensino para permitir participação plena, reconhecendo ritmos e estilos de aprendizagem diversos. As demais opções apresentam visões limitantes ou contraproducentes à inclusão.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A inclusão consiste apenas em disponibilizar recursos materiais para o aluno com deficiência.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "A educação inclusiva envolve adaptar o currículo e as práticas de ensino para promover participação de todos os alunos, respeitando ritmos de aprendizagem.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "A inclusão implica, obrigatoriamente, o deslocamento de alunos com necessidades especiais para classes especiais.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "A avaliação deve ser idêntica para todos sem considerar diferenças individuais.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "A escola inclusiva não depende de apoio de serviços especializados.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-inclusao",
+        "topic-principios-da-educacao-inclusiva"
+      ],
+      "approachIds": [
+        "app-psicologia-escolar-e-educacional"
+      ],
+      "authorIds": [
+        "author-booth-m",
+        "author-ainscow-m"
+      ],
+      "referenceIds": [
+        "work-2ff0939208bb",
+        "work-4456e1bf74f2",
+        "work-9ac89d070c07"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-escolar-e-educacional",
+      "legacyOriginId": "PSI-BANCO-0430",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Psicologia Escolar e Educacional",
+        "area": "Escolar e Educacional",
+        "tema": "inclusão",
+        "subtema": "Princípios da educação inclusiva",
+        "blocoQuiz": "Contextos Profissionais e Institucionais",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0433",
+      "stem": "Qual prática de orientação escolar é mais adequada para apoiar a decisão vocacional de estudantes em idade de transição?",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "aplicado",
+      "explanation": "A orientação vocacional eficaz deve ser centrada no aluno, incluindo entrevistas, inventários de interesses, atividades de exploração e acompanhamento para apoiar escolhas embasadas em preferências e habilidades. As opções A, C, D e E não promovem uma orientação adequada ou ética.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Impor uma escolha baseada em estatísticas de mercado.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "Usar uma abordagem centrada no aluno com entrevistas, inventários de interesses, atividades de exploração e acompanhamento.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "Ignorar o interesse do aluno.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "Fornecer apenas informações genéricas sem orientação prática.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "Eliminar atividades de orientação para reduzir carga de trabalho.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-orientacao",
+        "topic-orientacao-vocacional"
+      ],
+      "approachIds": [
+        "app-psicologia-escolar-e-educacional"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao-autorial"
+      ],
+      "referenceIds": [
+        "work-bcdf4623b059",
+        "work-f1c266fdb94a",
+        "work-f945cefbda77"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-escolar-e-educacional",
+      "legacyOriginId": "PSI-BANCO-0433",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Psicologia Escolar e Educacional",
+        "area": "Escolar e Educacional",
+        "tema": "orientação",
+        "subtema": "Orientação vocacional",
+        "blocoQuiz": "Contextos Profissionais e Institucionais",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0437",
+      "stem": "Caso de parceria entre escola e família para apoiar a participação regular e o rendimento escolar de um aluno. Qual prática caracteriza uma parceria efetiva entre escola e família?",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "aplicado",
+      "explanation": "Parcerias efetivas envolvem comunicação bidirecional regular, compartilhamento de metas, respeito à confidencialidade e participação dos pais na tomada de decisões, fortalecendo a colaboração entre escola e família.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Comunicação unilateral da escola.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Reuniões presenciais apenas uma vez por ano.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Estabelecimento de canais regulares de comunicação, compartilhamento de metas conjuntas, confidencialidade e participação dos pais nas decisões.",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "D) Punição por não comparecimento dos pais a reuniões.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Evitar envolvimento dos pais nas decisões pedagógicas.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-colaboracao-escola-familia-e-confidencialidade",
+        "topic-escola-familia"
+      ],
+      "approachIds": [
+        "app-psicologia-escolar-e-educacional"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao"
+      ],
+      "referenceIds": [
+        "work-2aad1db2e8aa",
+        "work-bbcf102da55b"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-escolar-e-educacional",
+      "legacyOriginId": "PSI-BANCO-0437",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Psicologia Escolar e Educacional",
+        "area": "Escolar e Educacional",
+        "tema": "escola-família",
+        "subtema": "Colaboração escola-família e confidencialidade",
+        "blocoQuiz": "Contextos Profissionais e Institucionais",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0438",
+      "stem": "Qual etapa central de um processo de orientação escolar que ajuda o estudante a relacionar interesses, habilidades e possibilidades formativas?",
+      "format": "multiple_choice",
+      "difficulty": "intermediate",
+      "knowledgeType": "aplicado",
+      "explanation": "Um processo de orientação eficaz envolve etapas de autoconhecimento, exploração de opções, planejamento de ações e acompanhamento, articulando interesses, habilidades e possibilidades de formação.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Fornecer informações sem diálogo.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Um processo que inclua autoconhecimento, exploração de opções, planejamento de ações e acompanhamento.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Impor uma carreira com base nas expectativas da família.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Focar apenas em notas escolares.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Discutir carreira sem considerar o contexto do estudante.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-orientacao",
+        "topic-processo-de-orientacao-vocacional"
+      ],
+      "approachIds": [
+        "app-psicologia-escolar-e-educacional"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao"
+      ],
+      "referenceIds": [
+        "work-22d1c236b32d",
+        "work-9a356b9f2025",
+        "work-dd585ed68d5d"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-escolar-e-educacional",
+      "legacyOriginId": "PSI-BANCO-0438",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Psicologia Escolar e Educacional",
+        "area": "Escolar e Educacional",
+        "tema": "orientação",
+        "subtema": "Processo de orientação vocacional",
+        "blocoQuiz": "Contextos Profissionais e Institucionais",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0439",
+      "stem": "Entre as políticas educacionais de inclusão na educação básica, qual elemento é mais determinante para a efetividade prática da escola?",
+      "format": "multiple_choice",
+      "difficulty": "advanced",
+      "knowledgeType": "comparativo",
+      "explanation": "A efetividade de políticas educacionais de inclusão depende de orçamento adequado combinado com padrões de qualidade, monitoramento da implementação e participação da comunidade, permitindo ajustes conforme o contexto escolar.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Orçamento apenas",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Adoção de padrões de qualidade, monitoramento da implementação e participação da comunidade",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Foco exclusivo em avaliações padronizadas",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Centralização administrativa sem participação das comunidades",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Exclusão de famílias do processo decisório",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-avaliacao-de-politicas-publicas-de-inclusao",
+        "topic-politicas-educacionais"
+      ],
+      "approachIds": [
+        "app-psicologia-escolar-e-educacional"
+      ],
+      "authorIds": [
+        "author-equipe-de-elaboracao"
+      ],
+      "referenceIds": [
+        "work-2358114c4387",
+        "work-ee316c57edd9"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-escolar-e-educacional",
+      "legacyOriginId": "PSI-BANCO-0439",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Psicologia Escolar e Educacional",
+        "area": "Escolar e Educacional",
+        "tema": "políticas educacionais",
+        "subtema": "Avaliação de políticas públicas de inclusão",
+        "blocoQuiz": "Contextos Profissionais e Institucionais",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0440",
+      "stem": "Na perspectiva da inclusão escolar, qual é o princípio básico que orienta a participação de alunos com necessidades educacionais especiais no currículo regular?",
+      "format": "multiple_choice",
+      "difficulty": "basic",
+      "knowledgeType": "conceitual",
+      "explanation": "A inclusão escolar preconiza a participação plena de alunos com necessidades educacionais especiais no currículo regular, com ajustes razoáveis, recursos de apoio e adaptações pedagógicas que eliminem barreiras à aprendizagem. Trata-se de uma prática que envolve colaboração entre escola, família e comunidade, com foco na acessibilidade e no desenvolvimento do aluno dentro do ambiente comum de aprendizagem.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Manter o currículo regular sem alterações específicas.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Garantir participação plena no currículo com ajustes razoáveis e apoio pedagógico.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Segregar alunos com deficiência em turmas especiais.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Manter a avaliação padrão sem considerar limitações.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Substituir conteúdos por atividades paralelas.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-inclusao",
+        "topic-inclusao-escolar"
+      ],
+      "approachIds": [
+        "app-psicologia-escolar-e-educacional"
+      ],
+      "authorIds": [
+        "author-lev-vygotsky",
+        "author-maria-montessori"
+      ],
+      "referenceIds": [
+        "work-11249c76e512",
+        "work-4875cf682642"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-escolar-e-educacional",
+      "legacyOriginId": "PSI-BANCO-0440",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Psicologia Escolar e Educacional",
+        "area": "Escolar e Educacional",
+        "tema": "inclusão",
+        "subtema": "inclusão escolar",
+        "blocoQuiz": "Contextos Profissionais e Institucionais",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0444",
+      "stem": "À luz de teorias de políticas educacionais, compare as proposições sobre inclusão escolar. Qual afirmação melhor descreve o que caracteriza uma política inclusiva eficaz na prática escolar?",
+      "format": "multiple_choice",
+      "difficulty": "advanced",
+      "knowledgeType": "comparativo",
+      "explanation": "Uma política inclusiva eficaz requer não apenas mandato legal, mas também implementação prática que envolva formação de docentes, alocação de recursos, avaliação de necessidades e participação da comunidade. A teoria da implementação de políticas enfatiza a capacidade de execução, o apoio institucional e o monitoramento de resultados para promover mudanças sustentáveis.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Políticas devem focar apenas em infraestrutura, sem considerar formação docente ou recursos humanos.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Políticas eficazes devem considerar formação de docentes, recursos, avaliação de necessidades e participação da comunidade.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Políticas não exigem monitoramento de impacto nem avaliação de eficácia.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Políticas de inclusão resolvem-se apenas com mandatos legais, sem implementação prática.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Políticas inclusivas devem ser independentes da prática docente e da participação da comunidade.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-implementacao-de-politicas-educacionais",
+        "topic-politicas-educacionais"
+      ],
+      "approachIds": [
+        "app-psicologia-escolar-e-educacional"
+      ],
+      "authorIds": [
+        "author-michael-fullan",
+        "author-hargreaves-a"
+      ],
+      "referenceIds": [
+        "work-110c04054a13",
+        "work-f10cf3eff3d0"
+      ],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-escolar-e-educacional",
+      "legacyOriginId": "PSI-BANCO-0444",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Psicologia Escolar e Educacional",
+        "area": "Escolar e Educacional",
+        "tema": "políticas educacionais",
+        "subtema": "implementação de políticas educacionais",
+        "blocoQuiz": "Contextos Profissionais e Institucionais",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "PSI-BANCO-0710",
+      "stem": "Qual é a principal diferença entre inclusão e integração na educação de pessoas com deficiência?",
+      "format": "multiple_choice",
+      "difficulty": "advanced",
+      "knowledgeType": "teorico",
+      "explanation": "Correta: inclusão envolve participação plena, pertencimento e ajustes institucionais para acolher a diversidade, diferindo de uma simples presença física (integração).",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Inclusão significa apenas a presença física de estudantes com deficiência na escola.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Integração implica que estudantes com deficiência sejam encaixados no currículo existente sem mudanças estruturais.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Inclusão envolve participação plena, pertencimento e ajustes institucionais para acolher a diversidade.",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "D) Inclusão é apenas uma meta pedagógica sem mudanças organizacionais.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Integração é sinônimo de inclusão.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-inclusao",
+        "topic-inclusao-educacional-e-participacao"
+      ],
+      "approachIds": [
+        "app-psicologia-escolar-e-educacional"
+      ],
+      "authorIds": [
+        "author-mel-ainscow",
+        "author-tony-booth"
+      ],
+      "referenceIds": [],
+      "reviewStatus": "review",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "autoral",
+      "bank": null,
+      "exam": null,
+      "year": null,
+      "questionNumber": null,
+      "sourceUrl": null,
+      "answerKeyUrl": null,
+      "officialAnswerStatus": null,
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-deficiencia-reabilitacao-e-inclusao",
+      "legacyOriginId": "PSI-BANCO-0710",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Psicologia Escolar e Educacional",
+        "area": "Deficiência, Reabilitação e Inclusão",
+        "tema": "Inclusão",
+        "subtema": "Inclusão educacional e participação",
+        "blocoQuiz": "Contextos Profissionais e Institucionais",
+        "anulada": false,
+        "reviewNote": null
+      }
+    },
+    {
+      "id": "real-cebraspe_hub_2018-081-29189e53725c",
+      "stem": "São exemplos de técnicas utilizadas em programas de\nintervenção psicoeducacional aplicados a pacientes com\ndoenças graves o treino em habilidades de enfrentamento\ne a resolução de problemas, o treino em relaxamento e a\nterapia suportivo-expressiva, que sempre são utilizadas\nindividualmente e têm como objetivo restrito o ensino do uso\nde estratégias de enfrentamento.",
+      "format": "true_false",
+      "difficulty": "unspecified",
+      "knowledgeType": "a_revisar",
+      "explanation": "Item real de prova oficial; comentário ainda não produzido.",
+      "options": [
+        {
+          "id": "true",
+          "text": "Certo",
+          "isCorrect": false
+        },
+        {
+          "id": "false",
+          "text": "Errado",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-a-classificar-na-revisao-tematica"
+      ],
+      "approachIds": [
+        "app-psicologia-escolar-e-educacional"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-4737f93ef5ee",
+        "work-d0c509791812"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Cebraspe",
+      "exam": "Residência Multiprofissional HUB 2018 — Programa Multiprofissional em Atenção Oncológica — Psicologia",
+      "year": 2018,
+      "questionNumber": 81,
+      "sourceUrl": "https://cdn.cebraspe.org.br/concursos/HUB_18_MULTIPROFISSIONAL/arquivos/370_RMULT_009_01.PDF",
+      "answerKeyUrl": "https://cdn.cebraspe.org.br/concursos/HUB_18_MULTIPROFISSIONAL/arquivos/GAB_DEFINITIVO_370_RMULT_009_01.PDF",
+      "officialAnswerStatus": null,
+      "categoryId": "cat-psicologia-escolar-e-educacional",
+      "areaId": "area-a-classificar-na-revisao-tematica",
+      "legacyOriginId": "real-cebraspe_hub_2018-081-29189e53725c",
+      "legacy": {
+        "categoriaFinal": "Psicologia Escolar e Educacional",
+        "abordagemFinal": "Psicologia Escolar e Educacional",
+        "area": "A classificar na revisão temática",
+        "tema": "A classificar na revisão temática",
+        "subtema": "A classificar na revisão temática",
+        "blocoQuiz": "Contextos Profissionais e Institucionais",
+        "anulada": false,
+        "reviewNote": true
+      }
+    }
+  ]
+}

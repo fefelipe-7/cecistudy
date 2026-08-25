@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "published",
+      "name": "Publicado"
+    },
+    {
+      "id": "review",
+      "name": "Revisão humana recomendada"
+    },
+    {
+      "id": "deprecated",
+      "name": "Desativado/anulado"
+    }
+  ]
+}

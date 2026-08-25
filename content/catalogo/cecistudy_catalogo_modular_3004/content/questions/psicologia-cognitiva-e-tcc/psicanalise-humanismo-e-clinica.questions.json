@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "group": {
+    "id": "qg-psicologia-cognitiva-e-tcc-psicanalise-humanismo-e-clinica",
+    "title": "Psicologia Cognitiva e TCC — Psicanálise, Humanismo e Clínica",
+    "categoryId": "cat-psicologia-cognitiva-e-tcc",
+    "categoryTitle": "Psicologia Cognitiva e TCC",
+    "block": "Psicanálise, Humanismo e Clínica",
+    "status": "published",
+    "source": "Cecistudy content catalog",
+    "sourcePath": "content/questions/psicologia-cognitiva-e-tcc/psicanalise-humanismo-e-clinica.questions.json"
+  },
+  "questions": [
+    {
+      "id": "real-vunesp_mpe_es_2013_psicologo-056",
+      "stem": "Uma das estratégias usadas pelos terapeutas cognitivo-comportamentais é o questionamento socrático. Uma paciente declara: “Eu gritei com meu filho porque ele se comportou mal. Eu não sou uma boa mãe.” O terapeuta responde:",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "conceitual",
+      "explanation": "Item real de prova oficial; comentário pedagógico individual ainda não produzido.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Você não seria exigente demais com você mesma?",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) O que você acha que é ser uma boa mãe?",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Você se sente culpada por ter gritado?",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Gritar com ele significa que você não o ama?",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Sua mãe costumava gritar com você?",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-questionamento-socratico",
+        "topic-tecnicas-cognitivas"
+      ],
+      "approachIds": [
+        "app-psicologia-cognitiva-e-tcc"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-699d1259162e",
+        "work-9f3ade5c05f4"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "VUNESP",
+      "exam": "MPE/ES 2013 — Agente Técnico — Psicólogo — Prova Objetiva 021",
+      "year": 2013,
+      "questionNumber": 56,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/31963/vunesp-2013-mpe-es-agente-tecnico-psicologo-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/31963/vunesp-2013-mpe-es-agente-tecnico-psicologo-gabarito.pdf",
+      "officialAnswerStatus": "gabarito_oficial",
+      "categoryId": "cat-psicologia-cognitiva-e-tcc",
+      "areaId": "area-terapia-cognitivo-comportamental",
+      "legacyOriginId": "real-vunesp_mpe_es_2013_psicologo-056",
+      "legacy": {
+        "categoriaFinal": "Psicologia Cognitiva e TCC",
+        "abordagemFinal": "Psicologia Cognitiva e TCC",
+        "area": "Terapia Cognitivo-Comportamental",
+        "tema": "técnicas cognitivas",
+        "subtema": "questionamento socrático",
+        "blocoQuiz": "Psicanálise, Humanismo e Clínica",
+        "anulada": false,
+        "reviewNote": true
+      }
+    }
+  ]
+}

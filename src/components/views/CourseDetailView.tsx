@@ -1,585 +1,163 @@
 ﻿import React, { useState } from 'react';
-import {
-  UserCheck,
-  Clock,
-  FileText,
-  Sparkles,
-  CheckCircle2,
-  Plus,
-  BookOpen,
-  AlertCircle,
-  MessageSquare,
-  Timer,
-  ClipboardList
-} from 'lucide-react';
+import { motion, AnimatePresence, useDragControls, type Variants } from 'framer-motion';
+import { MapPin } from 'lucide-react';
 import { CourseIcon } from '../ui/CourseIcon';
-import { Mascote } from '../ui/Mascote';
-import { CompletionToggle } from '../ui/CompletionToggle';
 import { UnderlineTabBar } from '../ui/UnderlineTabBar';
-import { TagList } from '../ui/TagList';
-import { ManageSurface } from '../ui/ManageSurface';
-import { ClassNoteModal } from '../courses/ClassNoteModal';
-import { ClassNoteListItem } from '../courses/ClassNoteListItem';
 import { useApp } from '../../context/AppContext';
-import { formatCourseSchedule, formatShortDate } from '../../lib/schedule';
-import { Course, ClassNote, WizardFlow } from '../../types';
+import { formatCourseSchedule } from '../../lib/schedule';
+import {
+  canStartTabSwipe,
+  shouldIgnorePanTarget,
+  swipeTabDelta,
+} from '../../lib/swipe';
+import { Course } from '../../types';
+import { CourseCreateMenu } from '../courses/detail/CourseCreateMenu';
+import { CourseInfoContent } from '../courses/detail/CourseInfoContent';
+import { CourseAulasContent } from '../courses/detail/CourseAulasContent';
+import { CourseRepertorioContent } from '../courses/detail/CourseRepertorioContent';
 
 interface CourseDetailViewProps {
   course: Course;
 }
 
-export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) => {
-  const [activeTab, setActiveTab] = useState<'info' | 'aulas' | 'repertorio'>('info');
-  const [selectedClassNote, setSelectedClassNote] = useState<ClassNote | null>(null);
-  const [showDoneTasks, setShowDoneTasks] = useState(false);
-  const {
-    classes,
-    exams,
-    tasks,
-    concepts,
-    authors,
-    readings,
-    materials,
-    sessions,
-    openWizard,
-    openCompose,
-    handleToggleExam,
-    handleToggleTask,
-  } = useApp();
+type DetailTab = 'info' | 'aulas' | 'repertorio';
 
-  // Filter items specific to this course
+const TAB_ORDER: DetailTab[] = ['info', 'aulas', 'repertorio'];
+
+/** Slide direcional entre tabs (a direção segue o gesto/toque). */
+const tabVariants: Variants = {
+  enter: (dir: number) => ({ x: dir >= 0 ? 48 : -48, opacity: 0 }),
+  center: { x: 0, opacity: 1 },
+  exit: (dir: number) => ({ x: dir >= 0 ? -48 : 48, opacity: 0 }),
+};
+
+/**
+ * Detalhe da disciplina (mobile): hero compacto com contexto (horário/sala),
+ * botão de novo registro que expande menu e 3 sub-tabs navegáveis por toque
+ * **ou arrasto contínuo** (o conteúdo acompanha o dedo com resistência elástica).
+ */
+export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) => {
+  const [activeTab, setActiveTab] = useState<DetailTab>('info');
+  const [direction, setDirection] = useState(1);
+  const dragControls = useDragControls();
+  const { classes, exams } = useApp();
+
   const courseClasses = classes.filter((c) => c.courseId === course.id);
   const courseExams = exams.filter((e) => e.courseId === course.id);
-  const courseTasks = tasks.filter((t) => t.disciplineId === course.id);
-  const courseReadings = readings.filter((r) => r.courseId === course.id);
-  const courseMaterials = materials.filter((m) => m.courseId === course.id);
 
-  // Sessões de foco da disciplina
-  const courseSessions = sessions.filter((s) => s.courseId === course.id);
-  const focusMinutes = courseSessions.reduce((acc, s) => acc + (s.durationMinutes || 0), 0);
+  const goToTab = (next: DetailTab, dir?: number) => {
+    if (next === activeTab) return;
+    setDirection(
+      dir ?? (TAB_ORDER.indexOf(next) > TAB_ORDER.indexOf(activeTab) ? 1 : -1)
+    );
+    setActiveTab(next);
+  };
 
-  // Frequência e pesos derivados dos dados reais
-  const attendance =
-    course.attendance && course.attendance.total > 0
-      ? {
-          pct: Math.round((course.attendance.attended / course.attendance.total) * 100),
-          absences: course.attendance.total - course.attendance.attended,
-        }
-      : null;
-  const assessment = courseExams
-    .filter((e) => typeof e.weightValue === 'number')
-    .sort((a, b) => a.date.localeCompare(b.date));
+  const stepTab = (delta: -1 | 1) => {
+    const idx = TAB_ORDER.indexOf(activeTab);
+    const nextIdx = idx + delta;
+    if (nextIdx < 0 || nextIdx >= TAB_ORDER.length) return;
+    goToTab(TAB_ORDER[nextIdx], delta);
+  };
 
-  // Concepts related to this course
-  const courseConcepts = concepts.filter(
-    (c) => c.courseIds && c.courseIds.includes(course.id)
-  );
+  /** Engaja o drag só para toque válido (fora da borda de voltar e de campos). */
+  const handlePointerDown = (e: React.PointerEvent) => {
+    if (e.pointerType === 'mouse') return;
+    if (!canStartTabSwipe(e.clientX)) return;
+    if (shouldIgnorePanTarget(e.target)) return;
+    dragControls.start(e);
+  };
 
-  // Authors related to this course concepts or class notes
-  const relatedAuthorIds = new Set<string>();
-  courseConcepts.forEach((c) => c.authorIds?.forEach((a) => relatedAuthorIds.add(a)));
-  courseClasses.forEach((cl) => cl.authorIds?.forEach((a) => relatedAuthorIds.add(a)));
-  const courseAuthors = authors.filter((a) => relatedAuthorIds.has(a.id));
+  const handleDragEnd = (_e: unknown, info: { offset: { x: number }; velocity: { x: number } }) => {
+    const delta = swipeTabDelta(info.offset.x, info.velocity.x);
+    if (delta !== 0) stepTab(delta);
+  };
+
+  const contextBits = [
+    formatCourseSchedule(course.schedule),
+    course.room,
+    course.category === 'complementar' ? 'complementar' : 'obrigatória',
+  ].filter(Boolean);
 
   return (
-    <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-6 pb-1 relative">
-
-      {/* Top Navigation & Header directly on canvas */}
-      <div className="space-y-3 px-1">
-        <div className="flex items-start gap-3.5">
-          <div
-            className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border border-ceci-border-default"
+    <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-4 pb-24 relative">
+      {/* Hero compacto — acento na cor da matéria */}
+      <div className="px-1 pt-1">
+        <div
+          className="rounded-[20px] bg-white border border-ceci-border-default p-3.5 flex items-center gap-3 shadow-sm"
+          style={{ borderLeftWidth: '4px', borderLeftColor: course.color || '#B94862' }}
+        >
+          <span
+            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
             style={{ backgroundColor: `${course.color}20` }}
           >
-            <CourseIcon icon={course.icon} className="w-7 h-7" />
-          </div>
-
-          <div className="flex-1 min-w-0 space-y-1">
-            <h1 className="font-display text-2xl font-bold text-ceci-primary leading-tight">
+            <CourseIcon icon={course.icon} className="w-5 h-5" />
+          </span>
+          <div className="min-w-0 space-y-1">
+            <h2 className="font-display text-base font-bold text-ceci-primary leading-tight">
               {course.name}
-            </h1>
-
-            <p className="text-xs font-semibold text-ceci-secondary flex items-center gap-1.5">
-              <UserCheck className="w-3.5 h-3.5 text-ceci-brand-strong" />
-              <span>{course.professor}</span>
+            </h2>
+            <p className="text-[11px] font-medium text-ceci-secondary flex items-center flex-wrap gap-x-1.5 gap-y-0.5">
+              <MapPin className="w-3 h-3 text-ceci-muted shrink-0" />
+              {contextBits.map((bit, i) => (
+                <React.Fragment key={i}>
+                  {i > 0 && <span aria-hidden className="text-ceci-muted">·</span>}
+                  <span>{bit}</span>
+                </React.Fragment>
+              ))}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Quick Add Grid 2x2 */}
-      <div className="grid grid-cols-2 gap-3.5 px-1">
-        {[
-          { type: 'session', icon: Timer, label: 'anotar estudo', accent: 'bg-surface-blue text-ceci-academic-strong border-ceci-border-academic' },
-          { type: 'exam', icon: ClipboardList, label: 'anotar prova', accent: 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand' },
-          { type: 'reading', icon: BookOpen, label: 'anotar leitura', accent: 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand' },
-          { type: 'class', icon: FileText, label: 'anotar aula', accent: 'bg-surface-muted text-ceci-primary border-ceci-border-default' },
-        ].map((btn) => {
-          const Icon = btn.icon;
-          return (
-            <button
-              key={btn.type}
-              onClick={() =>
-                btn.type === 'class'
-                  ? openCompose(course.id)
-                  : openWizard(btn.type as WizardFlow, course.id)
-              }
-              className="flex items-center gap-3 p-3.5 rounded-2xl bg-white border border-ceci-border-default hover:border-ceci-border-brand text-left tap-interactive hover:shadow-md active:scale-95 cursor-pointer shadow-sm"
-            >
-              <span className={`w-9 h-9 rounded-xl flex items-center justify-center border shrink-0 ${btn.accent}`}>
-                <Icon className="w-4.5 h-4.5" />
-              </span>
-              <span className="text-xs font-semibold text-ceci-primary leading-snug">{btn.label}</span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* 2. Sub-Tabs Bar */}
+      {/* Sub-tabs + conteúdo deslizável */}
       <UnderlineTabBar
         tabs={[
           { id: 'info', label: 'informações' },
-          { id: 'aulas', label: 'aulas & avaliações', badge: courseClasses.length + courseExams.length },
-          { id: 'repertorio', label: 'repertório & conteúdo', badge: courseConcepts.length + courseReadings.length },
+          {
+            id: 'aulas',
+            label: 'aulas',
+            badge: courseClasses.length + courseExams.length,
+          },
+          { id: 'repertorio', label: 'repertório' },
         ]}
         active={activeTab}
-        onChange={(v) => setActiveTab(v)}
+        onChange={(v) => goToTab(v as DetailTab)}
         className="px-1"
       />
 
-      {/* ==================================================================== */}
-      {/* TAB 1: INFORMAÇÖES DA MATÉRIA (Clean, inline layout without nested cards) */}
-      {/* ==================================================================== */}
-      {activeTab === 'info' && (
-        <div className="space-y-6 px-1">
+      <motion.div
+        onPointerDownCapture={handlePointerDown}
+        style={{ touchAction: 'pan-y' }}
+        className="px-1"
+      >
+        <AnimatePresence mode="popLayout" custom={direction} initial={false}>
+          <motion.div
+            key={activeTab}
+            custom={direction}
+            variants={tabVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ type: 'spring', stiffness: 380, damping: 36 }}
+            drag="x"
+            dragListener={false}
+            dragControls={dragControls}
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.14}
+            onDragEnd={handleDragEnd}
+            role="tabpanel"
+            aria-label={`aba ${activeTab}`}
+          >
+            {activeTab === 'info' && <CourseInfoContent course={course} />}
+            {activeTab === 'aulas' && <CourseAulasContent course={course} />}
+            {activeTab === 'repertorio' && <CourseRepertorioContent course={course} />}
+          </motion.div>
+        </AnimatePresence>
+      </motion.div>
 
-          {/* Badges: código, dias de aula, obrigatória/complementar */}
-          <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
-            <span className="text-[10px] font-extrabold uppercase tracking-wider bg-white px-2.5 py-0.5 rounded-full border border-ceci-border-default text-ceci-primary">
-              {course.code || 'sem código'}
-            </span>
-
-            <span className="inline-flex items-center gap-1 px-3 py-1 bg-white rounded-full text-[11px] font-semibold text-ceci-primary border border-ceci-border-default">
-              <Clock className="w-3 h-3 text-ceci-academic-strong" />
-              <span>{formatCourseSchedule(course.schedule) || 'horário a definir'}</span>
-            </span>
-
-            <span className="inline-flex items-center gap-1 px-3 py-1 bg-surface-rose text-ceci-brand-strong rounded-full text-[11px] font-semibold border border-ceci-border-brand">
-              <span>{course.category === 'complementar' ? 'complementar' : 'obrigatória'}</span>
-            </span>
-          </div>
-
-          {/* Ementa / Descrição (Inline Accent Block) */}
-          <div className="space-y-2">
-            <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-ceci-brand-strong" />
-              <span>o que essa disciplina ensina</span>
-            </h3>
-            <div className="border-l-3 border-ceci-brand-strong pl-3.5 py-1 text-xs text-ceci-text-soft leading-relaxed font-medium bg-gradient-to-r from-surface-rose/70 to-transparent rounded-r-xl flex items-start gap-2">
-              {!course.description && <Mascote expression="writing-note" className="w-7 h-7 shrink-0 -mt-1" decorative />}
-              {course.description ||
-                'esta disciplina ainda não tem ementa anotada. edite os detalhes da matéria para registrar os objetivos.'}
-            </div>
-          </div>
-
-          {/* Dados Universitários Grid (Inline divided section) */}
-          <div className="space-y-2.5">
-            <h3 className="font-display font-bold text-sm text-ceci-primary">
-              detalhes acadêmicos
-            </h3>
-
-            <div className="border-y border-ceci-border-default py-3 grid grid-cols-2 gap-y-3.5 gap-x-4">
-              <div>
-                <span className="text-[10px] font-bold text-ceci-tertiary uppercase tracking-wider block">Sala & Local</span>
-                <p className="font-semibold text-xs text-ceci-primary mt-0.5">{course.room || 'não informada'}</p>
-              </div>
-
-              <div>
-                <span className="text-[10px] font-bold text-ceci-tertiary uppercase tracking-wider block">Horário Semanal</span>
-                <p className="font-semibold text-xs text-ceci-primary mt-0.5">{formatCourseSchedule(course.schedule) || 'horário a definir'}</p>
-              </div>
-
-              <div>
-                <span className="text-[10px] font-bold text-ceci-tertiary uppercase tracking-wider block">Docente Responsável</span>
-                <p className="font-semibold text-xs text-ceci-primary mt-0.5">{course.professor}</p>
-              </div>
-
-              <div>
-                <span className="text-[10px] font-bold text-ceci-tertiary uppercase tracking-wider block">Frequência Registrada</span>
-                <p className="font-bold text-xs text-success-deep mt-0.5">
-                  {attendance ? `${attendance.pct}% (${attendance.absences} ${attendance.absences === 1 ? 'ausência' : 'ausências'})` : 'não registrada'}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Fórmulas de Avaliação / Pesos (derivadas das provas anotadas) */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between gap-2">
-              <h3 className="font-display font-bold text-sm text-ceci-primary">
-                como você é avaliada
-              </h3>
-              {typeof course.minGrade === 'number' && (
-                <span className="text-[11px] font-semibold text-ceci-brand-strong bg-surface-rose px-2.5 py-0.5 rounded-full border border-ceci-border-brand shrink-0">
-                  média mínima:{' '}
-                  {course.minGrade.toLocaleString('pt-BR', { minimumFractionDigits: 1 })}
-                </span>
-              )}
-            </div>
-
-            {assessment.length > 0 ? (
-              <div className="divide-y divide-ceci-border-default/70 border-t border-ceci-border-default">
-                {assessment.map((ex) => (
-                  <div key={ex.id} className="flex items-center justify-between py-2.5 text-xs">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="w-2 h-2 rounded-full bg-ceci-brand-strong shrink-0" />
-                      <span className="font-semibold text-ceci-primary line-clamp-1">{ex.title}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      {typeof ex.grade === 'number' && (
-                        <span className="font-bold text-success-deep bg-surface-mint-soft px-2 py-0.5 rounded border border-green-200">
-                          nota {ex.grade}
-                        </span>
-                      )}
-                      <span className="font-bold text-ceci-primary bg-surface-muted px-2 py-0.5 rounded border border-ceci-border-default">
-                        peso {ex.weightValue}%
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-xs text-ceci-tertiary py-1 flex items-center gap-1.5">
-                <Mascote expression="class-ready" className="w-6 h-6 shrink-0" decorative />
-                ainda não tem prova com peso anotada — registre as avaliações para ver a composição da média.
-              </p>
-            )}
-          </div>
-
-          {/* Sessões de foco da disciplina */}
-          {courseSessions.length > 0 && (
-            <div className="pl-3.5 py-2.5 border-l-2 border-ceci-brand space-y-1">
-              <h4 className="font-display font-bold text-xs text-ceci-brand-strong flex items-center gap-1.5">
-                <Timer className="w-3.5 h-3.5" />
-                <span>foco nesta disciplina</span>
-              </h4>
-              <p className="text-xs text-ceci-secondary leading-relaxed">
-                {focusMinutes >= 60 ? `${Math.floor(focusMinutes / 60)}h` : ''}{focusMinutes % 60 > 0 ? ` ${focusMinutes % 60}min` : focusMinutes === 0 ? '0min' : ''} de foco ·{' '}
-                {courseSessions.length} {courseSessions.length === 1 ? 'sessão' : 'sessões'}
-              </p>
-            </div>
-          )}
-
-          {/* Horário de Atendimento e Monitoria (vem dos dados da disciplina) */}
-          {course.officeHours && (
-            <div className="pl-3.5 py-2.5 border-l-2 border-ceci-academic-strong space-y-1">
-              <h4 className="font-display font-bold text-xs text-ceci-academic-strong flex items-center gap-1.5">
-                <MessageSquare className="w-3.5 h-3.5 text-ceci-academic-strong" />
-                <span>atendimento & monitoria</span>
-              </h4>
-              <p className="text-xs text-ceci-secondary leading-relaxed">
-                {course.officeHours}
-              </p>
-            </div>
-          )}
-
-        </div>
-      )}
-
-      {/* ==================================================================== */}
-      {/* TAB 2: AULAS & AVALIAÇÖES (Inline Journal & Exam List)              */}
-      {/* ==================================================================== */}
-      {activeTab === 'aulas' && (
-        <div className="space-y-6 px-1">
-          
-          {/* Section A: Próximas Avaliações */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-ceci-brand-strong" />
-                <span>próximas avaliações & provas</span>
-              </h3>
-              <span className="text-[11px] font-semibold text-ceci-tertiary">
-                {courseExams.length} anotadas
-              </span>
-            </div>
-
-            {courseExams.length > 0 ? (
-              <div className="divide-y divide-ceci-border-default/70 border-y border-ceci-border-default">
-                {courseExams.map((exam) => (
-                  <ManageSurface
-                    key={exam.id}
-                    kind="exam"
-                    id={exam.id}
-                    data-target={exam.id}
-                    onTap={() => handleToggleExam(exam.id)}
-                    className="py-3 flex items-start justify-between cursor-pointer group transition-colors"
-                  >
-                    <div className="space-y-1 flex-1 pr-2">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-[10px] font-bold text-ceci-brand-strong bg-surface-rose px-2 py-0.5 rounded-full border border-ceci-border-brand">
-                          {formatShortDate(exam.date)}
-                        </span>
-                        <span className="text-[10px] font-semibold text-ceci-secondary">
-                          {exam.weight}
-                        </span>
-                        {typeof exam.grade === 'number' && (
-                          <span className="text-[10px] font-bold text-success-deep bg-surface-mint-soft px-2 py-0.5 rounded-full border border-green-200">
-                            nota: {exam.grade}
-                          </span>
-                        )}
-                      </div>
-
-                      <h4 className={`font-display font-bold text-sm text-ceci-primary ${exam.completed ? 'line-through text-ceci-tertiary' : ''}`}>
-                        {exam.title}
-                      </h4>
-
-                      {exam.topics && exam.topics.length > 0 && (
-                        <div className="flex flex-wrap gap-1 pt-0.5">
-                          {exam.topics.map((tp, idx) => (
-                            <span key={idx} className="text-[9px] text-ceci-secondary bg-surface-muted px-2 py-0.2 rounded border border-ceci-border-default">
-                              {tp}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="pt-1">
-                      <CompletionToggle
-                        checked={exam.completed}
-                        onChange={() => handleToggleExam(exam.id)}
-                        label={exam.completed ? `marcar prova "${exam.title}" como pendente` : `marcar prova "${exam.title}" como concluída`}
-                      />
-                    </div>
-                  </ManageSurface>
-                ))}
-              </div>
-            ) : (
-              <p className="text-xs text-ceci-tertiary py-2 flex items-center gap-1.5">
-                <Mascote expression="class-ready" className="w-6 h-6 shrink-0" decorative />
-                ainda não tem prova anotada para esta disciplina.
-              </p>
-            )}
-          </div>
-
-          {/* Section B: Diário de Aulas / Registros (Editorial list with dividers) */}
-          <div className="space-y-3 pt-2">
-            <div className="flex items-center justify-between">
-              <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
-                <FileText className="w-4 h-4 text-ceci-academic-strong" />
-                <span>diário de aulas</span>
-              </h3>
-<button
-                onClick={() => openCompose(course.id)}
-                className="text-xs font-bold text-ceci-brand-strong hover:underline flex items-center gap-1 cursor-pointer"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>nova aula</span>
-              </button>
-            </div>
-
-            {courseClasses.length > 0 ? (
-              <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
-                {courseClasses.map((cl) => (
-                  <ClassNoteListItem
-                    key={cl.id}
-                    note={cl}
-                    onClick={() => setSelectedClassNote(cl)}
-                    showExtras
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="py-6 text-center space-y-2">
-                <Mascote expression="empty-invite" className="w-14 h-14 mx-auto" decorative />
-                <p className="text-xs font-semibold text-ceci-primary">ainda não tem aula anotada</p>
-                <button
-                  onClick={() => openCompose(course.id)}
-                  className="px-3.5 py-1.5 bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong rounded-full text-xs font-bold cursor-pointer"
-                >
-                  anotar primeira aula
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Section C: Tarefas & Trabalhos */}
-          {courseTasks.length > 0 && (
-            <div className="space-y-3 pt-2">
-              <div className="flex items-center justify-between gap-2">
-                <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-success-deep" />
-                  <span>tarefas & entregas</span>
-                </h3>
-                {courseTasks.some((t) => t.completed) && (
-                  <button
-                    onClick={() => setShowDoneTasks((s) => !s)}
-                    className="text-[11px] font-semibold text-ceci-brand-strong hover:underline cursor-pointer shrink-0"
-                  >
-                    {showDoneTasks ? 'esconder concluídas' : 'mostrar concluídas'}
-                  </button>
-                )}
-              </div>
-
-              <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
-                {(showDoneTasks ? courseTasks : courseTasks.filter((t) => !t.completed)).map((t) => (
-                  <ManageSurface
-                    key={t.id}
-                    kind="task"
-                    id={t.id}
-                    data-target={t.id}
-                    onTap={() => handleToggleTask(t.id)}
-                    className="py-2.5 flex items-center justify-between text-xs cursor-pointer"
-                  >
-                    <div className="space-y-0.5 pr-2">
-                      <p className={`font-semibold text-ceci-primary ${t.completed ? 'line-through text-ceci-tertiary' : ''}`}>
-                        {t.title}
-                      </p>
-                      {t.dueDate && (
-                        <span className="text-[10px] text-ceci-tertiary">prazo: {formatShortDate(t.dueDate)}</span>
-                      )}
-                    </div>
-                    <CompletionToggle
-                        checked={t.completed}
-                        onChange={() => handleToggleTask(t.id)}
-                        size="sm"
-                        label={t.completed ? `marcar tarefa "${t.title}" como pendente` : `marcar tarefa "${t.title}" como concluída`}
-                      />
-                  </ManageSurface>
-                ))}
-                {!showDoneTasks && courseTasks.every((t) => t.completed) && (
-                  <p className="py-3 text-xs text-success-deep flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4" /> todas as tarefas desta disciplina estão concluídas ♡
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
-
-        </div>
-      )}
-
-      {/* ==================================================================== */}
-      {/* TAB 3: REPERTÔRIO & CONTEÚDO (Inline Glossary & Author list)        */}
-      {/* ==================================================================== */}
-      {activeTab === 'repertorio' && (
-        <div className="space-y-6 px-1">
-          
-          {/* Section A: Conceitos Relacionados */}
-          <div className="space-y-3">
-            <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-ceci-brand-strong" />
-              <span>conceitos-chave da disciplina</span>
-            </h3>
-
-            {courseConcepts.length > 0 ? (
-              <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
-                {courseConcepts.map((concept) => (
-                  <ManageSurface key={concept.id} kind="concept" id={concept.id} className="py-3 space-y-1">
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-display font-bold text-sm text-ceci-primary">
-                        {concept.name}
-                      </h4>
-                    </div>
-                    <p className="text-xs text-ceci-secondary leading-relaxed">
-                      {concept.definition}
-                    </p>
-                    {concept.tags && concept.tags.length > 0 && (
-                      <TagList tags={concept.tags} size="sm" className="pt-1" />
-                    )}
-                  </ManageSurface>
-                ))}
-              </div>
-            ) : (
-              <p className="text-xs text-ceci-tertiary py-2 flex items-center gap-1.5">
-                <Mascote expression="connection-link" className="w-6 h-6 shrink-0" decorative />
-                ainda não tem conceito ligado a esta disciplina.
-              </p>
-            )}
-          </div>
-
-          {/* Section B: Autores Fundamentais */}
-          {courseAuthors.length > 0 && (
-            <div className="space-y-3 pt-2">
-              <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
-                <UserCheck className="w-4 h-4 text-ceci-academic-strong" />
-                <span>autores fundamentais</span>
-              </h3>
-
-              <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
-                {courseAuthors.map((author) => (
-                  <ManageSurface key={author.id} kind="author" id={author.id} className="py-3 flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-full bg-blue-200 text-ceci-academic-strong font-display font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
-                      {author.name.charAt(0)}
-                    </div>
-                    <div className="space-y-0.5">
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-display font-bold text-sm text-ceci-primary">
-                          {author.name}
-                        </h4>
-                        <span className="text-[10px] text-ceci-tertiary">{author.lifespan}</span>
-                      </div>
-                      <p className="text-xs text-ceci-secondary leading-relaxed">
-                        {author.bio}
-                      </p>
-                    </div>
-                  </ManageSurface>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Section C: Leituras & Bibliografia Recomendada */}
-          <div className="space-y-3 pt-2">
-            <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-beige-700" />
-              <span>leituras & bibliografia recomendada</span>
-            </h3>
-
-            {courseReadings.length > 0 || courseMaterials.length > 0 ? (
-              <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
-                {courseReadings.map((reading) => (
-                  <ManageSurface key={reading.id} kind="reading" id={reading.id} className="py-2.5 flex items-center justify-between text-xs">
-                    <div className="space-y-0.5">
-                      <h5 className="font-bold text-ceci-primary">{reading.title}</h5>
-                      <p className="text-[11px] text-ceci-tertiary">por {reading.author}</p>
-                    </div>
-                    <span className="text-[10px] font-semibold text-success-deep bg-surface-mint-soft px-2.5 py-1 rounded-full border border-ceci-border-academic">
-                      {reading.readPages || 0} / {reading.totalPages ?? '—'} pág
-                    </span>
-                  </ManageSurface>
-                ))}
-
-                {courseMaterials.map((mat) => (
-                  <ManageSurface key={mat.id} kind="material" id={mat.id} className="py-2.5 flex items-center justify-between text-xs">
-                    <div className="space-y-0.5">
-                      <h5 className="font-semibold text-ceci-primary">{mat.title}</h5>
-                      <p className="text-[10px] text-ceci-tertiary uppercase">{mat.type} • {mat.author}</p>
-                    </div>
-                    <span className="text-[10px] font-bold text-ceci-academic-strong bg-surface-blue px-2 py-0.5 rounded border border-ceci-border-academic">
-                      PDF
-                    </span>
-                  </ManageSurface>
-                ))}
-              </div>
-            ) : (
-              <p className="text-xs text-ceci-tertiary py-2 flex items-center gap-1.5">
-                <Mascote expression="reading-curious" className="w-6 h-6 shrink-0" decorative />
-                ainda não tem leitura vinculada a esta disciplina.
-              </p>
-            )}
-          </div>
-
-        </div>
-      )}
-
-      {/* Modal View for Selected Class Note */}
-      <ClassNoteModal
-        note={selectedClassNote}
-        onClose={() => setSelectedClassNote(null)}
-      />
-
+      {/* Novo registro — botão único que expande menu */}
+      <CourseCreateMenu courseId={course.id} variant="floating" />
     </div>
   );
 };

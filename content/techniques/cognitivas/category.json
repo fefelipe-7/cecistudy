@@ -1,0 +1,11 @@
+{
+  "id": "domain-cognitivas",
+  "nome": "Técnicas Cognitivas",
+  "slug": "cognitivas",
+  "descricaoCurta": "Aprendizagem cognitiva, avaliação de interpretações e modificação de crenças.",
+  "ordemExibicao": 1,
+  "quantidadeDeclarada": 15,
+  "quantidadeNominal": 15,
+  "status": "published",
+  "sourcePath": "content/techniques/cognitivas/category.json"
+}

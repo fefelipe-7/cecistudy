@@ -1,0 +1,11 @@
+{
+  "id": "domain-mindfulness-aceitacao-regulacao",
+  "nome": "Mindfulness, Aceitação e Regulação",
+  "slug": "mindfulness-aceitacao-regulacao",
+  "descricaoCurta": "Atenção ao presente, aceitação, desfusão, valores e regulação da relação com a experiência.",
+  "ordemExibicao": 10,
+  "quantidadeDeclarada": 12,
+  "quantidadeNominal": 14,
+  "status": "published",
+  "sourcePath": "content/techniques/mindfulness-aceitacao-regulacao/category.json"
+}

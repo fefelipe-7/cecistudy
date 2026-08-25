@@ -1,0 +1,18 @@
+{
+  "id": "cat-etica-direitos-humanos-e-regulamentacao",
+  "slug": "etica-direitos-humanos-e-regulamentacao",
+  "title": "Ética, Direitos Humanos e Regulamentação",
+  "displayOrder": 2,
+  "questionCount": 252,
+  "approachIds": [
+    "app-etica-direitos-humanos-e-regulamentacao",
+    "app-psicologia-da-saude-e-politicas-publicas",
+    "app-psicologia-social-e-comunitaria"
+  ],
+  "groupCount": 2,
+  "status": "published",
+  "allowedFormats": [
+    "multiple_choice",
+    "true_false"
+  ]
+}

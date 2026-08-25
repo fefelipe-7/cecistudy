@@ -1,0 +1,1126 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-25T01:42:44.659Z",
+  "stats": {
+    "canonical": 114,
+    "editorialCanonicals": 97,
+    "techniqueAliases": 25,
+    "taxonomicAliases": 17
+  },
+  "entries": [
+    {
+      "id": "psic-01-01",
+      "name": "Psicanálise Freudiana Clássica",
+      "system": "editorial",
+      "familyId": "fam-01",
+      "aliases": [
+        {
+          "id": "app-psicanalitica_psicodinamica-psicanalise-freudiana-classica",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-01-02",
+      "name": "Psicologia do Ego",
+      "system": "editorial",
+      "familyId": "fam-01",
+      "aliases": []
+    },
+    {
+      "id": "psic-01-03",
+      "name": "Teoria das Relações Objetais",
+      "system": "editorial",
+      "familyId": "fam-01",
+      "aliases": []
+    },
+    {
+      "id": "psic-01-04",
+      "name": "Psicologia do Self (Kohut)",
+      "system": "editorial",
+      "familyId": "fam-01",
+      "aliases": []
+    },
+    {
+      "id": "psic-01-05",
+      "name": "Psicanálise Relacional",
+      "system": "editorial",
+      "familyId": "fam-01",
+      "aliases": [
+        {
+          "id": "app-psicanalitica_psicodinamica-psicanalise-relacional",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-01-06",
+      "name": "Terapia Psicodinâmica Breve",
+      "system": "editorial",
+      "familyId": "fam-01",
+      "aliases": []
+    },
+    {
+      "id": "psic-01-07",
+      "name": "Psicologia Analítica Junguiana",
+      "system": "editorial",
+      "familyId": "fam-01",
+      "aliases": []
+    },
+    {
+      "id": "psic-01-08",
+      "name": "Psicologia Individual Adleriana",
+      "system": "editorial",
+      "familyId": "fam-01",
+      "aliases": []
+    },
+    {
+      "id": "psic-01-09",
+      "name": "Psicanálise Interpessoal (Sullivan)",
+      "system": "editorial",
+      "familyId": "fam-01",
+      "aliases": []
+    },
+    {
+      "id": "psic-01-10",
+      "name": "Psicoterapia Psicodinâmica Contemporânea (integrativa)",
+      "system": "editorial",
+      "familyId": "fam-01",
+      "aliases": [
+        {
+          "id": "app-psicanalitica_psicodinamica-psicoterapia-psicodinamica-contemporanea-integrativa",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-02-01",
+      "name": "Terapia Centrada na Pessoa (Rogers)",
+      "system": "editorial",
+      "familyId": "fam-02",
+      "aliases": [
+        {
+          "id": "app-existencial_humanista-terapia-centrada-na-pessoa-rogers",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-02-02",
+      "name": "Gestalt-terapia",
+      "system": "editorial",
+      "familyId": "fam-02",
+      "aliases": [
+        {
+          "id": "app-existencial_humanista-gestalt-terapia",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-02-03",
+      "name": "Terapia Existencial‑Humanista",
+      "system": "editorial",
+      "familyId": "fam-02",
+      "aliases": [
+        {
+          "id": "app-existencial_humanista-terapia-existencial-humanista",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-02-04",
+      "name": "Terapia Focada nas Emoções (Emotion‑Focused Therapy — EFT, vertente de Leslie Greenberg)",
+      "system": "editorial",
+      "familyId": "fam-02",
+      "aliases": [
+        {
+          "id": "app-existencial_humanista-terapia-focada-nas-emocoes",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-02-05",
+      "name": "Logoterapia",
+      "system": "editorial",
+      "familyId": "fam-02",
+      "aliases": []
+    },
+    {
+      "id": "psic-02-06",
+      "name": "Terapia Experiencial",
+      "system": "editorial",
+      "familyId": "fam-02",
+      "aliases": [
+        {
+          "id": "app-existencial_humanista-terapia-experiencial",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-02-07",
+      "name": "Daseinsanalyse (tradicionalmente associada a Ludwig Binswanger e Medard Boss)",
+      "system": "editorial",
+      "familyId": "fam-02",
+      "aliases": []
+    },
+    {
+      "id": "psic-02-08",
+      "name": "Terapia Existencial Britânica (vertente clínica contemporânea)",
+      "system": "editorial",
+      "familyId": "fam-02",
+      "aliases": []
+    },
+    {
+      "id": "psic-02-09",
+      "name": "Psicologia Humanista (movimento amplo)",
+      "system": "editorial",
+      "familyId": "fam-02",
+      "aliases": []
+    },
+    {
+      "id": "psic-02-10",
+      "name": "Terapia Transpessoal",
+      "system": "editorial",
+      "familyId": "fam-02",
+      "aliases": []
+    },
+    {
+      "id": "psic-03-01",
+      "name": "Behaviorismo Metodológico/Radical (base teórica)",
+      "system": "editorial",
+      "familyId": "fam-03",
+      "aliases": []
+    },
+    {
+      "id": "psic-03-02",
+      "name": "Terapia Comportamental Clássica",
+      "system": "editorial",
+      "familyId": "fam-03",
+      "aliases": [
+        {
+          "id": "app-comportamental-terapia-comportamental-classica",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-03-03",
+      "name": "Análise do Comportamento Aplicada (ABA)",
+      "system": "editorial",
+      "familyId": "fam-03",
+      "aliases": [
+        {
+          "id": "app-comportamental-analise-do-comportamento-aplicada-aba",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-03-04",
+      "name": "Dessensibilização Sistemática (Wolpe)",
+      "system": "editorial",
+      "familyId": "fam-03",
+      "aliases": []
+    },
+    {
+      "id": "psic-03-05",
+      "name": "Terapia de Exposição",
+      "system": "editorial",
+      "familyId": "fam-03",
+      "aliases": []
+    },
+    {
+      "id": "psic-03-06",
+      "name": "Terapia Comportamental Dialética (DBT)",
+      "system": "editorial",
+      "familyId": "fam-03",
+      "aliases": [
+        {
+          "id": "app-comportamental-terapia-comportamental-dialetica-dbt",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-03-07",
+      "name": "Ativação Comportamental",
+      "system": "editorial",
+      "familyId": "fam-03",
+      "aliases": []
+    },
+    {
+      "id": "psic-03-08",
+      "name": "Treinamento de Habilidades Sociais",
+      "system": "editorial",
+      "familyId": "fam-03",
+      "aliases": []
+    },
+    {
+      "id": "psic-03-09",
+      "name": "Modificação de Comportamento Infantil",
+      "system": "editorial",
+      "familyId": "fam-03",
+      "aliases": []
+    },
+    {
+      "id": "psic-03-10",
+      "name": "Terapia Comportamental de Casais",
+      "system": "editorial",
+      "familyId": "fam-03",
+      "aliases": []
+    },
+    {
+      "id": "psic-04-01",
+      "name": "Terapia Cognitiva (Beck)",
+      "system": "editorial",
+      "familyId": "fam-04",
+      "aliases": [
+        {
+          "id": "app-cognitiva_tcc-terapia-cognitiva-beck",
+          "source": "techniques"
+        },
+        {
+          "id": "app-cognitiva_tcc-terapia-cognitiva-baseada-em-mindfulness-mbct",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-04-02",
+      "name": "Terapia Racional-Emotiva Comportamental (REBT)",
+      "system": "editorial",
+      "familyId": "fam-04",
+      "aliases": []
+    },
+    {
+      "id": "psic-04-03",
+      "name": "TCC Integrada/Geral",
+      "system": "editorial",
+      "familyId": "fam-04",
+      "aliases": [
+        {
+          "id": "app-cognitiva_tcc-tcc-integrada-geral",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-04-04",
+      "name": "Terapia do Esquema",
+      "system": "editorial",
+      "familyId": "fam-04",
+      "aliases": [
+        {
+          "id": "app-cognitiva_tcc-terapia-do-esquema",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-04-05",
+      "name": "Terapia Cognitiva (Beck)",
+      "system": "editorial",
+      "familyId": "fam-04",
+      "aliases": []
+    },
+    {
+      "id": "psic-04-06",
+      "name": "Terapia de Aceitação e Compromisso (ACT)",
+      "system": "editorial",
+      "familyId": "fam-04",
+      "aliases": [
+        {
+          "id": "app-cognitiva_tcc-terapia-de-aceitacao-e-compromisso-act",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-04-07",
+      "name": "Terapia Focada na Compaixão (CFT)",
+      "system": "editorial",
+      "familyId": "fam-04",
+      "aliases": []
+    },
+    {
+      "id": "psic-04-08",
+      "name": "Terapia Metacognitiva de Wells (MCT)",
+      "system": "editorial",
+      "familyId": "fam-04",
+      "aliases": []
+    },
+    {
+      "id": "psic-04-09",
+      "name": "Terapia do Processamento Cognitivo (para TEPT)",
+      "system": "editorial",
+      "familyId": "fam-04",
+      "aliases": []
+    },
+    {
+      "id": "psic-04-10",
+      "name": "Terapia Cognitivo‑Comportamental Baseada em Protocolo Transdiagnóstico",
+      "system": "editorial",
+      "familyId": "fam-04",
+      "aliases": []
+    },
+    {
+      "id": "psic-05-01",
+      "name": "Terapia Familiar Estrutural (Salvador Minuchin)",
+      "system": "editorial",
+      "familyId": "fam-05",
+      "aliases": [
+        {
+          "id": "app-sistemica_familiar_casais-terapia-familiar-estrutural",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-05-02",
+      "name": "Terapia Familiar Estratégica (Jay Haley)",
+      "system": "editorial",
+      "familyId": "fam-05",
+      "aliases": []
+    },
+    {
+      "id": "psic-05-03",
+      "name": "Terapia Familiar Boweniana (Murray Bowen)",
+      "system": "editorial",
+      "familyId": "fam-05",
+      "aliases": []
+    },
+    {
+      "id": "psic-05-04",
+      "name": "Escola de Milão (Terapia Sistêmica de Milão)",
+      "system": "editorial",
+      "familyId": "fam-05",
+      "aliases": []
+    },
+    {
+      "id": "psic-05-05",
+      "name": "Terapia Centrada em Soluções",
+      "system": "editorial",
+      "familyId": "fam-05",
+      "aliases": []
+    },
+    {
+      "id": "psic-05-06",
+      "name": "Terapia Familiar Geral",
+      "system": "editorial",
+      "familyId": "fam-05",
+      "aliases": [
+        {
+          "id": "app-sistemica_familiar_casais-terapia-familiar-geral",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-05-07",
+      "name": "Terapia de Casais Integrativa",
+      "system": "editorial",
+      "familyId": "fam-05",
+      "aliases": [
+        {
+          "id": "app-sistemica_familiar_casais-terapia-de-casais-integrativa",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-05-08",
+      "name": "Terapia Familiar Experiencial",
+      "system": "editorial",
+      "familyId": "fam-05",
+      "aliases": []
+    },
+    {
+      "id": "psic-05-09",
+      "name": "Terapia Familiar Baseada em Apego",
+      "system": "editorial",
+      "familyId": "fam-05",
+      "aliases": []
+    },
+    {
+      "id": "psic-05-10",
+      "name": "Terapia Multissistêmica",
+      "system": "editorial",
+      "familyId": "fam-05",
+      "aliases": []
+    },
+    {
+      "id": "psic-06-01",
+      "name": "Terapia Narrativa",
+      "system": "editorial",
+      "familyId": "fam-06",
+      "aliases": [
+        {
+          "id": "app-construtivista_narrativa-terapia-narrativa",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-06-02",
+      "name": "Psicoterapias Construtivas",
+      "system": "editorial",
+      "familyId": "fam-06",
+      "aliases": [
+        {
+          "id": "app-construtivista_narrativa-psicoterapias-construtivas",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-06-03",
+      "name": "Terapia de Construção Pessoal (Psicologia dos Construtos Pessoais)",
+      "system": "editorial",
+      "familyId": "fam-06",
+      "aliases": []
+    },
+    {
+      "id": "psic-06-04",
+      "name": "Terapia Colaborativa (Diálica/Colaborativa)",
+      "system": "editorial",
+      "familyId": "fam-06",
+      "aliases": [
+        {
+          "id": "app-construtivista_narrativa-terapia-colaborativa",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-06-05",
+      "name": "Terapia Pós-moderna",
+      "system": "editorial",
+      "familyId": "fam-06",
+      "aliases": []
+    },
+    {
+      "id": "psic-06-06",
+      "name": "Construcionismo Social",
+      "system": "editorial",
+      "familyId": "fam-06",
+      "aliases": []
+    },
+    {
+      "id": "psic-06-07",
+      "name": "Coherence Therapy",
+      "system": "editorial",
+      "familyId": "fam-06",
+      "aliases": []
+    },
+    {
+      "id": "psic-06-08",
+      "name": "Terapia Ericksoniana",
+      "system": "editorial",
+      "familyId": "fam-06",
+      "aliases": []
+    },
+    {
+      "id": "psic-06-09",
+      "name": "Terapia Centrada em Soluções (TCS)",
+      "system": "editorial",
+      "familyId": "fam-06",
+      "aliases": []
+    },
+    {
+      "id": "psic-06-10",
+      "name": "Prática Baseada em Resposta",
+      "system": "editorial",
+      "familyId": "fam-06",
+      "aliases": []
+    },
+    {
+      "id": "psic-06-11",
+      "name": "Terapia de Renegociação de Identidade",
+      "system": "editorial",
+      "familyId": "fam-06",
+      "aliases": []
+    },
+    {
+      "id": "psic-07-01",
+      "name": "Psicoterapia Interpessoal (IPT)",
+      "system": "editorial",
+      "familyId": "fam-07",
+      "aliases": []
+    },
+    {
+      "id": "psic-07-02",
+      "name": "Terapia Relacional‑Cultural (Relational‑Cultural Therapy, RCT)",
+      "system": "editorial",
+      "familyId": "fam-07",
+      "aliases": []
+    },
+    {
+      "id": "psic-07-03",
+      "name": "Psicanálise Interpessoal (Interpersonal Psychoanalysis) — enquadramento relacional associado a Harry Stack Sullivan",
+      "system": "editorial",
+      "familyId": "fam-07",
+      "aliases": []
+    },
+    {
+      "id": "psic-07-04",
+      "name": "Terapia Baseada em Mentalização (MBT)",
+      "system": "editorial",
+      "familyId": "fam-07",
+      "aliases": []
+    },
+    {
+      "id": "psic-07-05",
+      "name": "Teoria dos Sistemas Intersubjetivos (Intersubjective Systems / Intersubjective Relational framework)",
+      "system": "editorial",
+      "familyId": "fam-07",
+      "aliases": []
+    },
+    {
+      "id": "psic-07-06",
+      "name": "Psicodinâmica Cíclica (terapia cíclica psicodinâmica)",
+      "system": "editorial",
+      "familyId": "fam-07",
+      "aliases": []
+    },
+    {
+      "id": "psic-07-07",
+      "name": "Terapia de Casais Baseada em Apego (EFT de Casais)",
+      "system": "editorial",
+      "familyId": "fam-07",
+      "aliases": []
+    },
+    {
+      "id": "psic-07-08",
+      "name": "Método Gottman de Terapia de Casais (Gottman Method Couples Therapy)",
+      "system": "editorial",
+      "familyId": "fam-07",
+      "aliases": []
+    },
+    {
+      "id": "psic-07-09",
+      "name": "Terapia Familiar Focada nas Emoções",
+      "system": "editorial",
+      "familyId": "fam-07",
+      "aliases": []
+    },
+    {
+      "id": "psic-08-01",
+      "name": "Psicoterapia Integrativa Geral",
+      "system": "editorial",
+      "familyId": "fam-08",
+      "aliases": [
+        {
+          "id": "app-integrativa_ecletica-psicoterapia-integrativa-geral",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-08-02",
+      "name": "Ecletismo Técnico",
+      "system": "editorial",
+      "familyId": "fam-08",
+      "aliases": []
+    },
+    {
+      "id": "psic-08-03",
+      "name": "Integração Assimilativa",
+      "system": "editorial",
+      "familyId": "fam-08",
+      "aliases": []
+    },
+    {
+      "id": "psic-08-04",
+      "name": "Terapia Multimodal",
+      "system": "editorial",
+      "familyId": "fam-08",
+      "aliases": []
+    },
+    {
+      "id": "psic-08-05",
+      "name": "Psicodinâmica Cíclica (Wachtel)",
+      "system": "editorial",
+      "familyId": "fam-08",
+      "aliases": []
+    },
+    {
+      "id": "psic-08-06",
+      "name": "Terapia de Aceitação e Compromisso (ACT) como modelo integrativo/contextual",
+      "system": "editorial",
+      "familyId": "fam-08",
+      "aliases": []
+    },
+    {
+      "id": "psic-08-07",
+      "name": "Formulação de Caso em Psicoterapia",
+      "system": "editorial",
+      "familyId": "fam-08",
+      "aliases": []
+    },
+    {
+      "id": "psic-08-08",
+      "name": "Modelo Transteórico de Mudança (Modelo dos Estágios)",
+      "system": "editorial",
+      "familyId": "fam-08",
+      "aliases": []
+    },
+    {
+      "id": "psic-08-09",
+      "name": "Prática Baseada em Evidências em Psicologia (PBE)",
+      "system": "editorial",
+      "familyId": "fam-08",
+      "aliases": []
+    },
+    {
+      "id": "psic-09-01",
+      "name": "Terapia Feminista",
+      "system": "editorial",
+      "familyId": "fam-09",
+      "aliases": []
+    },
+    {
+      "id": "psic-09-02",
+      "name": "Terapia Multicultural",
+      "system": "editorial",
+      "familyId": "fam-09",
+      "aliases": []
+    },
+    {
+      "id": "psic-09-03",
+      "name": "Terapia Afirmativa LGBTQ+",
+      "system": "editorial",
+      "familyId": "fam-09",
+      "aliases": []
+    },
+    {
+      "id": "psic-09-04",
+      "name": "Terapia Antirracista",
+      "system": "editorial",
+      "familyId": "fam-09",
+      "aliases": []
+    },
+    {
+      "id": "psic-09-05",
+      "name": "Terapia Interseccional",
+      "system": "editorial",
+      "familyId": "fam-09",
+      "aliases": []
+    },
+    {
+      "id": "psic-09-06",
+      "name": "Terapia Comunitária",
+      "system": "editorial",
+      "familyId": "fam-09",
+      "aliases": []
+    },
+    {
+      "id": "psic-09-07",
+      "name": "Abordagens Transculturais e Internacionais",
+      "system": "editorial",
+      "familyId": "fam-09",
+      "aliases": []
+    },
+    {
+      "id": "psic-09-08",
+      "name": "Terapia Feminista",
+      "system": "editorial",
+      "familyId": "fam-09",
+      "aliases": []
+    },
+    {
+      "id": "psic-09-09",
+      "name": "Terapia Familiar Feminista",
+      "system": "editorial",
+      "familyId": "fam-09",
+      "aliases": []
+    },
+    {
+      "id": "psic-10-01",
+      "name": "Terapia Focada em Soluções (TFS)",
+      "system": "editorial",
+      "familyId": "fam-10",
+      "aliases": [
+        {
+          "id": "app-pragmaticos_objetivo-terapia-focada-em-solucoes",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-10-02",
+      "name": "Entrevista Motivacional (EM)",
+      "system": "editorial",
+      "familyId": "fam-10",
+      "aliases": [
+        {
+          "id": "app-pragmaticos_objetivo-entrevista-motivacional",
+          "source": "techniques"
+        }
+      ]
+    },
+    {
+      "id": "psic-10-03",
+      "name": "Terapia da Realidade",
+      "system": "editorial",
+      "familyId": "fam-10",
+      "aliases": []
+    },
+    {
+      "id": "psic-10-04",
+      "name": "Terapia de Resolução de Problemas (TRP / Problem-Solving Therapy)",
+      "system": "editorial",
+      "familyId": "fam-10",
+      "aliases": []
+    },
+    {
+      "id": "psic-10-05",
+      "name": "Terapia Breve Orientada a Metas",
+      "system": "editorial",
+      "familyId": "fam-10",
+      "aliases": []
+    },
+    {
+      "id": "psic-10-06",
+      "name": "Terapia Breve Orientada a Metas",
+      "system": "editorial",
+      "familyId": "fam-10",
+      "aliases": []
+    },
+    {
+      "id": "psic-10-07",
+      "name": "Aconselhamento de Carreira",
+      "system": "editorial",
+      "familyId": "fam-10",
+      "aliases": []
+    },
+    {
+      "id": "psic-10-08",
+      "name": "Terapia Baseada em Forças (perspectiva baseada em forças)",
+      "system": "editorial",
+      "familyId": "fam-10",
+      "aliases": []
+    },
+    {
+      "id": "psic-10-09",
+      "name": "Terapia de Casal e Família de Curto Prazo (MRI — Mental Research Institute / modelo estratégico)",
+      "system": "editorial",
+      "familyId": "fam-10",
+      "aliases": []
+    },
+    {
+      "id": "app-avaliacao-psicologica-e-psicometria",
+      "name": "Avaliação Psicológica e Psicometria",
+      "system": "taxonomic",
+      "familyId": null,
+      "taxonomyFamilyId": "family-methodological",
+      "questionCount": 156,
+      "aliases": [],
+      "note": "área metodológica/contextual — entrada canônica própria"
+    },
+    {
+      "id": "app-behaviorismo-e-teorias-da-aprendizagem",
+      "name": "Behaviorismo e Teorias da Aprendizagem",
+      "system": "taxonomic",
+      "familyId": "fam-03",
+      "taxonomyFamilyId": "family-cognitive-behavioral",
+      "questionCount": 155,
+      "aliases": [],
+      "note": "área ampla — mapeada à família editorial por keyword"
+    },
+    {
+      "id": "app-desenvolvimento-humano",
+      "name": "Desenvolvimento Humano",
+      "system": "taxonomic",
+      "familyId": null,
+      "taxonomyFamilyId": "family-other",
+      "questionCount": 150,
+      "aliases": [],
+      "note": "área metodológica/contextual — entrada canônica própria"
+    },
+    {
+      "id": "app-fundamentos-da-psicologia",
+      "name": "Fundamentos da Psicologia",
+      "system": "taxonomic",
+      "familyId": null,
+      "taxonomyFamilyId": "family-methodological",
+      "questionCount": 335,
+      "aliases": [],
+      "note": "área metodológica/contextual — entrada canônica própria"
+    },
+    {
+      "id": "app-humanista-existencial-e-fenomenologica",
+      "name": "Humanista, Existencial e Fenomenológica",
+      "system": "taxonomic",
+      "familyId": "fam-02",
+      "taxonomyFamilyId": "family-humanistic-existential",
+      "questionCount": 155,
+      "aliases": [],
+      "note": "área ampla — mapeada à família editorial por keyword"
+    },
+    {
+      "id": "app-neuropsicologia-e-psicobiologia",
+      "name": "Neuropsicologia e Psicobiologia",
+      "system": "taxonomic",
+      "familyId": null,
+      "taxonomyFamilyId": "family-biological",
+      "questionCount": 154,
+      "aliases": [],
+      "note": "área metodológica/contextual — entrada canônica própria"
+    },
+    {
+      "id": "app-pesquisa-metodologia-e-estatistica",
+      "name": "Pesquisa, Metodologia e Estatística",
+      "system": "taxonomic",
+      "familyId": null,
+      "taxonomyFamilyId": "family-methodological",
+      "questionCount": 156,
+      "aliases": [],
+      "note": "área metodológica/contextual — entrada canônica própria"
+    },
+    {
+      "id": "app-psicanalise-e-psicodinamica",
+      "name": "Psicanálise e Psicodinâmica",
+      "system": "taxonomic",
+      "familyId": "fam-01",
+      "taxonomyFamilyId": "family-psychodynamic",
+      "questionCount": 157,
+      "aliases": [],
+      "note": "área ampla — mapeada à família editorial por keyword"
+    },
+    {
+      "id": "app-psicologia-cognitiva-e-tcc",
+      "name": "Psicologia Cognitiva e TCC",
+      "system": "taxonomic",
+      "familyId": "fam-04",
+      "taxonomyFamilyId": "family-cognitive-behavioral",
+      "questionCount": 154,
+      "aliases": [],
+      "note": "área ampla — mapeada à família editorial por keyword"
+    },
+    {
+      "id": "app-psicologia-escolar-e-educacional",
+      "name": "Psicologia Escolar e Educacional",
+      "system": "taxonomic",
+      "familyId": null,
+      "taxonomyFamilyId": "family-contextual",
+      "questionCount": 179,
+      "aliases": [],
+      "note": "área metodológica/contextual — entrada canônica própria"
+    },
+    {
+      "id": "app-psicologia-juridica-e-forense",
+      "name": "Psicologia Jurídica e Forense",
+      "system": "taxonomic",
+      "familyId": null,
+      "taxonomyFamilyId": "family-clinical-public",
+      "questionCount": 155,
+      "aliases": [],
+      "note": "área metodológica/contextual — entrada canônica própria"
+    },
+    {
+      "id": "app-psicologia-organizacional-e-do-trabalho",
+      "name": "Psicologia Organizacional e do Trabalho",
+      "system": "taxonomic",
+      "familyId": null,
+      "taxonomyFamilyId": "family-contextual",
+      "questionCount": 150,
+      "aliases": [],
+      "note": "área metodológica/contextual — entrada canônica própria"
+    },
+    {
+      "id": "app-psicologia-social-e-comunitaria",
+      "name": "Psicologia Social e Comunitária",
+      "system": "taxonomic",
+      "familyId": "fam-09",
+      "taxonomyFamilyId": "family-contextual",
+      "questionCount": 151,
+      "aliases": [],
+      "note": "área ampla — mapeada à família editorial por keyword"
+    },
+    {
+      "id": "app-psicologia-da-saude-e-politicas-publicas",
+      "name": "Psicologia da Saúde e Políticas Públicas",
+      "system": "taxonomic",
+      "familyId": null,
+      "taxonomyFamilyId": "family-clinical-public",
+      "questionCount": 184,
+      "aliases": [],
+      "note": "área metodológica/contextual — entrada canônica própria"
+    },
+    {
+      "id": "app-psicopatologia-e-clinica",
+      "name": "Psicopatologia e Clínica",
+      "system": "taxonomic",
+      "familyId": null,
+      "taxonomyFamilyId": "family-clinical-public",
+      "questionCount": 206,
+      "aliases": [],
+      "note": "área metodológica/contextual — entrada canônica própria"
+    },
+    {
+      "id": "app-teorias-da-personalidade",
+      "name": "Teorias da Personalidade",
+      "system": "taxonomic",
+      "familyId": null,
+      "taxonomyFamilyId": "family-psychodynamic",
+      "questionCount": 157,
+      "aliases": [],
+      "note": "área metodológica/contextual — entrada canônica própria"
+    },
+    {
+      "id": "app-etica-direitos-humanos-e-regulamentacao",
+      "name": "Ética, Direitos Humanos e Regulamentação",
+      "system": "taxonomic",
+      "familyId": null,
+      "taxonomyFamilyId": "family-clinical-public",
+      "questionCount": 250,
+      "aliases": [],
+      "note": "área metodológica/contextual — entrada canônica própria"
+    }
+  ],
+  "resolve": {
+    "app-avaliacao-psicologica-e-psicometria": "app-avaliacao-psicologica-e-psicometria",
+    "app-behaviorismo-e-teorias-da-aprendizagem": "app-behaviorismo-e-teorias-da-aprendizagem",
+    "app-cognitiva_tcc-tcc-integrada-geral": "psic-04-03",
+    "app-cognitiva_tcc-terapia-cognitiva-baseada-em-mindfulness-mbct": "psic-04-01",
+    "app-cognitiva_tcc-terapia-cognitiva-beck": "psic-04-01",
+    "app-cognitiva_tcc-terapia-de-aceitacao-e-compromisso-act": "psic-04-06",
+    "app-cognitiva_tcc-terapia-do-esquema": "psic-04-04",
+    "app-comportamental-analise-do-comportamento-aplicada-aba": "psic-03-03",
+    "app-comportamental-terapia-comportamental-classica": "psic-03-02",
+    "app-comportamental-terapia-comportamental-dialetica-dbt": "psic-03-06",
+    "app-construtivista_narrativa-psicoterapias-construtivas": "psic-06-02",
+    "app-construtivista_narrativa-terapia-colaborativa": "psic-06-04",
+    "app-construtivista_narrativa-terapia-narrativa": "psic-06-01",
+    "app-desenvolvimento-humano": "app-desenvolvimento-humano",
+    "app-etica-direitos-humanos-e-regulamentacao": "app-etica-direitos-humanos-e-regulamentacao",
+    "app-existencial_humanista-gestalt-terapia": "psic-02-02",
+    "app-existencial_humanista-terapia-centrada-na-pessoa-rogers": "psic-02-01",
+    "app-existencial_humanista-terapia-existencial-humanista": "psic-02-03",
+    "app-existencial_humanista-terapia-experiencial": "psic-02-06",
+    "app-existencial_humanista-terapia-focada-nas-emocoes": "psic-02-04",
+    "app-fundamentos-da-psicologia": "app-fundamentos-da-psicologia",
+    "app-humanista-existencial-e-fenomenologica": "app-humanista-existencial-e-fenomenologica",
+    "app-integrativa_ecletica-psicoterapia-integrativa-geral": "psic-08-01",
+    "app-neuropsicologia-e-psicobiologia": "app-neuropsicologia-e-psicobiologia",
+    "app-pesquisa-metodologia-e-estatistica": "app-pesquisa-metodologia-e-estatistica",
+    "app-pragmaticos_objetivo-entrevista-motivacional": "psic-10-02",
+    "app-pragmaticos_objetivo-terapia-focada-em-solucoes": "psic-10-01",
+    "app-psicanalise-e-psicodinamica": "app-psicanalise-e-psicodinamica",
+    "app-psicanalitica_psicodinamica-psicanalise-freudiana-classica": "psic-01-01",
+    "app-psicanalitica_psicodinamica-psicanalise-relacional": "psic-01-05",
+    "app-psicanalitica_psicodinamica-psicoterapia-psicodinamica-contemporanea-integrativa": "psic-01-10",
+    "app-psicologia-cognitiva-e-tcc": "app-psicologia-cognitiva-e-tcc",
+    "app-psicologia-da-saude-e-politicas-publicas": "app-psicologia-da-saude-e-politicas-publicas",
+    "app-psicologia-escolar-e-educacional": "app-psicologia-escolar-e-educacional",
+    "app-psicologia-juridica-e-forense": "app-psicologia-juridica-e-forense",
+    "app-psicologia-organizacional-e-do-trabalho": "app-psicologia-organizacional-e-do-trabalho",
+    "app-psicologia-social-e-comunitaria": "app-psicologia-social-e-comunitaria",
+    "app-psicopatologia-e-clinica": "app-psicopatologia-e-clinica",
+    "app-sistemica_familiar_casais-terapia-de-casais-integrativa": "psic-05-07",
+    "app-sistemica_familiar_casais-terapia-familiar-estrutural": "psic-05-01",
+    "app-sistemica_familiar_casais-terapia-familiar-geral": "psic-05-06",
+    "app-teorias-da-personalidade": "app-teorias-da-personalidade",
+    "psic-01-01": "psic-01-01",
+    "psic-01-02": "psic-01-02",
+    "psic-01-03": "psic-01-03",
+    "psic-01-04": "psic-01-04",
+    "psic-01-05": "psic-01-05",
+    "psic-01-06": "psic-01-06",
+    "psic-01-07": "psic-01-07",
+    "psic-01-08": "psic-01-08",
+    "psic-01-09": "psic-01-09",
+    "psic-01-10": "psic-01-10",
+    "psic-02-01": "psic-02-01",
+    "psic-02-02": "psic-02-02",
+    "psic-02-03": "psic-02-03",
+    "psic-02-04": "psic-02-04",
+    "psic-02-05": "psic-02-05",
+    "psic-02-06": "psic-02-06",
+    "psic-02-07": "psic-02-07",
+    "psic-02-08": "psic-02-08",
+    "psic-02-09": "psic-02-09",
+    "psic-02-10": "psic-02-10",
+    "psic-03-01": "psic-03-01",
+    "psic-03-02": "psic-03-02",
+    "psic-03-03": "psic-03-03",
+    "psic-03-04": "psic-03-04",
+    "psic-03-05": "psic-03-05",
+    "psic-03-06": "psic-03-06",
+    "psic-03-07": "psic-03-07",
+    "psic-03-08": "psic-03-08",
+    "psic-03-09": "psic-03-09",
+    "psic-03-10": "psic-03-10",
+    "psic-04-01": "psic-04-01",
+    "psic-04-02": "psic-04-02",
+    "psic-04-03": "psic-04-03",
+    "psic-04-04": "psic-04-04",
+    "psic-04-05": "psic-04-05",
+    "psic-04-06": "psic-04-06",
+    "psic-04-07": "psic-04-07",
+    "psic-04-08": "psic-04-08",
+    "psic-04-09": "psic-04-09",
+    "psic-04-10": "psic-04-10",
+    "psic-05-01": "psic-05-01",
+    "psic-05-02": "psic-05-02",
+    "psic-05-03": "psic-05-03",
+    "psic-05-04": "psic-05-04",
+    "psic-05-05": "psic-05-05",
+    "psic-05-06": "psic-05-06",
+    "psic-05-07": "psic-05-07",
+    "psic-05-08": "psic-05-08",
+    "psic-05-09": "psic-05-09",
+    "psic-05-10": "psic-05-10",
+    "psic-06-01": "psic-06-01",
+    "psic-06-02": "psic-06-02",
+    "psic-06-03": "psic-06-03",
+    "psic-06-04": "psic-06-04",
+    "psic-06-05": "psic-06-05",
+    "psic-06-06": "psic-06-06",
+    "psic-06-07": "psic-06-07",
+    "psic-06-08": "psic-06-08",
+    "psic-06-09": "psic-06-09",
+    "psic-06-10": "psic-06-10",
+    "psic-06-11": "psic-06-11",
+    "psic-07-01": "psic-07-01",
+    "psic-07-02": "psic-07-02",
+    "psic-07-03": "psic-07-03",
+    "psic-07-04": "psic-07-04",
+    "psic-07-05": "psic-07-05",
+    "psic-07-06": "psic-07-06",
+    "psic-07-07": "psic-07-07",
+    "psic-07-08": "psic-07-08",
+    "psic-07-09": "psic-07-09",
+    "psic-08-01": "psic-08-01",
+    "psic-08-02": "psic-08-02",
+    "psic-08-03": "psic-08-03",
+    "psic-08-04": "psic-08-04",
+    "psic-08-05": "psic-08-05",
+    "psic-08-06": "psic-08-06",
+    "psic-08-07": "psic-08-07",
+    "psic-08-08": "psic-08-08",
+    "psic-08-09": "psic-08-09",
+    "psic-09-01": "psic-09-01",
+    "psic-09-02": "psic-09-02",
+    "psic-09-03": "psic-09-03",
+    "psic-09-04": "psic-09-04",
+    "psic-09-05": "psic-09-05",
+    "psic-09-06": "psic-09-06",
+    "psic-09-07": "psic-09-07",
+    "psic-09-08": "psic-09-08",
+    "psic-09-09": "psic-09-09",
+    "psic-10-01": "psic-10-01",
+    "psic-10-02": "psic-10-02",
+    "psic-10-03": "psic-10-03",
+    "psic-10-04": "psic-10-04",
+    "psic-10-05": "psic-10-05",
+    "psic-10-06": "psic-10-06",
+    "psic-10-07": "psic-10-07",
+    "psic-10-08": "psic-10-08",
+    "psic-10-09": "psic-10-09"
+  }
+}

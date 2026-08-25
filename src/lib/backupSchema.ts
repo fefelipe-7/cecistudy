@@ -43,7 +43,6 @@ const courseSchema = passthrough({
   schedule: z.array(courseScheduleSlotSchema),
   color: z.string(),
   icon: z.string(),
-  progress: z.number(),
 });
 
 const classNoteSchema = passthrough({
@@ -205,6 +204,13 @@ const onboardingSchema = passthrough({
   completed: z.boolean(),
 });
 
+/** Índice de sincronização (carimbos/tombstones) — opcional; backups antigos não o trazem. */
+const syncIndexSchema = passthrough({
+  stamps: z.record(z.string(), z.number()).optional(),
+  records: z.record(z.string(), z.record(z.string(), z.number())).optional(),
+  tombstones: z.record(z.string(), z.record(z.string(), z.number())).optional(),
+});
+
 const studyQuestionSchema = passthrough({
   id: z.string(),
   question: z.string(),
@@ -271,6 +277,7 @@ export const backupDataSchema = z
     techniques: z.array(techniqueSchema),
     quizSessions: z.array(quizSessionSchema),
     onboarding: onboardingSchema,
+    syncIndex: syncIndexSchema.optional(),
   })
   .partial()
   .passthrough();

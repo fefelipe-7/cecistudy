@@ -1,0 +1,66 @@
+{
+  "id": "tec-manejo-da-resistencia",
+  "nome": "Manejo da resistência",
+  "canonicalKey": "manejo da resistencia",
+  "emUmaFrase": "Manejo da resistência é uma prática clínica ou recurso de estudo usado para trabalhar exploração de conflitos, defesas, transferência, fantasias e padrões relacionais.",
+  "definicao": "Manejo da resistência é uma prática clínica ou recurso de estudo usado para trabalhar exploração de conflitos, defesas, transferência, fantasias e padrões relacionais. Em sentido técnico, sua definição deve ser vinculada ao tipo de tarefa, atitude ou processo que organiza a sessão, e não apenas ao nome da escola.",
+  "objetivo": "Utilizar manejo da resistência para apoiar objetivos clínicos definidos colaborativamente, sempre considerando a formulação do caso, a preferência da pessoa e o contexto.",
+  "comoFunciona": "O mecanismo proposto depende da categoria: exploração de conflitos, defesas, transferência, fantasias e padrões relacionais. No caso de manejo da resistência, o terapeuta deve explicitar qual aprendizagem ou processo está sendo buscado e como será observado.",
+  "quandoEUtilizada": "Pode ser considerada quando a formulação clínica indicar que manejo da resistência é compatível com o problema, os objetivos, a fase do tratamento, a capacidade de participação e as preferências da pessoa. Não é uma indicação universal.",
+  "comoEAplicada": "O uso de manejo da resistência começa com explicação e acordo sobre o objetivo, segue com aplicação graduada e observação da resposta, e termina com integração da aprendizagem e planejamento de continuidade. A técnica é dependente do enquadre, da aliança, do momento clínico e da formulação individual.",
+  "origem": "Origina-se na psicanálise e se transforma nas psicoterapias psicodinâmicas, relacionais e interpessoais, com diferenças de enquadre, técnica e teoria da mudança.",
+  "desenvolvimentoHistorico": "No desenvolvimento histórico, manejo da resistência passou de uma prática situada em determinadas escolas a um recurso que pode ser adaptado ou questionado em outros modelos. A migração entre abordagens deve preservar contexto, finalidade e limites.",
+  "exemploPratico": "Em um exemplo didático, o terapeuta apresenta manejo da resistência a uma pessoa com uma dificuldade previamente formulada, combina um pequeno exercício, observa o que ocorre e pergunta o que foi aprendido, sem tratar o exemplo como protocolo universal.",
+  "fundamentacaoTeorica": "A fundamentação editorial desta técnica é organizada pela categoria “psicodinamicas”: exploração de conflitos, defesas, transferência, fantasias e padrões relacionais. A fonte deve ser lida para distinguir descrição histórica, hipótese de mecanismo e evidência de resultado.",
+  "evidencias": "A literatura psicodinâmica apoia algumas técnicas e processos em contextos delimitados, mas a relação entre interpretação, transferência, aliança e resultado não é linear. Revisões sistemáticas ressaltam heterogeneidade de frequência, timing, intensidade, população e formação do terapeuta.",
+  "limitacoes": "Interpretações prematuras, postura autoritária e leitura intrapsíquica de violência ou desigualdade podem prejudicar o cuidado. O enquadre, a formação e a aliança são determinantes.",
+  "contextoClinico": "Pode aparecer em psicanálise, psicoterapias psicodinâmicas, relacionais e interpessoais, mas a mesma técnica também pode atravessar outras escolas quando seu objetivo e sua função clínica forem preservados.",
+  "observacoes": "Classificação interna: intervencao. O nome pode designar técnica, procedimento, habilidade, atitude ou processo conforme o modelo; o registro separa o tipo para evitar equivalências artificiais.",
+  "tipoTecnica": "intervencao",
+  "classificacaoEstatuto": "recurso clínico estudado em contexto de abordagem; o estatuto específico pode ser técnica, procedimento, habilidade, estratégia, exercício ou atitude terapêutica.",
+  "slug": "manejo-da-resistencia",
+  "dominioId": "domain-psicodinamicas",
+  "dominioIds": [
+    "domain-psicodinamicas"
+  ],
+  "dominioNomes": [
+    "Técnicas Psicodinâmicas"
+  ],
+  "ordemExibicao": 73,
+  "posicoesNominais": [
+    {
+      "categoryId": "domain-psicodinamicas",
+      "categoryName": "Técnicas Psicodinâmicas",
+      "ordem": 75,
+      "nomeOriginal": "Manejo da resistência"
+    }
+  ],
+  "abordagemIds": [
+    "app-psicanalitica_psicodinamica-psicanalise-freudiana-classica",
+    "app-psicanalitica_psicodinamica-psicanalise-relacional",
+    "app-psicanalitica_psicodinamica-psicoterapia-psicodinamica-contemporanea-integrativa"
+  ],
+  "modeloIds": [],
+  "fonteIds": [
+    "src-psychodynamic-techniques-2007",
+    "src-transference-2024"
+  ],
+  "tecnicasRelacionadasIds": [
+    "tec-confrontacao",
+    "tec-clarificacao",
+    "tec-associacao-livre",
+    "tec-interpretacao",
+    "tec-interpretacao-de-sonhos",
+    "tec-analise-da-transferencia",
+    "tec-analise-da-contratransferencia",
+    "tec-elaboracao",
+    "tec-interpretacao-de-defesas",
+    "tec-exploracao-de-conflitos",
+    "tec-insight",
+    "tec-holding"
+  ],
+  "dataCadastro": "2026-08-20T19:40:41.325443+00:00",
+  "dataUltimaRevisao": "2026-08-20T19:40:41.325448+00:00",
+  "status": "published",
+  "sourcePath": "content/techniques/psicodinamicas/tec-manejo-da-resistencia.json"
+}

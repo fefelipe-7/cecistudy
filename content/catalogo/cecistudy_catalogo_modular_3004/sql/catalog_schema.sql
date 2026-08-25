@@ -1,0 +1,17 @@
+PRAGMA foreign_keys = ON;
+CREATE TABLE catalog_release (id TEXT PRIMARY KEY, version TEXT NOT NULL, content_hash TEXT NOT NULL, built_at TEXT NOT NULL, source_schema_version INTEGER NOT NULL);
+CREATE TABLE area (id TEXT PRIMARY KEY, name TEXT NOT NULL, display_order INTEGER NOT NULL);
+CREATE TABLE category (id TEXT PRIMARY KEY, name TEXT NOT NULL, slug TEXT NOT NULL UNIQUE, display_order INTEGER NOT NULL, status TEXT NOT NULL);
+CREATE TABLE approach_family (id TEXT PRIMARY KEY, name TEXT NOT NULL, description TEXT, display_order INTEGER NOT NULL, color TEXT);
+CREATE TABLE approach (id TEXT PRIMARY KEY, family_id TEXT NOT NULL REFERENCES approach_family(id), name TEXT NOT NULL, short_name TEXT, summary TEXT, status TEXT NOT NULL, source_path TEXT NOT NULL);
+CREATE TABLE author (id TEXT PRIMARY KEY, name TEXT NOT NULL, biography TEXT, source_path TEXT NOT NULL);
+CREATE TABLE work (id TEXT PRIMARY KEY, title TEXT NOT NULL, kind TEXT, source_path TEXT NOT NULL);
+CREATE TABLE topic (id TEXT PRIMARY KEY, area_id TEXT NOT NULL REFERENCES area(id), parent_id TEXT REFERENCES topic(id), name TEXT NOT NULL, slug TEXT NOT NULL UNIQUE);
+CREATE TABLE question_group (id TEXT PRIMARY KEY, category_id TEXT NOT NULL REFERENCES category(id), title TEXT NOT NULL, block_name TEXT, source_path TEXT NOT NULL, status TEXT NOT NULL);
+CREATE TABLE question (id TEXT PRIMARY KEY, group_id TEXT NOT NULL REFERENCES question_group(id), stem TEXT NOT NULL, format TEXT NOT NULL, difficulty TEXT NOT NULL, knowledge_type TEXT, explanation TEXT, origin TEXT, bank TEXT, exam TEXT, year INTEGER, question_number INTEGER, source_url TEXT, answer_key_url TEXT, official_answer_status TEXT, review_status TEXT NOT NULL, is_active INTEGER NOT NULL DEFAULT 1, is_scorable INTEGER NOT NULL DEFAULT 1, is_annulled INTEGER NOT NULL DEFAULT 0, legacy_origin_id TEXT);
+CREATE TABLE question_option (id TEXT PRIMARY KEY, question_id TEXT NOT NULL REFERENCES question(id) ON DELETE CASCADE, position INTEGER NOT NULL, text TEXT NOT NULL, is_correct INTEGER NOT NULL DEFAULT 0, UNIQUE(question_id, position));
+CREATE TABLE question_topic (question_id TEXT REFERENCES question(id) ON DELETE CASCADE, topic_id TEXT REFERENCES topic(id), PRIMARY KEY(question_id,topic_id));
+CREATE TABLE question_approach (question_id TEXT REFERENCES question(id) ON DELETE CASCADE, approach_id TEXT REFERENCES approach(id), PRIMARY KEY(question_id,approach_id));
+CREATE TABLE question_author (question_id TEXT REFERENCES question(id) ON DELETE CASCADE, author_id TEXT REFERENCES author(id), PRIMARY KEY(question_id,author_id));
+CREATE TABLE question_work (question_id TEXT REFERENCES question(id) ON DELETE CASCADE, work_id TEXT REFERENCES work(id), PRIMARY KEY(question_id,work_id));
+CREATE VIRTUAL TABLE question_fts USING fts5(question_id UNINDEXED, content);

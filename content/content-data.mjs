@@ -6,6 +6,9 @@
  */
 
 import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { BANCO_QUESTOES } from '../src/data/bancoQuestoes.ts';
 import { PSICOTERAPIA_APPROACHES } from '../src/data/psicoterapiaApproaches.ts';
@@ -21,10 +24,18 @@ import rawInterdisciplinary from '../src/data/books/livros_interdisciplinares_10
 };
 import rawArticles from '../src/data/books/artigos_150.json' with { type: 'json' };
 
+import {
+  loadConceptFiles,
+  loadTechniques,
+  loadCategories,
+  loadTopics,
+} from './temple-lib.mjs';
+
 export { BANCO_QUESTOES, PSICOTERAPIA_APPROACHES, PSICOTERAPIA_FAMILIES };
 
 const FALLBACK_STYLE = { color: '#DCCBB8', accent: '#756354' };
 const SEM_EDICAO_BR = '[sem edição brasileira confirmada]';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /** Consistência com o facade web (`src/data/books/index.ts`). */
 export function mapCatalogBooks() {
@@ -87,8 +98,36 @@ export function listAreas() {
   return order;
 }
 
+/**
+ * Fontes do Templo de Conhecimento (conceitos, técnicas, autores curados,
+ * categorias/tópicos do pacote). Autores vêm das fichas editoriais
+ * (`content/editorial/authorsCurated.json` gerado por `build-authors-fichas.mjs`)
+ * — entidade de consulta, separada das questões.
+ */
+export function loadTempleSources() {
+  const concepts = loadConceptFiles().map(({ file, data }) => data);
+  const { categories: techniqueCategories, techniques } = loadTechniques();
+  let curatedAuthorsFile = { authors: [], families: [] };
+  try {
+    curatedAuthorsFile = JSON.parse(
+      readFileSync(path.join(__dirname, 'editorial', 'authorsCurated.json'), 'utf8')
+    );
+  } catch {
+    // pipeline de fichas ainda não rodou — build-catalog falha depois com contagem mínima
+  }
+  return {
+    concepts,
+    techniqueCategories,
+    techniques,
+    curatedAuthors: curatedAuthorsFile.authors ?? [],
+    questionCategories: loadCategories(),
+    topics: loadTopics(),
+  };
+}
+
 /** Hash estável do conteúdo das fontes (para detectar drift no content:diff). */
 export function computeContentHash() {
+  const temple = loadTempleSources();
   const h = createHash('sha256');
   h.update(JSON.stringify(BANCO_QUESTOES));
   h.update(JSON.stringify(PSICOTERAPIA_APPROACHES));
@@ -98,5 +137,15 @@ export function computeContentHash() {
   h.update(JSON.stringify(mapArticles()));
   h.update(JSON.stringify(PSYCHOTHERAPY_FAMILIES));
   h.update(JSON.stringify(INTERDISCIPLINARY_AREAS));
+  // templo (resumido p/ hash: ids + hashes de conteúdo, não o corpo inteiro)
+  h.update(
+    JSON.stringify({
+      concepts: temple.concepts.map((c) => [c.id, c.contentHash ?? null]),
+      techniques: temple.techniques.map((t) => [t.id, t.dataUltimaRevisao ?? null]),
+      authors: temple.curatedAuthors.map((a) => [a.id, a.name, a.order]),
+      categories: temple.questionCategories.map((c) => [c.id, c.name]),
+      topics: temple.topics.length,
+    })
+  );
   return h.digest('hex');
 }

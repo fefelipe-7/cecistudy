@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "group": {
+    "id": "qg-teorias-da-personalidade-psicanalise-humanismo-e-clinica",
+    "title": "Teorias da Personalidade — Psicanálise, Humanismo e Clínica",
+    "categoryId": "cat-teorias-da-personalidade",
+    "categoryTitle": "Teorias da Personalidade",
+    "block": "Psicanálise, Humanismo e Clínica",
+    "status": "published",
+    "source": "Cecistudy content catalog",
+    "sourcePath": "content/questions/teorias-da-personalidade/psicanalise-humanismo-e-clinica.questions.json"
+  },
+  "questions": [
+    {
+      "id": "real-ibfc_mgs_2024_psicologo-025",
+      "stem": "Friedman e Schustack (2004) apresentam perspectivas básicas da personalidade. Qual perspectiva valoriza a natureza espiritual da pessoa e enfatiza a luta pela auto-satisfação e pela dignidade?",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "conceitual",
+      "explanation": "Questão real de prova oficial; comentário pedagógico individual ainda não produzido.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Neo-analítica.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "Behaviorista.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "Humanística.",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "Traço.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-perspectiva-humanistica",
+        "topic-perspectivas-da-personalidade"
+      ],
+      "approachIds": [
+        "app-teorias-da-personalidade"
+      ],
+      "authorIds": [
+        "author-friedman",
+        "author-schustack"
+      ],
+      "referenceIds": [
+        "work-8a0815d91523",
+        "work-8ca28ba8ded5"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "IBFC",
+      "exam": "MGS — Processo Seletivo Público Simplificado, Edital nº 07/2023 — Psicólogo",
+      "year": 2024,
+      "questionNumber": 25,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/105120/ibfc-2024-mgs-psicologo-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/105120/ibfc-2024-mgs-psicologo-gabarito.pdf",
+      "officialAnswerStatus": "gabarito_oficial_pos_recurso",
+      "categoryId": "cat-teorias-da-personalidade",
+      "areaId": "area-teorias-da-personalidade",
+      "legacyOriginId": "real-ibfc_mgs_2024_psicologo-025",
+      "legacy": {
+        "categoriaFinal": "Teorias da Personalidade",
+        "abordagemFinal": "Teorias da Personalidade",
+        "area": "Teorias da Personalidade",
+        "tema": "perspectivas da personalidade",
+        "subtema": "perspectiva humanística",
+        "blocoQuiz": "Psicanálise, Humanismo e Clínica",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-ufjf_2014_psicologo-050",
+      "stem": "Hall, Lindzey e Campbell (2000), no capítulo “A teoria psicanalítica clássica de Sigmund Freud”, afirmam:",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "conceitual",
+      "explanation": "Item real de prova oficial; comentário pedagógico individual ainda não produzido.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Para Freud, a estrutura da personalidade é constituída de três grandes sistemas: o id, o ego e o inconsciente, e o comportamento humano é quase sempre o produto de uma interação desses três sistemas com o princípio do prazer.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) O ego é a matriz da qual se originam o id e o superego, e consiste em tudo o que é psicológico. Ele é o reservatório da energia psíquica e fornece toda a energia para a operação dos outros sistemas. A sua energia é oriunda dos processos corporais, aos quais ele está intimamente associado.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) O processo primário é o meio pelo qual o ego formula um plano de satisfação da necessidade. É esse processo que leva o ego a retardar a satisfação em busca de condições mais adequadas.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) O ego é o executivo da personalidade, porque ele controla o acesso à ação, seleciona as características do ambiente às quais irá responder e decide que instintos serão satisfeitos e de que maneira.",
+          "isCorrect": true
+        },
+        {
+          "id": "e",
+          "text": "E) O ego, como árbitro moral internalizado de conduta, desenvolve-se em resposta às recompensas e punições impostas pelos pais. 25 UFJF – CONCURSO PÚBLICO TAE 2014 - PSICÓLOGO CÂMPUS DE GOVERNADOR VALADARES - MG",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-estrutura-e-desenvolvimento-da-personalidade",
+        "topic-freud-e-personalidade"
+      ],
+      "approachIds": [
+        "app-teorias-da-personalidade"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-87c832c23672"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "UFJF/COPESE",
+      "exam": "UFJF TAE 2014 — Campus Governador Valadares — Psicólogo",
+      "year": 2014,
+      "questionNumber": 50,
+      "sourceUrl": "https://www2.ufjf.br/copese/wp-content/uploads/sites/42/2010/08/PSIC%C3%93LOGO-GV-PROVA-E-GABARITO.pdf",
+      "answerKeyUrl": "https://www2.ufjf.br/copese/wp-content/uploads/sites/42/2010/08/PSIC%C3%93LOGO-GV-PROVA-E-GABARITO.pdf",
+      "officialAnswerStatus": "gabarito_oficial",
+      "categoryId": "cat-teorias-da-personalidade",
+      "areaId": "area-teorias-da-personalidade",
+      "legacyOriginId": "real-ufjf_2014_psicologo-050",
+      "legacy": {
+        "categoriaFinal": "Teorias da Personalidade",
+        "abordagemFinal": "Teorias da Personalidade",
+        "area": "Teorias da Personalidade",
+        "tema": "Freud e personalidade",
+        "subtema": "estrutura e desenvolvimento da personalidade",
+        "blocoQuiz": "Psicanálise, Humanismo e Clínica",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-ufjf_2014_psicologo-051",
+      "stem": "Sobre o desenvolvimento da personalidade, Hall, Lindzey e Campbell (2000), no capítulo “A teoria psicanalítica clássica de Sigmund Freud”, afirmam:",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "conceitual",
+      "explanation": "Item real de prova oficial; comentário pedagógico individual ainda não produzido.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Freud foi, provavelmente, o primeiro teórico da psicologia a enfatizar os aspectos genéticos da personalidade e, em particular, o papel decisivo da hereditariedade como formadora da estrutura de caráter básica da pessoa.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) A criança atravessa uma série de estágios dinamicamente diferenciados durante os primeiros cinco anos de vida, depois dos quais a dinâmica fica mais ou menos estabilizada. Esse período de estabilidade é denominado fase fálica.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) O modelo desenvolvimental de Freud baseia-se na suposição da sexualidade infantil, isto é, os estágios representam uma sequência normativa de diferentes modos de gratificar os impulsos sexuais.",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "D) Os locais de prazer corporal não mudam conforme a maturação física, o que leva a uma sequência normativa de zonas erógenas, cada uma com um conjunto diferente de ações e objetos característicos.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) O estágio genital ocorre em uma época na qual a criança é completamente dependente da mãe. É nessa época que surgem os sentimentos de dependência, que duram por toda a vida, e que a criança vivencia o romance familiar.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-estrutura-e-desenvolvimento-da-personalidade",
+        "topic-freud-e-personalidade"
+      ],
+      "approachIds": [
+        "app-teorias-da-personalidade"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-87c832c23672"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "UFJF/COPESE",
+      "exam": "UFJF TAE 2014 — Campus Governador Valadares — Psicólogo",
+      "year": 2014,
+      "questionNumber": 51,
+      "sourceUrl": "https://www2.ufjf.br/copese/wp-content/uploads/sites/42/2010/08/PSIC%C3%93LOGO-GV-PROVA-E-GABARITO.pdf",
+      "answerKeyUrl": "https://www2.ufjf.br/copese/wp-content/uploads/sites/42/2010/08/PSIC%C3%93LOGO-GV-PROVA-E-GABARITO.pdf",
+      "officialAnswerStatus": "gabarito_oficial",
+      "categoryId": "cat-teorias-da-personalidade",
+      "areaId": "area-teorias-da-personalidade",
+      "legacyOriginId": "real-ufjf_2014_psicologo-051",
+      "legacy": {
+        "categoriaFinal": "Teorias da Personalidade",
+        "abordagemFinal": "Teorias da Personalidade",
+        "area": "Teorias da Personalidade",
+        "tema": "Freud e personalidade",
+        "subtema": "estrutura e desenvolvimento da personalidade",
+        "blocoQuiz": "Psicanálise, Humanismo e Clínica",
+        "anulada": false,
+        "reviewNote": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "cat-fundamentos-historia-e-teorias",
+      "slug": "fundamentos-historia-e-teorias",
+      "name": "Fundamentos, História e Teorias",
+      "displayOrder": 1,
+      "questionCount": 275,
+      "status": "published"
+    },
+    {
+      "id": "cat-etica-direitos-humanos-e-regulamentacao",
+      "slug": "etica-direitos-humanos-e-regulamentacao",
+      "name": "Ética, Direitos Humanos e Regulamentação",
+      "displayOrder": 2,
+      "questionCount": 252,
+      "status": "published"
+    },
+    {
+      "id": "cat-psicopatologia-clinica-e-saude-mental",
+      "slug": "psicopatologia-clinica-e-saude-mental",
+      "name": "Psicopatologia, Clínica e Saúde Mental",
+      "displayOrder": 3,
+      "questionCount": 236,
+      "status": "published"
+    },
+    {
+      "id": "cat-psicologia-escolar-e-educacional",
+      "slug": "psicologia-escolar-e-educacional",
+      "name": "Psicologia Escolar e Educacional",
+      "displayOrder": 4,
+      "questionCount": 229,
+      "status": "published"
+    },
+    {
+      "id": "cat-psicanalise-e-psicodinamica",
+      "slug": "psicanalise-e-psicodinamica",
+      "name": "Psicanálise e Psicodinâmica",
+      "displayOrder": 5,
+      "questionCount": 157,
+      "status": "published"
+    },
+    {
+      "id": "cat-teorias-da-personalidade",
+      "slug": "teorias-da-personalidade",
+      "name": "Teorias da Personalidade",
+      "displayOrder": 6,
+      "questionCount": 157,
+      "status": "published"
+    },
+    {
+      "id": "cat-avaliacao-psicologica-e-psicometria",
+      "slug": "avaliacao-psicologica-e-psicometria",
+      "name": "Avaliação Psicológica e Psicometria",
+      "displayOrder": 7,
+      "questionCount": 156,
+      "status": "published"
+    },
+    {
+      "id": "cat-pesquisa-metodologia-e-estatistica",
+      "slug": "pesquisa-metodologia-e-estatistica",
+      "name": "Pesquisa, Metodologia e Estatística",
+      "displayOrder": 8,
+      "questionCount": 156,
+      "status": "published"
+    },
+    {
+      "id": "cat-behaviorismo-e-teorias-da-aprendizagem",
+      "slug": "behaviorismo-e-teorias-da-aprendizagem",
+      "name": "Behaviorismo e Teorias da Aprendizagem",
+      "displayOrder": 9,
+      "questionCount": 155,
+      "status": "published"
+    },
+    {
+      "id": "cat-humanista-existencial-e-fenomenologica",
+      "slug": "humanista-existencial-e-fenomenologica",
+      "name": "Humanista, Existencial e Fenomenológica",
+      "displayOrder": 10,
+      "questionCount": 155,
+      "status": "published"
+    },
+    {
+      "id": "cat-neuropsicologia-e-psicobiologia",
+      "slug": "neuropsicologia-e-psicobiologia",
+      "name": "Neuropsicologia e Psicobiologia",
+      "displayOrder": 11,
+      "questionCount": 155,
+      "status": "published"
+    },
+    {
+      "id": "cat-psicologia-juridica-e-forense",
+      "slug": "psicologia-juridica-e-forense",
+      "name": "Psicologia Jurídica e Forense",
+      "displayOrder": 12,
+      "questionCount": 155,
+      "status": "published"
+    },
+    {
+      "id": "cat-psicologia-cognitiva-e-tcc",
+      "slug": "psicologia-cognitiva-e-tcc",
+      "name": "Psicologia Cognitiva e TCC",
+      "displayOrder": 13,
+      "questionCount": 154,
+      "status": "published"
+    },
+    {
+      "id": "cat-psicologia-da-saude-sus-e-politicas-publicas",
+      "slug": "psicologia-da-saude-sus-e-politicas-publicas",
+      "name": "Psicologia da Saúde, SUS e Políticas Públicas",
+      "displayOrder": 14,
+      "questionCount": 152,
+      "status": "published"
+    },
+    {
+      "id": "cat-desenvolvimento-humano",
+      "slug": "desenvolvimento-humano",
+      "name": "Desenvolvimento Humano",
+      "displayOrder": 15,
+      "questionCount": 150,
+      "status": "published"
+    },
+    {
+      "id": "cat-psicologia-organizacional-e-do-trabalho",
+      "slug": "psicologia-organizacional-e-do-trabalho",
+      "name": "Psicologia Organizacional e do Trabalho",
+      "displayOrder": 16,
+      "questionCount": 150,
+      "status": "published"
+    },
+    {
+      "id": "cat-psicologia-social-grupos-e-diversidade",
+      "slug": "psicologia-social-grupos-e-diversidade",
+      "name": "Psicologia Social, Grupos e Diversidade",
+      "displayOrder": 17,
+      "questionCount": 150,
+      "status": "published"
+    },
+    {
+      "id": "cat-conhecimentos-gerais",
+      "slug": "conhecimentos-gerais",
+      "name": "Conhecimentos Gerais",
+      "displayOrder": 18,
+      "questionCount": 10,
+      "status": "published"
+    }
+  ]
+}

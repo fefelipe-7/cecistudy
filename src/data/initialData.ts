@@ -39,7 +39,6 @@ export const initialCourses: Course[] = [
     room: 'Bloco C - Sala 204',
     color: '#E8AFC0',
     icon: 'Brain',
-    progress: 68,
     description: 'estudo das manifestações psíquicas, semiologia e critérios diagnósticos do DSM-5-TR e CID-11.'
   },
   {
@@ -53,7 +52,6 @@ export const initialCourses: Course[] = [
     room: 'Laboratório de Testes',
     color: '#BFDDED',
     icon: 'FileText',
-    progress: 55,
     description: 'aplicação e interpretação de testes de personalidade, projetivos e psicométricos (HTP, BFP, WAIS).'
   },
   {
@@ -67,7 +65,6 @@ export const initialCourses: Course[] = [
     room: 'Bloco A - Sala 102',
     color: '#DCCBB8',
     icon: 'Sparkles',
-    progress: 80,
     description: 'princípios conceituais, formulação de caso e intervenções estruturadas na abordagem da TCC.',
     officeHours: 'quartas, 14:00 - 15:30, sala dos professores (bloco c)',
     attendance: { attended: 22, total: 24 }
@@ -83,7 +80,6 @@ export const initialCourses: Course[] = [
     room: 'Bloco C - Auditório B',
     color: '#A8C9B0',
     icon: 'Users',
-    progress: 40,
     description: 'processos psicossociais, relações interpessoais, subjetividades contemporâneas e Políticas Públicas de Saúde.'
   },
   {
@@ -97,7 +93,6 @@ export const initialCourses: Course[] = [
     room: 'Clínica Escola',
     color: '#E8C98C',
     icon: 'HeartHandshake',
-    progress: 75,
     description: 'observação, escuta analítica, ética do acolhimento e escuta qualificada na Clínica Escola.'
   }
 ];

@@ -118,7 +118,36 @@ Módulo novo de dados **estáticos** (não persistidos) com o acervo completo da
   por `MixedCollectionBlock` em shelves.
 - `tsconfig.json` usa `"resolveJsonModule": true` para importar os JSONs.
 
-## 7. Boas práticas ao mexer em dados
+## 7. Templo de Conhecimento (catálogo estático — pipeline editorial)
+
+Fontes **somente-leitura** geradas pela pipeline em `content/` (nenhuma é persistida no estado
+do usuário; na web vêm de facades lazy, no nativo do `.db` embutido):
+
+| Fonte | Volume | Origem |
+|---|---|---|
+| Questões (`bancoQuestoes`) | **3.002** (MC 2.283 · C/E 719) | pacote `content/catalogo/` via `content/build-questions-bank.mjs` → `src/data/questions/cecistudy_banco_3004_questoes.json` (shape raw `BancoQuestaoRaw` idêntico ao banco antigo) |
+| Conceitos | 225 em 12 domínios (~7,2 MB) | `content/concepts/` (relações vazias auto-preenchidas por `fill-concept-relations.mjs`, `relationStatus: 'auto'`) |
+| Autores curados | **139 fichas editoriais** (10 famílias; corpus `content/authors-curated/`) | `build-authors-fichas.mjs` → `content/editorial/authorsCurated.json` — entidade de **consulta**, totalmente separada das questões (sem contagem "questões que citam"); ficha = identificação + seções em markdown renderizadas por `temple/MarkdownBlock.tsx` |
+| Técnicas canônicas | 135 em 10 categorias | `content/techniques/` |
+| Registry de abordagens | 97 editoriais + aliases (17 taxonômicas + 25 de técnicas) | `content/build-approach-registry.mjs` → `content/editorial/approachRegistry.json`; resolve qualquer alias → id canônico `psic-*` |
+
+- **Tipos** (`types.ts`): `TempleConcept`, `TempleConceptIndexEntry`, `TempleConceptDomain`,
+  `TempleAuthor`, `TempleTechnique`, `TempleTechniqueCategory` (prefixo `Temple*` — distintos da
+  entidade editável `Technique` do usuário).
+- **Web:** facades lazy em `src/data/temple/` (gerados por `content/build-temple-facades.mjs`):
+  índice + autores + técnicas num chunk único; corpo dos conceitos em **12 chunks por domínio**
+  (`concepts/<domainId>.json`, carregados sob demanda). Facade tipado: `src/data/temple/index.ts`.
+- **Nativo:** tabelas novas no `.db` do catálogo (`concept`, `concept_domain`, `catalog_author`,
+  `technique`, `technique_category`, `question_category`, `topic`) — queries em
+  `src/lib/db/catalogDb.ts`.
+- **Loader dual:** `src/lib/templeData.ts` (memoizado; irmão de `catalogLibrary.ts`).
+- **Navegação:** `NavScreen { kind: 'templeSection', section: 'conceitos'|'autores'|'tecnicas' }`,
+  rota `#/biblioteca/templo/<slug>` empilhada sobre o templo.
+- **Gate da pipeline:** `npm run content:build` + `content:check` + `db:verify`
+  (versão atual do `.db`: ver `content/catalog-version.json`).
+- Contrato completo: `.context/docs/plano-templo-catalogo.md`.
+
+## 8. Boas práticas ao mexer em dados
 
 - Ao adicionar entidade nova, criar interface em `types.ts` + seed em `initialData.ts`
   + estado persistido em `AppContext.tsx` (se for global).

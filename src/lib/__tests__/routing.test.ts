@@ -99,6 +99,26 @@ describe('parseRoute', () => {
     expect(parseRoute('#/biblioteca/templo')).toEqual({ tab: 'biblioteca', temple: true });
   });
 
+  it('reconhece as seções do templo (conceitos/autores/técnicas)', () => {
+    expect(parseRoute('#/biblioteca/templo/conceitos')).toEqual({
+      tab: 'biblioteca',
+      templeSection: 'conceitos',
+    });
+    expect(parseRoute('#/biblioteca/templo/autores')).toEqual({
+      tab: 'biblioteca',
+      templeSection: 'autores',
+    });
+    expect(parseRoute('#/biblioteca/templo/tecnicas')).toEqual({
+      tab: 'biblioteca',
+      templeSection: 'tecnicas',
+    });
+    // slug desconhecido degrada para o templo
+    expect(parseRoute('#/biblioteca/templo/comparacoes')).toEqual({
+      tab: 'biblioteca',
+      temple: true,
+    });
+  });
+
   it('reconhece detalhe e transformação de nota avulsa', () => {
     expect(parseRoute('#/biblioteca/notas/note-1')).toEqual({
       tab: 'biblioteca',
@@ -246,6 +266,11 @@ describe('routeToStack', () => {
       { kind: 'tab', tab: 'biblioteca' },
       { kind: 'temple' },
     ]);
+    expect(routeToStack({ templeSection: 'conceitos' })).toEqual([
+      { kind: 'tab', tab: 'biblioteca' },
+      { kind: 'temple' },
+      { kind: 'templeSection', section: 'conceitos' },
+    ]);
     expect(routeToStack({ streak: true })).toEqual([
       { kind: 'tab', tab: 'home' },
       { kind: 'streak' },
@@ -379,11 +404,22 @@ describe('stackToHash', () => {
     expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'wizard', type: 'reading' }])).toBe('#/biblioteca/novo/leitura');
     expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c3' }, { kind: 'wizard', type: 'exam' }])).toBe('#/faculdade/c3/novo/prova');
   });
+
+  it('serializa seções do templo sobre o templo', () => {
+    expect(
+      stackToHash([
+        { kind: 'tab', tab: 'biblioteca' },
+        { kind: 'temple' },
+        { kind: 'templeSection', section: 'tecnicas' },
+      ])
+    ).toBe('#/biblioteca/templo/tecnicas');
+    expect(stackToHash([{ kind: 'temple' } as never])).toBe('#/biblioteca/templo');
+  });
 });
 
 describe('round-trip hash ↔ rota', () => {
   it('reconstrói a rota a partir do hash serializado (abas + sub-tabs)', () => {
-    const cases = ['#/home', '#/faculdade', '#/faculdade/c3', '#/faculdade/calendario', '#/estudos/foco', '#/estudos/revisar', '#/estudos/leituras', '#/estudos/historico', '#/biblioteca/conceitos', '#/biblioteca/notas', '#/biblioteca/notas/note-1', '#/biblioteca/notas/note-1/transformar', '#/biblioteca/templo', '#/biblioteca/familias', '#/biblioteca/familias/fam-01', '#/biblioteca/abordagens/psic-04-01', '#/streak', '#/perfil/streak', '#/faculdade/estagio', '#/estudos/tcc', '#/perfil/stickers', '#/nota', '#/nota/detalhes', '#/biblioteca/nota', '#/faculdade/c3/nota', '#/biblioteca/nota/detalhes', '#/faculdade/c3/nota/detalhes', '#/novo/estagio', '#/novo/prova-atividade', '#/biblioteca/novo/leitura', '#/faculdade/c3/novo/prova', '#/novo/materia', '#/faculdade/novo/materia', '#/estudos/quiz'];
+    const cases = ['#/home', '#/faculdade', '#/faculdade/c3', '#/faculdade/calendario', '#/estudos/foco', '#/estudos/revisar', '#/estudos/leituras', '#/estudos/historico', '#/biblioteca/conceitos', '#/biblioteca/notas', '#/biblioteca/notas/note-1', '#/biblioteca/notas/note-1/transformar', '#/biblioteca/templo', '#/biblioteca/templo/conceitos', '#/biblioteca/templo/autores', '#/biblioteca/templo/tecnicas', '#/biblioteca/familias', '#/biblioteca/familias/fam-01', '#/biblioteca/abordagens/psic-04-01', '#/streak', '#/perfil/streak', '#/faculdade/estagio', '#/estudos/tcc', '#/perfil/stickers', '#/nota', '#/nota/detalhes', '#/biblioteca/nota', '#/faculdade/c3/nota', '#/biblioteca/nota/detalhes', '#/faculdade/c3/nota/detalhes', '#/novo/estagio', '#/novo/prova-atividade', '#/biblioteca/novo/leitura', '#/faculdade/c3/novo/prova', '#/novo/materia', '#/faculdade/novo/materia', '#/estudos/quiz'];
     for (const h of cases) {
       const route = parseRoute(h);
       const stack = routeToStack(route);

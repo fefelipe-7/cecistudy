@@ -75,9 +75,11 @@ export function EdgeSwipeBack({ swipeX, onBack, canGoBack }: EdgeSwipeBackProps)
       if (!engaged) return;
       engaged = false;
       const commit = shouldCommit(dragX);
-      swipeX.set(0);
+      // Commit contínuo: navega e devolve o restinho do gesto ao 0 com spring
+      // EM SINCRONIA com a transição de pop — o movimento nunca "salta" para 0.
+      // No cancelamento o spring apenas retorna a tela ao lugar.
       if (commit) stateRef.current.onBack();
-      else animate(swipeX, 0, { type: 'spring', stiffness: 500, damping: 42 });
+      animate(swipeX, 0, { type: 'spring', stiffness: 500, damping: 42 });
     };
 
     const onPointerCancel = () => {

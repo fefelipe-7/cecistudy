@@ -23,6 +23,7 @@ import {
   mapArticles,
   listAreas,
   computeContentHash,
+  loadTempleSources,
 } from './content-data.mjs';
 import { CATALOG_TABLES_SQL, CATALOG_DB_NAME } from '../src/lib/db/catalogSchema.ts';
 import { USER_SCHEMA_VERSION } from '../src/lib/db/migrations/user.ts';
@@ -133,6 +134,70 @@ async function build() {
     works
   );
 
+  // ---- templo de conhecimento ----
+  const temple = loadTempleSources();
+
+  const domains = [
+    ...new Map(temple.concepts.map((c) => [c.domainId, c.domainName])).entries(),
+  ]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([id, name], i) => [id, name, i]);
+  insertMany(db, 'concept_domain', ['id', 'name', 'display_order'], domains);
+
+  const conceptRows = [];
+  const perDomainCount = new Map();
+  for (const c of temple.concepts) {
+    const order = perDomainCount.get(c.domainId) ?? 0;
+    perDomainCount.set(c.domainId, order + 1);
+    conceptRows.push([c.id, c.domainId, c.name, order, JSON.stringify(c)]);
+  }
+  insertMany(
+    db,
+    'concept',
+    ['id', 'domain_id', 'name', 'display_order', 'data_json'],
+    conceptRows
+  );
+
+  insertMany(
+    db,
+    'catalog_author',
+    ['id', 'name', 'kind', 'question_count', 'data_json'],
+    temple.curatedAuthors.map((a) => [a.id, a.name, 'person', 0, JSON.stringify(a)])
+  );
+
+  insertMany(
+    db,
+    'technique_category',
+    ['id', 'name', 'description', 'display_order'],
+    temple.techniqueCategories.map((c) => [
+      c.id,
+      c.nome,
+      c.descricaoCurta ?? null,
+      c.ordemExibicao ?? 0,
+    ])
+  );
+
+  insertMany(
+    db,
+    'technique',
+    ['id', 'category_id', 'name', 'display_order', 'data_json'],
+    temple.techniques.map((t) => [t.id, t.dominioId, t.nome, t.ordemExibicao ?? 0, JSON.stringify(t)])
+  );
+
+  insertMany(
+    db,
+    'question_category',
+    ['id', 'name', 'slug', 'display_order'],
+    temple.questionCategories.map((c) => [c.id, c.name, c.slug, c.displayOrder ?? 0])
+  );
+
+  insertMany(
+    db,
+    'topic',
+    ['id', 'parent_id', 'name'],
+    temple.topics.map((t) => [t.id, t.parentId ?? null, t.name])
+  );
+
   const buf = db.export();
   db.close();
 
@@ -153,6 +218,13 @@ async function build() {
           approaches: PSICOTERAPIA_APPROACHES.length,
           questions: BANCO_QUESTOES.length,
           works: works.length,
+          conceptDomains: domains.length,
+          concepts: conceptRows.length,
+          authors: temple.curatedAuthors.length,
+          techniqueCategories: temple.techniqueCategories.length,
+          techniques: temple.techniques.length,
+          questionCategories: temple.questionCategories.length,
+          topics: temple.topics.length,
         },
       },
       null,
@@ -167,6 +239,11 @@ async function build() {
     `[content:build] ${areas.length} áreas · ${PSICOTERAPIA_FAMILIES.length} famílias · ` +
       `${PSICOTERAPIA_APPROACHES.length} abordagens · ${BANCO_QUESTOES.length} questões · ` +
       `${works.length} obras (versão ${version}, hash ${contentHash.slice(0, 12)}…)`
+  );
+  console.log(
+    `[content:build] templo: ${domains.length} domínios · ${conceptRows.length} conceitos · ` +
+      `${temple.curatedAuthors.length} autores · ${temple.techniques.length} técnicas · ` +
+      `${temple.questionCategories.length} categorias · ${temple.topics.length} tópicos`
   );
 }
 

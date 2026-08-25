@@ -121,7 +121,6 @@ export const CourseWizard: React.FC = () => {
       room: room.trim() || undefined,
       color,
       icon,
-      progress: 0,
       description: description.trim() || undefined,
     });
     showToast('matéria adicionada ao seu cantinho ♡');

@@ -14,7 +14,7 @@ import { Capacitor } from '@capacitor/core';
 import { EmptyDatabase, emptyDatabase } from '../data/empty';
 import { backupDataSchema } from './backupSchema';
 import { PersistedStateSnapshot, buildBackupData } from './persistentData';
-import { USER_SCHEMA_VERSION } from '../data/schema';
+import { SCHEMA_VERSION, USER_SCHEMA_VERSION, migrateDatabase } from '../data/schema';
 
 export const BACKUP_FILE_NAME = 'cecistudy-backup.json';
 export const BACKUP_FORMAT = 'cecistudy-user-backup';
@@ -24,6 +24,8 @@ export interface BackupV2 {
   format: typeof BACKUP_FORMAT;
   formatVersion: number;
   userSchemaVersion: number;
+  /** Versão do schema de dados no momento do export (sincronização/import entre versões). */
+  schemaVersion?: number;
   catalogRelease: string | null;
   exportedAt: string;
   payload: Record<string, unknown>;
@@ -80,6 +82,7 @@ export async function buildBackupPayload(snapshot: PersistedStateSnapshot): Prom
     format: BACKUP_FORMAT,
     formatVersion: BACKUP_FORMAT_VERSION,
     userSchemaVersion: USER_SCHEMA_VERSION,
+    schemaVersion: SCHEMA_VERSION,
     catalogRelease: null,
     exportedAt: new Date().toISOString(),
     payload: buildBackupData(snapshot),
@@ -126,9 +129,20 @@ export function importAppDatabase(json: string): EmptyDatabase | null {
   if (p.formatVersion !== BACKUP_FORMAT_VERSION) return null;
   if (!p.payload || typeof p.payload !== 'object') return null;
 
+  // Migração entre versões de schema: backups antigos sobem até a versão atual;
+  // backups de versão futura são recusados (app desatualizado).
+  const payloadVersion = typeof p.schemaVersion === 'number' ? p.schemaVersion : null;
+  let payloadData = p.payload;
+  if (payloadVersion !== null) {
+    if (payloadVersion > SCHEMA_VERSION) return null;
+    const migrated = payloadVersion < SCHEMA_VERSION ? migrateDatabase(payloadVersion, p.payload) : p.payload;
+    if (!migrated) return null;
+    payloadData = migrated;
+  }
+
   // Validação runtime por coleção (Zod): rejeita shapes inválidos com erro
   // específico. O estado atual NUNCA é substituído antes da validação completa.
-  const validated = backupDataSchema.safeParse(p.payload);
+  const validated = backupDataSchema.safeParse(payloadData);
   if (!validated.success) {
     console.warn('[import] backup inválido:', validated.error.flatten());
     return null;

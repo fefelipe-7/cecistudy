@@ -4,12 +4,19 @@ import {
   EDGE_WIDTH,
   ENGAGE_THRESHOLD,
   MAX_DRAG_FRACTION,
+  SWIPE_TAB_THRESHOLD,
+  SWIPE_TAB_VELOCITY,
+  TAB_SWIPE_EDGE_MARGIN,
+  canStartTabSwipe,
   clampDrag,
   isEngaged,
+  isHorizontalPan,
   maxDragDistance,
   shouldCommit,
+  shouldIgnorePanTarget,
   shouldIgnoreTarget,
   supportsEdgeSwipe,
+  swipeTabDelta,
 } from '../swipe';
 
 describe('swipe — constantes', () => {
@@ -131,5 +138,93 @@ describe('swipe — shouldCommit / clampDrag', () => {
   it('suporta telas de pelo menos 320px', () => {
     expect(supportsEdgeSwipe(375)).toBe(true);
     expect(supportsEdgeSwipe(300)).toBe(false);
+  });
+});
+
+describe('swipe — pager de tabs (constantes)', () => {
+  it('expõe os limiares esperados', () => {
+    expect(SWIPE_TAB_THRESHOLD).toBe(64);
+    expect(SWIPE_TAB_VELOCITY).toBe(500);
+    expect(TAB_SWIPE_EDGE_MARGIN).toBe(8);
+  });
+});
+
+describe('swipe — isHorizontalPan', () => {
+  it('engaja com movimento horizontal dominante', () => {
+    expect(isHorizontalPan(ENGAGE_THRESHOLD + 5, 3)).toBe(true);
+  });
+
+  it('não engaja com pouco movimento', () => {
+    expect(isHorizontalPan(5, 2)).toBe(false);
+  });
+
+  it('não engaja quando o movimento é vertical', () => {
+    expect(isHorizontalPan(30, 60)).toBe(false);
+  });
+});
+
+describe('swipe — shouldIgnorePanTarget', () => {
+  it('ignora campos de texto', () => {
+    expect(shouldIgnorePanTarget(document.createElement('input'))).toBe(true);
+    expect(shouldIgnorePanTarget(document.createElement('textarea'))).toBe(true);
+  });
+
+  it('não ignora botões/cards clicáveis: o gesto vence o tap após movimento', () => {
+    const card = document.createElement('div');
+    card.setAttribute('role', 'button');
+    expect(shouldIgnorePanTarget(card)).toBe(false);
+    expect(shouldIgnorePanTarget(document.createElement('button'))).toBe(false);
+  });
+
+  it('ignora faixas com scroll horizontal próprio (barra de pills)', () => {
+    const scroller = document.createElement('div');
+    scroller.style.overflowX = 'auto';
+    const pill = document.createElement('span');
+    scroller.appendChild(pill);
+    expect(shouldIgnorePanTarget(pill)).toBe(true);
+  });
+
+  it('ignora marcas data-no-swipe', () => {
+    const el = document.createElement('div');
+    el.setAttribute('data-no-swipe', '');
+    expect(shouldIgnorePanTarget(el)).toBe(true);
+  });
+
+  it('não ignora conteúdo comum e alvo nulo', () => {
+    expect(shouldIgnorePanTarget(document.createElement('p'))).toBe(false);
+    expect(shouldIgnorePanTarget(null)).toBe(false);
+  });
+});
+
+describe('swipe — canStartTabSwipe (precedência do edge swipe-back)', () => {
+  it('não engaja dentro da faixa da borda esquerda', () => {
+    expect(canStartTabSwipe(0)).toBe(false);
+    expect(canStartTabSwipe(EDGE_WIDTH)).toBe(false);
+    expect(canStartTabSwipe(EDGE_WIDTH + TAB_SWIPE_EDGE_MARGIN)).toBe(false);
+  });
+
+  it('engaja além da faixa da borda', () => {
+    expect(canStartTabSwipe(EDGE_WIDTH + TAB_SWIPE_EDGE_MARGIN + 1)).toBe(true);
+  });
+});
+
+describe('swipe — swipeTabDelta', () => {
+  it('avança (+1) ao arrastar para a esquerda acima do limiar', () => {
+    expect(swipeTabDelta(-SWIPE_TAB_THRESHOLD - 10)).toBe(1);
+  });
+
+  it('volta (−1) ao arrastar para a direita acima do limiar', () => {
+    expect(swipeTabDelta(SWIPE_TAB_THRESHOLD + 10)).toBe(-1);
+  });
+
+  it('commita por flick rápido mesmo com pouco deslocamento', () => {
+    expect(swipeTabDelta(-(ENGAGE_THRESHOLD + 5), SWIPE_TAB_VELOCITY)).toBe(1);
+    expect(swipeTabDelta(ENGAGE_THRESHOLD + 5, SWIPE_TAB_VELOCITY)).toBe(-1);
+  });
+
+  it('não commita abaixo dos limiares', () => {
+    expect(swipeTabDelta(-SWIPE_TAB_THRESHOLD + 1)).toBe(0);
+    expect(swipeTabDelta(SWIPE_TAB_THRESHOLD + 1, SWIPE_TAB_VELOCITY - 1)).toBe(-1);
+    expect(swipeTabDelta(-(ENGAGE_THRESHOLD - 1), SWIPE_TAB_VELOCITY)).toBe(0);
   });
 });

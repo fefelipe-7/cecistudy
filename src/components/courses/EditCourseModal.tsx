@@ -6,17 +6,12 @@ import { SchedulePicker } from '../ui/SchedulePicker';
 import { formatCourseSchedule } from '../../lib/schedule';
 import { COURSE_ICON_OPTIONS } from '../../lib/courseOptions';
 import { COURSE_ICON_COMPONENTS } from '../ui/CourseIcon';
-import { deriveCourseProgress } from '../../lib/courseProgress';
 
 interface EditCourseModalProps {
   isOpen: boolean;
   course: Course | undefined;
   onClose: () => void;
   onSave: (updated: Course) => void;
-  /** Anotações de aula (para o progresso sugerido). */
-  classNotes?: { courseId: string }[];
-  /** Provas (para o progresso sugerido). */
-  exams?: { courseId: string; completed: boolean }[];
 }
 
 const inputClass =
@@ -28,8 +23,6 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
   course,
   onClose,
   onSave,
-  classNotes,
-  exams,
 }) => {
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
@@ -39,8 +32,6 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
   const [room, setRoom] = useState('');
   const [color, setColor] = useState('#E97891');
   const [icon, setIcon] = useState('Brain');
-  const [useManualProgress, setUseManualProgress] = useState(false);
-  const [manualProgress, setManualProgress] = useState('0');
   const [minGrade, setMinGrade] = useState('7');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState<'obrigatoria' | 'complementar'>('obrigatoria');
@@ -58,8 +49,6 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
       setRoom(course.room || '');
       setColor(course.color);
       setIcon(course.icon);
-      setUseManualProgress(typeof course.progressOverride === 'number');
-      setManualProgress(String(course.progressOverride ?? 0));
       setMinGrade(String(course.minGrade ?? 7));
       setDescription(course.description || '');
       setCategory(course.category === 'complementar' ? 'complementar' : 'obrigatoria');
@@ -69,17 +58,11 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
     }
   }, [isOpen, course]);
 
-  // Progresso sugerido a partir dos dados reais (frequência + provas + aulas anotadas)
-  const suggestedProgress = course
-    ? deriveCourseProgress(course, { classNotes, exams }).value
-    : 0;
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!course) return;
     if (!name.trim()) return;
     const att = parseInt(attendanceTotal) || 0;
-    const manualValue = Math.max(0, Math.min(100, parseInt(manualProgress) || 0));
     onSave({
       ...course,
       name: name.trim(),
@@ -90,8 +73,6 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
       room: room.trim(),
       color,
       icon,
-      progress: useManualProgress ? manualValue : suggestedProgress,
-      progressOverride: useManualProgress ? manualValue : undefined,
       minGrade: Math.max(0, Math.min(10, parseFloat(minGrade.replace(',', '.'))) || 0),
       description: description.trim(),
       category,
@@ -165,39 +146,6 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
                 onChange={(e) => setMinGrade(e.target.value)}
                 className={inputClass}
               />
-            </div>
-
-            <div className="col-span-2 rounded-xl border border-ceci-border-default bg-surface-subtle p-3 space-y-2">
-              <div className="flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="text-xs font-semibold text-ceci-primary">progresso da disciplina</p>
-                  <p className="text-[11px] text-ceci-secondary mt-0.5">
-                    {useManualProgress
-                      ? 'ajuste manual ativo.'
-                      : `calculado com carinho a partir das suas aulas e provas: ${suggestedProgress}%.`}
-                  </p>
-                </div>
-                <label className="flex items-center gap-1.5 text-[11px] font-semibold text-ceci-secondary cursor-pointer shrink-0">
-                  <input
-                    type="checkbox"
-                    checked={useManualProgress}
-                    onChange={(e) => setUseManualProgress(e.target.checked)}
-                    className="accent-rose-500"
-                  />
-                  manual
-                </label>
-              </div>
-              {useManualProgress && (
-                <input
-                  type="number"
-                  min={0}
-                  max={100}
-                  value={manualProgress}
-                  onChange={(e) => setManualProgress(e.target.value)}
-                  className={inputClass}
-                  aria-label="progresso manual (%)"
-                />
-              )}
             </div>
 
             <div className="col-span-2">

@@ -1,0 +1,16 @@
+{
+  "id": "cat-avaliacao-psicologica-e-psicometria",
+  "slug": "avaliacao-psicologica-e-psicometria",
+  "title": "Avaliação Psicológica e Psicometria",
+  "displayOrder": 7,
+  "questionCount": 156,
+  "approachIds": [
+    "app-avaliacao-psicologica-e-psicometria"
+  ],
+  "groupCount": 2,
+  "status": "published",
+  "allowedFormats": [
+    "multiple_choice",
+    "true_false"
+  ]
+}

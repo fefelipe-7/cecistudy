@@ -1,10 +1,20 @@
-import { isNativePlatform } from './storage';
+/**
+ * Rola a janela ao topo, SEMPRE instantâneo: é chamado na troca de tela (push/pop),
+ * e um scroll suave competiria com a transição de slide do framer-motion.
+ */
 
 /**
- * Rola a janela ao topo. No nativo (Capacitor) usa comportamento instantâneo
- * para não competir com a transição de slide do framer-motion; no web mantém
- * o scroll suave.
+ * Offset de scroll capturado no último scrollToTop — usado pela camada de slide
+ * para "congelar" a tela que está saindo exatamente onde a usuária a via
+ * (o conteúdo sai de cena transladado por esse valor em vez de pular ao topo).
  */
+let frozenExitScrollY = 0;
+
 export function scrollToTop(): void {
-  window.scrollTo({ top: 0, behavior: isNativePlatform ? 'auto' : 'smooth' });
+  frozenExitScrollY = window.scrollY;
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+export function getFrozenExitScrollY(): number {
+  return frozenExitScrollY;
 }

@@ -1,0 +1,294 @@
+{
+  "schemaVersion": 1,
+  "group": {
+    "id": "qg-avaliacao-psicologica-e-psicometria-pesquisa-avaliacao-e-fundamentos",
+    "title": "Avaliação Psicológica e Psicometria — Pesquisa, Avaliação e Fundamentos",
+    "categoryId": "cat-avaliacao-psicologica-e-psicometria",
+    "categoryTitle": "Avaliação Psicológica e Psicometria",
+    "block": "Pesquisa, Avaliação e Fundamentos",
+    "status": "published",
+    "source": "Cecistudy content catalog",
+    "sourcePath": "content/questions/avaliacao-psicologica-e-psicometria/pesquisa-avaliacao-e-fundamentos.questions.json"
+  },
+  "questions": [
+    {
+      "id": "real-ibfc_ebserh_2013_neuro-028",
+      "stem": "Associe o tipo de documento psicológico à definição: 1) Relatório; 2) Laudo; 3) Parecer. A) Documento conciso, minucioso e abrangente, que integra dados da avaliação para diagnóstico/prognóstico e decisão. B) Apresentação descritiva e/ou interpretativa, subsidiada em instrumental técnico, com resultados e conclusões da avaliação. C) Manifestação técnica fundamentada e resumida sobre questão focal, como resposta a consulta. Assinale a associação correta.",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "conceitual",
+      "explanation": "Questão real de prova oficial; comentário pedagógico individual ainda não produzido.",
+      "options": [
+        {
+          "id": "a",
+          "text": "1B, 2C, 3A.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "1C, 2A, 3B.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "1B, 2A, 3C.",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "1A, 2B, 3C.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-documentos-psicologicos",
+        "topic-relatorio-laudo-e-parecer"
+      ],
+      "approachIds": [
+        "app-avaliacao-psicologica-e-psicometria"
+      ],
+      "authorIds": [
+        "author-conselho-federal-de-psicologia"
+      ],
+      "referenceIds": [
+        "work-a55303488e8d",
+        "work-bed9beae6d2e"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "IBFC",
+      "exam": "EBSERH/HUB 2013 — Psicólogo — Neuropsicologia — Edital nº 03/2013",
+      "year": 2013,
+      "questionNumber": 28,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/33115/ibfc-2013-ebserh-psicologo-neuropsicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/33115/ibfc-2013-ebserh-psicologo-neuropsicologia-gabarito.pdf",
+      "officialAnswerStatus": "gabarito_oficial",
+      "categoryId": "cat-avaliacao-psicologica-e-psicometria",
+      "areaId": "area-avaliacao-psicologica-e-psicometria",
+      "legacyOriginId": "real-ibfc_ebserh_2013_neuro-028",
+      "legacy": {
+        "categoriaFinal": "Avaliação Psicológica e Psicometria",
+        "abordagemFinal": "Avaliação Psicológica e Psicometria",
+        "area": "Avaliação Psicológica e Psicometria",
+        "tema": "documentos psicológicos",
+        "subtema": "relatório, laudo e parecer",
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-ibfc_ebserh_2013_neuro-034",
+      "stem": "Sobre a entrevista clínica e a anamnese em avaliação psicológica, analise: I. Na anamnese somente aspectos que envolvem a queixa devem ser explorados. II. A anamnese obtém dados que correlacionam queixas com o processo avaliativo. III. A anamnese só é válida se feita com o paciente. IV. A anamnese fornece elementos para prognóstico. V. A anamnese direciona a avaliação e a escolha de instrumentos. Estão corretas:",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "conceitual",
+      "explanation": "Questão real de prova oficial; comentário pedagógico individual ainda não produzido.",
+      "options": [
+        {
+          "id": "a",
+          "text": "I, II e III apenas.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "II, III e V apenas.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "II, IV e V apenas.",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "I, IV e V apenas.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-anamnese-e-planejamento-da-avaliacao",
+        "topic-entrevista-psicologica"
+      ],
+      "approachIds": [
+        "app-avaliacao-psicologica-e-psicometria"
+      ],
+      "authorIds": [
+        "author-jurema-alcides-cunha"
+      ],
+      "referenceIds": [
+        "work-a55303488e8d",
+        "work-bed9beae6d2e"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "IBFC",
+      "exam": "EBSERH/HUB 2013 — Psicólogo — Neuropsicologia — Edital nº 03/2013",
+      "year": 2013,
+      "questionNumber": 34,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/33115/ibfc-2013-ebserh-psicologo-neuropsicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/33115/ibfc-2013-ebserh-psicologo-neuropsicologia-gabarito.pdf",
+      "officialAnswerStatus": "gabarito_oficial",
+      "categoryId": "cat-avaliacao-psicologica-e-psicometria",
+      "areaId": "area-avaliacao-psicologica-e-psicometria",
+      "legacyOriginId": "real-ibfc_ebserh_2013_neuro-034",
+      "legacy": {
+        "categoriaFinal": "Avaliação Psicológica e Psicometria",
+        "abordagemFinal": "Avaliação Psicológica e Psicometria",
+        "area": "Avaliação Psicológica e Psicometria",
+        "tema": "entrevista psicológica",
+        "subtema": "anamnese e planejamento da avaliação",
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-ibfc_ebserh_2013_neuro-037",
+      "stem": "Associe testes psicológicos aos construtos: 1) Teste D2; 2) Matrizes Progressivas; 3) Figuras Complexas de Rey; 4) Wisconsin de Classificação de Cartas. A) Percepção e memória não verbal; B) Fator g não verbal; C) Atenção concentrada; D) Funções executivas, como flexibilidade mental.",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "conceitual",
+      "explanation": "Questão real de prova oficial; comentário pedagógico individual ainda não produzido.",
+      "options": [
+        {
+          "id": "a",
+          "text": "1C, 2B, 3A, 4D.",
+          "isCorrect": true
+        },
+        {
+          "id": "b",
+          "text": "1A, 2B, 3C, 4D.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "1B, 2C, 3D, 4A.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "1C, 2D, 3A, 4B.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-d2-raven-rey-e-wisconsin",
+        "topic-testes-psicologicos"
+      ],
+      "approachIds": [
+        "app-avaliacao-psicologica-e-psicometria"
+      ],
+      "authorIds": [
+        "author-brickenkamp",
+        "author-john-raven",
+        "author-andre-rey",
+        "author-david-grant"
+      ],
+      "referenceIds": [
+        "work-a55303488e8d",
+        "work-bed9beae6d2e"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "IBFC",
+      "exam": "EBSERH/HUB 2013 — Psicólogo — Neuropsicologia — Edital nº 03/2013",
+      "year": 2013,
+      "questionNumber": 37,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/33115/ibfc-2013-ebserh-psicologo-neuropsicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/33115/ibfc-2013-ebserh-psicologo-neuropsicologia-gabarito.pdf",
+      "officialAnswerStatus": "gabarito_oficial",
+      "categoryId": "cat-avaliacao-psicologica-e-psicometria",
+      "areaId": "area-avaliacao-psicologica-e-psicometria",
+      "legacyOriginId": "real-ibfc_ebserh_2013_neuro-037",
+      "legacy": {
+        "categoriaFinal": "Avaliação Psicológica e Psicometria",
+        "abordagemFinal": "Avaliação Psicológica e Psicometria",
+        "area": "Avaliação Psicológica e Psicometria",
+        "tema": "testes psicológicos",
+        "subtema": "D2, Raven, Rey e Wisconsin",
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real-ibfc_mgs_2024_psicologo-016",
+      "stem": "De acordo com Trinca (2020), o Procedimento de Desenhos-Estórias ocupa lugar preponderante como instrumento para investigação clínica da personalidade. Analise: I. O Desenho-Estória apresenta boas condições de agilizar a compreensão diagnóstica, o planejamento terapêutico, a definição do foco e do caminho psicoterapêutico. PORQUE II. O Desenho-Estória não pode revelar novas áreas mantidas pelo paciente como defesas que impedem o fluir das sessões. Assinale a alternativa correta.",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "conceitual",
+      "explanation": "Questão real de prova oficial; comentário pedagógico individual ainda não produzido.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A afirmação I está correta e a II está incorreta.",
+          "isCorrect": true
+        },
+        {
+          "id": "b",
+          "text": "A afirmação I está incorreta e a II está correta.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "As afirmações I e II estão corretas, mas a II não justifica a I.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "As afirmações I e II estão corretas e a II justifica a I.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-procedimento-de-desenhos-estorias-e-investigacao-da-personalidade",
+        "topic-tecnicas-projetivas"
+      ],
+      "approachIds": [
+        "app-avaliacao-psicologica-e-psicometria"
+      ],
+      "authorIds": [
+        "author-walter-trinca"
+      ],
+      "referenceIds": [
+        "work-8a0815d91523",
+        "work-8ca28ba8ded5"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "IBFC",
+      "exam": "MGS — Processo Seletivo Público Simplificado, Edital nº 07/2023 — Psicólogo",
+      "year": 2024,
+      "questionNumber": 16,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/105120/ibfc-2024-mgs-psicologo-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/105120/ibfc-2024-mgs-psicologo-gabarito.pdf",
+      "officialAnswerStatus": "gabarito_oficial_pos_recurso",
+      "categoryId": "cat-avaliacao-psicologica-e-psicometria",
+      "areaId": "area-avaliacao-psicologica-e-psicometria",
+      "legacyOriginId": "real-ibfc_mgs_2024_psicologo-016",
+      "legacy": {
+        "categoriaFinal": "Avaliação Psicológica e Psicometria",
+        "abordagemFinal": "Avaliação Psicológica e Psicometria",
+        "area": "Avaliação Psicológica e Psicometria",
+        "tema": "técnicas projetivas",
+        "subtema": "Procedimento de Desenhos-Estórias e investigação da personalidade",
+        "blocoQuiz": "Pesquisa, Avaliação e Fundamentos",
+        "anulada": false,
+        "reviewNote": true
+      }
+    }
+  ]
+}

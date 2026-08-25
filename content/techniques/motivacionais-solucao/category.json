@@ -1,0 +1,11 @@
+{
+  "id": "domain-motivacionais-solucao",
+  "nome": "Técnicas Motivacionais e Focadas em Solução",
+  "slug": "motivacionais-solucao",
+  "descricaoCurta": "Autonomia, ambivalência, recursos, exceções e metas escolhidas pelo cliente.",
+  "ordemExibicao": 9,
+  "quantidadeDeclarada": 12,
+  "quantidadeNominal": 15,
+  "status": "published",
+  "sourcePath": "content/techniques/motivacionais-solucao/category.json"
+}

@@ -1,0 +1,8 @@
+{
+  "id": "family-other",
+  "name": "Outras abordagens",
+  "status": "published",
+  "approachIds": [
+    "app-desenvolvimento-humano"
+  ]
+}

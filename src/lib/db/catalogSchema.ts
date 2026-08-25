@@ -72,4 +72,54 @@ CREATE TABLE work (
   accent_color TEXT,
   data_json TEXT NOT NULL
 );
+
+CREATE TABLE concept_domain (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  display_order INTEGER NOT NULL
+);
+
+CREATE TABLE concept (
+  id TEXT PRIMARY KEY,
+  domain_id TEXT NOT NULL REFERENCES concept_domain(id),
+  name TEXT NOT NULL,
+  display_order INTEGER NOT NULL,
+  data_json TEXT NOT NULL
+);
+
+CREATE TABLE catalog_author (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  kind TEXT NOT NULL,
+  question_count INTEGER NOT NULL DEFAULT 0,
+  data_json TEXT NOT NULL
+);
+
+CREATE TABLE technique_category (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT,
+  display_order INTEGER NOT NULL
+);
+
+CREATE TABLE technique (
+  id TEXT PRIMARY KEY,
+  category_id TEXT NOT NULL REFERENCES technique_category(id),
+  name TEXT NOT NULL,
+  display_order INTEGER NOT NULL,
+  data_json TEXT NOT NULL
+);
+
+CREATE TABLE question_category (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  display_order INTEGER NOT NULL
+);
+
+CREATE TABLE topic (
+  id TEXT PRIMARY KEY,
+  parent_id TEXT REFERENCES topic(id),
+  name TEXT NOT NULL
+);
 `.trim();

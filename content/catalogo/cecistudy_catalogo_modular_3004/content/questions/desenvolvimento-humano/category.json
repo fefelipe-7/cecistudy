@@ -1,0 +1,16 @@
+{
+  "id": "cat-desenvolvimento-humano",
+  "slug": "desenvolvimento-humano",
+  "title": "Desenvolvimento Humano",
+  "displayOrder": 15,
+  "questionCount": 150,
+  "approachIds": [
+    "app-desenvolvimento-humano"
+  ],
+  "groupCount": 1,
+  "status": "published",
+  "allowedFormats": [
+    "multiple_choice",
+    "true_false"
+  ]
+}

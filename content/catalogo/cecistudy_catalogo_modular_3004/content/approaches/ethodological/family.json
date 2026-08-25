@@ -1,0 +1,10 @@
+{
+  "id": "family-methodological",
+  "name": "Fundamentos, avaliação e pesquisa",
+  "status": "published",
+  "approachIds": [
+    "app-avaliacao-psicologica-e-psicometria",
+    "app-fundamentos-da-psicologia",
+    "app-pesquisa-metodologia-e-estatistica"
+  ]
+}

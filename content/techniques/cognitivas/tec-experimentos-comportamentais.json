@@ -1,0 +1,65 @@
+{
+  "id": "tec-experimentos-comportamentais",
+  "nome": "Experimentos comportamentais",
+  "canonicalKey": "experimentos comportamentais",
+  "emUmaFrase": "Atividade planejada para testar uma previsão ou crença por meio de uma experiência observável, e não apenas por debate verbal.",
+  "definicao": "Atividade planejada para testar uma previsão ou crença por meio de uma experiência observável, e não apenas por debate verbal. Em sentido técnico, sua definição deve ser vinculada ao tipo de tarefa, atitude ou processo que organiza a sessão, e não apenas ao nome da escola.",
+  "objetivo": "Produzir informação nova sobre uma crença específica e ampliar aprendizagem corretiva.",
+  "comoFunciona": "O mecanismo proposto depende da categoria: aprendizagem cognitiva, avaliação de interpretações e modificação de crenças. No caso de experimentos comportamentais, o terapeuta deve explicitar qual aprendizagem ou processo está sendo buscado e como será observado.",
+  "quandoEUtilizada": "Pode ser considerada quando a formulação clínica indicar que experimentos comportamentais é compatível com o problema, os objetivos, a fase do tratamento, a capacidade de participação e as preferências da pessoa. Não é uma indicação universal.",
+  "comoEAplicada": "Terapeuta e cliente formulam previsão, definem operação, observam resultado e comparam o resultado com a previsão, incluindo aprendizagens e limites do teste.",
+  "origem": "Desenvolveu-se sobretudo no contexto das terapias cognitivas e cognitivo-comportamentais do século XX, em diálogo com aprendizagem, psicologia cognitiva e modelos de esquemas.",
+  "desenvolvimentoHistorico": "No desenvolvimento histórico, experimentos comportamentais passou de uma prática situada em determinadas escolas a um recurso que pode ser adaptado ou questionado em outros modelos. A migração entre abordagens deve preservar contexto, finalidade e limites.",
+  "exemploPratico": "Uma pessoa que acredita “se eu fizer uma pergunta, serei ridicularizada” combina uma pergunta simples em contexto seguro e registra o resultado sem usar comportamentos de segurança.",
+  "fundamentacaoTeorica": "A fundamentação editorial desta técnica é organizada pela categoria “cognitivas”: aprendizagem cognitiva, avaliação de interpretações e modificação de crenças. A fonte deve ser lida para distinguir descrição histórica, hipótese de mecanismo e evidência de resultado.",
+  "evidencias": "A literatura sobre técnicas cognitivas é mais consistente quando a técnica está inserida em um tratamento bem definido, para um problema e população específicos. A revisão meta-analítica de Ezawa e Hollon encontrou associação promissora entre reestruturação cognitiva observada em sessão e resultados, mas destacou a necessidade de mais estudos e não autoriza atribuir o efeito de uma terapia inteira a uma única técnica.",
+  "limitacoes": "Pode tornar-se debate intelectual, invalidação emocional ou busca de pensamento positivo se não houver formulação, colaboração e atenção ao contexto. Deve evitar substituir evidência por autoridade do terapeuta.",
+  "contextoClinico": "Pode aparecer em Terapia Cognitiva, TCC, Terapia do Esquema e modelos metacognitivos, mas a mesma técnica também pode atravessar outras escolas quando seu objetivo e sua função clínica forem preservados.",
+  "observacoes": "Classificação interna: intervencao. O nome pode designar técnica, procedimento, habilidade, atitude ou processo conforme o modelo; o registro separa o tipo para evitar equivalências artificiais.",
+  "tipoTecnica": "intervencao",
+  "classificacaoEstatuto": "recurso clínico estudado em contexto de abordagem; o estatuto específico pode ser técnica, procedimento, habilidade, estratégia, exercício ou atitude terapêutica.",
+  "slug": "experimentos-comportamentais",
+  "dominioId": "domain-cognitivas",
+  "dominioIds": [
+    "domain-cognitivas"
+  ],
+  "dominioNomes": [
+    "Técnicas Cognitivas"
+  ],
+  "ordemExibicao": 12,
+  "posicoesNominais": [
+    {
+      "categoryId": "domain-cognitivas",
+      "categoryName": "Técnicas Cognitivas",
+      "ordem": 12,
+      "nomeOriginal": "Experimentos comportamentais"
+    }
+  ],
+  "abordagemIds": [
+    "app-cognitiva_tcc-terapia-cognitiva-beck",
+    "app-cognitiva_tcc-tcc-integrada-geral",
+    "app-cognitiva_tcc-terapia-do-esquema"
+  ],
+  "modeloIds": [],
+  "fonteIds": [
+    "src-cognitive-restructuring-2023"
+  ],
+  "tecnicasRelacionadasIds": [
+    "tec-identificacao-de-pensamentos-automaticos",
+    "tec-registro-de-pensamentos",
+    "tec-reestruturacao-cognitiva",
+    "tec-questionamento-socratico",
+    "tec-busca-de-evidencias",
+    "tec-identificacao-de-distorcoes-cognitivas",
+    "tec-descatastrofizacao",
+    "tec-continuum-cognitivo",
+    "tec-flecha-descendente",
+    "tec-reatribuicao",
+    "tec-avaliacao-de-crencas",
+    "tec-cartoes-de-enfrentamento"
+  ],
+  "dataCadastro": "2026-08-20T19:40:41.306951+00:00",
+  "dataUltimaRevisao": "2026-08-20T19:40:41.306956+00:00",
+  "status": "published",
+  "sourcePath": "content/techniques/cognitivas/tec-experimentos-comportamentais.json"
+}

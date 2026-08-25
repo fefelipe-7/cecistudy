@@ -143,3 +143,90 @@ export async function getCatalogWorksByType(type: string): Promise<unknown[]> {
   const rows = await db.query('SELECT data_json FROM work WHERE type = ?', [type]);
   return parseJsonRows(rows);
 }
+
+// ---- consultas do templo de conhecimento ----
+
+/** Domínios de conceitos (12), em ordem de exibição. */
+export async function getCatalogConceptDomains(): Promise<Array<{ id: string; name: string }>> {
+  const db = await getCatalogDb();
+  if (!db) return [];
+  const rows = await db.query(
+    'SELECT id, name FROM concept_domain ORDER BY display_order'
+  );
+  return rows.map((r) => ({ id: String(r.id), name: String(r.name) }));
+}
+
+/** Índice leve dos conceitos (sem o corpo — vem do data_json no detalhe). */
+export async function getCatalogConceptIndex(): Promise<
+  Array<{ id: string; name: string; domainId: string; domainName: string | null; definition: string }>
+> {
+  const db = await getCatalogDb();
+  if (!db) return [];
+  const rows = await db.query(
+    `SELECT c.id, c.name, c.domain_id, d.name AS domain_name
+     FROM concept c JOIN concept_domain d ON d.id = c.domain_id
+     ORDER BY d.display_order, c.display_order`
+  );
+  return rows.map((r) => ({
+    id: String(r.id),
+    name: String(r.name),
+    domainId: String(r.domain_id),
+    domainName: r.domain_name != null ? String(r.domain_name) : null,
+    definition: '',
+  }));
+}
+
+/** Conceitos de um domínio (corpo completo via data_json). */
+export async function getCatalogConceptsByDomain<T = unknown>(domainId: string): Promise<T[]> {
+  const db = await getCatalogDb();
+  if (!db) return [];
+  const rows = await db.query(
+    'SELECT data_json FROM concept WHERE domain_id = ? ORDER BY display_order',
+    [domainId]
+  );
+  return parseJsonRows(rows) as T[];
+}
+
+/** Um conceito pelo id. */
+export async function getCatalogConcept<T = unknown>(id: string): Promise<T | null> {
+  const db = await getCatalogDb();
+  if (!db) return null;
+  const rows = await db.query('SELECT data_json FROM concept WHERE id = ?', [id]);
+  return rows.length > 0 ? (JSON.parse(String(rows[0].data_json)) as T) : null;
+}
+
+/** Autores curados (person + institution), mais citados primeiro. */
+export async function getCatalogAuthors<T = unknown>(): Promise<T[]> {
+  const db = await getCatalogDb();
+  if (!db) return [];
+  const rows = await db.query(
+    'SELECT data_json FROM catalog_author ORDER BY question_count DESC, name ASC'
+  );
+  return parseJsonRows(rows) as T[];
+}
+
+/** Categorias de técnicas (10), em ordem de exibição. */
+export async function getCatalogTechniqueCategories<
+  T = unknown,
+>(): Promise<T[]> {
+  const db = await getCatalogDb();
+  if (!db) return [];
+  const rows = await db.query(
+    'SELECT data_json FROM technique_category ORDER BY display_order'
+  );
+  return parseJsonRows(rows) as T[];
+}
+
+/** Técnicas canônicas (135), opcionalmente por categoria. */
+export async function getCatalogTechniques<T = unknown>(categoryId?: string): Promise<T[]> {
+  const db = await getCatalogDb();
+  if (!db) return [];
+  const rows = categoryId
+    ? await db.query('SELECT data_json FROM technique WHERE category_id = ? ORDER BY display_order', [
+        categoryId,
+      ])
+    : await db.query(
+        'SELECT t.data_json FROM technique t JOIN technique_category c ON c.id = t.category_id ORDER BY c.display_order, t.display_order'
+      );
+  return parseJsonRows(rows) as T[];
+}

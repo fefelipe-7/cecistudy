@@ -1,0 +1,11 @@
+{
+  "id": "domain-emocionais-experienciais",
+  "nome": "Técnicas Emocionais e Experienciais",
+  "slug": "emocionais-experienciais",
+  "descricaoCurta": "Acesso, diferenciação, simbolização e transformação de experiências emocionais.",
+  "ordemExibicao": 4,
+  "quantidadeDeclarada": 10,
+  "quantidadeNominal": 12,
+  "status": "published",
+  "sourcePath": "content/techniques/emocionais-experienciais/category.json"
+}

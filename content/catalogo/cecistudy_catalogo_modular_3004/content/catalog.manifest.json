@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "release": "2026.08.20",
+  "catalogId": "cecistudy-catalog",
+  "generatedAt": "2026-08-20T17:17:00.432775+00:00",
+  "contentHash": "30ee39598da3ba957e790a657e1b9abf10af55a574935b07cc8abc3c0bdf0edb",
+  "sourceFile": "cecistudy_banco_3004_final.json",
+  "counts": {
+    "questions": 3004,
+    "categories": 18,
+    "approaches": 17,
+    "areas": 122,
+    "topics": 1518,
+    "authors": 868,
+    "works": 1382,
+    "groups": 29,
+    "realQuestions": 1245,
+    "authorialQuestions": 1759,
+    "annulledQuestions": 1
+  },
+  "formats": {
+    "multiple_choice": 2284,
+    "true_false": 720
+  },
+  "reviewStatuses": {
+    "review": 1759,
+    "published": 1243,
+    "deprecated": 2
+  },
+  "paths": {
+    "questions": "content/questions",
+    "taxonomies": "content/taxonomies",
+    "approaches": "content/approaches",
+    "sqlite": "resources/catalog/cecistudy_catalog.sqlite",
+    "schema": "sql/catalog_schema.sql"
+  }
+}

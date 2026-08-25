@@ -1,0 +1,66 @@
+{
+  "id": "tec-joining",
+  "nome": "Joining",
+  "canonicalKey": "joining",
+  "emUmaFrase": "Joining é uma prática clínica ou recurso de estudo usado para trabalhar padrões de interação, circularidade, alianças, fronteiras e recursos do sistema.",
+  "definicao": "Joining é uma prática clínica ou recurso de estudo usado para trabalhar padrões de interação, circularidade, alianças, fronteiras e recursos do sistema. Em sentido técnico, sua definição deve ser vinculada ao tipo de tarefa, atitude ou processo que organiza a sessão, e não apenas ao nome da escola.",
+  "objetivo": "Utilizar joining para apoiar objetivos clínicos definidos colaborativamente, sempre considerando a formulação do caso, a preferência da pessoa e o contexto.",
+  "comoFunciona": "O mecanismo proposto depende da categoria: padrões de interação, circularidade, alianças, fronteiras e recursos do sistema. No caso de joining, o terapeuta deve explicitar qual aprendizagem ou processo está sendo buscado e como será observado.",
+  "quandoEUtilizada": "Pode ser considerada quando a formulação clínica indicar que joining é compatível com o problema, os objetivos, a fase do tratamento, a capacidade de participação e as preferências da pessoa. Não é uma indicação universal.",
+  "comoEAplicada": "O uso de joining começa com explicação e acordo sobre o objetivo, segue com aplicação graduada e observação da resposta, e termina com integração da aprendizagem e planejamento de continuidade. O alvo não é localizar o problema em um único membro, mas tornar padrões relacionais observáveis e modificáveis.",
+  "origem": "Desenvolveu-se com a terapia familiar e sistêmica, a cibernética, teorias da comunicação e modelos estruturais, estratégicos, transgeracionais e colaborativos.",
+  "desenvolvimentoHistorico": "No desenvolvimento histórico, joining passou de uma prática situada em determinadas escolas a um recurso que pode ser adaptado ou questionado em outros modelos. A migração entre abordagens deve preservar contexto, finalidade e limites.",
+  "exemploPratico": "Em um exemplo didático, o terapeuta apresenta joining a uma pessoa com uma dificuldade previamente formulada, combina um pequeno exercício, observa o que ocorre e pergunta o que foi aprendido, sem tratar o exemplo como protocolo universal.",
+  "fundamentacaoTeorica": "A fundamentação editorial desta técnica é organizada pela categoria “sistemicas-familiares-casais”: padrões de interação, circularidade, alianças, fronteiras e recursos do sistema. A fonte deve ser lida para distinguir descrição histórica, hipótese de mecanismo e evidência de resultado.",
+  "evidencias": "A evidência da terapia sistêmica e familiar depende do modelo, população e resultado. Estudos qualitativos mostram que membros da família valorizam colaboração, segurança, compreensão relacional e participação; a técnica deve ser avaliada como intervenção situada no sistema, não como ferramenta neutra.",
+  "limitacoes": "Mapas e perguntas podem reforçar culpabilização, expor segredos ou ignorar violência e assimetrias de poder. Segurança individual deve preceder qualquer intervenção conjunta.",
+  "contextoClinico": "Pode aparecer em terapias sistêmicas, familiares e de casais, mas a mesma técnica também pode atravessar outras escolas quando seu objetivo e sua função clínica forem preservados.",
+  "observacoes": "Classificação interna: intervencao. O nome pode designar técnica, procedimento, habilidade, atitude ou processo conforme o modelo; o registro separa o tipo para evitar equivalências artificiais.",
+  "tipoTecnica": "intervencao",
+  "classificacaoEstatuto": "recurso clínico estudado em contexto de abordagem; o estatuto específico pode ser técnica, procedimento, habilidade, estratégia, exercício ou atitude terapêutica.",
+  "slug": "joining",
+  "dominioId": "domain-sistemicas-familiares-casais",
+  "dominioIds": [
+    "domain-sistemicas-familiares-casais"
+  ],
+  "dominioNomes": [
+    "Técnicas Sistêmicas, Familiares e de Casais"
+  ],
+  "ordemExibicao": 90,
+  "posicoesNominais": [
+    {
+      "categoryId": "domain-sistemicas-familiares-casais",
+      "categoryName": "Técnicas Sistêmicas, Familiares e de Casais",
+      "ordem": 92,
+      "nomeOriginal": "Joining"
+    }
+  ],
+  "abordagemIds": [
+    "app-sistemica_familiar_casais-terapia-familiar-geral",
+    "app-sistemica_familiar_casais-terapia-familiar-estrutural",
+    "app-sistemica_familiar_casais-terapia-de-casais-integrativa"
+  ],
+  "modeloIds": [],
+  "fonteIds": [
+    "src-family-perspectives-2025",
+    "src-apa-approaches"
+  ],
+  "tecnicasRelacionadasIds": [
+    "tec-enactment",
+    "tec-genograma",
+    "tec-perguntas-circulares",
+    "tec-reenquadramento",
+    "tec-conotacao-positiva",
+    "tec-prescricao-de-tarefas",
+    "tec-escultura-familiar",
+    "tec-dramatizacao",
+    "tec-externalizacao",
+    "tec-perguntas-reflexivas",
+    "tec-intervencoes-estruturais",
+    "tec-mapeamento-estrutural"
+  ],
+  "dataCadastro": "2026-08-20T19:40:41.330203+00:00",
+  "dataUltimaRevisao": "2026-08-20T19:40:41.330208+00:00",
+  "status": "published",
+  "sourcePath": "content/techniques/sistemicas-familiares-casais/tec-joining.json"
+}

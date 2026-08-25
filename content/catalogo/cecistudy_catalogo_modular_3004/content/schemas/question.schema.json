@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cecistudy-question.schema.json",
+  "type": "object",
+  "required": [
+    "id",
+    "stem",
+    "format",
+    "difficulty",
+    "options",
+    "reviewStatus",
+    "categoryId",
+    "approachIds"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stem": {
+      "type": "string",
+      "minLength": 1
+    },
+    "format": {
+      "enum": [
+        "multiple_choice",
+        "true_false"
+      ]
+    },
+    "difficulty": {
+      "enum": [
+        "basic",
+        "intermediate",
+        "advanced",
+        "unspecified"
+      ]
+    },
+    "options": {
+      "type": "array",
+      "minItems": 2
+    },
+    "reviewStatus": {
+      "enum": [
+        "published",
+        "review",
+        "deprecated"
+      ]
+    },
+    "categoryId": {
+      "type": "string"
+    },
+    "approachIds": {
+      "type": "array"
+    },
+    "isActive": {
+      "type": "boolean"
+    },
+    "isScorable": {
+      "type": "boolean"
+    },
+    "isAnnulled": {
+      "type": "boolean"
+    }
+  }
+}

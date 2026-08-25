@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CeciStudy dominio tecnica",
+  "type": "object",
+  "required": [
+    "id",
+    "nome",
+    "slug",
+    "ordemExibicao"
+  ],
+  "additionalProperties": true
+}

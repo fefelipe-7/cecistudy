@@ -1,0 +1,66 @@
+{
+  "id": "tec-documentos-terapeuticos",
+  "nome": "Documentos terapêuticos",
+  "canonicalKey": "documentos terapeuticos",
+  "emUmaFrase": "Documentos terapêuticos é uma prática clínica ou recurso de estudo usado para trabalhar construção de significados, linguagem, identidade e alternativas narrativas.",
+  "definicao": "Documentos terapêuticos é uma prática clínica ou recurso de estudo usado para trabalhar construção de significados, linguagem, identidade e alternativas narrativas. Em sentido técnico, sua definição deve ser vinculada ao tipo de tarefa, atitude ou processo que organiza a sessão, e não apenas ao nome da escola.",
+  "objetivo": "Utilizar documentos terapêuticos para apoiar objetivos clínicos definidos colaborativamente, sempre considerando a formulação do caso, a preferência da pessoa e o contexto.",
+  "comoFunciona": "O mecanismo proposto depende da categoria: construção de significados, linguagem, identidade e alternativas narrativas. No caso de documentos terapêuticos, o terapeuta deve explicitar qual aprendizagem ou processo está sendo buscado e como será observado.",
+  "quandoEUtilizada": "Pode ser considerada quando a formulação clínica indicar que documentos terapêuticos é compatível com o problema, os objetivos, a fase do tratamento, a capacidade de participação e as preferências da pessoa. Não é uma indicação universal.",
+  "comoEAplicada": "O uso de documentos terapêuticos começa com explicação e acordo sobre o objetivo, segue com aplicação graduada e observação da resposta, e termina com integração da aprendizagem e planejamento de continuidade. A técnica deve evitar substituir a narrativa da pessoa por uma interpretação autoritária do terapeuta.",
+  "origem": "Articula construtivismo, psicologia dos construtos pessoais, terapia narrativa, construcionismo social e práticas colaborativas orientadas à linguagem e ao significado.",
+  "desenvolvimentoHistorico": "No desenvolvimento histórico, documentos terapêuticos passou de uma prática situada em determinadas escolas a um recurso que pode ser adaptado ou questionado em outros modelos. A migração entre abordagens deve preservar contexto, finalidade e limites.",
+  "exemploPratico": "Em um exemplo didático, o terapeuta apresenta documentos terapêuticos a uma pessoa com uma dificuldade previamente formulada, combina um pequeno exercício, observa o que ocorre e pergunta o que foi aprendido, sem tratar o exemplo como protocolo universal.",
+  "fundamentacaoTeorica": "A fundamentação editorial desta técnica é organizada pela categoria “narrativas-construtivistas”: construção de significados, linguagem, identidade e alternativas narrativas. A fonte deve ser lida para distinguir descrição histórica, hipótese de mecanismo e evidência de resultado.",
+  "evidencias": "A base empírica é heterogênea e frequentemente avalia modelos inteiros, processos de significado ou estudos qualitativos. A técnica pode ser clinicamente útil quando preserva a autoria do cliente, mas alegações de eficácia específica exigem fonte e indicação delimitadas.",
+  "limitacoes": "O terapeuta pode impor uma narrativa alternativa ou minimizar sintomas, materialidade e desigualdade. Externalização e reautoria requerem validação, precisão e respeito à linguagem do cliente.",
+  "contextoClinico": "Pode aparecer em terapias narrativas, construtivistas, colaborativas e pós-modernas, mas a mesma técnica também pode atravessar outras escolas quando seu objetivo e sua função clínica forem preservados.",
+  "observacoes": "Classificação interna: intervencao. O nome pode designar técnica, procedimento, habilidade, atitude ou processo conforme o modelo; o registro separa o tipo para evitar equivalências artificiais.",
+  "tipoTecnica": "intervencao",
+  "classificacaoEstatuto": "recurso clínico estudado em contexto de abordagem; o estatuto específico pode ser técnica, procedimento, habilidade, estratégia, exercício ou atitude terapêutica.",
+  "slug": "documentos-terapeuticos",
+  "dominioId": "domain-narrativas-construtivistas",
+  "dominioIds": [
+    "domain-narrativas-construtivistas"
+  ],
+  "dominioNomes": [
+    "Técnicas Narrativas e Construtivistas"
+  ],
+  "ordemExibicao": 99,
+  "posicoesNominais": [
+    {
+      "categoryId": "domain-narrativas-construtivistas",
+      "categoryName": "Técnicas Narrativas e Construtivistas",
+      "ordem": 104,
+      "nomeOriginal": "Documentos terapêuticos"
+    }
+  ],
+  "abordagemIds": [
+    "app-construtivista_narrativa-terapia-narrativa",
+    "app-construtivista_narrativa-psicoterapias-construtivas",
+    "app-construtivista_narrativa-terapia-colaborativa"
+  ],
+  "modeloIds": [],
+  "fonteIds": [
+    "src-family-perspectives-2025",
+    "src-apa-approaches"
+  ],
+  "tecnicasRelacionadasIds": [
+    "tec-externalizacao",
+    "tec-perguntas-de-excecao",
+    "tec-mapeamento-da-influencia",
+    "tec-reautoria",
+    "tec-testemunhas-externas",
+    "tec-perguntas-de-perspectiva",
+    "tec-desconstrucao",
+    "tec-identificacao-de-resultados-unicos",
+    "tec-construcao-de-significado",
+    "tec-exploracao-de-construtos-pessoais",
+    "tec-tecnica-da-grade-de-repertorio",
+    "tec-reconstrucao-narrativa"
+  ],
+  "dataCadastro": "2026-08-20T19:40:41.332685+00:00",
+  "dataUltimaRevisao": "2026-08-20T19:40:41.332691+00:00",
+  "status": "published",
+  "sourcePath": "content/techniques/narrativas-construtivistas/tec-documentos-terapeuticos.json"
+}

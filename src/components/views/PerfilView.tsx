@@ -23,7 +23,6 @@ import {
   Layers
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { deriveCourseProgress } from '../../lib/courseProgress';
 import { DitherFunnelChart } from '../ui/dither-funnel';
 import { CHART_PASTELS, formatCount } from '../../lib/ditherChart';
 import { ToggleRow } from '../ui/ToggleRow';
@@ -270,6 +269,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
     resetApp,
     exportData,
     importData,
+    openSyncScreen,
   } = useApp();
 
   const [name, setName] = useState(profile.name);
@@ -319,14 +319,6 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
   const flashcardsReviewed = flashcards.reduce((acc, f) => acc + (f.timesReviewed || 0), 0);
   const tasksDone = tasks.filter((t) => t.completed).length;
   const examsPending = exams.filter((e) => !e.completed).length;
-  const avgCourseProgress = courses.length
-    ? Math.round(
-        courses.reduce(
-          (acc, c) => acc + deriveCourseProgress(c, { classNotes: classes, exams }).value,
-          0
-        ) / courses.length
-      )
-    : 0;
   const totalInternshipHours = internshipLogs.reduce((acc, l) => acc + l.hours, 0);
   const tccChaptersDone = tcc.chapters.filter((ch) => ch.completed).length;
   const tccChaptersTotal = tcc.chapters.length;
@@ -519,10 +511,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
           ))}
         </div>
 
-        <div className="flex items-center justify-between border-t border-ceci-border-subtle pt-3">
-          <p className="text-[10px] text-ceci-tertiary">
-            média de progresso das disciplinas: {avgCourseProgress}%
-          </p>
+        <div className="flex items-center justify-end border-t border-ceci-border-subtle pt-3">
           <span className="text-[11px] font-semibold text-ceci-brand-strong">
             {profile.totalSemesters - profile.semester} semestres restantes
           </span>
@@ -764,6 +753,15 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
         <p className="text-xs text-ceci-secondary leading-relaxed -mt-1">
           tudo fica guardado só no seu dispositivo. faça um backup para migrar ou comece de novo quando quiser ♡
         </p>
+
+        <button
+          onClick={openSyncScreen}
+          className="w-full flex items-center gap-2 bg-white border border-ceci-border-brand text-ceci-primary px-4 py-3 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer hover:bg-surface-rose transition-colors"
+        >
+          <RefreshCw className="w-4 h-4 text-ceci-brand-strong" />
+          sincronizar entre dispositivos
+          <ChevronRight className="w-4 h-4 ml-auto text-ceci-muted" />
+        </button>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <button

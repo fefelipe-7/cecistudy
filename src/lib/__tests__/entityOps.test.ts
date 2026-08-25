@@ -24,7 +24,6 @@ const course: Course = {
   schedule: [{ day: 1, start: '09:00' }],
   color: '#E97891',
   icon: 'Brain',
-  progress: 50,
 };
 
 const classNote: ClassNote = {

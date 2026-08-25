@@ -1,0 +1,367 @@
+import React, { Suspense, lazy } from 'react';
+import { useApp } from '../context/AppContext';
+import { ViewSkeleton } from '../components/ui/Skeleton';
+
+// C1: views carregadas sob demanda — cada uma vira chunk próprio; o boot fica
+// leve e a biblioteca (com o catálogo estático grande) só carrega ao ser aberta.
+// As factories ficam nomeadas para o preload pós-boot (preloadScreenChunks):
+// assim a 1ª visita a uma aba já anima o conteúdo real, não o skeleton.
+const loadHomeView = () => import('../components/views/HomeView').then((m) => ({ default: m.HomeView }));
+const loadFaculdadeView = () => import('../components/views/FaculdadeView').then((m) => ({ default: m.FaculdadeView }));
+const loadEstudosView = () => import('../components/views/EstudosView').then((m) => ({ default: m.EstudosView }));
+const loadBibliotecaView = () => import('../components/views/BibliotecaView').then((m) => ({ default: m.BibliotecaView }));
+const loadPerfilView = () => import('../components/views/PerfilView').then((m) => ({ default: m.PerfilView }));
+const loadStreakView = () => import('../components/views/StreakView').then((m) => ({ default: m.StreakView }));
+const loadSyncScreen = () => import('../components/sync/SyncScreen').then((m) => ({ default: m.SyncScreen }));
+const loadComposeNoteView = () => import('../components/views/ComposeNoteView').then((m) => ({ default: m.ComposeNoteView }));
+const loadClassNoteDetailWizard = () => import('../components/views/ClassNoteDetailWizard').then((m) => ({ default: m.ClassNoteDetailWizard }));
+const loadNoteDetailWizard = () => import('../components/views/NoteDetailWizard').then((m) => ({ default: m.NoteDetailWizard }));
+const loadNoteTransformWizard = () => import('../components/views/NoteTransformWizard').then((m) => ({ default: m.NoteTransformWizard }));
+const loadWizardRouter = () => import('../components/wizards/WizardRouter').then((m) => ({ default: m.WizardRouter }));
+
+// Quiz components (lazy loaded)
+const loadQuizCategorySelector = () => import('../components/quizzes/QuizCategorySelector').then((m) => ({ default: m.QuizCategorySelector }));
+const loadQuizLoadingScreen = () => import('../components/quizzes/QuizLoadingScreen').then((m) => ({ default: m.QuizLoadingScreen }));
+const loadQuizPlayer = () => import('../components/quizzes/QuizPlayer').then((m) => ({ default: m.QuizPlayer }));
+const loadQuizResultScreen = () => import('../components/quizzes/QuizResultScreen').then((m) => ({ default: m.QuizResultScreen }));
+
+// Study screens (telas dedicadas da aba estudos)
+const loadStudyFocusScreen = () => import('../components/estudos/StudyFocusScreen').then((m) => ({ default: m.StudyFocusScreen }));
+const loadStudyRevisarScreen = () => import('../components/estudos/StudyRevisarScreen').then((m) => ({ default: m.StudyRevisarScreen }));
+const loadStudyLeiturasScreen = () => import('../components/estudos/StudyLeiturasScreen').then((m) => ({ default: m.StudyLeiturasScreen }));
+const loadStudyHistoricoScreen = () => import('../components/estudos/StudyHistoricoScreen').then((m) => ({ default: m.StudyHistoricoScreen }));
+
+// Telas de domínio empilhadas sobre suas abas (estágio → faculdade, TCC → estudos)
+const loadInternshipDiaryView = () => import('../components/views/InternshipDiaryView').then((m) => ({ default: m.InternshipDiaryView }));
+const loadTccView = () => import('../components/views/TccView').then((m) => ({ default: m.TccView }));
+
+// Desktop (master-detail da faculdade)
+const loadSplitLayout = () => import('../desktop/layouts/SplitLayout').then((m) => ({ default: m.SplitLayout }));
+const loadCourseMasterList = () => import('../desktop/components/CourseMasterList').then((m) => ({ default: m.CourseMasterList }));
+const loadCourseDetailPane = () => import('../desktop/components/CourseDetailPane').then((m) => ({ default: m.CourseDetailPane }));
+
+const HomeView = lazy(loadHomeView);
+const FaculdadeView = lazy(loadFaculdadeView);
+const EstudosView = lazy(loadEstudosView);
+const BibliotecaView = lazy(loadBibliotecaView);
+const PerfilView = lazy(loadPerfilView);
+const StreakView = lazy(loadStreakView);
+const SyncScreen = lazy(loadSyncScreen);
+const ComposeNoteView = lazy(loadComposeNoteView);
+const ClassNoteDetailWizard = lazy(loadClassNoteDetailWizard);
+const NoteDetailWizard = lazy(loadNoteDetailWizard);
+const NoteTransformWizard = lazy(loadNoteTransformWizard);
+const WizardRouter = lazy(loadWizardRouter);
+
+// Quiz components (lazy loaded)
+const QuizCategorySelector = lazy(loadQuizCategorySelector);
+const QuizLoadingScreen = lazy(loadQuizLoadingScreen);
+const QuizPlayer = lazy(loadQuizPlayer);
+const QuizResultScreen = lazy(loadQuizResultScreen);
+
+// Study screens (telas dedicadas da aba estudos)
+const StudyFocusScreen = lazy(loadStudyFocusScreen);
+const StudyRevisarScreen = lazy(loadStudyRevisarScreen);
+const StudyLeiturasScreen = lazy(loadStudyLeiturasScreen);
+const StudyHistoricoScreen = lazy(loadStudyHistoricoScreen);
+
+// Telas de domínio empilhadas sobre suas abas (estágio → faculdade, TCC → estudos)
+const InternshipDiaryView = lazy(loadInternshipDiaryView);
+const TccView = lazy(loadTccView);
+
+// Desktop (master-detail da faculdade)
+const SplitLayout = lazy(loadSplitLayout);
+const CourseMasterList = lazy(loadCourseMasterList);
+const CourseDetailPane = lazy(loadCourseDetailPane);
+
+import { Panel } from '../desktop/components/ui/Panel';
+import { AnimatePresence, motion } from 'framer-motion';
+
+/** Fallback discreto enquanto um chunk de view carrega (primeira visita à aba). */
+export const ViewFallback = () => <ViewSkeleton rows={5} />;
+
+/** Factories de todos os chunks de tela — reutilizadas pelo lazy e pelo preload. */
+const SCREEN_CHUNK_LOADERS = [
+  loadHomeView,
+  loadFaculdadeView,
+  loadEstudosView,
+  loadBibliotecaView,
+  loadPerfilView,
+  loadStreakView,
+  loadSyncScreen,
+  loadComposeNoteView,
+  loadClassNoteDetailWizard,
+  loadNoteDetailWizard,
+  loadNoteTransformWizard,
+  loadWizardRouter,
+  loadQuizCategorySelector,
+  loadQuizLoadingScreen,
+  loadQuizPlayer,
+  loadQuizResultScreen,
+  loadStudyFocusScreen,
+  loadStudyRevisarScreen,
+  loadStudyLeiturasScreen,
+  loadStudyHistoricoScreen,
+  loadInternshipDiaryView,
+  loadTccView,
+  loadSplitLayout,
+  loadCourseMasterList,
+  loadCourseDetailPane,
+];
+
+let preloaded = false;
+
+/**
+ * Pré-carrega os chunks das telas no primeiro idle pós-boot: a 1ª visita a uma
+ * aba/tela auxiliar anima o conteúdo real em vez do skeleton. Idempotente.
+ */
+export function preloadScreenChunks(): void {
+  if (preloaded || typeof window === 'undefined') return;
+  preloaded = true;
+  const schedule =
+    typeof window.requestIdleCallback === 'function'
+      ? (cb: () => void) => window.requestIdleCallback(() => cb(), { timeout: 3000 })
+      : (cb: () => void) => window.setTimeout(cb, 1500);
+  schedule(() => {
+    SCREEN_CHUNK_LOADERS.forEach((load) => {
+      void load().catch(() => {});
+    });
+  });
+}
+
+/**
+ * Crossfade sutil da pane de detalhe no master-detail desktop: trocar de
+ * disciplina na lista faz a pane antiga esvanece enquanto a nova entra.
+ */
+const DetailPaneFade: React.FC<{ paneKey: string; children: React.ReactNode }> = ({
+  paneKey,
+  children,
+}) => (
+  <AnimatePresence mode="popLayout" initial={false}>
+    <motion.div
+      key={paneKey}
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0, transition: { duration: 0.18, ease: 'easeOut' } }}
+      exit={{ opacity: 0, transition: { duration: 0.12, ease: 'easeIn' } }}
+    >
+      {children}
+    </motion.div>
+  </AnimatePresence>
+);
+
+/**
+ * Qual "casca" está renderizando o conteúdo — muda a composição (master-detail),
+ * nunca as views em si. A pilha no AppContext continua sendo a fonte da verdade.
+ */
+export type ShellKind = 'mobile' | 'desktop';
+
+/**
+ * Camada de slide: telas de base (tabs) + auxiliares de 1º nível
+ * (curso, notas, templo, streak, quiz, study…). Consumida pelas duas shells.
+ */
+export const SlideContent: React.FC<{ shell: ShellKind }> = ({ shell }) => {
+  const app = useApp();
+  const activeTab = app.activeTab;
+
+  return (
+    <>
+      {app.isStreakScreenOpen ? (
+        <Suspense fallback={<ViewFallback />}>
+          <StreakView />
+        </Suspense>
+      ) : app.isSyncScreenOpen ? (
+        <Suspense fallback={<ViewFallback />}>
+          <SyncScreen />
+        </Suspense>
+      ) : app.isQuizLoadingOpen ? (
+        <Suspense fallback={<ViewFallback />}>
+          <QuizLoadingScreen
+            config={app.currentQuizLoadingConfig!}
+            onReady={(pool, config) => app.openQuizPlay(pool, config)}
+            onCancel={app.closeQuizLoading}
+          />
+        </Suspense>
+      ) : app.isQuizCategoryOpen ? (
+        <Suspense fallback={<ViewFallback />}>
+          <QuizCategorySelector
+            questions={app.questions}
+            onStart={(config) => app.openQuizLoading(config)}
+            onClose={app.closeQuizCategory}
+            ensureQuestionsLoaded={app.ensureQuestionsLoaded}
+          />
+        </Suspense>
+      ) : app.focusedStudyScreen ? (
+        <Suspense fallback={<ViewFallback />}>
+          {app.focusedStudyScreen === 'focus' && <StudyFocusScreen />}
+          {app.focusedStudyScreen === 'revisar' && <StudyRevisarScreen />}
+          {app.focusedStudyScreen === 'leituras' && <StudyLeiturasScreen />}
+          {app.focusedStudyScreen === 'historico' && <StudyHistoricoScreen />}
+        </Suspense>
+      ) : app.isQuizPlayOpen ? (
+        <Suspense fallback={<ViewFallback />}>
+          <QuizPlayer
+            state={app.currentQuizPlayState!}
+            onAnswer={(answer) => {
+              // Registra a resposta (sem avançar o índice)
+              const current = app.currentQuizPlayState!;
+              app.updateQuizPlayState({
+                answers: [...current.answers, answer],
+              });
+            }}
+            onAdvance={() => {
+              // Avança para próxima questão (sem adicionar resposta novamente)
+              const current = app.currentQuizPlayState!;
+              app.updateQuizPlayState({
+                currentIdx: current.currentIdx + 1,
+                questionStartTime: Date.now(),
+              });
+            }}
+            onFinish={(answers, config, startTime, correctCount, totalCount) => {
+              app.openQuizResult(answers, config, startTime, correctCount, totalCount);
+            }}
+          />
+        </Suspense>
+      ) : app.isQuizResultOpen ? (
+        <Suspense fallback={<ViewFallback />}>
+          <QuizResultScreen
+            answers={app.currentQuizResultAnswers!}
+            config={app.currentQuizResultConfig!}
+            startTime={app.currentQuizResultStartTime!}
+            correctCount={app.currentQuizResultCorrectCount!}
+            totalCount={app.currentQuizResultTotalCount!}
+            onSave={(sessionId) => {
+              app.handleSaveQuizSession({
+                id: sessionId,
+                config: app.currentQuizResultConfig!,
+                answers: app.currentQuizResultAnswers!,
+                startedAt: app.currentQuizResultStartTime!,
+                finishedAt: Date.now(),
+                totalTimeMs: Date.now() - app.currentQuizResultStartTime!,
+                correctCount: app.currentQuizResultCorrectCount!,
+                totalCount: app.currentQuizResultTotalCount!,
+                scorePct: Math.round((app.currentQuizResultCorrectCount! / app.currentQuizResultTotalCount!) * 100),
+                createdAt: new Date().toISOString().split('T')[0],
+              });
+              app.closeAllQuizScreens();
+              app.showToast('sessão de quiz guardada ♡');
+            }}
+            onRetry={() => {
+              // Repete o mesmo quiz (mesmo pool + config). Se a pool não sobreviveu
+              // (ex.: reload direto no hash de resultado), volta ao seletor.
+              if (!app.currentQuizResultPool || app.currentQuizResultPool.length === 0) {
+                app.newQuizFromResult();
+                return;
+              }
+              app.openQuizPlay(app.currentQuizResultPool, app.currentQuizResultConfig!);
+            }}
+            onNewQuiz={() => {
+              // Volta para o seletor de assuntos
+              app.newQuizFromResult();
+            }}
+          />
+        </Suspense>
+      ) : (
+        <>
+          <Suspense fallback={<ViewFallback />}>
+            {activeTab === 'home' && <HomeView />}
+            {activeTab === 'faculdade' &&
+              (app.isInternshipDiaryOpen ? (
+                <InternshipDiaryView />
+              ) : shell === 'desktop' && app.subTabFaculdade === 'disciplinas' ? (
+                // Desktop: master-detail — lista compacta à esquerda, detalhe à direita.
+                <SplitLayout
+                  master={<CourseMasterList />}
+                  detail={
+                    <DetailPaneFade paneKey={app.focusedCourse?.id ?? 'empty'}>
+                      {app.focusedCourse ? (
+                        <CourseDetailPane course={app.focusedCourse} />
+                      ) : (
+                        <DesktopDetailPlaceholder />
+                      )}
+                    </DetailPaneFade>
+                  }
+                />
+              ) : (
+                <FaculdadeView course={app.focusedCourse} />
+              ))}
+            {activeTab === 'estudos' &&
+              (app.isTccScreenOpen ? <TccView /> : <EstudosView />)}
+            {activeTab === 'biblioteca' && (
+              <BibliotecaView
+                mode={
+                  app.isNotesScreenOpen
+                    ? 'notes'
+                    : app.isTempleScreenOpen
+                      ? 'temple'
+                      : app.focusedTempleSection
+                        ? app.focusedTempleSection
+                        : app.isFamiliesScreenOpen
+                          ? 'families'
+                          : app.focusedFamilyId
+                            ? 'family'
+                            : app.focusedApproachId
+                              ? 'approach'
+                              : 'library'
+                }
+                familyId={app.focusedFamilyId ?? undefined}
+                approachId={app.focusedApproachId ?? undefined}
+              />
+            )}
+            {activeTab === 'perfil' && (
+              <PerfilView mode={app.isStickersScreenOpen ? 'stickers' : 'profile'} />
+            )}
+          </Suspense>
+        </>
+      )}
+    </>
+  );
+};
+
+/** Placeholder da pane de detalhe quando nenhuma disciplina está selecionada. */
+const DesktopDetailPlaceholder = () => (
+  <Panel
+    dashed
+    className="min-h-[320px] flex flex-col items-center justify-center gap-2 p-8 text-center"
+  >
+    <span className="text-3xl" aria-hidden>🌷</span>
+    <p className="font-display font-semibold text-ceci-primary">sua grade aparece aqui</p>
+    <p className="text-xs text-ceci-secondary max-w-[240px]">
+      escolha uma disciplina na lista ao lado para ver aulas, avaliações e repertório ♡
+    </p>
+  </Panel>
+);
+
+/**
+ * Camada overlay (fade+scale): fluxos profundos da pilha
+ * (compose, wizards, detalhes de nota). A shell decide a moldura:
+ * fullscreen no mobile, janela centrada no desktop.
+ */
+export const OverlayContent: React.FC = () => {
+  const app = useApp();
+
+  return (
+    <>
+      {app.isComposeScreenOpen ? (
+        <Suspense fallback={<ViewFallback />}>
+          <ComposeNoteView />
+        </Suspense>
+      ) : app.isComposeDetailsOpen ? (
+        <Suspense fallback={<ViewFallback />}>
+          <ClassNoteDetailWizard />
+        </Suspense>
+      ) : app.isNoteDetailOpen ? (
+        <Suspense fallback={<ViewFallback />}>
+          <NoteDetailWizard />
+        </Suspense>
+      ) : app.isNoteTransformOpen ? (
+        <Suspense fallback={<ViewFallback />}>
+          <NoteTransformWizard />
+        </Suspense>
+      ) : app.isWizardOpen ? (
+        <Suspense fallback={<ViewFallback />}>
+          <WizardRouter />
+        </Suspense>
+      ) : null}
+    </>
+  );
+};

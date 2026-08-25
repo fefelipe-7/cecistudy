@@ -1,4 +1,5 @@
-import type { NavTab, NavScreen, WizardFlow, QuizConfig, QuizAnswer, QuizPlayState, StudyScreen } from '../types';
+import type { NavTab, NavScreen, WizardFlow, QuizConfig, QuizAnswer, QuizPlayState, StudyScreen, TempleSection } from '../types';
+import { TEMPLE_SECTION_SLUGS } from '../types';
 
 /**
  * Rota virtual (espelho do `location.hash`).
@@ -10,6 +11,8 @@ export interface Route {
   focusedCourseId?: string | null;
   notes?: boolean;
   temple?: boolean;
+  /** Seção interna do templo (ex.: `#/biblioteca/templo/conceitos`). */
+  templeSection?: TempleSection;
   /** Detalhe de uma nota avulsa (ex.: `#/biblioteca/notas/:noteId`). */
   noteDetailId?: string;
   /** Transformação de uma nota em outra entidade (ex.: `#/biblioteca/notas/:noteId/transformar`). */
@@ -47,6 +50,8 @@ export interface Route {
   families?: boolean;
   /** Detalhe de uma família (ex.: `#/biblioteca/familias/:famId`). */
   familyId?: string;
+  /** Sincronização entre dispositivos (ex.: `#/perfil/sincronizar`). */
+  sync?: boolean;
 }
 
 /** Valores de sub-tab conhecidos por aba (usados para distinguir sub-tab de courseId na rota). */
@@ -194,7 +199,16 @@ export function parseRoute(hash: string): Route {
       if (h[2]) return { tab: 'biblioteca', noteDetailId: h[2] };
       return { tab: 'biblioteca', notes: true };
     }
-    if (h[1] === 'templo') return { tab: 'biblioteca', temple: true };
+    if (h[1] === 'templo') {
+      // Seções internas: `#/biblioteca/templo/conceitos|autores|tecnicas`
+      if (h[2]) {
+        const section = (Object.keys(TEMPLE_SECTION_SLUGS) as TempleSection[]).find(
+          (s) => TEMPLE_SECTION_SLUGS[s] === h[2]
+        );
+        if (section) return { tab: 'biblioteca', templeSection: section };
+      }
+      return { tab: 'biblioteca', temple: true };
+    }
     const s = subtab('biblioteca');
     if (s) return { tab: 'biblioteca', subTab: s };
     return { tab: 'biblioteca' };
@@ -226,6 +240,7 @@ export function parseRoute(hash: string): Route {
     if (h[1] === 'stickers') {
       return { tab: 'perfil', stickers: true };
     }
+    if (h[1] === 'sincronizar') return { tab: 'perfil', sync: true };
     if (h[1] === 'streak') return { tab: 'perfil', streak: true };
     return { tab: 'perfil' };
   }
@@ -278,6 +293,13 @@ export function routeToStack(route: Route): NavScreen[] {
     ];
   }
   if (route.temple) return [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'temple' }];
+  if (route.templeSection) {
+    return [
+      { kind: 'tab', tab: 'biblioteca' },
+      { kind: 'temple' },
+      { kind: 'templeSection', section: route.templeSection },
+    ];
+  }
   if (route.approachId) {
     return [...baseStackFor('biblioteca'), { kind: 'approach', approachId: route.approachId }];
   }
@@ -286,6 +308,9 @@ export function routeToStack(route: Route): NavScreen[] {
   }
   if (route.families) {
     return [...baseStackFor('biblioteca'), { kind: 'families' }];
+  }
+  if (route.sync) {
+    return [{ kind: 'tab', tab: 'perfil' }, { kind: 'sync' }];
   }
   if (route.quizCategory || route.quizLoading) {
     return [...baseStackFor('estudos'), { kind: 'quiz-category' }];
@@ -339,12 +364,16 @@ export function stackToHash(stack: NavScreen[], subTab?: string): string {
   if (top.kind === 'noteDetail') return `#/biblioteca/notas/${top.noteId}`;
   if (top.kind === 'noteTransform') return `#/biblioteca/notas/${top.noteId}/transformar`;
   if (top.kind === 'temple') return '#/biblioteca/templo';
+  if (top.kind === 'templeSection') {
+    return `#/biblioteca/templo/${TEMPLE_SECTION_SLUGS[top.section]}`;
+  }
   if (top.kind === 'course') return `#/faculdade/${top.courseId}`;
   if (top.kind === 'approach') {
     return `#/biblioteca/abordagens/${top.approachId}`;
   }
   if (top.kind === 'families') return '#/biblioteca/familias';
   if (top.kind === 'family') return `#/biblioteca/familias/${top.familyId}`;
+  if (top.kind === 'sync') return '#/perfil/sincronizar';
   if (top.kind === 'quiz-category' || top.kind === 'quiz-loading') return '#/estudos/quiz';
   if (top.kind === 'quiz-play') return '#/estudos/quiz/play';
   if (top.kind === 'quiz-result') return '#/estudos/quiz/result';

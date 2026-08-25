@@ -1,0 +1,16 @@
+{
+  "id": "cat-humanista-existencial-e-fenomenologica",
+  "slug": "humanista-existencial-e-fenomenologica",
+  "title": "Humanista, Existencial e Fenomenológica",
+  "displayOrder": 10,
+  "questionCount": 155,
+  "approachIds": [
+    "app-humanista-existencial-e-fenomenologica"
+  ],
+  "groupCount": 1,
+  "status": "published",
+  "allowedFormats": [
+    "multiple_choice",
+    "true_false"
+  ]
+}

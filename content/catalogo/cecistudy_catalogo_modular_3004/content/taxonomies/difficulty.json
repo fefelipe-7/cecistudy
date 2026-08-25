@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "basic",
+      "name": "Básica"
+    },
+    {
+      "id": "intermediate",
+      "name": "Intermediária"
+    },
+    {
+      "id": "advanced",
+      "name": "Avançada"
+    },
+    {
+      "id": "unspecified",
+      "name": "Não especificada"
+    }
+  ]
+}

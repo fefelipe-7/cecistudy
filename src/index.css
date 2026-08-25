@@ -1,6 +1,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/*
+ * Variante de plataforma (não de viewport): aplica utilitários só quando o
+ * bundle roda dentro da casca Tauri (`<html data-platform="desktop">`, setado
+ * por `initPlatformFlags()` no boot). Uso: `desktop:max-w-none`, etc.
+ * O responsivo interno da janela continua existindo (min 420×720).
+ */
+@custom-variant desktop ([data-platform="desktop"] &);
+
 @theme {
   /* cecistudy DESIGN SYSTEM PRIMITIVE TOKENS */
 

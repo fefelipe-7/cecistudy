@@ -1,0 +1,67 @@
+{
+  "id": "tec-evocacao-emocional",
+  "nome": "Evocação emocional",
+  "canonicalKey": "evocacao emocional",
+  "emUmaFrase": "Evocação emocional é uma prática clínica ou recurso de estudo usado para trabalhar acesso, diferenciação, simbolização e transformação de experiências emocionais.",
+  "definicao": "Evocação emocional é uma prática clínica ou recurso de estudo usado para trabalhar acesso, diferenciação, simbolização e transformação de experiências emocionais. Em sentido técnico, sua definição deve ser vinculada ao tipo de tarefa, atitude ou processo que organiza a sessão, e não apenas ao nome da escola.",
+  "objetivo": "Utilizar evocação emocional para apoiar objetivos clínicos definidos colaborativamente, sempre considerando a formulação do caso, a preferência da pessoa e o contexto.",
+  "comoFunciona": "O mecanismo proposto depende da categoria: acesso, diferenciação, simbolização e transformação de experiências emocionais. No caso de evocação emocional, o terapeuta deve explicitar qual aprendizagem ou processo está sendo buscado e como será observado.",
+  "quandoEUtilizada": "Pode ser considerada quando a formulação clínica indicar que evocação emocional é compatível com o problema, os objetivos, a fase do tratamento, a capacidade de participação e as preferências da pessoa. Não é uma indicação universal.",
+  "comoEAplicada": "O uso de evocação emocional começa com explicação e acordo sobre o objetivo, segue com aplicação graduada e observação da resposta, e termina com integração da aprendizagem e planejamento de continuidade. A experiência emocional é explorada de modo graduado, responsivo e vinculado a significado, relação e ação.",
+  "origem": "Foi desenvolvida em tradições humanistas, Gestalt, terapia experiencial, psicodinâmica breve e modelos integrativos interessados em emoção como processo de mudança.",
+  "desenvolvimentoHistorico": "No desenvolvimento histórico, evocação emocional passou de uma prática situada em determinadas escolas a um recurso que pode ser adaptado ou questionado em outros modelos. A migração entre abordagens deve preservar contexto, finalidade e limites.",
+  "exemploPratico": "Em um exemplo didático, o terapeuta apresenta evocação emocional a uma pessoa com uma dificuldade previamente formulada, combina um pequeno exercício, observa o que ocorre e pergunta o que foi aprendido, sem tratar o exemplo como protocolo universal.",
+  "fundamentacaoTeorica": "A fundamentação editorial desta técnica é organizada pela categoria “emocionais-experienciais”: acesso, diferenciação, simbolização e transformação de experiências emocionais. A fonte deve ser lida para distinguir descrição histórica, hipótese de mecanismo e evidência de resultado.",
+  "evidencias": "As terapias experienciais têm literatura crescente, com resultados favoráveis em algumas condições, mas as técnicas isoladas são difíceis de separar de relação terapêutica, formulação e processo emocional. Revisões de terapias dinâmico-experienciais e trabalho de cadeiras apoiam investigação cuidadosa, sem transformar toda experiência intensa em mecanismo terapêutico.",
+  "limitacoes": "Intensidade emocional não garante mudança; evocação sem integração pode desregular, retraumatizar ou produzir conclusões precipitadas. O ritmo deve ser responsivo e a técnica não deve ser usada para forçar catarse.",
+  "contextoClinico": "Pode aparecer em terapias experienciais, Gestalt, Focadas nas Emoções e modelos integrativos, mas a mesma técnica também pode atravessar outras escolas quando seu objetivo e sua função clínica forem preservados.",
+  "observacoes": "Classificação interna: tecnica. O nome pode designar técnica, procedimento, habilidade, atitude ou processo conforme o modelo; o registro separa o tipo para evitar equivalências artificiais.",
+  "tipoTecnica": "tecnica",
+  "classificacaoEstatuto": "recurso clínico estudado em contexto de abordagem; o estatuto específico pode ser técnica, procedimento, habilidade, estratégia, exercício ou atitude terapêutica.",
+  "slug": "evocacao-emocional",
+  "dominioId": "domain-emocionais-experienciais",
+  "dominioIds": [
+    "domain-emocionais-experienciais"
+  ],
+  "dominioNomes": [
+    "Técnicas Emocionais e Experienciais"
+  ],
+  "ordemExibicao": 42,
+  "posicoesNominais": [
+    {
+      "categoryId": "domain-emocionais-experienciais",
+      "categoryName": "Técnicas Emocionais e Experienciais",
+      "ordem": 42,
+      "nomeOriginal": "Evocação emocional"
+    }
+  ],
+  "abordagemIds": [
+    "app-existencial_humanista-terapia-experiencial",
+    "app-existencial_humanista-gestalt-terapia",
+    "app-existencial_humanista-terapia-focada-nas-emocoes",
+    "app-integrativa_ecletica-psicoterapia-integrativa-geral"
+  ],
+  "modeloIds": [],
+  "fonteIds": [
+    "src-experiential-dynamic-2025",
+    "src-chairwork-2026",
+    "src-humanistic-research"
+  ],
+  "tecnicasRelacionadasIds": [
+    "tec-focalizacao",
+    "tec-processamento-emocional",
+    "tec-experimentos-experienciais",
+    "tec-cadeira-vazia",
+    "tec-duas-cadeiras",
+    "tec-trabalho-com-emocoes",
+    "tec-acesso-a-experiencia",
+    "tec-expressao-emocional",
+    "tec-regulacao-emocional",
+    "tec-amplificacao",
+    "tec-reconhecimento-emocional"
+  ],
+  "dataCadastro": "2026-08-20T19:40:41.316148+00:00",
+  "dataUltimaRevisao": "2026-08-20T19:40:41.316153+00:00",
+  "status": "published",
+  "sourcePath": "content/techniques/emocionais-experienciais/tec-evocacao-emocional.json"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "app-psicopatologia-e-clinica",
+  "familyId": "family-clinical-public",
+  "name": "Psicopatologia e Clínica",
+  "shortName": "Psicopatologia e Clínica",
+  "summary": "Abordagem editorial do Cecistudy: Psicopatologia e Clínica.",
+  "questionCount": 206,
+  "status": "published",
+  "sourcePath": "content/approaches/linical-public/psicopatologia-e-clinica.json"
+}

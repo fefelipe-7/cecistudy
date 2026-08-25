@@ -12,6 +12,7 @@ import {
   mapArticles,
   listAreas,
   computeContentHash,
+  loadTempleSources,
 } from './content-data.mjs';
 
 const MIN = {
@@ -22,6 +23,12 @@ const MIN = {
   livrosCatalogo: 1,
   livrosInter: 1,
   artigos: 1,
+  conceitos: 200,
+  dominiosConceito: 10,
+  tecnicas: 130,
+  autores: 120,
+  categoriasQuestao: 18,
+  topicos: 1400,
 };
 
 const failures = [];
@@ -40,6 +47,20 @@ check('livros do catálogo', mapCatalogBooks().length, MIN.livrosCatalogo);
 check('livros interdisciplinares', mapInterdisciplinaryBooks().length, MIN.livrosInter);
 check('artigos', mapArticles().length, MIN.artigos);
 
+// templo de conhecimento
+const temple = loadTempleSources();
+const conceptDomains = new Set(temple.concepts.map((c) => c.domainId));
+check('conceitos', temple.concepts.length, MIN.conceitos);
+check('domínios de conceito', conceptDomains.size, MIN.dominiosConceito);
+check('técnicas', temple.techniques.length, MIN.tecnicas);
+check(
+  'autores (fichas curadas)',
+  temple.curatedAuthors.length,
+  MIN.autores
+);
+check('categorias de questão (pacote)', temple.questionCategories.length, MIN.categoriasQuestao);
+check('tópicos', temple.topics.length, MIN.topicos);
+
 const hash = computeContentHash();
 console.log(`hash do conteúdo: ${hash.slice(0, 16)}…`);
 
@@ -53,6 +74,14 @@ if (ids(PSICOTERAPIA_APPROACHES, 'id').size !== PSICOTERAPIA_APPROACHES.length) 
 }
 if (BANCO_QUESTOES.some((q) => !q.question || !q.answer)) {
   failures.push('questão sem pergunta/resposta');
+}
+// shape do templo: conceito sem id/nome/domínio; técnica fora de categoria conhecida
+if (temple.concepts.some((c) => !c.id || !c.name || !c.domainId)) {
+  failures.push('conceito sem id/nome/domínio');
+}
+const techniqueCategoryIds = new Set(temple.techniqueCategories.map((c) => c.id));
+if (temple.techniques.some((t) => !t.id || !techniqueCategoryIds.has(t.dominioId))) {
+  failures.push('técnica sem id ou categoria desconhecida');
 }
 
 if (failures.length > 0) {

@@ -36,6 +36,7 @@ import type {
   OnboardingState,
   QuizSession,
   LooseNote,
+  SyncIndex,
 } from '../types';
 
 /** Tipo do banco persistido completo (fonte única de verdade). */
@@ -75,6 +76,7 @@ export interface PersistedStateSnapshot {
   techniques: Technique[];
   quizSessions: QuizSession[];
   onboarding: OnboardingState;
+  syncIndex: SyncIndex;
 }
 
 /** Converte o estado do contexto no banco persistido completo. */
@@ -106,6 +108,7 @@ export function readDatabaseFromState(state: PersistedStateSnapshot): PersistedD
     techniques: state.techniques,
     quizSessions: state.quizSessions,
     onboarding: state.onboarding,
+    syncIndex: state.syncIndex ?? emptyDatabase().syncIndex,
   };
 }
 

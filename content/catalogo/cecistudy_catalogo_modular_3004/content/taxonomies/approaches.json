@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "app-avaliacao-psicologica-e-psicometria",
+      "name": "Avaliação Psicológica e Psicometria",
+      "questionCount": 156,
+      "familyId": "family-methodological",
+      "status": "published"
+    },
+    {
+      "id": "app-behaviorismo-e-teorias-da-aprendizagem",
+      "name": "Behaviorismo e Teorias da Aprendizagem",
+      "questionCount": 155,
+      "familyId": "family-cognitive-behavioral",
+      "status": "published"
+    },
+    {
+      "id": "app-desenvolvimento-humano",
+      "name": "Desenvolvimento Humano",
+      "questionCount": 150,
+      "familyId": "family-other",
+      "status": "published"
+    },
+    {
+      "id": "app-fundamentos-da-psicologia",
+      "name": "Fundamentos da Psicologia",
+      "questionCount": 335,
+      "familyId": "family-methodological",
+      "status": "published"
+    },
+    {
+      "id": "app-humanista-existencial-e-fenomenologica",
+      "name": "Humanista, Existencial e Fenomenológica",
+      "questionCount": 155,
+      "familyId": "family-humanistic-existential",
+      "status": "published"
+    },
+    {
+      "id": "app-neuropsicologia-e-psicobiologia",
+      "name": "Neuropsicologia e Psicobiologia",
+      "questionCount": 154,
+      "familyId": "family-biological",
+      "status": "published"
+    },
+    {
+      "id": "app-pesquisa-metodologia-e-estatistica",
+      "name": "Pesquisa, Metodologia e Estatística",
+      "questionCount": 156,
+      "familyId": "family-methodological",
+      "status": "published"
+    },
+    {
+      "id": "app-psicanalise-e-psicodinamica",
+      "name": "Psicanálise e Psicodinâmica",
+      "questionCount": 157,
+      "familyId": "family-psychodynamic",
+      "status": "published"
+    },
+    {
+      "id": "app-psicologia-cognitiva-e-tcc",
+      "name": "Psicologia Cognitiva e TCC",
+      "questionCount": 154,
+      "familyId": "family-cognitive-behavioral",
+      "status": "published"
+    },
+    {
+      "id": "app-psicologia-escolar-e-educacional",
+      "name": "Psicologia Escolar e Educacional",
+      "questionCount": 179,
+      "familyId": "family-contextual",
+      "status": "published"
+    },
+    {
+      "id": "app-psicologia-juridica-e-forense",
+      "name": "Psicologia Jurídica e Forense",
+      "questionCount": 155,
+      "familyId": "family-clinical-public",
+      "status": "published"
+    },
+    {
+      "id": "app-psicologia-organizacional-e-do-trabalho",
+      "name": "Psicologia Organizacional e do Trabalho",
+      "questionCount": 150,
+      "familyId": "family-contextual",
+      "status": "published"
+    },
+    {
+      "id": "app-psicologia-social-e-comunitaria",
+      "name": "Psicologia Social e Comunitária",
+      "questionCount": 151,
+      "familyId": "family-contextual",
+      "status": "published"
+    },
+    {
+      "id": "app-psicologia-da-saude-e-politicas-publicas",
+      "name": "Psicologia da Saúde e Políticas Públicas",
+      "questionCount": 184,
+      "familyId": "family-clinical-public",
+      "status": "published"
+    },
+    {
+      "id": "app-psicopatologia-e-clinica",
+      "name": "Psicopatologia e Clínica",
+      "questionCount": 206,
+      "familyId": "family-clinical-public",
+      "status": "published"
+    },
+    {
+      "id": "app-teorias-da-personalidade",
+      "name": "Teorias da Personalidade",
+      "questionCount": 157,
+      "familyId": "family-psychodynamic",
+      "status": "published"
+    },
+    {
+      "id": "app-etica-direitos-humanos-e-regulamentacao",
+      "name": "Ética, Direitos Humanos e Regulamentação",
+      "questionCount": 250,
+      "familyId": "family-clinical-public",
+      "status": "published"
+    }
+  ]
+}

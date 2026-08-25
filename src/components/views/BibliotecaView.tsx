@@ -25,6 +25,7 @@ import {
   MaterialItem,
   Course,
   SubTabBiblioteca,
+  TempleSection,
 } from '../../types';
 import {
   initialContextCollections,
@@ -61,6 +62,9 @@ import { BookDetailModal } from '../library/BookDetailModal';
 import { LibraryFilterModal } from '../library/LibraryFilterModal';
 import { NotesScreen } from '../library/NotesScreen';
 import { TempleScreen } from '../library/TempleScreen';
+import { ConceptsScreen } from '../library/temple/ConceptsScreen';
+import { AuthorsScreen } from '../library/temple/AuthorsScreen';
+import { TechniquesScreen } from '../library/temple/TechniquesScreen';
 import { FamiliesView } from './FamiliesView';
 import { FamilyDetailView } from './FamilyDetailView';
 import { ApproachDetailView } from './ApproachDetailView';
@@ -70,7 +74,14 @@ import { MixedCollectionBlock } from '../library/MixedCollectionBlock';
 import { ManageSurface } from '../ui/ManageSurface';
 import { useApp } from '../../context/AppContext';
 
-export type BibliotecaViewMode = 'library' | 'notes' | 'temple' | 'families' | 'family' | 'approach';
+export type BibliotecaViewMode =
+  | 'library'
+  | 'notes'
+  | 'temple'
+  | TempleSection
+  | 'families'
+  | 'family'
+  | 'approach';
 
 /** Card compacto de livro para as prateleiras de "meus materiais". */
 const MiniBookCard: React.FC<{
@@ -484,6 +495,17 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
   // Dedicated Screen View for "Templo de Conhecimento"
   if (mode === 'temple') {
     return <TempleScreen />;
+  }
+
+  // Seções internas do templo (conceitos / autores / técnicas)
+  if (mode === 'conceitos') {
+    return <ConceptsScreen />;
+  }
+  if (mode === 'autores') {
+    return <AuthorsScreen />;
+  }
+  if (mode === 'tecnicas') {
+    return <TechniquesScreen />;
   }
 
   // Dedicated Screen View for "Famílias de Psicoterapias"

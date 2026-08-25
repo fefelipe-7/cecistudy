@@ -9,10 +9,13 @@ import {
   HeartHandshake,
   History,
   Landmark,
+  Lightbulb,
   Sparkles,
   Target,
   Trophy,
+  User,
   Users,
+  Wrench,
   type LucideIcon,
 } from 'lucide-react';
 import type { CourseIconName } from '../../types';
@@ -31,6 +34,9 @@ const COURSE_ICON_MAP: Record<CourseIconName, LucideIcon> = {
   Clock,
   BookOpen,
   History,
+  Lightbulb,
+  User,
+  Wrench,
 };
 
 /** Mapa nome → componente (para pickers de ícone, ex.: EditCourseModal). */
@@ -50,6 +56,9 @@ const COURSE_ICON_COLOR: Record<CourseIconName, string> = {
   Clock: 'text-ceci-academic-strong',
   BookOpen: 'text-beige-700',
   History: 'text-ceci-brand-strong',
+  Lightbulb: 'text-ceci-academic-strong',
+  User: 'text-beige-700',
+  Wrench: 'text-success-deep',
 };
 
 /** Nomes de ícones resolvíveis (ordem estável p/ testes). */
@@ -67,6 +76,9 @@ export const COURSE_ICON_NAMES: readonly CourseIconName[] = [
   'Clock',
   'BookOpen',
   'History',
+  'Lightbulb',
+  'User',
+  'Wrench',
 ];
 
 interface CourseIconProps {

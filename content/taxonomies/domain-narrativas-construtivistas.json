@@ -1,0 +1,11 @@
+{
+  "id": "domain-narrativas-construtivistas",
+  "nome": "Técnicas Narrativas e Construtivistas",
+  "slug": "narrativas-construtivistas",
+  "descricaoCurta": "Construção de significados, linguagem, identidade e alternativas narrativas.",
+  "ordemExibicao": 8,
+  "quantidadeDeclarada": 10,
+  "quantidadeNominal": 14,
+  "status": "published",
+  "sourcePath": "content/techniques/narrativas-construtivistas/category.json"
+}

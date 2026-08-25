@@ -1,0 +1,11 @@
+{
+  "id": "domain-psicodinamicas",
+  "nome": "Técnicas Psicodinâmicas",
+  "slug": "psicodinamicas",
+  "descricaoCurta": "Exploração de conflitos, defesas, transferência, fantasias e padrões relacionais.",
+  "ordemExibicao": 6,
+  "quantidadeDeclarada": 15,
+  "quantidadeNominal": 15,
+  "status": "published",
+  "sourcePath": "content/techniques/psicodinamicas/category.json"
+}

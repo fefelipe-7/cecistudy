@@ -1,0 +1,16 @@
+{
+  "id": "cat-psicologia-da-saude-sus-e-politicas-publicas",
+  "slug": "psicologia-da-saude-sus-e-politicas-publicas",
+  "title": "Psicologia da Saúde, SUS e Políticas Públicas",
+  "displayOrder": 14,
+  "questionCount": 152,
+  "approachIds": [
+    "app-psicologia-da-saude-e-politicas-publicas"
+  ],
+  "groupCount": 2,
+  "status": "published",
+  "allowedFormats": [
+    "multiple_choice",
+    "true_false"
+  ]
+}

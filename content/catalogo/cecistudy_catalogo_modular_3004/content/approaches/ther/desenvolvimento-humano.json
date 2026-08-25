@@ -1,0 +1,10 @@
+{
+  "id": "app-desenvolvimento-humano",
+  "familyId": "family-other",
+  "name": "Desenvolvimento Humano",
+  "shortName": "Desenvolvimento Humano",
+  "summary": "Abordagem editorial do Cecistudy: Desenvolvimento Humano.",
+  "questionCount": 150,
+  "status": "published",
+  "sourcePath": "content/approaches/ther/desenvolvimento-humano.json"
+}

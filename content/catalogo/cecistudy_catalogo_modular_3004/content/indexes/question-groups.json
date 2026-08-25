@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "groups": [
+    {
+      "id": "qg-avaliacao-psicologica-e-psicometria-pesquisa-avaliacao-e-fundamentos",
+      "title": "Avaliação Psicológica e Psicometria — Pesquisa, Avaliação e Fundamentos",
+      "path": "content/questions/avaliacao-psicologica-e-psicometria/pesquisa-avaliacao-e-fundamentos.questions.json",
+      "questionCount": 4
+    },
+    {
+      "id": "qg-avaliacao-psicologica-e-psicometria-psicopatologia-neuropsicologia-e-avaliacao",
+      "title": "Avaliação Psicológica e Psicometria — Psicopatologia, Neuropsicologia e Avaliação",
+      "path": "content/questions/avaliacao-psicologica-e-psicometria/psicopatologia-neuropsicologia-e-avaliacao.questions.json",
+      "questionCount": 152
+    },
+    {
+      "id": "qg-behaviorismo-e-teorias-da-aprendizagem-contextos-profissionais-e-institucionais",
+      "title": "Behaviorismo e Teorias da Aprendizagem — Contextos Profissionais e Institucionais",
+      "path": "content/questions/behaviorismo-e-teorias-da-aprendizagem/contextos-profissionais-e-institucionais.questions.json",
+      "questionCount": 98
+    },
+    {
+      "id": "qg-behaviorismo-e-teorias-da-aprendizagem-desenvolvimento-aprendizagem-e-cognicao",
+      "title": "Behaviorismo e Teorias da Aprendizagem — Desenvolvimento, Aprendizagem e Cognição",
+      "path": "content/questions/behaviorismo-e-teorias-da-aprendizagem/desenvolvimento-aprendizagem-e-cognicao.questions.json",
+      "questionCount": 57
+    },
+    {
+      "id": "qg-conhecimentos-gerais-etica-direitos-documentos-e-politicas-publicas",
+      "title": "Conhecimentos Gerais — Ética, Direitos, Documentos e Políticas Públicas",
+      "path": "content/questions/conhecimentos-gerais/etica-direitos-documentos-e-politicas-publicas.questions.json",
+      "questionCount": 10
+    },
+    {
+      "id": "qg-desenvolvimento-humano-desenvolvimento-aprendizagem-e-cognicao",
+      "title": "Desenvolvimento Humano — Desenvolvimento, Aprendizagem e Cognição",
+      "path": "content/questions/desenvolvimento-humano/desenvolvimento-aprendizagem-e-cognicao.questions.json",
+      "questionCount": 150
+    },
+    {
+      "id": "qg-fundamentos-historia-e-teorias-pesquisa-avaliacao-e-fundamentos",
+      "title": "Fundamentos, História e Teorias — Pesquisa, Avaliação e Fundamentos",
+      "path": "content/questions/fundamentos-historia-e-teorias/pesquisa-avaliacao-e-fundamentos.questions.json",
+      "questionCount": 275
+    },
+    {
+      "id": "qg-humanista-existencial-e-fenomenologica-psicanalise-humanismo-e-clinica",
+      "title": "Humanista, Existencial e Fenomenológica — Psicanálise, Humanismo e Clínica",
+      "path": "content/questions/humanista-existencial-e-fenomenologica/psicanalise-humanismo-e-clinica.questions.json",
+      "questionCount": 155
+    },
+    {
+      "id": "qg-neuropsicologia-e-psicobiologia-pesquisa-avaliacao-e-fundamentos",
+      "title": "Neuropsicologia e Psicobiologia — Pesquisa, Avaliação e Fundamentos",
+      "path": "content/questions/neuropsicologia-e-psicobiologia/pesquisa-avaliacao-e-fundamentos.questions.json",
+      "questionCount": 9
+    },
+    {
+      "id": "qg-neuropsicologia-e-psicobiologia-psicopatologia-neuropsicologia-e-avaliacao",
+      "title": "Neuropsicologia e Psicobiologia — Psicopatologia, Neuropsicologia e Avaliação",
+      "path": "content/questions/neuropsicologia-e-psicobiologia/psicopatologia-neuropsicologia-e-avaliacao.questions.json",
+      "questionCount": 146
+    },
+    {
+      "id": "qg-pesquisa-metodologia-e-estatistica-pesquisa-avaliacao-e-fundamentos",
+      "title": "Pesquisa, Metodologia e Estatística — Pesquisa, Avaliação e Fundamentos",
+      "path": "content/questions/pesquisa-metodologia-e-estatistica/pesquisa-avaliacao-e-fundamentos.questions.json",
+      "questionCount": 156
+    },
+    {
+      "id": "qg-psicanalise-e-psicodinamica-psicanalise-humanismo-e-clinica",
+      "title": "Psicanálise e Psicodinâmica — Psicanálise, Humanismo e Clínica",
+      "path": "content/questions/psicanalise-e-psicodinamica/psicanalise-humanismo-e-clinica.questions.json",
+      "questionCount": 157
+    },
+    {
+      "id": "qg-psicologia-cognitiva-e-tcc-desenvolvimento-aprendizagem-e-cognicao",
+      "title": "Psicologia Cognitiva e TCC — Desenvolvimento, Aprendizagem e Cognição",
+      "path": "content/questions/psicologia-cognitiva-e-tcc/desenvolvimento-aprendizagem-e-cognicao.questions.json",
+      "questionCount": 153
+    },
+    {
+      "id": "qg-psicologia-cognitiva-e-tcc-psicanalise-humanismo-e-clinica",
+      "title": "Psicologia Cognitiva e TCC — Psicanálise, Humanismo e Clínica",
+      "path": "content/questions/psicologia-cognitiva-e-tcc/psicanalise-humanismo-e-clinica.questions.json",
+      "questionCount": 1
+    },
+    {
+      "id": "qg-psicologia-escolar-e-educacional-contextos-profissionais-e-institucionais",
+      "title": "Psicologia Escolar e Educacional — Contextos Profissionais e Institucionais",
+      "path": "content/questions/psicologia-escolar-e-educacional/contextos-profissionais-e-institucionais.questions.json",
+      "questionCount": 9
+    },
+    {
+      "id": "qg-psicologia-escolar-e-educacional-desenvolvimento-aprendizagem-e-cognicao",
+      "title": "Psicologia Escolar e Educacional — Desenvolvimento, Aprendizagem e Cognição",
+      "path": "content/questions/psicologia-escolar-e-educacional/desenvolvimento-aprendizagem-e-cognicao.questions.json",
+      "questionCount": 50
+    },
+    {
+      "id": "qg-psicologia-escolar-e-educacional-psicologia-escolar-e-educacional",
+      "title": "Psicologia Escolar e Educacional — Psicologia Escolar e Educacional",
+      "path": "content/questions/psicologia-escolar-e-educacional/psicologia-escolar-e-educacional.questions.json",
+      "questionCount": 170
+    },
+    {
+      "id": "qg-psicologia-juridica-e-forense-contextos-profissionais-e-institucionais",
+      "title": "Psicologia Jurídica e Forense — Contextos Profissionais e Institucionais",
+      "path": "content/questions/psicologia-juridica-e-forense/contextos-profissionais-e-institucionais.questions.json",
+      "questionCount": 155
+    },
+    {
+      "id": "qg-psicologia-organizacional-e-do-trabalho-contextos-profissionais-e-institucionais",
+      "title": "Psicologia Organizacional e do Trabalho — Contextos Profissionais e Institucionais",
+      "path": "content/questions/psicologia-organizacional-e-do-trabalho/contextos-profissionais-e-institucionais.questions.json",
+      "questionCount": 150
+    },
+    {
+      "id": "qg-psicologia-social-grupos-e-diversidade-psicologia-social-grupos-e-diversidade",
+      "title": "Psicologia Social, Grupos e Diversidade — Psicologia Social, Grupos e Diversidade",
+      "path": "content/questions/psicologia-social-grupos-e-diversidade/psicologia-social-grupos-e-diversidade.questions.json",
+      "questionCount": 150
+    },
+    {
+      "id": "qg-psicologia-da-saude-sus-e-politicas-publicas-etica-direitos-documentos-e-politicas-publicas",
+      "title": "Psicologia da Saúde, SUS e Políticas Públicas — Ética, Direitos, Documentos e Políticas Públicas",
+      "path": "content/questions/psicologia-da-saude-sus-e-politicas-publicas/etica-direitos-documentos-e-politicas-publicas.questions.json",
+      "questionCount": 144
+    },
+    {
+      "id": "qg-psicologia-da-saude-sus-e-politicas-publicas-psicopatologia-neuropsicologia-e-avaliacao",
+      "title": "Psicologia da Saúde, SUS e Políticas Públicas — Psicopatologia, Neuropsicologia e Avaliação",
+      "path": "content/questions/psicologia-da-saude-sus-e-politicas-publicas/psicopatologia-neuropsicologia-e-avaliacao.questions.json",
+      "questionCount": 8
+    },
+    {
+      "id": "qg-psicopatologia-clinica-e-saude-mental-psicanalise-humanismo-e-clinica",
+      "title": "Psicopatologia, Clínica e Saúde Mental — Psicanálise, Humanismo e Clínica",
+      "path": "content/questions/psicopatologia-clinica-e-saude-mental/psicanalise-humanismo-e-clinica.questions.json",
+      "questionCount": 4
+    },
+    {
+      "id": "qg-psicopatologia-clinica-e-saude-mental-psicopatologia-neuropsicologia-e-avaliacao",
+      "title": "Psicopatologia, Clínica e Saúde Mental — Psicopatologia, Neuropsicologia e Avaliação",
+      "path": "content/questions/psicopatologia-clinica-e-saude-mental/psicopatologia-neuropsicologia-e-avaliacao.questions.json",
+      "questionCount": 232
+    },
+    {
+      "id": "qg-teorias-da-personalidade-contextos-profissionais-e-institucionais",
+      "title": "Teorias da Personalidade — Contextos Profissionais e Institucionais",
+      "path": "content/questions/teorias-da-personalidade/contextos-profissionais-e-institucionais.questions.json",
+      "questionCount": 145
+    },
+    {
+      "id": "qg-teorias-da-personalidade-pesquisa-avaliacao-e-fundamentos",
+      "title": "Teorias da Personalidade — Pesquisa, Avaliação e Fundamentos",
+      "path": "content/questions/teorias-da-personalidade/pesquisa-avaliacao-e-fundamentos.questions.json",
+      "questionCount": 9
+    },
+    {
+      "id": "qg-teorias-da-personalidade-psicanalise-humanismo-e-clinica",
+      "title": "Teorias da Personalidade — Psicanálise, Humanismo e Clínica",
+      "path": "content/questions/teorias-da-personalidade/psicanalise-humanismo-e-clinica.questions.json",
+      "questionCount": 3
+    },
+    {
+      "id": "qg-etica-direitos-humanos-e-regulamentacao-etica-direitos-documentos-e-politicas-publicas",
+      "title": "Ética, Direitos Humanos e Regulamentação — Ética, Direitos, Documentos e Políticas Públicas",
+      "path": "content/questions/etica-direitos-humanos-e-regulamentacao/etica-direitos-documentos-e-politicas-publicas.questions.json",
+      "questionCount": 251
+    },
+    {
+      "id": "qg-etica-direitos-humanos-e-regulamentacao-psicologia-social-grupos-e-diversidade",
+      "title": "Ética, Direitos Humanos e Regulamentação — Psicologia Social, Grupos e Diversidade",
+      "path": "content/questions/etica-direitos-humanos-e-regulamentacao/psicologia-social-grupos-e-diversidade.questions.json",
+      "questionCount": 1
+    }
+  ]
+}

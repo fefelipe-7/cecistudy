@@ -1,0 +1,14 @@
+{
+  "package": "cecistudy-catalogo-modular",
+  "version": "2026.08.20",
+  "rootCopyDirectories": [
+    "content",
+    "resources",
+    "sql",
+    "scripts",
+    "docs"
+  ],
+  "questionCount": 3004,
+  "sqlite": "resources/catalog/cecistudy_catalog.sqlite",
+  "legacyReference": "legacy/cecistudy_banco_3004_final.json"
+}

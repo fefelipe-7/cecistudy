@@ -1,0 +1,583 @@
+{
+  "schemaVersion": 1,
+  "group": {
+    "id": "qg-psicologia-da-saude-sus-e-politicas-publicas-psicopatologia-neuropsicologia-e-avaliacao",
+    "title": "Psicologia da Saúde, SUS e Políticas Públicas — Psicopatologia, Neuropsicologia e Avaliação",
+    "categoryId": "cat-psicologia-da-saude-sus-e-politicas-publicas",
+    "categoryTitle": "Psicologia da Saúde, SUS e Políticas Públicas",
+    "block": "Psicopatologia, Neuropsicologia e Avaliação",
+    "status": "published",
+    "source": "Cecistudy content catalog",
+    "sourcePath": "content/questions/psicologia-da-saude-sus-e-politicas-publicas/psicopatologia-neuropsicologia-e-avaliacao.questions.json"
+  },
+  "questions": [
+    {
+      "id": "real_marinha_2025_psicologia_verde_q04",
+      "stem": "Segundo Corrêa (2022), assinale a opção que apresenta uma definição correta acerca do suicídio.",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial da Marinha identificado. A explicação pedagógica individual será revisada com base no enunciado e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Ideação suicida: um comportamento potencialmente autolesivo, associado a pelo menos alguma intenção de morrer, por causa do ato.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) ideação suicida: pensamentos passivos sobre querer estar morto ou pensamentos ativos sobre se matar, não acompanhados de comportamento preparatório.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) Atos preparatórios ou plano de suicídio: pensamentos passivos sobre querer estar morto ou pensamentos ativos sobre se matar, não acompanhados de comportamento preparatório.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Atos preparatórios ou plano de suicídio: um comportamento potencialmente autolesivo, associado a pelo menos alguma intenção de morrer, por causa do ato.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Tentativa de suicídio: o indivíduo toma medidas para ferir a si mesmo, mas é impedido por ele mesmo ou outros de iniciar o ato autolesivo antes que o potencial de dano tenha começado.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-psicologia-da-saude-e-politicas-publicas"
+      ],
+      "approachIds": [
+        "app-psicologia-da-saude-e-politicas-publicas"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-62eb39700ad2",
+        "work-fc29b6f4e6ce"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Marinha",
+      "exam": "CP-T 2025 — Quadro Técnico — Psicologia — Prova Verde",
+      "year": 2025,
+      "questionNumber": 4,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "gabarito oficial Marinha",
+      "categoryId": "cat-psicologia-da-saude-sus-e-politicas-publicas",
+      "areaId": "area-psicologia-da-saude-e-politicas-publicas",
+      "legacyOriginId": "real_marinha_2025_psicologia_verde_q04",
+      "legacy": {
+        "categoriaFinal": "Psicologia da Saúde, SUS e Políticas Públicas",
+        "abordagemFinal": "Psicologia da Saúde e Políticas Públicas",
+        "area": "Psicologia da Saúde e Políticas Públicas",
+        "tema": "Psicologia da Saúde e Políticas Públicas",
+        "subtema": "Psicologia da Saúde e Políticas Públicas",
+        "blocoQuiz": "Psicopatologia, Neuropsicologia e Avaliação",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_marinha_2025_psicologia_verde_q05",
+      "stem": "Segundo o Manual Diagnóstico e Estatístico de Transtornos Mentais (DSM - 5 - TR), a pessoa com Transtorno de Personalidade Evitativa (F60.6) apresenta o seguinte sintoma:",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial da Marinha identificado. A explicação pedagógica individual será revisada com base no enunciado e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) não deseja nem desfruta de relações íntimas, nem mesmo ser parte de uma família.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) não se dispõe a envolver-se com pessoas, a menos que tenha certeza de que será recebida de forma positiva.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) quase sempre opta por atividades solitárias.",
+          "isCorrect": true
+        },
+        {
+          "id": "d",
+          "text": "D) não tem amigos próximos ou confidentes que não sejam os familiares de primeiro grau.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) demonstra frieza emocional, distanciamento ou embotamento afetivo.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-psicologia-da-saude-e-politicas-publicas"
+      ],
+      "approachIds": [
+        "app-psicologia-da-saude-e-politicas-publicas"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-62eb39700ad2",
+        "work-fc29b6f4e6ce"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Marinha",
+      "exam": "CP-T 2025 — Quadro Técnico — Psicologia — Prova Verde",
+      "year": 2025,
+      "questionNumber": 5,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "gabarito oficial Marinha",
+      "categoryId": "cat-psicologia-da-saude-sus-e-politicas-publicas",
+      "areaId": "area-psicologia-da-saude-e-politicas-publicas",
+      "legacyOriginId": "real_marinha_2025_psicologia_verde_q05",
+      "legacy": {
+        "categoriaFinal": "Psicologia da Saúde, SUS e Políticas Públicas",
+        "abordagemFinal": "Psicologia da Saúde e Políticas Públicas",
+        "area": "Psicologia da Saúde e Políticas Públicas",
+        "tema": "Psicologia da Saúde e Políticas Públicas",
+        "subtema": "Psicologia da Saúde e Políticas Públicas",
+        "blocoQuiz": "Psicopatologia, Neuropsicologia e Avaliação",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_marinha_2025_psicologia_verde_q14",
+      "stem": "Segundo o Manual Diagnóstico e Estatístico de Transtornos Mentais (DSM - 5 - TR), no Transtorno de Ansiedade Generalizada ou TAG (F41.1), a ansiedade e a preocupação estão associadas a:",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial da Marinha identificado. A explicação pedagógica individual será revisada com base no enunciado e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) palpitações, coração acelerado ou taquicardia.",
+          "isCorrect": true
+        },
+        {
+          "id": "b",
+          "text": "B) sudorese.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) fatigabilidade.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) tremores ou abalos.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) náusea ou desconforto abdominal.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-psicologia-da-saude-e-politicas-publicas"
+      ],
+      "approachIds": [
+        "app-psicologia-da-saude-e-politicas-publicas"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-62eb39700ad2",
+        "work-fc29b6f4e6ce"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Marinha",
+      "exam": "CP-T 2025 — Quadro Técnico — Psicologia — Prova Verde",
+      "year": 2025,
+      "questionNumber": 14,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "gabarito oficial Marinha",
+      "categoryId": "cat-psicologia-da-saude-sus-e-politicas-publicas",
+      "areaId": "area-psicologia-da-saude-e-politicas-publicas",
+      "legacyOriginId": "real_marinha_2025_psicologia_verde_q14",
+      "legacy": {
+        "categoriaFinal": "Psicologia da Saúde, SUS e Políticas Públicas",
+        "abordagemFinal": "Psicologia da Saúde e Políticas Públicas",
+        "area": "Psicologia da Saúde e Políticas Públicas",
+        "tema": "Psicologia da Saúde e Políticas Públicas",
+        "subtema": "Psicologia da Saúde e Políticas Públicas",
+        "blocoQuiz": "Psicopatologia, Neuropsicologia e Avaliação",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_marinha_2025_psicologia_verde_q19",
+      "stem": "Amarante (2013) propõe pensar o campo da saúde mental e atenção psicossocial não como um modelo ou sistema fechado, mas sim como um processo social e complexo que se constitui enquanto entrelaçamento de dimensões simultâneas. Nesse sentido, a Lei nº 10.216/2001 e o Dia Nacional da Luta Antimanicomia! integram, respectivamente, as seguintes dimensões:",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial da Marinha identificado. A explicação pedagógica individual será revisada com base no enunciado e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) teórico-conceitual e técnico-assistencial.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) jurídico-política e sociocultural.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) técnico-assistencial e jurídico-política.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) jurídico-política e teórico-conceitual.",
+          "isCorrect": true
+        },
+        {
+          "id": "e",
+          "text": "E) técnico-assistencial e sociocultural.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-psicologia-da-saude-e-politicas-publicas"
+      ],
+      "approachIds": [
+        "app-psicologia-da-saude-e-politicas-publicas"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-62eb39700ad2",
+        "work-fc29b6f4e6ce"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Marinha",
+      "exam": "CP-T 2025 — Quadro Técnico — Psicologia — Prova Verde",
+      "year": 2025,
+      "questionNumber": 19,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "gabarito oficial Marinha",
+      "categoryId": "cat-psicologia-da-saude-sus-e-politicas-publicas",
+      "areaId": "area-psicologia-da-saude-e-politicas-publicas",
+      "legacyOriginId": "real_marinha_2025_psicologia_verde_q19",
+      "legacy": {
+        "categoriaFinal": "Psicologia da Saúde, SUS e Políticas Públicas",
+        "abordagemFinal": "Psicologia da Saúde e Políticas Públicas",
+        "area": "Psicologia da Saúde e Políticas Públicas",
+        "tema": "Psicologia da Saúde e Políticas Públicas",
+        "subtema": "Psicologia da Saúde e Políticas Públicas",
+        "blocoQuiz": "Psicopatologia, Neuropsicologia e Avaliação",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_marinha_2025_psicologia_verde_q26",
+      "stem": "No contexto da Política do Ministério da Saúde para atenção integral a usuários de álcool e outras drogas (2003), no que tange ao campo da prática de políticas públicas, a intersetorialdade e a intrasetorialidade requerem investimentos continuos e de longo prazo, dedicando esforços coerentes a cada nova geração. A integralidade das ações, com a consequente definição de papéis entre os diversos níveis de governabilidade requer, EXCETO:",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial da Marinha identificado. A explicação pedagógica individual será revisada com base no enunciado e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) construção de oportunidades de inserção das ações nos mecanismos implementados pelo Sistema Único de Saúde (SUS) nestas esferas de governo.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) formulação de alternativas de sustentabilidade e de financiamento das ações.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) repasse das experiências relativas às iniciativas de descentralização e da desconcentração de atividades e de responsabilidades obtidas por estados e municípios.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) processos de formação e capacitação de profissionais e de trabalhadores de saúde, com amplo investimento político e operacional para a mudança de conceitos.",
+          "isCorrect": true
+        },
+        {
+          "id": "e",
+          "text": "E) implementação de reforço dos fatores de proteção, sendo fundamental perceber a importância da educação em saúde como estratégia fundamental para a prevenção.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-psicologia-da-saude-e-politicas-publicas"
+      ],
+      "approachIds": [
+        "app-psicologia-da-saude-e-politicas-publicas"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-62eb39700ad2",
+        "work-fc29b6f4e6ce"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Marinha",
+      "exam": "CP-T 2025 — Quadro Técnico — Psicologia — Prova Verde",
+      "year": 2025,
+      "questionNumber": 26,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "gabarito oficial Marinha",
+      "categoryId": "cat-psicologia-da-saude-sus-e-politicas-publicas",
+      "areaId": "area-psicologia-da-saude-e-politicas-publicas",
+      "legacyOriginId": "real_marinha_2025_psicologia_verde_q26",
+      "legacy": {
+        "categoriaFinal": "Psicologia da Saúde, SUS e Políticas Públicas",
+        "abordagemFinal": "Psicologia da Saúde e Políticas Públicas",
+        "area": "Psicologia da Saúde e Políticas Públicas",
+        "tema": "Psicologia da Saúde e Políticas Públicas",
+        "subtema": "Psicologia da Saúde e Políticas Públicas",
+        "blocoQuiz": "Psicopatologia, Neuropsicologia e Avaliação",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_marinha_2025_psicologia_verde_q30",
+      "stem": "A internação, em qualquer de suas modalidades, só será indicada quando os recursos extra-hospitalares se mostrarem insuficientes. Em conformidade com o prescrito na lei nº 10.216/2001, sobre a internação psiquiátrica, é correto afirmar que:",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial da Marinha identificado. A explicação pedagógica individual será revisada com base no enunciado e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) o término da internação involuntária dar-se-á por solicitação escrita do paciente ou por determinação do médico assistente.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) a internação psiquiátrica compulsória deverá, no prazo de 72h, ser comunicada ao Ministério Público Estadual pelo responsável técnico do estabelecimento.",
+          "isCorrect": true
+        },
+        {
+          "id": "c",
+          "text": "C) o término da internação voluntária dar-se-á por solicitação escrita do familiar, ou responsável legal, sem a necessidade de anuência do especialista responsável pelo tratamento.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) a internação compulsória é determinada, de acordo com a legislação vigente, pelo juiz competente.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) a internação voluntária ou involuntária deverá ser autorizada por médico devidamente registrado no Conselho Federal de Medicina (CFM).",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-psicologia-da-saude-e-politicas-publicas"
+      ],
+      "approachIds": [
+        "app-psicologia-da-saude-e-politicas-publicas"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-62eb39700ad2",
+        "work-fc29b6f4e6ce"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Marinha",
+      "exam": "CP-T 2025 — Quadro Técnico — Psicologia — Prova Verde",
+      "year": 2025,
+      "questionNumber": 30,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "gabarito oficial Marinha",
+      "categoryId": "cat-psicologia-da-saude-sus-e-politicas-publicas",
+      "areaId": "area-psicologia-da-saude-e-politicas-publicas",
+      "legacyOriginId": "real_marinha_2025_psicologia_verde_q30",
+      "legacy": {
+        "categoriaFinal": "Psicologia da Saúde, SUS e Políticas Públicas",
+        "abordagemFinal": "Psicologia da Saúde e Políticas Públicas",
+        "area": "Psicologia da Saúde e Políticas Públicas",
+        "tema": "Psicologia da Saúde e Políticas Públicas",
+        "subtema": "Psicologia da Saúde e Políticas Públicas",
+        "blocoQuiz": "Psicopatologia, Neuropsicologia e Avaliação",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_marinha_2025_psicologia_verde_q41",
+      "stem": "Em “Teoria e Técnica de Psicoterapias” (Fiorini, 2004), o autor não se furta a mencionar as limitações de uma terapia breve. Acerca do tema, assinale a opção correta.",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial da Marinha identificado. A explicação pedagógica individual será revisada com base no enunciado e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) A ação por meio de sugestão pode impulsionar a “fuga para a saúde” e induzir o paciente ao acting-out.",
+          "isCorrect": false
+        },
+        {
+          "id": "b",
+          "text": "B) Não pode, em prazos inespecíficos, suscitar mudanças na estrutura nuclear da personalidade, embora possa produzir modificações dinâmicas não desprezíveis.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Uma ênfase superficial na compreensão racional, assim como interpretações prematuras, pode reforçar resistências, incrementando a intelectualização.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) A terapia breve pode fracassar por completo (por exemplo, em fobias específicas) ou produzir unicamente variações superficiais (fenomenológicas), atuando apenas por efeito de cura transferencial, com o desaparecimento de sintomas e a instalação de uma pseudo-adaptação num nível regressivo.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) É possível obter melhoras apenas transitórias, dependendo do resultado do quadro clínico, da estrutura básica da personalidade, do nível evolutivo para o qual se regrida na crise, assim como de diversas condições grupais e situacionais.",
+          "isCorrect": true
+        }
+      ],
+      "topicIds": [
+        "topic-psicologia-da-saude-e-politicas-publicas"
+      ],
+      "approachIds": [
+        "app-psicologia-da-saude-e-politicas-publicas"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-62eb39700ad2",
+        "work-fc29b6f4e6ce"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Marinha",
+      "exam": "CP-T 2025 — Quadro Técnico — Psicologia — Prova Verde",
+      "year": 2025,
+      "questionNumber": 41,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "gabarito oficial Marinha",
+      "categoryId": "cat-psicologia-da-saude-sus-e-politicas-publicas",
+      "areaId": "area-psicologia-da-saude-e-politicas-publicas",
+      "legacyOriginId": "real_marinha_2025_psicologia_verde_q41",
+      "legacy": {
+        "categoriaFinal": "Psicologia da Saúde, SUS e Políticas Públicas",
+        "abordagemFinal": "Psicologia da Saúde e Políticas Públicas",
+        "area": "Psicologia da Saúde e Políticas Públicas",
+        "tema": "Psicologia da Saúde e Políticas Públicas",
+        "subtema": "Psicologia da Saúde e Políticas Públicas",
+        "blocoQuiz": "Psicopatologia, Neuropsicologia e Avaliação",
+        "anulada": false,
+        "reviewNote": true
+      }
+    },
+    {
+      "id": "real_marinha_2025_psicologia_verde_q47",
+      "stem": "De acordo com a Nota Técnica do Conselho Federal de Psicologia nº 22/2024, assinale a opção que apresenta a fase de atuação em emergências e desastres em que são realizadas ações para promover a saúde mental e integral da população afetada; reduzir os impactos psicossociais gerados pelo desastre; realizar intervenções voltadas à atenção psicossocial e, se necessário, atendimento psicoterapêutico, notadamente para aqueles que apresentarem sofrimento psíquico clinicamente significativo.",
+      "format": "multiple_choice",
+      "difficulty": "unspecified",
+      "knowledgeType": "unspecified",
+      "explanation": "Gabarito oficial da Marinha identificado. A explicação pedagógica individual será revisada com base no enunciado e nas referências da categoria.",
+      "options": [
+        {
+          "id": "a",
+          "text": "A) Prevenção.",
+          "isCorrect": true
+        },
+        {
+          "id": "b",
+          "text": "B) Mitigação.",
+          "isCorrect": false
+        },
+        {
+          "id": "c",
+          "text": "C) Preparação.",
+          "isCorrect": false
+        },
+        {
+          "id": "d",
+          "text": "D) Resposta.",
+          "isCorrect": false
+        },
+        {
+          "id": "e",
+          "text": "E) Reconstrução.",
+          "isCorrect": false
+        }
+      ],
+      "topicIds": [
+        "topic-psicologia-da-saude-e-politicas-publicas"
+      ],
+      "approachIds": [
+        "app-psicologia-da-saude-e-politicas-publicas"
+      ],
+      "authorIds": [],
+      "referenceIds": [
+        "work-62eb39700ad2",
+        "work-fc29b6f4e6ce"
+      ],
+      "reviewStatus": "published",
+      "isActive": true,
+      "isScorable": true,
+      "isAnnulled": false,
+      "origin": "real",
+      "bank": "Marinha",
+      "exam": "CP-T 2025 — Quadro Técnico — Psicologia — Prova Verde",
+      "year": 2025,
+      "questionNumber": 47,
+      "sourceUrl": "https://arquivos.qconcursos.com/prova/arquivo_prova/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-prova.pdf",
+      "answerKeyUrl": "https://arquivos.qconcursos.com/prova/arquivo_gabarito/133556/marinha-2025-quadro-tecnico-primeiro-tenente-psicologia-gabarito.pdf",
+      "officialAnswerStatus": "gabarito oficial Marinha",
+      "categoryId": "cat-psicologia-da-saude-sus-e-politicas-publicas",
+      "areaId": "area-psicologia-da-saude-e-politicas-publicas",
+      "legacyOriginId": "real_marinha_2025_psicologia_verde_q47",
+      "legacy": {
+        "categoriaFinal": "Psicologia da Saúde, SUS e Políticas Públicas",
+        "abordagemFinal": "Psicologia da Saúde e Políticas Públicas",
+        "area": "Psicologia da Saúde e Políticas Públicas",
+        "tema": "Psicologia da Saúde e Políticas Públicas",
+        "subtema": "Psicologia da Saúde e Políticas Públicas",
+        "blocoQuiz": "Psicopatologia, Neuropsicologia e Avaliação",
+        "anulada": false,
+        "reviewNote": true
+      }
+    }
+  ]
+}

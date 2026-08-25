@@ -36,7 +36,9 @@ import {
   NoteTargetType,
   StudyScreen,
   ManagedItem,
-  ManagedItemKind
+  ManagedItemKind,
+  SyncIndex,
+  TempleSection
 } from '../types';
 import {
   emptyProfile,
@@ -51,9 +53,12 @@ import { demoDatabase } from '../data/seeds';
 import { exportAppDatabase, importAppDatabase, buildBackupPayload } from '../lib/exportImport';
 import { usePersistentState } from '../lib/usePersistentState';
 import { useSqliteState } from '../lib/useSqliteState';
+import { useStampedState } from '../lib/useStampedState';
+import { emptySyncIndex } from '../lib/sync/stamp';
 import { storage, isNativePlatform } from '../lib/storage';
-import { getCatalogApproaches, getCatalogQuestions } from '../lib/db/catalogDb';
 import { getUserDb, clearUserData } from '../lib/db/userDb';
+import { getCatalogQuestions } from '../lib/db/catalogDb';
+import { ensureApproaches, ensureQuestions } from '../lib/bootPreload';
 import { hapticTap, hapticSuccess } from '../lib/haptics';
 import { scrollToTop } from '../lib/scroll';
 import { celebrate } from '../lib/celebrate';
@@ -162,6 +167,8 @@ export interface AppContextValue {
   openCourseDetail: (courseId: string) => void;
   closeCourseDetail: () => void;
   isBottomNavVisible: boolean;
+  /** Base da pilha é uma tab — mantém o padding inferior do main estável durante push/pop. */
+  hasTabBase: boolean;
   /** Se existe algo para voltar (cadeia do back do Android / gesto de borda). */
   canGoBack: boolean;
   isNotesScreenOpen: boolean;
@@ -170,6 +177,10 @@ export interface AppContextValue {
   isTempleScreenOpen: boolean;
   openTemple: () => void;
   closeTemple: () => void;
+  /** Seção interna do templo aberta (conceitos/autores/técnicas) ou null. */
+  focusedTempleSection: TempleSection | null;
+  openTempleSection: (section: TempleSection) => void;
+  closeTempleSection: () => void;
   isFamiliesScreenOpen: boolean;
   openFamilies: () => void;
   closeFamilies: () => void;
@@ -251,6 +262,14 @@ export interface AppContextValue {
   isStickersScreenOpen: boolean;
   openStickersScreen: () => void;
   closeStickersScreen: () => void;
+  /** Sincronização entre dispositivos (pareamento P2P). */
+  isSyncScreenOpen: boolean;
+  openSyncScreen: () => void;
+  closeSyncScreen: () => void;
+  /** Snapshot local (JSON do payload de backup v2) para o transporte de sync. */
+  getSyncPayloadJson: () => Promise<string>;
+  /** Aplica o banco mesclado pela sincronização (sem re-carimbar). */
+  applySyncedDatabase: (db: ReturnType<typeof emptyDatabase>) => void;
   isQuizCategoryOpen: boolean;
   openQuizCategory: (config?: Partial<QuizConfig>) => void;
   closeQuizCategory: () => void;
@@ -342,32 +361,35 @@ const AppContext = createContext<AppContextValue | undefined>(undefined);
 export function AppProvider({ children }: { children: React.ReactNode }) {
   // State — defaults vazios (produção); dados de exemplo entram via onboarding/demo
   // Domínio persiste via useSqliteState: web = localStorage (intacto), nativo = SQLite.
-  const [profile, setProfile] = useSqliteState<UserProfile>('profile', emptyProfile);
-  const [courses, setCourses] = useSqliteState<Course[]>('courses', []);
+  // Coleções de domínio usam `useStampedState`: além do valor, mantém o SyncIndex
+  // (carimbos por coleção/registro + tombstones) p/ sincronização entre dispositivos.
+  const [syncIndex, setSyncIndex] = useSqliteState<SyncIndex>('syncIndex', emptySyncIndex());
+  const { value: profile, set: setProfile, setRaw: setProfileRaw } = useStampedState<UserProfile>('profile', emptyProfile, syncIndex, setSyncIndex);
+  const { value: courses, set: setCourses, setRaw: setCoursesRaw } = useStampedState<Course[]>('courses', [], syncIndex, setSyncIndex);
 
   // normaliza schedule legado (string) persistido por versões anteriores à v9
   useEffect(() => {
     setCourses((prev) =>
-      prev.map((c) => (Array.isArray(c.schedule) ? c : { ...c, schedule: parseLegacySchedule(c.schedule) }))
+      prev.every((c) => Array.isArray(c.schedule))
+        ? prev
+        : prev.map((c) => (Array.isArray(c.schedule) ? c : { ...c, schedule: parseLegacySchedule(c.schedule) }))
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const [classes, setClasses] = useSqliteState<ClassNote[]>('classes', []);
-  const [tasks, setTasks] = useSqliteState<Task[]>('tasks', []);
-  const [exams, setExams] = useSqliteState<Exam[]>('exams', []);
-  const [authors, setAuthors] = useSqliteState<PsychologyAuthor[]>('authors', []);
-  const [concepts, setConcepts] = useSqliteState<PsychologyConcept[]>('concepts', []);
+  const { value: classes, set: setClasses, setRaw: setClassesRaw } = useStampedState<ClassNote[]>('classes', [], syncIndex, setSyncIndex);
+  const { value: tasks, set: setTasks, setRaw: setTasksRaw } = useStampedState<Task[]>('tasks', [], syncIndex, setSyncIndex);
+  const { value: exams, set: setExams, setRaw: setExamsRaw } = useStampedState<Exam[]>('exams', [], syncIndex, setSyncIndex);
+  const { value: authors, set: setAuthors, setRaw: setAuthorsRaw } = useStampedState<PsychologyAuthor[]>('authors', [], syncIndex, setSyncIndex);
+  const { value: concepts, set: setConcepts, setRaw: setConceptsRaw } = useStampedState<PsychologyConcept[]>('concepts', [], syncIndex, setSyncIndex);
   // Abordagens (97, ~1MB): banco estático do catálogo — NÃO é dado da usuária.
   // Web: seed lazy do módulo embutido. Nativo: lido do catálogo SQLite.
+  // Fonte única via bootPreload: se a splash já carregou, reaproveita a promise.
   const [approaches, setApproaches] = useState<PsychologyApproach[]>([]);
   const approachesSeededRef = useRef(false);
   useEffect(() => {
     if (approachesSeededRef.current || approaches.length > 0) return;
     let cancelled = false;
-    const load = isNativePlatform
-      ? getCatalogApproaches<PsychologyApproach>()
-      : import('../data/psicoterapiaApproaches').then((m) => m.PSICOTERAPIA_APPROACHES);
-    load
+    ensureApproaches<PsychologyApproach>()
       .then((data) => {
         if (cancelled || data.length === 0) return;
         approachesSeededRef.current = true;
@@ -381,16 +403,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
   }, [approaches.length]);
 
-  const [readings, setReadings] = useSqliteState<ReadingItem[]>('readings', []);
-  const [flashcards, setFlashcards] = useSqliteState<Flashcard[]>('flashcards', []);
-  const [materials, setMaterials] = useSqliteState<MaterialItem[]>('materials', []);
-  const [internshipLogs, setInternshipLogs] = useSqliteState<InternshipLog[]>('internship', []);
-  const [supervision, setSupervision] = useSqliteState<SupervisionNotebook[]>('supervision', []);
-  const [tcc, setTcc] = useSqliteState<TccData>('tcc', emptyTcc);
-  const [stickers, setStickers] = useSqliteState<Sticker[]>('stickers', lockedStickerCatalog());
-  const [sessions, setSessions] = useSqliteState<StudySession[]>('sessions', []);
-  const [techniques, setTechniques] = useSqliteState<Technique[]>('techniques', []);
-  const [quizSessions, setQuizSessions] = useSqliteState<QuizSession[]>('quizSessions', []);
+  const { value: readings, set: setReadings, setRaw: setReadingsRaw } = useStampedState<ReadingItem[]>('readings', [], syncIndex, setSyncIndex);
+  const { value: flashcards, set: setFlashcards, setRaw: setFlashcardsRaw } = useStampedState<Flashcard[]>('flashcards', [], syncIndex, setSyncIndex);
+  const { value: materials, set: setMaterials, setRaw: setMaterialsRaw } = useStampedState<MaterialItem[]>('materials', [], syncIndex, setSyncIndex);
+  const { value: internshipLogs, set: setInternshipLogs, setRaw: setInternshipLogsRaw } = useStampedState<InternshipLog[]>('internship', [], syncIndex, setSyncIndex);
+  const { value: supervision, set: setSupervision, setRaw: setSupervisionRaw } = useStampedState<SupervisionNotebook[]>('supervision', [], syncIndex, setSyncIndex);
+  const { value: tcc, set: setTcc, setRaw: setTccRaw } = useStampedState<TccData>('tcc', emptyTcc, syncIndex, setSyncIndex);
+  const { value: stickers, set: setStickers, setRaw: setStickersRaw } = useStampedState<Sticker[]>('stickers', lockedStickerCatalog(), syncIndex, setSyncIndex);
+  const { value: sessions, set: setSessions, setRaw: setSessionsRaw } = useStampedState<StudySession[]>('sessions', [], syncIndex, setSyncIndex);
+  const { value: techniques, set: setTechniques, setRaw: setTechniquesRaw } = useStampedState<Technique[]>('techniques', [], syncIndex, setSyncIndex);
+  const { value: quizSessions, set: setQuizSessions, setRaw: setQuizSessionsRaw } = useStampedState<QuizSession[]>('quizSessions', [], syncIndex, setSyncIndex);
 
   // Questões (745): banco estático do catálogo — mesmo tratamento de abordagens.
   const [questions, setQuestions] = useState<StudyQuestion[]>([]);
@@ -398,10 +420,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (questionsSeededRef.current || questions.length > 0) return;
     let cancelled = false;
-    const load = isNativePlatform
-      ? getCatalogQuestions<StudyQuestion>()
-      : import('../data/bancoQuestoes').then((m) => m.BANCO_QUESTOES);
-    load
+    ensureQuestions<StudyQuestion>()
       .then((data) => {
         if (cancelled || data.length === 0) return;
         questionsSeededRef.current = true;
@@ -416,7 +435,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [questions.length]);
 
   // Streak de estudos (dias ativos; derivados calculados abaixo)
-  const [streakData, setStreakData] = useSqliteState<StreakData>('streakData', emptyStreakData);
+  const { value: streakData, set: setStreakData, setRaw: setStreakDataRaw } = useStampedState<StreakData>('streakData', emptyStreakData, syncIndex, setSyncIndex);
 
   // Lembrete diário de estudo (só efetivo no app nativo)
   const [reminderSettings, setReminderSettings] = usePersistentState<ReminderSettings>('reminder', emptyReminder);
@@ -429,12 +448,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [onboarding, setOnboarding] = usePersistentState<OnboardingState>('onboarding', emptyOnboarding);
 
   // Livros salvos da biblioteca (no contexto → entram no export/import)
-  const [savedBookIds, setSavedBookIds] = useSqliteState<string[]>('savedBookIds', []);
+  const { value: savedBookIds, set: setSavedBookIds, setRaw: setSavedBookIdsRaw } = useStampedState<string[]>('savedBookIds', [], syncIndex, setSyncIndex);
 
   // Progresso de leitura por obra (id → páginas lidas), registrado no modal do livro
-  const [readingProgress, setReadingProgress] = useSqliteState<Record<string, number>>(
+  const { value: readingProgress, set: setReadingProgress, setRaw: setReadingProgressRaw } = useStampedState<Record<string, number>>(
     'readingProgress',
-    {}
+    {},
+    syncIndex,
+    setSyncIndex
   );
 
   // Navigation state — pilha nativa (push/pop)
@@ -454,7 +475,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [subTabEstudos, setSubTabEstudos] = useState<SubTabEstudos>('sessoes');
   const [subTabBiblioteca, setSubTabBiblioteca] = useState<SubTabBiblioteca>('autores');
   const [targetId, setTargetId] = useState<string | undefined>(undefined);
-  const [bookmarkedCourseIds, setBookmarkedCourseIds] = useSqliteState<string[]>('bookmarkedCourseIds', []);
+  const { value: bookmarkedCourseIds, set: setBookmarkedCourseIds, setRaw: setBookmarkedCourseIdsRaw } = useStampedState<string[]>('bookmarkedCourseIds', [], syncIndex, setSyncIndex);
 
   // Modals
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
@@ -473,7 +494,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [wizardEdit, setWizardEdit] = useState<ManagedItem | null>(null);
 
   // Notas avulsas (global — a tela de composição salva fora da biblioteca)
-  const [looseNotes, setLooseNotes] = useSqliteState<LooseNote[]>('looseNotes', []);
+  const { value: looseNotes, set: setLooseNotes, setRaw: setLooseNotesRaw } = useStampedState<LooseNote[]>('looseNotes', [], syncIndex, setSyncIndex);
 
   // Composição de nota (tela de captura rápida)
   const [composeCourseId, setComposeCourseId] = useState<string | undefined>(undefined);
@@ -496,6 +517,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const isInternshipDiaryOpen = currentScreen.kind === 'internshipDiary';
   const isTccScreenOpen = currentScreen.kind === 'tcc';
   const isStickersScreenOpen = currentScreen.kind === 'stickers';
+  const isSyncScreenOpen = currentScreen.kind === 'sync';
   const isNotesScreenOpen = currentScreen.kind === 'notes';
   const isNoteDetailOpen = currentScreen.kind === 'noteDetail';
   const isNoteTransformOpen = currentScreen.kind === 'noteTransform';
@@ -505,12 +527,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       : null;
   const focusedNote = focusedNoteId ? looseNotes.find((n) => n.id === focusedNoteId) : undefined;
   const isTempleScreenOpen = currentScreen.kind === 'temple';
+  const focusedTempleSection = currentScreen.kind === 'templeSection' ? currentScreen.section : null;
   const isFamiliesScreenOpen = currentScreen.kind === 'families';
   const focusedFamilyId = currentScreen.kind === 'family' ? currentScreen.familyId : null;
   const focusedApproachId = currentScreen.kind === 'approach' ? currentScreen.approachId : null;
   const focusedApproach = focusedApproachId ? approaches.find((a) => a.id === focusedApproachId) : undefined;
   const focusedFamily = focusedFamilyId ? PSICOTERAPIA_FAMILIES.find((f) => f.id === focusedFamilyId) : undefined;
   const isBottomNavVisible = currentScreen.kind === 'tab';
+  /** Base da pilha é uma tab: o padding da shell não muda ao empilhar/desempilhar telas
+      auxiliares dentro da mesma aba (evita drift vertical no meio da transição). */
+  const hasTabBase = navigationStack[0]?.kind === 'tab';
   const isComposeScreenOpen = currentScreen.kind === 'compose';
   const isComposeDetailsOpen = currentScreen.kind === 'composeDetails';
   const isWizardOpen = currentScreen.kind === 'wizard';
@@ -575,11 +601,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
                               ? 'tcc'
 : currentScreen.kind === 'stickers'
                           ? 'stickers'
-                          : currentScreen.kind === 'study'
-                            ? `study-${currentScreen.screen}`
-                            : currentScreen.kind === 'quiz-loading'
-                              ? 'quiz-loading'
-                              : 'tab-home';
+                          : currentScreen.kind === 'sync'
+                            ? 'sync'
+                            : currentScreen.kind === 'study'
+                              ? `study-${currentScreen.screen}`
+                              : currentScreen.kind === 'quiz-loading'
+                                ? 'quiz-loading'
+                                : 'tab-home';
 
   /**
    * Chave da camada de slide horizontal (pilha).
@@ -597,9 +625,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           ? 'notes'
           : currentScreen.kind === 'noteDetail' || currentScreen.kind === 'noteTransform'
             ? 'notes'
-            : currentScreen.kind === 'temple'
+          : currentScreen.kind === 'temple'
             ? 'temple'
-            : currentScreen.kind === 'families'
+            : currentScreen.kind === 'templeSection'
+              ? `temple-${currentScreen.section}`
+              : currentScreen.kind === 'families'
               ? 'families'
               : currentScreen.kind === 'family'
                 ? `family-${currentScreen.familyId}`
@@ -613,11 +643,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
                         ? 'tcc'
                         : currentScreen.kind === 'stickers'
                           ? 'stickers'
-                          : currentScreen.kind === 'study'
-                            ? `study-${currentScreen.screen}`
-                            : currentScreen.kind === 'quiz-loading'
-                              ? 'quiz-loading'
-                              : navigationStack[0]?.kind === 'tab'
+                          : currentScreen.kind === 'sync'
+                            ? 'sync'
+                            : currentScreen.kind === 'study'
+                              ? `study-${currentScreen.screen}`
+                              : currentScreen.kind === 'quiz-loading'
+                                ? 'quiz-loading'
+                                : navigationStack[0]?.kind === 'tab'
                                   ? `tab-${navigationStack[0].tab}`
                                   : navigationStack[0]?.kind === 'course'
                                     ? `course-${navigationStack[0].courseId}`
@@ -1075,34 +1107,36 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setMaterials((prev) => prev.map((m) => (m.id === material.id ? material : m)));
   };
 
-  /** Aplica um banco completo (empty ou demo) a todos os estados persistidos. */
+  /** Aplica um banco completo (empty/demo/import/sincronizado) sem carimbar o SyncIndex. */
   const applyDatabase = (db: ReturnType<typeof emptyDatabase>) => {
-    setProfile(db.profile);
-    setCourses(db.courses);
-    setClasses(db.classes);
-    setTasks(db.tasks);
-    setExams(db.exams);
-    setAuthors(db.authors);
-    setConcepts(db.concepts);
-    setReadings(db.readings);
-    setFlashcards(db.flashcards);
-    setMaterials(db.materials);
-    setInternshipLogs(db.internshipLogs);
-    setSupervision(db.supervision);
-    setTcc(db.tcc);
-    setStickers(mergeCatalogWithProgress(db.stickers));
-    setSessions(db.sessions);
-    setTechniques(db.techniques);
-    setQuizSessions(db.quizSessions);
+    setProfileRaw(db.profile);
+    setCoursesRaw(db.courses);
+    setClassesRaw(db.classes);
+    setTasksRaw(db.tasks);
+    setExamsRaw(db.exams);
+    setAuthorsRaw(db.authors);
+    setConceptsRaw(db.concepts);
+    setReadingsRaw(db.readings);
+    setFlashcardsRaw(db.flashcards);
+    setMaterialsRaw(db.materials);
+    setInternshipLogsRaw(db.internshipLogs);
+    setSupervisionRaw(db.supervision);
+    setTccRaw(db.tcc);
+    setStickersRaw(mergeCatalogWithProgress(db.stickers));
+    setSessionsRaw(db.sessions);
+    setTechniquesRaw(db.techniques);
+    setQuizSessionsRaw(db.quizSessions);
     // approaches/questions são bancos estáticos (seed lazy): não são aplicados
     // aqui — backups não os trazem e o catálogo é re-semeado sob demanda.
-    setStreakData(db.streakData);
+    setStreakDataRaw(db.streakData);
     setReminderSettings(db.reminder);
-    setLooseNotes(db.looseNotes as LooseNote[]);
-    setSavedBookIds(db.savedBookIds);
-    setReadingProgress(db.readingProgress ?? {});
-    setBookmarkedCourseIds(db.bookmarkedCourseIds);
+    setLooseNotesRaw(db.looseNotes as LooseNote[]);
+    setSavedBookIdsRaw(db.savedBookIds);
+    setReadingProgressRaw(db.readingProgress ?? {});
+    setBookmarkedCourseIdsRaw(db.bookmarkedCourseIds);
     setOnboarding(db.onboarding);
+    // Índice de sync viaja junto (carimbos/tombstones do banco aplicado).
+    setSyncIndex(db.syncIndex ?? emptySyncIndex());
   };
 
   /** Carrega os dados de exemplo (onboarding "começar com exemplo" / Perfil → configurações). */
@@ -1157,7 +1191,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       readings, flashcards, materials, internshipLogs, supervision, tcc, stickers, sessions,
       streakData, reminder: reminderSettings, looseNotes, savedBookIds,
       bookmarkedCourseIds, readingProgress, questions, techniques, quizSessions,
-      onboarding,
+      onboarding, syncIndex,
     });
     await exportAppDatabase(payload);
   };
@@ -1172,6 +1206,26 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     applyDatabase(db);
     showToast('backup restaurado com carinho ♡');
   };
+
+  /** Snapshot local (JSON do backup v2) para enviar na sincronização entre dispositivos. */
+  const getSyncPayloadJson = useCallback(async () => {
+    const payload = await buildBackupPayload({
+      profile, courses, classes, tasks, exams, authors, concepts, approaches,
+      readings, flashcards, materials, internshipLogs, supervision, tcc, stickers, sessions,
+      streakData, reminder: reminderSettings, looseNotes, savedBookIds,
+      bookmarkedCourseIds, readingProgress, questions, techniques, quizSessions,
+      onboarding, syncIndex,
+    });
+    return JSON.stringify(payload);
+  }, [profile, courses, classes, tasks, exams, authors, concepts, approaches, readings,
+    flashcards, materials, internshipLogs, supervision, tcc, stickers, sessions, streakData,
+    reminderSettings, looseNotes, savedBookIds, bookmarkedCourseIds, readingProgress, questions,
+    techniques, quizSessions, onboarding, syncIndex]);
+
+  /** Aplica o banco mesclado pela sincronização (mesmo caminho do import). */
+  const applySyncedDatabase = useCallback((db: ReturnType<typeof emptyDatabase>) => {
+    applyDatabase(db);
+  }, []);
 
   /** Sub-tab atual da aba base (para codificar no hash quando não for a padrão). */
   const currentSubTabFor = useCallback((tab: NavTab): string | undefined => {
@@ -1353,6 +1407,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const closeTemple = useCallback(() => goBack(), [goBack]);
 
+  const openTempleSection = useCallback(
+    (section: TempleSection) => {
+      const top = navigationStack[navigationStack.length - 1];
+      const next: NavScreen[] =
+        top.kind === 'templeSection' && top.section === section
+          ? navigationStack
+          : top.kind === 'temple'
+            ? [...navigationStack, { kind: 'templeSection', section }]
+            : [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'temple' }, { kind: 'templeSection', section }];
+      setStack(next);
+      syncHash(next);
+      scrollToTop();
+    },
+    [navigationStack, setStack, syncHash, scrollToTop]
+  );
+
+  const closeTempleSection = useCallback(() => goBack(), [goBack]);
+
   const openFamilies = useCallback(() => {
     const top = navigationStack[navigationStack.length - 1];
     const next: NavScreen[] =
@@ -1439,6 +1511,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [navigationStack, setStack, syncHash]);
 
   const closeStickersScreen = useCallback(() => goBack(), [goBack]);
+
+  const openSyncScreen = useCallback(() => {
+    const top = navigationStack[navigationStack.length - 1];
+    const next: NavScreen[] =
+      top.kind === 'sync'
+        ? navigationStack
+        : [{ kind: 'tab', tab: 'perfil' as NavTab }, { kind: 'sync' } as const];
+    setStack(next);
+    syncHash(next);
+    scrollToTop();
+  }, [navigationStack, setStack, syncHash]);
+
+  const closeSyncScreen = useCallback(() => goBack(), [goBack]);
 
   const openQuizCategory = useCallback((_config?: Partial<QuizConfig>) => {
     const next = stackAfterOpenQuizCategory(navigationStack);
@@ -1882,6 +1967,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     openCourseDetail,
     closeCourseDetail,
     isBottomNavVisible,
+    hasTabBase,
     canGoBack,
     isNotesScreenOpen,
     openNotesScreen,
@@ -1889,6 +1975,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     isTempleScreenOpen,
     openTemple,
     closeTemple,
+    focusedTempleSection,
+    openTempleSection,
+    closeTempleSection,
     isFamiliesScreenOpen,
     openFamilies,
     closeFamilies,
@@ -1936,9 +2025,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     isTccScreenOpen,
     openTccScreen,
     closeTccScreen,
-    isStickersScreenOpen,
-    openStickersScreen,
-    closeStickersScreen,
+  isStickersScreenOpen,
+  openStickersScreen,
+  closeStickersScreen,
+  isSyncScreenOpen,
+  openSyncScreen,
+  closeSyncScreen,
+  getSyncPayloadJson,
+  applySyncedDatabase,
     isQuizCategoryOpen,
     openQuizCategory,
     closeQuizCategory,

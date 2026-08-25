@@ -1,0 +1,10 @@
+{
+  "id": "app-teorias-da-personalidade",
+  "familyId": "family-psychodynamic",
+  "name": "Teorias da Personalidade",
+  "shortName": "Teorias da Personalidade",
+  "summary": "Abordagem editorial do Cecistudy: Teorias da Personalidade.",
+  "questionCount": 157,
+  "status": "published",
+  "sourcePath": "content/approaches/sychodynamic/teorias-da-personalidade.json"
+}
