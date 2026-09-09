@@ -20,7 +20,7 @@ import {
   ChevronRight,
   type LucideIcon,
 } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { Modal } from '../ui/Modal';
 import { PsicoterapiaFieldKey } from '../../types';
 
@@ -59,7 +59,7 @@ const BlockLabel: React.FC<BlockLabelProps> = ({ index, title, hint }) => (
 );
 
 export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachId }) => {
-  const { approaches, openApproach } = useApp();
+  const { approaches, openApproach } = useMobileApp();
   const [selectedAuthor, setSelectedAuthor] = useState<string | null>(null);
 
   const approach = approaches.find((a) => a.id === approachId);
@@ -198,9 +198,6 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
                 </button>
               ))}
             </div>
-            <p className="text-[11px] text-ceci-tertiary">
-              conceitos e técnicas desta abordagem chegam em breve ♡
-            </p>
           </div>
         </section>
       )}
@@ -268,7 +265,7 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
       <Modal
         open={Boolean(selectedAuthor)}
         onClose={() => setSelectedAuthor(null)}
-        className="w-full max-w-md bg-white rounded-[24px] p-5 space-y-3 shadow-floating"
+        className="w-full max-w-md bg-white rounded-2xl p-5 space-y-3 shadow-floating"
       >
         <div className="flex items-center justify-between">
           <h2 className="font-display font-bold text-base text-ceci-primary">{selectedAuthor}</h2>

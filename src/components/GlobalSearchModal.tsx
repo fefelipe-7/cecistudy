@@ -117,7 +117,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         results.push({
           id: r.id,
           title: r.title,
-          subtitle: `por ${r.author} • ${r.status === 'concluido' ? 'concluído' : 'em leitura'}`,
+          subtitle: `${r.author ? `por ${r.author} • ` : ''}${r.status === 'concluido' ? 'concluído' : 'em leitura'}`,
           type: 'reading',
           badge: 'leitura',
           tab: 'estudos',

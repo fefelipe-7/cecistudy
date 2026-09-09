@@ -30,6 +30,7 @@ import {
   loadCategories,
   loadTopics,
 } from './temple-lib.mjs';
+import { loadComparisonSqlSources } from './comparations/normalizer.mjs';
 
 export { BANCO_QUESTOES, PSICOTERAPIA_APPROACHES, PSICOTERAPIA_FAMILIES };
 
@@ -115,6 +116,10 @@ export function loadTempleSources() {
   } catch {
     // pipeline de fichas ainda não rodou — build-catalog falha depois com contagem mínima
   }
+  const comparisons = loadComparisonSqlSources(
+    path.join(__dirname, 'comparations', 'migrations', 'comparacoes_seed_completo.sql'),
+    readFileSync
+  );
   return {
     concepts,
     techniqueCategories,
@@ -122,6 +127,7 @@ export function loadTempleSources() {
     curatedAuthors: curatedAuthorsFile.authors ?? [],
     questionCategories: loadCategories(),
     topics: loadTopics(),
+    comparisons,
   };
 }
 
@@ -145,6 +151,8 @@ export function computeContentHash() {
       authors: temple.curatedAuthors.map((a) => [a.id, a.name, a.order]),
       categories: temple.questionCategories.map((c) => [c.id, c.name]),
       topics: temple.topics.length,
+      comparisons: temple.comparisons.comparacoes,
+      comparisonSources: temple.comparisons.fontes,
     })
   );
   return h.digest('hex');

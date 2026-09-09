@@ -1,146 +1,139 @@
 import React from 'react';
 import {
   Home,
-  GraduationCap,
   Brain,
   Library,
-  User,
+  CalendarDays,
+  FolderKanban,
+  Megaphone,
   ChevronRight,
   Sparkles,
   Plus,
+  Inbox,
+  Network,
+  Search,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { NavTab } from '../../types';
-import { useApp } from '../../context/AppContext';
+import { useDesktopApp } from '@/context/desktopApp';
 import { pickTip } from '../../lib/tips';
 import { Panel } from './ui/Panel';
-
-interface NavChild {
-  label: string;
-  active: boolean;
-  onSelect: () => void;
-}
+import { WorkspaceSwitcher } from './WorkspaceSwitcher';
+import { computeSidebarBadges } from '../lib/sidebarBadges';
 
 interface NavEntry {
-  tab: NavTab;
+  key: string;
   label: string;
   icon: LucideIcon;
+  active: boolean;
+  onSelect: () => void;
+  badge?: number;
 }
 
-const ENTRIES: NavEntry[] = [
-  { tab: 'home', label: 'hoje', icon: Home },
-  { tab: 'faculdade', label: 'faculdade', icon: GraduationCap },
-  { tab: 'estudos', label: 'estudos', icon: Brain },
-  { tab: 'biblioteca', label: 'biblioteca', icon: Library },
-];
-
-const ESTUDOS_LABELS: Record<string, string> = {
-  sessoes: 'sessões',
-  leituras: 'leituras',
-  flashcards: 'flashcards',
-  questoes: 'questões',
-  historico: 'histórico',
-};
-
-const BIBLIOTECA_LABELS: Record<string, string> = {
-  materiais: 'materiais',
-  autores: 'autores',
-  conceitos: 'conceitos',
-  abordagens: 'abordagens',
-  mapa: 'mapa',
-};
-
 /**
- * Sidebar da casca desktop (plataforma Tauri) — visual "premium SaaS":
- * perfil no topo, grupo de navegação com item ativo rosa suave e card
- * de dica do cecinho no fim. Não é o espelho responsivo do BottomNav
- * (esse papel é do `components/DesktopSidebar.tsx` no web ≥ lg).
+ * Sidebar da casca desktop, segundo cecistudy-desktop-shell.json: 240px, grupos
+ * (Home, Base de Conhecimento, Calendário, Projetos/TCC, Estudos, Marketing),
+ * item ativo usa fundo neutro (--ds-surface-active) com barrinha rosa de 3px à
+ * esquerda e ícone rosa-strong — rosa como acento, nunca fundo de painel.
+ * Reuso dos tokens semânticos existentes; novos tokens ficam em desktop-tokens.css.
  */
 export const DesktopSidebar: React.FC = () => {
-  const app = useApp();
+  const app = useDesktopApp();
+  const pendingCount = app.suggestions.filter((s) => s.status === 'pending').length;
+  const badges = computeSidebarBadges(app.exams, app.flashcards, app.savedBookIds.length);
   const {
     profile,
     activeTab,
     handleNavigate,
     subTabFaculdade,
     setSubTabFaculdade,
-    subTabEstudos,
-    setSubTabEstudos,
-    subTabBiblioteca,
-    setSubTabBiblioteca,
+    openInbox,
+    closeInbox,
+    isInboxOpen,
+    openKnowledgeGraph,
+    closeKnowledgeGraph,
+    isKnowledgeGraphOpen,
+    openProjects,
+    closeProjects,
+    isProjectsOpen,
+    openQuickAdd,
+    openStudy,
   } = app;
 
-  // A aba base da pilha (mesmo com tela auxiliar aberta, ex.: curso em detalhe)
-  const baseTab = app.activeTab;
+  const baseTab = activeTab;
 
-  const childrenFor = (tab: NavTab): NavChild[] => {
-    if (baseTab !== tab) return [];
-    if (tab === 'faculdade') {
-      return [
-        {
-          label: 'disciplinas',
-          active: subTabFaculdade === 'disciplinas',
-          onSelect: () => handleNavigate('faculdade', 'disciplinas'),
-        },
-        {
-          label: 'calendário',
-          active: subTabFaculdade === 'calendario',
-          onSelect: () => {
-            setSubTabFaculdade('calendario');
-            if (app.focusedCourseId) app.closeCourseDetail();
-            else handleNavigate('faculdade');
-          },
-        },
-        {
-          label: 'diário de estágio',
-          active: app.isInternshipDiaryOpen,
-          onSelect: () => app.openInternshipDiary(),
-        },
-      ];
-    }
-    if (tab === 'estudos') {
-      return [
-        ...(Object.keys(ESTUDOS_LABELS) as Array<keyof typeof ESTUDOS_LABELS>).map((key) => ({
-          label: ESTUDOS_LABELS[key],
-          active: subTabEstudos === key && !app.focusedStudyScreen && !app.isTccScreenOpen,
-          onSelect: () => {
-            setSubTabEstudos(key as typeof subTabEstudos);
-            if (app.focusedStudyScreen) app.closeStudy();
-            if (app.isTccScreenOpen) app.closeTccScreen();
-          },
-        })),
-        {
-          label: 'tcc',
-          active: app.isTccScreenOpen,
-          onSelect: () => app.openTccScreen(),
-        },
-      ];
-    }
-    if (tab === 'biblioteca') {
-      return [
-        ...(Object.keys(BIBLIOTECA_LABELS) as Array<keyof typeof BIBLIOTECA_LABELS>).map((key) => ({
-          label: BIBLIOTECA_LABELS[key],
-          active: subTabBiblioteca === key && !app.isNotesScreenOpen && !app.isTempleScreenOpen,
-          onSelect: () => {
-            setSubTabBiblioteca(key as typeof subTabBiblioteca);
-            if (app.isNotesScreenOpen) app.closeNotesScreen();
-            if (app.isTempleScreenOpen) app.closeTemple();
-          },
-        })),
-        {
-          label: 'notas avulsas',
-          active: app.isNotesScreenOpen,
-          onSelect: () => app.openNotesScreen(),
-        },
-        {
-          label: 'templo',
-          active: app.isTempleScreenOpen,
-          onSelect: () => app.openTemple(),
-        },
-      ];
-    }
-    return [];
+  // Os painéis auxiliares (grafo/inbox/projetos) tomam a tela inteira; ao navegar
+  // para uma aba principal eles precisam fechar, senão a tela fica "presa" neles.
+  const closeAuxPanels = () => {
+    closeKnowledgeGraph();
+    closeProjects();
+    closeInbox();
   };
+
+  const openCommandPalette = () => {
+    window.dispatchEvent(new CustomEvent('ceci:open-command-palette'));
+  };
+
+  const entries: NavEntry[] = [
+    {
+      key: 'home',
+      label: 'Home',
+      icon: Home,
+      active: baseTab === 'home',
+      onSelect: () => {
+        closeAuxPanels();
+        handleNavigate('home');
+      },
+    },
+    {
+      key: 'conhecimento',
+      label: 'Base de Conhecimento',
+      icon: Library,
+      active: baseTab === 'biblioteca',
+      badge: badges.biblioteca,
+      onSelect: () => {
+        closeAuxPanels();
+        handleNavigate('biblioteca');
+      },
+    },
+    {
+      key: 'calendario',
+      label: 'Calendário',
+      icon: CalendarDays,
+      active: baseTab === 'faculdade' && subTabFaculdade === 'calendario',
+      badge: badges.faculdade,
+      onSelect: () => {
+        closeAuxPanels();
+        if (app.focusedCourseId) app.closeCourseDetail();
+        setSubTabFaculdade('calendario');
+        handleNavigate('faculdade');
+      },
+    },
+    {
+      key: 'projetos',
+      label: 'Projetos & TCC',
+      icon: FolderKanban,
+      active: isProjectsOpen,
+      onSelect: () => (isProjectsOpen ? closeProjects() : openProjects()),
+    },
+    {
+      key: 'estudos',
+      label: 'Estudos',
+      icon: Brain,
+      active: baseTab === 'estudos',
+      badge: badges.estudos,
+      onSelect: () => {
+        closeAuxPanels();
+        handleNavigate('estudos');
+      },
+    },
+    {
+      key: 'marketing',
+      label: 'Marketing',
+      icon: Megaphone,
+      active: false,
+      onSelect: () => app.showToast('marketing chega em breve ♡'),
+    },
+  ];
 
   const tip = pickTip({
     pendingTasks: app.tasks.filter((t) => !t.completed).length,
@@ -148,134 +141,209 @@ export const DesktopSidebar: React.FC = () => {
   });
 
   return (
-    <aside className="flex flex-col shrink-0 w-[264px] h-full bg-white border-r border-ceci-border-subtle px-5 py-5 select-none">
+    <aside
+      className="flex h-full w-[240px] shrink-0 flex-col px-3 py-4 select-none"
+      style={{ background: 'var(--ds-surface-sidebar)', borderRight: '1px solid var(--ds-border-default)' }}
+    >
       {/* marca */}
-      <div className="flex items-center gap-2.5 px-1 mb-5">
-        <span className="w-9 h-9 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center font-display font-bold text-ceci-brand-strong text-lg">
+      <div className="mb-4 flex items-center gap-2.5 px-1">
+        <span
+          className="flex h-9 w-9 items-center justify-center rounded-2xl font-display text-lg font-bold"
+          style={{ background: 'var(--ds-accent-subtle)', color: 'var(--ds-accent-strong)' }}
+        >
           C
         </span>
         <span className="font-display font-bold text-ceci-primary">cecistudy ♡</span>
       </div>
 
-      {/* user profile card */}
+      {/* busca (atalho ⌘K → command palette) */}
       <button
-        onClick={() => handleNavigate('perfil')}
-        aria-label="abrir perfil"
-        aria-current={baseTab === 'perfil' ? 'page' : undefined}
-        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border cursor-pointer transition-colors ${
-          baseTab === 'perfil'
-            ? 'bg-surface-rose border-ceci-border-brand'
-            : 'bg-surface-muted border-transparent hover:bg-beige-50'
-        }`}
+        onClick={openCommandPalette}
+        aria-label="abrir busca e comandos"
+        className="mb-3 flex w-full items-center gap-2 rounded-[10px] border px-3 py-2 text-sm text-ceci-tertiary transition-colors hover:bg-[var(--ds-surface-hover)] focus-visible:outline-none focus-visible:[box-shadow:var(--ds-focus-ring-neutral)]"
+        style={{ borderColor: 'var(--ds-border-default)' }}
       >
-        <span className="w-8 h-8 rounded-full bg-surface-rose border border-ceci-border-brand overflow-hidden flex items-center justify-center shrink-0" aria-hidden>
-          {profile.photoUrl ? (
-            <img src={profile.photoUrl} alt="" className="w-full h-full object-cover" />
-          ) : (
-            <span className="text-sm">🌷</span>
-          )}
-        </span>
-        <span className="min-w-0 flex-1 text-left">
-          <span className="block text-xs font-bold text-ceci-primary truncate">
-            {profile.name || 'seu cantinho'}
-          </span>
-          <span className="block text-[11px] text-ceci-muted truncate">
-            semestre {profile.semester} de {profile.totalSemesters}
-          </span>
-        </span>
-        <ChevronRight className="w-3.5 h-3.5 text-ceci-muted shrink-0" />
+        <Search className="h-[18px] w-[18px]" />
+        <span className="flex-1 text-left">buscar…</span>
+        <kbd className="rounded-md bg-black/[0.04] px-1.5 py-0.5 font-mono text-[10px]">⌘K</kbd>
       </button>
 
-      {/* grupo de navegação */}
-      <span className="px-3 mt-6 mb-2 text-[11px] font-semibold uppercase tracking-wider text-ceci-muted">
+      {/* seletor de workspace */}
+      <WorkspaceSwitcher />
+
+      {/* inbox & grafo (aceleradores secundários) */}
+      <button
+        onClick={() => (isInboxOpen ? closeInbox() : openInbox())}
+        aria-label="abrir inbox de conhecimento"
+        aria-current={isInboxOpen ? 'page' : undefined}
+        className="relative mt-2 flex w-full items-center gap-2.5 rounded-[8px] px-2 py-1.5 text-sm font-medium transition-colors hover:bg-[var(--ds-surface-hover)] focus-visible:outline-none focus-visible:[box-shadow:var(--ds-focus-ring-neutral)]"
+        style={
+          isInboxOpen
+            ? { background: 'var(--ds-surface-active)', color: 'var(--ds-text-primary)' }
+            : { color: 'var(--ds-text-secondary)' }
+        }
+      >
+        {isInboxOpen && (
+          <span
+            aria-hidden
+            className="absolute left-0 w-[3px] rounded-full"
+            style={{ height: '60%', background: 'var(--ds-accent-strong)' }}
+          />
+        )}
+        <Inbox
+          className="h-[18px] w-[18px]"
+          style={isInboxOpen ? { color: 'var(--ds-accent-strong)' } : undefined}
+        />
+        inbox de conhecimento
+        {pendingCount > 0 && (
+          <span
+            className="ml-auto rounded-full px-1.5 py-0.5 text-[10px] font-bold"
+            style={
+              isInboxOpen
+                ? { background: 'var(--ds-accent-subtle)', color: 'var(--ds-accent-strong)' }
+                : { background: 'var(--ds-surface-raised)', color: 'var(--ds-text-secondary)' }
+            }
+          >
+            {pendingCount}
+          </span>
+        )}
+      </button>
+
+      <button
+        onClick={() => (isKnowledgeGraphOpen ? closeKnowledgeGraph() : openKnowledgeGraph())}
+        aria-label="abrir grafo de conhecimento"
+        aria-current={isKnowledgeGraphOpen ? 'page' : undefined}
+        className="relative flex w-full items-center gap-2.5 rounded-[8px] px-2 py-1.5 text-sm font-medium transition-colors hover:bg-[var(--ds-surface-hover)] focus-visible:outline-none focus-visible:[box-shadow:var(--ds-focus-ring-neutral)]"
+        style={
+          isKnowledgeGraphOpen
+            ? { background: 'var(--ds-surface-active)', color: 'var(--ds-text-primary)' }
+            : { color: 'var(--ds-text-secondary)' }
+        }
+      >
+        {isKnowledgeGraphOpen && (
+          <span
+            aria-hidden
+            className="absolute left-0 w-[3px] rounded-full"
+            style={{ height: '60%', background: 'var(--ds-accent-strong)' }}
+          />
+        )}
+        <Network
+          className="h-[18px] w-[18px]"
+          style={isKnowledgeGraphOpen ? { color: 'var(--ds-accent-strong)' } : undefined}
+        />
+        grafo de conhecimento
+      </button>
+
+      {/* grupo de navegação principal */}
+      <span className="mb-2 mt-5 px-3 text-[11px] font-semibold uppercase tracking-[0.06em] text-ceci-muted">
         navegação
       </span>
 
-      <nav className="flex flex-col gap-0.5 overflow-y-auto" aria-label="navegação principal">
-        {ENTRIES.map((entry) => {
+      <nav className="flex flex-col gap-0.5" aria-label="navegação principal">
+        {entries.map((entry) => {
           const Icon = entry.icon;
-          const isActive = baseTab === entry.tab;
-          const children = childrenFor(entry.tab);
-          const expanded = children.length > 0;
           return (
-            <div key={entry.tab}>
-              <button
-                onClick={() => handleNavigate(entry.tab)}
-                aria-label={`ir para ${entry.label}`}
-                aria-current={isActive ? 'page' : undefined}
-                aria-expanded={expanded}
-                className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-[10px] text-sm font-medium cursor-pointer transition-colors ${
-                  isActive
-                    ? 'bg-surface-rose text-ceci-brand-strong font-semibold'
-                    : 'text-ceci-secondary hover:bg-surface-muted hover:text-ceci-primary'
-                }`}
-              >
-                <Icon className="w-[18px] h-[18px]" />
-                {entry.label}
-              </button>
-
-              {expanded && (
-                <div className="flex flex-col mt-0.5 mb-1 ml-[22px] pl-3 border-l border-ceci-border-subtle">
-                  {children.map((child) => (
-                    <button
-                      key={child.label}
-                      onClick={child.onSelect}
-                      aria-current={child.active ? 'true' : undefined}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[10px] text-xs cursor-pointer transition-colors text-left ${
-                        child.active
-                          ? 'bg-surface-rose text-ceci-brand-strong font-semibold'
-                          : 'text-ceci-secondary hover:bg-surface-muted hover:text-ceci-primary font-normal'
-                      }`}
-                    >
-                      {!child.active && <span className="w-3" aria-hidden />}
-                      {child.label}
-                    </button>
-                  ))}
-                </div>
+            <button
+              key={entry.key}
+              onClick={entry.onSelect}
+              aria-label={`ir para ${entry.label}`}
+              aria-current={entry.active ? 'page' : undefined}
+              className="relative flex items-center gap-2.5 rounded-[8px] px-2 py-1.5 text-sm font-medium transition-colors hover:bg-[var(--ds-surface-hover)] focus-visible:outline-none focus-visible:[box-shadow:var(--ds-focus-ring-neutral)]"
+              style={
+                entry.active
+                  ? { background: 'var(--ds-surface-active)', color: 'var(--ds-text-primary)' }
+                  : { color: 'var(--ds-text-secondary)' }
+              }
+            >
+              {entry.active && (
+                <span
+                  aria-hidden
+                  className="absolute left-0 w-[3px] rounded-full"
+                  style={{ height: '60%', background: 'var(--ds-accent-strong)' }}
+                />
               )}
-            </div>
+              <Icon
+                className="h-[18px] w-[18px]"
+                style={entry.active ? { color: 'var(--ds-accent-strong)' } : undefined}
+              />
+              {entry.label}
+              {entry.badge !== undefined && entry.badge > 0 && (
+                <span
+                  className="ml-auto rounded-full px-1.5 text-[10px] font-mono"
+                  style={{ background: 'var(--ds-surface-raised)', color: 'var(--ds-text-secondary)' }}
+                >
+                  {entry.badge}
+                </span>
+              )}
+            </button>
           );
         })}
       </nav>
 
-      {/* ação rápida + dica do cecinho */}
-      <div className="mt-auto pt-4 flex flex-col gap-3">
-        <button
-          onClick={app.openQuickAdd}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-[10px] bg-ceci-primary text-white text-sm font-semibold cursor-pointer hover:bg-ceci-primary-hover transition-colors shadow-xs"
+      {/* perfil */}
+      <button
+        onClick={() => handleNavigate('perfil')}
+        aria-label="abrir perfil"
+        aria-current={baseTab === 'perfil' ? 'page' : undefined}
+        className="mt-3 flex w-full items-center gap-3 rounded-[12px] border px-3 py-2.5 text-left transition-colors hover:bg-[var(--ds-surface-hover)] focus-visible:outline-none focus-visible:[box-shadow:var(--ds-focus-ring-neutral)]"
+        style={
+          baseTab === 'perfil'
+            ? { background: 'var(--ds-surface-active)', borderColor: 'var(--ds-border-default)' }
+            : { borderColor: 'transparent', background: 'var(--ds-surface-raised)' }
+        }
+      >
+        <span
+          className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full border"
+          style={{ borderColor: 'var(--ds-border-default)' }}
+          aria-hidden
         >
-          <Plus className="w-4 h-4" />
+          {profile.photoUrl ? (
+            <img src={profile.photoUrl} alt="" className="h-full w-full object-cover" />
+          ) : (
+            <span className="text-sm">🌷</span>
+          )}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-xs font-bold text-ceci-primary">
+            {profile.name || 'seu cantinho'}
+          </span>
+          <span className="block truncate text-[11px] text-ceci-muted">
+            semestre {profile.semester} de {profile.totalSemesters}
+          </span>
+        </span>
+        <ChevronRight className="h-3.5 w-3.5 shrink-0 text-ceci-muted" />
+      </button>
+
+      {/* ação rápida + dica do cecinho */}
+      <div className="mt-auto flex flex-col gap-3 pt-4">
+        <button
+          onClick={openQuickAdd}
+          className="flex w-full items-center justify-center gap-2 rounded-[10px] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-ceci-primary-hover focus-visible:outline-none focus-visible:[box-shadow:var(--ds-focus-ring)]"
+          style={{ background: 'var(--color-ceci-primary)' }}
+        >
+          <Plus className="h-4 w-4" />
           novo registro
-          <kbd className="ml-auto px-1.5 py-0.5 rounded-md bg-white/10 text-[10px] font-mono font-normal">⌘N</kbd>
+          <kbd className="ml-auto rounded-md bg-white/10 px-1.5 py-0.5 font-mono text-[10px] font-normal">⌘N</kbd>
         </button>
 
-        {/* CTA/promo card (borda tracejada) */}
         <Panel dashed className="p-3.5">
           <div className="flex items-start gap-2.5">
-            <span className="text-base leading-none mt-0.5" aria-hidden>✨</span>
+            <span className="text-base leading-none" aria-hidden>✨</span>
             <div className="min-w-0">
               <p className="text-xs font-semibold text-ceci-primary">dica do cecinho</p>
-              <p className="mt-0.5 text-[11px] leading-relaxed text-ceci-secondary line-clamp-2">
-                {tip}
-              </p>
+              <p className="mt-0.5 text-[11px] leading-relaxed text-ceci-secondary line-clamp-2">{tip}</p>
             </div>
           </div>
           <button
-            onClick={() => app.openStudy('focus')}
-            className="mt-2.5 w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[10px] bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong text-xs font-semibold cursor-pointer hover:bg-rose-100 transition-colors"
+            onClick={() => openStudy('focus')}
+            className="mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-[10px] px-3 py-1.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:[box-shadow:var(--ds-focus-ring)]"
+            style={{ background: 'var(--ds-accent-subtle)', color: 'var(--ds-accent-strong)' }}
           >
-            <Sparkles className="w-3 h-3" />
+            <Sparkles className="h-3 w-3" />
             bora focar?
           </button>
         </Panel>
-
-        <span className="flex items-center justify-center gap-1.5 text-[10px] text-ceci-muted">
-          <User className="w-3 h-3" aria-hidden />
-          atalhos: ⌘K · ⌘N · ⌘1–4 · esc
-        </span>
       </div>
     </aside>
   );
 };
-
-

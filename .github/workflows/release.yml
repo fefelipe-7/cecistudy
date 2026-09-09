@@ -1,4 +1,4 @@
-name: release (apk + ipa + ota + desktop)
+name: release mobile (apk + ipa + ota)
 
 # Pipeline único de CD do cecistudy ♡
 #
@@ -81,6 +81,9 @@ jobs:
 
       - name: test
         run: npm run test
+
+      - name: boundary check (mobile/desktop/packages)
+        run: node .github/scripts/check-boundaries.mjs
 
       - name: build web
         run: npm run build
@@ -300,85 +303,10 @@ jobs:
           path: ios/App/build/**/*.ipa
           if-no-files-found: error
 
-  desktop:
-    name: desktop (${{ matrix.os }})
-    needs: prepare
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: windows-latest
-            artifact: desktop-windows
-          - os: macos-latest
-            artifact: desktop-macos
-          - os: ubuntu-22.04
-            artifact: desktop-linux
-    env:
-      TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
-      TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-      APP_VERSION: ${{ needs.prepare.outputs.version }}
-    steps:
-      - name: checkout
-        uses: actions/checkout@v4
-
-      - name: setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - name: install deps (raiz)
-        run: npm ci
-
-      - name: download dist
-        uses: actions/download-artifact@v4
-        with:
-          name: web-dist
-          path: dist
-
-      - name: setup rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: rust cache
-        uses: swatinem/rust-cache@v2
-        with:
-          workspaces: desktop/src-tauri
-
-      - name: deps do linux (webkit2gtk)
-        if: matrix.os == 'ubuntu-22.04'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libgtk-3-dev libxdo-dev libssl-dev
-
-      - name: install deps (desktop)
-        working-directory: desktop
-        run: npm ci
-
-      - name: build tauri (versão do release)
-        working-directory: desktop
-        shell: bash
-        run: npx tauri build --config "{\"version\":\"$APP_VERSION\"}"
-
-      - name: upload bundles
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.artifact }}
-          path: |
-            desktop/src-tauri/target/release/bundle/**/*.exe
-            desktop/src-tauri/target/release/bundle/**/*.msi
-            desktop/src-tauri/target/release/bundle/**/*.dmg
-            desktop/src-tauri/target/release/bundle/**/*.app.tar.gz
-            desktop/src-tauri/target/release/bundle/**/*.AppImage
-            desktop/src-tauri/target/release/bundle/**/*.deb
-            desktop/src-tauri/target/release/bundle/**/*.rpm
-            desktop/src-tauri/target/release/bundle/**/*.sig
-          if-no-files-found: error
-
   release:
     name: github release + ota
-    needs: [prepare, android, ios, desktop]
-    if: always() && needs.prepare.result == 'success' && needs.android.result == 'success' && needs.ios.result == 'success' && needs.desktop.result == 'success'
+    needs: [prepare, android, ios]
+    if: always() && needs.prepare.result == 'success' && needs.android.result == 'success' && needs.ios.result == 'success'
     runs-on: ubuntu-latest
     env:
       VERSION: ${{ needs.prepare.outputs.version }}
@@ -416,22 +344,12 @@ jobs:
           name: ota-bundle
           path: ota-bundle
 
-      - name: download desktop bundles (windows/macos/linux)
-        uses: actions/download-artifact@v4
-        with:
-          pattern: desktop-*
-          path: desktop-assets
-
       - name: organize release assets
         run: |
           mkdir -p final
           cp "$(find release-assets -name '*.apk' | head -1)" "final/cecistudy-$VERSION-android.apk"
           cp "$(find release-assets -name '*.ipa' | head -1)" "final/cecistudy-$VERSION-ios.ipa"
           cp "$(find ota-bundle -name '*.zip' | head -1)" "final/cecistudy-$VERSION.zip"
-          # desktop: renomeia com prefixo/versionação amigável
-          find desktop-assets -type f \( -name '*.exe' -o -name '*.msi' -o -name '*.dmg' \
-            -o -name '*.app.tar.gz' -o -name '*.AppImage' -o -name '*.deb' -o -name '*.rpm' \
-            -o -name '*.sig' \) -exec cp {} final/ \;
           ls -la final
 
       - name: create/update github release
@@ -443,16 +361,14 @@ jobs:
             -o -name '*.sig' \) -printf '%p ' 2>/dev/null || true)
           NOTES=$(cat <<EOF
           ## cecistudy v$VERSION
-          bundle web e apps nativos (android/iOS/desktop) gerados pelo pipeline de release.
+          bundle web e apps nativos (android/iOS) gerados pelo pipeline de release mobile.
 
           artefatos:
           - android: cecistudy-$VERSION-android.apk
           - ios: cecistudy-$VERSION-ios.ipa (unsigned p/ sideload — assine com seu apple id)
           - ota (web): cecistudy-$VERSION.zip
-          - desktop (windows/macos/linux): instaladores + bundles do updater
 
           ota: o app nativo com o plugin @capgo/capacitor-updater recebe esta versão automaticamente pelo github pages.
-          desktop: o app tauri se atualiza pelo updater (latest.json neste release).
           EOF
           )
           if gh release view "$TAG" >/dev/null 2>&1; then
@@ -471,14 +387,6 @@ jobs:
               final/cecistudy-$VERSION-ios.ipa \
               final/cecistudy-$VERSION.zip $DESKTOP_ASSETS
           fi
-
-      - name: publish latest.json (updater desktop)
-        run: |
-          node .github/scripts/desktop-update-manifest.mjs "$TAG" desktop-assets latest.json
-          cp latest.json final/latest.json
-          gh release upload "$TAG" final/latest.json --clobber
-        env:
-          GH_TOKEN: ${{ github.token }}
 
       - name: publish ota (version.json + bundles)
         env:

@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
-import { BookOpen } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import React, { useEffect, useMemo, useState } from 'react';
+import { BookOpen, Library } from 'lucide-react';
+import { useMobileApp } from '@/context/mobileApp';
 import type { ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
+import { TOAST } from '../../lib/copy';
+import {
+  buildAuthorSuggestions,
+  findCatalogMatches,
+  findMyReadingMatches,
+  type CatalogWorkRef,
+} from '../../lib/readingMatching';
+import { loadNativeLibraryDataset } from '../../lib/catalogLibrary';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import {
+  FieldHint,
   FieldLabel,
   ReviewCard,
   TextInput,
 } from './wizardFields';
 import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
 import { Picker } from '../ui/Picker';
+import { AuthorSuggestInput } from '../ui/AuthorSuggestInput';
 
 const TYPES: { value: ReadingType; label: string; emoji?: string }[] = [
   { value: 'livro', label: 'livro', emoji: '📖' },
@@ -29,13 +39,15 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
   const {
     courses,
     readings,
+    authors,
     wizardCourseId,
     handleAddReading,
     handleUpdateReading,
+    handleAddAuthor,
     closeWizard,
     openEditCourse,
     showToast,
-  } = useApp();
+  } = useMobileApp();
   const editingReading = editing?.kind === 'reading'
     ? readings.find((r) => r.id === editing.id)
     : undefined;
@@ -53,8 +65,95 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
   );
   const [status, setStatus] = useState<ReadingStatus>(editingReading?.status ?? 'nao_iniciado');
 
+  // Acervo da biblioteca (web = facade lazy; nativo = catálogo SQLite) p/
+  // sugerir obras que já fazem parte do acervo quando o título bate.
+  const [catalogWorks, setCatalogWorks] = useState<CatalogWorkRef[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    const toRefs = (
+      books: { id: string; nome: string; autor: string }[]
+    ): CatalogWorkRef[] =>
+      books.map((b) => ({ id: b.id, title: b.nome, author: b.autor }));
+    void loadNativeLibraryDataset()
+      .then((dataset) => {
+        if (cancelled) return;
+        if (dataset) {
+          setCatalogWorks([
+            ...toRefs(dataset.catalogBooks),
+            ...toRefs(dataset.interdisciplinaryBooks),
+          ]);
+          return;
+        }
+        return import('../../data/books').then((facade) => {
+          if (!cancelled) {
+            setCatalogWorks([...toRefs(facade.catalogBooks), ...toRefs(facade.interdisciplinaryBooks)]);
+          }
+        });
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const titleTrimmed = title.trim();
+  const myMatches = useMemo(
+    () =>
+      editing?.kind === 'reading'
+        ? findMyReadingMatches(titleTrimmed, readings, editing.id)
+        : findMyReadingMatches(titleTrimmed, readings),
+    [readings, titleTrimmed, editing]
+  );
+  const catalogMatches = useMemo(
+    () => findCatalogMatches(titleTrimmed, catalogWorks),
+    [catalogWorks, titleTrimmed]
+  );
+
+  const authorSuggestions = useMemo(
+    () =>
+      buildAuthorSuggestions({
+        authors,
+        readings,
+        catalogWorks: catalogMatches,
+      }),
+    [authors, readings, catalogMatches]
+  );
+
+  const handleCreateAuthor = (name: string) => {
+    handleAddAuthor({
+      id: 'aut-' + Date.now(),
+      name,
+      bio: '',
+      keyConcepts: [],
+      majorWorks: [],
+    });
+    showToast(TOAST.authorSaved);
+  };
+
+  const adoptMyReading = (readingId: string) => {
+    const match = readings.find((r) => r.id === readingId);
+    if (!match) return;
+    setTitle(match.title);
+    setAuthor(match.author);
+    setType(match.type);
+    setTotalPages(match.totalPages ? String(match.totalPages) : '');
+    setCourseId(match.courseId ?? courseId);
+    setStatus(match.status);
+    hapticSuccess();
+    showToast('preenchemos com os dados da sua estante ♡');
+  };
+
+  const adoptCatalogWork = (workId: string) => {
+    const match = catalogWorks.find((w) => w.id === workId);
+    if (!match) return;
+    setTitle(match.title);
+    setAuthor((prev) => prev || match.author);
+    hapticSuccess();
+    showToast('dados do acervo preenchidos ♡');
+  };
+
   const createCourseInline = () => {
-    showToast('cadastre a matéria — quando voltar, ela aparece aqui ♡');
+    showToast(TOAST.courseRegistered);
     openEditCourse();
   };
 
@@ -65,6 +164,7 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       id: 'leitura-obra',
       title: 'obra',
       headline: 'qual obra você vai ler?',
+      subtitle: 'título e autor — se a obra já está no acervo da biblioteca, usamos os dados.',
       content: (
         <div className="space-y-4">
           <TextInput
@@ -73,9 +173,60 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
             placeholder="título da obra ou artigo — ex: a interpretação dos sonhos"
             autoFocus
           />
-          <TextInput
+
+          {myMatches.length > 0 && (
+            <div className="rounded-2xl border border-ceci-border-brand bg-surface-rose px-4 py-3 space-y-2">
+              <p className="text-[11px] font-semibold text-ceci-brand-strong">
+                essa obra já está na sua estante ♡
+              </p>
+              {myMatches.slice(0, 3).map((r) => (
+                <button
+                  key={r.id}
+                  type="button"
+                  onClick={() => adoptMyReading(r.id)}
+                  className="w-full flex items-center gap-2 text-left bg-white rounded-xl border border-ceci-border-subtle px-3 py-2.5 hover:bg-surface-muted tap-interactive cursor-pointer transition-colors"
+                >
+                  <BookOpen className="w-4 h-4 text-ceci-brand-strong shrink-0" />
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-xs font-semibold text-ceci-primary line-clamp-1">{r.title}</span>
+                    <span className="block text-[10px] text-ceci-secondary">
+                      {r.author || 'autor não informado'} · já cadastrada
+                    </span>
+                  </span>
+                  <span className="text-[10px] font-bold text-ceci-academic-strong shrink-0">usar essa</span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {catalogMatches.length > 0 && (
+            <div className="rounded-2xl border border-ceci-border-academic bg-surface-blue px-4 py-3 space-y-2">
+              <p className="text-[11px] font-semibold text-ceci-academic-strong">
+                tem no acervo da biblioteca ✦
+              </p>
+              {catalogMatches.slice(0, 3).map((w) => (
+                <button
+                  key={w.id}
+                  type="button"
+                  onClick={() => adoptCatalogWork(w.id)}
+                  className="w-full flex items-center gap-2 text-left bg-white rounded-xl border border-ceci-border-subtle px-3 py-2.5 hover:bg-surface-muted tap-interactive cursor-pointer transition-colors"
+                >
+                  <Library className="w-4 h-4 text-ceci-academic-strong shrink-0" />
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-xs font-semibold text-ceci-primary line-clamp-1">{w.title}</span>
+                    <span className="block text-[10px] text-ceci-secondary">{w.author || 'autor não informado'}</span>
+                  </span>
+                  <span className="text-[10px] font-bold text-ceci-academic-strong shrink-0">usar dados</span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          <AuthorSuggestInput
             value={author}
-            onChange={(e) => setAuthor(e.target.value)}
+            onChange={setAuthor}
+            suggestions={authorSuggestions}
+            onCreateAuthor={handleCreateAuthor}
             placeholder="autor — ex: freud"
           />
         </div>
@@ -85,6 +236,7 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       id: 'leitura-formato',
       title: 'formato',
       headline: 'qual o formato e o tamanho?',
+      subtitle: 'o tipo da obra e o total de páginas, para acompanhar o progresso depois.',
       content: (
         <div className="space-y-5">
           <ChoiceCardGrid
@@ -101,6 +253,7 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
               onChange={(e) => setTotalPages(e.target.value)}
               placeholder="ex: 200"
             />
+            <FieldHint>sem esse número, não dá para calcular a porcentagem de leitura.</FieldHint>
           </div>
         </div>
       ),
@@ -109,6 +262,7 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       id: 'leitura-contexto',
       title: 'contexto',
       headline: 'onde essa leitura se encaixa?',
+      subtitle: 'a disciplina é opcional; o status mostra onde essa leitura está na sua jornada.',
       content: (
         <div className="space-y-5">
           <Picker
@@ -133,6 +287,7 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       id: 'leitura-revisar',
       title: 'revisar',
       headline: 'confere se está tudo certinho ♡',
+      subtitle: 'confere os dados — o progresso de leitura você atualiza a qualquer hora.',
       content: (
         <ReviewCard
           rows={[

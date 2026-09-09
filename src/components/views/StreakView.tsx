@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Flame, Trophy, CalendarDays, CheckCircle2 } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { AnimatedNumber } from '../ui/AnimatedNumber';
 import { Mascote } from '../ui/Mascote';
 import { addDays, getRecentWeeks, toDateKey } from '../../lib/streak';
@@ -20,7 +20,7 @@ const WHAT_COUNTS = [
 ];
 
 export const StreakView: React.FC = () => {
-  const { streakStats, currentWeekProgress, streakData, handleNavigate } = useApp();
+  const { streakStats, currentWeekProgress, streakData, handleNavigate } = useMobileApp();
   const todayKey = toDateKey(new Date());
   const weekCells = currentWeekProgress.filter((c) => c.status !== 'weekend');
   const doneThisWeek = currentWeekProgress.filter((c) => c.status === 'done').length;
@@ -108,7 +108,7 @@ export const StreakView: React.FC = () => {
       </div>
 
       {/* Sua semana */}
-      <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
+      <div className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="font-display font-bold text-base text-ceci-primary">sua semana</h2>
           <span className="text-[11px] font-bold text-ceci-brand-strong bg-surface-rose px-2.5 py-1 rounded-full border border-ceci-border-brand">
@@ -154,7 +154,7 @@ export const StreakView: React.FC = () => {
       </div>
 
       {/* Histórico das últimas semanas */}
-      <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-3.5">
+      <div className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm space-y-3.5">
         <h2 className="font-display font-bold text-base text-ceci-primary">últimas semanas</h2>
         <div className="space-y-2.5">
           {recentWeeks.map((week) => (
@@ -181,7 +181,7 @@ export const StreakView: React.FC = () => {
       </div>
 
       {/* Como funciona */}
-      <div className="rounded-[24px] p-5 bg-surface-subtle border border-ceci-border-default space-y-3">
+      <div className="rounded-2xl p-5 bg-surface-subtle border border-ceci-border-default space-y-3">
         <h2 className="font-display font-bold text-base text-ceci-primary">como funciona a streak ♡</h2>
         <ul className="space-y-2">
           {WHAT_COUNTS.map((item) => (

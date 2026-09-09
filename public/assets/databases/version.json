@@ -1,8 +1,8 @@
 {
   "database": "cecistudy_catalog.db",
   "version": "2026.08.24.1",
-  "contentHash": "8e4cf2e2f04fecf7fe108d6648143d64e90ebc106dfaa629fbb3763f0ef701cb",
-  "builtAt": "2026-08-25T13:33:01.924Z",
+  "contentHash": "4abe5c03f2f62563630bdc5c64abda4ec5eac18601c59575e0745981aab9ed4c",
+  "builtAt": "2026-08-27T22:30:47.867Z",
   "sourceSchemaVersion": 1,
   "counts": {
     "areas": 18,
@@ -14,7 +14,8 @@
     "concepts": 225,
     "authors": 139,
     "techniqueCategories": 10,
-    "techniques": 135,
+    "techniques": 136,
+    "comparisons": 130,
     "questionCategories": 18,
     "topics": 1518
   }

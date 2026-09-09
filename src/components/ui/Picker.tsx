@@ -123,7 +123,7 @@ export const Picker: React.FC<PickerProps> = ({
             position="bottom"
             className="w-full max-w-md"
           >
-            <div className="bg-white rounded-t-[28px] sm:rounded-[24px] border border-ceci-border-default shadow-xl overflow-hidden text-ceci-primary">
+            <div className="bg-white rounded-t-[28px] sm:rounded-2xl border border-ceci-border-default shadow-xl overflow-hidden text-ceci-primary">
               <div className="px-5 pt-4 pb-2 border-b border-ceci-border-subtle">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-ceci-tertiary">
                   {sheetTitle ?? label ?? 'escolher'}

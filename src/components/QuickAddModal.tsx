@@ -92,7 +92,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({ isOpen, onClose, o
     open={isOpen}
     onClose={onClose}
     position="bottom"
-    className="w-full max-w-lg bg-canvas rounded-t-[28px] sm:rounded-[24px] border border-ceci-border-default shadow-xl overflow-hidden p-5 sm:p-6 text-ceci-primary"
+    className="w-full max-w-lg bg-canvas rounded-t-[28px] sm:rounded-2xl border border-ceci-border-default shadow-xl overflow-hidden p-5 sm:p-6 text-ceci-primary"
   >
     {/* Header */}
     <div className="flex items-center justify-between border-b border-ceci-border-subtle pb-3 mb-4">

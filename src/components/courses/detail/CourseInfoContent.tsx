@@ -1,7 +1,7 @@
 import React from 'react';
 import { BookOpen, CalendarClock, GraduationCap, MessageSquare, Timer } from 'lucide-react';
 import { Mascote } from '../../ui/Mascote';
-import { useApp } from '../../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { formatCourseSchedule } from '../../../lib/schedule';
 import { Course } from '../../../types';
 
@@ -17,7 +17,7 @@ const ROW_VALUE = 'font-semibold text-xs text-ceci-primary mt-0.5';
 
 /** Conteúdo da tab "informações" — compartilhado entre mobile e desktop. */
 export const CourseInfoContent: React.FC<CourseInfoContentProps> = ({ course }) => {
-  const { sessions } = useApp();
+  const { sessions } = useMobileApp();
 
   const attendance =
     course.attendance && course.attendance.total > 0
@@ -154,7 +154,7 @@ export const CourseInfoContent: React.FC<CourseInfoContentProps> = ({ course }) 
 
 /** Provas com peso anotado desta disciplina (ordenáveis por data). */
 function useAssessments(courseId: string) {
-  const { exams } = useApp();
+  const { exams } = useMobileApp();
   return React.useMemo(
     () => exams.filter((e) => e.courseId === courseId && typeof e.weightValue === 'number'),
     [exams, courseId]

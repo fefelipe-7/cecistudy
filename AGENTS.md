@@ -1,44 +1,94 @@
 # AGENTS.md
 
-Guidance for OpenCode sessions working in **cecistudy ♡** — a personal, mobile-first, pt-BR academic organizer for Psychology (React 19 + TypeScript + Vite + Tailwind CSS 4 + Capacitor 8).
+Guidance for OpenCode sessions in **cecistudy ♡** — personal, mobile-first, pt-BR academic organizer for Psychology (React 19 + TS + Vite 6 + Tailwind 4 + Capacitor 8 + Tauri 2 desktop).
 
 ## Commands & Verification
-- **Package Manager:** Use **`npm`** (no bun).
-- `npm run dev` — Vite dev server (port 3000)
-- `npm run lint` — `tsc --noEmit` (only typecheck/lint)
+- Package manager: **npm** (no bun).
+- `npm run dev` — Vite dev server on port 3000.
+- `npm run lint` — `tsc --noEmit` (typecheck only; this is the "lint").
 - `npm run test` — Vitest (jsdom). Single file: `npm run test -- src/lib/__tests__/routing.test.ts`
-- `npm run build` — Vite build → `dist/`
-- **Verification Gate:** Always run `npm run lint` and `npm run test` after code changes.
+- `npm run build` — `vite build` → `dist/`.
+- `node .github/scripts/check-boundaries.mjs` — fails if mobile/desktop/packages import boundaries are violated. É gate obrigatório do PR (`.github/workflows/ci.yml`) e do release; rode localmente antes de tocar `packages/*`, `src/shells` ou `src/desktop`. A regra "shared UI não brancha por plataforma" (`isDesktop`/`isMobile`/`Capacitor.isNativePlatform`/`__TAURI__`) vive em `src/components`, `src/shells/SharedScreenLayers.tsx` e `src/overlays/*`.
+- **Verification gate:** run `npm run lint` + `npm run test` after any code change; run the boundary check when touching `packages/*`.
+- Content/catalog pipeline (only when editing temple/catalog data): `npm run content:build` → `npm run db:verify` → `npm run content:check`.
+
+## Monorepo / Package Boundaries (read before editing `packages/*`)
+- `packages/*` are npm workspaces and the **canonical** shared libraries: `domain`, `application`, `data`, `sync`, `contracts`, `design-tokens`.
+- `src/core/*` and `src/data/*` are **compat stubs** that re-export from those packages. Do NOT add business rules there — put new domain/use-case logic in `packages/domain` / `packages/application`.
+- **CRITICAL re-export rule:** compat stubs use a RELATIVE path to the package
+  (`export * from '../../packages/data/src/schema'`). Never use `@/packages/...` — the tsconfig
+  `@/*` alias resolves `./src/*` first and does NOT fall back to `./packages/*`, so `@/packages/...`
+  compiles under `tsc` but breaks the Vite build.
+- **Boundary rule:** `packages/*` must NEVER import `react`, `@capacitor/*`, or `__TAURI__` (enforced
+  by `check-boundaries.mjs`). Platform/Capacitor glue stays in `src/lib` (e.g. `exportFile.ts` isolates
+  `@capacitor/filesystem`/`@capacitor/share`).
+- **`apps/mobile` and `apps/desktop` DO exist** as independent clients (Tauri 2 desktop, Capacitor mobile).
+  Each has its own entrypoint (`apps/*/src/app/main.tsx`), provider (`apps/*/src/*AppProvider.tsx`),
+  `vite.config.ts` and build (`npm run build --workspace=apps/mobile|apps/desktop`). `src/App.tsx` (web)
+  is mobile-first and no longer branches on `isDesktop`. The Fase 10 separation is in progress
+  (see `desktop/context-desktop/separacao-interface/07-estado-execucao.md`): desktop components now use
+  `useDesktopApp()` (`src/context/desktopApp.ts`) and mobile/shared views are migrating to `useMobileApp()`
+  (`src/context/mobileApp.ts`); both are facades over the still-universal `AppContext` until the bridge is
+  removed. Do not add new business rules directly to `AppContext`; call into `packages/*` instead.
 
 ## Architecture & Navigation
-- **No Router:** Navigation is a state stack (`NavScreen[]`) in `AppContext.tsx`. `location.hash` is a mirror (`src/lib/routing.ts`).
-- **Views:** Views consume `useApp()` with no props.
-- **Entry & Startup:** App starts empty (`data/empty.ts`). Demo data (`data/seeds.ts`) loads only via onboarding or Perfil → configurações.
+- **No router.** Navigation is a state stack (`NavScreen[]`) in `src/context/AppContext.tsx`; `location.hash` is only a mirror (`src/lib/routing.ts`). Source of truth = the stack.
+- **Views** consume `useApp()` with no props.
+- **App starts empty** (`src/data/empty.ts`): no demo/seed data; onboarding always begins from zero.
+- **AppContext is a facade** (Fase 0 rule): do not add new business rules directly to it; call into `packages/*` instead.
 
 ## Code Conventions
-- **Design System:** Use semantic tokens from `src/index.css` `@theme` (e.g. `text-ceci-primary`, `bg-surface-rose`, `border-ceci-border-brand`) — **never raw hex** in classNames (hex allowed only as data values via `style={{}}`).
-- **Copy:** pt-BR, lowercase, warm ("guardar", "bora estudar?", "prontinho ♡").
-- **State & Schema:** New global state requires `usePersistentState` in `AppContext.tsx`, interface in `types.ts`, and seed in `data/empty.ts`. If data shape changes, bump `SCHEMA_VERSION` in `data/schema.ts` and add a migration.
+- **Design tokens:** use semantic tokens from `src/index.css` `@theme` (`text-ceci-primary`, `bg-surface-rose`, `border-ceci-border-brand`); never raw hex in classNames (hex only as data values via `style={{}}`). See `.context/design-system.md`.
+- **Copy:** pt-BR, lowercase, warm ("guardar", "bora estudar?", "prontinho ♡"). Never refer to the user as "Ceci".
+- **Schema changes:** bump `SCHEMA_VERSION` only in `packages/data/src/schema` (re-exported at `src/data/schema.ts`) and add a `MIGRATIONS` entry — and ONLY when the persisted format in `packages/domain|data` changes. Navigation/UI changes (e.g. `NavScreen`) must never bump `SCHEMA_VERSION`. New persisted state needs a `usePersistentState` key + seed in `src/data/empty.ts`.
+- **Editing files (MANDATORY):** ALWAYS edit via the `edit` tool. **Never** bulk-rewrite source files with PowerShell `Get-Content`/`Set-Content` (or any encoding-naive write) — it silently corrupts UTF‑8/non‑ASCII and turns pt‑BR accents (á/ã/ç/ê/õ…) into the U+FFFD replacement char, which is lossy and unrecoverable. Mechanical renames across many files must be done with the `edit` tool per file, or a script that reads **and** writes explicitly as UTF‑8 — and must be verified with `npm run lint` + a check for the replacement character (`\x{FFFD}`). (Incidente 2026‑08: migração em lote via PowerShell corrompeu 9 arquivos de views; recuperados de backup e refeitos com o `edit` tool.)
 
 ## Persistence & Native
-- **Tri-modal Storage:** web = `localStorage` · nativo domínio = **SQLite** (`cecistudy_user`, plugin `@capacitor-community/sqlite`; camada em `src/lib/db/` com import legado de Preferences no boot) · preferências pequenas (`reminder`, `onboarding`, gcal) = `@capacitor/preferences` via `usePersistentState`. Catálogo estático (questões/abordagens/obras) vive no `.db` de `public/assets/databases/` (gerado por `npm run content:build`; verificado por `db:verify`) — no nativo o app lê dele (`catalogDb.ts`); na web, do facade JS.
-- **Native (`android/`/`ios/`):** Committed to repo. Native builds + releases + OTA run in CI (`.github/workflows/release.yml`); this Linux machine has no JDK/SDK/Xcode.
-- **OTA Updates:** Self-hosted web bundle updates via `@capgo/capacitor-updater` (`src/lib/ota.ts`) hosted on GitHub Pages (`ota/README.md`).
-
-## Desktop (`desktop/` — Tauri 2)
-- **Casca sobre o bundle web:** `desktop/src-tauri` empacota o mesmo `dist/` da raiz (`frontendDist: ../../dist`). Nada de código do app mora em `desktop/`; nenhum código Tauri entra nas deps da raiz.
-- **Detecção:** `isDesktop` em `src/lib/platform.ts` (via `window.__TAURI_INTERNALS__`; ponte de recursos via `window.__TAURI__` com `withGlobalTauri: true`) — irmã do `isNativePlatform`.
-- **Comandos só em `desktop/`:** `cd desktop && npm run dev|build` (dev usa `devUrl` localhost:3000 → rode o dev server da raiz junto). Build local exige toolchain C (MSVC no Windows); CI cobre windows/macos/ubuntu.
-- **Preview da shell desktop no navegador:** `npm run dev:desktop` (ou `?platform=desktop` na URL do dev server) força `isDesktop` sem compilar o Tauri — ideal p/ iterar a UI desktop. Recursos que dependem da ponte `window.__TAURI__` (updater, notificação) ficam no-op no preview. `?platform=web` faz o inverso.
-- **Features desktop:** lembrete diário via timer JS (`src/lib/notifications.ts`, dispara com app aberto); auto-update via tauri-plugin-updater + GitHub Releases (`latest.json` assinado; card no Perfil); `tauri-plugin-window-state` (lembra tamanho/posição da janela).
-- **Shell por plataforma (não breakpoint):** `App.tsx` escolhe `DesktopAppShell` (`shells/`) quando `isDesktop`; senão `MobileAppShell` (web responsiva + Capacitor — inclui a sidebar web ≥ lg de `components/DesktopSidebar.tsx`). Ambas consomem o mesmo `useApp()`; a pilha de navegação é única.
-- **Módulos desktop:** `src/desktop/` (layouts master-detail como `SplitLayout`, componentes próprios como sidebar c/ sub-navegação e topbar) + camadas compartilhadas em `src/shells/` (`ScreenLayers.tsx` = conteúdo das telas, `GlobalOverlays.tsx` = modais/toasts/⌘K). Master-detail: faculdade renderiza lista compacta + `CourseDetailView` em panes (sem empilhar tela); compose/wizards viram janela centrada.
-- **Visual desktop ("premium, mesma alma"):** sidebar branca × conteúdo `bg-surface-muted` (contraste de hierarquia); item ativo = `bg-surface-rose` + `text-ceci-brand-strong` `rounded-[10px]`; cards = primitiva `desktop/components/ui/Panel` (border fina > sombra forte) · badges = `StatusBadge` · pills = `TagPill`. Título de página 26px display na topbar. Nada de hex novo — só tokens.
-- **Variante CSS `desktop:*`:** `@custom-variant` em `index.css`, ativa por `<html data-platform="desktop">` setado por `initPlatformFlags()` (`platform.ts`) no boot do `main.tsx`. Use p/ estilos exclusivos de plataforma além dos breakpoints.
-- **Atalhos desktop:** ⌘K busca · ⌘N novo registro · ⌘1–4 abas · Esc volta um nível (`handleSystemBack`).
+- **Tri-modal storage:** web = `localStorage` · native domain data = **SQLite** (`@capacitor-community/sqlite`, `cecistudy_user`) via `src/lib/db/` · small prefs (`reminder`, `onboarding`, `gcal`) = `@capacitor/preferences` (through `usePersistentState`). Static catalog (questions/approaches/works) ships in `public/assets/databases/*.db` (built by `content:build`, checked by `db:verify`); web reads it via JS facades.
+- **Native (`android/`, `ios/`):** committed. Releases OTA/mobile (APK+IPA+OTA) rodam em CI (`.github/workflows/release.yml`); releases desktop (Tauri, msi/dmg/AppImage/deb) em `.github/workflows/release-desktop.yml` — pipelines **independentes** por app. Gates de PR em `.github/workflows/ci.yml` (lint+test+boundary). This Linux box has no JDK/SDK/Xcode, so you cannot compile native here.
+- **Desktop (`desktop/` — Tauri 2):** `desktop/src-tauri` wraps the root `dist/`. No app code lives in `desktop/`; no Tauri deps enter root `package.json`. Preview the desktop shell in-browser with `npm run dev:desktop` (or `?platform=desktop`); `?platform=web` forces the mobile/web shell. Detection: `isDesktop` in `src/lib/platform.ts`.
 
 ## Gotchas & Environment Quirks
-- **Node 26 & Jsdom:** Experimental global `localStorage` shadows jsdom's storage; fixed in `vitest.setup.ts`.
-- **Git Repo:** Local workspace lacks a `.git` folder; CI expects `main`.
-- **Docs Drift:** `.context/*.md` files may be drifted in places; trust code + `types.ts` as the ultimate source of truth.
-- **GitHub bloqueado nesta rede** (api/github/CDN = 000): npm, PyPI e CDN Microsoft funcionam. Build nativo do desktop é possível localmente com llvm-mingw 20260616 em `%LOCALAPPDATA%` + stub de CRT (receita completa no `desktop/README.md`); instaladores (.msi/.exe) só no CI.
+- **Node:** `engines >=22` / `.nvmrc` = 22. If running on Node 26, jsdom's `localStorage` is shadowed by an experimental global; handled in `vitest.setup.ts`.
+- **No `.git` here:** local workspace is not a git repo; CI expects branch `main`.
+- **Docs drift:** `.context/*.md` and the separation plan in `desktop/context-desktop/` may be stale in places — trust the code and `packages/data/src/schema` / `packages/domain` as source of truth.
+- **GitHub network is blocked from this machine** (api/cdn = 000); npm, PyPI, and Microsoft CDN work. Native desktop installers build only in CI.
+
+## Skills do projeto (e quando usar)
+Skills locais em `.agents/skills/<nome>/SKILL.md` (instalados via `npx skills add`). Agrupadas por
+função — use a skill certa na hora certa (leia o `SKILL.md` correspondente antes de especificar/implementar).
+
+### Frontend & Design (UI/UX das features desktop)
+- `frontend-design` — diretrizes de design de interface; use ao especificar/implementar QUALQUER tela desktop nova.
+- `web-design-guidelines` — boas práticas de web design (acessibilidade, layout); use em specs de shell/perfil/settings.
+- `vercel-react-best-practices` — padrões React/Tailwind; use ao definir componentes/estado das features.
+- `vercel-composition-patterns` — padrões de composição de componentes; use no master-detail, split layouts, inspector.
+- `ui-ux-pro-max` (+ `ui-styling`, `design`, `design-system`, `brand`, `banner-design`, `slides`) — polimento visual/UX; use em telas ricas (grafo, documents, marketing).
+- `react-ui` — padrões de UI React; use em componentes de biblioteca/leitura desktop.
+- `design-system` — mantenha tokens `--ds-*` (desktop) e `ceci-*` (compartilhado); nunca hex raw em classes.
+
+### Product / Discovery
+- `idea-refine` — refinar/validar ideia de feature; use antes de escrever spec de módulo greenfield.
+- `problem-statement` — articular o problema; use na introdução de cada spec.
+- `prioritization-methods` — priorizar features; use no roadmap.
+
+### Specification
+- `spec-driven-development` — fluxo spec→test→código; use como esqueleto de TODAS as specs.
+- `prd` — product requirements doc; use em módulos greenfield grandes (calendário, documents, marketing).
+- `specification-techniques` — técnicas de especificação; use para formato/detalhamento.
+- `user-stories` — histórias de usuário; use para critérios de aceite por feature.
+
+### Architecture
+- `greenfield-architecture-planner` — arquitetar módulos novos do zero; use em Calendário/Documents/Marketing/Biblioteca desktop.
+
+### Planning
+- `planning-and-task-breakdown` — quebrar em tarefas; use no plano de implementação de cada spec.
+- `roadmap-frameworks` — roadmap; use para sequenciar Fases.
+
+### Implementation
+- `incremental-implementation` — implementação incremental e segura; use ao planejar a remoção do código mobile compartilhado.
+- `context-engineering` — engenharia de contexto/estado; use na separação de estado (`DesktopSessionState`, `ScreenLayers`).
+
+**Regra:** specs de features desktop vivem em `desktop/spec/` e DEVEM respeitar `.github/scripts/check-boundaries.mjs`
+(desktop NUNCA importa mobile estaticamente; estado visual desktop fica em `DesktopSessionState`, nunca no `SyncPackage`).
+O relatório-base de varredura está em `desktop/spec/00-relatorio-varredura.md`.

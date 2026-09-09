@@ -1,6 +1,6 @@
 ﻿import React, { useMemo } from 'react';
 import { Flame, ChevronRight, Play, Target, BookOpen, Timer } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { Mascote } from '../ui/Mascote';
 import { ManageSurface } from '../ui/ManageSurface';
 import { DitherGrowthChart } from '../ui/dither-growth';
@@ -17,7 +17,7 @@ const formatShortDate = (daysAgo: number) => {
 
 /** Tela dedicada de histórico — sessões de foco, quizzes e leituras concluídas. */
 export const StudyHistoricoScreen: React.FC = () => {
-  const { sessions, quizSessions, readings, courses, streakStats, openStudy } = useApp();
+  const { sessions, quizSessions, readings, courses, streakStats, openStudy } = useMobileApp();
 
   const courseName = (id?: string) => courses.find((c) => c.id === id)?.name || 'geral';
 
@@ -99,7 +99,7 @@ export const StudyHistoricoScreen: React.FC = () => {
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-3">
       <div className="grid sm:grid-cols-2 gap-3">
-        <div className="rounded-[24px] p-5 bg-surface-subtle border border-ceci-border-subtle shadow-sm flex items-center justify-between">
+        <div className="rounded-2xl p-5 bg-surface-subtle border border-ceci-border-subtle shadow-sm flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="w-9 h-9 rounded-full bg-white border border-ceci-border-default flex items-center justify-center">
               <Flame className="w-4 h-4 text-ceci-brand-strong fill-ceci-brand" />
@@ -114,7 +114,7 @@ export const StudyHistoricoScreen: React.FC = () => {
           <span className="font-display font-bold text-lg text-ceci-primary">{weekFocusMinutes} min</span>
         </div>
 
-        <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm flex items-center justify-between">
+        <div className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="w-9 h-9 rounded-full bg-surface-rose border border-ceci-border-brand flex items-center justify-center">
               <Flame className={`w-4 h-4 ${streakStats.alive ? 'fill-rose-500 text-rose-500' : 'text-ceci-muted'}`} />
@@ -133,7 +133,7 @@ export const StudyHistoricoScreen: React.FC = () => {
       </div>
 
       {!hasAnything ? (
-        <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
+        <div className="rounded-2xl p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
           <Mascote expression="pause-kind" className="w-14 h-14 mx-auto" decorative />
           <p className="text-xs text-ceci-secondary leading-relaxed">
             nenhuma sessão anotada ainda. quando você concluir seu primeiro foco, ela aparece aqui ♡
@@ -178,7 +178,7 @@ export const StudyHistoricoScreen: React.FC = () => {
                   key={s.id}
                   kind="session"
                   id={s.id}
-                  className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm flex items-center justify-between gap-3"
+                  className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm flex items-center justify-between gap-3"
                 >
                   <div className="min-w-0">
                     <h3 className="font-semibold text-xs text-ceci-primary truncate">{s.topic}</h3>
@@ -208,7 +208,7 @@ export const StudyHistoricoScreen: React.FC = () => {
                   key={q.id}
                   kind="quizSession"
                   id={q.id}
-                  className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm flex items-center justify-between gap-3"
+                  className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm flex items-center justify-between gap-3"
                 >
                   <div className="min-w-0 flex items-center gap-2.5">
                     <span className="w-8 h-8 rounded-xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center shrink-0">
@@ -233,7 +233,7 @@ export const StudyHistoricoScreen: React.FC = () => {
 
           {/* Áreas com menor acerto no quiz */}
           {sortedQuizzes.length > 0 && weakestAreas.length > 0 && (
-            <div className="rounded-[24px] p-4 bg-surface-rose border border-ceci-border-brand shadow-sm space-y-2">
+            <div className="rounded-2xl p-4 bg-surface-rose border border-ceci-border-brand shadow-sm space-y-2">
               <p className="text-xs font-semibold text-ceci-primary flex items-center gap-1.5">
                 <Target className="w-4 h-4 text-ceci-brand-strong" /> pra revisar mais
               </p>
@@ -259,7 +259,7 @@ export const StudyHistoricoScreen: React.FC = () => {
                   key={r.id}
                   kind="reading"
                   id={r.id}
-                  className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm flex items-center justify-between gap-3"
+                  className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm flex items-center justify-between gap-3"
                 >
                   <div className="min-w-0 flex items-center gap-2.5">
                     <span className="w-8 h-8 rounded-xl bg-surface-blue border border-ceci-border-academic flex items-center justify-center shrink-0">

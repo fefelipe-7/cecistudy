@@ -10,7 +10,7 @@ import {
   ScanLine,
   Sparkles,
 } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import {
   formatPairCode,
   generatePairCode,
@@ -52,13 +52,13 @@ const StepCard: React.FC<{ children: React.ReactNode; className?: string }> = ({
   children,
   className = '',
 }) => (
-  <div className={`rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm ${className}`}>
+  <div className={`rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm ${className}`}>
     {children}
   </div>
 );
 
 export const SyncScreen: React.FC = () => {
-  const { closeSyncScreen, showToast } = useApp();
+  const { closeSyncScreen, showToast } = useMobileApp();
   const [phase, setPhase] = useState<Phase>('choose');
   const [role, setRole] = useState<SyncRole>('host');
   const [code, setCode] = useState('');
@@ -215,7 +215,7 @@ export const SyncScreen: React.FC = () => {
 
             <button
               onClick={startHost}
-              className="w-full text-left rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm hover:border-ceci-border-brand transition-colors cursor-pointer active:scale-[0.99] transition-transform"
+              className="w-full text-left rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm hover:border-ceci-border-brand transition-colors cursor-pointer active:scale-[0.99] transition-transform"
             >
               <div className="flex items-start gap-3">
                 <span className="w-11 h-11 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center shrink-0">
@@ -234,7 +234,7 @@ export const SyncScreen: React.FC = () => {
 
             <button
               onClick={startJoin}
-              className="w-full text-left rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm hover:border-ceci-border-academic transition-colors cursor-pointer active:scale-[0.99]"
+              className="w-full text-left rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm hover:border-ceci-border-academic transition-colors cursor-pointer active:scale-[0.99]"
             >
               <div className="flex items-start gap-3">
                 <span className="w-11 h-11 rounded-2xl bg-surface-blue border border-ceci-border-academic flex items-center justify-center shrink-0">
@@ -267,7 +267,7 @@ export const SyncScreen: React.FC = () => {
               no outro dispositivo, toque em “conectar a outro dispositivo”
             </p>
 
-            <div className="w-56 h-56 rounded-[20px] bg-white border border-ceci-border-default shadow-sm flex items-center justify-center overflow-hidden mb-4">
+            <div className="w-56 h-56 rounded-xl bg-white border border-ceci-border-default shadow-sm flex items-center justify-center overflow-hidden mb-4">
               {qrDataUrl ? (
                 <img src={qrDataUrl} alt="QR code de pareamento" className="w-full h-full object-contain" />
               ) : (

@@ -1,42 +1,42 @@
 import type {
-  Course,
-  ClassNote,
-  Task,
-  Exam,
-  PsychologyAuthor,
-  PsychologyConcept,
-  ReadingItem,
-  Flashcard,
-  MaterialItem,
-  InternshipLog,
-  StudySession,
-  QuizSession,
-  LooseNote,
-  ManagedItemKind,
+   Course,
+   ClassNote,
+   Task,
+   Exam,
+   PsychologyAuthor,
+   PsychologyConcept,
+   ReadingItem,
+   Flashcard,
+   MaterialItem,
+   InternshipLog,
+   StudySession,
+   QuizSession,
+   LooseNote,
+   ManagedItemKind,
 } from '../types';
 
 /** Todos os bancos que o menu de editar/excluir pode tocar. */
 export interface ManagedDB {
-  courses: Course[];
-  classes: ClassNote[];
-  tasks: Task[];
-  exams: Exam[];
-  authors: PsychologyAuthor[];
-  concepts: PsychologyConcept[];
-  readings: ReadingItem[];
-  flashcards: Flashcard[];
-  materials: MaterialItem[];
-  internshipLogs: InternshipLog[];
-  sessions: StudySession[];
-  quizSessions: QuizSession[];
-  looseNotes: LooseNote[];
-  bookmarkedCourseIds: string[];
-  /** Ids de livros salvos da biblioteca (usado por `catalogBook`). */
-  savedBookIds?: string[];
-  /** Progresso de leitura do catálogo (bookId → páginas). */
-  readingProgress?: Record<string, number>;
-  /** Referências leves do catálogo estático (para resolver nome/total de páginas). */
-  catalogBooks?: CatalogBookRef[];
+   courses: Course[];
+   classes: ClassNote[];
+   tasks: Task[];
+   exams: Exam[];
+   authors: PsychologyAuthor[];
+   concepts: PsychologyConcept[];
+   readings: ReadingItem[];
+   flashcards: Flashcard[];
+   materials: MaterialItem[];
+   internshipLogs: InternshipLog[];
+   sessions: StudySession[];
+   quizSessions: QuizSession[];
+   looseNotes: LooseNote[];
+   bookmarkedCourseIds: string[];
+   /** Ids de livros salvos da biblioteca (usado por `catalogBook`). */
+   savedBookIds?: string[];
+   /** Progresso de leitura do catálogo (bookId → páginas). */
+   readingProgress?: Record<string, number>;
+   /** Referências leves do catálogo estático (para resolver nome/total de páginas). */
+   catalogBooks?: CatalogBookRef[];
 }
 
 /** Referência leve a um livro do catálogo estático da biblioteca. */

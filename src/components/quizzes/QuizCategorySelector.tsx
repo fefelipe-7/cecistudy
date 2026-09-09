@@ -56,7 +56,7 @@ function FilterSection({
   count: number;
 }) {
   return (
-    <div className="rounded-[20px] bg-white border border-ceci-border-default overflow-hidden">
+    <div className="rounded-xl bg-white border border-ceci-border-default overflow-hidden">
       <button
         onClick={onToggleOpen}
         className="w-full flex items-center justify-between gap-3 p-4"
@@ -125,7 +125,7 @@ function FilterSection({
 function CountSelector({ count, onChange, maxAvailable }: { count: number; onChange: (n: number) => void; maxAvailable: number }) {
   const options = [5, 10, 15, 20].filter((n) => n <= maxAvailable);
   return (
-    <div className="rounded-[20px] bg-white border border-ceci-border-default p-4">
+    <div className="rounded-xl bg-white border border-ceci-border-default p-4">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Target className="w-5 h-5 text-ceci-brand-strong" />
@@ -237,7 +237,7 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 space-y-4">
           {/* Card explicativo */}
           <div
-            className="rounded-[20px] p-4 bg-white border border-ceci-border-default shadow-sm text-center space-y-3"
+            className="rounded-xl p-4 bg-white border border-ceci-border-default shadow-sm text-center space-y-3"
           >
             <Mascote expression="quiz-ready" className="w-12 h-12 mx-auto" decorative />
             <div>

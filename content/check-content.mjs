@@ -14,6 +14,7 @@ import {
   computeContentHash,
   loadTempleSources,
 } from './content-data.mjs';
+import approachRegistryFile from '../src/data/temple/approachRegistry.json' with { type: 'json' };
 
 const MIN = {
   questoes: 100,
@@ -29,6 +30,7 @@ const MIN = {
   autores: 120,
   categoriasQuestao: 18,
   topicos: 1400,
+  comparacoes: 130,
 };
 
 const failures = [];
@@ -60,6 +62,8 @@ check(
 );
 check('categorias de questão (pacote)', temple.questionCategories.length, MIN.categoriasQuestao);
 check('tópicos', temple.topics.length, MIN.topicos);
+check('comparações', temple.comparisons.comparacoes.length, MIN.comparacoes);
+check('fontes de comparações', temple.comparisons.fontes.length, 21);
 
 const hash = computeContentHash();
 console.log(`hash do conteúdo: ${hash.slice(0, 16)}…`);
@@ -83,6 +87,45 @@ const techniqueCategoryIds = new Set(temple.techniqueCategories.map((c) => c.id)
 if (temple.techniques.some((t) => !t.id || !techniqueCategoryIds.has(t.dominioId))) {
   failures.push('técnica sem id ou categoria desconhecida');
 }
+const comparisonIds = temple.comparisons.comparacoes.map((c) => c.id);
+const comparisonSlugs = temple.comparisons.comparacoes.map((c) => c.slug);
+if (new Set(comparisonIds).size !== comparisonIds.length) failures.push('ids duplicados em comparações');
+if (new Set(comparisonSlugs).size !== comparisonSlugs.length) failures.push('slugs duplicados em comparações');
+if (temple.comparisons.comparacoes.some((c) => !c.id || !c.slug || !c.titulo || !c.perguntaCentral || c.itens.length < 2)) {
+  failures.push('comparação sem id/slug/título/pergunta ou com menos de duas entidades');
+}
+
+const comparisonSources = new Set(temple.comparisons.fontes.map((source) => source.id));
+const techniqueIds = new Set(temple.techniques.map((technique) => technique.id));
+const conceptIds = new Set(temple.concepts.map((concept) => concept.id));
+const comparisonEntityTypes = new Set(['abordagem', 'tecnica', 'conceito', 'autor', 'fenomeno']);
+const approachIds = new Set(approachRegistryFile.entries.map((entry) => entry.id));
+const authorIds = new Set(temple.curatedAuthors.map((author) => author.id));
+const normalizeLookup = (value) => String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
+const authorNames = new Set(temple.curatedAuthors.map((author) => normalizeLookup(author.name)));
+for (const comparison of temple.comparisons.comparacoes) {
+  if (comparison.eixos.length !== 9) failures.push(`${comparison.id}: esperado 9 eixos`);
+  if (comparison.eixos.some((axis) => axis.respostas.length !== comparison.itens.length)) {
+    failures.push(`${comparison.id}: respostas não cobrem todos os itens em cada eixo`);
+  }
+  if (comparison.fontesDetalhadas.some((source) => !comparisonSources.has(source.id))) {
+    failures.push(`${comparison.id}: fonte detalhada inexistente`);
+  }
+  if (comparison.evidencias.some((evidence) => !comparisonSources.has(evidence.fonteId))) {
+    failures.push(`${comparison.id}: evidência com fonte inexistente`);
+  }
+  if (comparison.itens.some((item) => {
+    if (!comparisonEntityTypes.has(item.tipoEntidade)) return true;
+    if (item.tipoEntidade === 'tecnica') return !techniqueIds.has(item.entidadeId);
+    if (item.tipoEntidade === 'conceito') return !conceptIds.has(item.entidadeId);
+    if (item.tipoEntidade === 'autor') return !authorIds.has(item.entidadeId) && !authorNames.has(normalizeLookup(item.entidadeNome));
+    if (item.tipoEntidade === 'abordagem') return !approachIds.has(item.entidadeId);
+    return false;
+  })) {
+    failures.push(`${comparison.id}: item com tipo ou entidade não resolvível`);
+  }
+}
+if (!techniqueIds.has('tec-psicoeducacao')) failures.push('técnica canônica tec-psicoeducacao ausente');
 
 if (failures.length > 0) {
   console.error(`[content:check] falhou: ${failures.join('; ')}`);

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Flame, ChevronRight } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { AnimatedNumber } from '../ui/AnimatedNumber';
 
 export const StudyStatsWidget: React.FC = () => {
-  const { streakStats, currentWeekProgress, openStreak } = useApp();
+  const { streakStats, currentWeekProgress, openStreak } = useMobileApp();
   const weekCells = currentWeekProgress.filter((c) => c.status !== 'weekend');
   const doneThisWeek = currentWeekProgress.filter((c) => c.status === 'done').length;
 
@@ -19,7 +19,7 @@ export const StudyStatsWidget: React.FC = () => {
           openStreak();
         }
       }}
-      className="card-lift press-card rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm cursor-pointer space-y-4"
+      className="card-lift press-card rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm cursor-pointer space-y-4"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">

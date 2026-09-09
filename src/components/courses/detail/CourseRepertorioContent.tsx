@@ -3,7 +3,7 @@ import { BookOpen, Sparkles, UserCheck } from 'lucide-react';
 import { Mascote } from '../../ui/Mascote';
 import { TagList } from '../../ui/TagList';
 import { ManageSurface } from '../../ui/ManageSurface';
-import { useApp } from '../../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { Course } from '../../../types';
 
 interface CourseRepertorioContentProps {
@@ -12,7 +12,7 @@ interface CourseRepertorioContentProps {
 
 /** Conteúdo da tab "repertório & conteúdo" — compartilhado entre mobile e desktop. */
 export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = ({ course }) => {
-  const { concepts, authors, readings, materials, classes } = useApp();
+  const { concepts, authors, readings, materials, classes } = useMobileApp();
 
   const courseConcepts = concepts.filter((c) => c.courseIds && c.courseIds.includes(course.id));
   const relatedAuthorIds = new Set<string>();

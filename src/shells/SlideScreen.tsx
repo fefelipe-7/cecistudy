@@ -21,7 +21,7 @@ interface SlideScreenProps {
  * da tela nova, sem pulo nem salto vertical.
  */
 export const SlideScreen: React.FC<SlideScreenProps> = ({ direction, children }) => {
-  const [isPresent] = usePresence();
+  const [isPresent, safeToRemove] = usePresence();
   const ref = useRef<HTMLDivElement>(null);
   const docTopRef = useRef(0);
 
@@ -46,6 +46,11 @@ export const SlideScreen: React.FC<SlideScreenProps> = ({ direction, children })
       initial="initial"
       animate="animate"
       exit="exit"
+      onAnimationComplete={() => {
+        // `usePresence` exige que o componente sinalize quando a animação de
+        // saída terminou; sem isso cada tela antiga permanece no DOM invisível.
+        if (!isPresent) safeToRemove();
+      }}
       className={
         isPresent
           ? 'relative'

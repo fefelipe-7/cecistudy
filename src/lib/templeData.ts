@@ -11,12 +11,13 @@
 import { isNativePlatform } from './storage.ts';
 import type {
   TempleAuthor,
+  TempleComparison,
   TempleConcept,
   TempleConceptDomain,
   TempleConceptIndexEntry,
   TempleTechnique,
   TempleTechniqueCategory,
-} from '../types.ts';
+} from '../types';
 
 type TempleFacade = typeof import('../data/temple/index.ts');
 
@@ -117,6 +118,27 @@ export async function getTempleTechniques(categoryId?: string): Promise<TempleTe
   }
   techniquesByCategory.set(categoryId, result);
   return result;
+}
+
+// ---- comparações ----
+
+let comparisonsCache: TempleComparison[] | undefined;
+
+export async function getTempleComparisons(): Promise<TempleComparison[]> {
+  if (comparisonsCache) return comparisonsCache;
+  const facade = await getWebFacade();
+  if (facade) {
+    comparisonsCache = facade.comparisonsFile.comparacoes;
+    return comparisonsCache;
+  }
+  const { getCatalogComparisons } = await import('./db/catalogDb.ts');
+  comparisonsCache = await getCatalogComparisons<TempleComparison>();
+  return comparisonsCache;
+}
+
+export async function getTempleComparison(slug: string): Promise<TempleComparison | null> {
+  const comparisons = await getTempleComparisons();
+  return comparisons.find((comparison) => comparison.slug === slug) ?? null;
 }
 
 // ---- registry de abordagens ----

@@ -1,0 +1,16 @@
+# AgentSkill development outputs
+*.skill
+*-workspace/
+dist/
+
+# Local environment
+.DS_Store
+Thumbs.db
+.env
+.env.*
+
+# Tool caches
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+node_modules/

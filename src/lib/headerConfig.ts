@@ -1,6 +1,7 @@
 import {
   CheckCircle2,
   FileText,
+  GitCompare,
   HeartHandshake,
   Lightbulb,
   Settings2,
@@ -47,6 +48,13 @@ export const TEMPLE_SECTION_META: Record<
     icon: 'Wrench',
     color: '#43805B',
     Icon: Wrench,
+  },
+  comparacoes: {
+    title: 'comparações',
+    subtitle: 'lado a lado das abordagens para entender diferenças e pontes',
+    icon: 'HeartHandshake',
+    color: '#8C7338',
+    Icon: GitCompare,
   },
 };
 
@@ -180,6 +188,15 @@ export function buildHeaderConfig(input: HeaderConfigInput): DynamicHeaderConfig
       subtitle: meta.subtitle,
       icon: meta.icon,
       color: meta.color,
+      onBack,
+    };
+  } else if (currentScreen.kind === 'comparison') {
+    headerConfig = {
+      type: 'detail',
+      title: 'comparação em estudo',
+      subtitle: 'uma leitura lado a lado entre perspectivas',
+      icon: 'HeartHandshake',
+      color: '#8C7338',
       onBack,
     };
   } else if (currentScreen.kind === 'families') {

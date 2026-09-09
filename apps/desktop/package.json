@@ -1,0 +1,25 @@
+{
+  "name": "cecistudy-desktop",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port=3000 --host=0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.5.0",
+    "@fontsource/dm-serif-display": "^5.3.0",
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@fontsource/plus-jakarta-sans": "^5.3.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "@tailwindcss/vite": "^4.1.14",
+    "framer-motion": "^13.0.0",
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1",
+    "tailwindcss": "^4.1.14",
+    "vite": "^6.2.3"
+  }
+}

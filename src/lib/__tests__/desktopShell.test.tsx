@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { cleanup, render, screen } from '@testing-library/react';
-import { AppProvider } from '../../context/AppContext';
+import { DesktopAppProvider } from '../../../apps/desktop/src/DesktopAppProvider';
 import { DesktopAppShell } from '../../shells/DesktopAppShell';
 
 afterEach(() => {
@@ -15,17 +15,21 @@ describe('DesktopAppShell (smoke)', () => {
       JSON.stringify({ completed: true, completedAt: new Date().toISOString() })
     );
     render(
-      <AppProvider>
+      <DesktopAppProvider>
         <DesktopAppShell />
-      </AppProvider>
+      </DesktopAppProvider>
     );
 
     // marca da sidebar + rodapé
     expect(screen.getAllByText('cecistudy ♡').length).toBeGreaterThanOrEqual(1);
-    // abas principais
-    expect(screen.getByText('faculdade')).toBeTruthy();
-    expect(screen.getByText('estudos')).toBeTruthy();
-    expect(screen.getByText('biblioteca')).toBeTruthy();
+    // grupos de navegação (JSON: cecistudy-desktop-shell.json) — aparecem na
+    // sidebar e (como atalhos) na Home desktop, então checamos presença (>=1).
+    expect(screen.getAllByText('Home').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Base de Conhecimento').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Calendário').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Projetos & TCC').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Estudos').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Marketing').length).toBeGreaterThanOrEqual(1);
     // ação rápida
     expect(screen.getByText('novo registro')).toBeTruthy();
     // rodapé
@@ -34,9 +38,9 @@ describe('DesktopAppShell (smoke)', () => {
 
   it('mostra onboarding em tela cheia no primeiro acesso', () => {
     render(
-      <AppProvider>
+      <DesktopAppProvider>
         <DesktopAppShell />
-      </AppProvider>
+      </DesktopAppProvider>
     );
     expect(screen.queryByText('cecistudy ♡')).toBeNull();
   });

@@ -44,9 +44,9 @@ describe('quizStack', () => {
     expect(next).toEqual([estudosTab, { kind: 'quiz-category' }]);
   });
 
-  it('abre loading trocando o topo pelo splash (base = estudos)', () => {
+  it('abre loading empilhando sobre a categoria (base = estudos)', () => {
     const next = stackAfterOpenQuizLoading([estudosTab, { kind: 'quiz-category' }], CONFIG);
-    expect(next).toEqual([estudosTab, { kind: 'quiz-loading', config: CONFIG }]);
+    expect(next).toEqual([estudosTab, { kind: 'quiz-category' }, { kind: 'quiz-loading', config: CONFIG }]);
   });
 
   it('abre o jogo com base na categoria existente', () => {

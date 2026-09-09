@@ -6,7 +6,6 @@ import {
   ArrowLeft,
   Heart,
   GraduationCap,
-  Palette,
   Camera,
   Trash2,
   FolderOpen,
@@ -15,7 +14,7 @@ import {
   Bell,
   X,
 } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { cn } from '../../lib/utils';
 import { PillGroup } from '../ui/PillGroup';
 import { ToggleRow } from '../ui/ToggleRow';
@@ -43,7 +42,7 @@ const PERMISSION_CARDS: {
 ];
 
 export const OnboardingScreen: React.FC = () => {
-  const { completeOnboarding } = useApp();
+  const { completeOnboarding } = useMobileApp();
   const [step, setStep] = useState(0);
   const [name, setName] = useState('');
   const [semester, setSemester] = useState(1);
@@ -51,7 +50,6 @@ export const OnboardingScreen: React.FC = () => {
   const [university, setUniversity] = useState('');
   const [targetCareer, setTargetCareer] = useState('');
   const [photoUrl, setPhotoUrl] = useState('');
-  const [loadDemo, setLoadDemo] = useState(true);
 
   const canProceedName = name.trim().length > 0;
 
@@ -75,8 +73,7 @@ export const OnboardingScreen: React.FC = () => {
         dailyQuote: 'compreender o ser humano é a forma mais bonita de cuidado.',
         stickersCollected: 0,
         photoUrl: photoUrl || '',
-      },
-      loadDemo
+      }
     );
   };
 
@@ -96,7 +93,7 @@ export const OnboardingScreen: React.FC = () => {
         {/* indicador de progresso */}
         {step > 0 && (
           <div className="flex items-center gap-1.5 justify-center mb-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
+            {[1, 2, 3, 4, 5].map((i) => (
               <span
                 key={i}
                 className={cn(
@@ -111,7 +108,7 @@ export const OnboardingScreen: React.FC = () => {
         <div className="flex-1 flex flex-col justify-center">
           {step === 0 && (
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-4">
-              <div className="w-16 h-16 mx-auto rounded-[24px] bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-3xl">
+              <div className="w-16 h-16 mx-auto rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-3xl">
                 🌷
               </div>
               <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">
@@ -326,68 +323,7 @@ export const OnboardingScreen: React.FC = () => {
           )}
 
           {step === 5 && (
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="w-11 h-11 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong">
-                  <Palette className="w-5 h-5" />
-                </span>
-                <div>
-                  <h1 className="font-display text-xl font-bold tracking-tight">como prefere começar?</h1>
-                  <p className="text-xs text-ceci-secondary">o cantinho nasce do jeito que você quiser</p>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <button
-                  onClick={() => setLoadDemo(true)}
-                  className={cn(
-                    'w-full text-left bg-white rounded-[22px] p-5 border transition-all cursor-pointer',
-                    loadDemo ? 'border-ceci-border-brand shadow-xs ring-2 ring-ceci-border-brand' : 'border-ceci-border-default'
-                  )}
-                >
-                  <div className="flex items-center gap-2 font-display font-bold text-sm text-ceci-primary">
-                    <Sparkles className="w-4 h-4 text-rose-500" /> começar com exemplos
-                  </div>
-                  <p className="text-xs text-ceci-secondary mt-1 leading-relaxed">
-                    preencho o cantinho com disciplinas, aulas, provas e leituras de exemplo — você explora e troca pelo que for seu.
-                  </p>
-                </button>
-
-                <button
-                  onClick={() => setLoadDemo(false)}
-                  className={cn(
-                    'w-full text-left bg-white rounded-[22px] p-5 border transition-all cursor-pointer',
-                    !loadDemo ? 'border-ceci-border-brand shadow-xs ring-2 ring-ceci-border-brand' : 'border-ceci-border-default'
-                  )}
-                >
-                  <div className="flex items-center gap-2 font-display font-bold text-sm text-ceci-primary">
-                    <Heart className="w-4 h-4 text-ceci-brand-strong" /> começar do zero
-                  </div>
-                  <p className="text-xs text-ceci-secondary mt-1 leading-relaxed">
-                    começa vazio, e você constrói tudo no seu ritmo, anotando aula por aula.
-                  </p>
-                </button>
-              </div>
-
-              <div className="flex gap-2 pt-2">
-                <button
-                  onClick={() => setStep(4)}
-                  className="flex items-center gap-1.5 bg-white border border-ceci-border-default text-ceci-secondary px-5 py-3 rounded-full text-xs font-semibold cursor-pointer"
-                >
-                  <ArrowLeft className="w-4 h-4" /> voltar
-                </button>
-                <button
-                  onClick={() => setStep(6)}
-                  className="flex-1 flex items-center justify-center gap-2 bg-ceci-brand hover:bg-ceci-brand-strong text-white py-3 rounded-full text-xs font-semibold transition-colors cursor-pointer"
-                >
-                  continuar <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {step === 6 && (
-            <PermissionsStep onFinish={finish} onBack={() => setStep(5)} />
+            <PermissionsStep onFinish={finish} onBack={() => setStep(4)} />
           )}
         </div>
 

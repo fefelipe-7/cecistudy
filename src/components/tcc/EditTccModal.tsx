@@ -64,7 +64,7 @@ export const EditTccModal: React.FC<EditTccModalProps> = ({ isOpen, tcc, onClose
 
   return (
     <Modal open={isOpen} onClose={onClose} position="bottom" className="w-full max-w-lg">
-      <div className="w-full bg-canvas rounded-t-[28px] sm:rounded-[24px] border border-ceci-border-default shadow-xl overflow-hidden p-5 sm:p-6 text-ceci-primary">
+      <div className="w-full bg-canvas rounded-t-[28px] sm:rounded-2xl border border-ceci-border-default shadow-xl overflow-hidden p-5 sm:p-6 text-ceci-primary">
         <div className="flex items-center justify-between border-b border-ceci-border-subtle pb-3 mb-4">
           <div className="flex items-center gap-3">
             <span className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">

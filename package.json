@@ -3,12 +3,16 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "engines": {
     "node": ">=22"
   },
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
-    "dev:desktop": "vite --port=3000 --host=0.0.0.0 --open \"http://localhost:3000/?platform=desktop\"",
+    "dev:desktop": "npm run dev --workspace=apps/desktop",
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist",
@@ -16,12 +20,12 @@
     "lint": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "content:build": "node content/build-catalog.mjs",
-    "content:check": "node content/check-content.mjs",
-    "content:report": "node content/report-content.mjs",
-    "content:diff": "node content/diff-content.mjs",
-    "db:verify": "node scripts/db-verify.mjs",
-    "db:legacy-import": "node scripts/db-legacy-import.mjs",
+    "content:build": "tsx content/build-catalog.mjs",
+    "content:check": "tsx content/check-content.mjs",
+    "content:report": "tsx content/report-content.mjs",
+    "content:diff": "tsx content/diff-content.mjs",
+    "db:verify": "tsx scripts/db-verify.mjs",
+    "db:legacy-import": "tsx scripts/db-legacy-import.mjs",
     "cap:sync": "npm run build && cap sync",
     "cap:sync:web": "cap copy web",
     "cap:open:android": "cap open android",

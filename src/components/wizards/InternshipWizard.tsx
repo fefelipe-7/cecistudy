@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Compass,
   HeartHandshake,
@@ -6,8 +6,8 @@ import {
   Stethoscope,
   Users,
 } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
-import type { InternshipLogType, ManagedItem, InternshipPhase } from '../../types';
+import { useMobileApp } from '@/context/mobileApp';
+import type { InternshipLogType, ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { useWizardDraft } from '../../lib/useWizardDraft';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
@@ -29,14 +29,6 @@ const KINDS: {
   { value: 'outro', label: 'outro', caption: 'registro avulso de campo', Icon: Sparkles },
 ];
 
-const PHASES: { value: InternshipPhase; label: string }[] = [
-  { value: 'preparar', label: 'preparar' },
-  { value: 'registrar', label: 'registrar' },
-  { value: 'refletir', label: 'refletir' },
-  { value: 'supervisionar', label: 'supervisionar' },
-  { value: 'entregar', label: 'entregar' },
-];
-
 const KIND_META: Record<InternshipLogType, { title: string; icon: React.ReactNode }> = {
   estagio: { title: 'novo registro de estágio', icon: <HeartHandshake className="w-3.5 h-3.5" /> },
   atendimento_clinico: { title: 'novo atendimento clínico', icon: <Stethoscope className="w-3.5 h-3.5" /> },
@@ -45,22 +37,47 @@ const KIND_META: Record<InternshipLogType, { title: string; icon: React.ReactNod
   outro: { title: 'novo registro', icon: <Sparkles className="w-3.5 h-3.5" /> },
 };
 
-/** Rascunho do registro essencial (docs/modais-wizards.md §5.1/§5.7). */
+/** Rascunho do registro essencial. */
 interface InternshipDraft {
   kind?: InternshipLogType;
   activity?: string;
   hours?: string;
   date?: string;
   reflections?: string;
+  discussedLogIds?: string[];
+  beforeNotes?: string;
+  afterNotes?: string;
+  selfAssessment?: {
+    confidence?: string;
+    limits?: string;
+    themes?: string;
+  };
+  nextSteps?: string[];
+  supervisor?: string;
+  topics?: string[];
+  orientations?: string;
+  doubts?: string;
+  patient?: string;
+  sessionNumber?: string;
+  patientAge?: string;
+  theme?: string;
+  approach?: string;
+  interventionNotes?: string;
+  observations?: string;
 }
 
 export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
-  const { internshipLogs, handleAddInternshipLog, handleUpdateInternshipLog, closeWizard, showToast } = useApp();
+  const {
+    internshipLogs,
+    handleAddInternshipLog,
+    handleUpdateInternshipLog,
+    closeWizard,
+    showToast,
+  } = useMobileApp();
   const editingLog = editing?.kind === 'internship'
     ? internshipLogs.find((l) => l.id === editing.id)
     : undefined;
 
-  // ---- rascunho: preserva o essencial se ela sair no meio (§5.7) ----
   const draft = useWizardDraft<InternshipDraft>('internship');
   const savedDraft = editingLog ? null : draft.load();
 
@@ -69,39 +86,101 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
 
   // comuns
   const [activity, setActivity] = useState(editingLog?.activity ?? savedDraft?.activity ?? '');
-  // duração começa vazia — nunca assumir 4 horas silenciosamente (§4.6)
   const [hours, setHours] = useState(editingLog ? String(editingLog.hours) : savedDraft?.hours ?? '');
   const [date, setDate] = useState(editingLog?.date ?? savedDraft?.date ?? '');
   const [reflections, setReflections] = useState(editingLog?.reflections ?? savedDraft?.reflections ?? '');
 
   // atendimento clínico
-  const [patient, setPatient] = useState(editingLog?.patient ?? '');
-  const [sessionNumber, setSessionNumber] = useState(editingLog?.sessionNumber ? String(editingLog.sessionNumber) : '');
-  const [patientAge, setPatientAge] = useState(editingLog?.patientAge ?? '');
-  const [theme, setTheme] = useState(editingLog?.theme ?? '');
-  const [approach, setApproach] = useState(editingLog?.approach ?? '');
-  const [interventionNotes, setInterventionNotes] = useState(editingLog?.interventionNotes ?? '');
-  const [observations, setObservations] = useState(editingLog?.observations ?? '');
+  const [patient, setPatient] = useState(editingLog?.patient ?? savedDraft?.patient ?? '');
+  const [sessionNumber, setSessionNumber] = useState(editingLog?.sessionNumber ? String(editingLog.sessionNumber) : savedDraft?.sessionNumber ?? '');
+  const [patientAge, setPatientAge] = useState(editingLog?.patientAge ?? savedDraft?.patientAge ?? '');
+  const [theme, setTheme] = useState(editingLog?.theme ?? savedDraft?.theme ?? '');
+  const [approach, setApproach] = useState(editingLog?.approach ?? savedDraft?.approach ?? '');
+  const [interventionNotes, setInterventionNotes] = useState(editingLog?.interventionNotes ?? savedDraft?.interventionNotes ?? '');
+  const [observations, setObservations] = useState(editingLog?.observations ?? savedDraft?.observations ?? '');
 
   // supervisão / intervisão
-  const [supervisor, setSupervisor] = useState(editingLog?.supervisor ?? '');
-  const [topics, setTopics] = useState<string[]>(editingLog?.topics ?? []);
-  const [orientations, setOrientations] = useState(editingLog?.orientations ?? '');
-  const [doubts, setDoubts] = useState(editingLog?.doubts ?? '');
-  const [nextSteps, setNextSteps] = useState(editingLog?.nextSteps ?? '');
+  const [supervisor, setSupervisor] = useState(editingLog?.supervisor ?? savedDraft?.supervisor ?? '');
+  const [topics, setTopics] = useState<string[]>(editingLog?.topics ?? savedDraft?.topics ?? []);
+  const [orientations, setOrientations] = useState(editingLog?.orientations ?? savedDraft?.orientations ?? '');
+  const [doubts, setDoubts] = useState(editingLog?.doubts ?? savedDraft?.doubts ?? '');
+  const [nextSteps, setNextSteps] = useState<string[]>(editingLog?.nextSteps ?? savedDraft?.nextSteps ?? []);
+  const [discussedLogIds, setDiscussedLogIds] = useState<string[]>(editingLog?.discussedLogIds ?? savedDraft?.discussedLogIds ?? []);
+  const [beforeNotes, setBeforeNotes] = useState(editingLog?.beforeNotes ?? savedDraft?.beforeNotes ?? '');
+  const [afterNotes, setAfterNotes] = useState(editingLog?.afterNotes ?? savedDraft?.afterNotes ?? '');
+  const [confidence, setConfidence] = useState(editingLog?.selfAssessment?.confidence ?? savedDraft?.selfAssessment?.confidence ?? '');
+  const [limits, setLimits] = useState(editingLog?.selfAssessment?.limits ?? savedDraft?.selfAssessment?.limits ?? '');
+  const [themes, setThemes] = useState(editingLog?.selfAssessment?.themes ?? savedDraft?.selfAssessment?.themes ?? '');
 
-  // ciclo de formação (estágio 2.0)
-  const [phase, setPhase] = useState<InternshipPhase | undefined>(editingLog?.phase);
-  const [prepChecklist, setPrepChecklist] = useState<string[]>(editingLog?.prepChecklist ?? []);
+  // atendimentos clínicos disponíveis para discussão
+  const attendanceLogs = useMemo(() => {
+    return internshipLogs
+      .filter((l) => l.type === 'atendimento_clinico')
+      .sort((a, b) => {
+        const aPending = !a.supervisionLogId;
+        const bPending = !b.supervisionLogId;
+        if (aPending !== bPending) return aPending ? -1 : 1;
+        const aNum = a.sessionNumber ?? 0;
+        const bNum = b.sessionNumber ?? 0;
+        if (aNum !== bNum) return aNum - bNum;
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      });
+  }, [internshipLogs]);
 
-  // persiste o rascunho do essencial a cada mudança (best-effort)
+  // persiste rascunho
   useEffect(() => {
     if (editingLog) return;
-    draft.save({ kind: kind ?? undefined, activity, hours, date, reflections });
+    draft.save({
+      kind: kind ?? undefined,
+      activity,
+      hours,
+      date,
+      reflections,
+      discussedLogIds,
+      beforeNotes,
+      afterNotes,
+      selfAssessment: (confidence || limits || themes) ? { confidence, limits, themes } : undefined,
+      nextSteps,
+      supervisor,
+      topics,
+      orientations,
+      doubts,
+      patient,
+      sessionNumber,
+      patientAge,
+      theme,
+      approach,
+      interventionNotes,
+      observations,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kind, activity, hours, date, reflections, editingLog]);
+  }, [
+    kind,
+    activity,
+    hours,
+    date,
+    reflections,
+    discussedLogIds,
+    beforeNotes,
+    afterNotes,
+    confidence,
+    limits,
+    themes,
+    nextSteps,
+    supervisor,
+    topics,
+    orientations,
+    doubts,
+    patient,
+    sessionNumber,
+    patientAge,
+    theme,
+    approach,
+    interventionNotes,
+    observations,
+    editingLog,
+  ]);
 
-  /** Fecha limpando o rascunho (salvou ou descartou de propósito). */
   const finish = () => {
     draft.clear();
     closeWizard();
@@ -111,6 +190,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
     id: 'tipo',
     title: 'tipo',
     headline: 'o que você quer registrar agora?',
+    subtitle: 'cada tipo tem campos próprios — escolhe o que combina com o que viveu hoje.',
     content: (
       <div className="space-y-3">
         {KINDS.map((k) => {
@@ -122,7 +202,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
                 setKind(k.value);
                 setStep(0);
               }}
-              className="w-full flex items-center gap-4 p-4 rounded-[24px] bg-white border-2 border-ceci-border-default hover:border-ceci-border-brand text-left transition-all active:scale-[0.98] cursor-pointer shadow-sm"
+              className="w-full flex items-center gap-4 p-4 rounded-2xl bg-white border-2 border-ceci-border-default hover:border-ceci-border-brand text-left transition-all active:scale-[0.98] cursor-pointer shadow-sm"
             >
               <span className="w-11 h-11 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
                 <Icon className="w-5 h-5" />
@@ -138,51 +218,11 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
     ),
   };
 
-  const cycleStep: WizardStep = {
-    id: 'estagio-fase',
-    title: 'fase & preparação',
-    headline: 'em qual passo do ciclo esse registro se encaixa?',
-    content: (
-      <div className="space-y-4">
-        <div>
-          <FieldLabel>ciclo de formação</FieldLabel>
-          <div className="grid grid-cols-2 gap-2">
-            {PHASES.map((p) => {
-              const active = phase === p.value;
-              return (
-                <button
-                  key={p.value}
-                  onClick={() => setPhase(active ? undefined : p.value)}
-                  className={`py-2.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
-                    active
-                      ? 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong'
-                      : 'bg-white border-ceci-border-default text-ceci-secondary hover:bg-surface-muted'
-                  }`}
-                >
-                  {p.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-        <div>
-          <FieldLabel>preparar o campo (opcional)</FieldLabel>
-          <TagField
-            tags={prepChecklist}
-            onChange={setPrepChecklist}
-            placeholder="ex: revisar prontuário, levar formulário"
-            emptyMessage="toque em + para listar o que você preparou"
-          />
-        </div>
-      </div>
-    ),
-  };
-
-  // ---- passo comum: o essencial (§5.7: tipo, data, resumo e duração) ----
   const essentialStep = (activityContent: React.ReactNode): WizardStep => ({
     id: 'essencial',
     title: 'essencial',
     headline: 'o que aconteceu e quando?',
+    subtitle: 'um resumo do que rolou no campo — horas e data são opcionais e dá para ajustar depois.',
     content: (
       <div className="space-y-4">
         {activityContent}
@@ -210,6 +250,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
     id: 'reflexao',
     title: 'reflexão',
     headline: 'como foi essa experiência pra você?',
+    subtitle: 'suas impressões e aprendizados — é o coração do diário de estágio ♡',
     content: (
       <div className="space-y-4">
         {extra}
@@ -233,7 +274,6 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
         autoFocus
       />
     ),
-    cycleStep,
     reflectionStep(),
     {
       id: 'revisar',
@@ -243,7 +283,6 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
         <ReviewCard
           rows={[
             { label: 'atividade', value: activity.trim() },
-            { label: 'fase', value: phase ? PHASES.find((p) => p.value === phase)?.label ?? '—' : '—' },
             { label: 'horas', value: `${parseFloat(hours) || 0} h` },
             { label: 'data', value: date ? new Date(date).toLocaleDateString('pt-BR') : today() },
             { label: 'reflexões', value: reflections.trim() || 'sem reflexões' },
@@ -266,6 +305,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
       id: 'contexto-atendimento',
       title: 'contexto profissional',
       headline: 'quem você atendeu e qual foi a demanda?',
+      subtitle: 'só o necessário do paciente (iniciais bastam) e as intervenções que você usou.',
       content: (
         <div className="space-y-4">
           <div className="grid grid-cols-3 gap-3">
@@ -350,6 +390,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
       id: 'contexto-supervisao',
       title: 'contexto profissional',
       headline: "o que foi discutido nessa conversa?",
+      subtitle: 'temas, orientações e dúvidas que ficaram no ar para investigar depois.',
       content: (
         <div className="space-y-4">
           <div>
@@ -373,17 +414,117 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
         </div>
       ),
     },
+    {
+      id: 'discussed',
+      title: 'atendimentos discutidos',
+      headline: 'quais atendimentos foram discutidos nessa supervisão/intervisão?',
+      subtitle: 'selecione as sessões que foram trazidas para conversa.',
+      content: (
+        <div className="space-y-3">
+          <div className="max-h-[200px] overflow-y-auto border border-ceci-border-default rounded-xl p-3">
+            {attendanceLogs.map((log) => (
+              <div key={log.id} className="flex items-start gap-3 p-2 rounded-lg border border-ceci-border-subtle">
+                <input
+                  type="checkbox"
+                  checked={discussedLogIds.includes(log.id)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setDiscussedLogIds([...discussedLogIds, log.id]);
+                    } else {
+                      setDiscussedLogIds(discussedLogIds.filter((id) => id !== log.id));
+                    }
+                  }}
+                  className="h-4 w-4 flex-shrink-0 text-ceci-primary"
+                />
+                <div className="flex-1 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-ceci-primary">Sessão {log.sessionNumber ?? '—'}</span>
+                    <span className="text-xs text-ceci-secondary">
+                      {log.date ? new Date(log.date).toLocaleDateString('pt-BR') : '—'}
+                    </span>
+                  </div>
+                  <span className="text-xs text-ceci-secondary truncate max-w-[200px]">
+                    {log.activity}
+                  </span>
+                </div>
+              </div>
+            ))}
+            {attendanceLogs.length === 0 && (
+              <p className="text-xs text-ceci-secondary text-center py-4">
+                nenhum atendimento clínico registrado ainda
+              </p>
+            )}
+          </div>
+          <p className="text-xs text-ceci-secondary text-center mt-2">
+            dica: marque primeiro os que ainda não têm supervisão (pendentes)
+          </p>
+        </div>
+      ),
+    },
     reflectionStep(
-      <div>
-        <FieldLabel>próximos passos</FieldLabel>
+      <div className="space-y-4">
+        <FieldLabel>o que você levou pra conversa</FieldLabel>
         <TextArea
           rows={3}
-          value={nextSteps}
-          onChange={(e) => setNextSteps(e.target.value)}
-          placeholder="o que combinaram de levar para a próxima..."
+          value={beforeNotes}
+          onChange={(e) => setBeforeNotes(e.target.value)}
+          placeholder="suas hipóteses e perguntas que levou..."
         />
+        <FieldLabel>o que ficou combinado</FieldLabel>
+        <TextArea
+          rows={3}
+          value={afterNotes}
+          onChange={(e) => setAfterNotes(e.target.value)}
+          placeholder="as orientações e decisões da supervisão..."
+        />
+        <FieldLabel>autoavaliação</FieldLabel>
+        <div className="space-y-2">
+          <div>
+            <FieldLabel>confiança</FieldLabel>
+            <TextArea
+              rows={2}
+              value={confidence}
+              onChange={(e) => setConfidence(e.target.value)}
+              placeholder="o que já consigo fazer bem..."
+            />
+          </div>
+          <div>
+            <FieldLabel>limites</FieldLabel>
+            <TextArea
+              rows={2}
+              value={limits}
+              onChange={(e) => setLimits(e.target.value)}
+              placeholder="o que ainda é difícil ou incerto..."
+            />
+          </div>
+          <div>
+            <FieldLabel>temas para aprofundar</FieldLabel>
+            <TextArea
+              rows={2}
+              value={themes}
+              onChange={(e) => setThemes(e.target.value)}
+              placeholder="assuntos que quer revisar ou estudar mais..."
+            />
+          </div>
+        </div>
       </div>
     ),
+    {
+      id: 'next-steps',
+      title: 'próximos passos',
+      headline: 'o que combinaram de levar para a próxima?',
+      content: (
+        <div className="space-y-2">
+          <FieldLabel>próximos passos</FieldLabel>
+          <TagField
+            tags={nextSteps}
+            onChange={setNextSteps}
+            placeholder="ex: revisar capítulo de TCC, tentar nova técnica..."
+            emptyMessage="toque em + para adicionar"
+          />
+        </div>
+      ),
+    },
     {
       id: 'revisar',
       title: 'revisar',
@@ -396,7 +537,8 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
             { label: 'temas', value: topics.length ? topics.join(' · ') : '—' },
             { label: 'orientações', value: orientations.trim() || '—' },
             { label: 'dúvidas', value: doubts.trim() || '—' },
-            { label: 'próximos passos', value: nextSteps.trim() || '—' },
+            { label: 'atendimentos discutidos', value: discussedLogIds.length ? `${discussedLogIds.length} sessões` : '—' },
+            { label: 'próximos passos', value: nextSteps.length ? nextSteps.join(' · ') : '—' },
             { label: 'horas', value: `${parseFloat(hours) || 0} h` },
             { label: 'data', value: date ? new Date(date).toLocaleDateString('pt-BR') : today() },
             { label: 'reflexões', value: reflections.trim() || 'sem reflexões' },
@@ -410,10 +552,10 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
     kind === null
       ? [choiceStep]
       : kind === 'atendimento_clinico'
-        ? atendimentoSteps
-        : kind === 'supervisao' || kind === 'intervisao'
-          ? supervisionSteps
-          : estagioSteps;
+      ? atendimentoSteps
+      : kind === 'supervisao' || kind === 'intervisao'
+      ? supervisionSteps
+      : estagioSteps;
 
   const canNext = kind === null ? false : activity.trim().length > 0;
 
@@ -425,7 +567,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
       date: date || today(),
       hours: parseFloat(hours) || 0,
       activity: activity.trim(),
-      reflections: reflections.trim() || 'reflexão registrada no diário do cecistudy.',
+      reflections: reflections.trim(),
     };
     return kind === 'atendimento_clinico'
       ? {
@@ -439,19 +581,21 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
           observations: observations.trim() || undefined,
         }
       : kind === 'supervisao' || kind === 'intervisao'
-        ? {
-            ...base,
-            supervisor: supervisor.trim() || undefined,
-            topics: topics.length ? topics : undefined,
-            orientations: orientations.trim() || undefined,
-            doubts: doubts.trim() || undefined,
-            nextSteps: nextSteps.trim() || undefined,
-          }
-        : {
-            ...base,
-            phase: phase ?? undefined,
-            prepChecklist: prepChecklist.length ? prepChecklist : undefined,
-          };
+      ? {
+          ...base,
+          supervisor: supervisor.trim() || undefined,
+          topics: topics.length ? topics : undefined,
+          orientations: orientations.trim() || undefined,
+          doubts: doubts.trim() || undefined,
+          discussedLogIds: discussedLogIds.length ? discussedLogIds : undefined,
+          beforeNotes: beforeNotes.trim() || undefined,
+          afterNotes: afterNotes.trim() || undefined,
+          selfAssessment: (confidence || limits || themes) ? { confidence, limits, themes } : undefined,
+          nextSteps: nextSteps.length ? nextSteps : undefined,
+        }
+      : {
+          ...base,
+        };
   };
 
   const handleSave = () => {
@@ -459,12 +603,41 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
     if (!log) return;
     if (editingLog) {
       handleUpdateInternshipLog({ ...editingLog, ...log });
+      // side effect: sync supervisionLogId
+      if ((log.type === 'supervisao' || log.type === 'intervisao') && discussedLogIds.length > 0) {
+        const currentId = log.id;
+        internshipLogs.forEach((target) => {
+          if (target.type === 'atendimento_clinico') {
+            const should = discussedLogIds.includes(target.id);
+            const currently = target.supervisionLogId === currentId;
+            if (should && !currently) {
+              handleUpdateInternshipLog({ ...target, supervisionLogId: currentId });
+            } else if (!should && currently) {
+              handleUpdateInternshipLog({ ...target, supervisionLogId: undefined });
+            }
+          }
+        });
+      }
       hapticSuccess();
       finish();
       showToast('registro de estágio atualizado ♡');
       return;
     }
     handleAddInternshipLog(log);
+    if ((log.type === 'supervisao' || log.type === 'intervisao') && discussedLogIds.length > 0) {
+      const currentId = log.id;
+      internshipLogs.forEach((target) => {
+        if (target.type === 'atendimento_clinico') {
+          const should = discussedLogIds.includes(target.id);
+          const currently = target.supervisionLogId === currentId;
+          if (should && !currently) {
+            handleUpdateInternshipLog({ ...target, supervisionLogId: currentId });
+          } else if (!should && currently) {
+            handleUpdateInternshipLog({ ...target, supervisionLogId: undefined });
+          }
+        }
+      });
+    }
     hapticSuccess();
     finish();
     showToast('registro de estágio guardado ♡');
@@ -474,13 +647,12 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
     ? KIND_META[kind]
     : { title: 'novo registro de estágio', icon: <Sparkles className="w-3.5 h-3.5" /> };
 
-  // expressão da mascotinha acompanha o tipo de registro
   const mascote =
     kind === 'supervisao' || kind === 'intervisao'
       ? 'supervision-reflect'
       : kind === 'atendimento_clinico'
-        ? 'listening-hello'
-        : 'field-prepare';
+      ? 'listening-hello'
+      : 'field-prepare';
 
   const isDirty = !editingLog && (activity.trim().length > 0 || reflections.trim().length > 0);
 

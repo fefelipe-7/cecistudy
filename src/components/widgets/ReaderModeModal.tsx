@@ -48,7 +48,7 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
       onClose={onClose}
       position="center"
       closeOnBackdrop={false}
-      className={`w-full max-w-2xl h-[92vh] rounded-[24px] shadow-2xl flex flex-col overflow-hidden transition-colors duration-200 border border-ceci-border-default ${themeClasses[theme]}`}
+      className={`w-full max-w-2xl h-[92vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-colors duration-200 border border-ceci-border-default ${themeClasses[theme]}`}
     >
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Controls Bar */}
@@ -134,12 +134,6 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
             </p>
           )}
 
-          <p
-            className="leading-relaxed text-justify"
-            style={{ fontSize: `${fontSize}px` }}
-          >
-            Em seus estudos em Psicologia, o acompanhamento regular e a síntese diária de leituras fortalecem a base teórico-prática para estágios e atendimentos.
-          </p>
         </div>
 
         {/* Floating Reader Actions Bar */}

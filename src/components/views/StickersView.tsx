@@ -1,6 +1,6 @@
 import React from 'react';
 import { Sparkles, Lock } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { countUnlocked } from '../../lib/stickers';
 import type { Sticker } from '../../types';
 
@@ -15,13 +15,13 @@ const CATEGORY_ORDER: Sticker['category'][] = ['faculdade', 'estudo', 'leituras'
 
 /** Tela cheia de stickers & conquistas — desbloqueadas e a buscar. */
 export const StickersView: React.FC = () => {
-  const { stickers } = useApp();
+  const { stickers } = useMobileApp();
   const unlocked = countUnlocked(stickers);
 
   return (
     <div className="space-y-4 pb-1">
       {/* Cabeçalho */}
-      <div className="flex items-center justify-between gap-3 rounded-[24px] p-4 bg-white border border-ceci-border-default shadow-sm">
+      <div className="flex items-center justify-between gap-3 rounded-2xl p-4 bg-white border border-ceci-border-default shadow-sm">
         <div className="flex items-center gap-3 min-w-0">
           <span className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
             <Sparkles className="w-5 h-5" />
@@ -47,7 +47,7 @@ export const StickersView: React.FC = () => {
         const groupUnlocked = group.filter((s) => s.unlocked).length;
 
         return (
-          <div key={category} className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-3">
+          <div key={category} className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="font-display font-bold text-base text-ceci-primary">
                 {CATEGORY_LABELS[category]}

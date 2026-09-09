@@ -9,6 +9,10 @@
  * (`?platform=desktop` ou `?platform=web`) — usado para desenvolver/ajustar a
  * UI da casca desktop rodando só o dev server (`npm run dev` →
  * http://localhost:3000/?platform=desktop), sem compilar o Tauri.
+ * 
+ * **Regra do app:** a visualização do shell desktop só deve ser feita através
+ * do comando `npm run dev:desktop`. O uso de `?platform=desktop` na query string
+ * continua funcionando em desenvolvimento, mas o fluxo canonical é o npm script.
  */
 
 type ForcedPlatform = 'desktop' | 'web';

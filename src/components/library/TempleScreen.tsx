@@ -9,7 +9,7 @@ import {
   ChevronRight,
   type LucideIcon,
 } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import type { TempleSection } from '../../types';
 
 interface TempleCard {
@@ -33,7 +33,6 @@ const TEMPLE_CARDS: TempleCard[] = [
     bubble: 'bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong group-hover:bg-ceci-brand-strong group-hover:text-white',
     titleHover: 'group-hover:text-ceci-brand-strong',
     chevron: 'text-ceci-brand-strong',
-    toast: 'em breve: famílias ♡',
     action: 'familias',
   },
   {
@@ -74,16 +73,21 @@ const TEMPLE_CARDS: TempleCard[] = [
     bubble: 'bg-surface-gold border border-ceci-border-gold text-gold group-hover:bg-gold group-hover:text-white',
     titleHover: 'group-hover:text-gold',
     chevron: 'text-gold',
-    toast: 'em breve: comparações ♡',
+    action: 'comparacoes',
   },
 ];
 
 export const TempleScreen: React.FC = () => {
-  const { showToast, openFamilies, openTempleSection } = useApp();
+  const { showToast, openFamilies, openTempleSection } = useMobileApp();
 
   const handleCardClick = (card: TempleCard) => {
     if (card.action === 'familias') openFamilies();
-    else if (card.action === 'conceitos' || card.action === 'autores' || card.action === 'tecnicas')
+    else if (
+      card.action === 'conceitos' ||
+      card.action === 'autores' ||
+      card.action === 'tecnicas' ||
+      card.action === 'comparacoes'
+    )
       openTempleSection(card.action);
     else showToast(card.toast ?? 'em breve ♡');
   };
@@ -91,7 +95,7 @@ export const TempleScreen: React.FC = () => {
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-5 pb-1 relative">
       {/* Screen Title Banner */}
-      <div className="bg-white rounded-[24px] p-5 border border-ceci-border-default space-y-1.5 shadow-2xs">
+      <div className="bg-white rounded-2xl p-5 border border-ceci-border-default space-y-1.5 shadow-2xs">
         <div className="flex items-center gap-2.5">
           <div className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
             <Landmark className="w-5 h-5" />
@@ -113,7 +117,7 @@ export const TempleScreen: React.FC = () => {
           <button
             key={card.id}
             onClick={() => handleCardClick(card)}
-            className="w-full text-left bg-white rounded-[22px] p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
+            className="w-full text-left bg-white rounded-xl p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
           >
             <div className="flex items-center gap-3 min-w-0 pr-2">
               <div

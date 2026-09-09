@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, BookOpen, Check, FileText, Tag } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { ClassNote } from '../../types';
 import type { LooseNote } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
@@ -27,7 +27,7 @@ export const ComposeNoteView: React.FC = () => {
     closeCompose,
     showToast,
     openDetailPrompt,
-  } = useApp();
+  } = useMobileApp();
 
   const [lastPrefs, setLastPrefs] = usePersistentState<ComposePrefs>('composePrefs', { mode: 'avulsa' });
 
@@ -189,7 +189,7 @@ export const ComposeNoteView: React.FC = () => {
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="escreva sua nota aqui... ✨"
-        className="flex-1 min-h-[45vh] mt-3 w-full bg-white rounded-[22px] border border-ceci-border-default shadow-2xs p-4 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 resize-none leading-relaxed"
+        className="flex-1 min-h-[45vh] mt-3 w-full bg-white rounded-xl border border-ceci-border-default shadow-2xs p-4 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 resize-none leading-relaxed"
       />
     </div>
   );

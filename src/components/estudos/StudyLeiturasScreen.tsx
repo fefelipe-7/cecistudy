@@ -1,6 +1,6 @@
 ﻿import React, { useState } from 'react';
 import { Plus, BookOpen } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { ReaderModeModal } from '../widgets/ReaderModeModal';
 import { Mascote } from '../ui/Mascote';
 import { ManageSurface } from '../ui/ManageSurface';
@@ -14,7 +14,7 @@ const READING_STATUS_LABEL: Record<ReadingItem['status'], string> = {
 
 /** Tela dedicada de leituras — lista + modo leitura (reusa o ReaderModeModal). */
 export const StudyLeiturasScreen: React.FC = () => {
-  const { readings, courses, handleUpdateReadingPages, openWizard } = useApp();
+  const { readings, courses, handleUpdateReadingPages, openWizard } = useMobileApp();
   const [readerModalReading, setReaderModalReading] = useState<ReadingItem | null>(null);
 
   const courseName = (id?: string) => courses.find((c) => c.id === id)?.name || 'geral';
@@ -30,7 +30,7 @@ export const StudyLeiturasScreen: React.FC = () => {
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-3">
       {readings.length > 0 && (
-        <div className="rounded-[24px] p-4 bg-surface-subtle border border-ceci-border-subtle shadow-sm grid grid-cols-3 divide-x divide-ceci-border-subtle text-center">
+        <div className="rounded-2xl p-4 bg-surface-subtle border border-ceci-border-subtle shadow-sm grid grid-cols-3 divide-x divide-ceci-border-subtle text-center">
           <div className="px-1">
             <p className="font-display font-bold text-lg text-ceci-academic-strong">{inProgressCount}</p>
             <p className="text-[10px] text-ceci-secondary leading-tight">em andamento</p>
@@ -46,7 +46,7 @@ export const StudyLeiturasScreen: React.FC = () => {
         </div>
       )}
       {readings.length === 0 ? (
-        <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
+        <div className="rounded-2xl p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
           <Mascote expression="reading-curious" className="w-14 h-14 mx-auto" decorative />
           <p className="text-xs text-ceci-secondary leading-relaxed">
             nenhuma leitura anotada ainda. que tal adicionar seu primeiro livro ou artigo ♡
@@ -72,7 +72,7 @@ export const StudyLeiturasScreen: React.FC = () => {
                 id={r.id}
                 onTap={() => setReaderModalReading(r)}
                 data-target={r.id}
-                className={`rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-3 ${
+                className={`rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm space-y-3 ${
                   isDone ? 'opacity-70' : ''
                 }`}
               >
@@ -80,7 +80,9 @@ export const StudyLeiturasScreen: React.FC = () => {
                   <div className="min-w-0">
                     <h3 className="font-semibold text-xs text-ceci-primary leading-snug line-clamp-2">{r.title}</h3>
                     <p className="text-[11px] text-ceci-secondary mt-0.5">
-                      {r.author} · {courseName(r.courseId)}
+                      {[r.author || 'autor não informado', courseName(r.courseId) || null]
+                        .filter(Boolean)
+                        .join(' · ')}
                     </p>
                   </div>
                   <span

@@ -20,7 +20,7 @@
 
 > Sem dependências mortas: `@google/genai`, `express`, `dotenv` e `@types/express` foram
 > removidos (backend Gemini/AI Studio descartado). `package.json` usa `"name": "cecistudy"`.
-> Builds nativos: `.github/workflows/release.yml` (APK + IPA + OTA, versão por tag).
+> Builds nativos: pipelines independentes — `.github/workflows/release.yml` (mobile: APK + IPA + OTA/Pages) e `.github/workflows/release-desktop.yml` (Tauri: msi/dmg/AppImage/deb). Gate de PR em `.github/workflows/ci.yml` (lint + test + boundary).
 
 ## 2. Hierarquia de componentes
 
@@ -231,7 +231,7 @@ npm run cap:assets     → regenera ícones/splash a partir de assets/*.svg
 - Notificação Android usa `ic_stat_cecistudy.png` (drawable).
 
 ### Builds (CI)
-`.github/workflows/release.yml` — pipeline único de release (tag `v*` ou dispatch manual):
+`.github/workflows/release.yml` (mobile) + `.github/workflows/release-desktop.yml` (desktop) — pipelines independentes de release (tag `v*` ou dispatch manual):
 - **prepare:** lint + testes + build web → zip do bundle OTA (sha256) + `dist/`.
 - **Android:** ubuntu + JDK 21 + Android SDK → `assembleRelease` assinado (keystore via
   secrets `ANDROID_KEYSTORE*`) ou `assembleDebug` sem keystore → APK no release.
@@ -266,7 +266,7 @@ Terceira casca sobre o **mesmo bundle web** (`dist/` da raiz):
   `TAURI_SIGNING_PRIVATE_KEY`). Manifest montado por
   `.github/scripts/desktop-update-manifest.mjs`. UI: branch desktop do card
   "atualização do app" no Perfil.
-- **CI:** job `desktop` (matrix windows/macos/ubuntu) no `release.yml` builda e anexa
+- **CI:** gate de PR em `.github/workflows/ci.yml` (lint+test+boundary); `.github/workflows/release-desktop.yml` builda o app desktop (matrix windows/macos/ubuntu) e anexa
   `.msi`/`.dmg`/`.AppImage`/`.deb` ao mesmo Release.
 - **Layout ≥ lg:** sidebar fixa à esquerda (`src/components/DesktopSidebar.tsx`)
   substitui BottomNav/FAB; container alarga (`lg:max-w-3xl xl:max-w-4xl`). Abaixo

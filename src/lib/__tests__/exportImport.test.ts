@@ -53,7 +53,6 @@ function makeSnapshot(overrides: Partial<PersistedStateSnapshot> = {}): Persiste
     flashcards: [],
     materials: [],
     internshipLogs: [],
-    supervision: [],
     tcc: {
       title: '',
       advisor: '',
@@ -102,7 +101,7 @@ function makeSnapshot(overrides: Partial<PersistedStateSnapshot> = {}): Persiste
         createdAt: '2026-08-19',
       },
     ],
-    onboarding: { completed: true, completedAt: '2026-08-01', loadedDemo: true },
+    onboarding: { completed: true, completedAt: '2026-08-01' },
     syncIndex: { stamps: {}, records: {}, tombstones: {} },
     ...overrides,
   };
@@ -127,7 +126,38 @@ describe('contrato do banco persistido (backup v2)', () => {
     expect(data).not.toHaveProperty('questions');
     expect(data.quizSessions).toHaveLength(1);
     expect(data.techniques).toHaveLength(1);
-    expect(data.onboarding).toEqual({ completed: true, completedAt: '2026-08-01', loadedDemo: true });
+    expect(data.onboarding).toEqual({ completed: true, completedAt: '2026-08-01' });
+  });
+
+  it('backup NÃO exporta o estado visual de sessão desktop (separação B6/B7)', async () => {
+    // O DesktopSessionState é dono exclusivo de apps/desktop e vive fora do
+    // snapshot do banco (chave própria 'desktopSession'); jamais deve aparecer
+    // no payload de backup compartilhado entre as cascas.
+    const snapshot = makeSnapshot();
+    const payload = await buildBackupPayload(snapshot);
+    expect(payload.payload).not.toHaveProperty('desktopSession');
+    expect(payload.payload).not.toHaveProperty('isKnowledgeGraphOpen');
+    expect(payload.payload).not.toHaveProperty('sidebarCollapsed');
+    expect(payload.payload).not.toHaveProperty('canvasClarity');
+    expect(payload.payload).not.toHaveProperty('density');
+  });
+
+  it('backup NÃO exporta o estado de navegação (pilha/sub-tabs — dono do motor por casca)', async () => {
+    // A navegação virou estado de motor por casca (spec 07): a pilha
+    // (`navigationStack`/`activeTab`/`focusedStudyScreen`/sub-tabs) e a chave
+    // `nav*` usada no cache do `readDatabaseFromState` não são dados do usuário
+    // e não entram no backup compartilhado pelas cascas.
+    const snapshot = makeSnapshot();
+    const payload = await buildBackupPayload(snapshot);
+    expect(payload.payload).not.toHaveProperty('navigationStack');
+    expect(payload.payload).not.toHaveProperty('activeTab');
+    expect(payload.payload).not.toHaveProperty('subTabFaculdade');
+    expect(payload.payload).not.toHaveProperty('subTabEstudos');
+    expect(payload.payload).not.toHaveProperty('subTabBiblioteca');
+    expect(payload.payload).not.toHaveProperty('focusedStudyScreen');
+    for (const key of Object.keys(payload.payload)) {
+      expect(key.startsWith('nav')).toBe(false);
+    }
   });
 
   it('buildBackupPayload gera envelope v2 com metadados', async () => {
@@ -255,5 +285,124 @@ describe('exportAppDatabase', () => {
     expect(payload.format).toBe(BACKUP_FORMAT);
     expect(typeof payload.exportedAt).toBe('string');
     expect(typeof exportAppDatabase).toBe('function');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Fase 0 — migração de backups antigos (reversibilidade antes de mexer no domínio)
+// ---------------------------------------------------------------------------
+
+/** Envelope de backup exportado em uma versão antiga do schema (ex.: v5). */
+function makeLegacyBackupV5() {
+  // Forma de dados ANTERIOR às migrações 6..11:
+  // - ainda traz mood (currentMood/moodHistory) e profile.avatarMood;
+  // - courses trazem `progress`/`progressOverride` e `schedule` como string;
+  // - ainda NÃO existem quizSessions / supervisions / syncIndex.
+  const data: Record<string, unknown> = {
+    currentMood: { mood: 'ok', note: '' },
+    moodHistory: [],
+    profile: {
+      name: 'Ceci',
+      semester: 6,
+      totalSemesters: 8,
+      university: 'UFRJ',
+      targetCareer: 'clínica',
+      dailyQuote: 'com leveza',
+      stickersCollected: 3,
+      avatarMood: 'ok',
+    },
+    courses: [
+      {
+        id: 'c1',
+        name: 'Psicopatologia I',
+        professor: 'Ana',
+        semester: '6º semestre',
+        schedule: 'seg 09:00',
+        color: '#FFD3DD',
+        icon: 'Brain',
+        progress: 50,
+        progressOverride: 60,
+      },
+    ],
+    classes: [{ id: 'cl-1', courseId: 'c1', title: 'aula 1', number: 1, date: '2026-08-01', summary: 'resumo' }],
+    tasks: [{ id: 't1', title: 'ler cap 2', completed: false, priority: 'media', category: 'leitura' }],
+    exams: [{ id: 'e1', courseId: 'c1', title: 'p1', date: '2026-09-01', weight: '40%', topics: ['x'], completed: false }],
+    authors: [{ id: 'aut-1', name: 'Freud', bio: 'bio' }],
+    concepts: [{ id: 'con-1', name: 'recalque', definition: 'def', authorIds: ['aut-1'], courseIds: ['c1'], tags: ['x'] }],
+    readings: [],
+    flashcards: [],
+    materials: [],
+    internshipLogs: [],
+    tcc: { title: '', advisor: '', field: '', problemStatement: '', objectives: [], status: 'em_andamento', chapters: [], references: [] },
+    stickers: [],
+    sessions: [],
+    streakData: { activeDays: ['2026-08-01'] },
+    reminder: { enabled: true, time: '19:00' },
+    looseNotes: [],
+    savedBookIds: ['bk-1'],
+    bookmarkedCourseIds: ['c1'],
+    readingProgress: { 'bk-1': 30 },
+    techniques: [{ id: 'tec-1', name: 'associação livre', description: 'desc' }],
+    onboarding: { completed: true, completedAt: '2026-08-01' },
+  };
+  return {
+    format: BACKUP_FORMAT,
+    formatVersion: BACKUP_FORMAT_VERSION,
+    userSchemaVersion: USER_SCHEMA_VERSION,
+    catalogRelease: null,
+    exportedAt: '2025-01-01T00:00:00.000Z',
+    schemaVersion: 5,
+    payload: data,
+  };
+}
+
+describe('migração de backups antigos (Fase 0)', () => {
+  it('recusa backup de versão de schema futura (> atual)', () => {
+    const legacy = makeLegacyBackupV5();
+    legacy.schemaVersion = 999;
+    expect(importAppDatabase(JSON.stringify(legacy))).toBeNull();
+  });
+
+  it('migra backup v5 → atual e normaliza shapes (mood, schedule, progress)', () => {
+    const legacy = makeLegacyBackupV5();
+    const restored = importAppDatabase(JSON.stringify(legacy));
+
+    expect(restored).not.toBeNull();
+    // Mood removido pelas migrações 6 (campos de mood do backup) — não vaza para o banco.
+    expect(restored).not.toHaveProperty('currentMood');
+    expect(restored).not.toHaveProperty('moodHistory');
+    expect((restored!.profile as unknown as Record<string, unknown>)).not.toHaveProperty('avatarMood');
+    // progress removido pela migração 11.
+    const course = restored!.courses[0] as unknown as Record<string, unknown>;
+    expect(course).not.toHaveProperty('progress');
+    expect(course).not.toHaveProperty('progressOverride');
+    // schedule string → array (migração 9).
+    expect(Array.isArray(course.schedule)).toBe(true);
+    expect((course.schedule as unknown[]).length).toBeGreaterThan(0);
+    // coleções adicionadas por migrações intermediárias ganham defaults.
+expect(restored!.quizSessions).toEqual([]);
+     expect(restored!.syncIndex).toEqual({ stamps: {}, records: {}, tombstones: {} });
+    // dados do usuário preservados.
+    expect(restored!.savedBookIds).toEqual(['bk-1']);
+    expect(restored!.readingProgress).toEqual({ 'bk-1': 30 });
+    expect(restored!.techniques).toHaveLength(1);
+  });
+
+  it('migra backup v8 (sem syncIndex/quizSessions já presentes) sem duplicar', () => {
+    const snapshot = makeSnapshot();
+    const payload = { ...snapshot, syncIndex: undefined, quizSessions: undefined } as Record<string, unknown>;
+    const envelope = {
+      format: BACKUP_FORMAT,
+      formatVersion: BACKUP_FORMAT_VERSION,
+      userSchemaVersion: USER_SCHEMA_VERSION,
+      catalogRelease: null,
+      exportedAt: '2025-06-01T00:00:00.000Z',
+      schemaVersion: 8,
+      payload,
+    };
+    const restored = importAppDatabase(JSON.stringify(envelope));
+    expect(restored).not.toBeNull();
+    expect(restored!.quizSessions).toEqual([]);
+    expect(restored!.syncIndex).toEqual({ stamps: {}, records: {}, tombstones: {} });
   });
 });

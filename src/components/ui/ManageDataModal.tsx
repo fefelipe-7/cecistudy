@@ -26,7 +26,7 @@ import {
 import { Modal } from './Modal';
 import { Mascote } from './Mascote';
 import { ReadingProgressEditor } from './ReadingProgressEditor';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import type { ManagedItemKind } from '../../types';
 import { MANAGED_KIND_LABEL, type ManagedDB } from '../../lib/entityOps';
 import {
@@ -94,37 +94,37 @@ const CATALOG_REFS: { id: string; title: string; author: string; totalPages?: nu
  * A lógica vive em `src/lib/contextActions.ts` (pura); aqui só mapeamos ids → handlers.
  */
 export const ManageDataModal: React.FC = () => {
-  const ctx = useApp();
+  const ctx = useMobileApp();
   const { managedItem, closeManageItem, deleteManagedItem } = ctx;
   const [phase, setPhase] = useState<Phase>('menu');
 
-  const db: ManagedDB = useMemo(
-    () => ({
-      courses: ctx.courses,
-      classes: ctx.classes,
-      tasks: ctx.tasks,
-      exams: ctx.exams,
-      authors: ctx.authors,
-      concepts: ctx.concepts,
-      readings: ctx.readings,
-      flashcards: ctx.flashcards,
-      materials: ctx.materials,
-      internshipLogs: ctx.internshipLogs,
-      sessions: ctx.sessions,
-      quizSessions: ctx.quizSessions,
-      looseNotes: ctx.looseNotes,
-      bookmarkedCourseIds: ctx.bookmarkedCourseIds,
-      savedBookIds: ctx.savedBookIds,
-      readingProgress: ctx.readingProgress,
-      catalogBooks: CATALOG_REFS,
-    }),
-    [
-      ctx.courses, ctx.classes, ctx.tasks, ctx.exams, ctx.authors, ctx.concepts,
-      ctx.readings, ctx.flashcards, ctx.materials, ctx.internshipLogs, ctx.sessions,
-      ctx.quizSessions, ctx.looseNotes, ctx.bookmarkedCourseIds, ctx.savedBookIds,
-      ctx.readingProgress,
-    ]
-  );
+const db: ManagedDB = useMemo(
+     () => ({
+       courses: ctx.courses,
+       classes: ctx.classes,
+       tasks: ctx.tasks,
+       exams: ctx.exams,
+       authors: ctx.authors,
+       concepts: ctx.concepts,
+       readings: ctx.readings,
+       flashcards: ctx.flashcards,
+       materials: ctx.materials,
+       internshipLogs: ctx.internshipLogs,
+       sessions: ctx.sessions,
+       quizSessions: ctx.quizSessions,
+       looseNotes: ctx.looseNotes,
+       bookmarkedCourseIds: ctx.bookmarkedCourseIds,
+       savedBookIds: ctx.savedBookIds,
+       readingProgress: ctx.readingProgress,
+       catalogBooks: CATALOG_REFS,
+     }),
+     [
+       ctx.courses, ctx.classes, ctx.tasks, ctx.exams, ctx.authors, ctx.concepts,
+       ctx.readings, ctx.flashcards, ctx.materials, ctx.internshipLogs,
+       ctx.sessions, ctx.quizSessions, ctx.looseNotes, ctx.bookmarkedCourseIds,
+       ctx.savedBookIds, ctx.readingProgress,
+     ]
+   );
 
   const itemContext = useMemo(
     () => (managedItem ? buildItemContext(managedItem.kind, managedItem.id, db) : null),
@@ -243,7 +243,7 @@ export const ManageDataModal: React.FC = () => {
 
     return (
       <Modal open onClose={reset} position="bottom" className="max-w-md">
-        <div className="rounded-t-3xl sm:rounded-3xl bg-white px-5 pt-2 pb-6 shadow-[0_8px_28px_rgba(64,56,58,0.12)]">
+        <div className="rounded-t-3xl sm:rounded-3xl bg-white px-5 pt-2 pb-6 shadow-floating">
           <div className="flex items-center gap-3 mt-1 mb-4">
             <span className="w-10 h-10 rounded-2xl bg-surface-rose text-ceci-brand-strong flex items-center justify-center shrink-0">
               {KIND_ICON[itemContext.kind]}
@@ -273,7 +273,7 @@ export const ManageDataModal: React.FC = () => {
   if (phase === 'confirm-delete') {
     return (
       <Modal open onClose={reset} position="bottom" className="max-w-md">
-        <div className="rounded-t-3xl sm:rounded-3xl bg-white px-5 pt-2 pb-6 shadow-[0_8px_28px_rgba(64,56,58,0.12)]">
+        <div className="rounded-t-3xl sm:rounded-3xl bg-white px-5 pt-2 pb-6 shadow-floating">
           <div className="flex items-center gap-3 mt-1 mb-4">
             <span className="w-10 h-10 rounded-2xl bg-surface-rose text-red-700 flex items-center justify-center">
               <Trash2 className="w-5 h-5" />
@@ -364,7 +364,7 @@ export const ManageDataModal: React.FC = () => {
 
   return (
     <Modal open onClose={reset} position="bottom" className="max-w-md">
-      <div className="rounded-t-3xl sm:rounded-3xl bg-white px-5 pt-2 pb-6 shadow-[0_8px_28px_rgba(64,56,58,0.12)]">
+      <div className="rounded-t-3xl sm:rounded-3xl bg-white px-5 pt-2 pb-6 shadow-floating">
         <div className="flex items-center gap-3 mt-1 mb-4">
           <span className="w-10 h-10 rounded-2xl bg-surface-rose text-ceci-brand-strong flex items-center justify-center shrink-0">
             {KIND_ICON[itemContext.kind]}

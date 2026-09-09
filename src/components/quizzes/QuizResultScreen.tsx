@@ -140,7 +140,7 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 space-y-6">
           {/* Hero card com score */}
           <div
-            className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4"
+            className="rounded-2xl p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4"
           >
             <Mascote expression={mascoteExpression} className="w-20 h-20 mx-auto" decorative />
             <div>
@@ -200,7 +200,7 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
 
           {/* Detalhamento por área */}
           {statsByArea.length > 0 && (
-            <div className="rounded-[20px] p-4 bg-white border border-ceci-border-default shadow-sm space-y-3">
+            <div className="rounded-xl p-4 bg-white border border-ceci-border-default shadow-sm space-y-3">
               <SectionTitle title="por área" icon={<BarChart2 className="w-4 h-4" />} />
               <div className="space-y-2">
                 {statsByArea.map(([area, data]) => (
@@ -219,7 +219,7 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
 
           {/* Detalhamento por dificuldade */}
           {statsByDificuldade.length > 0 && (
-            <div className="rounded-[20px] p-4 bg-white border border-ceci-border-default shadow-sm space-y-3">
+            <div className="rounded-xl p-4 bg-white border border-ceci-border-default shadow-sm space-y-3">
               <SectionTitle title="por dificuldade" icon={<Target className="w-4 h-4" />} />
               <div className="space-y-2">
                 {statsByDificuldade.map(([dif, data]) => (
@@ -238,7 +238,7 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
 
           {/* Detalhamento por escola */}
           {statsByEscola.length > 0 && (
-            <div className="rounded-[20px] p-4 bg-white border border-ceci-border-default shadow-sm space-y-3">
+            <div className="rounded-xl p-4 bg-white border border-ceci-border-default shadow-sm space-y-3">
               <SectionTitle title="por escola/abordagem" icon={<Brain className="w-4 h-4" />} />
               <div className="space-y-2">
                 {statsByEscola.map(([escola, data]) => (
@@ -256,7 +256,7 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
           )}
 
           {/* Revisão detalhada (colapsável) */}
-          <div className="rounded-[20px] p-4 bg-white border border-ceci-border-default shadow-sm space-y-3">
+          <div className="rounded-xl p-4 bg-white border border-ceci-border-default shadow-sm space-y-3">
             <SectionTitle title="revisão das respostas" icon={<RotateCcw className="w-4 h-4" />} />
             <div className="space-y-2 max-h-64 overflow-y-auto">
               {answers.map((a, i) => {

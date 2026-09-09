@@ -75,6 +75,17 @@ export function getDailyGoalMessage(
 
 export type DueUrgency = 'overdue' | 'today' | 'tomorrow' | 'soon' | 'later' | 'none';
 
+export const DUE_STYLES: Record<DueUrgency, string> = {
+  overdue: 'text-red-700 font-bold',
+  today: 'text-red-700 font-bold',
+  tomorrow: 'text-amber-text font-semibold',
+  soon: 'text-ceci-secondary',
+  later: 'text-ceci-secondary',
+  none: 'text-ceci-muted',
+};
+
+export const ATTENTION_LIMIT = 5;
+
 export interface DueLabel {
   label: string;
   urgency: DueUrgency;

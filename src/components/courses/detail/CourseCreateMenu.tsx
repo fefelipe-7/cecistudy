@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, ClipboardList, FileText, Plus, Timer } from 'lucide-react';
-import { useApp } from '../../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { WizardFlow } from '../../../types';
 
 interface CourseCreateMenuProps {
@@ -29,7 +29,7 @@ export const CourseCreateMenu: React.FC<CourseCreateMenuProps> = ({
   variant = 'floating',
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { openWizard, openCompose } = useApp();
+  const { openWizard, openCompose } = useMobileApp();
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

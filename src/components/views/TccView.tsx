@@ -1,13 +1,13 @@
 import React from 'react';
 import { GraduationCap, PencilLine } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { ProgressBar } from '../ui/ProgressBar';
 import { CompletionToggle } from '../ui/CompletionToggle';
 import { Mascote } from '../ui/Mascote';
 
 /** Tela cheia do meu TCC — visualização + botão de edição (criar/manter). */
 export const TccView: React.FC = () => {
-  const { tcc, openEditTcc, handleUpdateTcc, showToast } = useApp();
+  const { tcc, openEditTcc, handleUpdateTcc, showToast } = useMobileApp();
 
   const hasTcc = tcc.title.trim().length > 0;
   const chaptersDone = tcc.chapters.filter((ch) => ch.completed).length;
@@ -25,7 +25,7 @@ export const TccView: React.FC = () => {
   return (
     <div className="space-y-4 pb-1">
       {/* Cabeçalho da tela */}
-      <div className="flex items-center justify-between gap-3 rounded-[24px] p-4 bg-white border border-ceci-border-default shadow-sm">
+      <div className="flex items-center justify-between gap-3 rounded-2xl p-4 bg-white border border-ceci-border-default shadow-sm">
         <div className="flex items-center gap-3 min-w-0">
           <span className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
             <GraduationCap className="w-5 h-5" />
@@ -47,7 +47,7 @@ export const TccView: React.FC = () => {
       </div>
 
       {!hasTcc ? (
-        <div className="rounded-[24px] p-8 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
+        <div className="rounded-2xl p-8 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
           <Mascote expression="research-tcc" className="w-16 h-16 mx-auto" decorative />
           <h3 className="font-display font-bold text-lg text-ceci-primary">
             ainda não tem tcc
@@ -67,7 +67,7 @@ export const TccView: React.FC = () => {
       ) : (
         <>
           {/* Resumo do trabalho */}
-          <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-3">
+          <div className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm space-y-3">
             <div className="border-b border-ceci-border-subtle pb-3 space-y-2">
               <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand">
                 tcc • {statusLabel}
@@ -102,7 +102,7 @@ export const TccView: React.FC = () => {
           </div>
 
           {/* Cronograma de capítulos */}
-          <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-3">
+          <div className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="font-display font-bold text-base text-ceci-primary">
                 cronograma de capítulos
@@ -152,7 +152,7 @@ export const TccView: React.FC = () => {
 
           {/* Referências */}
           {tcc.references.length > 0 && (
-            <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-3">
+            <div className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm space-y-3">
               <h3 className="font-display font-bold text-base text-ceci-primary">
                 referências utilizadas (abnt)
               </h3>

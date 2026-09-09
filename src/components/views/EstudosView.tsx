@@ -12,20 +12,13 @@ import {
   Activity,
   GraduationCap,
 } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { isDueToday, intervalFor } from '../../lib/review';
-import { toDateKey, type WeekDayStatus } from '../../lib/streak';
+import { toDateKey } from '../../lib/streak';
 import { pickTip } from '../../lib/tips';
+import { WEEK_CELL_STYLE } from '../../lib/copy';
 import { Mascote } from '../ui/Mascote';
 import { SectionTitle } from '../ui/SectionTitle';
-
-/** Bolinha de um dia na linha do ritmo semanal (mesmo padrão da HomeView). */
-const WEEK_CELL_STYLE: Record<WeekDayStatus, string> = {
-  done: 'bg-rose-500 text-white border-rose-500',
-  today: 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand ring-2 ring-rose-300/50',
-  upcoming: 'bg-white text-ceci-muted border-ceci-border-default',
-  weekend: 'bg-surface-muted text-ceci-faded border-ceci-border-subtle',
-};
 
 export const EstudosView: React.FC = () => {
   const {
@@ -41,7 +34,7 @@ export const EstudosView: React.FC = () => {
     openQuizCategory,
     openTccScreen,
     openWizard,
-  } = useApp();
+  } = useMobileApp();
 
   // ---- dados reais derivados do estado ----
   const dueCards = useMemo(() => flashcards.filter(isDueToday), [flashcards]);
@@ -137,7 +130,7 @@ export const EstudosView: React.FC = () => {
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={() => openStudy('focus')}
-            className="bg-ceci-primary hover:bg-ceci-ink text-white rounded-[24px] p-5 text-left tap-interactive cursor-pointer space-y-2 shadow-sm min-h-[110px]"
+            className="bg-ceci-primary hover:bg-ceci-ink text-white rounded-2xl p-5 text-left tap-interactive cursor-pointer space-y-2 shadow-sm min-h-[110px]"
           >
             <Brain className="w-6 h-6 text-rose-200" />
             <p className="text-base font-bold font-display">bora focar?</p>
@@ -151,7 +144,7 @@ export const EstudosView: React.FC = () => {
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={() => openStudy('revisar')}
-            className="bg-white hover:border-ceci-border-brand rounded-[24px] p-5 text-left border border-ceci-border-default tap-interactive cursor-pointer space-y-2 shadow-sm min-h-[110px]"
+            className="bg-white hover:border-ceci-border-brand rounded-2xl p-5 text-left border border-ceci-border-default tap-interactive cursor-pointer space-y-2 shadow-sm min-h-[110px]"
           >
             <Sparkles className="w-6 h-6 text-ceci-brand-strong" />
             <div className="flex items-center gap-2">
@@ -183,7 +176,7 @@ export const EstudosView: React.FC = () => {
         <motion.button
           whileTap={{ scale: 0.98 }}
           onClick={() => openStudy('leituras')}
-          className={`w-full rounded-[24px] p-5 border shadow-sm cursor-pointer text-left space-y-3 tap-interactive ${
+          className={`w-full rounded-2xl p-5 border shadow-sm cursor-pointer text-left space-y-3 tap-interactive ${
             readingInProgress
               ? 'bg-white border-ceci-border-default hover:border-ceci-border-academic'
               : 'bg-surface-subtle border-dashed border-ceci-border-default hover:border-ceci-border-academic'
@@ -233,7 +226,7 @@ export const EstudosView: React.FC = () => {
           whileTap={{ scale: 0.98 }}
           onClick={() => openStudy('historico')}
           aria-label="ver seu histórico e estatísticas de estudo"
-          className="w-full bg-white rounded-[22px] p-5 border border-ceci-border-default hover:border-ceci-border-brand shadow-sm cursor-pointer space-y-4 tap-interactive text-left"
+          className="w-full bg-white rounded-xl p-5 border border-ceci-border-default hover:border-ceci-border-brand shadow-sm cursor-pointer space-y-4 tap-interactive text-left"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -286,7 +279,7 @@ export const EstudosView: React.FC = () => {
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={() => openQuizCategory()}
-            className="bg-surface-subtle hover:border-ceci-border-academic rounded-[24px] p-4 text-left border border-ceci-border-subtle tap-interactive cursor-pointer space-y-1.5 min-h-[96px]"
+            className="bg-surface-subtle hover:border-ceci-border-academic rounded-2xl p-4 text-left border border-ceci-border-subtle tap-interactive cursor-pointer space-y-1.5 min-h-[96px]"
           >
             <HelpCircle className="w-5 h-5 text-ceci-academic-strong" />
             <p className="text-sm font-bold font-display text-ceci-primary">quiz de questões</p>
@@ -296,7 +289,7 @@ export const EstudosView: React.FC = () => {
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={openTccScreen}
-            className="bg-surface-subtle hover:border-ceci-border-brand rounded-[24px] p-4 text-left border border-ceci-border-subtle tap-interactive cursor-pointer space-y-1.5 min-h-[96px]"
+            className="bg-surface-subtle hover:border-ceci-border-brand rounded-2xl p-4 text-left border border-ceci-border-subtle tap-interactive cursor-pointer space-y-1.5 min-h-[96px]"
           >
             <GraduationCap className="w-5 h-5 text-ceci-brand-strong" />
             <p className="text-sm font-bold font-display text-ceci-primary">meu tcc</p>
@@ -315,7 +308,7 @@ export const EstudosView: React.FC = () => {
       {/* ================================================================ */}
       {/* 6. DICA DO CECINHO                                                */}
       {/* ================================================================ */}
-      <div className="p-4 rounded-[22px] bg-white border border-ceci-border-subtle shadow-sm flex items-center gap-3 px-0.5 lg:px-4">
+      <div className="p-4 rounded-xl bg-white border border-ceci-border-subtle shadow-sm flex items-center gap-3 px-0.5 lg:px-4">
         <Mascote expression="celebrate-small" className="w-12 h-12 shrink-0 ml-0.5 lg:ml-0" decorative />
         <div className="min-w-0">
           <div className="flex items-center gap-2 text-xs font-semibold text-ceci-primary font-display">

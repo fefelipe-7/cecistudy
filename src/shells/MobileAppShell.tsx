@@ -2,31 +2,28 @@ import React, { memo, useCallback, useEffect, useRef } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { App as CapacitorApp } from '@capacitor/app';
 import { AnimatePresence, motion, useMotionValue } from 'framer-motion';
-import { useApp } from '../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { setupNativeShell } from '../lib/native';
 import { overlayVariants, PUSH_DURATION, PUSH_EXIT_DURATION } from '../lib/motion';
-import { isDesktop } from '../lib/platform';
 import { nativeNavigation } from '../navigation/native-navigation';
 
 import { HeaderNav } from '../components/HeaderNav';
 import { BottomNav } from '../components/BottomNav';
-import { DesktopSidebar } from '../components/DesktopSidebar';
 import { EdgeSwipeBack } from '../components/ui/EdgeSwipeBack';
 import { OnboardingScreen } from '../components/views/OnboardingScreen';
-import { GlobalOverlays } from './GlobalOverlays';
+
 import { SlideScreen } from './SlideScreen';
-import { SlideContent, OverlayContent } from './ScreenLayers';
+import { SlideContent, OverlayContent } from './SharedScreenLayers';
 
 const HeaderNavMemo = memo(HeaderNav);
 const BottomNavMemo = memo(BottomNav);
-const DesktopSidebarMemo = memo(DesktopSidebar);
 
 /**
  * Casca mobile/web: header dinâmico + barra inferior + pilha com slide
  * horizontal e overlays em tela cheia. Efeitos nativos (Capacitor) vivem aqui.
  */
 export const MobileAppShell: React.FC = () => {
-  const app = useApp();
+  const app = useMobileApp();
 
   useEffect(() => {
     setupNativeShell();
@@ -98,23 +95,12 @@ export const MobileAppShell: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen text-ceci-primary flex flex-col font-sans antialiased selection:bg-rose-100 selection:text-ceci-brand-strong lg:pl-60">
+    <div className="min-h-screen text-ceci-primary flex flex-col font-sans antialiased selection:bg-rose-100 selection:text-ceci-brand-strong">
 
       {/* Gesto de "voltar pela borda" (iOS): desliza a camada de slide e volta um nível.
           No desktop o gesto não existe — a shell própria cuida da navegação. */}
-      {!Capacitor.isNativePlatform() && !isDesktop && (
+      {!Capacitor.isNativePlatform() && (
         <EdgeSwipeBack swipeX={swipeX} onBack={app.handleSystemBack} canGoBack={app.canGoBack} />
-      )}
-
-      {/* Sidebar desktop-web (≥ lg) — espelha a visibilidade da barra inferior */}
-      {app.isBottomNavVisible && (
-        <DesktopSidebarMemo
-          activeTab={activeTab}
-          onChangeTab={handleNavigate}
-          onOpenWizard={app.openWizard}
-          onOpenTaskExamWizard={app.openTaskExamWizard}
-          onOpenCompose={openCompose}
-        />
       )}
 
       {/* Top Header — entra/sai com fade nos fluxos auxiliares (compose/wizards)
@@ -147,7 +133,7 @@ export const MobileAppShell: React.FC = () => {
         <motion.div style={{ x: swipeX }}>
           <AnimatePresence initial={false} custom={app.navDirection}>
             <SlideScreen key={app.slideKey} direction={app.navDirection}>
-              <SlideContent shell="mobile" />
+              <SlideContent />
             </SlideScreen>
           </AnimatePresence>
         </motion.div>
@@ -196,7 +182,7 @@ export const MobileAppShell: React.FC = () => {
       </AnimatePresence>
 
       {/* Modais/toasts globais (compartilhados com a shell desktop) */}
-      <GlobalOverlays />
+
 
     </div>
   );

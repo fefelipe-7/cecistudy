@@ -36,8 +36,8 @@ interface TipCandidate {
   fallback?: boolean;
 }
 
-function candidatesFor(ctx: TipContext): TipCandidate[] {
-  const examDays = daysUntil(ctx.nextExamDate);
+function candidatesFor(ctx: TipContext, now: Date): TipCandidate[] {
+  const examDays = daysUntil(ctx.nextExamDate, now);
   const plural = (n: number, one: string, many: string) => (n === 1 ? one : many);
 
   return [
@@ -84,6 +84,6 @@ const FALLBACK_TIP =
 
 /** Dica contextual do cecinho para o momento atual (a mais específica vence). */
 export function pickTip(ctx: TipContext, now = new Date()): string {
-  const match = candidatesFor(ctx).find((c) => c.matches());
+  const match = candidatesFor(ctx, now).find((c) => c.matches());
   return match?.message ?? FALLBACK_TIP;
 }

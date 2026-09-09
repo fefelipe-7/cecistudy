@@ -1,0 +1,59 @@
+{
+  "id": "tec-psicoeducacao",
+  "nome": "Psicoeducação",
+  "canonicalKey": "psicoeducacao",
+  "emUmaFrase": "Intervenção estruturada que compartilha um modelo compreensível sobre o problema, o tratamento e os próximos passos, adaptando informação à pessoa e ao contexto.",
+  "definicao": "Psicoeducação é o uso colaborativo de informação, linguagem e recursos de aprendizagem para ampliar compreensão, participação e capacidade de decisão. O conteúdo deve ser relevante para a formulação, compreensível para a pessoa e revisado conforme suas dúvidas, cultura e preferências.",
+  "objetivo": "Apoiar compreensão do fenômeno, participação no tratamento, autonomia e tomada de decisões informadas, sem transformar informação em prescrição universal.",
+  "comoFunciona": "O profissional parte da pergunta da pessoa, apresenta um modelo em linguagem acessível, verifica compreensão, conecta a informação à experiência concreta e ajusta o plano conforme feedback, risco, contexto e objetivos compartilhados.",
+  "quandoEUtilizada": "Pode ser considerada quando a pessoa deseja compreender o problema, o modelo de tratamento, estratégias de autocuidado, sinais de alerta ou opções de participação. A indicação depende da formulação, do momento clínico, da capacidade de processamento e da preferência da pessoa.",
+  "comoEAplicada": "Pode envolver explicação dialogada, metáforas, folhetos, registros, mapas do problema, revisão de dúvidas, planejamento de sinais de alerta e combinação de informação com treino ou experiência. A aplicação deve evitar sobrecarga e checar se o conteúdo foi compreendido.",
+  "origem": "A psicoeducação atravessa psicoterapia, promoção de saúde, educação em saúde e intervenções familiares. Seu sentido clínico varia conforme a abordagem, o público, o problema e o papel atribuído à informação.",
+  "desenvolvimentoHistorico": "O recurso passou de explicações predominantemente prescritivas para práticas mais colaborativas e baseadas em decisão compartilhada, participação da família, adaptação cultural e integração entre pesquisa, expertise clínica e preferências da pessoa.",
+  "exemploPratico": "Após compreender uma formulação de ansiedade, o profissional explica o ciclo entre ameaça percebida, sintomas e esquiva, pede à pessoa que descreva o ciclo com suas próprias palavras e combina quais informações ou experimentos seriam úteis no próximo passo.",
+  "fundamentacaoTeorica": "A técnica deve ser vinculada ao modelo clínico que organiza a explicação. Informação isolada não é sinônimo de mudança; seu efeito depende de relevância, compreensão, relação, oportunidade, contexto e possibilidade real de ação.",
+  "evidencias": "A utilidade da psicoeducação deve ser avaliada conforme população, formato, comparação e desfecho. O recurso pode apoiar participação e compreensão, mas não autoriza atribuir automaticamente qualquer resultado à informação isolada ou à escola inteira.",
+  "limitacoes": "Informação em excesso, linguagem técnica, culpabilização, falsa certeza ou desconsideração de cultura e preferência podem reduzir participação e segurança. Psicoeducação não substitui avaliação clínica, supervisão, diretrizes, consentimento ou decisão compartilhada.",
+  "contextoClinico": "Pode aparecer em terapias cognitivas, comportamentais, familiares, psicodinâmicas, integrativas, intervenções de saúde e trabalhos com famílias, desde que sua função seja explicitada e ajustada ao modelo e à pessoa.",
+  "observacoes": "Classificação interna: tecnica. O registro mantém a distinção entre compartilhar informação, ensinar habilidades, oferecer orientação e realizar uma intervenção específica.",
+  "tipoTecnica": "tecnica",
+  "classificacaoEstatuto": "recurso clínico e educativo adaptável ao contexto; não equivale automaticamente a protocolo, tratamento ou evidência de superioridade.",
+  "slug": "psicoeducacao",
+  "dominioId": "domain-motivacionais-solucao",
+  "dominioIds": [
+    "domain-motivacionais-solucao"
+  ],
+  "dominioNomes": [
+    "Técnicas Motivacionais e Focadas em Solução"
+  ],
+  "ordemExibicao": 115,
+  "posicoesNominais": [
+    {
+      "categoryId": "domain-motivacionais-solucao",
+      "categoryName": "Técnicas Motivacionais e Focadas em Solução",
+      "ordem": 115,
+      "nomeOriginal": "Psicoeducação"
+    }
+  ],
+  "abordagemIds": [
+    "app-cognitiva_tcc-terapia-cognitivo-comportamental",
+    "app-sistemica_familiar-terapia-familiar",
+    "app-integrativas-integracao-geral"
+  ],
+  "modeloIds": [],
+  "fonteIds": [
+    "src-apa-ebpp-2021",
+    "src-family-2020"
+  ],
+  "tecnicasRelacionadasIds": [
+    "tec-estabelecimento-de-metas",
+    "tec-planejamento-de-mudanca",
+    "tec-perguntas-abertas",
+    "tec-sumarios",
+    "tec-escuta-reflexiva"
+  ],
+  "dataCadastro": "2026-08-27T00:00:00.000Z",
+  "dataUltimaRevisao": "2026-08-27T00:00:00.000Z",
+  "status": "published",
+  "sourcePath": "content/techniques/motivacionais-solucao/tec-psicoeducacao.json"
+}

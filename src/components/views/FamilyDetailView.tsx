@@ -1,11 +1,11 @@
 ﻿import React, { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { PSICOTERAPIA_FAMILIES } from '../../data/psicoterapiaFamilies';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { ListSkeleton } from '../ui/Skeleton';
 
 export const FamilyDetailView: React.FC<{ familyId: string }> = ({ familyId }) => {
-  const { openApproach, approaches } = useApp();
+  const { openApproach, approaches } = useMobileApp();
   const [showAll, setShowAll] = useState(false);
 
   const family = PSICOTERAPIA_FAMILIES.find((f) => f.id === familyId);
@@ -24,7 +24,7 @@ export const FamilyDetailView: React.FC<{ familyId: string }> = ({ familyId }) =
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-5 pb-1 relative">
       {/* Título da família */}
       <div
-        className="bg-white rounded-[24px] p-5 border space-y-1.5 shadow-2xs"
+        className="bg-white rounded-2xl p-5 border space-y-1.5 shadow-2xs"
         style={{ borderColor: `${family.color}66` }}
       >
         <div className="flex items-center gap-2.5">
@@ -61,7 +61,7 @@ export const FamilyDetailView: React.FC<{ familyId: string }> = ({ familyId }) =
                 <button
                   key={approach.id}
                   onClick={() => openApproach(approach.id)}
-                  className="w-full text-left bg-white rounded-[22px] p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
+                  className="w-full text-left bg-white rounded-xl p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3 min-w-0 pr-2">
                     <span

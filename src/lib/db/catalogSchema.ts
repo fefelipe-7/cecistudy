@@ -110,6 +110,15 @@ CREATE TABLE technique (
   data_json TEXT NOT NULL
 );
 
+CREATE TABLE comparison (
+  id TEXT PRIMARY KEY,
+  slug TEXT UNIQUE NOT NULL,
+  type TEXT NOT NULL,
+  priority TEXT NOT NULL,
+  phase TEXT NOT NULL,
+  data_json TEXT NOT NULL
+);
+
 CREATE TABLE question_category (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,

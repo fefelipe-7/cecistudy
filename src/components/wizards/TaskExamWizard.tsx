@@ -1,15 +1,16 @@
 import React, { useMemo, useState } from 'react';
 import { ClipboardList, CheckCircle2, Sparkles, CalendarPlus2 } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import type { Task, Exam, ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
+import { TOAST } from '../../lib/copy';
 import { createTaskCalendarEvent, createExamCalendarEvent } from '../../lib/calendar';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import { Toggle } from '../ui/Toggle';
 import {
   DateField,
   DateInput,
-  FieldLabel,
+  Field,
   ReviewCard,
   TextInput,
 } from './wizardFields';
@@ -53,7 +54,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
     closeWizard,
     openEditCourse,
     showToast,
-  } = useApp();
+  } = useMobileApp();
   const editingTask = editing?.kind === 'task' ? tasks.find((t) => t.id === editing.id) : undefined;
   const editingExam = editing?.kind === 'exam' ? exams.find((e) => e.id === editing.id) : undefined;
   const initialKind: 'task' | 'exam' | null =
@@ -81,7 +82,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
 
   /** Criação contextual de matéria (§4.1): abre o cadastro e avisa que ela aparece aqui ao voltar. */
   const createCourseInline = () => {
-    showToast('cadastre a matéria — quando voltar, ela aparece aqui ♡');
+    showToast(TOAST.courseRegistered);
     openEditCourse();
   };
 
@@ -104,6 +105,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
     id: 'tipo',
     title: 'tipo',
     headline: 'o que você quer registrar agora?',
+    subtitle: 'tarefa é um compromisso com prazo; prova é avaliação que vale nota, com data e peso.',
     content: (
       <div className="space-y-3">
         <button
@@ -111,7 +113,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
             setKind('task');
             setStep(0);
           }}
-          className="w-full flex items-center gap-4 p-5 rounded-[24px] bg-white border-2 border-ceci-border-default hover:border-ceci-border-brand text-left transition-all active:scale-[0.98] cursor-pointer shadow-sm"
+          className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white border-2 border-ceci-border-default hover:border-ceci-border-brand text-left transition-all active:scale-[0.98] cursor-pointer shadow-sm"
         >
           <span className="w-12 h-12 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
             <CheckCircle2 className="w-6 h-6" />
@@ -128,7 +130,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
             setKind('exam');
             setStep(0);
           }}
-          className="w-full flex items-center gap-4 p-5 rounded-[24px] bg-white border-2 border-ceci-border-default hover:border-ceci-border-academic text-left transition-all active:scale-[0.98] cursor-pointer shadow-sm"
+          className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white border-2 border-ceci-border-default hover:border-ceci-border-academic text-left transition-all active:scale-[0.98] cursor-pointer shadow-sm"
         >
           <span className="w-12 h-12 rounded-2xl bg-surface-blue border border-ceci-border-academic flex items-center justify-center text-ceci-academic-strong shrink-0">
             <ClipboardList className="w-6 h-6" />
@@ -151,6 +153,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       id: 'tarefa-titulo',
       title: 'tarefa',
       headline: 'o que você precisa fazer?',
+      subtitle: 'anota numa frase — disciplina, prazo e foco vêm nos próximos passos, e tudo pode ficar vazio ♡',
       content: (
         <div className="space-y-2">
           <TextInput
@@ -159,9 +162,6 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
             placeholder="ex: ler capítulo 4 de psicopatologia"
             autoFocus
           />
-          <p className="text-[11px] text-ceci-tertiary">
-            dá para guardar sem prazo depois, se quiser ✨
-          </p>
         </div>
       ),
     },
@@ -169,6 +169,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       id: 'tarefa-categoria',
       title: 'categoria & foco',
       headline: 'como essa tarefa se encaixa no seu dia?',
+      subtitle: 'a categoria organiza o plano e a prioridade mostra onde começar.',
       content: (
         <div className="space-y-5">
           <ChoiceCardGrid
@@ -190,6 +191,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       id: 'tarefa-prazo',
       title: 'disciplina & prazo',
       headline: 'qual disciplina e quando precisa estar pronta?',
+      subtitle: 'a disciplina conecta a tarefa ao cantinho; sem prazo também é um estado válido ♡',
       content: (
         <div className="space-y-4">
           <Picker
@@ -214,6 +216,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       id: 'tarefa-revisar',
       title: 'revisar',
       headline: 'confere se está tudo certinho ♡',
+      subtitle: 'se algo estiver fora, é só voltar e ajustar antes de guardar.',
       content: (
         <div className="space-y-3">
           <ReviewCard
@@ -236,15 +239,20 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       id: 'prova-titulo',
       title: 'prova',
       headline: 'vamos começar com o básico da avaliação.',
+      subtitle: 'título e data da prova — disciplina e peso vêm no próximo passo.',
       content: (
         <div className="space-y-4">
-          <TextInput
-            value={examTitle}
-            onChange={(e) => setExamTitle(e.target.value)}
-            placeholder="ex: prova teórica ii — transtornos de ansiedade"
-            autoFocus
-          />
-          <DateInput value={examDate} onChange={(e) => setExamDate(e.target.value)} />
+          <Field label="título da prova" hint="como essa avaliação aparece no seu plano — ex: prova teórica ii">
+            <TextInput
+              value={examTitle}
+              onChange={(e) => setExamTitle(e.target.value)}
+              placeholder="ex: prova teórica ii — transtornos de ansiedade"
+              autoFocus
+            />
+          </Field>
+          <Field label="data da prova" hint="se ainda não souber, pode confirmar depois — sem data também vale ♡">
+            <DateInput value={examDate} onChange={(e) => setExamDate(e.target.value)} />
+          </Field>
         </div>
       ),
     },
@@ -252,6 +260,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       id: 'prova-contexto',
       title: 'disciplina & peso',
       headline: 'qual disciplina e quanto vale?',
+      subtitle: 'a disciplina conecta a prova ao cantinho; o peso mostra quanto ela vale na nota final.',
       content: (
         <div className="space-y-4">
           <Picker
@@ -263,14 +272,13 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
             createLabel="criar matéria agora"
             onCreate={createCourseInline}
           />
-          <div>
-            <FieldLabel>peso</FieldLabel>
+          <Field label="peso" hint="ex: 40% da nota, 1,0 ou 10 pontos — como fizer mais sentido.">
             <TextInput
               value={examWeight}
               onChange={(e) => setExamWeight(e.target.value)}
               placeholder="ex: 40% da nota"
             />
-          </div>
+          </Field>
         </div>
       ),
     },
@@ -278,6 +286,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       id: 'prova-topicos',
       title: 'tópicos',
       headline: 'o que vai cair nessa prova?',
+      subtitle: 'lista os assuntos para preparar a revisão — pode deixar vazio e completar depois ♡',
       content: (
         <TagField
           tags={examTopics}
@@ -291,6 +300,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       id: 'prova-revisar',
       title: 'revisar',
       headline: 'confere se está tudo certinho ♡',
+      subtitle: 'revisa os dados e, se quiser, marca a prova no Google Agenda.',
       content: (
         <div className="space-y-3">
           <ReviewCard

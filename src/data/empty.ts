@@ -1,8 +1,10 @@
 /**
- * Defaults de "começar vazio" (produção).
- *
- * O app nasce sem dados de demonstração: o primeiro acesso passa pelo onboarding,
- * e a usuária constrói tudo do zero (ou carrega os exemplos — ver `seeds.ts`).
+ * Defaults de "começar vazio" (produção) + contrato do banco persistido
+ * (`EmptyDatabase`): usado no boot, no reset, no import de backup e no merge
+ * de sincronização. O app nasce sem dados de demonstração: o primeiro acesso
+ * passa pelo onboarding e a usuária constrói tudo do zero. Catálogos estáticos
+ * (abordagens/questões/templo) NÃO vivem aqui — são semeados em runtime a
+ * partir do acervo (`lib/bootPreload.ts` / `templeData.ts`).
  */
 import { lockedStickerCatalog } from './stickerCatalog';
 import {
@@ -17,7 +19,6 @@ import {
   Flashcard,
   MaterialItem,
   InternshipLog,
-  SupervisionNotebook,
   TccData,
   Sticker,
   UserProfile,
@@ -72,22 +73,21 @@ export interface EmptyDatabase {
   flashcards: Flashcard[];
   materials: MaterialItem[];
   internshipLogs: InternshipLog[];
-  supervision: SupervisionNotebook[];
   tcc: TccData;
-  stickers: Sticker[];
-  sessions: StudySession[];
-  streakData: StreakData;
-  reminder: { enabled: boolean; time: string };
-  looseNotes: unknown[];
-  savedBookIds: string[];
-  bookmarkedCourseIds: string[];
-  questions: StudyQuestion[];
-  techniques: Technique[];
-  onboarding: OnboardingState;
-  quizSessions: QuizSession[];
-  readingProgress: Record<string, number>;
-  /** Carimbos de alteração p/ sincronização entre dispositivos (Fase Sync). */
-  syncIndex: SyncIndex;
+   stickers: Sticker[];
+   sessions: StudySession[];
+   streakData: StreakData;
+   reminder: { enabled: boolean; time: string };
+   looseNotes: unknown[];
+   savedBookIds: string[];
+   bookmarkedCourseIds: string[];
+   questions: StudyQuestion[];
+   techniques: Technique[];
+   onboarding: OnboardingState;
+   quizSessions: QuizSession[];
+   readingProgress: Record<string, number>;
+   /** Carimbos de alteração p/ sincronização entre dispositivos (Fase Sync). */
+   syncIndex: SyncIndex;
 }
 
 export function emptyDatabase(): EmptyDatabase {
@@ -104,10 +104,9 @@ export function emptyDatabase(): EmptyDatabase {
     flashcards: [],
     materials: [],
     internshipLogs: [],
-    supervision: [],
     tcc: emptyTcc,
-    stickers: lockedStickerCatalog(),
-    sessions: [],
+stickers: lockedStickerCatalog(),
+   sessions: [],
     streakData: emptyStreakData,
     reminder: emptyReminder,
     looseNotes: [],

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Sparkles } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import type { ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import {
+  FieldHint,
   FieldLabel,
   ReviewCard,
   TextArea,
@@ -13,9 +14,11 @@ import {
 import { PillGroupMulti } from '../ui/PillGroupMulti';
 import { Picker } from '../ui/Picker';
 import { TagField } from '../ui/TagField';
+import { useAcervoTheory } from './useAcervoTheory';
 
 export const ConceptWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
-  const { approaches, authors, courses, concepts, wizardCourseId, handleAddConcept, handleUpdateConcept, closeWizard, showToast } = useApp();
+  const { approaches, authors, courses, concepts, wizardCourseId, handleAddConcept, handleUpdateConcept, closeWizard, showToast } = useMobileApp();
+  const { authorOptions, resolveIds } = useAcervoTheory();
   const editingConcept = editing?.kind === 'concept'
     ? concepts.find((c) => c.id === editing.id)
     : undefined;
@@ -39,6 +42,7 @@ export const ConceptWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       id: 'conceito-nome',
       title: 'conceito',
       headline: 'qual é o conceito?',
+      subtitle: 'nome + uma definição com as suas palavras — o resto fica opcional ♡',
       content: (
         <div className="space-y-4">
           <TextInput
@@ -55,6 +59,7 @@ export const ConceptWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
               onChange={(e) => setDefinition(e.target.value)}
               placeholder="o que é esse conceito?"
             />
+            <FieldHint>uma definição simples já ajuda: depois dá para aprofundar.</FieldHint>
           </div>
         </div>
       ),
@@ -63,6 +68,7 @@ export const ConceptWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       id: 'conceito-contexto',
       title: 'contexto',
       headline: 'onde esse conceito se encaixa?',
+      subtitle: 'abordagem, autores, disciplinas e tags conectam o conceito ao seu repertório ♡',
       content: (
         <div className="space-y-4">
           <Picker
@@ -76,9 +82,9 @@ export const ConceptWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
           <PillGroupMulti
             label="autores relacionados"
             variant="rose"
-            options={authors.map((x) => ({ value: x.id, label: x.name }))}
+            options={authorOptions}
             value={authorIds}
-            onChange={setAuthorIds}
+            onChange={(v) => setAuthorIds(resolveIds(v))}
           />
           <PillGroupMulti
             label="disciplinas"
@@ -100,6 +106,7 @@ export const ConceptWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       id: 'conceito-revisar',
       title: 'revisar',
       headline: 'confere se está tudo certinho ♡',
+      subtitle: 'confere nome e definição antes de guardar o conceito.',
       content: (
         <ReviewCard
           rows={[
@@ -146,6 +153,7 @@ export const ConceptWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       step={step}
       onStepChange={setStep}
       canNext={name.trim().length > 0}
+      blockedReason="dê um nome para o conceito"
       onSave={handleSave}
       onClose={closeWizard}
       saveLabel={editing ? 'guardar alterações ♡' : 'guardar conceito ♡'}

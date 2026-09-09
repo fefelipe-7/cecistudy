@@ -1,0 +1,46 @@
+name: Validate Skill
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate Agent Skill repository
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate required files
+        run: |
+          echo "Checking required skill files..."
+          test -f SKILL.md    || (echo "SKILL.md missing" && exit 1)
+          test -f README.md   || (echo "README.md missing" && exit 1)
+          test -f LICENSE     || (echo "LICENSE missing" && exit 1)
+          test -f CHANGELOG.md || (echo "CHANGELOG.md missing" && exit 1)
+          echo "All required files present."
+
+      - name: Validate SKILL.md frontmatter
+        run: |
+          echo "Checking SKILL.md frontmatter fields..."
+          grep -q "^name:" SKILL.md     || (echo "name field missing in SKILL.md" && exit 1)
+          grep -q "^description:" SKILL.md || (echo "description field missing in SKILL.md" && exit 1)
+          grep -q "^license:" SKILL.md  || (echo "license field missing in SKILL.md" && exit 1)
+          echo "SKILL.md frontmatter OK."
+
+      - name: Validate evals structure
+        run: |
+          echo "Checking evals directory..."
+          test -d evals                       || (echo "evals/ directory missing" && exit 1)
+          test -f evals/evals.json            || (echo "evals/evals.json missing" && exit 1)
+          test -f evals/trigger-evals.json    || (echo "evals/trigger-evals.json missing" && exit 1)
+          echo "Evals structure OK."

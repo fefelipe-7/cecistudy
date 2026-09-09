@@ -1,0 +1,35 @@
+name: ci
+
+# Gate de PR: garante que nenhuma mudança quebra a separação lógica
+# mobile/desktop nem a compatibilidade via packages/*. Roda em todo PR para
+# main e em pushes para main (guarda contra o "mexi num lado e quebrou o outro").
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: install deps
+        run: npm ci
+      - name: typecheck
+        run: npm run lint
+      - name: test
+        run: npm run test
+      - name: boundary check (mobile/desktop/packages)
+        run: node .github/scripts/check-boundaries.mjs

@@ -1,0 +1,89 @@
+{
+  "skill_name": "greenfield-architecture-planner",
+  "evals": [
+    {
+      "id": 1,
+      "name": "lean_customer_support_dashboard",
+      "prompt": "Plan the architecture for a new customer-support dashboard. Product spec and acceptance criteria are available. The MVP needs ticket intake, assignment, SLA status, canned replies, internal notes, and manager reporting. We prefer Angular and Spring Boot, have a team of 4, and want a lean first release rather than a big platform.",
+      "expected_output": "Produces a right-sized architecture plan that recommends a lean deployable shape, explains Angular/Spring Boot fit, defines boundaries, data model, API outline, validation strategy, ADRs, and a first vertical-slice handoff.",
+      "files": [],
+      "expectations": [
+        "The plan explicitly identifies the MVP boundary and first vertical slice.",
+        "The recommended architecture is right-sized for a small team and does not default to microservices.",
+        "The plan explains how team size, stack preference, and lean-release context shaped the recommendation.",
+        "The plan defines frontend, backend/domain, persistence, integration, and reporting boundaries.",
+        "The plan includes a conceptual data model with ticket, customer, agent, assignment, note, SLA, and reply-template concepts or clear equivalents.",
+        "The plan includes API or integration contract outlines for ticket intake, assignment, status updates, notes, and reporting.",
+        "The plan includes a validation strategy covering unit, integration or contract, end-to-end, accessibility, and smoke tests.",
+        "The plan includes an ADR-style decision log and an implementation handoff."
+      ]
+    },
+    {
+      "id": 2,
+      "name": "regulated_healthcare_intake_portal",
+      "prompt": "We need architecture for a greenfield healthcare intake portal. Patients submit intake forms and documents, staff review submissions, and providers receive approved packets. The product owner says it may contain PHI, but retention, audit, and deployment environment are not settled yet. We need a cautious enterprise-grade plan without pretending we are already compliant.",
+      "expected_output": "Produces an architecture plan that treats PHI and compliance uncertainty as architecture drivers, asks or records targeted open questions, recommends secure defaults, avoids compliance claims, and includes audit, retention, identity, data protection, validation, and stakeholder review needs.",
+      "files": [],
+      "expectations": [
+        "The plan clearly labels PHI, retention, audit, and deployment uncertainty as assumptions or open questions.",
+        "The plan does not claim HIPAA or regulatory compliance as achieved.",
+        "The plan covers identity, authorization, encryption or data protection, secrets, audit logging, data retention, and access review.",
+        "The plan distinguishes organization or governance context that must be confirmed from technical assumptions that can proceed.",
+        "The recommended architecture separates patient submission, staff review, provider packet delivery, document storage, and audit concerns.",
+        "The data model includes patient, intake submission, document, review, provider packet, user or role, and audit event concepts or clear equivalents.",
+        "The validation strategy includes security, access-control, auditability, data lifecycle, and end-to-end workflow checks.",
+        "The risks and open questions section identifies qualified stakeholder review as required before implementation."
+      ]
+    },
+    {
+      "id": 3,
+      "name": "offline_first_field_inspection_app",
+      "prompt": "Create a greenfield architecture plan for an offline-first field inspection app. Inspectors use tablets in areas with unreliable connectivity, capture photos, fill long forms, and sync later. Supervisors review exceptions in a web dashboard. We expect sync conflicts, large attachments, and role-based access.",
+      "expected_output": "Produces an architecture plan that makes offline storage, sync, conflict resolution, attachment handling, role-based access, dashboard review, observability, and validation central decisions.",
+      "files": [],
+      "expectations": [
+        "The plan treats offline-first behavior as a primary architecture driver.",
+        "The plan defines local persistence, sync queue or equivalent, conflict detection/resolution, retry behavior, and visible sync status.",
+        "The plan addresses photo or attachment storage separately from core inspection records.",
+        "The plan separates inspector mobile/tablet workflows from supervisor dashboard workflows.",
+        "The plan explains how workspace and field conditions, including unreliable connectivity and tablet usage, shape architecture decisions.",
+        "The API or integration outline includes sync, upload, inspection submission, review, and exception handling flows.",
+        "The validation strategy includes offline, reconnection, conflict, attachment, role-based access, and end-to-end tests.",
+        "The decision log includes at least one decision about offline storage or synchronization."
+      ]
+    },
+    {
+      "id": 4,
+      "name": "tiny_internal_tool_overengineering_check",
+      "prompt": "We have two weeks to build a tiny internal approval tool for 25 finance users. It needs request submission, two-step approval, email notifications, and an export. Someone suggested microservices, Kafka, Kubernetes, and event sourcing. Please plan the architecture and explain what we should actually build first.",
+      "expected_output": "Produces a pragmatic architecture plan that rejects unnecessary platform complexity, recommends a simple deployable shape, keeps notifications and export straightforward, and gives an implementation-ready first slice.",
+      "files": [],
+      "expectations": [
+        "The plan explicitly rejects or defers microservices, Kafka, Kubernetes, and event sourcing unless a real driver is identified.",
+        "The recommended architecture is simple enough for a two-week internal-tool delivery window.",
+        "The plan explains how user count, finance-team context, delivery timeline, and maintenance burden shape the recommendation.",
+        "The plan covers request submission, two-step approval, email notifications, export, and basic administration or user management.",
+        "The data model includes request, approval step, approver, requester, notification, and export concepts or clear equivalents.",
+        "The deployment and operations section recommends a low-operational-burden approach.",
+        "The validation strategy focuses on approval workflow correctness, authorization, notification behavior, export integrity, and smoke tests.",
+        "The handoff identifies a first vertical slice that can be implemented quickly."
+      ]
+    },
+    {
+      "id": 5,
+      "name": "context_aligned_workspace_architecture",
+      "prompt": "Plan architecture for a new lightweight grant-management portal. Personal context: I am the only maintainer for the first six months and prefer boring, debuggable tools. Organization context: our nonprofit already uses Microsoft 365, Azure AD, GitHub Actions, and PostgreSQL; procurement approval for new vendors is slow. Project context: first release is due in eight weeks for 12 internal reviewers and about 200 applicants. Workspace context: the repo will live beside our existing TypeScript tools, docs are kept under docs/, and future agents should be able to turn the plan into tasks. We need stack, boundaries, data model, API outline, security posture, deployment, validation, ADRs, and handoff.",
+      "expected_output": "Produces an architecture plan that explicitly aligns recommendations with personal maintainer constraints, organization standards, project timeline and scale, and workspace conventions instead of proposing generic architecture.",
+      "files": [],
+      "expectations": [
+        "The plan includes a distinct context alignment section or equivalent explicit treatment.",
+        "The plan reflects the solo-maintainer preference for boring, debuggable, low-operational-burden tools.",
+        "The plan uses or seriously considers Microsoft 365, Azure AD, GitHub Actions, and PostgreSQL because they are organization context.",
+        "The plan avoids introducing new vendors without naming procurement friction as a trade-off.",
+        "The plan right-sizes architecture for 12 reviewers, 200 applicants, and an eight-week first release.",
+        "The plan respects workspace conventions such as TypeScript adjacency, docs/ documentation, and downstream task-planning handoff.",
+        "The decision log ties at least two decisions to personal, organization, project, or workspace context."
+      ]
+    }
+  ]
+}

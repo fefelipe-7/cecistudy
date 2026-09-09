@@ -1,19 +1,19 @@
 import { describe, it, expect } from 'vitest';
 import { deleteManagedItem, MANAGED_KIND_LABEL, MANAGED_KIND_REMOVED, ManagedDB } from '../entityOps';
 import type {
-  Course,
-  ClassNote,
-  Task,
-  Exam,
-  PsychologyAuthor,
-  PsychologyConcept,
-  ReadingItem,
-  Flashcard,
-  MaterialItem,
-  InternshipLog,
-  StudySession,
-  QuizSession,
-  LooseNote,
+   Course,
+   ClassNote,
+   Task,
+   Exam,
+   PsychologyAuthor,
+   PsychologyConcept,
+   ReadingItem,
+   Flashcard,
+   MaterialItem,
+   InternshipLog,
+   StudySession,
+   QuizSession,
+   LooseNote,
 } from '../../types';
 
 const course: Course = {
@@ -146,23 +146,23 @@ const looseNote: LooseNote = {
 };
 
 function makeDb(): ManagedDB {
-  return {
-    courses: [course],
-    classes: [classNote],
-    tasks: [task],
-    exams: [exam],
-    authors: [author],
-    concepts: [concept],
-    readings: [reading],
-    flashcards: [flashcard],
-    materials: [material],
-    internshipLogs: [internshipLog],
-    sessions: [session],
-    quizSessions: [quizSession],
-    looseNotes: [looseNote],
-    bookmarkedCourseIds: ['c1'],
-  };
-}
+   return {
+     courses: [course],
+     classes: [classNote],
+     tasks: [task],
+     exams: [exam],
+     authors: [author],
+     concepts: [concept],
+     readings: [reading],
+     flashcards: [flashcard],
+     materials: [material],
+     internshipLogs: [internshipLog],
+     sessions: [session],
+     quizSessions: [quizSession],
+     looseNotes: [looseNote],
+     bookmarkedCourseIds: ['c1'],
+   };
+ }
 
 describe('deleteManagedItem', () => {
   it('exclui uma tarefa simples sem tocar nos outros bancos', () => {

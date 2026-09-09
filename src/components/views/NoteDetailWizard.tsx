@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { FileText } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import type { LooseNote } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { WizardScaffold, type WizardStep } from '../wizards/WizardScaffold';
@@ -13,6 +13,7 @@ import {
 import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
 import { PillGroupMulti } from '../ui/PillGroupMulti';
 import { Picker } from '../ui/Picker';
+import { useAcervoTheory } from '../wizards/useAcervoTheory';
 
 const CATEGORY_OPTIONS: { value: LooseNote['category']; label: string; emoji?: string }[] = [
   { value: 'reflexão', label: 'reflexão', emoji: '🌷' },
@@ -34,7 +35,7 @@ export const NoteDetailWizard: React.FC = () => {
     closeAllNoteScreens,
     openNoteTransform,
     showToast,
-  } = useApp();
+  } = useMobileApp();
 
   const [step, setStep] = useState(0);
   const [title, setTitle] = useState('');
@@ -45,6 +46,7 @@ export const NoteDetailWizard: React.FC = () => {
   const [authorIds, setAuthorIds] = useState<string[]>([]);
   const [approachIds, setApproachIds] = useState<string[]>([]);
   const [materialIds, setMaterialIds] = useState<string[]>([]);
+  const { conceptOptions, authorOptions, resolveIds } = useAcervoTheory();
 
   useEffect(() => {
     if (!focusedNote) return;
@@ -98,6 +100,7 @@ export const NoteDetailWizard: React.FC = () => {
       id: 'identificacao',
       title: 'identificação',
       headline: 'vamos dar uma cara pra essa nota.',
+      subtitle: 'título + categoria + o conteúdo que você quer guardar.',
       content: (
         <div className="space-y-4">
           <TextInput
@@ -128,6 +131,7 @@ export const NoteDetailWizard: React.FC = () => {
       id: 'vinculos',
       title: 'vínculos',
       headline: 'o que essa nota tem a ver com o cantinho?',
+      subtitle: 'vínculos são opcionais — conectam a nota a matérias, conceitos, autores e materiais ♡',
       content: (
         <div className="space-y-5">
           <Picker
@@ -140,31 +144,23 @@ export const NoteDetailWizard: React.FC = () => {
           />
 
           <div className="space-y-2">
-            {concepts.length > 0 ? (
-              <PillGroupMulti
-                label="conceitos"
-                variant="rose"
-                options={concepts.map((c) => ({ value: c.id, label: c.name }))}
-                value={conceptIds}
-                onChange={setConceptIds}
-              />
-            ) : (
-              <span className="text-[11px] text-ceci-tertiary">ainda não há conceitos no cantinho.</span>
-            )}
+            <PillGroupMulti
+              label="conceitos"
+              variant="rose"
+              options={conceptOptions}
+              value={conceptIds}
+              onChange={(v) => setConceptIds(resolveIds(v))}
+            />
           </div>
 
           <div className="space-y-2">
-            {authors.length > 0 ? (
-              <PillGroupMulti
-                label="autores"
-                variant="rose"
-                options={authors.map((a) => ({ value: a.id, label: a.name }))}
-                value={authorIds}
-                onChange={setAuthorIds}
-              />
-            ) : (
-              <span className="text-[11px] text-ceci-tertiary">ainda não há autores no cantinho.</span>
-            )}
+            <PillGroupMulti
+              label="autores"
+              variant="rose"
+              options={authorOptions}
+              value={authorIds}
+              onChange={(v) => setAuthorIds(resolveIds(v))}
+            />
           </div>
 
           <div className="space-y-2">
@@ -201,6 +197,7 @@ export const NoteDetailWizard: React.FC = () => {
       id: 'revisar',
       title: 'revisar',
       headline: 'confere se está tudo certinho ♡',
+      subtitle: 'se faltar detalhe, é só voltar — ou transformar essa nota depois.',
       content: (
         <div className="space-y-3">
           <ReviewCard

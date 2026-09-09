@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mascote } from '../ui/Mascote';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { buildQuizPool } from '../../lib/quizLogic';
 import type { QuizConfig, StudyQuestion } from '../../types';
 
@@ -13,7 +13,7 @@ interface QuizLoadingScreenProps {
 
 /** Splash transitório: garante o acervo em memória e só então abre o quiz. */
 export const QuizLoadingScreen: React.FC<QuizLoadingScreenProps> = ({ config, onReady, onCancel }) => {
-  const { ensureQuestionsLoaded, showToast } = useApp();
+  const { ensureQuestionsLoaded, showToast } = useMobileApp();
   const [message, setMessage] = useState('escrevendo suas questões...');
 
   useEffect(() => {

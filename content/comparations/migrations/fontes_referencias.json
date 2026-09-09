@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "id": "src-apa-approaches",
+      "tipo": "institucional",
+      "titulo": "Different approaches to psychotherapy",
+      "autor": "American Psychological Association",
+      "ano": null,
+      "url": "https://www.apa.org/topics/psychotherapy/approaches",
+      "escopo": "Categorias gerais de psicoterapia e diferenças de ênfase entre psicodinâmica, comportamento, cognição, humanismo e integração.",
+      "uso_no_app": "Fundamentação conceitual de abordagens e modelos."
+    },
+    {
+      "id": "src-apa-ebpp-2021",
+      "tipo": "politica_profissional",
+      "titulo": "Professional Practice Guidelines for Evidence-Based Psychological Practice in Health Care",
+      "autor": "American Psychological Association",
+      "ano": null,
+      "url": "https://www.apa.org/about/policy/psychological-practice-health-care.pdf",
+      "escopo": "Integração da melhor pesquisa disponível, expertise clínica e características, cultura e preferências do paciente.",
+      "uso_no_app": "Eixos de evidência, adaptação, relação e limites."
+    },
+    {
+      "id": "src-cochrane-behavioral-2013",
+      "tipo": "revisao_cochrane",
+      "titulo": "Behavioural therapies versus other psychological therapies for depression",
+      "autor": "Cochrane",
+      "ano": 2013,
+      "url": "https://www.cochrane.org/evidence/CD008696_behavioural-therapies-versus-other-psychological-therapies-depression",
+      "escopo": "25 RCTs e 955 participantes; terapias comportamentais e outras psicológicas apresentaram resultados semelhantes para depressão, com certeza baixa a moderada.",
+      "uso_no_app": "Evidência comparativa em depressão."
+    },
+    {
+      "id": "src-norcross-lambert-2018",
+      "tipo": "revisao",
+      "titulo": "Psychotherapy relationships that work III",
+      "autor": "John C. Norcross; Bruce E. Wampold / colaboradores",
+      "ano": 2018,
+      "url": "https://pubmed.ncbi.nlm.nih.gov/30335448/",
+      "escopo": "Elementos relacionais com evidência de contribuição para resultados psicoterapêuticos.",
+      "uso_no_app": "Eixo de relação terapêutica e fatores comuns."
+    },
+    {
+      "id": "src-evidence-psychotherapy-2017",
+      "tipo": "revisao",
+      "titulo": "Evidence-Based Psychotherapy: Advantages and Challenges",
+      "autor": "Cook, Schwartz & Kaslow",
+      "ano": 2017,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5509639/",
+      "escopo": "Vantagens e desafios da psicoterapia baseada em evidências, validade externa, diversidade e flexibilidade.",
+      "uso_no_app": "Metodologia de leitura de evidências."
+    },
+    {
+      "id": "src-psychodynamic-techniques-2007",
+      "tipo": "revisao_sistematica",
+      "titulo": "Psychodynamic psychotherapy: A systematic review of techniques, indications and empirical evidence",
+      "autor": "Leichsenring & Leibing",
+      "ano": 2007,
+      "url": "https://doi.org/10.1348/147608306X117394",
+      "escopo": "23 ensaios randomizados em condições específicas; resultados favoráveis frente a controles e comparabilidade com tratamentos estabelecidos em condições delimitadas.",
+      "uso_no_app": "Evidência e mecanismos psicodinâmicos."
+    },
+    {
+      "id": "src-humanistic-research",
+      "tipo": "handbook_revisao",
+      "titulo": "Research on humanistic-experiential psychotherapies",
+      "autor": "Elliott et al.",
+      "ano": 2008,
+      "url": "https://strathprints.strath.ac.uk/37895/",
+      "escopo": "Síntese de resultados e processos de psicoterapias humanístico-experienciais.",
+      "uso_no_app": "Abordagens humanistas e experienciais."
+    },
+    {
+      "id": "src-mi-2021",
+      "tipo": "revisao",
+      "titulo": "Motivational Interviewing: An Evidence-Based Approach for Use in Medical Practice",
+      "autor": "Bischof, Bischof & Rumpf",
+      "ano": 2021,
+      "url": "https://doi.org/10.3238/arztebl.m2021.0014",
+      "escopo": "Entrevista Motivacional, linguagem de mudança, parceria, aceitação e limites de evidência sobre mecanismos e indicações.",
+      "uso_no_app": "Modelos pragmáticos e mudança orientada à autonomia."
+    },
+    {
+      "id": "src-act-2015",
+      "tipo": "meta_analise",
+      "titulo": "A meta-analysis of the efficacy of acceptance and commitment therapy for clinically relevant mental and physical health problems",
+      "autor": "A-Tjak et al.",
+      "ano": 2015,
+      "url": "https://pubmed.ncbi.nlm.nih.gov/25547522/",
+      "escopo": "39 RCTs e 1.821 participantes; efeitos favoráveis da ACT frente a controles; sem diferença significativa frente à TCC estabelecida na comparação relatada.",
+      "uso_no_app": "ACT, flexibilidade psicológica e comparação com TCC."
+    },
+    {
+      "id": "src-mbt-2018",
+      "tipo": "revisao_sistematica",
+      "titulo": "Is mentalization-based therapy effective in treating the symptoms of borderline personality disorder?",
+      "autor": "Vogt & Norman",
+      "ano": 2018,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6900007/",
+      "escopo": "14 estudos; MBT igual ou superior a comparadores em sintomas de BPD, com baixa qualidade metodológica na maioria dos estudos.",
+      "uso_no_app": "Mentalização, apego e BPD."
+    },
+    {
+      "id": "src-ipt-2024",
+      "tipo": "revisao_sistematica_meta_analise",
+      "titulo": "Effectiveness of interpersonal psychotherapy in comparison to other interventions for postpartum depression in LMICs",
+      "autor": "Kang et al.",
+      "ano": 2024,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11032640/",
+      "escopo": "4 RCTs e 188 mulheres; meta-análise de 3 estudos com SMD=-0,62 e I²=96%; certeza baixa ou muito baixa.",
+      "uso_no_app": "IPT, depressão pós-parto e contexto de recursos limitados."
+    },
+    {
+      "id": "src-cochrane-couple-2018",
+      "tipo": "revisao_cochrane",
+      "titulo": "Couple therapy for depression",
+      "autor": "Barbato, D’Avanzo & Parabiaghi",
+      "ano": 2018,
+      "url": "https://www.cochrane.org/evidence/CD004188_couple-therapy-depression",
+      "escopo": "14 estudos e 651 participantes; sem diferença clara frente à psicoterapia individual para sintomas depressivos; possível benefício relacional com evidência baixa ou muito baixa.",
+      "uso_no_app": "Terapia de casal e distinção entre desfechos individuais e relacionais."
+    },
+    {
+      "id": "src-family-perspectives-2025",
+      "tipo": "revisao_sistematica_qualitativa",
+      "titulo": "Client Perspectives of Family Therapy: A Qualitative Systematic Review",
+      "autor": "Todd et al.",
+      "ano": 2025,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12042159/",
+      "escopo": "Perspectivas de familiares sobre fatores úteis e não úteis em terapia familiar; usar para orientar participação, segurança e experiência do cliente.",
+      "uso_no_app": "Eixos de relação, participação e perspectiva da família."
+    },
+    {
+      "id": "src-family-2020",
+      "tipo": "revisao_conceitual",
+      "titulo": "Family Interventions: Basic Principles and Techniques",
+      "autor": "Varghese, Kirpekar & Loganathan",
+      "ano": 2020,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7001353/",
+      "escopo": "Diferença entre psicoeducação, intervenção familiar e terapia sistêmica; circularidade, comunicação, recursos e reestruturação.",
+      "uso_no_app": "Eixos de contexto, família, unidade de análise e prática."
+    },
+    {
+      "id": "src-structural-strategic-2019",
+      "tipo": "estudo_quase_experimental",
+      "titulo": "Effectiveness of Structural–Strategic Family Therapy in the Treatment of Adolescents with Mental Health Problems and Their Families",
+      "autor": "Jiménez et al.",
+      "ano": 2019,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6479931/",
+      "escopo": "41 participantes familiares; melhora pós-intervenção em sintomas e funcionamento familiar; sem randomização.",
+      "uso_no_app": "Terapia estrutural-estratégica e limites de causalidade."
+    },
+    {
+      "id": "src-narrative-2024",
+      "tipo": "meta_analise",
+      "titulo": "Effectiveness of narrative therapy for depressive symptoms in adults with somatic disorders",
+      "autor": "Hu et al.",
+      "ano": 2024,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11609228/",
+      "escopo": "54 estudos e 4.879 participantes; SMD=-1,64 em sintomas depressivos, evidência baixa e predominância de estudos chineses.",
+      "uso_no_app": "Narrativa, externalização e reautoria; aplicabilidade limitada."
+    },
+    {
+      "id": "src-cognitive-restructuring-2023",
+      "tipo": "artigo_academico",
+      "titulo": "Cognitive Restructuring and Psychotherapy Outcome",
+      "autor": "Ezawa & Hollon",
+      "ano": 2023,
+      "url": "https://doi.org/10.1037/pst0000474",
+      "escopo": "Reestruturação cognitiva como componente e processo de mudança; não atribuir o efeito total a uma única técnica.",
+      "uso_no_app": "Técnicas cognitivas e mecanismo de mudança."
+    },
+    {
+      "id": "src-exposure-inhibitory-2008",
+      "tipo": "revisao_teorica",
+      "titulo": "Optimizing inhibitory learning during exposure therapy",
+      "autor": "Craske et al.",
+      "ano": 2008,
+      "url": "https://doi.org/10.1016/j.brat.2008.04.006",
+      "escopo": "Aprendizagem inibitória como modelo para otimizar exposição; sem dados quantitativos incorporados neste pacote.",
+      "uso_no_app": "Exposição, aprendizagem e prevenção de esquiva."
+    },
+    {
+      "id": "src-mindfulness-2011",
+      "tipo": "revisao",
+      "titulo": "Effects of Mindfulness on Psychological Health",
+      "autor": "Keng, Smoski & Robins",
+      "ano": 2011,
+      "url": "https://doi.org/10.1016/j.cpr.2011.04.006",
+      "escopo": "Atenção plena, aceitação, regulação emocional e possíveis mecanismos; sem números quantitativos incorporados neste pacote.",
+      "uso_no_app": "ACT, desfusão e processos experienciais."
+    },
+    {
+      "id": "src-chairwork-2026",
+      "tipo": "revisao",
+      "titulo": "Experiential therapies including Chairwork",
+      "autor": "Ottingerová et al.",
+      "ano": 2026,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12876151/",
+      "escopo": "Trabalho experiencial com cadeiras e partes; detalhes quantitativos devem ser conferidos antes de publicação final.",
+      "uso_no_app": "Cadeira vazia, duas cadeiras e dramatização."
+    },
+    {
+      "id": "src-transference-2024",
+      "tipo": "revisao",
+      "titulo": "Transference interpretation and psychotherapy outcome",
+      "autor": "Yılmaz et al.",
+      "ano": 2024,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11116935/",
+      "escopo": "Relações entre interpretação da transferência e resultados; manter ausência de consenso causal.",
+      "uso_no_app": "Transferência, interpretação e relação."
+    }
+  ]
+}

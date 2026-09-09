@@ -2,7 +2,7 @@ import React from 'react';
 import { BookOpen, ChevronRight, HelpCircle } from 'lucide-react';
 import { ClassNote } from '../../types';
 import { StarRating } from '../ui/StarRating';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { useLongPress } from '../../lib/useLongPress';
 
 interface ClassNoteListItemProps {
@@ -16,7 +16,7 @@ export const ClassNoteListItem: React.FC<ClassNoteListItemProps> = ({
   onClick,
   showExtras = false,
 }) => {
-  const { openManageItem } = useApp();
+  const { openManageItem } = useMobileApp();
   const handlers = useLongPress({
     onLongPress: () => openManageItem('class', note.id),
     onClick,

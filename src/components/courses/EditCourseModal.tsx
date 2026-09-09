@@ -84,7 +84,7 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
 
   return (
     <Modal open={isOpen} onClose={onClose} position="bottom" className="w-full max-w-lg">
-      <div className="w-full bg-canvas rounded-t-[28px] sm:rounded-[24px] border border-ceci-border-default shadow-xl overflow-hidden p-5 sm:p-6 text-ceci-primary">
+      <div className="w-full bg-canvas rounded-t-[28px] sm:rounded-2xl border border-ceci-border-default shadow-xl overflow-hidden p-5 sm:p-6 text-ceci-primary">
         <div className="flex items-center justify-between border-b border-ceci-border-subtle pb-3 mb-4">
           <div>
             <h3 className="font-display font-bold text-lg text-ceci-primary">editar matéria</h3>

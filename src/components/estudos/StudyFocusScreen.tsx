@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Pause, RotateCcw, Timer, CheckCircle2, Sparkles } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { celebrate } from '../../lib/celebrate';
 import { hapticSuccess } from '../../lib/haptics';
 import { PillGroup } from '../ui/PillGroup';
@@ -15,7 +15,7 @@ const toISODate = (d: Date) => d.toISOString().split('T')[0];
 
 /** Tela dedicada de sessão de foco (timer em tela cheia). */
 export const StudyFocusScreen: React.FC = () => {
-  const { courses, handleAddSession, showToast } = useApp();
+  const { courses, handleAddSession, showToast } = useMobileApp();
 
   const [preset, setPreset] = useState(25);
   const [timeLeft, setTimeLeft] = useState(25 * 60);
@@ -92,7 +92,7 @@ export const StudyFocusScreen: React.FC = () => {
 
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-4">
-      <div className="rounded-[24px] p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4">
+      <div className="rounded-2xl p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4">
         <h2 className="font-display text-xl font-bold text-ceci-primary">cantinho de foco ceci</h2>
         <p className="text-xs text-ceci-secondary -mt-2">
           {isRunning ? '✨ em andamento...' : timeLeft === 0 ? 'finalizada!' : 'pronto para começar'}
@@ -214,7 +214,7 @@ export const StudyFocusScreen: React.FC = () => {
         </motion.div>
       )}
 
-      <div className="rounded-[20px] p-4 bg-surface-rose border border-ceci-border-brand flex items-center gap-3">
+      <div className="rounded-xl p-4 bg-surface-rose border border-ceci-border-brand flex items-center gap-3">
         <Sparkles className="w-5 h-5 text-ceci-brand-strong shrink-0" />
         <p className="text-xs text-ceci-secondary leading-relaxed">
           dica do cecinho: sem pressa, sem culpa. cada minutinho conta no seu cantinho ♡
@@ -222,7 +222,7 @@ export const StudyFocusScreen: React.FC = () => {
       </div>
 
       <Modal open={pendingReset} onClose={() => setPendingReset(false)} closeOnBackdrop={false}>
-        <div className="w-full max-w-sm bg-white rounded-[24px] shadow-floating p-6">
+        <div className="w-full max-w-sm bg-white rounded-2xl shadow-floating p-6">
           <h3 className="font-display font-bold text-lg text-ceci-primary mb-2">reiniciar sessão?</h3>
           <p className="text-sm text-ceci-secondary leading-relaxed mb-5">
             isso zera o timer e descarta o tempo já decorrido. tem certeza?

@@ -1,10 +1,6 @@
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { isNativePlatform } from './storage';
 import { isDesktop } from './platform';
-import {
-  desktopEnsureNotificationPermission,
-  desktopNotify,
-} from './desktop';
 
 /** id fixo do lembrete diário (para cancelar/substituir com segurança) */
 const DAILY_REMINDER_ID = 1001;
@@ -38,11 +34,12 @@ function reminderBody(): string {
 function scheduleDesktopTimer(time: string): void {
   cancelDailyReminder();
   const { hour, minute } = parseTime(time);
-  const fire = () => {
+  const fire = async () => {
+    const { desktopNotify } = await import('../../apps/desktop/lib/desktop');
     void desktopNotify('cecistudy ♡ lembrete de estudo', reminderBody());
-    desktopReminderTimer = setTimeout(fire, msUntilNext(hour, minute));
+    desktopReminderTimer = setTimeout(() => void fire(), msUntilNext(hour, minute));
   };
-  desktopReminderTimer = setTimeout(fire, msUntilNext(hour, minute));
+  desktopReminderTimer = setTimeout(() => void fire(), msUntilNext(hour, minute));
 }
 
 function msUntilNext(hour: number, minute: number): number {
@@ -55,7 +52,10 @@ function msUntilNext(hour: number, minute: number): number {
 
 /** pede (e devolve) permissão para notificações */
 export async function ensureNotificationPermission(): Promise<boolean> {
-  if (isDesktop) return desktopEnsureNotificationPermission();
+  if (isDesktop) {
+    const { desktopEnsureNotificationPermission } = await import('../../apps/desktop/lib/desktop');
+    return desktopEnsureNotificationPermission();
+  }
   if (!isNativePlatform) return false;
   const perm = await LocalNotifications.checkPermissions();
   if (perm.display === 'granted') return true;
@@ -119,6 +119,7 @@ export async function cancelDailyReminder(): Promise<void> {
 
 /** caminho desktop do lembrete diário: pede permissão e arma o timer. */
 async function scheduleDesktopReminder(time: string): Promise<boolean> {
+  const { desktopEnsureNotificationPermission } = await import('../../apps/desktop/lib/desktop');
   const granted = await desktopEnsureNotificationPermission();
   if (!granted) return false;
   scheduleDesktopTimer(time);

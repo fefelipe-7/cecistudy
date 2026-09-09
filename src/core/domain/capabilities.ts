@@ -1,0 +1,1 @@
+export * from '../../../packages/domain/src/core/domain/capabilities';

@@ -1,0 +1,50 @@
+[
+  {
+    "query": "Before we create the repo for a new B2B onboarding portal, help me decide the stack, module boundaries, data model, API shape, deployment approach, and first vertical slice.",
+    "should_trigger": true
+  },
+  {
+    "query": "I have product specs and AC for a brand-new field-service app. Can you turn them into an architecture plan with ADRs and validation strategy?",
+    "should_trigger": true
+  },
+  {
+    "query": "We are choosing between a modular monolith and microservices for a new marketplace MVP. I need the trade-offs, system boundaries, and implementation handoff.",
+    "should_trigger": true
+  },
+  {
+    "query": "Plan the backend/frontend architecture for a greenfield analytics dashboard. We know the workflows but have not bootstrapped anything yet.",
+    "should_trigger": true
+  },
+  {
+    "query": "For this new internal approvals product, define the data model, API contracts, security posture, local dev setup, and test layers before implementation.",
+    "should_trigger": true
+  },
+  {
+    "query": "I need an architecture plan for a new grants portal that fits my solo-maintainer reality, our Azure AD/GitHub Actions/PostgreSQL organization standards, and the repo conventions in this workspace.",
+    "should_trigger": true
+  },
+  {
+    "query": "Write the actual Spring Boot controllers and Angular components for the ticket dashboard.",
+    "should_trigger": false
+  },
+  {
+    "query": "Audit this existing production repo and identify refactoring opportunities in the service layer.",
+    "should_trigger": false
+  },
+  {
+    "query": "Generate detailed Jira stories and acceptance criteria for the next sprint from this product brief.",
+    "should_trigger": false
+  },
+  {
+    "query": "Create a complete OpenAPI 3.1 spec for these finished endpoints.",
+    "should_trigger": false
+  },
+  {
+    "query": "Set up a new Next.js project with Tailwind, linting, testing, and CI.",
+    "should_trigger": false
+  },
+  {
+    "query": "Remember that I personally prefer PostgreSQL for future chats about any project.",
+    "should_trigger": false
+  }
+]

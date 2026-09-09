@@ -8,14 +8,14 @@ interface PanelProps extends React.HTMLAttributes<HTMLDivElement> {
 
 /**
  * Card padrão da shell desktop ("premium SaaS, mesma alma"):
- * fundo branco, border fina e sombra quase imperceptível —
- * a delimitação vem da borda, não da sombra.
+ * fundo branco, border fina — a delimitação vem da borda, não da sombra
+ * (sombra fica apenas em elementos flutuantes).
  */
 export const Panel: React.FC<PanelProps> = ({ className, dashed, children, ...rest }) => (
   <div
     {...rest}
     className={cn(
-      'bg-white rounded-2xl border shadow-xs p-4',
+      'bg-white rounded-2xl border p-4',
       dashed ? 'border-dashed border-ceci-border-default' : 'border-ceci-border-subtle',
       className
     )}

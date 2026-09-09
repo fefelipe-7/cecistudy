@@ -1,91 +1,24 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import {
-  FileText,
-  CheckCircle2,
-  ClipboardList,
-  Brain,
-  Timer,
-  HeartHandshake,
-  Sparkles,
-  UserCheck,
-  BookOpen,
-  Wand2,
-} from 'lucide-react';
-import { useApp } from '../../context/AppContext';
-import type {
-  NoteTargetType,
-  LooseNote,
-  Task,
-  InternshipLogType,
-  MaterialItem,
-} from '../../types';
+import { CheckCircle2, Wand2 } from 'lucide-react';
+import { useMobileApp } from '@/context/mobileApp';
+import type { NoteTargetType, Task, InternshipLogType, MaterialItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
+import { TOAST } from '../../lib/copy';
 import { buildClassNoteFromNote, noteFirstLine } from '../../lib/noteLogic';
 import { WizardScaffold, type WizardStep } from '../wizards/WizardScaffold';
-import {
-  DateInput,
-  FieldLabel,
-  ReviewCard,
-  TextArea,
-  TextInput,
-} from '../wizards/wizardFields';
-import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
-import { PillGroupMulti } from '../ui/PillGroupMulti';
+import { ReviewCard } from '../wizards/wizardFields';
+import { useAcervoTheory } from '../wizards/useAcervoTheory';
 import { Picker } from '../ui/Picker';
-import { TagField } from '../ui/TagField';
-
-type IconType = React.ComponentType<{ className?: string }>;
-
-/** Os três destinos principais (§5.11) — o resto fica em "mais opções". */
-const MAIN_TARGET_TYPES: NoteTargetType[] = ['task', 'flashcard', 'class'];
-
-const TARGETS: { type: NoteTargetType; label: string; caption: string; Icon: IconType; accent: string }[] = [
-  { type: 'task', label: 'tarefa', caption: 'prazo ou atividade', Icon: CheckCircle2, accent: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong' },
-  { type: 'flashcard', label: 'flashcard', caption: 'pergunta & resposta', Icon: Brain, accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong' },
-  { type: 'class', label: 'aula', caption: 'anotação de aula no diário', Icon: FileText, accent: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong' },
-  { type: 'exam', label: 'prova / avaliação', caption: 'avaliação que vale nota', Icon: ClipboardList, accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong' },
-  { type: 'session', label: 'sessão de estudo', caption: 'foco no cantinho', Icon: Timer, accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong' },
-  { type: 'internship', label: 'estágio', caption: 'registro de campo', Icon: HeartHandshake, accent: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong' },
-  { type: 'concept', label: 'conceito', caption: 'conceito psicológico', Icon: Sparkles, accent: 'bg-amber-bg border-amber-border text-amber-text' },
-  { type: 'author', label: 'autor', caption: 'estudado na jornada', Icon: UserCheck, accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong' },
-  { type: 'material', label: 'material', caption: 'livro, artigo ou link', Icon: BookOpen, accent: 'bg-surface-muted border-ceci-border-default text-ceci-secondary' },
-];
-
-const MORE_TARGETS = TARGETS.filter((t) => !MAIN_TARGET_TYPES.includes(t.type));
-
-const TASK_CATEGORIES: { value: Task['category']; label: string; emoji?: string }[] = [
-  { value: 'leitura', label: 'leitura', emoji: '📚' },
-  { value: 'trabalho', label: 'trabalho', emoji: '📝' },
-  { value: 'revisao', label: 'revisão', emoji: '🧠' },
-  { value: 'estagio', label: 'estágio', emoji: '🩺' },
-  { value: 'outro', label: 'outro', emoji: '✨' },
-];
-
-const PRIORITIES: { value: Task['priority']; label: string; emoji?: string }[] = [
-  { value: 'baixa', label: 'baixa', emoji: '🌱' },
-  { value: 'media', label: 'média', emoji: '⚖️' },
-  { value: 'alta', label: 'alta', emoji: '🔥' },
-];
-
-const INTERNSHIP_TYPES: { value: InternshipLogType; label: string; emoji?: string }[] = [
-  { value: 'estagio', label: 'estágio', emoji: '🏫' },
-  { value: 'atendimento_clinico', label: 'atendimento clínico', emoji: '🛋️' },
-  { value: 'supervisao', label: 'supervisão', emoji: '🧑‍🏫' },
-  { value: 'intervisao', label: 'intervisão', emoji: '👥' },
-  { value: 'outro', label: 'outro', emoji: '✨' },
-];
-
-const MATERIAL_TYPES: { value: MaterialItem['type']; label: string; emoji?: string }[] = [
-  { value: 'artigo', label: 'artigo', emoji: '📄' },
-  { value: 'livro', label: 'livro', emoji: '📖' },
-  { value: 'pdf', label: 'pdf', emoji: '📎' },
-  { value: 'link', label: 'link', emoji: '🔗' },
-  { value: 'slides', label: 'slides', emoji: '📽️' },
-];
-
-const today = () => new Date().toISOString().split('T')[0];
-
-const truncate = (s: string, max = 80) => (s.length > max ? `${s.slice(0, max)}…` : s);
+import { TARGETS, MAIN_TARGET_TYPES, MORE_TARGETS, today, truncate } from '../wizards/note/constants';
+import ClassForm from '../wizards/note/ClassForm';
+import TaskForm from '../wizards/note/TaskForm';
+import ExamForm from '../wizards/note/ExamForm';
+import FlashcardForm from '../wizards/note/FlashcardForm';
+import SessionForm from '../wizards/note/SessionForm';
+import InternshipForm from '../wizards/note/InternshipForm';
+import ConceptForm from '../wizards/note/ConceptForm';
+import AuthorForm from '../wizards/note/AuthorForm';
+import MaterialForm from '../wizards/note/MaterialForm';
 
 export const NoteTransformWizard: React.FC = () => {
   const {
@@ -111,13 +44,14 @@ export const NoteTransformWizard: React.FC = () => {
     setActiveTab,
     openEditCourse,
     showToast,
-  } = useApp();
+  } = useMobileApp();
 
   const [step, setStep] = useState(0);
   const [target, setTarget] = useState<NoteTargetType | null>(null);
   const [moreOpen, setMoreOpen] = useState(false);
   /** Item criado com sucesso — mostra a tela final "abrir item criado" (§5.11). */
   const [created, setCreated] = useState<{ label: string; onOpen?: () => void } | null>(null);
+  const { conceptOptions, resolveIds } = useAcervoTheory();
 
   // ---- campos compartilhados (preenchidos a partir da nota) ----
   const [title, setTitle] = useState('');
@@ -264,7 +198,7 @@ export const NoteTransformWizard: React.FC = () => {
       emptyMessage="ainda não há disciplinas cadastradas."
       createLabel="criar matéria agora"
       onCreate={() => {
-        showToast('cadastre a matéria — quando voltar, ela aparece aqui ♡');
+        showToast(TOAST.courseRegistered);
         openEditCourse();
       }}
     />
@@ -274,12 +208,9 @@ export const NoteTransformWizard: React.FC = () => {
     id: 'tipo',
     title: 'transformar em',
     headline: 'em que essa nota vira?',
+    subtitle: 'suas notas são rascunhos transitórios — escolhe para onde essa vai.',
     content: (
       <div className="space-y-4">
-        <p className="text-[11px] text-ceci-tertiary leading-relaxed">
-          suas notas são rascunhos transitórios — escolhe para onde essa vai.
-        </p>
-
         {/* três destinos principais (§5.11) */}
         <div className="space-y-2.5">
           {TARGETS.filter((t) => MAIN_TARGET_TYPES.includes(t.type)).map((opt) => {
@@ -291,7 +222,7 @@ export const NoteTransformWizard: React.FC = () => {
                   setTarget(opt.type);
                   setStep(1);
                 }}
-                className="w-full flex items-center gap-3.5 p-4 rounded-[22px] bg-white border-2 border-ceci-border-default hover:border-ceci-border-brand text-left transition-all active:scale-[0.98] cursor-pointer shadow-sm"
+                className="w-full flex items-center gap-3.5 p-4 rounded-xl bg-white border-2 border-ceci-border-default hover:border-ceci-border-brand text-left transition-all active:scale-[0.98] cursor-pointer shadow-sm"
               >
                 <span className={`w-11 h-11 rounded-2xl border flex items-center justify-center shrink-0 ${opt.accent}`}>
                   <Icon className="w-5 h-5" />
@@ -324,7 +255,7 @@ export const NoteTransformWizard: React.FC = () => {
                     setTarget(opt.type);
                     setStep(1);
                   }}
-                  className="w-full flex flex-col items-start gap-2 p-3.5 rounded-[20px] bg-white border border-ceci-border-default hover:border-ceci-border-brand text-left transition-all active:scale-[0.98] cursor-pointer shadow-2xs"
+                  className="w-full flex flex-col items-start gap-2 p-3.5 rounded-xl bg-white border border-ceci-border-default hover:border-ceci-border-brand text-left transition-all active:scale-[0.98] cursor-pointer shadow-2xs"
                 >
                   <span className={`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 ${opt.accent}`}>
                     <Icon className="w-4 h-4" />
@@ -350,6 +281,7 @@ export const NoteTransformWizard: React.FC = () => {
     id: 'revisar',
     title: 'revisar',
     headline: 'confere se está tudo certinho ♡',
+    subtitle: 'se algo estiver fora, volta e ajusta aqui antes de transformar.',
     content: (
       <div className="space-y-3">
         <ReviewCard rows={rows} />
@@ -361,10 +293,11 @@ export const NoteTransformWizard: React.FC = () => {
     ),
   });
 
-  const formStep = (id: string, headline: string, content: React.ReactNode): WizardStep => ({
+  const formStep = (id: string, headline: string, content: React.ReactNode, subtitle?: string): WizardStep => ({
     id,
     title: 'detalhes',
     headline,
+    subtitle,
     content,
   });
 
@@ -375,29 +308,16 @@ export const NoteTransformWizard: React.FC = () => {
           formStep(
             'aula',
             'como essa aula fica registrada?',
-            <div className="space-y-4">
-              <TextInput
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="título da aula"
-                autoFocus
-              />
-              {courseSelect}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <FieldLabel>número da aula</FieldLabel>
-                  <TextInput
-                    type="number"
-                    value={classNumber}
-                    onChange={(e) => setClassNumber(parseInt(e.target.value) || 0)}
-                  />
-                </div>
-                <div>
-                  <FieldLabel>data</FieldLabel>
-                  <DateInput value={classDate} onChange={(e) => setClassDate(e.target.value)} />
-                </div>
-              </div>
-            </div>
+            <ClassForm
+              value={title}
+              onChange={setTitle}
+              courseSelect={courseSelect}
+              classNumber={classNumber}
+              onClassNumberChange={setClassNumber}
+              classDate={classDate}
+              onClassDateChange={setClassDate}
+            />,
+            'título da aula e data — o conteúdo da nota vai junto para o diário.'
           ),
           reviewStep([
             { label: 'aula', value: title.trim() },
@@ -411,31 +331,18 @@ export const NoteTransformWizard: React.FC = () => {
           formStep(
             'tarefa',
             'o que você precisa fazer?',
-            <div className="space-y-4">
-              <TextInput
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="título da tarefa"
-                autoFocus
-              />
-              <ChoiceCardGrid
-                label="categoria"
-                options={TASK_CATEGORIES}
-                value={taskCategory}
-                onChange={(v) => setTaskCategory(v)}
-              />
-              <ChoiceCardGrid
-                label="prioridade"
-                options={PRIORITIES}
-                value={priority}
-                onChange={(v) => setPriority(v)}
-              />
-              {courseSelect}
-              <div>
-                <FieldLabel>prazo</FieldLabel>
-                <DateInput value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
-              </div>
-            </div>
+            <TaskForm
+              value={title}
+              onChange={setTitle}
+              category={taskCategory}
+              onCategoryChange={setTaskCategory}
+              priority={priority}
+              onPriorityChange={setPriority}
+              courseSelect={courseSelect}
+              dueDate={dueDate}
+              onDueDateChange={setDueDate}
+            />,
+            'em que a tarefa se torna: título, categoria e o prazo para entregar.'
           ),
           reviewStep([
             { label: 'tarefa', value: title.trim() },
@@ -450,35 +357,18 @@ export const NoteTransformWizard: React.FC = () => {
           formStep(
             'prova',
             'vamos registrar essa avaliação.',
-            <div className="space-y-4">
-              <TextInput
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="título da prova"
-                autoFocus
-              />
-              {courseSelect}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <FieldLabel>data</FieldLabel>
-                  <DateInput value={examDate} onChange={(e) => setExamDate(e.target.value)} />
-                </div>
-                <div>
-                  <FieldLabel>peso</FieldLabel>
-                  <TextInput
-                    value={examWeight}
-                    onChange={(e) => setExamWeight(e.target.value)}
-                    placeholder="ex: 40% da nota"
-                  />
-                </div>
-              </div>
-              <TagField
-                tags={topics}
-                onChange={setTopics}
-                placeholder="tópicos da prova (ex: transtornos de ansiedade)"
-                emptyMessage="não precisa preencher tudo, pode deixar vazio ♡"
-              />
-            </div>
+            <ExamForm
+              value={title}
+              onChange={setTitle}
+              courseSelect={courseSelect}
+              date={examDate}
+              onDateChange={setExamDate}
+              weight={examWeight}
+              onWeightChange={setExamWeight}
+              topics={topics}
+              onTopicsChange={setTopics}
+            />,
+            'título, disciplina, data e peso da avaliação que vale nota.'
           ),
           reviewStep([
             { label: 'prova', value: title.trim() },
@@ -493,32 +383,17 @@ export const NoteTransformWizard: React.FC = () => {
           formStep(
             'flashcard',
             'pergunta & resposta de estudo.',
-            <div className="space-y-4">
-              <TextInput
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
-                placeholder="pergunta do cartão"
-                autoFocus
-              />
-              <div>
-                <FieldLabel>resposta</FieldLabel>
-                <TextArea
-                  rows={5}
-                  value={answer}
-                  onChange={(e) => setAnswer(e.target.value)}
-                  placeholder="resposta (o conteúdo da sua nota)"
-                />
-              </div>
-              {courseSelect}
-              <Picker
-                label="conceito (opcional)"
-                value={conceptId}
-                onChange={setConceptId}
-                options={concepts.map((x) => ({ value: x.id, label: x.name }))}
-                placeholder="sem conceito"
-                emptyMessage="ainda não há conceitos no cantinho."
-              />
-            </div>
+            <FlashcardForm
+              question={question}
+              onQuestionChange={setQuestion}
+              answer={answer}
+              onAnswerChange={setAnswer}
+              courseSelect={courseSelect}
+              conceptId={conceptId}
+              onConceptIdChange={(v) => setConceptId(resolveIds([v])[0])}
+              conceptOptions={conceptOptions}
+            />,
+            'a pergunta fica na frente do card; o conteúdo da sua nota vira a resposta.'
           ),
           reviewStep([
             { label: 'pergunta', value: question.trim() },
@@ -532,29 +407,16 @@ export const NoteTransformWizard: React.FC = () => {
           formStep(
             'sessão',
             'como ficou essa sessão de foco?',
-            <div className="space-y-4">
-              <TextInput
-                value={sessionTopic}
-                onChange={(e) => setSessionTopic(e.target.value)}
-                placeholder="tópico da sessão"
-                autoFocus
-              />
-              {courseSelect}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <FieldLabel>data</FieldLabel>
-                  <DateInput value={sessionDate} onChange={(e) => setSessionDate(e.target.value)} />
-                </div>
-                <div>
-                  <FieldLabel>duração (min)</FieldLabel>
-                  <TextInput
-                    type="number"
-                    value={duration}
-                    onChange={(e) => setDuration(parseInt(e.target.value) || 0)}
-                  />
-                </div>
-              </div>
-            </div>
+            <SessionForm
+              topic={sessionTopic}
+              onTopicChange={setSessionTopic}
+              courseSelect={courseSelect}
+              date={sessionDate}
+              onDateChange={setSessionDate}
+              duration={duration}
+              onDurationChange={setDuration}
+            />,
+            'tópico, data e duração para registrar no histórico de foco.'
           ),
           reviewStep([
             { label: 'tópico', value: sessionTopic.trim() },
@@ -568,43 +430,19 @@ export const NoteTransformWizard: React.FC = () => {
           formStep(
             'estágio',
             'registro do campo de estágio.',
-            <div className="space-y-4">
-              <TextInput
-                value={activity}
-                onChange={(e) => setActivity(e.target.value)}
-                placeholder="o que aconteceu (atividade/evento)"
-                autoFocus
-              />
-              <ChoiceCardGrid
-                label="tipo"
-                options={INTERNSHIP_TYPES}
-                value={internshipType}
-                onChange={(v) => setInternshipType(v)}
-              />
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <FieldLabel>data</FieldLabel>
-                  <DateInput value={internshipDate} onChange={(e) => setInternshipDate(e.target.value)} />
-                </div>
-                <div>
-                  <FieldLabel>horas</FieldLabel>
-                  <TextInput
-                    type="number"
-                    value={hours}
-                    onChange={(e) => setHours(parseInt(e.target.value) || 0)}
-                  />
-                </div>
-              </div>
-              <div>
-                <FieldLabel>reflexões</FieldLabel>
-                <TextArea
-                  rows={4}
-                  value={reflections}
-                  onChange={(e) => setReflections(e.target.value)}
-                  placeholder="reflexões sobre o registro"
-                />
-              </div>
-            </div>
+            <InternshipForm
+              activity={activity}
+              onActivityChange={setActivity}
+              type={internshipType}
+              onTypeChange={setInternshipType}
+              date={internshipDate}
+              onDateChange={setInternshipDate}
+              hours={hours}
+              onHoursChange={setHours}
+              reflections={reflections}
+              onReflectionsChange={setReflections}
+            />,
+            'o que aconteceu no campo — atividade, tipo, data e horas.'
           ),
           reviewStep([
             { label: 'atividade', value: activity.trim() },
@@ -619,49 +457,24 @@ export const NoteTransformWizard: React.FC = () => {
           formStep(
             'conceito',
             'que conceito nasce daqui?',
-            <div className="space-y-4">
-              <TextInput
-                value={conceptName}
-                onChange={(e) => setConceptName(e.target.value)}
-                placeholder="nome do conceito"
-                autoFocus
-              />
-              <div>
-                <FieldLabel>definição</FieldLabel>
-                <TextArea
-                  rows={4}
-                  value={definition}
-                  onChange={(e) => setDefinition(e.target.value)}
-                  placeholder="o que é esse conceito?"
-                />
-              </div>
-              <Picker
-                label="abordagem (opcional)"
-                value={approachId}
-                onChange={setApproachId}
-                options={approaches.map((x) => ({ value: x.id, label: x.shortName || x.name }))}
-                placeholder="sem abordagem"
-                emptyMessage="ainda não há abordagens registradas."
-              />
-              <PillGroupMulti variant="rose"
-                label="autores relacionados"
-                options={authors.map((x) => ({ value: x.id, label: x.name }))}
-                value={authorIds}
-                onChange={setAuthorIds}
-              />
-              <PillGroupMulti variant="rose"
-                label="disciplinas"
-                options={courses.map((x) => ({ value: x.id, label: x.name }))}
-                value={courseIds}
-                onChange={setCourseIds}
-              />
-              <TagField
-                tags={tags}
-                onChange={setTags}
-                placeholder="tags do conceito (ex: ansiedade)"
-                emptyMessage="não precisa preencher tudo, pode deixar vazio ♡"
-              />
-            </div>
+            <ConceptForm
+              name={conceptName}
+              onNameChange={setConceptName}
+              definition={definition}
+              onDefinitionChange={setDefinition}
+              approaches={approaches}
+              approachId={approachId}
+              onApproachIdChange={setApproachId}
+              authors={authors}
+              authorIds={authorIds}
+              onAuthorIdsChange={setAuthorIds}
+              courses={courses}
+              courseIds={courseIds}
+              onCourseIdsChange={setCourseIds}
+              tags={tags}
+              onTagsChange={setTags}
+            />,
+            'nome e definição do conceito — vínculos com autores e disciplinas são opcionais ♡'
           ),
           reviewStep([
             { label: 'conceito', value: conceptName.trim() },
@@ -677,43 +490,20 @@ export const NoteTransformWizard: React.FC = () => {
           formStep(
             'autor',
             'quem é esse autor pra você?',
-            <div className="space-y-4">
-              <TextInput
-                value={authorName}
-                onChange={(e) => setAuthorName(e.target.value)}
-                placeholder="nome do autor"
-                autoFocus
-              />
-              <div>
-                <FieldLabel>bio / contribuição</FieldLabel>
-                <TextArea
-                  rows={4}
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  placeholder="o que você quer lembrar dele(a)?"
-                />
-              </div>
-              <Picker
-                label="abordagem (opcional)"
-                value={approachId}
-                onChange={setApproachId}
-                options={approaches.map((x) => ({ value: x.id, label: x.shortName || x.name }))}
-                placeholder="sem abordagem"
-                emptyMessage="ainda não há abordagens registradas."
-              />
-              <TagField
-                tags={keyConcepts}
-                onChange={setKeyConcepts}
-                placeholder="conceitos-chave"
-                emptyMessage="não precisa preencher tudo, pode deixar vazio ♡"
-              />
-              <TagField
-                tags={majorWorks}
-                onChange={setMajorWorks}
-                placeholder="obras principais"
-                emptyMessage="não precisa preencher tudo, pode deixar vazio ♡"
-              />
-            </div>
+            <AuthorForm
+              name={authorName}
+              onNameChange={setAuthorName}
+              bio={bio}
+              onBioChange={setBio}
+              approaches={approaches}
+              approachId={approachId}
+              onApproachIdChange={setApproachId}
+              keyConcepts={keyConcepts}
+              onKeyConceptsChange={setKeyConcepts}
+              majorWorks={majorWorks}
+              onMajorWorksChange={setMajorWorks}
+            />,
+            'nome + uma nota do porquê lembrar dele(a) — o resto fica para depois.'
           ),
           reviewStep([
             { label: 'autor', value: authorName.trim() },
@@ -728,37 +518,20 @@ export const NoteTransformWizard: React.FC = () => {
           formStep(
             'material',
             'que material você quer guardar?',
-            <div className="space-y-4">
-              <TextInput
-                value={materialTitle}
-                onChange={(e) => setMaterialTitle(e.target.value)}
-                placeholder="título do material"
-                autoFocus
-              />
-              <ChoiceCardGrid
-                label="tipo"
-                options={MATERIAL_TYPES}
-                value={materialType}
-                onChange={(v) => setMaterialType(v)}
-              />
-              <TextInput
-                value={materialAuthor}
-                onChange={(e) => setMaterialAuthor(e.target.value)}
-                placeholder="autor(a)"
-              />
-              {courseSelect}
-              <TextInput
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                placeholder="link (se houver)"
-              />
-              <TagField
-                tags={materialTags}
-                onChange={setMaterialTags}
-                placeholder="tags do material"
-                emptyMessage="não precisa preencher tudo, pode deixar vazio ♡"
-              />
-            </div>
+            <MaterialForm
+              title={materialTitle}
+              onTitleChange={setMaterialTitle}
+              type={materialType}
+              onTypeChange={setMaterialType}
+              author={materialAuthor}
+              onAuthorChange={setMaterialAuthor}
+              courseSelect={courseSelect}
+              url={url}
+              onUrlChange={setUrl}
+              tags={materialTags}
+              onTagsChange={setMaterialTags}
+            />,
+            'título, tipo e de quem é o material — para achar fácil depois.'
           ),
           reviewStep([
             { label: 'material', value: materialTitle.trim() },

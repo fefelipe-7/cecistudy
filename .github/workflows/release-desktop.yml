@@ -1,0 +1,231 @@
+name: release desktop (tauri)
+
+# Pipeline independente de release do app desktop (Tauri 2).
+#
+# Em um tag v* (ex.: `v1.2.3`) ou via dispatch manual, ele:
+#   1. valida o código (lint + testes + boundary) e builda o bundle web;
+#   2. builda o app desktop (Tauri 2) para windows/macos/linux;
+#   3. publica os instaladores no GitHub Release (editando o release já criado
+#      pelo pipeline mobile, sem sobrescrever as notas) + o latest.json do
+#      updater Tauri.
+#
+# Versão:
+#   - tag push  v1.2.3  → versão "1.2.3"
+#   - dispatch manual   → versão digitada, ou "1.0.<nº de commits>" se vazia
+#
+# Secrets de assinatura (opcionais — sem eles o build cai para debug):
+#   TAURI_SIGNING_PRIVATE_KEY          chave minisign do Tauri updater
+#   TAURI_SIGNING_PRIVATE_KEY_PASSWORD senha da chave
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'versão do release (ex.: 1.2.3). vazio = 1.0.<nº de commits>'
+        required: false
+        type: string
+
+concurrency:
+  group: release-desktop
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    name: validar + build web
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: install deps
+        run: npm ci
+
+      - name: typecheck
+        run: npm run lint
+
+      - name: test
+        run: npm run test
+
+      - name: boundary check (mobile/desktop/packages)
+        run: node .github/scripts/check-boundaries.mjs
+
+      - name: build web
+        run: npm run build
+
+      - name: derive version
+        id: version
+        run: |
+          INPUT_VERSION="${{ github.event.inputs.version }}"
+          if [ -n "$INPUT_VERSION" ]; then
+            VERSION="$INPUT_VERSION"
+          elif [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION="1.0.$(git rev-list --count HEAD)"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: upload dist (para build tauri)
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: dist
+          if-no-files-found: error
+
+  desktop:
+    name: desktop (${{ matrix.os }})
+    needs: prepare
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            artifact: desktop-windows
+          - os: macos-latest
+            artifact: desktop-macos
+          - os: ubuntu-22.04
+            artifact: desktop-linux
+    env:
+      TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+      TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+      APP_VERSION: ${{ needs.prepare.outputs.version }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: install deps (raiz)
+        run: npm ci
+
+      - name: download dist
+        uses: actions/download-artifact@v4
+        with:
+          name: web-dist
+          path: dist
+
+      - name: setup rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: desktop/src-tauri
+
+      - name: deps do linux (webkit2gtk)
+        if: matrix.os == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libgtk-3-dev libxdo-dev libssl-dev
+
+      - name: install deps (desktop)
+        working-directory: desktop
+        run: npm ci
+
+      - name: build tauri (versão do release)
+        working-directory: desktop
+        shell: bash
+        run: npx tauri build --config "{\"version\":\"$APP_VERSION\"}"
+
+      - name: upload bundles
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            desktop/src-tauri/target/release/bundle/**/*.exe
+            desktop/src-tauri/target/release/bundle/**/*.msi
+            desktop/src-tauri/target/release/bundle/**/*.dmg
+            desktop/src-tauri/target/release/bundle/**/*.app.tar.gz
+            desktop/src-tauri/target/release/bundle/**/*.AppImage
+            desktop/src-tauri/target/release/bundle/**/*.deb
+            desktop/src-tauri/target/release/bundle/**/*.rpm
+            desktop/src-tauri/target/release/bundle/**/*.sig
+          if-no-files-found: error
+
+  release:
+    name: github release + updater
+    needs: [prepare, desktop]
+    if: always() && needs.prepare.result == 'success' && needs.desktop.result == 'success'
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.prepare.outputs.version }}
+      TAG: ${{ needs.prepare.outputs.tag }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: install deps
+        run: npm ci
+
+      - name: download desktop bundles (windows/macos/linux)
+        uses: actions/download-artifact@v4
+        with:
+          pattern: desktop-*
+          path: desktop-assets
+
+      - name: organize release assets
+        run: |
+          mkdir -p final
+          find desktop-assets -type f \( -name '*.exe' -o -name '*.msi' -o -name '*.dmg' \
+            -o -name '*.app.tar.gz' -o -name '*.AppImage' -o -name '*.deb' -o -name '*.rpm' \
+            -o -name '*.sig' \) -exec cp {} final/ \;
+          ls -la final
+
+      - name: create/update github release (desktop)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          DESKTOP_ASSETS=$(find final -maxdepth 1 \( -name '*.exe' -o -name '*.msi' -o -name '*.dmg' \
+            -o -name '*.app.tar.gz' -o -name '*.AppImage' -o -name '*.deb' -o -name '*.rpm' \
+            -o -name '*.sig' \) -printf '%p ' 2>/dev/null || true)
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            # release já existe (criado pelo pipeline mobile): só anexa os assets desktop.
+            # shellcheck disable=SC2086
+            gh release upload "$TAG" $DESKTOP_ASSETS --clobber || true
+          else
+            NOTES=$(cat <<EOF
+          ## cecistudy v$VERSION (desktop)
+          instaladores desktop (windows/macos/linux) gerados pelo pipeline de release desktop.
+          o app tauri se atualiza pelo updater (latest.json neste release).
+          EOF
+            )
+            # shellcheck disable=SC2086
+            gh release create "$TAG" --title "cecistudy v$VERSION" --notes "$NOTES" $DESKTOP_ASSETS
+          fi
+
+      - name: publish latest.json (updater desktop)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node .github/scripts/desktop-update-manifest.mjs "$TAG" desktop-assets latest.json
+          gh release upload "$TAG" latest.json --clobber

@@ -1,25 +1,24 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { FileText } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { hapticSuccess } from '../../lib/haptics';
 import { StarRating } from '../ui/StarRating';
 import { WizardScaffold, type WizardStep } from '../wizards/WizardScaffold';
 import { DateInput, FieldLabel, TextArea, TextInput } from '../wizards/wizardFields';
 import { PillGroupMulti } from '../ui/PillGroupMulti';
 import { ToggleRow } from '../ui/ToggleRow';
+import { useAcervoTheory } from '../wizards/useAcervoTheory';
 
 export const ClassNoteDetailWizard: React.FC = () => {
   const {
     classes,
-    concepts,
     approaches,
-    authors,
     materials,
     wizardNoteId,
     handleUpdateClassNote,
     closeComposeDetails,
     showToast,
-  } = useApp();
+  } = useMobileApp();
 
   const note = useMemo(
     () => classes.find((c) => c.id === wizardNoteId) ?? null,
@@ -37,6 +36,7 @@ export const ClassNoteDetailWizard: React.FC = () => {
   const [materialIds, setMaterialIds] = useState<string[]>([]);
   const [hasQuestions, setHasQuestions] = useState(false);
   const [rating, setRating] = useState(0);
+  const { conceptOptions, authorOptions, resolveIds } = useAcervoTheory();
 
   useEffect(() => {
     if (!note) return;
@@ -71,6 +71,7 @@ export const ClassNoteDetailWizard: React.FC = () => {
       id: 'identificacao',
       title: 'identificação',
       headline: 'vamos dar um nome pra essa aula.',
+      subtitle: 'título + número e data da aula para organizar o diário.',
       content: (
         <div className="space-y-4">
           <TextInput
@@ -100,6 +101,7 @@ export const ClassNoteDetailWizard: React.FC = () => {
       id: 'conteudo',
       title: 'conteúdo',
       headline: 'o que você quer guardar da aula?',
+      subtitle: 'os pontos principais discutidos em sala — a sua versão do conteúdo.',
       content: (
         <TextArea
           rows={12}
@@ -114,14 +116,15 @@ export const ClassNoteDetailWizard: React.FC = () => {
       id: 'enriquecer',
       title: 'enriquecer',
       headline: 'quer conectar com o seu repertório?',
+      subtitle: 'tudo opcional: conceitos, abordagens, autores, materiais e a sua avaliação da aula ♡',
       content: (
         <div className="space-y-5">
           <PillGroupMulti
             label="conceitos abordados"
             variant="rose"
-            options={concepts.map((c) => ({ value: c.id, label: c.name }))}
+            options={conceptOptions}
             value={conceptIds}
-            onChange={setConceptIds}
+            onChange={(v) => setConceptIds(resolveIds(v))}
           />
 
           <PillGroupMulti
@@ -135,9 +138,9 @@ export const ClassNoteDetailWizard: React.FC = () => {
           <PillGroupMulti
             label="autores citados"
             variant="rose"
-            options={authors.map((a) => ({ value: a.id, label: a.name }))}
+            options={authorOptions}
             value={authorIds}
-            onChange={setAuthorIds}
+            onChange={(v) => setAuthorIds(resolveIds(v))}
           />
 
           <PillGroupMulti

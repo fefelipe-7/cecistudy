@@ -103,7 +103,10 @@ function renderTable(lines: string[], keyPrefix: string): Inline {
   );
 }
 
-export const MarkdownBlock: React.FC<{ source: string }> = ({ source }) => {
+export const MarkdownBlock: React.FC<{ source: string; muted?: boolean }> = ({
+  source,
+  muted = false,
+}) => {
   const lines = source.split('\n');
   const blocks: React.ReactNode[] = [];
   let i = 0;
@@ -191,7 +194,10 @@ export const MarkdownBlock: React.FC<{ source: string }> = ({ source }) => {
         i++;
       }
       blocks.push(
-        <p key={key++} className="text-sm text-ceci-primary leading-relaxed">
+        <p
+          key={key++}
+          className={`text-sm leading-relaxed ${muted ? 'text-ceci-secondary' : 'text-ceci-primary'}`}
+        >
           {renderInline(buf.join(' '), `p${key}`)}
         </p>
       );

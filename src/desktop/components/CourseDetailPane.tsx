@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { MessageSquare, Timer, UserCheck } from 'lucide-react';
 import { CourseIcon } from '../../components/ui/CourseIcon';
 import { UnderlineTabBar } from '../../components/ui/UnderlineTabBar';
-import { useApp } from '../../context/AppContext';
+import { useDesktopApp } from '@/context/desktopApp';
 import { formatCourseSchedule } from '../../lib/schedule';
 import { Course } from '../../types';
 import { StatusBadge } from './ui/StatusBadge';
@@ -25,7 +25,7 @@ type DetailTab = 'info' | 'aulas' | 'repertorio';
  */
 export const CourseDetailPane: React.FC<CourseDetailPaneProps> = ({ course }) => {
   const [activeTab, setActiveTab] = useState<DetailTab>('info');
-  const { classes, exams, sessions } = useApp();
+  const { classes, exams, sessions } = useDesktopApp();
 
   const courseClasses = useMemo(
     () => classes.filter((c) => c.courseId === course.id),
@@ -67,13 +67,13 @@ export const CourseDetailPane: React.FC<CourseDetailPaneProps> = ({ course }) =>
                 {course.name}
               </h2>
               <p className="text-xs text-ceci-secondary flex items-center gap-1 mt-1">
-                <UserCheck className="w-3.5 h-3.5 text-ceci-brand-strong" />
+                <UserCheck className="w-3.5 h-3.5 text-[var(--ds-accent-strong)]" />
                 <span className="truncate">{course.professor}</span>
               </p>
             </span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 border-t border-ceci-border-subtle pt-3">
             <StatusBadge variant="neutral">
               {course.category === 'complementar' ? 'complementar' : 'obrigatória'}
             </StatusBadge>
@@ -135,7 +135,7 @@ export const CourseDetailPane: React.FC<CourseDetailPaneProps> = ({ course }) =>
       </div>
 
       {/* Coluna direita — conteúdo em abas */}
-      <div className="min-w-0 space-y-4">
+      <div className="min-w-0 flex flex-col gap-4">
         <div className="flex items-center justify-between gap-3">
           <UnderlineTabBar
             tabs={[
@@ -153,10 +153,12 @@ export const CourseDetailPane: React.FC<CourseDetailPaneProps> = ({ course }) =>
           <CourseCreateMenu courseId={course.id} variant="inline" />
         </div>
 
-        <div role="tabpanel" aria-label={`aba ${activeTab}`}>
-          {activeTab === 'info' && <CourseInfoContent course={course} />}
-          {activeTab === 'aulas' && <CourseAulasContent course={course} />}
-          {activeTab === 'repertorio' && <CourseRepertorioContent course={course} />}
+        <div className="bg-white rounded-2xl border border-ceci-border-subtle p-5 min-h-[320px]">
+          <div role="tabpanel" aria-label={`aba ${activeTab}`}>
+            {activeTab === 'info' && <CourseInfoContent course={course} />}
+            {activeTab === 'aulas' && <CourseAulasContent course={course} />}
+            {activeTab === 'repertorio' && <CourseRepertorioContent course={course} />}
+          </div>
         </div>
       </div>
     </div>

@@ -1,9 +1,10 @@
 ﻿import React, { useState } from 'react';
 import { motion, AnimatePresence, useDragControls, type Variants } from 'framer-motion';
+import { getTransition, prefersReducedMotion } from '@/lib/motion';
 import { MapPin } from 'lucide-react';
 import { CourseIcon } from '../ui/CourseIcon';
 import { UnderlineTabBar } from '../ui/UnderlineTabBar';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { formatCourseSchedule } from '../../lib/schedule';
 import {
   canStartTabSwipe,
@@ -40,7 +41,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
   const [activeTab, setActiveTab] = useState<DetailTab>('info');
   const [direction, setDirection] = useState(1);
   const dragControls = useDragControls();
-  const { classes, exams } = useApp();
+  const { classes, exams } = useMobileApp();
 
   const courseClasses = classes.filter((c) => c.courseId === course.id);
   const courseExams = exams.filter((e) => e.courseId === course.id);
@@ -82,33 +83,38 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-4 pb-24 relative">
       {/* Hero compacto — acento na cor da matéria */}
-      <div className="px-1 pt-1">
-        <div
-          className="rounded-[20px] bg-white border border-ceci-border-default p-3.5 flex items-center gap-3 shadow-sm"
-          style={{ borderLeftWidth: '4px', borderLeftColor: course.color || '#B94862' }}
-        >
-          <span
-            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-            style={{ backgroundColor: `${course.color}20` }}
-          >
-            <CourseIcon icon={course.icon} className="w-5 h-5" />
-          </span>
-          <div className="min-w-0 space-y-1">
-            <h2 className="font-display text-base font-bold text-ceci-primary leading-tight">
-              {course.name}
-            </h2>
-            <p className="text-[11px] font-medium text-ceci-secondary flex items-center flex-wrap gap-x-1.5 gap-y-0.5">
-              <MapPin className="w-3 h-3 text-ceci-muted shrink-0" />
-              {contextBits.map((bit, i) => (
-                <React.Fragment key={i}>
-                  {i > 0 && <span aria-hidden className="text-ceci-muted">·</span>}
-                  <span>{bit}</span>
-                </React.Fragment>
-              ))}
-            </p>
-          </div>
-        </div>
-      </div>
+<div className="px-1 pt-1">
+         <motion.div
+           layoutId="course-hero"
+           className="rounded-xl bg-white border border-ceci-border-default p-3.5 flex items-center gap-3 shadow-sm"
+           style={{ borderLeftWidth: '4px', borderLeftColor: course.color || '#B94862' }}
+         >
+           <motion.span
+             layoutId="course-icon-bg"
+             className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+             style={{ backgroundColor: `${course.color}20` }}
+           >
+             <CourseIcon icon={course.icon} className="w-5 h-5" />
+           </motion.span>
+           <div className="min-w-0 space-y-1">
+             <motion.h2
+               layoutId="course-title"
+               className="font-display text-base font-bold text-ceci-primary leading-tight"
+             >
+               {course.name}
+             </motion.h2>
+             <p className="text-[11px] font-medium text-ceci-secondary flex items-center flex-wrap gap-x-1.5 gap-y-0.5">
+               <MapPin className="w-3 h-3 text-ceci-muted shrink-0" />
+               {contextBits.map((bit, i) => (
+                 <React.Fragment key={i}>
+                   {i > 0 && <span aria-hidden className="text-ceci-muted">·</span>}
+                   <span>{bit}</span>
+                 </React.Fragment>
+               ))}
+             </p>
+           </div>
+         </motion.div>
+       </div>
 
       {/* Sub-tabs + conteúdo deslizável */}
       <UnderlineTabBar
@@ -126,6 +132,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
         className="px-1"
       />
 
+{/* Sub-tabs + conteúdo deslizável */}
       <motion.div
         onPointerDownCapture={handlePointerDown}
         style={{ touchAction: 'pan-y' }}
@@ -139,12 +146,14 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ type: 'spring', stiffness: 380, damping: 36 }}
-            drag="x"
+            transition={prefersReducedMotion()
+              ? { duration: 0.08 }
+              : { type: 'spring', stiffness: 380, damping: 36 }}
+            drag={prefersReducedMotion() ? false : 'x'}
             dragListener={false}
             dragControls={dragControls}
             dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.14}
+            dragElastic={prefersReducedMotion() ? 0 : 0.14}
             onDragEnd={handleDragEnd}
             role="tabpanel"
             aria-label={`aba ${activeTab}`}

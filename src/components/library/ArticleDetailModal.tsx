@@ -5,7 +5,7 @@ import { PSYCHOTHERAPY_FAMILIES } from '../../data/books/families';
 import { Modal } from '../ui/Modal';
 import { BookmarkToggle } from '../ui/BookmarkToggle';
 import { copyToClipboard } from '../../lib/utils';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 
 interface ArticleDetailModalProps {
   article: Article;
@@ -23,7 +23,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({
   onClose,
   onToggleSave,
 }) => {
-  const { showToast } = useApp();
+  const { showToast } = useMobileApp();
   const familia = PSYCHOTHERAPY_FAMILIES[article.familia];
   const hasLink = Boolean(article.linkDireto);
 

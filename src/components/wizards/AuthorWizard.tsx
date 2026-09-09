@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { UserCheck } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import type { ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
+import { TOAST } from '../../lib/copy';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import {
   ReviewCard,
@@ -13,7 +14,7 @@ import { Picker } from '../ui/Picker';
 import { TagField } from '../ui/TagField';
 
 export const AuthorWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
-  const { approaches, authors, handleAddAuthor, handleUpdateAuthor, closeWizard, showToast } = useApp();
+  const { approaches, authors, handleAddAuthor, handleUpdateAuthor, closeWizard, showToast } = useMobileApp();
   const editingAuthor = editing?.kind === 'author'
     ? authors.find((a) => a.id === editing.id)
     : undefined;
@@ -33,6 +34,7 @@ export const AuthorWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editi
       id: 'autor-nome',
       title: 'nome',
       headline: 'quem é esse autor?',
+      subtitle: 'nome e, se souber, o período de vida — o essencial para identificar.',
       content: (
         <div className="space-y-4">
           <TextInput
@@ -53,6 +55,7 @@ export const AuthorWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editi
       id: 'autor-bio',
       title: 'biografia',
       headline: 'conta um pouco sobre ele.',
+      subtitle: 'o que você quer lembrar da contribuição dele para a psicologia.',
       content: (
         <div className="space-y-4">
           <TextArea
@@ -75,6 +78,7 @@ export const AuthorWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editi
       id: 'autor-obras',
       title: 'obras & ideias',
       headline: 'quais obras e ideias são dele?',
+      subtitle: 'obras principais e conceitos-chave — tudo opcional, pode completar depois ♡',
       content: (
         <div className="space-y-5">
           <TagField
@@ -97,6 +101,7 @@ export const AuthorWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editi
       id: 'autor-revisar',
       title: 'revisar',
       headline: 'confere se está tudo certinho ♡',
+      subtitle: 'confere as informações antes de guardar o autor no cantinho.',
       content: (
         <ReviewCard
           rows={[
@@ -139,7 +144,7 @@ export const AuthorWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editi
     });
     hapticSuccess();
     closeWizard();
-    showToast('autor guardado no cantinho ♡');
+    showToast(TOAST.authorSaved);
   };
 
   return (
@@ -151,6 +156,7 @@ export const AuthorWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editi
       step={step}
       onStepChange={setStep}
       canNext={name.trim().length > 0}
+      blockedReason="dê um nome para o autor"
       onSave={handleSave}
       onClose={closeWizard}
       saveLabel={editing ? 'guardar alterações ♡' : 'guardar autor ♡'}

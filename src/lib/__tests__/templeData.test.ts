@@ -113,8 +113,8 @@ describe('autores curados (fichas editoriais)', () => {
 });
 
 describe('técnicas', () => {
-  it('135 técnicas em 10 categorias, todas com categoria válida', () => {
-    expect(templeTechniques.length).toBe(135);
+  it('136 técnicas em 10 categorias, todas com categoria válida', () => {
+    expect(templeTechniques.length).toBe(136);
     expect(techniqueCategories.length).toBe(10);
     const categoryIds = new Set(techniqueCategories.map((c) => c.id));
     for (const t of templeTechniques) {

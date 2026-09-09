@@ -1,0 +1,2340 @@
+{
+  "schema_version": 1,
+  "generated_by": "Manus AI",
+  "generated_at": "2026-08-27",
+  "scope": "backlog editorial e pesquisa inicial para a seção Comparações",
+  "counts": {
+    "total": 57,
+    "abordagens_modelos": 20,
+    "autores": 11,
+    "conceitos": 8,
+    "tecnicas": 8,
+    "perspectivas_multiplas": 10
+  },
+  "canonical_axes": [
+    "como_cada_perspectiva_entende_o_ser_humano",
+    "como_cada_perspectiva_entende_o_sofrimento",
+    "papel_do_passado_e_do_contexto",
+    "mecanismo_de_mudanca",
+    "papel_do_terapeuta",
+    "papel_do_paciente",
+    "relacao_terapeutica",
+    "diferencas_na_pratica",
+    "evidencia_criticas_e_limitacoes"
+  ],
+  "schema_notes": [
+    "tipo_entidade fenomeno é uma extensão recomendada para perspectivas múltiplas que não correspondem a um conceito já cadastrado.",
+    "Para autores, os IDs usam o stem das fichas Markdown até existir uma tabela de autores canônica.",
+    "fontes_iniciais são pontos de partida; comparações clínicas por condição exigem revisão específica antes de publicação."
+  ],
+  "comparacoes": [
+    {
+      "id": "cmp-001",
+      "titulo": "Psicanálise Freudiana Clássica × Behaviorismo Metodológico/Radical",
+      "slug": "psicanalise-freudiana-classica-behaviorismo",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-01-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-03-01"
+        }
+      ],
+      "pergunta_central": "O comportamento humano deve ser explicado prioritariamente por processos inconscientes ou por relações funcionais entre comportamento e ambiente?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-psychodynamic-techniques-2007"
+      ],
+      "observacao_editorial": "Confronto histórico e conceitual; separar a teoria freudiana da psicoterapia psicodinâmica contemporânea e o behaviorismo como base teórica da terapia comportamental.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-002",
+      "titulo": "Psicanálise Freudiana Clássica × Terapia Cognitiva (Beck)",
+      "slug": "psicanalise-terapia-cognitiva-beck",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-01-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-04-01"
+        }
+      ],
+      "pergunta_central": "O sofrimento é melhor formulado como conflito psíquico e significado inconsciente ou como padrões de interpretação, emoção e comportamento?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017",
+        "src-psychodynamic-techniques-2007"
+      ],
+      "observacao_editorial": "Comparação prioritária e artigo-modelo desta pesquisa.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada",
+      "visao_geral": "A Terapia Cognitiva de Aaron Beck e a Psicanálise Freudiana Clássica são formas diferentes de compreender o sofrimento psicológico. Ambas procuram relacionar experiências internas a emoções e comportamentos, mas divergem sobre a unidade de análise, o estatuto do inconsciente, o peso do passado, a posição do terapeuta e o mecanismo de mudança.",
+      "convergencias": [
+        "Ambas procuram relacionar sofrimento atual a padrões internos e à história de aprendizagem ou desenvolvimento.",
+        "As duas reconhecem que a descrição literal de um sintoma pode ser insuficiente e que o tratamento exige uma formulação sobre como o problema se mantém.",
+        "Uma relação de trabalho suficientemente segura participa do processo, sem tornar pensamentos automáticos, esquemas, conflitos, defesas e desejos inconscientes sinônimos."
+      ],
+      "divergencias": [
+        {
+          "tema": "unidade de análise",
+          "por_entidade": {
+            "psic-01-01": ["Conflitos psíquicos, desejos incompatíveis, defesas e compromissos que se formam na história do sujeito."],
+            "psic-04-01": ["Interpretações rígidas, vieses, crenças, esquemas e padrões comportamentais que influenciam emoção e ação."]
+          }
+        },
+        {
+          "tema": "papel do inconsciente",
+          "por_entidade": {
+            "psic-01-01": ["É central para compreender desejos, conflitos, defesas, lapsos, sonhos, sintomas e aspectos da relação terapêutica."],
+            "psic-04-01": ["Pode aparecer em formulações ampliadas, mas não é o princípio explicativo central da Terapia Cognitiva clássica."]
+          }
+        }
+      ],
+      "pratica": "Um mesmo relato — sempre que preciso apresentar um trabalho, sinto que todos perceberão que sou incompetente — poderia ser trabalhado de modos diferentes. A Terapia Cognitiva poderia identificar o pensamento automático, examinar evidências e planejar um experimento comportamental. A Psicanálise poderia acompanhar associações ligadas a incompetência, julgamento, vergonha e exigência, investigando repetições e significados atualizados na situação e na relação analítica. Esses exemplos são didáticos, não protocolos universais.",
+      "enfases": [
+        {
+          "dimensao": "cognição",
+          "por_entidade": {
+            "psic-01-01": {"level": 2, "label": "processos inconscientes"},
+            "psic-04-01": {"level": 5, "label": "pensamentos e crenças"}
+          }
+        },
+        {
+          "dimensao": "história",
+          "por_entidade": {
+            "psic-01-01": {"level": 5, "label": "história e conflitos"},
+            "psic-04-01": {"level": 3, "label": "formação de esquemas"}
+          }
+        },
+        {
+          "dimensao": "relação",
+          "por_entidade": {
+            "psic-01-01": {"level": 5, "label": "transferência e resistência"},
+            "psic-04-01": {"level": 4, "label": "colaboração e aliança"}
+          }
+        }
+      ],
+      "para_pensar": [
+        "O que cada formulação consegue explicar bem e o que deixa em segundo plano?",
+        "O que se ganha e o que se perde ao transformar a experiência em pensamentos observáveis ou em conflitos inconscientes?",
+        "Duas perspectivas precisam ser mutuamente exclusivas quando recortam o mesmo fenômeno de maneiras diferentes?"
+      ],
+      "fontes": [
+        "American Psychological Association — Different approaches to psychotherapy",
+        "American Psychological Association — Evidence-Based Psychological Practice in Health Care",
+        "Leichsenring & Leibing — Psychodynamic psychotherapy: systematic review of techniques, indications and empirical evidence"
+      ],
+      "relacionados": [
+        {"tipo": "abordagem", "id": "psic-04-01"},
+        {"tipo": "abordagem", "id": "psic-01-01"},
+        {"tipo": "autor", "id": "author-aaron_t_beck"},
+        {"tipo": "autor", "id": "author-sigmund_freud"},
+        {"tipo": "conceito", "id": "concept-02-cognicao-e-processos-mentais-pensamento"},
+        {"tipo": "tecnica", "id": "tec-reestruturacao-cognitiva"}
+      ]
+    },
+    {
+      "id": "cmp-003",
+      "titulo": "Psicanálise Freudiana Clássica × Psicologia Humanista",
+      "slug": "psicanalise-humanismo",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-01-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-02-09"
+        }
+      ],
+      "pergunta_central": "A mudança parte da elaboração de conflitos e desejos ou da expansão de escolha, autenticidade e potencial?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-humanistic-research",
+        "src-psychodynamic-techniques-2007"
+      ],
+      "observacao_editorial": "",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-004",
+      "titulo": "Behaviorismo Metodológico/Radical × Terapia Cognitiva (Beck)",
+      "slug": "behaviorismo-terapia-cognitiva",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-03-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-04-01"
+        }
+      ],
+      "pergunta_central": "É necessário recorrer a construtos cognitivos para explicar e modificar o comportamento?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017"
+      ],
+      "observacao_editorial": "",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-005",
+      "titulo": "Behaviorismo Metodológico/Radical × Terapia Centrada na Pessoa",
+      "slug": "behaviorismo-terapia-centrada-na-pessoa",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-03-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-02-01"
+        }
+      ],
+      "pergunta_central": "Como conciliar leis de aprendizagem, agência percebida e experiência subjetiva?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P2",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-humanistic-research"
+      ],
+      "observacao_editorial": "",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-006",
+      "titulo": "Terapia Cognitiva (Beck) × Terapia Centrada na Pessoa",
+      "slug": "terapia-cognitiva-centrada-na-pessoa",
+      "tipo": "complementaridade",
+      "itens": [
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-04-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-02-01"
+        }
+      ],
+      "pergunta_central": "Como estrutura técnica e colaboração centrada na pessoa podem se articular sem reduzir uma à outra?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017",
+        "src-humanistic-research"
+      ],
+      "observacao_editorial": "",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-007",
+      "titulo": "Terapia Cognitiva (Beck) × Terapia Familiar Estrutural",
+      "slug": "terapia-cognitiva-familiar-estrutural",
+      "tipo": "perspectivas",
+      "itens": [
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-04-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-05-01"
+        }
+      ],
+      "pergunta_central": "O foco primário deve estar nos padrões cognitivo-comportamentais individuais ou na organização das relações familiares?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-family-perspectives-2025",
+        "src-evidence-psychotherapy-2017"
+      ],
+      "observacao_editorial": "",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-008",
+      "titulo": "Terapia Cognitiva (Beck) × Psicoterapia Psicodinâmica Contemporânea",
+      "slug": "terapia-cognitiva-psicodinamica-contemporanea",
+      "tipo": "complementaridade",
+      "itens": [
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-04-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-01-10"
+        }
+      ],
+      "pergunta_central": "O que uma formulação cognitiva torna visível que uma formulação psicodinâmica tende a deixar em segundo plano, e vice-versa?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-evidence-psychotherapy-2017",
+        "src-psychodynamic-techniques-2007"
+      ],
+      "observacao_editorial": "",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-009",
+      "titulo": "Psicologia Humanista × Terapia Existencial-Humanista",
+      "slug": "humanismo-existencialismo",
+      "tipo": "convergencia",
+      "itens": [
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-02-09"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-02-03"
+        }
+      ],
+      "pergunta_central": "Em que medida crescimento, escolha, autenticidade e sentido funcionam como conceitos comuns ou distintos?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P2",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-humanistic-research"
+      ],
+      "observacao_editorial": "",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-010",
+      "titulo": "Terapia Familiar Estrutural × Terapia Familiar Estratégica",
+      "slug": "familiar-estrutural-estrategica",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-05-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-05-02"
+        }
+      ],
+      "pergunta_central": "A mudança é buscada principalmente pela reorganização da estrutura relacional ou pela interrupção estratégica de sequências?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-family-perspectives-2025"
+      ],
+      "observacao_editorial": "",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-011",
+      "titulo": "Terapia Familiar Estrutural × Terapia Familiar Boweniana",
+      "slug": "familiar-estrutural-boweniana",
+      "tipo": "perspectivas",
+      "itens": [
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-05-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-05-03"
+        }
+      ],
+      "pergunta_central": "Como diferem estrutura, fronteiras, diferenciação do self e transmissão intergeracional como unidades de análise?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P2",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-family-perspectives-2025"
+      ],
+      "observacao_editorial": "",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-012",
+      "titulo": "Terapia Narrativa × Terapia Cognitiva (Beck)",
+      "slug": "narrativa-terapia-cognitiva",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-06-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-04-01"
+        }
+      ],
+      "pergunta_central": "O sofrimento deve ser compreendido como narrativa dominante e relações de poder ou como padrões cognitivos testáveis?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-evidence-psychotherapy-2017",
+        "src-apa-approaches"
+      ],
+      "observacao_editorial": "",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-013",
+      "titulo": "Terapia Narrativa × Terapia Focada em Soluções",
+      "slug": "narrativa-focada-solucoes",
+      "tipo": "convergencia",
+      "itens": [
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-06-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-10-01"
+        }
+      ],
+      "pergunta_central": "Como cada modelo usa linguagem, exceções, recursos e futuro preferido sem tratar a pessoa como o problema?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P2",
+      "fase": "02",
+      "fontes_iniciais": [
+        "src-evidence-psychotherapy-2017"
+      ],
+      "observacao_editorial": "",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-014",
+      "titulo": "Psicoterapia Interpessoal × Psicanálise Interpessoal",
+      "slug": "interpessoal-psicanalise-interpessoal",
+      "tipo": "perspectivas",
+      "itens": [
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-07-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-07-03"
+        }
+      ],
+      "pergunta_central": "Como uma abordagem breve e focal se diferencia de uma formulação interpessoal psicodinâmica?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P2",
+      "fase": "02",
+      "fontes_iniciais": [
+        "src-evidence-psychotherapy-2017",
+        "src-psychodynamic-techniques-2007"
+      ],
+      "observacao_editorial": "",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-015",
+      "titulo": "Terapia Baseada em Mentalização × Terapia Cognitiva (Beck)",
+      "slug": "mentalizacao-terapia-cognitiva",
+      "tipo": "complementaridade",
+      "itens": [
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-07-04"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-04-01"
+        }
+      ],
+      "pergunta_central": "A mudança ocorre principalmente ao revisar interpretações ou ao ampliar a capacidade de compreender estados mentais próprios e alheios?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P2",
+      "fase": "02",
+      "fontes_iniciais": [
+        "src-evidence-psychotherapy-2017"
+      ],
+      "observacao_editorial": "",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-016",
+      "titulo": "Terapia de Aceitação e Compromisso × Terapia Cognitiva (Beck)",
+      "slug": "act-terapia-cognitiva",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-04-06"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-04-01"
+        }
+      ],
+      "pergunta_central": "A mudança depende de modificar o conteúdo dos pensamentos ou de mudar a relação com pensamentos e experiências?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017",
+        "src-mindfulness-2011"
+      ],
+      "observacao_editorial": "",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-017",
+      "titulo": "Terapia Comportamental Dialética × Terapia Cognitiva (Beck)",
+      "slug": "dbt-terapia-cognitiva",
+      "tipo": "complementaridade",
+      "itens": [
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-03-06"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-04-01"
+        }
+      ],
+      "pergunta_central": "Como regulação emocional, validação e habilidades diferem de reestruturação cognitiva e experimentação?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "02",
+      "fontes_iniciais": [
+        "src-evidence-psychotherapy-2017"
+      ],
+      "observacao_editorial": "",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-018",
+      "titulo": "Terapia do Esquema × Terapia Cognitiva (Beck)",
+      "slug": "terapia-esquema-terapia-cognitiva",
+      "tipo": "complementaridade",
+      "itens": [
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-04-04"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-04-01"
+        }
+      ],
+      "pergunta_central": "O que muda quando a formulação se amplia de pensamentos automáticos para esquemas, modos e necessidades?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-evidence-psychotherapy-2017",
+        "src-cognitive-restructuring-2023"
+      ],
+      "observacao_editorial": "",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-019",
+      "titulo": "Terapia de Casais Baseada em Apego × Método Gottman",
+      "slug": "eft-casais-gottman",
+      "tipo": "perspectivas",
+      "itens": [
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-07-07"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-07-08"
+        }
+      ],
+      "pergunta_central": "Como apego, ciclos emocionais, amizade, conflito e habilidades de comunicação organizam duas propostas de terapia de casais?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "02",
+      "fontes_iniciais": [
+        "src-family-perspectives-2025"
+      ],
+      "observacao_editorial": "",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-020",
+      "titulo": "Entrevista Motivacional × Terapia Focada em Soluções",
+      "slug": "entrevista-motivacional-focada-solucoes",
+      "tipo": "convergencia",
+      "itens": [
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-10-02"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-10-01"
+        }
+      ],
+      "pergunta_central": "Como ambivalência, linguagem de mudança, metas e exceções orientam processos breves sem substituir a agência do cliente?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "02",
+      "fontes_iniciais": [
+        "src-mi-2021",
+        "src-evidence-psychotherapy-2017"
+      ],
+      "observacao_editorial": "",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-021",
+      "titulo": "Sigmund Freud × B. F. Skinner",
+      "slug": "freud-skinner",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_sigmund_freud"
+        },
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_b_f_skinner"
+        }
+      ],
+      "pergunta_central": "Qual é a unidade de análise mais adequada para explicar comportamento e sofrimento?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "/content/authors-curated/cecistudy_ficha_sigmund_freud.md",
+        "/content/authors-curated/cecistudy_ficha_b_f_skinner.md",
+        "internal:authors-curated"
+      ],
+      "observacao_editorial": "Usar o slug da ficha Markdown como identificador provisório até a migração para uma tabela de autores canônica.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-022",
+      "titulo": "Sigmund Freud × Carl Rogers",
+      "slug": "freud-rogers",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_sigmund_freud"
+        },
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_carl_rogers"
+        }
+      ],
+      "pergunta_central": "O que muda quando o foco passa de conflito e inconsciente para experiência, congruência e relação?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "/content/authors-curated/cecistudy_ficha_sigmund_freud.md",
+        "/content/authors-curated/cecistudy_ficha_carl_rogers.md",
+        "internal:authors-curated"
+      ],
+      "observacao_editorial": "Usar o slug da ficha Markdown como identificador provisório até a migração para uma tabela de autores canônica.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-023",
+      "titulo": "Sigmund Freud × Aaron T. Beck",
+      "slug": "freud-beck",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_sigmund_freud"
+        },
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_aaron_t_beck"
+        }
+      ],
+      "pergunta_central": "Como duas formulações da depressão e do sofrimento alteram o plano de intervenção?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "/content/authors-curated/cecistudy_ficha_sigmund_freud.md",
+        "/content/authors-curated/cecistudy_ficha_aaron_t_beck.md",
+        "src-psychodynamic-techniques-2007",
+        "src-cognitive-restructuring-2023"
+      ],
+      "observacao_editorial": "Usar o slug da ficha Markdown como identificador provisório até a migração para uma tabela de autores canônica.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-024",
+      "titulo": "Sigmund Freud × Carl Gustav Jung",
+      "slug": "freud-jung",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_sigmund_freud"
+        },
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_carl_gustav_jung"
+        }
+      ],
+      "pergunta_central": "Como inconsciente, símbolo, libido e desenvolvimento assumem sentidos diferentes?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "/content/authors-curated/cecistudy_ficha_sigmund_freud.md",
+        "/content/authors-curated/cecistudy_ficha_carl_gustav_jung.md",
+        "internal:authors-curated"
+      ],
+      "observacao_editorial": "Usar o slug da ficha Markdown como identificador provisório até a migração para uma tabela de autores canônica.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-025",
+      "titulo": "Sigmund Freud × Alfred Adler",
+      "slug": "freud-adler",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_sigmund_freud"
+        },
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_alfred_adler"
+        }
+      ],
+      "pergunta_central": "O sofrimento é mais bem compreendido por pulsões e conflitos ou por metas, pertencimento e contexto social?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "/content/authors-curated/cecistudy_ficha_sigmund_freud.md",
+        "/content/authors-curated/cecistudy_ficha_alfred_adler.md",
+        "internal:authors-curated"
+      ],
+      "observacao_editorial": "Usar o slug da ficha Markdown como identificador provisório até a migração para uma tabela de autores canônica.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-026",
+      "titulo": "Aaron T. Beck × Albert Ellis",
+      "slug": "beck-ellis",
+      "tipo": "complementaridade",
+      "itens": [
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_aaron_t_beck"
+        },
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_albert_ellis"
+        }
+      ],
+      "pergunta_central": "Como pensamentos automáticos, esquemas, crenças irracionais e disputa ativa se aproximam e se diferenciam?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "/content/authors-curated/cecistudy_ficha_aaron_t_beck.md",
+        "/content/authors-curated/cecistudy_ficha_albert_ellis.md",
+        "src-cognitive-restructuring-2023"
+      ],
+      "observacao_editorial": "Usar o slug da ficha Markdown como identificador provisório até a migração para uma tabela de autores canônica.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-027",
+      "titulo": "Aaron T. Beck × Steven C. Hayes",
+      "slug": "beck-hayes",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_aaron_t_beck"
+        },
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_steven_c_hayes"
+        }
+      ],
+      "pergunta_central": "A intervenção deve revisar conteúdo cognitivo ou promover flexibilidade psicológica e desfusão?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "/content/authors-curated/cecistudy_ficha_aaron_t_beck.md",
+        "/content/authors-curated/cecistudy_ficha_steven_c_hayes.md",
+        "src-cognitive-restructuring-2023",
+        "src-mindfulness-2011"
+      ],
+      "observacao_editorial": "Usar o slug da ficha Markdown como identificador provisório até a migração para uma tabela de autores canônica.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-028",
+      "titulo": "Aaron T. Beck × Jeffrey Young",
+      "slug": "beck-young",
+      "tipo": "complementaridade",
+      "itens": [
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_aaron_t_beck"
+        },
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_jeffrey_young"
+        }
+      ],
+      "pergunta_central": "Como a terapia do esquema amplia a formulação cognitiva para padrões duradouros e necessidades?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "/content/authors-curated/cecistudy_ficha_aaron_t_beck.md",
+        "/content/authors-curated/cecistudy_ficha_jeffrey_young.md",
+        "internal:authors-curated"
+      ],
+      "observacao_editorial": "Usar o slug da ficha Markdown como identificador provisório até a migração para uma tabela de autores canônica.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-029",
+      "titulo": "Carl Rogers × Leslie S. Greenberg",
+      "slug": "rogers-greenberg",
+      "tipo": "convergencia",
+      "itens": [
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_carl_rogers"
+        },
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_leslie_s_greenberg"
+        }
+      ],
+      "pergunta_central": "Como a relação centrada na pessoa se articula ao processamento e transformação das emoções?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P2",
+      "fase": "02",
+      "fontes_iniciais": [
+        "/content/authors-curated/cecistudy_ficha_carl_rogers.md",
+        "/content/authors-curated/cecistudy_ficha_leslie_s_greenberg.md",
+        "src-humanistic-research"
+      ],
+      "observacao_editorial": "Usar o slug da ficha Markdown como identificador provisório até a migração para uma tabela de autores canônica.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-030",
+      "titulo": "Murray Bowen × Salvador Minuchin",
+      "slug": "bowen-minuchin",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_murray_bowen"
+        },
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_salvador_minuchin"
+        }
+      ],
+      "pergunta_central": "Como diferenciar diferenciação e transmissão intergeracional de estrutura, fronteiras e subsistemas?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "/content/authors-curated/cecistudy_ficha_murray_bowen.md",
+        "/content/authors-curated/cecistudy_ficha_salvador_minuchin.md",
+        "src-family-perspectives-2025"
+      ],
+      "observacao_editorial": "Usar o slug da ficha Markdown como identificador provisório até a migração para uma tabela de autores canônica.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-031",
+      "titulo": "William R. Miller × Steve de Shazer",
+      "slug": "miller-de-shazer",
+      "tipo": "convergencia",
+      "itens": [
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_william_r_miller"
+        },
+        {
+          "tipo_entidade": "autor",
+          "entidade_id": "cecistudy_ficha_steve_de_shazer"
+        }
+      ],
+      "pergunta_central": "Como linguagem de mudança, ambivalência, exceções e metas organizam duas práticas breves?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P2",
+      "fase": "02",
+      "fontes_iniciais": [
+        "/content/authors-curated/cecistudy_ficha_william_r_miller.md",
+        "/content/authors-curated/cecistudy_ficha_steve_de_shazer.md",
+        "src-mi-2021"
+      ],
+      "observacao_editorial": "Usar o slug da ficha Markdown como identificador provisório até a migração para uma tabela de autores canônica.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-032",
+      "titulo": "Inconsciente × Consciência",
+      "slug": "inconsciente-consciencia",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "conceito",
+          "entidade_id": "concept-10-processos-psicodinamicos-e-inconscientes-inconsciente"
+        },
+        {
+          "tipo_entidade": "conceito",
+          "entidade_id": "concept-01-fundamentos-psicologicos-consciencia"
+        }
+      ],
+      "pergunta_central": "Como diferentes teorias definem o que pode ou não ser acessível à consciência?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017"
+      ],
+      "observacao_editorial": "Comparação conceitual; não apresentar como equivalência entre constructos de escolas diferentes.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-033",
+      "titulo": "Ego × Self",
+      "slug": "ego-self",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "conceito",
+          "entidade_id": "concept-10-processos-psicodinamicos-e-inconscientes-ego"
+        },
+        {
+          "tipo_entidade": "conceito",
+          "entidade_id": "concept-10-processos-psicodinamicos-e-inconscientes-self"
+        }
+      ],
+      "pergunta_central": "Ego e self são instâncias, funções, experiências ou construções teóricas?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017"
+      ],
+      "observacao_editorial": "Comparação conceitual; não apresentar como equivalência entre constructos de escolas diferentes.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-034",
+      "titulo": "Cognição × Emoção",
+      "slug": "cognicao-emocao",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "conceito",
+          "entidade_id": "concept-02-cognicao-e-processos-mentais-cognicao"
+        },
+        {
+          "tipo_entidade": "conceito",
+          "entidade_id": "concept-03-emocao-afeto-e-motivacao-emocao"
+        }
+      ],
+      "pergunta_central": "Cognição e emoção são processos separáveis ou mutuamente constitutivos?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017"
+      ],
+      "observacao_editorial": "Comparação conceitual; não apresentar como equivalência entre constructos de escolas diferentes.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-035",
+      "titulo": "Reforço positivo × Motivação",
+      "slug": "reforco-positivo-motivacao",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "conceito",
+          "entidade_id": "concept-06-aprendizagem-e-comportamento-reforco-positivo"
+        },
+        {
+          "tipo_entidade": "conceito",
+          "entidade_id": "concept-03-emocao-afeto-e-motivacao-motivacao"
+        }
+      ],
+      "pergunta_central": "O que faz uma consequência fortalecer comportamento e como isso se relaciona, ou não, à motivação?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P2",
+      "fase": "02",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017"
+      ],
+      "observacao_editorial": "Comparação conceitual; não apresentar como equivalência entre constructos de escolas diferentes.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-036",
+      "titulo": "Livre-arbítrio × Determinismo",
+      "slug": "livre-arbitrio-determinismo",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "conceito",
+          "entidade_id": "concept-01-fundamentos-psicologicos-livre-arbitrio"
+        },
+        {
+          "tipo_entidade": "conceito",
+          "entidade_id": "concept-01-fundamentos-psicologicos-determinismo"
+        }
+      ],
+      "pergunta_central": "Como cada posição explica responsabilidade, escolha e possibilidade de mudança?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017"
+      ],
+      "observacao_editorial": "Comparação conceitual; não apresentar como equivalência entre constructos de escolas diferentes.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-037",
+      "titulo": "Apego × Mentalização",
+      "slug": "apego-mentalizacao",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "conceito",
+          "entidade_id": "concept-05-desenvolvimento-humano-apego"
+        },
+        {
+          "tipo_entidade": "conceito",
+          "entidade_id": "concept-07-relacoes-e-processos-interpessoais-mentalizacao"
+        }
+      ],
+      "pergunta_central": "Como vínculos e compreensão de estados mentais explicam desenvolvimento e relações?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017"
+      ],
+      "observacao_editorial": "Comparação conceitual; não apresentar como equivalência entre constructos de escolas diferentes.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-038",
+      "titulo": "Transferência × Aliança terapêutica",
+      "slug": "transferencia-alianca",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "conceito",
+          "entidade_id": "concept-10-processos-psicodinamicos-e-inconscientes-transferencia"
+        },
+        {
+          "tipo_entidade": "conceito",
+          "entidade_id": "concept-11-processos-de-psicoterapia-e-mudanca-alianca-terapeutica"
+        }
+      ],
+      "pergunta_central": "Como distinguir padrões relacionais reeditados da colaboração deliberada no tratamento?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017"
+      ],
+      "observacao_editorial": "Comparação conceitual; não apresentar como equivalência entre constructos de escolas diferentes.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-039",
+      "titulo": "Identidade narrativa × Identidade pessoal",
+      "slug": "identidade-narrativa-identidade-pessoal",
+      "tipo": "divergencia",
+      "itens": [
+        {
+          "tipo_entidade": "conceito",
+          "entidade_id": "concept-04-personalidade-self-e-identidade-identidade-narrativa"
+        },
+        {
+          "tipo_entidade": "conceito",
+          "entidade_id": "concept-04-personalidade-self-e-identidade-identidade-pessoal"
+        }
+      ],
+      "pergunta_central": "O que uma narrativa acrescenta ao estudo da identidade como continuidade, reconhecimento e pertencimento?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P2",
+      "fase": "02",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017"
+      ],
+      "observacao_editorial": "Comparação conceitual; não apresentar como equivalência entre constructos de escolas diferentes.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-040",
+      "titulo": "Associação livre × Registro de pensamentos",
+      "slug": "associacao-livre-registro-pensamentos",
+      "tipo": "complementaridade",
+      "itens": [
+        {
+          "tipo_entidade": "tecnica",
+          "entidade_id": "tec-associacao-livre"
+        },
+        {
+          "tipo_entidade": "tecnica",
+          "entidade_id": "tec-registro-de-pensamentos"
+        }
+      ],
+      "pergunta_central": "Como cada procedimento transforma a fala ou o pensamento em material de investigação?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-psychodynamic-techniques-2007",
+        "src-cognitive-restructuring-2023"
+      ],
+      "observacao_editorial": "Comparação de procedimentos; explicitar a função clínica e não apenas a aparência da atividade.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-041",
+      "titulo": "Interpretação × Questionamento socrático",
+      "slug": "interpretacao-questionamento-socratico",
+      "tipo": "complementaridade",
+      "itens": [
+        {
+          "tipo_entidade": "tecnica",
+          "entidade_id": "tec-interpretacao"
+        },
+        {
+          "tipo_entidade": "tecnica",
+          "entidade_id": "tec-questionamento-socratico"
+        }
+      ],
+      "pergunta_central": "Quem formula a hipótese de sentido e como ela é testada na sessão?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-psychodynamic-techniques-2007",
+        "src-cognitive-restructuring-2023"
+      ],
+      "observacao_editorial": "Comparação de procedimentos; explicitar a função clínica e não apenas a aparência da atividade.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-042",
+      "titulo": "Exposição × Dessensibilização",
+      "slug": "exposicao-dessensibilizacao",
+      "tipo": "complementaridade",
+      "itens": [
+        {
+          "tipo_entidade": "tecnica",
+          "entidade_id": "tec-exposicao"
+        },
+        {
+          "tipo_entidade": "tecnica",
+          "entidade_id": "tec-dessensibilizacao"
+        }
+      ],
+      "pergunta_central": "Como diferem os modelos de aprendizagem, a função da ansiedade e o desenho da prática?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-exposure-inhibitory-2008",
+        "src-evidence-psychotherapy-2017"
+      ],
+      "observacao_editorial": "Comparação de procedimentos; explicitar a função clínica e não apenas a aparência da atividade.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-043",
+      "titulo": "Reestruturação cognitiva × Desfusão cognitiva",
+      "slug": "reestruturacao-desfusao",
+      "tipo": "complementaridade",
+      "itens": [
+        {
+          "tipo_entidade": "tecnica",
+          "entidade_id": "tec-reestruturacao-cognitiva"
+        },
+        {
+          "tipo_entidade": "tecnica",
+          "entidade_id": "tec-desfusao-cognitiva"
+        }
+      ],
+      "pergunta_central": "O objetivo é avaliar e revisar o conteúdo ou alterar a relação com o pensamento?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-cognitive-restructuring-2023",
+        "src-mindfulness-2011"
+      ],
+      "observacao_editorial": "Comparação de procedimentos; explicitar a função clínica e não apenas a aparência da atividade.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-044",
+      "titulo": "Cadeira vazia × Dramatização",
+      "slug": "cadeira-vazia-dramatizacao",
+      "tipo": "complementaridade",
+      "itens": [
+        {
+          "tipo_entidade": "tecnica",
+          "entidade_id": "tec-cadeira-vazia"
+        },
+        {
+          "tipo_entidade": "tecnica",
+          "entidade_id": "tec-dramatizacao"
+        }
+      ],
+      "pergunta_central": "Como a ação experiencial, a representação e a relação com partes ou pessoas organizam a intervenção?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P2",
+      "fase": "02",
+      "fontes_iniciais": [
+        "src-chairwork-2026",
+        "src-experiential-dynamic-2025",
+        "src-family-perspectives-2025"
+      ],
+      "observacao_editorial": "Comparação de procedimentos; explicitar a função clínica e não apenas a aparência da atividade.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-045",
+      "titulo": "Genograma × Mapeamento estrutural",
+      "slug": "genograma-mapeamento-estrutural",
+      "tipo": "complementaridade",
+      "itens": [
+        {
+          "tipo_entidade": "tecnica",
+          "entidade_id": "tec-genograma"
+        },
+        {
+          "tipo_entidade": "tecnica",
+          "entidade_id": "tec-mapeamento-estrutural"
+        }
+      ],
+      "pergunta_central": "Como cada ferramenta representa história, vínculos, fronteiras e padrões relacionais?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-family-perspectives-2025"
+      ],
+      "observacao_editorial": "Comparação de procedimentos; explicitar a função clínica e não apenas a aparência da atividade.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-046",
+      "titulo": "Perguntas circulares × Pergunta do milagre",
+      "slug": "perguntas-circulares-pergunta-milagre",
+      "tipo": "complementaridade",
+      "itens": [
+        {
+          "tipo_entidade": "tecnica",
+          "entidade_id": "tec-perguntas-circulares"
+        },
+        {
+          "tipo_entidade": "tecnica",
+          "entidade_id": "tec-pergunta-do-milagre"
+        }
+      ],
+      "pergunta_central": "Como uma pergunta amplia perspectivas relacionais e a outra constrói um futuro preferido?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P2",
+      "fase": "02",
+      "fontes_iniciais": [
+        "src-family-perspectives-2025",
+        "src-evidence-psychotherapy-2017"
+      ],
+      "observacao_editorial": "Comparação de procedimentos; explicitar a função clínica e não apenas a aparência da atividade.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-047",
+      "titulo": "Escuta reflexiva × Questionamento socrático",
+      "slug": "escuta-reflexiva-questionamento-socratico",
+      "tipo": "complementaridade",
+      "itens": [
+        {
+          "tipo_entidade": "tecnica",
+          "entidade_id": "tec-escuta-reflexiva"
+        },
+        {
+          "tipo_entidade": "tecnica",
+          "entidade_id": "tec-questionamento-socratico"
+        }
+      ],
+      "pergunta_central": "Como equilibrar evocação da perspectiva do cliente e investigação colaborativa de hipóteses?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "01",
+      "fontes_iniciais": [
+        "src-mi-2021",
+        "src-cognitive-restructuring-2023"
+      ],
+      "observacao_editorial": "Comparação de procedimentos; explicitar a função clínica e não apenas a aparência da atividade.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-048",
+      "titulo": "Ansiedade segundo diferentes abordagens",
+      "slug": "ansiedade-multiplas-abordagens",
+      "tipo": "perspectivas",
+      "itens": [
+        {
+          "tipo_entidade": "fenomeno",
+          "entidade_id": "fenomeno-ansiedade",
+          "papel": "abordagem"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-01-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-03-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-04-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-02-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-07-04"
+        }
+      ],
+      "pergunta_central": "Como conflito, aprendizagem, cognição, experiência e mentalização formulam a ansiedade?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "02",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017",
+        "condition_specific_guideline_required"
+      ],
+      "observacao_editorial": "Requer adicionar “fenomeno” ao enum de tipo_entidade ou criar tabela própria; a pesquisa clínica deve ser específica para condição, população e desfecho.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-049",
+      "titulo": "Depressão segundo diferentes abordagens",
+      "slug": "depressao-multiplas-abordagens",
+      "tipo": "perspectivas",
+      "itens": [
+        {
+          "tipo_entidade": "fenomeno",
+          "entidade_id": "fenomeno-depressao",
+          "papel": "abordagem"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-01-10"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-03-07"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-04-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-07-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-02-01"
+        }
+      ],
+      "pergunta_central": "Como cada modelo descreve manutenção, mudança e objetivos de tratamento para depressão?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "02",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017",
+        "condition_specific_guideline_required"
+      ],
+      "observacao_editorial": "Requer adicionar “fenomeno” ao enum de tipo_entidade ou criar tabela própria; a pesquisa clínica deve ser específica para condição, população e desfecho.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-050",
+      "titulo": "Trauma segundo diferentes abordagens",
+      "slug": "trauma-multiplas-abordagens",
+      "tipo": "perspectivas",
+      "itens": [
+        {
+          "tipo_entidade": "fenomeno",
+          "entidade_id": "fenomeno-trauma",
+          "papel": "abordagem"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-01-10"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-03-05"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-04-09"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-06-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-07-04"
+        }
+      ],
+      "pergunta_central": "Como memória, evitação, significado, relação e segurança são priorizados?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "02",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017",
+        "condition_specific_guideline_required"
+      ],
+      "observacao_editorial": "Requer adicionar “fenomeno” ao enum de tipo_entidade ou criar tabela própria; a pesquisa clínica deve ser específica para condição, população e desfecho.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-051",
+      "titulo": "Luto segundo diferentes abordagens",
+      "slug": "luto-multiplas-abordagens",
+      "tipo": "perspectivas",
+      "itens": [
+        {
+          "tipo_entidade": "fenomeno",
+          "entidade_id": "fenomeno-luto",
+          "papel": "abordagem"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-01-10"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-04-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-02-03"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-06-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-07-01"
+        }
+      ],
+      "pergunta_central": "Como cada perspectiva diferencia sofrimento esperado, complicação e reconstrução de sentido?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "02",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017",
+        "condition_specific_guideline_required"
+      ],
+      "observacao_editorial": "Requer adicionar “fenomeno” ao enum de tipo_entidade ou criar tabela própria; a pesquisa clínica deve ser específica para condição, população e desfecho.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-052",
+      "titulo": "Personalidade segundo diferentes abordagens",
+      "slug": "personalidade-multiplas-abordagens",
+      "tipo": "perspectivas",
+      "itens": [
+        {
+          "tipo_entidade": "fenomeno",
+          "entidade_id": "fenomeno-personalidade",
+          "papel": "abordagem"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-01-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-04-04"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-02-09"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-03-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-06-03"
+        }
+      ],
+      "pergunta_central": "Personalidade é conflito, esquema, potencial, repertório ou sistema de construtos?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "02",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017",
+        "condition_specific_guideline_required"
+      ],
+      "observacao_editorial": "Requer adicionar “fenomeno” ao enum de tipo_entidade ou criar tabela própria; a pesquisa clínica deve ser específica para condição, população e desfecho.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-053",
+      "titulo": "Apego segundo diferentes abordagens",
+      "slug": "apego-multiplas-abordagens",
+      "tipo": "perspectivas",
+      "itens": [
+        {
+          "tipo_entidade": "fenomeno",
+          "entidade_id": "fenomeno-apego",
+          "papel": "abordagem"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-01-03"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-05-09"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-07-04"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-07-07"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-02-04"
+        }
+      ],
+      "pergunta_central": "Como vínculos, modelos internos, emoção e mentalização se articulam?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "02",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017",
+        "condition_specific_guideline_required"
+      ],
+      "observacao_editorial": "Requer adicionar “fenomeno” ao enum de tipo_entidade ou criar tabela própria; a pesquisa clínica deve ser específica para condição, população e desfecho.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-054",
+      "titulo": "Relacionamentos segundo diferentes abordagens",
+      "slug": "relacionamentos-multiplas-abordagens",
+      "tipo": "perspectivas",
+      "itens": [
+        {
+          "tipo_entidade": "fenomeno",
+          "entidade_id": "fenomeno-relacionamentos",
+          "papel": "abordagem"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-01-05"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-05-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-07-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-07-07"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-07-08"
+        }
+      ],
+      "pergunta_central": "A unidade de análise é o mundo interno, a estrutura do sistema, a transação interpessoal, o ciclo de apego ou as habilidades do casal?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "02",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017",
+        "condition_specific_guideline_required"
+      ],
+      "observacao_editorial": "Requer adicionar “fenomeno” ao enum de tipo_entidade ou criar tabela própria; a pesquisa clínica deve ser específica para condição, população e desfecho.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-055",
+      "titulo": "Desenvolvimento infantil segundo diferentes abordagens",
+      "slug": "desenvolvimento-infantil-multiplas-abordagens",
+      "tipo": "perspectivas",
+      "itens": [
+        {
+          "tipo_entidade": "fenomeno",
+          "entidade_id": "fenomeno-desenvolvimento-infantil",
+          "papel": "abordagem"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-01-03"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-03-09"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-04-04"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-05-10"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-07-04"
+        }
+      ],
+      "pergunta_central": "Como desenvolvimento, aprendizagem, esquemas, sistemas e mentalização explicam mudanças na infância?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P2",
+      "fase": "03",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017",
+        "condition_specific_guideline_required"
+      ],
+      "observacao_editorial": "Requer adicionar “fenomeno” ao enum de tipo_entidade ou criar tabela própria; a pesquisa clínica deve ser específica para condição, população e desfecho.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-056",
+      "titulo": "Identidade segundo diferentes abordagens",
+      "slug": "identidade-multiplas-abordagens",
+      "tipo": "perspectivas",
+      "itens": [
+        {
+          "tipo_entidade": "fenomeno",
+          "entidade_id": "fenomeno-identidade",
+          "papel": "abordagem"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-01-07"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-02-03"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-04-04"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-06-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-09-05"
+        }
+      ],
+      "pergunta_central": "Como identidade é formulada como individuação, autenticidade, esquema, narrativa e posição social?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "02",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017",
+        "condition_specific_guideline_required"
+      ],
+      "observacao_editorial": "Requer adicionar “fenomeno” ao enum de tipo_entidade ou criar tabela própria; a pesquisa clínica deve ser específica para condição, população e desfecho.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    },
+    {
+      "id": "cmp-057",
+      "titulo": "Sofrimento psicológico segundo diferentes abordagens",
+      "slug": "sofrimento-psicologico-multiplas-abordagens",
+      "tipo": "perspectivas",
+      "itens": [
+        {
+          "tipo_entidade": "fenomeno",
+          "entidade_id": "fenomeno-sofrimento-psicologico",
+          "papel": "abordagem"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-01-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-03-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-04-01"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-02-09"
+        },
+        {
+          "tipo_entidade": "abordagem",
+          "entidade_id": "psic-09-05"
+        }
+      ],
+      "pergunta_central": "O que cada perspectiva torna visível e o que tende a deixar em segundo plano?",
+      "eixos_recomendados": [
+        "como_cada_perspectiva_entende_o_ser_humano",
+        "como_cada_perspectiva_entende_o_sofrimento",
+        "papel_do_passado_e_do_contexto",
+        "mecanismo_de_mudanca",
+        "papel_do_terapeuta",
+        "papel_do_paciente",
+        "relacao_terapeutica",
+        "diferencas_na_pratica",
+        "evidencia_criticas_e_limitacoes"
+      ],
+      "prioridade": "P1",
+      "fase": "02",
+      "fontes_iniciais": [
+        "src-apa-approaches",
+        "src-evidence-psychotherapy-2017",
+        "condition_specific_guideline_required"
+      ],
+      "observacao_editorial": "Requer adicionar “fenomeno” ao enum de tipo_entidade ou criar tabela própria; a pesquisa clínica deve ser específica para condição, população e desfecho.",
+      "status_pesquisa": "selecionada_com_base_no_catalogo_e_na_metodologia_validada"
+    }
+  ]
+}

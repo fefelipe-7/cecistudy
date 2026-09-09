@@ -107,7 +107,7 @@ const handleNext = useCallback(() => {
                 exit: (dir: number) => ({ x: -dir * 40, opacity: 0, transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] } }),
               }}
             >
-              <div className="rounded-[20px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
+              <div className="rounded-xl p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
                 {/* Timer da questão */}
                 <div className="flex items-center justify-between text-xs mb-2">
                   <span className="text-ceci-secondary flex items-center gap-1">

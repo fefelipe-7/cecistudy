@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Brain } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import type { ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
+import { TOAST } from '../../lib/copy';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import { ReviewCard, TextArea, TextInput } from './wizardFields';
 import { Picker } from '../ui/Picker';
+import { useAcervoTheory } from './useAcervoTheory';
 
 export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
   const {
@@ -18,7 +20,7 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
     closeWizard,
     openEditCourse,
     showToast,
-  } = useApp();
+  } = useMobileApp();
   const editingCard = editing?.kind === 'flashcard'
     ? flashcards.find((c) => c.id === editing.id)
     : undefined;
@@ -30,12 +32,13 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
     editingCard?.courseId ?? (wizardCourseId || courses[0]?.id || '')
   );
   const [conceptId, setConceptId] = useState(editingCard?.conceptId ?? '');
+  const { conceptOptions, resolveIds } = useAcervoTheory();
 
   const courseName = courses.find((c) => c.id === courseId)?.name ?? '';
   const conceptName = concepts.find((c) => c.id === conceptId)?.name ?? '';
 
   const createCourseInline = () => {
-    showToast('cadastre a matéria — quando voltar, ela aparece aqui ♡');
+    showToast(TOAST.courseRegistered);
     openEditCourse();
   };
 
@@ -44,6 +47,7 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
       id: 'card-frente',
       title: 'frente',
       headline: 'qual a pergunta do card?',
+      subtitle: 'uma pergunta curta, tipo "o que é...?" ou "como...?" — a resposta entra no próximo passo.',
       content: (
         <TextInput
           value={question}
@@ -57,6 +61,7 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
       id: 'card-verso',
       title: 'verso',
       headline: 'e qual é a resposta?',
+      subtitle: 'explica com as suas palavras — quanto mais simples e direta, mais fácil revisar depois.',
       content: (
         <TextArea
           rows={6}
@@ -70,13 +75,14 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
       id: 'card-contexto',
       title: 'contexto',
       headline: 'quer conectar a um conceito ou disciplina?',
+      subtitle: 'vínculos são opcionais — ajudam a revisar o cartão por tema ou matéria ♡',
       content: (
         <div className="space-y-4">
           <Picker
             label="conceito relacionado (opcional)"
             value={conceptId}
-            onChange={setConceptId}
-            options={concepts.map((c) => ({ value: c.id, label: c.name }))}
+            onChange={(v) => setConceptId(resolveIds([v])[0])}
+            options={conceptOptions}
             emptyMessage="ainda não há conceitos no cantinho."
           />
           <Picker
@@ -95,6 +101,7 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
       id: 'card-revisar',
       title: 'revisar',
       headline: 'confere se está tudo certinho ♡',
+      subtitle: 'confere pergunta e resposta antes de guardar o card.',
       content: (
         <ReviewCard
           rows={[

@@ -5,7 +5,7 @@ import { CompletionToggle } from '../../ui/CompletionToggle';
 import { ManageSurface } from '../../ui/ManageSurface';
 import { ClassNoteModal } from '../ClassNoteModal';
 import { ClassNoteListItem } from '../ClassNoteListItem';
-import { useApp } from '../../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { formatShortDate } from '../../../lib/schedule';
 import { Course, ClassNote } from '../../../types';
 
@@ -23,7 +23,7 @@ export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }
   const [showDoneExams, setShowDoneExams] = useState(false);
   const [showDoneTasks, setShowDoneTasks] = useState(false);
   const { classes, exams, tasks, handleToggleExam, handleToggleTask, openWizard, openCompose } =
-    useApp();
+    useMobileApp();
 
   const courseClasses = classes
     .filter((c) => c.courseId === course.id)

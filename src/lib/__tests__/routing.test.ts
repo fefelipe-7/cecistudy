@@ -79,13 +79,25 @@ describe('parseRoute', () => {
     expect(parseRoute('#/estudos/questoes')).toEqual({ tab: 'estudos', quizCategory: true });
   });
 
+  it('nova sub-tab estágio: `/faculdade/estagio` → subTab estagio; diário em `/faculdade/estagio/diario`', () => {
+    expect(parseRoute('#/faculdade/estagio')).toEqual({ tab: 'faculdade', subTab: 'estagio' });
+    expect(parseRoute('#/faculdade/estagio/diario')).toEqual({ tab: 'faculdade', internshipDiary: true });
+    // round-trip
+    expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'internshipDiary' }])).toBe(
+      '#/faculdade/estagio/diario'
+    );
+    expect(
+      stackToHash(routeToStack({ tab: 'faculdade', subTab: 'estagio' }), 'estagio')
+    ).toBe('#/faculdade/estagio');
+  });
+
   it('perfil não tem sub-tabs — segmento desconhecido cai na aba base', () => {
     expect(parseRoute('#/perfil/xyz')).toEqual({ tab: 'perfil' });
   });
 
-  it('reconhece o diário de estágio em /faculdade/estagio (legado /perfil/estagio degrada)', () => {
-    expect(parseRoute('#/faculdade/estagio')).toEqual({ tab: 'faculdade', internshipDiary: true });
-    expect(parseRoute('#/perfil/estagio')).toEqual({ tab: 'faculdade', internshipDiary: true });
+  it('reconhece o diário de estágio em /faculdade/estagio/diario (legado /perfil/estagio degrada para tab estágio)', () => {
+    expect(parseRoute('#/faculdade/estagio/diario')).toEqual({ tab: 'faculdade', internshipDiary: true });
+    expect(parseRoute('#/perfil/estagio')).toEqual({ tab: 'faculdade', subTab: 'estagio' });
   });
 
   it('reconhece as telas de tcc e stickers (legados degradam; stickers segue no perfil)', () => {
@@ -112,11 +124,22 @@ describe('parseRoute', () => {
       tab: 'biblioteca',
       templeSection: 'tecnicas',
     });
-    // slug desconhecido degrada para o templo
+    // comparacoes é uma seção conhecida do templo (Fase comparações)
     expect(parseRoute('#/biblioteca/templo/comparacoes')).toEqual({
       tab: 'biblioteca',
-      temple: true,
+      templeSection: 'comparacoes',
     });
+  });
+
+  it('reconhece e serializa o detalhe de uma comparação', () => {
+    const hash = '#/biblioteca/templo/comparacoes/psicanalise-terapia-cognitiva-beck';
+    expect(parseRoute(hash)).toEqual({
+      tab: 'biblioteca',
+      templeSection: 'comparacoes',
+      comparisonSlug: 'psicanalise-terapia-cognitiva-beck',
+    });
+    const stack = routeToStack(parseRoute(hash));
+    expect(stackToHash(stack)).toBe(hash);
   });
 
   it('reconhece detalhe e transformação de nota avulsa', () => {
@@ -371,7 +394,7 @@ describe('stackToHash', () => {
     expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c3' }], 'calendario')).toBe('#/faculdade/c3');
     expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'streak' }])).toBe('#/streak');
     expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'streak' }])).toBe('#/perfil/streak');
-    expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'internshipDiary' }])).toBe('#/faculdade/estagio');
+    expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'internshipDiary' }])).toBe('#/faculdade/estagio/diario');
     expect(stackToHash([{ kind: 'tab', tab: 'estudos' }, { kind: 'tcc' }])).toBe('#/estudos/tcc');
     expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'stickers' }])).toBe('#/perfil/stickers');
     expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }])).toBe('#/biblioteca/notas');

@@ -16,112 +16,127 @@ export const iOS_SPRING: Transition = {
   mass: 0.9,
 };
 
-/** Spring leve para micro-interações (taps, hover). */
-export const TAP_SPRING: Transition = {
-  type: 'spring',
-  stiffness: 500,
-  damping: 30,
-};
-
 /** Fade simples e rápido para overlays de modal. */
 export const OVERLAY_FADE: Transition = { duration: 0.18, ease: 'easeOut' };
 
-/** Pulinho padrão de entrada de tela — fade + sobe 10px, curva easeOut (0.3s). Igual à EstudosView. */
-export const VIEW_PULINHO: Transition = { duration: 0.3, ease: 'easeOut' };
-
-/** Duração da entrada no push/pop (crossfade com micro-drift). */
-export const PUSH_DURATION = 0.24;
+/** Duração da entrada no push/pop (fade + scale sutil). */
+export const PUSH_DURATION = 0.2;
 
 /** Duração da saída no push/pop (concorrente e sobreposta à entrada). */
-export const PUSH_EXIT_DURATION = 0.18;
+export const PUSH_EXIT_DURATION = 0.13;
 
-/** Duração da troca de tab (crossfade com pulinho sutil). */
-export const TAB_DURATION = 0.22;
+/** Duração da troca de tab (fade puro, sem movimento). */
+export const TAB_DURATION = 0.15;
 
-const prefersReducedMotion = (): boolean =>
+export const prefersReducedMotion = (): boolean =>
   typeof window !== 'undefined' &&
   (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false);
 
 /**
- * Variants direcionais para transição de telas (pilha push/pop).
+ * Returns a transition object that respects the user's reduced‑motion preference.
+ * If reduced motion is requested, returns a fast fade-only transition (duration 0.08).
+ * Otherwise, returns the provided transition.
+ */
+export const getTransition = (normalTransition: Transition): Transition =>
+  prefersReducedMotion() ? { duration: 0.08 } : normalTransition;
+
+/**
+ * Variants de transição de telas (pilha push/pop + troca de tab).
  * Cada variante resolve pelo `custom` (direction): 1 = push · -1 = pop · 0 = troca de tab.
  *
- * **Crossfade com micro-drift:** a tela nova faz fade-in com um deslize mínimo
- * na direção do movimento (±14px) enquanto a antiga esvanece suavemente por baixo
- * com drift contrário (~8px). Entrada e saída são concorrentes e sobrepostas —
- * leitura sutil de profundidade, sem "pulo" nem escurecimento.
+ * **Fade + scale sutil:** a tela nova entra com fade e um zoom mínimo
+ * (0.985 → 1) enquanto a antiga esvanece por baixo, no lugar — sem deslocamento.
+ * Leitura leve, rápida e sem "meio-slide".
  *
- * direction=0 (troca de tab) mantém o "pulinho" (fade + sobe 8px) sem slide horizontal.
+ * direction=0 (troca de tab) é **fade puro**, sem nenhum movimento.
  *
  * `prefers-reduced-motion` degrada tudo para um fade simples.
  */
 export const screenVariants: Variants = {
   initial: (direction: number) => {
-    if (prefersReducedMotion()) return { x: 0, y: 0, opacity: 0 };
-    if (direction === 1) {
-      // push: fade-in com drift mínimo vindo da direita
-      return { x: 14, y: 0, opacity: 0 };
-    }
-    if (direction === -1) {
-      // pop: fade-in com drift mínimo vindo da esquerda
-      return { x: -14, y: 0, opacity: 0 };
-    }
-    // troca de tab: pulinho sutil
-    return { x: 0, y: 8, opacity: 0 };
+    if (prefersReducedMotion() || direction === 0) return { opacity: 0 };
+    // push/pop: fade com zoom mínimo de entrada
+    return { opacity: 0, scale: 0.985 };
   },
   animate: (direction: number) => ({
-    x: 0,
-    y: 0,
     opacity: 1,
+    scale: 1,
     transition:
       direction === 0
         ? { duration: TAB_DURATION, ease: 'easeOut' }
-        : { duration: PUSH_DURATION, ease: IOS_EASE },
+        : { duration: PUSH_DURATION, ease: IOS_EASE_OUT },
   }),
   exit: (direction: number) => {
     if (prefersReducedMotion())
-      return { x: 0, y: 0, opacity: 0, transition: { duration: 0.12, ease: 'easeIn' } };
-    if (direction === 1) {
-      // sendo coberta pelo push: esvanece com drift para a esquerda
-      return { x: -8, y: 0, opacity: 0, transition: { duration: PUSH_EXIT_DURATION, ease: 'easeIn' } };
+      return { opacity: 0, transition: { duration: 0.12, ease: 'easeIn' } };
+    if (direction === 0) {
+      // troca de tab: fade curtíssimo no lugar
+      return { opacity: 0, transition: { duration: 0.1, ease: 'easeIn' } };
     }
-    if (direction === -1) {
-      // saindo no pop: esvanece com drift para a direita
-      return { x: 8, y: 0, opacity: 0, transition: { duration: PUSH_EXIT_DURATION, ease: 'easeIn' } };
-    }
-    // troca de tab: fade curto no lugar
-    return {
-      x: 0,
-      y: 0,
-      opacity: 0,
-      transition: { duration: 0.12, ease: 'easeIn' },
-    };
+    // sendo coberta/saindo: esvanece no lugar, sem movimento
+    return { opacity: 0, transition: { duration: PUSH_EXIT_DURATION, ease: 'easeIn' } };
   },
 };
 
 /** Variants de fade + scale curtos para telas auxiliares (wizard, compose, etc.). */
 export const overlayVariants: Variants = {
-  initial: { opacity: 0, scale: 0.985, y: 6 },
-  animate: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.18, ease: IOS_EASE_OUT } },
-  exit: { opacity: 0, scale: 0.99, y: 4, transition: { duration: 0.14, ease: 'easeIn' } },
+  initial: () => {
+    if (prefersReducedMotion()) return { opacity: 0 };
+    return { opacity: 0, scale: 0.985, y: 6 };
+  },
+  animate: () => {
+    if (prefersReducedMotion()) return { opacity: 1, transition: { duration: 0.18, ease: 'easeOut' } };
+    return { opacity: 1, scale: 1, y: 0, transition: { duration: 0.18, ease: IOS_EASE_OUT } };
+  },
+  exit: () => {
+    if (prefersReducedMotion()) return { opacity: 0, transition: { duration: 0.14, ease: 'easeIn' } };
+    return { opacity: 0, scale: 0.99, y: 4, transition: { duration: 0.14, ease: 'easeIn' } };
+  },
 };
 
 /** Variants para painéis de modal por posição. */
 export const sheetVariants: Record<'center' | 'top' | 'bottom', Variants> = {
   center: {
-    initial: { opacity: 0, scale: 0.96, y: 10 },
-    animate: { opacity: 1, scale: 1, y: 0, transition: iOS_SPRING },
-    exit: { opacity: 0, scale: 0.97, y: 8, transition: { duration: 0.15, ease: 'easeIn' } },
+    initial: () => {
+      if (prefersReducedMotion()) return { opacity: 0 };
+      return { opacity: 0, scale: 0.96, y: 10 };
+    },
+    animate: () => {
+      if (prefersReducedMotion()) return { opacity: 1, transition: { duration: 0.15, ease: 'easeIn' } };
+      return { opacity: 1, scale: 1, y: 0, transition: iOS_SPRING };
+    },
+    exit: () => {
+      if (prefersReducedMotion()) return { opacity: 0, transition: { duration: 0.15, ease: 'easeIn' } };
+      return { opacity: 0, scale: 0.97, y: 8, transition: { duration: 0.15, ease: 'easeIn' } };
+    },
   },
   top: {
-    initial: { opacity: 0, y: -28 },
-    animate: { opacity: 1, y: 0, transition: iOS_SPRING },
-    exit: { opacity: 0, y: -20, transition: { duration: 0.16, ease: 'easeIn' } },
+    initial: () => {
+      if (prefersReducedMotion()) return { opacity: 0 };
+      return { opacity: 0, y: -28 };
+    },
+    animate: () => {
+      if (prefersReducedMotion()) return { opacity: 1, transition: { duration: 0.16, ease: 'easeIn' } };
+      return { opacity: 1, y: 0, transition: iOS_SPRING };
+    },
+    exit: () => {
+      if (prefersReducedMotion()) return { opacity: 0, transition: { duration: 0.16, ease: 'easeIn' } };
+      return { opacity: 0, y: -20, transition: { duration: 0.16, ease: 'easeIn' } };
+    },
   },
   bottom: {
-    initial: { y: '100%' },
-    animate: { y: 0, transition: iOS_SPRING },
-    exit: { y: '100%', transition: { duration: 0.2, ease: 'easeIn' } },
+    initial: () => {
+      if (prefersReducedMotion()) return { y: '100%', opacity: 0 };
+      return { y: '100%' };
+    },
+    animate: () => {
+      if (prefersReducedMotion()) return { y: 0, transition: { duration: 0.2, ease: 'easeIn' } };
+      return { y: 0, transition: iOS_SPRING };
+    },
+    exit: () => {
+      if (prefersReducedMotion()) return { y: '100%', transition: { duration: 0.2, ease: 'easeIn' } };
+      return { y: '100%', transition: { duration: 0.2, ease: 'easeIn' } };
+    },
   },
 };
 
@@ -133,24 +148,19 @@ export const fadeSlide: Variants = {
 };
 
 /**
- * Troca concorrente dos modos do header (brand ↔ detail), sincronizada com o push/pop
- * das telas: crossfade com micro-drift (±10px na entrada, ~6px na saída), no mesmo
- * ritmo do `screenVariants`.
- * Resolve pelo `custom` (direction): 1 = push · -1 = pop · 0 = troca de tab (só fade).
+ * Troca concorrente dos modos do header (brand ↔ detail), sincronizada com a
+ * transição das telas: **crossfade puro** (sem deslocamento), no mesmo ritmo
+ * do `screenVariants`. O `custom` (direction) é aceito e ignorado — mantém a
+ * API compatível com os consumidores.
  */
 export const headerSwapVariants: Variants = {
-  initial: (direction: number) => ({
-    opacity: 0,
-    x: prefersReducedMotion() ? 0 : direction === 1 ? 10 : direction === -1 ? -10 : 0,
-  }),
+  initial: { opacity: 0 },
   animate: {
     opacity: 1,
-    x: 0,
-    transition: { duration: PUSH_DURATION, ease: IOS_EASE },
+    transition: { duration: PUSH_DURATION, ease: IOS_EASE_OUT },
   },
-  exit: (direction: number) => ({
+  exit: {
     opacity: 0,
-    x: prefersReducedMotion() ? 0 : direction === 1 ? -6 : direction === -1 ? 6 : 0,
     transition: { duration: PUSH_EXIT_DURATION, ease: 'easeIn' },
-  }),
+  },
 };

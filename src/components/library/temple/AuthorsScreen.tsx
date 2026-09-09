@@ -1,8 +1,19 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, BookMarked, Loader2, Quote, Search, User } from 'lucide-react';
+import { BookMarked, Quote, User } from 'lucide-react';
 import type { TempleAuthor } from '../../../types';
 import { getTempleAuthors } from '../../../lib/templeData';
 import { MarkdownBlock } from './MarkdownBlock';
+import {
+  TempleBackButton,
+  TempleChip,
+  TempleEmptyState,
+  TempleIntroCard,
+  TempleLead,
+  TempleLoading,
+  TempleNeutralBadge,
+  TempleSearchInput,
+  TempleSectionCard,
+} from './TempleShared';
 
 type SortMode = 'acervo' | 'az';
 
@@ -65,19 +76,17 @@ export const AuthorsScreen: React.FC = () => {
   if (selected) {
     return (
       <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-4 pb-1 relative">
-        <button
+        <TempleBackButton
           onClick={() => setSelected(null)}
-          className="flex items-center gap-2 text-sm font-semibold text-ceci-brand-strong hover:text-ceci-primary transition-colors cursor-pointer px-1 py-2"
-          aria-label="voltar para a lista de autores"
-        >
-          <ArrowLeft className="w-4 h-4" /> voltar aos autores
-        </button>
+          label="voltar aos autores"
+          ariaLabel="voltar para a lista de autores"
+        />
 
         {/* cabeçalho */}
-        <div className="bg-white rounded-[24px] p-5 space-y-3 shadow-2xs border border-ceci-border-default">
+        <div className="bg-white rounded-2xl p-5 space-y-3 shadow-2xs border border-ceci-border-default">
           <div className="flex items-start gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-surface-muted border border-ceci-border-default flex items-center justify-center text-beige-700 shrink-0">
-              <User className="w-6 h-6" />
+            <div className="w-12 h-12 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0 [&_svg]:w-6 [&_svg]:h-6">
+              <User />
             </div>
             <div className="min-w-0">
               <h1 className="text-xl font-bold font-display text-ceci-primary leading-tight">
@@ -96,19 +105,18 @@ export const AuthorsScreen: React.FC = () => {
                   </span>
                 ))}
                 {(selected.born || selected.died) && (
-                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-surface-muted text-ceci-secondary border border-ceci-border-subtle">
+                  <TempleNeutralBadge>
                     {[selected.born, selected.died].filter(Boolean).join(' – ')}
-                  </span>
+                  </TempleNeutralBadge>
                 )}
               </div>
             </div>
           </div>
 
           {selected.oneLiner && (
-            <div className="bg-surface-blue border border-ceci-border-academic rounded-[18px] p-3.5 flex items-start gap-2.5">
-              <Quote className="w-4 h-4 text-ceci-academic-strong shrink-0 mt-0.5" />
-              <p className="text-xs text-ceci-primary leading-relaxed">{selected.oneLiner}</p>
-            </div>
+            <TempleLead accent="brand" icon={<Quote />}>
+              {selected.oneLiner}
+            </TempleLead>
           )}
 
           {(selected.mainWork || selected.origin) && (
@@ -136,25 +144,14 @@ export const AuthorsScreen: React.FC = () => {
         {/* seções da ficha */}
         <div className="space-y-3">
           {selected.sections.map((section) => (
-            <section
+            <TempleSectionCard
               key={section.title}
-              className={`rounded-[22px] p-4 border shadow-2xs ${
-                HIGHLIGHT_SECTIONS.has(section.title.toLowerCase())
-                  ? 'bg-surface-rose border-ceci-border-brand'
-                  : 'bg-white border-ceci-border-default'
-              }`}
+              title={section.title}
+              accent="brand"
+              highlighted={HIGHLIGHT_SECTIONS.has(section.title.toLowerCase())}
             >
-              <h2
-                className={`text-xs uppercase tracking-wider font-bold mb-2 ${
-                  HIGHLIGHT_SECTIONS.has(section.title.toLowerCase())
-                    ? 'text-ceci-brand-strong'
-                    : 'text-ceci-secondary'
-                }`}
-              >
-                {section.title}
-              </h2>
               <MarkdownBlock source={section.body} />
-            </section>
+            </TempleSectionCard>
           ))}
         </div>
       </div>
@@ -164,73 +161,60 @@ export const AuthorsScreen: React.FC = () => {
   // ---- lista ----
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-5 pb-1 relative">
-      {/* Intro */}
-      <div className="bg-white rounded-[24px] p-5 border border-ceci-border-default space-y-1.5 shadow-2xs">
-        <div className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-2xl bg-surface-muted border border-ceci-border-default flex items-center justify-center text-beige-700 shrink-0">
-            <User className="w-5 h-5" />
-          </div>
-          <div>
-            <h1 className="text-lg font-bold font-display text-ceci-primary leading-tight">
-              {loading ? 'autores' : `${authors.length} autores do acervo`}
-            </h1>
-            <p className="text-xs text-ceci-secondary">
-              quem é quem na história da psicologia — fichas para consultar com calma
-            </p>
-          </div>
-        </div>
-      </div>
+      <TempleIntroCard
+        accent="brand"
+        icon={<User />}
+        title={loading ? 'autores' : `${authors.length} autores do acervo`}
+        subtitle="quem é quem na história da psicologia"
+      />
 
-      {/* Busca */}
-      <div className="relative px-1">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ceci-tertiary" />
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="procurar autor…"
-          className="w-full bg-white border border-ceci-border-default rounded-2xl pl-11 pr-4 py-3 text-sm text-ceci-primary placeholder:text-ceci-muted focus:border-ceci-border-brand focus:outline-none shadow-2xs"
-          aria-label="procurar autor"
-        />
-      </div>
+      <TempleSearchInput value={query} onChange={setQuery} label="procurar autor" placeholder="procurar autor…" />
 
       {/* Filtro por família */}
       {!loading && families.length > 0 && (
-        <div className="flex gap-2 overflow-x-auto scrollbar-none px-1 pb-1" role="group" aria-label="filtrar por família teórica">
-          <FilterChip label="todas as famílias" active={family === null} onClick={() => setFamily(null)} />
+        <div
+          className="flex gap-2 overflow-x-auto scrollbar-none px-1 pb-1"
+          role="group"
+          aria-label="filtrar por família teórica"
+        >
+          <TempleChip label="todas as famílias" active={family === null} onClick={() => setFamily(null)} />
           {families.map((f) => (
-            <FilterChip key={f} label={f.toLowerCase()} active={family === f} onClick={() => setFamily(f === family ? null : f)} />
+            <TempleChip
+              key={f}
+              label={f.toLowerCase()}
+              active={family === f}
+              onClick={() => setFamily(f === family ? null : f)}
+            />
           ))}
         </div>
       )}
 
       {/* Ordenação */}
-      <div className="flex gap-2 px-1">
-        {(
-          [
-            ['acervo', 'ordem do acervo'],
-            ['az', 'a – z'],
-          ] as Array<[SortMode, string]>
-        ).map(([value, label]) => (
-          <button
-            key={value}
-            onClick={() => setSortMode(value)}
-            className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-              sortMode === value
-                ? 'bg-surface-muted text-beige-700 border border-ceci-border-strong shadow-xs'
-                : 'bg-white text-ceci-secondary border border-ceci-border-default hover:bg-surface-muted'
-            }`}
-            aria-pressed={sortMode === value}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      {loading && (
-        <div className="flex items-center justify-center gap-2 py-8 text-sm text-ceci-secondary">
-          <Loader2 className="w-4 h-4 animate-spin" /> carregando autores…
+      {!loading && (
+        <div className="flex gap-2 px-1">
+          {(
+            [
+              ['acervo', 'ordem do acervo'],
+              ['az', 'a – z'],
+            ] as Array<[SortMode, string]>
+          ).map(([value, label]) => (
+            <button
+              key={value}
+              onClick={() => setSortMode(value)}
+              className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                sortMode === value
+                  ? 'bg-surface-muted text-beige-700 border border-ceci-border-strong shadow-xs'
+                  : 'bg-white text-ceci-secondary border border-ceci-border-default hover:bg-surface-muted'
+              }`}
+              aria-pressed={sortMode === value}
+            >
+              {label}
+            </button>
+          ))}
         </div>
       )}
+
+      {loading && <TempleLoading label="carregando autores…" />}
 
       {/* Lista */}
       {!loading && sortMode === 'acervo' && (
@@ -259,31 +243,11 @@ export const AuthorsScreen: React.FC = () => {
       )}
 
       {!loading && filtered.length === 0 && (
-        <div className="text-center py-8">
-          <p className="text-sm text-ceci-secondary">nenhum autor com esse nome ♡</p>
-        </div>
+        <TempleEmptyState message="nenhum autor com esse nome ♡" />
       )}
     </div>
   );
 };
-
-const FilterChip: React.FC<{ label: string; active: boolean; onClick: () => void }> = ({
-  label,
-  active,
-  onClick,
-}) => (
-  <button
-    onClick={onClick}
-    aria-pressed={active}
-    className={`shrink-0 px-3.5 py-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap transition-all cursor-pointer ${
-      active
-        ? 'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand shadow-xs'
-        : 'bg-white text-ceci-secondary border border-ceci-border-default hover:bg-surface-rose'
-    }`}
-  >
-    {label}
-  </button>
-);
 
 const AuthorRow: React.FC<{ author: TempleAuthor; onOpen: () => void }> = ({ author, onOpen }) => (
   <button
@@ -291,7 +255,7 @@ const AuthorRow: React.FC<{ author: TempleAuthor; onOpen: () => void }> = ({ aut
     className="w-full text-left bg-white rounded-[18px] px-4 py-3 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between gap-2"
   >
     <div className="min-w-0 pr-1">
-      <h3 className="text-sm font-semibold text-ceci-primary font-display truncate group-hover:text-beige-700 transition-colors">
+      <h3 className="text-sm font-semibold text-ceci-primary font-display truncate group-hover:text-ceci-brand-strong transition-colors">
         {author.name}
       </h3>
       <p className="text-xs text-ceci-secondary truncate">

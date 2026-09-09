@@ -10,24 +10,24 @@ const yesterday = () => {
 };
 
 function makeDb(overrides: Partial<ManagedDB> = {}): ManagedDB {
-  return {
-    courses: [{ id: 'c1', name: 'Psicopatologia I' } as never],
-    classes: [],
-    tasks: [],
-    exams: [],
-    authors: [],
-    concepts: [],
-    readings: [],
-    flashcards: [],
-    materials: [],
-    internshipLogs: [],
-    sessions: [],
-    quizSessions: [],
-    looseNotes: [],
-    bookmarkedCourseIds: [],
-    ...overrides,
-  };
-}
+   return {
+     courses: [{ id: 'c1', name: 'Psicopatologia I' } as never],
+     classes: [],
+     tasks: [],
+     exams: [],
+     authors: [],
+     concepts: [],
+     readings: [],
+     flashcards: [],
+     materials: [],
+     internshipLogs: [],
+     sessions: [],
+     quizSessions: [],
+     looseNotes: [],
+     bookmarkedCourseIds: [],
+     ...overrides,
+   };
+ }
 
 describe('clampPageInput', () => {
   it('aceita valor maior que a atual e dentro do total', () => {

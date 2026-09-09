@@ -230,3 +230,22 @@ export async function getCatalogTechniques<T = unknown>(categoryId?: string): Pr
       );
   return parseJsonRows(rows) as T[];
 }
+
+/** Comparações editoriais, na ordem de prioridade, fase e título. */
+export async function getCatalogComparisons<T = unknown>(): Promise<T[]> {
+  const db = await getCatalogDb();
+  if (!db) return [];
+  const rows = await db.query(
+    `SELECT data_json FROM comparison
+     ORDER BY CASE priority WHEN 'P1' THEN 0 ELSE 1 END, phase ASC, id ASC`
+  );
+  return parseJsonRows(rows) as T[];
+}
+
+/** Uma comparação editorial pelo slug. */
+export async function getCatalogComparison<T = unknown>(slug: string): Promise<T | null> {
+  const db = await getCatalogDb();
+  if (!db) return null;
+  const rows = await db.query('SELECT data_json FROM comparison WHERE slug = ?', [slug]);
+  return rows.length > 0 ? (JSON.parse(String(rows[0].data_json)) as T) : null;
+}

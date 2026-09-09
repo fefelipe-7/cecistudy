@@ -3,7 +3,7 @@ import { Pencil, Trash2, Paperclip, HelpCircle } from 'lucide-react';
 import { ClassNote } from '../../types';
 import { Modal } from '../ui/Modal';
 import { StarRating } from '../ui/StarRating';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 
 interface ClassNoteModalProps {
   note: ClassNote | null;
@@ -11,7 +11,7 @@ interface ClassNoteModalProps {
 }
 
 export const ClassNoteModal: React.FC<ClassNoteModalProps> = ({ note, onClose }) => {
-  const { editManagedItem, openManageItem, concepts, authors } = useApp();
+  const { editManagedItem, openManageItem, concepts, authors } = useMobileApp();
   if (!note) return null;
 
   const noteConcepts = (note.conceptIds ?? [])

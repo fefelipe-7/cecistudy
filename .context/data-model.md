@@ -5,7 +5,8 @@
 ## 1. Fontes
 
 - **Tipos:** `src/types.ts` (fonte da verdade).
-- **Seeds:** `src/data/initialData.ts` e `src/data/libraryData.ts`.
+- **Estado inicial:** `src/data/empty.ts` (`emptyDatabase()` — o app nasce zerado; não existem mais
+  seeds de demonstração: `initialData.ts`/`seeds.ts`/`notesSeeds.ts` foram removidos).
 
 ## 2. Entidades (em `types.ts`)
 
@@ -76,13 +77,12 @@
 - ⚠️ **Não persistidos** (estado local de view): `systemSuggestions` (HomeView),
   catálogo `CollectionBook` (BibliotecaView).
 
-## 5. Seeds (`initialData.ts`)
+## 5. Seeds (removidos)
 
-- 5 disciplinas (Psicopatologia I, Avaliação Psicológica II, TCC, Psicologia Social, Estágio).
-- 4 anotações de aula, 5 tarefas, 3 avaliações, 4 abordagens, 4 autores, 5 conceitos,
-  4 leituras, 4 flashcards, 3 materiais, 2 registros de estágio, TCC completo, 8 stickers,
-  2 sessões de estudo.
-- Streak: `initialStreakData = { activeDays: [] }` (começa vazia; dias ativos entram pelas ações).
+- Os dados de exemplo ("começar com exemplos" do onboarding / botão do Perfil) foram
+  **removidos por completo** (2026-08): `initialData.ts`, `seeds.ts` e `notesSeeds.ts`
+  não existem mais; `completeOnboarding(profile)` sempre parte do banco vazio.
+- Streak: `emptyStreakData = { activeDays: [] }` (começa vazia; dias ativos entram pelas ações).
 
 ## 6. Catálogo da biblioteca (`libraryData.ts`)
 
@@ -149,7 +149,7 @@ do usuário; na web vêm de facades lazy, no nativo do `.db` embutido):
 
 ## 8. Boas práticas ao mexer em dados
 
-- Ao adicionar entidade nova, criar interface em `types.ts` + seed em `initialData.ts`
+- Ao adicionar entidade nova, criar interface em `types.ts` + valor vazio em `empty.ts`
   + estado persistido em `AppContext.tsx` (se for global).
 - Respeitar os prefixos de id e as chaves de relação existentes.
 - Não duplicar dados entre `ReadingItem` e `CollectionBook` sem documentar a intenção.

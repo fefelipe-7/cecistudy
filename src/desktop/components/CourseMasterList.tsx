@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
 import { Plus } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useDesktopApp } from '@/context/desktopApp';
 import { CourseIcon } from '../../components/ui/CourseIcon';
+import { formatCourseSchedule } from '../../lib/schedule';
 import { Panel } from './ui/Panel';
 import { StatusBadge } from './ui/StatusBadge';
 
@@ -16,7 +17,7 @@ export const CourseMasterList: React.FC = () => {
     focusedCourseId,
     openCourseDetail,
     openWizard,
-  } = useApp();
+  } = useDesktopApp();
 
   const sorted = useMemo(
     () => [...courses].sort((a, b) => a.name.localeCompare(b.name)),
@@ -32,7 +33,7 @@ export const CourseMasterList: React.FC = () => {
         <button
           onClick={() => openWizard('course')}
           aria-label="nova disciplina"
-          className="w-7 h-7 rounded-[10px] bg-white border border-ceci-border-default text-ceci-secondary flex items-center justify-center cursor-pointer hover:bg-surface-muted hover:text-ceci-primary transition-colors shadow-xs"
+          className="w-7 h-7 rounded-[10px] bg-white border border-ceci-border-default text-ceci-secondary flex items-center justify-center cursor-pointer hover:bg-[var(--ds-surface-hover)] hover:border-ceci-border-strong hover:text-ceci-primary transition-colors focus-visible:outline-none focus-visible:[box-shadow:var(--ds-focus-ring-neutral)]"
         >
           <Plus className="w-4 h-4" />
         </button>
@@ -41,14 +42,15 @@ export const CourseMasterList: React.FC = () => {
       <ul className="flex flex-col gap-2" role="listbox" aria-label="disciplinas">
         {sorted.map((course) => {
           const isActive = course.id === focusedCourseId;
+          const schedule = formatCourseSchedule(course.schedule);
           return (
             <li key={course.id}>
               <Panel
                 role="option"
                 aria-selected={isActive}
                 onClick={() => openCourseDetail(course.id)}
-                className={`w-full text-left cursor-pointer transition-all hover:border-ceci-border-strong ${
-                  isActive ? 'border-ceci-border-brand bg-surface-rose' : ''
+                className={`w-full text-left cursor-pointer transition-colors hover:border-ceci-border-strong hover:bg-[var(--ds-surface-hover)] ${
+                  isActive ? 'border-ceci-border-strong bg-[var(--ds-surface-active)]' : ''
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -56,18 +58,22 @@ export const CourseMasterList: React.FC = () => {
                     <CourseIcon icon={course.icon} className="w-[18px] h-[18px]" />
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span
-                      className={`block text-sm font-semibold truncate leading-tight ${
-                        isActive ? 'text-ceci-brand-strong' : 'text-ceci-primary'
-                      }`}
-                    >
+                    <span className="block text-sm font-semibold truncate leading-tight text-ceci-primary">
                       {course.name}
                     </span>
                     <span className="block text-xs text-ceci-muted truncate mt-0.5">
                       {course.code || course.professor || '—'}
                     </span>
                   </span>
-                  {isActive && <StatusBadge variant="brand">aberta</StatusBadge>}
+                  {isActive ? (
+                    <StatusBadge variant="brand">aberta</StatusBadge>
+                  ) : (
+                    schedule && (
+                      <span className="hidden sm:block font-mono text-[11px] text-ceci-muted shrink-0">
+                        {schedule}
+                      </span>
+                    )
+                  )}
                 </div>
               </Panel>
             </li>

@@ -225,7 +225,7 @@ export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
   return (
     <div
       className={cn(
-        'relative w-full rounded-[24px] p-5 border shadow-sm transition-colors',
+        'relative w-full rounded-2xl p-5 border shadow-sm transition-colors',
         theme === 'dark'
           ? 'bg-neutral-900 border-neutral-700 text-white'
           : 'bg-white border-ceci-border-default text-ceci-primary',

@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { Timer } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import type { ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
-import { FieldLabel, ReviewCard, TextInput } from './wizardFields';
+import { FieldHint, FieldLabel, ReviewCard, TextInput } from './wizardFields';
 import { Picker } from '../ui/Picker';
 
 const today = () => new Date().toISOString().split('T')[0];
 
 export const SessionWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
-  const { courses, sessions, wizardCourseId, handleAddSession, handleUpdateSession, closeWizard, showToast } = useApp();
+  const { courses, sessions, wizardCourseId, handleAddSession, handleUpdateSession, closeWizard, showToast } = useMobileApp();
   const editingSession = editing?.kind === 'session'
     ? sessions.find((s) => s.id === editing.id)
     : undefined;
@@ -28,6 +28,7 @@ export const SessionWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       id: 'sessao-tema',
       title: 'tema',
       headline: 'o que você vai estudar?',
+      subtitle: 'o assunto da sessão de foco — ex: revisar semiologia dos transtornos do humor.',
       content: (
         <TextInput
           value={topic}
@@ -41,6 +42,7 @@ export const SessionWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       id: 'sessao-ritmo',
       title: 'ritmo',
       headline: 'por quanto tempo?',
+      subtitle: 'a duração que combina com a sua disponibilidade de agora.',
       content: (
         <div>
           <FieldLabel>duração (minutos)</FieldLabel>
@@ -50,6 +52,7 @@ export const SessionWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
             onChange={(e) => setMinutes(e.target.value)}
             placeholder="ex: 25"
           />
+          <FieldHint>25 minutos é um bom começo — você ajusta sempre que quiser.</FieldHint>
         </div>
       ),
     },
@@ -57,6 +60,7 @@ export const SessionWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       id: 'sessao-disciplina',
       title: 'disciplina',
       headline: 'quer conectar a uma disciplina?',
+      subtitle: 'opcional — ajuda a separar o foco por matéria no seu histórico ♡',
       content: (
         <Picker
           value={courseId}
@@ -70,6 +74,7 @@ export const SessionWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       id: 'sessao-revisar',
       title: 'revisar',
       headline: 'confere se está tudo certinho ♡',
+      subtitle: 'confere o tema e a duração da sessão antes de guardar no histórico.',
       content: (
         <ReviewCard
           rows={[
@@ -116,6 +121,7 @@ export const SessionWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       step={step}
       onStepChange={setStep}
       canNext={topic.trim().length > 0}
+      blockedReason="dê um assunto para a sessão"
       onSave={handleSave}
       onClose={closeWizard}
       saveLabel={editing ? 'guardar alterações ♡' : 'guardar sessão ♡'}

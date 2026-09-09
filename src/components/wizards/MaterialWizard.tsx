@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BookOpen } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import type { MaterialItem, ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
@@ -21,7 +21,7 @@ const MATERIAL_TYPES: { value: MaterialItem['type']; label: string; emoji?: stri
 ];
 
 export const MaterialWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
-  const { courses, materials, wizardCourseId, handleAddMaterial, handleUpdateMaterial, closeWizard, showToast } = useApp();
+  const { courses, materials, wizardCourseId, handleAddMaterial, handleUpdateMaterial, closeWizard, showToast } = useMobileApp();
   const editingMaterial = editing?.kind === 'material'
     ? materials.find((m) => m.id === editing.id)
     : undefined;
@@ -43,6 +43,7 @@ export const MaterialWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edi
       id: 'material-obra',
       title: 'material',
       headline: 'que material você quer guardar?',
+      subtitle: 'título, tipo e autor(a) — o essencial para achar o material depois.',
       content: (
         <div className="space-y-4">
           <TextInput
@@ -64,6 +65,7 @@ export const MaterialWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edi
       id: 'material-contexto',
       title: 'contexto',
       headline: 'onde esse material se encaixa?',
+      subtitle: 'disciplina, link e tags ajudam a encontrar o material na biblioteca ♡',
       content: (
         <div className="space-y-4">
           <Picker
@@ -91,6 +93,7 @@ export const MaterialWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edi
       id: 'material-revisar',
       title: 'revisar',
       headline: 'confere se está tudo certinho ♡',
+      subtitle: 'confere os dados antes de guardar o material.',
       content: (
         <ReviewCard
           rows={[
@@ -137,6 +140,7 @@ export const MaterialWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edi
       step={step}
       onStepChange={setStep}
       canNext={title.trim().length > 0}
+      blockedReason="dê um título para o material"
       onSave={handleSave}
       onClose={closeWizard}
       saveLabel={editing ? 'guardar alterações ♡' : 'guardar material ♡'}

@@ -6,6 +6,24 @@ export const FieldLabel: React.FC<{ children: React.ReactNode }> = ({ children }
   <label className="block text-[11px] font-semibold text-ceci-tertiary mb-1.5 uppercase tracking-wider">{children}</label>
 );
 
+/** Microlinha de ajuda abaixo de um campo: explica o que colocar ali. */
+export const FieldHint: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
+  <p className={cn('text-[11px] text-ceci-tertiary leading-relaxed mt-1.5', className)}>{children}</p>
+);
+
+/** Campo completo dos wizards: rótulo + controle + hint explicativo opcional. */
+export const Field: React.FC<{
+  label?: string;
+  hint?: React.ReactNode;
+  children: React.ReactNode;
+}> = ({ label, hint, children }) => (
+  <div>
+    {label && <FieldLabel>{label}</FieldLabel>}
+    {children}
+    {hint && <FieldHint>{hint}</FieldHint>}
+  </div>
+);
+
 /** Input "chunky": fundo sólido suave, cantos grandes, bastante respiro interno. */
 const inputClass =
   'w-full bg-surface-input border border-transparent rounded-2xl px-4 py-4 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 transition-shadow';

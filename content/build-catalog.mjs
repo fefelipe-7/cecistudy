@@ -186,6 +186,20 @@ async function build() {
 
   insertMany(
     db,
+    'comparison',
+    ['id', 'slug', 'type', 'priority', 'phase', 'data_json'],
+    temple.comparisons.comparacoes.map((c) => [
+      c.id,
+      c.slug,
+      c.tipo,
+      c.prioridade,
+      c.fase,
+      JSON.stringify(c),
+    ])
+  );
+
+  insertMany(
+    db,
     'question_category',
     ['id', 'name', 'slug', 'display_order'],
     temple.questionCategories.map((c) => [c.id, c.name, c.slug, c.displayOrder ?? 0])
@@ -223,6 +237,7 @@ async function build() {
           authors: temple.curatedAuthors.length,
           techniqueCategories: temple.techniqueCategories.length,
           techniques: temple.techniques.length,
+          comparisons: temple.comparisons.comparacoes.length,
           questionCategories: temple.questionCategories.length,
           topics: temple.topics.length,
         },
@@ -243,6 +258,7 @@ async function build() {
   console.log(
     `[content:build] templo: ${domains.length} domínios · ${conceptRows.length} conceitos · ` +
       `${temple.curatedAuthors.length} autores · ${temple.techniques.length} técnicas · ` +
+      `${temple.comparisons.comparacoes.length} comparações · ` +
       `${temple.questionCategories.length} categorias · ${temple.topics.length} tópicos`
   );
 }

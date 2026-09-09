@@ -18,6 +18,7 @@ Ele é carregado pelo opencode via `instructions` em `opencode.json`.
 | [`data-model.md`](./data-model.md) | Entidades de `types.ts`, relações, prefixos de id, chaves localStorage, seeds |
 | [`copy-and-voice.md`](./copy-and-voice.md) | Voz/tom pt-BR, lowercase, branding `cecistudy ♡`, emojis |
 | [`backlog.md`](./backlog.md) | Pontos de melhoria e débito técnico priorizados |
+| [`specs/`](../specs/) | **Specs de refatoração** — modularização, hardcoded, mobile/desktop |
 | [`animations.md`](./animations.md) | Plano de animações/transições iOS-like, celebrações (confete), diagnóstico e progresso |
 | [`themes.md`](./themes.md) | Arquitetura do sistema de temas (tipos, applyTheme, ordem de implementação) |
 | [`themes/README.md`](./themes/README.md) | Catálogo dos 10 temas com ficha completa de cada um |
@@ -55,13 +56,15 @@ src/
     notifications.ts           → lembrete diário local (no-op no web)
     utils.ts                   → cn()
   data/
-    initialData.ts             → seed das entidades
+    empty.ts                   → estado inicial zerado (sem seeds)
     libraryData.ts             → catálogo da biblioteca (livros/coleções)
   components/
     ui/                        → primitivas (button, Card, Modal, UnderlineTabBar, IconButton, ProgressBar, CourseIcon…)
     views/                     → Home, Faculdade, Estudos, Biblioteca, Perfil, CourseDetail
     widgets/                   → blocos reutilizáveis (stats, reader…)
     library/  courses/         → componentes extraídos da biblioteca e de disciplinas
+  specs/                       → specs de refatoração (MOD-001, HAR-001, SEP-001)
+  tasks/                       → plano de tarefas (plan.md + todo.md)
 android/                       → projeto nativo Android (Capacitor)
 ios/                           → projeto nativo iOS (Capacitor)
 assets/                        → arte-fonte (icon/splash SVGs) p/ `cap:assets`
@@ -72,6 +75,6 @@ assets/                        → arte-fonte (icon/splash SVGs) p/ `cap:assets`
 - Web: `npm run dev` (porta 3000) · `npm run build` · `npm run preview`
 - Lint/typecheck: `npm run lint` = `tsc --noEmit`
 - Nativo: `npm run cap:sync` (build + sync) · `npm run cap:open:android` · `npm run cap:open:ios` · `npm run cap:assets` (regenera ícones/splash)
-- CI: `.github/workflows/release.yml` (pipeline único: APK + IPA + OTA, versão por tag)
+- CI: `.github/workflows/ci.yml` (gate de PR: lint + test + boundary) · `.github/workflows/release.yml` (mobile: APK + IPA + OTA) · `.github/workflows/release-desktop.yml` (desktop Tauri: msi/dmg/AppImage/deb)
 
 Veja [`architecture.md`](./architecture.md) para os detalhes.

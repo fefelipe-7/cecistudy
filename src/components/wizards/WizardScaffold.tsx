@@ -10,6 +10,8 @@ export interface WizardStep {
   title: string;
   /** Pergunta direta exibida em destaque no topo do passo (título em vez de rótulo de campo). */
   headline?: string;
+  /** Microlinha de apoio logo abaixo do headline, explicando o propósito do passo. */
+  subtitle?: string;
   content: React.ReactNode;
 }
 
@@ -141,13 +143,6 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
               <h1 className="font-display font-bold text-sm text-ceci-primary truncate leading-tight">{title}</h1>
               {subtitle && <p className="text-[11px] text-ceci-secondary truncate">{subtitle}</p>}
             </div>
-            {mascote && (
-              <Mascote
-                expression={mascote}
-                decorative
-                className="w-8 h-8 shrink-0 -mr-0.5 hidden min-[380px]:block"
-              />
-            )}
           </div>
 
           {/* indicador de etapa — "a usuária sabe em que passo está" */}
@@ -186,10 +181,26 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
             animate="animate"
             exit="exit"
           >
-            {steps[step].headline && (
-              <h2 className="font-display font-bold text-[26px] leading-[1.15] text-ceci-primary">
-                {steps[step].headline}
-              </h2>
+            {(steps[step].headline || steps[step].subtitle) && (
+              <div className="flex items-start gap-3 sm:gap-4">
+                <div className="flex-1 min-w-0">
+                  {steps[step].headline && (
+                    <h2 className="font-display font-bold text-[22px] sm:text-[26px] leading-[1.18] text-ceci-primary">
+                      {steps[step].headline}
+                    </h2>
+                  )}
+                  {steps[step].subtitle && (
+                    <p className="mt-2 text-[12px] text-ceci-secondary leading-relaxed">
+                      {steps[step].subtitle}
+                    </p>
+                  )}
+                </div>
+                <Mascote
+                  expression={mascote}
+                  decorative
+                  className="w-20 h-20 sm:w-24 sm:h-24 shrink-0 object-contain -mt-0.5 drop-shadow-sm"
+                />
+              </div>
             )}
             <div className="pt-4">{steps[step].content}</div>
           </motion.div>

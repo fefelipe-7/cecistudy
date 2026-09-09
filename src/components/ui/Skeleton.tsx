@@ -24,7 +24,7 @@ export const ViewSkeleton: React.FC<ViewSkeletonProps> = ({ rows = 6 }) => (
     className="max-w-md sm:max-w-xl mx-auto space-y-5 pb-1 relative"
   >
     {/* Banner */}
-    <div className="bg-white rounded-[24px] p-5 border border-ceci-border-default space-y-3 shadow-2xs">
+    <div className="bg-white rounded-2xl p-5 border border-ceci-border-default space-y-3 shadow-2xs">
       <div className="flex items-center gap-2.5">
         <Skeleton className="w-10 h-10 rounded-2xl shrink-0" />
         <div className="space-y-2 flex-1 min-w-0">
@@ -42,7 +42,7 @@ export const ViewSkeleton: React.FC<ViewSkeletonProps> = ({ rows = 6 }) => (
       {Array.from({ length: rows }).map((_, i) => (
         <div
           key={i}
-          className="bg-white rounded-[22px] p-4 border border-ceci-border-default shadow-2xs flex items-center gap-3"
+          className="bg-white rounded-xl p-4 border border-ceci-border-default shadow-2xs flex items-center gap-3"
         >
           <Skeleton className="w-11 h-11 rounded-2xl shrink-0" />
           <div className="space-y-2 flex-1 min-w-0">
@@ -61,7 +61,7 @@ export const ListSkeleton: React.FC<ViewSkeletonProps> = ({ rows = 6 }) => (
     {Array.from({ length: rows }).map((_, i) => (
       <div
         key={i}
-        className="bg-white rounded-[22px] p-4 border border-ceci-border-default shadow-2xs flex items-center gap-3"
+        className="bg-white rounded-xl p-4 border border-ceci-border-default shadow-2xs flex items-center gap-3"
       >
         <Skeleton className="w-9 h-9 rounded-xl shrink-0" />
         <div className="space-y-2 flex-1 min-w-0">

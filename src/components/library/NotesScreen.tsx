@@ -17,6 +17,8 @@ import { Mascote } from '../ui/Mascote';
 import { PillGroup } from '../ui/PillGroup';
 import { ManageSurface } from '../ui/ManageSurface';
 import { copyToClipboard } from '../../lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
+import { getTransition } from '@/lib/motion';
 import type { LooseNote, Course, PsychologyConcept, PsychologyAuthor } from '../../types';
 
 interface NotesScreenProps {
@@ -78,7 +80,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
       </div>
 
       {/* Screen Title Banner */}
-      <div className="bg-white rounded-[24px] p-5 border border-ceci-border-default space-y-1.5 shadow-2xs">
+      <div className="bg-white rounded-2xl p-5 border border-ceci-border-default space-y-1.5 shadow-2xs">
         <div className="flex items-center gap-2.5">
           <div className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
             <FileText className="w-5 h-5" />
@@ -134,7 +136,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
 
       {/* New Note Form */}
       {isCreatingNote && (
-        <div className="bg-white rounded-[22px] p-4 border border-ceci-border-brand bg-surface-rose/30 space-y-3 shadow-2xs">
+        <div className="bg-white rounded-xl p-4 border border-ceci-border-brand bg-surface-rose/30 space-y-3 shadow-2xs">
           <div className="flex items-center justify-between border-b border-ceci-border-brand/60 pb-2">
             <h3 className="text-xs font-bold text-ceci-primary font-display uppercase tracking-wider">
               criar nova nota avulsa
@@ -222,7 +224,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
               key={note.id}
               kind="looseNote"
               id={note.id}
-              className="bg-white rounded-[20px] p-4 border border-ceci-border-default hover:border-ceci-border-brand tap-interactive space-y-2.5 shadow-2xs flex flex-col justify-between group"
+              className="bg-white rounded-xl p-4 border border-ceci-border-default hover:border-ceci-border-brand tap-interactive space-y-2.5 shadow-2xs flex flex-col justify-between group"
             >
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-2 border-b border-ceci-border-subtle pb-2">
@@ -340,7 +342,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
         })}
 
         {filteredNotes.length === 0 && (
-          <div className="bg-white rounded-[22px] p-8 text-center border border-dashed border-ceci-border-default space-y-2">
+          <div className="bg-white rounded-xl p-8 text-center border border-dashed border-ceci-border-default space-y-2">
             <Mascote expression="no-results" className="w-14 h-14 mx-auto" decorative />
             <p className="text-xs font-bold text-ceci-primary">nenhuma nota encontrada</p>
             <p className="text-xs text-ceci-secondary">

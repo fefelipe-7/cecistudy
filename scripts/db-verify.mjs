@@ -31,6 +31,7 @@ const EXPECTED_TABLES = [
   'catalog_author',
   'technique_category',
   'technique',
+  'comparison',
   'question_category',
   'topic',
 ];
@@ -45,7 +46,8 @@ const MIN_COUNTS = {
   concept: 200,
   catalog_author: 120,
   technique_category: 10,
-  technique: 130,
+  technique: 136,
+  comparison: 130,
   question_category: 18,
   topic: 1400,
 };
@@ -81,6 +83,17 @@ async function main() {
     }
   }
 
+  const structuredComparisons = Number(db.exec("SELECT COUNT(*) FROM comparison WHERE json_extract(data_json, '$.schemaVersion') = 2")[0]?.values?.[0]?.[0] ?? 0);
+  if (structuredComparisons !== counts.comparison) {
+    console.error(`[db:verify] comparações sem objeto v2 completo (${structuredComparisons}/${counts.comparison})`);
+    process.exit(1);
+  }
+  const canonicalTechniqueComparisons = Number(db.exec("SELECT COUNT(*) FROM comparison WHERE instr(data_json, 'tec-psicoeducacao') > 0")[0]?.values?.[0]?.[0] ?? 0);
+  if (canonicalTechniqueComparisons < 1) {
+    console.error('[db:verify] tec-psicoeducacao ausente das comparações no SQLite');
+    process.exit(1);
+  }
+
   const release = db.exec(
     'SELECT version, content_hash, built_at, source_schema_version FROM catalog_release WHERE id = 1'
   )[0]?.values?.[0];
@@ -103,7 +116,7 @@ async function main() {
       `${counts.area} áreas · ${counts.approach_family} famílias · ${counts.approach} abordagens · ` +
       `${counts.question} questões · ${counts.work} obras · ` +
       `${counts.concept_domain} domínios · ${counts.concept} conceitos · ` +
-      `${counts.catalog_author} autores · ${counts.technique} técnicas · ` +
+      `${counts.catalog_author} autores · ${counts.technique} técnicas · ${counts.comparison} comparações · ` +
       `${counts.question_category} categorias de questão · ${counts.topic} tópicos`
   );
 }

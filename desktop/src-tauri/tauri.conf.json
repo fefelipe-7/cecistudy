@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "identifier": "ceci.study.desktop",
   "build": {
-    "frontendDist": "../../dist",
+    "frontendDist": "../../apps/desktop/dist",
     "devUrl": "http://localhost:3000",
     "beforeDevCommand": "",
     "beforeBuildCommand": ""

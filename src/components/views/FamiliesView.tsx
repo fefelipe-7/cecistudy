@@ -1,11 +1,11 @@
 ﻿import React, { useState } from 'react';
 import { Network, Search, ChevronRight, Landmark } from 'lucide-react';
 import { PSICOTERAPIA_FAMILIES } from '../../data/psicoterapiaFamilies';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { Mascote } from '../ui/Mascote';
 
 export const FamiliesView: React.FC = () => {
-  const { openFamily } = useApp();
+  const { openFamily } = useMobileApp();
   const [query, setQuery] = useState('');
 
   const q = query.trim().toLowerCase();
@@ -16,7 +16,7 @@ export const FamiliesView: React.FC = () => {
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-5 pb-1 relative">
       {/* Intro */}
-      <div className="bg-white rounded-[24px] p-5 border border-ceci-border-default space-y-1.5 shadow-2xs">
+      <div className="bg-white rounded-2xl p-5 border border-ceci-border-default space-y-1.5 shadow-2xs">
         <div className="flex items-center gap-2.5">
           <div className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
             <Network className="w-5 h-5" />
@@ -58,7 +58,7 @@ export const FamiliesView: React.FC = () => {
           <button
             key={family.id}
             onClick={() => openFamily(family.id)}
-            className="w-full text-left bg-white rounded-[22px] p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
+            className="w-full text-left bg-white rounded-xl p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
           >
             <div className="flex items-center gap-3 min-w-0 pr-2">
               <div

@@ -1,11 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Clock,
-  Database,
-  Download,
   FileText,
-  Upload,
-  RotateCcw,
   BookOpen,
   Brain,
   CheckCircle2,
@@ -14,29 +10,21 @@ import {
   HeartHandshake,
   ListChecks,
   Sparkles,
-  Settings,
   ChevronRight,
-  Camera,
-  Trash2,
   Smartphone,
   RefreshCw,
-  Layers
+  Layers,
+  Users,
 } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { DitherFunnelChart } from '../ui/dither-funnel';
 import { CHART_PASTELS, formatCount } from '../../lib/ditherChart';
-import { ToggleRow } from '../ui/ToggleRow';
-import { Modal } from '../ui/Modal';
 import { isReminderSupported } from '../../lib/notifications';
 import { isGcalConfigured } from '../../lib/gcal';
 import { isNativePlatform } from '../../lib/storage';
-import { isDesktop } from '../../lib/platform';
-import {
-  desktopCheckForUpdate,
-  desktopDownloadAndInstallUpdate,
-  desktopRelaunch,
-} from '../../lib/desktop';
+
 import { pickProfilePhoto } from '../../lib/photo';
+import { formatStudyTime } from '../../lib/profileMeta';
 import {
   applyNow,
   checkForUpdates,
@@ -44,29 +32,17 @@ import {
   useOtaStatus,
 } from '../../lib/ota';
 import { StudyStatsWidget } from '../widgets/StudyStatsWidget';
-import { AnimatedNumber } from '../ui/AnimatedNumber';
 import { ProgressBar } from '../ui/ProgressBar';
 import { StickersView } from './StickersView';
+import { GithubSyncCard } from './GithubSyncCard';
+import ProfileHeader from './perfil/ProfileHeader';
+import JourneySummary from './perfil/JourneySummary';
+import JourneyTimeline from './perfil/JourneyTimeline';
+import StickersSection from './perfil/StickersSection';
+import PersonalizationSection from './perfil/PersonalizationSection';
+import DataSection from './perfil/DataSection';
 
-/** Formata minutos de estudo em "Xh Ymin" / "Xmin". */
-const formatStudyTime = (minutes: number): string => {
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  if (h === 0) return `${m}min`;
-  return m === 0 ? `${h}h` : `${h}h ${m}min`;
-};
-
-/** Reflexão de jornada derivada do semestre atual (voz carinhosa do cantinho). */
-const getJourneyReflection = (semester: number, total: number): string => {
-  const half = Math.ceil(total / 2);
-  if (semester < half) {
-    return `no ${semester}º semestre, cada aula e leitura é um alicerce novo — a teoria vai se transformando em forma de ver o mundo. sem pressa, com carinho.`;
-  }
-  if (semester === half) {
-    return `metade da graduação! no ${semester}º semestre a teoria ganha vida na prática do estágio e na estruturação do tcc. cada aula é um tijolinho na construção da profissional que estou me tornando.`;
-  }
-  return `no ${semester}º semestre, a caminhada está bem encaminhada — entre estágio, tcc e práticas, cada registro vira cuidado e conhecimento. falta pouco para a formatura ♡`;
-};
+import { deriveCases } from '../../lib/internshipCases';
 
 const scrollToSection = (id: string) => {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -92,7 +68,7 @@ const OtaSection: React.FC = () => {
   const busy = ota.status === 'checking' || ota.status === 'downloading';
 
   return (
-    <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
+    <div className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
       <div className="flex items-center gap-2">
         <Smartphone className="w-4 h-4 text-ceci-academic-strong" />
         <h2 className="font-display font-bold text-xl text-ceci-primary">
@@ -140,102 +116,6 @@ const OtaSection: React.FC = () => {
   );
 };
 
-/** Card de atualização no desktop (Tauri updater via GitHub Releases). */
-const DesktopUpdateSection: React.FC = () => {
-  const { showToast } = useApp();
-  const [status, setStatus] = useState<'idle' | 'checking' | 'downloading' | 'ready' | 'error'>('idle');
-  const [version, setVersion] = useState<string | null>(null);
-  const [progress, setProgress] = useState(0);
-
-  const busy = status === 'checking' || status === 'downloading';
-
-  const check = async () => {
-    setStatus('checking');
-    try {
-      const info = await desktopCheckForUpdate();
-      if (info) {
-        setVersion(info.version);
-        setStatus('ready');
-      } else {
-        showToast('tudo em dia ✨');
-        setStatus('idle');
-      }
-    } catch {
-      setStatus('error');
-    }
-  };
-
-  const install = async () => {
-    setStatus('downloading');
-    setProgress(0);
-    try {
-      await desktopDownloadAndInstallUpdate(setProgress);
-      showToast('atualização instalada ♡ reiniciando…');
-      setTimeout(() => void desktopRelaunch(), 1200);
-    } catch {
-      setStatus('error');
-    }
-  };
-
-  const statusText =
-    status === 'checking'
-      ? 'procurando novidades…'
-      : status === 'downloading'
-        ? `baixando atualização (${progress}%)…`
-        : status === 'ready'
-          ? version
-            ? `a versão ${version} está pronta ♡`
-            : 'atualização disponível ♡'
-          : status === 'error'
-            ? 'não consegui verificar agora — tenta de novo.'
-            : 'tudo em dia ✨';
-
-  return (
-    <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
-      <div className="flex items-center gap-2">
-        <Smartphone className="w-4 h-4 text-ceci-academic-strong" />
-        <h2 className="font-display font-bold text-xl text-ceci-primary">
-          atualização do app
-        </h2>
-      </div>
-
-      <div className="rounded-2xl p-4 border bg-surface-blue border-ceci-border-academic space-y-3">
-        <div>
-          <p className="text-[11px] text-ceci-secondary leading-tight mt-0.5">
-            {statusText}
-          </p>
-        </div>
-
-        {status === 'downloading' && <ProgressBar value={progress} className="h-2" />}
-
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => void check()}
-            disabled={busy}
-            className="flex items-center gap-2 bg-white border border-ceci-border-default text-ceci-primary px-4 py-2.5 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer hover:border-ceci-border-brand transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <RefreshCw className={`w-4 h-4 ${status === 'checking' ? 'animate-spin' : ''}`} />
-            verificar atualização
-          </button>
-
-          {status === 'ready' && (
-            <button
-              onClick={() => void install()}
-              className="flex items-center gap-2 bg-ceci-primary hover:bg-ceci-primary-hover text-white px-4 py-2.5 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer transition-colors"
-            >
-              baixar e instalar
-            </button>
-          )}
-        </div>
-      </div>
-
-      <p className="text-[11px] text-ceci-tertiary -mt-1">
-        o cantinho se atualiza sozinho pelo github releases; instalar pode pedir para reiniciar o app.
-      </p>
-    </div>
-  );
-};
-
 export type PerfilViewMode = 'profile' | 'stickers';
 interface PerfilViewProps {
   /** Tela derivada da pilha `perfil` renderizada no lugar da página. */
@@ -265,18 +145,18 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
     gcalEnabled,
     setGcalEnabled,
     showToast,
-    loadDemoData,
     resetApp,
     exportData,
     importData,
     openSyncScreen,
-  } = useApp();
+  } = useMobileApp();
+
+  const { shellExtras } = useMobileApp();
 
   const [name, setName] = useState(profile.name);
   const [semester, setSemester] = useState(profile.semester);
   const [university, setUniversity] = useState(profile.university);
   const [dailyQuote, setDailyQuote] = useState(profile.dailyQuote);
-  const [pendingAction, setPendingAction] = useState<'demos' | 'reset' | null>(null);
 
   // Tela cheia de stickers & conquistas (empilhada sobre o perfil)
   if (mode === 'stickers') {
@@ -320,6 +200,10 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
   const tasksDone = tasks.filter((t) => t.completed).length;
   const examsPending = exams.filter((e) => !e.completed).length;
   const totalInternshipHours = internshipLogs.reduce((acc, l) => acc + l.hours, 0);
+  const cases = useMemo(() => deriveCases(internshipLogs), [internshipLogs]);
+  const patientsCount = cases.length;
+  const pendingReflection = cases.reduce((a, c) => a + c.pendingReflection, 0);
+  const pendingSupervision = cases.reduce((a, c) => a + c.pendingSupervision, 0);
   const tccChaptersDone = tcc.chapters.filter((ch) => ch.completed).length;
   const tccChaptersTotal = tcc.chapters.length;
   const stickersUnlocked = stickers.filter((s) => s.unlocked).length;
@@ -396,6 +280,13 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
       onClick: () => openInternshipDiary()
     },
     {
+      Icon: Users,
+      label: 'pacientes atendidos',
+      display: patientsCount,
+      animate: true,
+      onClick: () => openInternshipDiary()
+    },
+    {
       Icon: ListChecks,
       label: 'capítulos do tcc',
       display: `${tccChaptersDone}/${tccChaptersTotal}`,
@@ -412,113 +303,13 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
 
   return (
     <div className="space-y-5 pb-1">
-      {/* ===== Header compacto ===== */}
-      <div className="rounded-[24px] p-5 bg-gradient-to-r from-white via-surface-muted to-surface-rose/80 border border-ceci-border-default shadow-sm space-y-4">
-        <div className="flex items-center gap-4">
-          <div className="relative shrink-0">
-            <div className="w-16 h-16 rounded-3xl bg-surface-rose border-2 border-ceci-border-brand flex items-center justify-center font-display font-bold text-3xl text-ceci-primary shadow-2xs overflow-hidden">
-              {profile.photoUrl ? (
-                <img src={profile.photoUrl} alt={`foto de ${profile.name}`} className="w-full h-full object-cover" />
-              ) : (
-                profile.name.trim().charAt(0).toUpperCase() || 'C'
-              )}
-            </div>
-            <button
-              onClick={handlePickPhoto}
-              aria-label="trocar foto de perfil"
-              title="trocar foto"
-              className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-ceci-primary hover:bg-ceci-primary-hover text-white flex items-center justify-center shadow-xs border-2 border-white tap-interactive cursor-pointer active:scale-95"
-            >
-              <Camera className="w-3.5 h-3.5" />
-            </button>
-            {profile.photoUrl && (
-              <button
-                onClick={handleRemovePhoto}
-                aria-label="remover foto de perfil"
-                title="remover foto"
-                className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-white border border-ceci-border-default text-ceci-secondary hover:text-red-700 hover:border-red-400 flex items-center justify-center shadow-xs tap-interactive cursor-pointer active:scale-95"
-              >
-                <Trash2 className="w-3 h-3" />
-              </button>
-            )}
-          </div>
-
-          <div className="min-w-0">
-            <h1 className="font-display text-2xl sm:text-3xl font-bold text-ceci-primary truncate">
-              meu espaço • {profile.name} <span className="text-rose-500 font-normal">♡</span>
-            </h1>
-            <p className="text-xs text-ceci-secondary mt-0.5">
-              {profile.targetCareer} • {profile.university}
-            </p>
-          </div>
-        </div>
-
-        {/* progresso da graduação — inline */}
-        <div className="rounded-2xl bg-white p-3.5 border border-ceci-border-default space-y-2">
-          <div className="flex items-center justify-between text-[11px]">
-            <span className="font-bold text-ceci-tertiary">progresso da graduação</span>
-            <span className="font-display font-bold text-sm text-ceci-brand-strong">
-              {percentDegree}% concluído
-            </span>
-          </div>
-          <ProgressBar value={percentDegree} />
-          <p className="text-[11px] text-ceci-secondary">
-            {profile.semester}º de {profile.totalSemesters} semestres
-          </p>
-        </div>
-
-        <p className="text-xs text-ceci-secondary leading-relaxed italic border-t border-ceci-border-subtle pt-3">
-          “{profile.dailyQuote}”
-        </p>
-      </div>
-
-      {/* ===== Resumo da jornada (métricas reais) ===== */}
-      <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
-        <div>
-          <h2 className="font-display font-bold text-xl text-ceci-primary">
-            resumo da minha jornada
-          </h2>
-          <p className="text-xs text-ceci-secondary">
-            tudo anotado com carinho ao longo dos semestres, reunido aqui ♡
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-2.5">
-          {tiles.map((tile) => (
-            <div
-              key={tile.label}
-              role="button"
-              tabIndex={0}
-              onClick={tile.onClick}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  tile.onClick();
-                }
-              }}
-              className="p-3 rounded-2xl bg-surface-muted border border-ceci-border-default hover:border-ceci-border-brand tap-interactive cursor-pointer"
-            >
-              <div className="w-7 h-7 rounded-lg bg-white border border-ceci-border-subtle flex items-center justify-center mb-1.5">
-                <tile.Icon className="w-3.5 h-3.5 text-ceci-brand-strong" />
-              </div>
-              <p className="font-display font-bold text-lg text-ceci-primary leading-none">
-                {tile.animate ? <AnimatedNumber value={tile.display as number} /> : tile.display}
-              </p>
-              <p className="text-[10px] font-medium text-ceci-secondary mt-0.5 leading-tight">
-                {tile.label}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <div className="flex items-center justify-end border-t border-ceci-border-subtle pt-3">
-          <span className="text-[11px] font-semibold text-ceci-brand-strong">
-            {profile.totalSemesters - profile.semester} semestres restantes
-          </span>
-        </div>
-      </div>
-
-      {/* ===== Sua jornada até aqui (funil dithered) ===== */}
+      <ProfileHeader
+        profile={profile}
+        percentDegree={percentDegree}
+        onPickPhoto={handlePickPhoto}
+        onRemovePhoto={handleRemovePhoto}
+      />
+      <JourneySummary tiles={tiles} semestersLeft={profile.totalSemesters - profile.semester} />
       <DitherFunnelChart
         stages={journeyStages}
         title="sua jornada até aqui"
@@ -527,326 +318,40 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
         formatValue={(n) => formatCount(n)}
       />
 
-      {/* ===== Ofensiva de estudos (streak real) ===== */}
       <StudyStatsWidget />
 
-      {/* ===== Linha do tempo da graduação ===== */}
-      <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
-        <div className="flex items-center justify-between gap-2">
-          <div>
-            <h2 className="font-display font-bold text-xl text-ceci-primary">
-              linha do tempo da minha graduação
-            </h2>
-            <p className="text-xs text-ceci-secondary">
-              acompanhando a caminhada desde o primeiro dia até a formação clínica.
-            </p>
-          </div>
-          <span className="text-xs bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand px-3 py-1 rounded-full font-medium shrink-0">
-            {percentDegree}% do caminho 🎓
-          </span>
-        </div>
+      <JourneyTimeline profile={profile} percentDegree={percentDegree} />
 
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-1">
-          {Array.from({ length: profile.totalSemesters }, (_, i) => i + 1).map((sem) => {
-            const isPast = sem < profile.semester;
-            const isCurrent = sem === profile.semester;
+      <StickersSection stickers={stickers} unlocked={stickersUnlocked} onOpen={openStickersScreen} />
 
-            return (
-              <div
-                key={sem}
-                className={`p-3.5 rounded-2xl border text-center ${
-                  isCurrent
-                    ? 'bg-surface-rose border-2 border-ceci-border-brand text-ceci-brand-strong shadow-2xs font-bold'
-                    : isPast
-                    ? 'bg-surface-blue/80 border-ceci-border-academic text-ceci-academic-strong'
-                    : 'bg-white border-ceci-border-default opacity-60 text-ceci-secondary'
-                }`}
-              >
-                <p className="text-xs opacity-80">semestre</p>
-                <p className="font-display text-2xl font-bold my-1">{sem}º</p>
-                <p className="text-[10px] font-medium">
-                  {isCurrent ? '🌸 em andamento' : isPast ? '✓ concluído' : 'aguardando'}
-                </p>
-              </div>
-            );
-          })}
-        </div>
+      <PersonalizationSection
+        reminderSettings={reminderSettings}
+        onUpdateReminder={updateReminder}
+        reminderSupported={isReminderSupported()}
+        gcalEnabled={gcalEnabled}
+        onSetGcalEnabled={setGcalEnabled}
+        gcalConfigured={isGcalConfigured()}
+        name={name}
+        onNameChange={setName}
+        semester={semester}
+        onSemesterChange={setSemester}
+        university={university}
+        onUniversityChange={setUniversity}
+        dailyQuote={dailyQuote}
+        onDailyQuoteChange={setDailyQuote}
+        onSaveProfile={handleSaveProfile}
+      />
 
-        <div className="p-4 rounded-2xl bg-surface-muted border border-ceci-border-default text-xs space-y-2">
-          <p className="font-semibold text-ceci-primary">💭 reflexão de jornada:</p>
-          <p className="text-ceci-secondary leading-relaxed">
-            “{getJourneyReflection(profile.semester, profile.totalSemesters)}”
-          </p>
-        </div>
-      </div>
-
-      {/* ===== Stickers & conquistas ===== */}
-      <div id="perfil-stickers" className="scroll-mt-4 rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-3">
-        <div className="flex items-center justify-between gap-2">
-          <div>
-            <h2 className="font-display font-bold text-xl text-ceci-primary">
-              stickers & conquistas
-            </h2>
-            <p className="text-xs text-ceci-secondary">
-              celebrando cada passo do cantinho ♡
-            </p>
-          </div>
-          <button
-            onClick={openStickersScreen}
-            className="flex items-center gap-1 text-xs font-bold text-ceci-brand-strong bg-surface-rose border border-ceci-border-brand px-3.5 py-2 rounded-xl tap-interactive cursor-pointer hover:bg-ceci-border-brand/40 active:scale-[0.98] transition-colors shrink-0"
-          >
-            ver conquistas
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-
-        <div className="flex items-center gap-2 flex-wrap pt-1">
-          {stickers.filter((s) => s.unlocked).slice(0, 6).map((st) => (
-            <span
-              key={st.id}
-              title={st.name}
-              className="w-11 h-11 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-2xl"
-            >
-              {st.emoji}
-            </span>
-          ))}
-          {stickers.filter((s) => !s.unlocked).slice(0, 3).map((st) => (
-            <span
-              key={st.id}
-              title={st.name}
-              className="w-11 h-11 rounded-2xl bg-surface-muted border border-dashed border-ceci-border-default flex items-center justify-center text-2xl opacity-50 grayscale"
-            >
-              {st.emoji}
-            </span>
-          ))}
-        </div>
-
-        <p className="text-[11px] text-ceci-secondary">
-          {stickersUnlocked} de {stickers.length} desbloqueados — bora buscar as próximas? ♡
-        </p>
-      </div>
-
-      {/* ===== Personalização do cantinho ===== */}
-      <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
-        <div className="flex items-center gap-2">
-          <Settings className="w-4 h-4 text-rose-500" />
-          <h2 className="font-display font-bold text-xl text-ceci-primary">
-            personalize seu cantinho
-          </h2>
-        </div>
-
-        {/* Lembrete diário de estudo (app nativo) */}
-        <div className={`rounded-2xl p-4 border ${isReminderSupported() ? 'bg-surface-rose border-ceci-border-brand' : 'bg-surface-muted border-ceci-border-default'} space-y-3`}>
-          <ToggleRow
-            label="lembrete diário de estudo ♡"
-            description={
-              isReminderSupported()
-                ? 'um carinho do cecistudy na hora de estudar.'
-                : 'ativável no aplicativo nativo (android/ios).'
-            }
-            checked={reminderSettings.enabled}
-            onChange={() => updateReminder({ ...reminderSettings, enabled: !reminderSettings.enabled })}
-            disabled={!isReminderSupported()}
-            className=""
-          />
-
-          {isReminderSupported() && (
-            <div className="flex items-center gap-3">
-              <span className="text-[11px] font-medium text-ceci-secondary">horário:</span>
-              <input
-                type="time"
-                value={reminderSettings.time}
-                onChange={(e) => updateReminder({ ...reminderSettings, time: e.target.value })}
-                disabled={!reminderSettings.enabled}
-                className="bg-white border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3 py-1.5 text-sm text-ceci-primary disabled:opacity-50"
-              />
-              <span className="text-[11px] text-ceci-tertiary">todas as noites</span>
-            </div>
-          )}
-        </div>
-
-        {/* Agenda do Google (provas e tarefas) */}
-        <div className={`rounded-2xl p-4 border ${gcalEnabled ? 'bg-surface-blue border-ceci-border-academic' : 'bg-surface-muted border-ceci-border-default'} space-y-3`}>
-          <ToggleRow
-            label="agenda do google ♡"
-            description={
-              isGcalConfigured()
-                ? 'suas provas e tarefas viram eventos na agenda.'
-                : 'precisa configurar o client id do google primeiro.'
-            }
-            checked={gcalEnabled}
-            onChange={() => void setGcalEnabled(!gcalEnabled)}
-            disabled={!isGcalConfigured()}
-            className=""
-          />
-          {!isGcalConfigured() && (
-            <p className="text-[11px] text-ceci-tertiary">
-              adicione <code className="rounded bg-white px-1 border border-ceci-border-default">VITE_GOOGLE_CLIENT_ID_WEB</code> no ambiente.
-            </p>
-          )}
-        </div>
-
-        <form onSubmit={handleSaveProfile} className="space-y-4 max-w-lg">
-          <div>
-            <label className="block text-xs font-medium text-ceci-secondary mb-1">seu nome</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-ceci-secondary mb-1">semestre atual</label>
-              <input
-                type="number"
-                value={semester}
-                onChange={(e) => setSemester(Number(e.target.value))}
-                className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-ceci-secondary mb-1">universidade</label>
-              <input
-                type="text"
-                value={university}
-                onChange={(e) => setUniversity(e.target.value)}
-                className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium text-ceci-secondary mb-1">frase motivacional de entrada</label>
-            <textarea
-              rows={2}
-              value={dailyQuote}
-              onChange={(e) => setDailyQuote(e.target.value)}
-              className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3.5 py-2 text-xs text-ceci-primary"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="bg-rose-500 hover:bg-ceci-brand text-white px-5 py-2.5 rounded-xl text-xs font-medium shadow-2xs cursor-pointer"
-          >
-            guardar configurações do cantinho
-          </button>
-        </form>
-      </div>
-
-      {/* ===== Atualização do app (OTA no nativo · updater no desktop) ===== */}
       {isNativePlatform && <OtaSection />}
-      {isDesktop && <DesktopUpdateSection />}
+      {shellExtras?.updateSection && <shellExtras.updateSection />}
+      <GithubSyncCard />
 
-      {/* ===== Dados do cantinho (backup / exemplos / reset) ===== */}
-      <div className="rounded-[24px] p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
-        <div className="flex items-center gap-2">
-          <Database className="w-4 h-4 text-ceci-academic-strong" />
-          <h2 className="font-display font-bold text-xl text-ceci-primary">
-            seus dados
-          </h2>
-        </div>
-        <p className="text-xs text-ceci-secondary leading-relaxed -mt-1">
-          tudo fica guardado só no seu dispositivo. faça um backup para migrar ou comece de novo quando quiser ♡
-        </p>
-
-        <button
-          onClick={openSyncScreen}
-          className="w-full flex items-center gap-2 bg-white border border-ceci-border-brand text-ceci-primary px-4 py-3 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer hover:bg-surface-rose transition-colors"
-        >
-          <RefreshCw className="w-4 h-4 text-ceci-brand-strong" />
-          sincronizar entre dispositivos
-          <ChevronRight className="w-4 h-4 ml-auto text-ceci-muted" />
-        </button>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          <button
-            onClick={() => exportData()}
-            className="flex items-center gap-2 bg-surface-blue border border-ceci-border-academic text-ceci-academic-strong px-4 py-3 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer hover:bg-ceci-academic-strong hover:text-white transition-colors"
-          >
-            <Download className="w-4 h-4" />
-            exportar backup
-          </button>
-
-          <label className="flex items-center gap-2 bg-white border border-ceci-border-default text-ceci-primary px-4 py-3 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer hover:border-ceci-border-brand transition-colors">
-            <Upload className="w-4 h-4" />
-            importar backup
-            <input
-              type="file"
-              accept="application/json,.json"
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = () => importData(String(reader.result));
-                reader.readAsText(file);
-                e.target.value = '';
-              }}
-            />
-          </label>
-
-          <button
-            onClick={() => setPendingAction('demos')}
-            className="flex items-center gap-2 bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong px-4 py-3 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer hover:bg-ceci-brand-strong hover:text-white transition-colors"
-          >
-            <Sparkles className="w-4 h-4" />
-            carregar exemplos
-          </button>
-
-          <button
-            onClick={() => setPendingAction('reset')}
-            className="flex items-center gap-2 bg-white border border-ceci-border-default text-ceci-secondary px-4 py-3 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer hover:border-red-400 hover:text-red-700 transition-colors"
-          >
-            <RotateCcw className="w-4 h-4" />
-            resetar cantinho
-          </button>
-
-          <Modal
-            open={pendingAction !== null}
-            onClose={() => setPendingAction(null)}
-            closeOnBackdrop={false}
-          >
-            <div className="w-full max-w-sm bg-white rounded-[24px] shadow-[0_20px_40px_rgba(64,56,58,0.15)] p-6">
-              <h3 className="font-display font-bold text-lg text-ceci-primary mb-2">
-                {pendingAction === 'demos' ? 'carregar exemplos?' : 'resetar cantinho?'}
-              </h3>
-              <p className="text-sm text-ceci-secondary leading-relaxed mb-5">
-                {pendingAction === 'demos'
-                  ? 'isso substitui o conteúdo atual do cantinho por dados de exemplo. a sua evolução atual será perdida.'
-                  : 'isso apaga todo o conteúdo do cantinho e não dá para desfazer. tem certeza?'}
-              </p>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setPendingAction(null)}
-                  className="flex-1 py-3 rounded-2xl text-sm font-semibold text-ceci-secondary bg-white border border-ceci-border-default cursor-pointer active:scale-95 transition-transform"
-                >
-                  cancelar
-                </button>
-                <button
-                  onClick={() => {
-                    if (pendingAction === 'demos') loadDemoData();
-                    else resetApp();
-                    setPendingAction(null);
-                  }}
-                  className={`flex-1 py-3 rounded-2xl text-sm font-semibold text-white cursor-pointer active:scale-95 transition-transform ${
-                    pendingAction === 'demos'
-                      ? 'bg-ceci-brand hover:bg-ceci-brand-strong'
-                      : 'bg-red-500 hover:bg-red-600'
-                  }`}
-                >
-                  confirmar
-                </button>
-              </div>
-            </div>
-          </Modal>
-        </div>
-      </div>
-
+      <DataSection
+        onOpenSync={openSyncScreen}
+        onExport={() => exportData()}
+        onImport={(json) => importData(json)}
+        onReset={resetApp}
+      />
       {/* rodapé carinhoso */}
       <div className="flex items-center justify-center gap-1.5 pt-1 text-[11px] text-ceci-tertiary">
         <Sparkles className="w-3.5 h-3.5" />

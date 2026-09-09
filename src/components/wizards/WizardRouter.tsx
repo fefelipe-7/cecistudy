@@ -1,5 +1,5 @@
 import React from 'react';
-import { useApp } from '../../context/AppContext';
+import { useMobileApp } from '@/context/mobileApp';
 import { TaskExamWizard } from './TaskExamWizard';
 import { FlashcardWizard } from './FlashcardWizard';
 import { ReadingWizard } from './ReadingWizard';
@@ -12,7 +12,7 @@ import { CourseWizard } from './CourseWizard';
 
 /** Renderiza o wizard correspondente ao topo da pilha (`currentWizardType`). */
 export const WizardRouter: React.FC = () => {
-  const { currentWizardType, wizardEdit } = useApp();
+  const { currentWizardType, wizardEdit } = useMobileApp();
   if (!currentWizardType) return null;
   switch (currentWizardType) {
     case 'task':

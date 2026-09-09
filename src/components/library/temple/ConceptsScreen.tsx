@@ -1,11 +1,22 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, ChevronRight, Lightbulb, Loader2 } from 'lucide-react';
+import { Lightbulb } from 'lucide-react';
 import type { TempleConcept, TempleConceptDomain, TempleConceptIndexEntry } from '../../../types';
 import {
   getTempleConceptDomains,
   getTempleConceptIndex,
   getTempleConceptsByDomain,
 } from '../../../lib/templeData';
+import { MarkdownBlock } from './MarkdownBlock';
+import {
+  TempleAccordionHeader,
+  TempleBackButton,
+  TempleEmptyState,
+  TempleIntroCard,
+  TempleLead,
+  TempleLoading,
+  TempleSearchInput,
+  TempleSectionCard,
+} from './TempleShared';
 
 /** Rótulos pt-BR das seções do detalhe (ordem de exibição). */
 const SECTION_LABELS: Array<[string, string]> = [
@@ -23,6 +34,9 @@ const SECTION_LABELS: Array<[string, string]> = [
   ['literatureDebates', 'debates na literatura'],
   ['sources', 'fontes'],
 ];
+
+/** Seções que ganham destaque visual no detalhe. */
+const HIGHLIGHT_SECTIONS = new Set(['importance']);
 
 export const ConceptsScreen: React.FC = () => {
   const [domains, setDomains] = useState<TempleConceptDomain[]>([]);
@@ -76,39 +90,46 @@ export const ConceptsScreen: React.FC = () => {
   };
 
   if (selected) {
+    const highlightKeys = new Set(
+      SECTION_LABELS.filter(([key]) => HIGHLIGHT_SECTIONS.has(key)).map(([, label]) => label)
+    );
     return (
       <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-4 pb-1 relative">
-        <button
+        <TempleBackButton
           onClick={() => setSelected(null)}
-          className="flex items-center gap-2 text-sm font-semibold text-ceci-brand-strong hover:text-ceci-primary transition-colors cursor-pointer px-1 py-2"
-          aria-label="voltar para a lista de conceitos"
-        >
-          <ArrowLeft className="w-4 h-4" /> voltar aos conceitos
-        </button>
+          label="voltar aos conceitos"
+          ariaLabel="voltar para a lista de conceitos"
+        />
 
-        <div className="bg-white rounded-[24px] p-5 border border-ceci-border-default space-y-2 shadow-2xs">
-          <span
-            className="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-surface-blue text-ceci-academic-strong border border-ceci-border-academic"
-          >
-            {selected.domainName ?? selected.domainId}
-          </span>
-          <h1 className="text-xl font-bold font-display text-ceci-primary leading-tight">
-            {selected.name}
-          </h1>
-          <p className="text-sm text-ceci-secondary leading-relaxed">{selected.definition}</p>
+        <div className="bg-white rounded-2xl p-5 border border-ceci-border-default space-y-3 shadow-2xs">
+          <div className="flex items-start justify-between gap-3">
+            <h1 className="text-xl font-bold font-display text-ceci-primary leading-tight min-w-0">
+              {selected.name}
+            </h1>
+            <span className="shrink-0 mt-0.5">
+              <span className="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-surface-blue text-ceci-academic-strong border border-ceci-border-academic whitespace-nowrap">
+                {selected.domainName ?? selected.domainId}
+              </span>
+            </span>
+          </div>
+          <TempleLead accent="academic" icon={<Lightbulb />}>
+            <MarkdownBlock source={selected.definition} />
+          </TempleLead>
         </div>
 
-        <div className="space-y-3 px-0">
+        <div className="space-y-3">
           {SECTION_LABELS.map(([key, label]) => {
             const body = selected.sections?.[key];
             if (!body || !body.trim()) return null;
             return (
-              <div key={key} className="bg-white rounded-[22px] p-4 border border-ceci-border-default shadow-2xs">
-                <h2 className="text-xs uppercase tracking-wider font-bold text-ceci-secondary mb-1.5">
-                  {label}
-                </h2>
-                <p className="text-sm text-ceci-primary leading-relaxed whitespace-pre-line">{body}</p>
-              </div>
+              <TempleSectionCard
+                key={key}
+                title={label}
+                accent="academic"
+                highlighted={highlightKeys.has(label)}
+              >
+                <MarkdownBlock source={body} />
+              </TempleSectionCard>
             );
           })}
         </div>
@@ -118,37 +139,16 @@ export const ConceptsScreen: React.FC = () => {
 
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-5 pb-1 relative">
-      {/* Intro */}
-      <div className="bg-white rounded-[24px] p-5 border border-ceci-border-default space-y-1.5 shadow-2xs">
-        <div className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-2xl bg-surface-blue border border-ceci-border-academic flex items-center justify-center text-ceci-academic-strong shrink-0">
-            <Lightbulb className="w-5 h-5" />
-          </div>
-          <div>
-            <h1 className="text-lg font-bold font-display text-ceci-primary leading-tight">
-              {loading ? 'conceitos' : `${index.length} conceitos, ${domains.length} domínios`}
-            </h1>
-            <p className="text-xs text-ceci-secondary">
-              ideias-chave organizadas por domínio da psicologia
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Busca */}
-      <input
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="procurar conceito…"
-        className="w-full bg-white border border-ceci-border-default rounded-2xl px-4 py-3 text-sm text-ceci-primary placeholder:text-ceci-muted focus:border-ceci-border-academic focus:outline-none shadow-2xs mx-auto block"
-        aria-label="procurar conceito"
+      <TempleIntroCard
+        accent="academic"
+        icon={<Lightbulb />}
+        title={loading ? 'conceitos' : `${index.length} conceitos`}
+        subtitle={`ideias-chave da psicologia em ${domains.length} domínios`}
       />
 
-      {loading && (
-        <div className="flex items-center justify-center gap-2 py-8 text-sm text-ceci-secondary">
-          <Loader2 className="w-4 h-4 animate-spin" /> carregando conceitos…
-        </div>
-      )}
+      <TempleSearchInput value={query} onChange={setQuery} label="procurar conceito" placeholder="procurar conceito…" />
+
+      {loading && <TempleLoading label="carregando conceitos…" />}
 
       {/* Lista por domínio */}
       <div className="space-y-3 px-1">
@@ -158,20 +158,17 @@ export const ConceptsScreen: React.FC = () => {
             if (entries.length === 0) return null;
             const isOpen = openDomain === domain.id || q.length > 0;
             return (
-              <div key={domain.id} className="bg-white rounded-[22px] border border-ceci-border-default shadow-2xs overflow-hidden">
-                <button
-                  onClick={() => setOpenDomain(isOpen && !q ? null : domain.id)}
-                  className="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-surface-muted transition-colors text-left"
-                  aria-expanded={isOpen}
-                >
-                  <div className="min-w-0">
-                    <h2 className="text-sm font-bold text-ceci-primary font-display">{domain.name}</h2>
-                    <p className="text-xs text-ceci-secondary">{entries.length} conceitos</p>
-                  </div>
-                  <ChevronRight
-                    className={`w-4 h-4 text-ceci-tertiary transition-transform shrink-0 ${isOpen ? 'rotate-90' : ''}`}
-                  />
-                </button>
+              <div
+                key={domain.id}
+                className="bg-white rounded-xl border border-ceci-border-default shadow-2xs overflow-hidden"
+              >
+                <TempleAccordionHeader
+                  title={domain.name}
+                  count={entries.length}
+                  countLabel="conceitos"
+                  open={isOpen}
+                  onToggle={() => setOpenDomain(isOpen && !q ? null : domain.id)}
+                />
                 {isOpen && (
                   <div className="border-t border-ceci-border-subtle divide-y divide-ceci-border-subtle">
                     {entries.map((entry) => (
@@ -179,14 +176,11 @@ export const ConceptsScreen: React.FC = () => {
                         key={entry.id}
                         onClick={() => void openConcept(entry)}
                         disabled={loadingDetail}
-                        className="w-full text-left px-4 py-3 hover:bg-surface-rose transition-colors cursor-pointer group disabled:opacity-60"
+                        className="w-full text-left px-4 py-3 hover:bg-surface-blue transition-colors cursor-pointer group disabled:opacity-60"
                       >
-                        <div className="flex items-center justify-between gap-2">
-                          <h3 className="text-sm font-semibold text-ceci-primary group-hover:text-ceci-academic-strong transition-colors truncate">
-                            {entry.name}
-                          </h3>
-                          {loadingDetail && <Loader2 className="w-3.5 h-3.5 animate-spin text-ceci-muted shrink-0" />}
-                        </div>
+                        <h3 className="text-sm font-semibold text-ceci-primary group-hover:text-ceci-academic-strong transition-colors truncate">
+                          {entry.name}
+                        </h3>
                         {entry.definition && (
                           <p className="text-xs text-ceci-secondary mt-0.5 line-clamp-2">{entry.definition}</p>
                         )}
@@ -198,10 +192,8 @@ export const ConceptsScreen: React.FC = () => {
             );
           })}
 
-        {!loading && Object.keys(Object.fromEntries(byDomain)).length === 0 && (
-          <div className="text-center py-8">
-            <p className="text-sm text-ceci-secondary">nada por aqui com esse nome ♡</p>
-          </div>
+        {!loading && byDomain.size === 0 && (
+          <TempleEmptyState message="nada por aqui com esse nome ♡" />
         )}
       </div>
     </div>
