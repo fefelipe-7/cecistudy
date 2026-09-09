@@ -68,8 +68,8 @@ jobs:
       - name: boundary check (mobile/desktop/packages)
         run: node .github/scripts/check-boundaries.mjs
 
-      - name: build web
-        run: npm run build
+      - name: build web (desktop)
+        run: npm run build --workspace=apps/desktop
 
       - name: derive version
         id: version
@@ -88,8 +88,8 @@ jobs:
       - name: upload dist (para build tauri)
         uses: actions/upload-artifact@v4
         with:
-          name: web-dist
-          path: dist
+          name: desktop-web-dist
+          path: apps/desktop/dist
           if-no-files-found: error
 
   desktop:
@@ -123,11 +123,11 @@ jobs:
       - name: install deps (raiz)
         run: npm ci
 
-      - name: download dist
+      - name: download dist (desktop web, para o tauri)
         uses: actions/download-artifact@v4
         with:
-          name: web-dist
-          path: dist
+          name: desktop-web-dist
+          path: apps/desktop/dist
 
       - name: setup rust
         uses: dtolnay/rust-toolchain@stable
