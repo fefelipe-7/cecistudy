@@ -69,7 +69,7 @@ export const AuthorSuggestInput: React.FC<AuthorSuggestInputProps> = ({
       />
 
       {focused && matches.length > 0 && (
-        <div className="absolute z-20 left-0 right-0 top-full mt-1 bg-white rounded-2xl border border-ceci-border-default shadow-lg overflow-hidden">
+        <div className="absolute z-20 left-0 right-0 top-full mt-1 bg-surface-default rounded-2xl border border-ceci-border-default shadow-lg overflow-hidden">
           {matches.map((name) => (
             <button
               key={name}

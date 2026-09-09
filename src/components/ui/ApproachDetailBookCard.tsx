@@ -24,7 +24,7 @@ export const ApproachDetailBookCard: React.FC<ApproachDetailBookCardProps> = ({
   return (
     <button
       onClick={onSelect}
-      className={`w-full flex flex-col items-start p-4 border border-ceci-border-default rounded-[18px] bg-white ${
+      className={`w-full flex flex-col items-start p-4 border border-ceci-border-default rounded-[18px] bg-surface-default ${
         isFeatured
           ? 'border-ceci-brand-strong bg-surface-rose/20'
           : 'hover:border-ceci-brand-strong'

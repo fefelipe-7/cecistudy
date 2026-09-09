@@ -20,7 +20,7 @@ const ACCENTS: Record<
   academic: {
     tile: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong',
     chipActive: 'bg-surface-blue text-ceci-academic-strong border-ceci-border-academic shadow-xs',
-    chipIdle: 'bg-white text-ceci-secondary border border-ceci-border-default hover:bg-surface-blue',
+    chipIdle: 'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-surface-blue',
     lead: 'bg-surface-blue border border-ceci-border-academic rounded-[18px] p-3.5',
     leadIcon: 'text-ceci-academic-strong shrink-0 mt-0.5',
     sectionHighlight: 'rounded-xl p-4 border shadow-2xs bg-surface-blue border-ceci-border-academic',
@@ -30,7 +30,7 @@ const ACCENTS: Record<
   success: {
     tile: 'bg-surface-mint-soft border-ceci-border-mint text-success-deep',
     chipActive: 'bg-surface-mint-soft text-success-deep border-ceci-border-mint shadow-xs',
-    chipIdle: 'bg-white text-ceci-secondary border border-ceci-border-default hover:bg-surface-mint-soft',
+    chipIdle: 'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-surface-mint-soft',
     lead: 'bg-surface-mint-soft border border-ceci-border-mint rounded-[18px] p-3.5',
     leadIcon: 'text-success-deep shrink-0 mt-0.5',
     sectionHighlight: 'rounded-xl p-4 border shadow-2xs bg-surface-mint-soft border-ceci-border-mint',
@@ -40,7 +40,7 @@ const ACCENTS: Record<
   brand: {
     tile: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong',
     chipActive: 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand shadow-xs',
-    chipIdle: 'bg-white text-ceci-secondary border border-ceci-border-default hover:bg-surface-rose',
+    chipIdle: 'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-surface-rose',
     lead: 'bg-surface-rose border border-ceci-border-brand rounded-[18px] p-3.5',
     leadIcon: 'text-ceci-brand-strong shrink-0 mt-0.5',
     sectionHighlight: 'rounded-xl p-4 border shadow-2xs bg-surface-rose border-ceci-border-brand',
@@ -57,7 +57,7 @@ export const TempleIntroCard: React.FC<{
   title: string;
   subtitle: string;
 }> = ({ accent, icon, title, subtitle }) => (
-  <div className="bg-white rounded-2xl p-5 border border-ceci-border-default shadow-2xs">
+  <div className="bg-surface-default rounded-2xl p-5 border border-ceci-border-default shadow-2xs">
     <div className="flex items-center gap-2.5">
       <div
         className={`w-10 h-10 rounded-2xl border flex items-center justify-center shrink-0 [&_svg]:w-5 [&_svg]:h-5 ${ACCENTS[accent].tile}`}
@@ -84,7 +84,7 @@ export const TempleSearchInput: React.FC<{
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder ?? `${label}…`}
-      className="w-full bg-white border border-ceci-border-default rounded-2xl pl-11 pr-4 py-3 text-sm text-ceci-primary placeholder:text-ceci-muted focus:border-ceci-border-brand focus:outline-none shadow-2xs"
+      className="w-full bg-surface-default border border-ceci-border-default rounded-2xl pl-11 pr-4 py-3 text-sm text-ceci-primary placeholder:text-ceci-muted focus:border-ceci-border-brand focus:outline-none shadow-2xs"
       aria-label={label}
     />
   </div>
@@ -160,7 +160,7 @@ export const TempleSectionCard: React.FC<{
     className={
       highlighted
         ? ACCENTS[accent].sectionHighlight
-        : 'rounded-xl p-4 border shadow-2xs bg-white border-ceci-border-default'
+        : 'rounded-xl p-4 border shadow-2xs bg-surface-default border-ceci-border-default'
     }
   >
     <h2 className={highlighted ? ACCENTS[accent].sectionHighlightTitle : 'text-xs uppercase tracking-wider font-bold mb-2 text-ceci-secondary'}>
@@ -178,7 +178,7 @@ export const TempleLoading: React.FC<{ label: string }> = ({ label }) => (
 
 export const TempleEmptyState: React.FC<{ message: string }> = ({ message }) => (
   <div className="text-center py-8">
-    <p className="text-sm text-ceci-secondary">{message}</p>
+    <p className="font-serif-academic text-base text-ceci-secondary">{message}</p>
   </div>
 );
 

@@ -184,7 +184,7 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
                   key={r.id}
                   type="button"
                   onClick={() => adoptMyReading(r.id)}
-                  className="w-full flex items-center gap-2 text-left bg-white rounded-xl border border-ceci-border-subtle px-3 py-2.5 hover:bg-surface-muted tap-interactive cursor-pointer transition-colors"
+                  className="w-full flex items-center gap-2 text-left bg-surface-default rounded-xl border border-ceci-border-subtle px-3 py-2.5 hover:bg-surface-muted tap-interactive cursor-pointer transition-colors"
                 >
                   <BookOpen className="w-4 h-4 text-ceci-brand-strong shrink-0" />
                   <span className="min-w-0 flex-1">
@@ -209,7 +209,7 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
                   key={w.id}
                   type="button"
                   onClick={() => adoptCatalogWork(w.id)}
-                  className="w-full flex items-center gap-2 text-left bg-white rounded-xl border border-ceci-border-subtle px-3 py-2.5 hover:bg-surface-muted tap-interactive cursor-pointer transition-colors"
+                  className="w-full flex items-center gap-2 text-left bg-surface-default rounded-xl border border-ceci-border-subtle px-3 py-2.5 hover:bg-surface-muted tap-interactive cursor-pointer transition-colors"
                 >
                   <Library className="w-4 h-4 text-ceci-academic-strong shrink-0" />
                   <span className="min-w-0 flex-1">

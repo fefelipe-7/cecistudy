@@ -83,7 +83,7 @@ export const AuthorsScreen: React.FC = () => {
         />
 
         {/* cabeçalho */}
-        <div className="bg-white rounded-2xl p-5 space-y-3 shadow-2xs border border-ceci-border-default">
+        <div className="bg-surface-default rounded-2xl p-5 space-y-3 shadow-2xs border border-ceci-border-default">
           <div className="flex items-start gap-3">
             <div className="w-12 h-12 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0 [&_svg]:w-6 [&_svg]:h-6">
               <User />
@@ -204,7 +204,7 @@ export const AuthorsScreen: React.FC = () => {
               className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                 sortMode === value
                   ? 'bg-surface-muted text-beige-700 border border-ceci-border-strong shadow-xs'
-                  : 'bg-white text-ceci-secondary border border-ceci-border-default hover:bg-surface-muted'
+                  : 'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-surface-muted'
               }`}
               aria-pressed={sortMode === value}
             >
@@ -252,7 +252,7 @@ export const AuthorsScreen: React.FC = () => {
 const AuthorRow: React.FC<{ author: TempleAuthor; onOpen: () => void }> = ({ author, onOpen }) => (
   <button
     onClick={onOpen}
-    className="w-full text-left bg-white rounded-[18px] px-4 py-3 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between gap-2"
+    className="w-full text-left bg-surface-default rounded-[18px] px-4 py-3 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between gap-2"
   >
     <div className="min-w-0 pr-1">
       <h3 className="text-sm font-semibold text-ceci-primary font-display truncate group-hover:text-ceci-brand-strong transition-colors">

@@ -14,7 +14,7 @@ export const ApproachDetailVerbCard: React.FC<ApproachDetailVerbCardProps> = ({
   return (
     <button
       onClick={onSelect}
-      className="w-[120px] flex flex-col items-center p-3 border border-ceci-border-default rounded-[18px] bg-white hover:border-ceci-brand-strong cursor-pointer transition-colors"
+      className="w-[120px] flex flex-col items-center p-3 border border-ceci-border-default rounded-[18px] bg-surface-default hover:border-ceci-brand-strong cursor-pointer transition-colors"
     >
       <div className="w-10 h-10 rounded-full bg-surface-mint-soft flex items-center justify-center mb-2">
         <Wrench className="w-5 h-5 text-success-deep" />

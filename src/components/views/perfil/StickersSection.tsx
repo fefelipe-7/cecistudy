@@ -11,7 +11,7 @@ interface StickersSectionProps {
 }
 
 const StickersSection: React.FC<StickersSectionProps> = ({ stickers, unlocked, onOpen }) => (
-  <div id="perfil-stickers" className="scroll-mt-4 rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm space-y-3">
+  <div id="perfil-stickers" className="scroll-mt-4 rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm space-y-3">
     <div className="flex items-center justify-between gap-2">
       <div>
         <h2 className="font-display font-bold text-xl text-ceci-primary">

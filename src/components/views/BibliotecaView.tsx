@@ -229,7 +229,7 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
         <div className="flex items-center gap-2">
           <button
             onClick={openTemple}
-            className="w-10 h-10 rounded-2xl bg-white border border-ceci-border-default hover:border-ceci-border-brand flex items-center justify-center text-ceci-primary shadow-2xs tap-interactive active:scale-95 cursor-pointer"
+            className="w-10 h-10 rounded-2xl bg-surface-default border border-ceci-border-default hover:border-ceci-border-brand flex items-center justify-center text-ceci-primary shadow-2xs tap-interactive active:scale-95 cursor-pointer"
             title="templo de conhecimento"
           >
             <Landmark className="w-5 h-5" />

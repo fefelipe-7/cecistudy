@@ -70,7 +70,7 @@ export const PillGroup = <T extends string>({
                   ? VARIANT_CLASSES[variant]
                   : outline
                     ? 'text-ceci-secondary hover:text-ceci-primary hover:bg-surface-rose'
-                    : 'bg-white text-ceci-secondary border border-ceci-border-default hover:bg-surface-muted'
+                    : 'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-surface-muted'
               )}
             >
               {o.emoji ? `${o.emoji} ` : ''}

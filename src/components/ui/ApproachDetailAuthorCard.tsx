@@ -14,7 +14,7 @@ export const ApproachDetailAuthorCard: React.FC<ApproachDetailAuthorCardProps> =
   return (
     <button
       onClick={onSelect}
-      className="w-[120px] flex flex-col items-center p-3 border border-ceci-border-default rounded-[18px] bg-white hover:border-ceci-brand-strong cursor-pointer transition-colors"
+      className="w-[120px] flex flex-col items-center p-3 border border-ceci-border-default rounded-[18px] bg-surface-default hover:border-ceci-brand-strong cursor-pointer transition-colors"
     >
       <div className="w-10 h-10 rounded-full bg-surface-blue flex items-center justify-center mb-2">
         <User className="w-5 h-5 text-ceci-academic-strong" />

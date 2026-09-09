@@ -56,7 +56,7 @@ function FilterSection({
   count: number;
 }) {
   return (
-    <div className="rounded-xl bg-white border border-ceci-border-default overflow-hidden">
+    <div className="rounded-xl bg-surface-default border border-ceci-border-default overflow-hidden">
       <button
         onClick={onToggleOpen}
         className="w-full flex items-center justify-between gap-3 p-4"
@@ -125,7 +125,7 @@ function FilterSection({
 function CountSelector({ count, onChange, maxAvailable }: { count: number; onChange: (n: number) => void; maxAvailable: number }) {
   const options = [5, 10, 15, 20].filter((n) => n <= maxAvailable);
   return (
-    <div className="rounded-xl bg-white border border-ceci-border-default p-4">
+    <div className="rounded-xl bg-surface-default border border-ceci-border-default p-4">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Target className="w-5 h-5 text-ceci-brand-strong" />
@@ -237,7 +237,7 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 space-y-4">
           {/* Card explicativo */}
           <div
-            className="rounded-xl p-4 bg-white border border-ceci-border-default shadow-sm text-center space-y-3"
+            className="rounded-xl p-4 bg-surface-default border border-ceci-border-default shadow-sm text-center space-y-3"
           >
             <Mascote expression="quiz-ready" className="w-12 h-12 mx-auto" decorative />
             <div>
@@ -325,7 +325,7 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
         </div>
       </div>
 
-      <div className="fixed bottom-0 inset-x-0 z-10 bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(64,56,58,0.06)]">
+      <div className="fixed bottom-0 inset-x-0 z-10 bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(var(--shadow-rgb),0.06)]">
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
           <button
             onClick={onClose}

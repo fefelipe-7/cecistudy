@@ -222,7 +222,7 @@ export const NoteTransformWizard: React.FC = () => {
                   setTarget(opt.type);
                   setStep(1);
                 }}
-                className="w-full flex items-center gap-3.5 p-4 rounded-xl bg-white border-2 border-ceci-border-default hover:border-ceci-border-brand text-left transition-all active:scale-[0.98] cursor-pointer shadow-sm"
+                className="w-full flex items-center gap-3.5 p-4 rounded-xl bg-surface-default border-2 border-ceci-border-default hover:border-ceci-border-brand text-left transition-all active:scale-[0.98] cursor-pointer shadow-sm"
               >
                 <span className={`w-11 h-11 rounded-2xl border flex items-center justify-center shrink-0 ${opt.accent}`}>
                   <Icon className="w-5 h-5" />
@@ -255,7 +255,7 @@ export const NoteTransformWizard: React.FC = () => {
                     setTarget(opt.type);
                     setStep(1);
                   }}
-                  className="w-full flex flex-col items-start gap-2 p-3.5 rounded-xl bg-white border border-ceci-border-default hover:border-ceci-border-brand text-left transition-all active:scale-[0.98] cursor-pointer shadow-2xs"
+                  className="w-full flex flex-col items-start gap-2 p-3.5 rounded-xl bg-surface-default border border-ceci-border-default hover:border-ceci-border-brand text-left transition-all active:scale-[0.98] cursor-pointer shadow-2xs"
                 >
                   <span className={`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 ${opt.accent}`}>
                     <Icon className="w-4 h-4" />
@@ -725,7 +725,7 @@ export const NoteTransformWizard: React.FC = () => {
           )}
           <button
             onClick={closeAllNoteScreens}
-            className="w-full min-h-[44px] rounded-2xl border border-ceci-border-default bg-white text-ceci-secondary text-sm font-semibold active:scale-[0.98] transition-transform cursor-pointer"
+            className="w-full min-h-[44px] rounded-2xl border border-ceci-border-default bg-surface-default text-ceci-secondary text-sm font-semibold active:scale-[0.98] transition-transform cursor-pointer"
           >
             voltar para as notas
           </button>

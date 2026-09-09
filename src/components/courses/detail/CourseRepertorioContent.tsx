@@ -35,12 +35,20 @@ export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = (
         </h3>
 
         {courseConcepts.length > 0 ? (
-          <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
+          <div className="space-y-2">
             {courseConcepts.map((concept) => (
-              <ManageSurface key={concept.id} kind="concept" id={concept.id} className="py-3 space-y-1">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-display font-bold text-sm text-ceci-primary">{concept.name}</h4>
-                </div>
+              <ManageSurface
+                key={concept.id}
+                kind="concept"
+                id={concept.id}
+                className="rounded-2xl bg-surface-default border border-ceci-border-default p-3.5 pl-4 space-y-1 relative overflow-hidden"
+              >
+                <span
+                  aria-hidden
+                  className="absolute left-0 top-3.5 bottom-3.5 w-1 rounded-r-full"
+                  style={{ background: course.color }}
+                />
+                <h4 className="font-display font-bold text-sm text-ceci-primary">{concept.name}</h4>
                 <p className="text-xs text-ceci-secondary leading-relaxed">{concept.definition}</p>
                 {concept.tags && concept.tags.length > 0 && (
                   <TagList tags={concept.tags} size="sm" className="pt-1" />

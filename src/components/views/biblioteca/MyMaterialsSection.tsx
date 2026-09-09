@@ -62,7 +62,7 @@ export const MyMaterialsSection: React.FC<MyMaterialsSectionProps> = ({
     {/* Simple Navigation Card "suas notas" */}
     <button
       onClick={onOpenNotes}
-      className="w-full text-left bg-white rounded-xl p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs tap-interactive hover:shadow-xs active:scale-[0.99] cursor-pointer group flex items-center justify-between"
+      className="w-full text-left bg-surface-default rounded-xl p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs tap-interactive hover:shadow-xs active:scale-[0.99] cursor-pointer group flex items-center justify-between"
     >
       <div className="flex items-center gap-3 min-w-0 pr-2">
         <div className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong group-hover:bg-ceci-brand-strong group-hover:text-white transition-colors shrink-0">

@@ -32,10 +32,10 @@ const InternshipSection: React.FC<InternshipSectionProps> = ({
     <button
       onClick={onOpenDiary}
       aria-label="abrir diário de estágio"
-      className="w-full rounded-[26px] p-5 bg-gradient-to-br from-surface-rose via-white to-surface-blue border border-ceci-border-brand shadow-sm card-lift press-card cursor-pointer relative overflow-hidden group"
+      className="w-full rounded-[26px] p-5 bg-gradient-to-br from-surface-rose via-surface-default to-surface-blue border border-ceci-border-brand shadow-sm card-lift press-card cursor-pointer relative overflow-hidden group"
     >
       <div className="flex items-center gap-4">
-        <span className="w-14 h-14 rounded-xl bg-white border border-ceci-border-brand flex items-center justify-center shadow-2xs shrink-0">
+        <span className="w-14 h-14 rounded-xl bg-surface-default border border-ceci-border-brand flex items-center justify-center shadow-2xs shrink-0">
           <HeartHandshake className="w-7 h-7 text-ceci-brand-strong" />
         </span>
         <div className="min-w-0 flex-1">

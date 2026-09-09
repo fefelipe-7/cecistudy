@@ -75,7 +75,7 @@ export const CourseCreateMenu: React.FC<CourseCreateMenuProps> = ({
             <div
               role="menu"
               aria-label="registros rápidos da disciplina"
-              className="flex flex-col items-end gap-1 rounded-2xl bg-white border border-ceci-border-default shadow-floating p-1.5"
+              className="flex flex-col items-end gap-1 rounded-2xl bg-surface-default border border-ceci-border-default shadow-floating p-1.5"
             >
               {ACTIONS.map((action) => {
                 const Icon = action.icon;

@@ -151,7 +151,7 @@ export const ClassNoteDetailWizard: React.FC = () => {
             onChange={setMaterialIds}
           />
 
-          <div className="bg-white rounded-2xl border border-ceci-border-default px-4 py-4 shadow-2xs space-y-2">
+          <div className="bg-surface-default rounded-2xl border border-ceci-border-default px-4 py-4 shadow-2xs space-y-2">
             <p className="text-xs font-bold text-ceci-primary">sua avaliação da aula</p>
             <p className="text-[11px] text-ceci-secondary">ajuda a classificar melhor as aulas no seu diário.</p>
             <StarRating value={rating} onChange={setRating} showLabel />
@@ -162,7 +162,7 @@ export const ClassNoteDetailWizard: React.FC = () => {
             description="marca aqui para revisar depois"
             checked={hasQuestions}
             onChange={() => setHasQuestions(!hasQuestions)}
-            className="bg-white rounded-2xl border border-ceci-border-default px-4 py-3 shadow-2xs"
+            className="bg-surface-default rounded-2xl border border-ceci-border-default px-4 py-3 shadow-2xs"
           />
         </div>
       ),

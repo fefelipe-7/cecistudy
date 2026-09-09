@@ -36,7 +36,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({
     <Modal
       open
       onClose={onClose}
-      className="w-full max-w-sm bg-white rounded-[28px] border border-ceci-border-default shadow-2xl overflow-hidden text-ceci-primary flex flex-col max-h-[85dvh]"
+      className="w-full max-w-sm bg-surface-default rounded-[28px] border border-ceci-border-default shadow-2xl overflow-hidden text-ceci-primary flex flex-col max-h-[85dvh]"
     >
       {/* Hero da família */}
       <div
@@ -131,7 +131,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({
               </a>
               <button
                 onClick={handleCopyLink}
-                className="p-3 rounded-2xl bg-white border border-ceci-border-default text-ceci-secondary hover:bg-surface-rose hover:text-ceci-brand-strong flex items-center justify-center transition-colors cursor-pointer min-h-[44px]"
+                className="p-3 rounded-2xl bg-surface-default border border-ceci-border-default text-ceci-secondary hover:bg-surface-rose hover:text-ceci-brand-strong flex items-center justify-center transition-colors cursor-pointer min-h-[44px]"
                 title="copiar link"
                 aria-label="copiar link do artigo"
               >
@@ -143,7 +143,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({
       </div>
 
       {/* Rodapé fixo — sempre visível */}
-      <div className="shrink-0 flex items-center gap-2 px-6 py-4 border-t border-ceci-border-subtle bg-white">
+      <div className="shrink-0 flex items-center gap-2 px-6 py-4 border-t border-ceci-border-subtle bg-surface-default">
         <BookmarkToggle
           active={isSaved}
           onToggle={onToggleSave}

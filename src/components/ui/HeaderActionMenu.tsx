@@ -32,7 +32,7 @@ export const HeaderActionMenu: React.FC<HeaderActionMenuProps> = ({ actions }) =
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="w-9 h-9 rounded-2xl bg-white border border-ceci-border-default hover:border-ceci-border-brand flex items-center justify-center shadow-2xs hover:bg-surface-rose tap-interactive cursor-pointer active:scale-95"
+        className="w-9 h-9 rounded-2xl bg-surface-default border border-ceci-border-default hover:border-ceci-border-brand flex items-center justify-center shadow-2xs hover:bg-surface-rose tap-interactive cursor-pointer active:scale-95"
         title="mais ações"
         aria-label="mais ações"
         aria-expanded={open}
@@ -41,7 +41,7 @@ export const HeaderActionMenu: React.FC<HeaderActionMenuProps> = ({ actions }) =
       </button>
 
       {open && (
-        <div className="absolute right-0 top-11 z-50 w-56 bg-white rounded-2xl border border-ceci-border-default shadow-floating overflow-hidden">
+        <div className="absolute right-0 top-11 z-50 w-56 bg-surface-default rounded-2xl border border-ceci-border-default shadow-floating overflow-hidden">
           {actions.map((action, i) => {
             const Icon = action.Icon;
             return (

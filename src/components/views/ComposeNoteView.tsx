@@ -99,7 +99,7 @@ export const ComposeNoteView: React.FC = () => {
         <div className="max-w-md sm:max-w-xl lg:max-w-2xl mx-auto flex items-center justify-between gap-2">
           <button
             onClick={closeCompose}
-            className="w-9 h-9 rounded-2xl bg-white border border-ceci-border-default hover:bg-surface-rose flex items-center justify-center text-ceci-primary shadow-2xs transition-all active:scale-95 cursor-pointer"
+            className="w-9 h-9 rounded-2xl bg-surface-default border border-ceci-border-default hover:bg-surface-rose flex items-center justify-center text-ceci-primary shadow-2xs transition-all active:scale-95 cursor-pointer"
             title="voltar"
             aria-label="voltar"
           >
@@ -136,7 +136,7 @@ export const ComposeNoteView: React.FC = () => {
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
               isClassNote
                 ? 'bg-ceci-primary text-white shadow-2xs'
-                : 'bg-white text-ceci-secondary border border-ceci-border-default hover:bg-surface-rose'
+                : 'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-surface-rose'
             }`}
           >
             <BookOpen className="w-3.5 h-3.5" />
@@ -149,7 +149,7 @@ export const ComposeNoteView: React.FC = () => {
               onChange={setCourseId}
               options={courses.map((c) => ({ value: c.id, label: c.name }))}
               placeholder="disciplina"
-              buttonClassName="flex-1 min-w-0 bg-white border border-ceci-border-default rounded-full px-3 py-1.5 text-[11px] font-medium"
+              buttonClassName="flex-1 min-w-0 bg-surface-default border border-ceci-border-default rounded-full px-3 py-1.5 text-[11px] font-medium"
               sheetTitle="disciplina da aula"
             />
           )}
@@ -163,7 +163,7 @@ export const ComposeNoteView: React.FC = () => {
               value={tag}
               onChange={(e) => setTag(e.target.value)}
               placeholder="tag para classificar a aula (ex.: ansiedade)"
-              className="flex-1 min-w-0 bg-white/60 border border-ceci-border-subtle rounded-full px-3.5 py-1.5 text-[11px] text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500"
+              className="flex-1 min-w-0 bg-surface-default/60 border border-ceci-border-subtle rounded-full px-3.5 py-1.5 text-[11px] text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500"
             />
           </div>
         ) : (
@@ -189,7 +189,7 @@ export const ComposeNoteView: React.FC = () => {
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="escreva sua nota aqui... ✨"
-        className="flex-1 min-h-[45vh] mt-3 w-full bg-white rounded-xl border border-ceci-border-default shadow-2xs p-4 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 resize-none leading-relaxed"
+        className="flex-1 min-h-[45vh] mt-3 w-full bg-surface-default rounded-xl border border-ceci-border-default shadow-2xs p-4 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 resize-none leading-relaxed"
       />
     </div>
   );

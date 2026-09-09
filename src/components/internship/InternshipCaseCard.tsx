@@ -14,7 +14,7 @@ export const InternshipCaseCard: React.FC<Props> = ({ caseData, onPress }) => {
   return (
     <button
       onClick={onPress}
-      className="w-full text-left p-4 rounded-2xl bg-white border border-ceci-border-default shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+      className="w-full text-left p-4 rounded-2xl bg-surface-default border border-ceci-border-default shadow-sm hover:shadow-md transition-shadow cursor-pointer"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">

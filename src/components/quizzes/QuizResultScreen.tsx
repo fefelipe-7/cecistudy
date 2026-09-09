@@ -24,7 +24,7 @@ function StatCard({ icon, label, value, colorClass, bgClass }: {
   bgClass: string;
 }) {
   return (
-    <div className="rounded-xl p-4 bg-white border border-ceci-border-default shadow-sm">
+    <div className="rounded-xl p-4 bg-surface-default border border-ceci-border-default shadow-sm">
       <div className="flex items-center gap-2 mb-2">
         <span className={`w-8 h-8 rounded-xl flex items-center justify-center ${bgClass}`}>
           {icon}
@@ -140,7 +140,7 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 space-y-6">
           {/* Hero card com score */}
           <div
-            className="rounded-2xl p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4"
+            className="rounded-2xl p-6 bg-surface-default border border-ceci-border-default shadow-sm text-center space-y-4"
           >
             <Mascote expression={mascoteExpression} className="w-20 h-20 mx-auto" decorative />
             <div>
@@ -200,7 +200,7 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
 
           {/* Detalhamento por área */}
           {statsByArea.length > 0 && (
-            <div className="rounded-xl p-4 bg-white border border-ceci-border-default shadow-sm space-y-3">
+            <div className="rounded-xl p-4 bg-surface-default border border-ceci-border-default shadow-sm space-y-3">
               <SectionTitle title="por área" icon={<BarChart2 className="w-4 h-4" />} />
               <div className="space-y-2">
                 {statsByArea.map(([area, data]) => (
@@ -219,7 +219,7 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
 
           {/* Detalhamento por dificuldade */}
           {statsByDificuldade.length > 0 && (
-            <div className="rounded-xl p-4 bg-white border border-ceci-border-default shadow-sm space-y-3">
+            <div className="rounded-xl p-4 bg-surface-default border border-ceci-border-default shadow-sm space-y-3">
               <SectionTitle title="por dificuldade" icon={<Target className="w-4 h-4" />} />
               <div className="space-y-2">
                 {statsByDificuldade.map(([dif, data]) => (
@@ -238,7 +238,7 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
 
           {/* Detalhamento por escola */}
           {statsByEscola.length > 0 && (
-            <div className="rounded-xl p-4 bg-white border border-ceci-border-default shadow-sm space-y-3">
+            <div className="rounded-xl p-4 bg-surface-default border border-ceci-border-default shadow-sm space-y-3">
               <SectionTitle title="por escola/abordagem" icon={<Brain className="w-4 h-4" />} />
               <div className="space-y-2">
                 {statsByEscola.map(([escola, data]) => (
@@ -256,7 +256,7 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
           )}
 
           {/* Revisão detalhada (colapsável) */}
-          <div className="rounded-xl p-4 bg-white border border-ceci-border-default shadow-sm space-y-3">
+          <div className="rounded-xl p-4 bg-surface-default border border-ceci-border-default shadow-sm space-y-3">
             <SectionTitle title="revisão das respostas" icon={<RotateCcw className="w-4 h-4" />} />
             <div className="space-y-2 max-h-64 overflow-y-auto">
               {answers.map((a, i) => {
@@ -301,7 +301,7 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
       </div>
 
       {/* Footer sticky - ações */}
-      <div className="fixed bottom-0 inset-x-0 z-10 bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(64,56,58,0.06)]">
+      <div className="fixed bottom-0 inset-x-0 z-10 bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(var(--shadow-rgb),0.06)]">
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] space-y-2">
           <button
             onClick={() => {

@@ -21,18 +21,18 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   hasClassesToday,
   onOpenCalendar,
 }) => (
-  <section className="rounded-[26px] bg-gradient-to-br from-white to-surface-rose border border-ceci-border-subtle shadow-sm p-5 relative overflow-hidden">
+  <section className="rounded-[26px] bg-gradient-to-br from-surface-default to-surface-rose border border-ceci-border-subtle shadow-sm p-5 relative overflow-hidden">
     <div className="flex items-start justify-between gap-3">
       <div className="min-w-0">
         <p className="text-xs text-ceci-secondary font-medium lowercase tracking-wide">faculdade</p>
-        <h1 className="text-2xl sm:text-3xl font-bold text-ceci-primary mt-0.5 tracking-tight font-display">
+        <h1 className="font-serif-academic text-3xl sm:text-4xl text-ceci-primary mt-0.5 tracking-tight">
           {semester}º semestre
         </h1>
       </div>
       <button
         onClick={onOpenCalendar}
         aria-label="ver calendário"
-        className="w-10 h-10 rounded-2xl bg-white/80 border border-ceci-border-default flex items-center justify-center text-ceci-secondary hover:bg-white transition-colors shadow-2xs cursor-pointer shrink-0"
+        className="w-10 h-10 rounded-2xl bg-surface-default/80 border border-ceci-border-default flex items-center justify-center text-ceci-secondary hover:bg-surface-default transition-colors shadow-2xs cursor-pointer shrink-0"
       >
         <CalendarIcon className="w-5 h-5" />
       </button>

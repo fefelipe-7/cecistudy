@@ -124,7 +124,7 @@ export const KnowledgeGraphScreen: React.FC = () => {
           <select
             value={sourceId}
             onChange={(e) => setSourceId(e.target.value)}
-            className="rounded-[10px] border border-ceci-border-default px-2.5 py-1.5 text-xs text-ceci-primary bg-white focus:outline-none focus:ring-2 focus:ring-ceci-border-brand"
+            className="rounded-[10px] border border-ceci-border-default px-2.5 py-1.5 text-xs text-ceci-primary bg-surface-default focus:outline-none focus:ring-2 focus:ring-ceci-border-brand"
           >
             <option value="">selecione…</option>
             {entities.map((e) => (
@@ -137,7 +137,7 @@ export const KnowledgeGraphScreen: React.FC = () => {
           <select
             value={targetId}
             onChange={(e) => setTargetId(e.target.value)}
-            className="rounded-[10px] border border-ceci-border-default px-2.5 py-1.5 text-xs text-ceci-primary bg-white focus:outline-none focus:ring-2 focus:ring-ceci-border-brand"
+            className="rounded-[10px] border border-ceci-border-default px-2.5 py-1.5 text-xs text-ceci-primary bg-surface-default focus:outline-none focus:ring-2 focus:ring-ceci-border-brand"
           >
             <option value="">selecione…</option>
             {entities.map((e) => (
@@ -150,7 +150,7 @@ export const KnowledgeGraphScreen: React.FC = () => {
           <select
             value={kind}
             onChange={(e) => setKind(e.target.value as RelationKind)}
-            className="rounded-[10px] border border-ceci-border-default px-2.5 py-1.5 text-xs text-ceci-primary bg-white focus:outline-none focus:ring-2 focus:ring-ceci-border-brand"
+            className="rounded-[10px] border border-ceci-border-default px-2.5 py-1.5 text-xs text-ceci-primary bg-surface-default focus:outline-none focus:ring-2 focus:ring-ceci-border-brand"
           >
             {KIND_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
@@ -251,7 +251,7 @@ export const KnowledgeGraphScreen: React.FC = () => {
 
       {/* detalhe do nó selecionado */}
       {selectedEntity ? (
-        <div className="mx-4 mb-4 rounded-[16px] border border-ceci-border-subtle bg-white p-4">
+        <div className="mx-4 mb-4 rounded-[16px] border border-ceci-border-subtle bg-surface-default p-4">
           <div className="flex items-center gap-2 mb-2">
             <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${TYPE_COLORS[selectedEntity.type] ?? 'bg-surface-muted text-ceci-muted border-ceci-border-default'}`}>
               {selectedEntity.type}

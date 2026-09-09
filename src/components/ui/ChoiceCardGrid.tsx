@@ -51,7 +51,7 @@ export const ChoiceCardGrid = <T extends string>({
                 columns === 1 ? 'w-full px-4 py-3.5' : 'px-3.5 py-3.5',
                 sel
                   ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong shadow-2xs'
-                  : 'bg-white border-ceci-border-subtle text-ceci-primary hover:bg-surface-muted'
+                  : 'bg-surface-default border-ceci-border-subtle text-ceci-primary hover:bg-surface-muted'
               )}
             >
               {o.caption ? (

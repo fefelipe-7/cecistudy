@@ -61,7 +61,7 @@ export const QuizGroupDetail: React.FC<QuizGroupDetailProps> = ({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25 }}
-            className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm text-center space-y-3"
+            className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm text-center space-y-3"
           >
             <span className="text-4xl" aria-hidden>{group.icon}</span>
             <div>
@@ -81,7 +81,7 @@ export const QuizGroupDetail: React.FC<QuizGroupDetailProps> = ({
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05, duration: 0.2 }}
-            className="rounded-xl p-4 bg-white border border-ceci-border-default shadow-sm space-y-1"
+            className="rounded-xl p-4 bg-surface-default border border-ceci-border-default shadow-sm space-y-1"
           >
             <StatRow
               icon={<BookOpen className="w-3.5 h-3.5" />}
@@ -127,7 +127,7 @@ export const QuizGroupDetail: React.FC<QuizGroupDetailProps> = ({
       </div>
 
       {/* Botão fixo */}
-      <div className="fixed bottom-0 inset-x-0 z-10 bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(64,56,58,0.06)]">
+      <div className="fixed bottom-0 inset-x-0 z-10 bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(var(--shadow-rgb),0.06)]">
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
           <button
             onClick={handleStart}

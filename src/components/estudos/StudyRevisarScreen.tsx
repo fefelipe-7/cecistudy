@@ -87,7 +87,7 @@ export const StudyRevisarScreen: React.FC = () => {
 
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-4">
-      <div className="rounded-2xl p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4">
+      <div className="rounded-2xl p-6 bg-surface-default border border-ceci-border-default shadow-sm text-center space-y-4">
         {reviewQueue.length === 0 && reviewedCount === 0 ? (
           <div className="py-6 space-y-3">
             <Mascote expression="done-calm" className="w-14 h-14 mx-auto" decorative />

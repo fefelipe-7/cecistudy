@@ -84,7 +84,7 @@ export const EstudosView: React.FC = () => {
       {/* ================================================================ */}
       {/* 1. HERO — study corner + resumo real do dia                       */}
       {/* ================================================================ */}
-      <section className="rounded-[26px] bg-gradient-to-br from-white to-surface-rose border border-ceci-border-subtle shadow-sm p-5 relative overflow-hidden">
+      <section className="rounded-[26px] bg-gradient-to-br from-surface-default to-surface-rose border border-ceci-border-subtle shadow-sm p-5 relative overflow-hidden">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <p className="text-xs text-ceci-secondary font-medium lowercase tracking-wide">estudos</p>
@@ -92,7 +92,7 @@ export const EstudosView: React.FC = () => {
               seu study corner
             </h1>
           </div>
-          <span className="flex items-center gap-1 bg-white/80 px-3 py-1.5 rounded-full border border-ceci-border-brand shrink-0">
+          <span className="flex items-center gap-1 bg-surface-default/80 px-3 py-1.5 rounded-full border border-ceci-border-brand shrink-0">
             <Flame className={`w-4 h-4 ${streakStats.alive ? 'fill-rose-500 text-rose-500' : 'text-ceci-muted'}`} />
             <span className="text-xs font-bold text-ceci-brand-strong">
               {streakStats.current} {streakStats.current === 1 ? 'dia' : 'dias'}
@@ -144,7 +144,7 @@ export const EstudosView: React.FC = () => {
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={() => openStudy('revisar')}
-            className="bg-white hover:border-ceci-border-brand rounded-2xl p-5 text-left border border-ceci-border-default tap-interactive cursor-pointer space-y-2 shadow-sm min-h-[110px]"
+            className="bg-surface-default hover:border-ceci-border-brand rounded-2xl p-5 text-left border border-ceci-border-default tap-interactive cursor-pointer space-y-2 shadow-sm min-h-[110px]"
           >
             <Sparkles className="w-6 h-6 text-ceci-brand-strong" />
             <div className="flex items-center gap-2">
@@ -178,7 +178,7 @@ export const EstudosView: React.FC = () => {
           onClick={() => openStudy('leituras')}
           className={`w-full rounded-2xl p-5 border shadow-sm cursor-pointer text-left space-y-3 tap-interactive ${
             readingInProgress
-              ? 'bg-white border-ceci-border-default hover:border-ceci-border-academic'
+              ? 'bg-surface-default border-ceci-border-default hover:border-ceci-border-academic'
               : 'bg-surface-subtle border-dashed border-ceci-border-default hover:border-ceci-border-academic'
           }`}
         >
@@ -226,7 +226,7 @@ export const EstudosView: React.FC = () => {
           whileTap={{ scale: 0.98 }}
           onClick={() => openStudy('historico')}
           aria-label="ver seu histórico e estatísticas de estudo"
-          className="w-full bg-white rounded-xl p-5 border border-ceci-border-default hover:border-ceci-border-brand shadow-sm cursor-pointer space-y-4 tap-interactive text-left"
+          className="w-full bg-surface-default rounded-xl p-5 border border-ceci-border-default hover:border-ceci-border-brand shadow-sm cursor-pointer space-y-4 tap-interactive text-left"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -299,7 +299,7 @@ export const EstudosView: React.FC = () => {
 
         <button
           onClick={() => openWizard('flashcard')}
-          className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-2xl text-xs font-semibold text-ceci-brand-strong bg-white border border-dashed border-ceci-border-default hover:border-ceci-border-brand cursor-pointer"
+          className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-2xl text-xs font-semibold text-ceci-brand-strong bg-surface-default border border-dashed border-ceci-border-default hover:border-ceci-border-brand cursor-pointer"
         >
           <Plus className="w-4 h-4" /> novo flashcard
         </button>
@@ -308,14 +308,14 @@ export const EstudosView: React.FC = () => {
       {/* ================================================================ */}
       {/* 6. DICA DO CECINHO                                                */}
       {/* ================================================================ */}
-      <div className="p-4 rounded-xl bg-white border border-ceci-border-subtle shadow-sm flex items-center gap-3 px-0.5 lg:px-4">
+      <div className="p-4 rounded-xl bg-surface-default border border-ceci-border-subtle shadow-sm flex items-center gap-3 px-0.5 lg:px-4">
         <Mascote expression="celebrate-small" className="w-12 h-12 shrink-0 ml-0.5 lg:ml-0" decorative />
         <div className="min-w-0">
           <div className="flex items-center gap-2 text-xs font-semibold text-ceci-primary font-display">
             <Sparkles className="w-4 h-4 text-rose-500" />
             <span>dica do cecinho ✨</span>
           </div>
-          <p className="text-xs text-ceci-secondary leading-relaxed mt-0.5">
+          <p className="font-serif-academic text-sm text-ceci-secondary leading-relaxed mt-0.5">
             {cecinhoTip}
           </p>
         </div>

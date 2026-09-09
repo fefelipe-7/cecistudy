@@ -64,7 +64,7 @@ export const QuizGroupSelector: React.FC<QuizGroupSelectorProps> = ({
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 space-y-3">
           {/* Card explicativo compacto */}
           <div
-            className="rounded-xl p-4 bg-white border border-ceci-border-default shadow-sm text-center space-y-2"
+            className="rounded-xl p-4 bg-surface-default border border-ceci-border-default shadow-sm text-center space-y-2"
           >
             <Mascote expression="quiz-ready" className="w-10 h-10 mx-auto" decorative />
             <div>
@@ -91,8 +91,8 @@ export const QuizGroupSelector: React.FC<QuizGroupSelectorProps> = ({
                     className={cn(
                       'w-full flex items-center gap-3 p-4 rounded-xl border text-left transition-all active:scale-[0.98]',
                       isGeral
-                        ? 'bg-white border-ceci-border-default shadow-sm'
-                        : 'bg-white border-ceci-border-subtle',
+                        ? 'bg-surface-default border-ceci-border-default shadow-sm'
+                        : 'bg-surface-default border-ceci-border-subtle',
                       group.questionCount > 0
                         ? 'hover:bg-surface-rose hover:border-ceci-border-brand cursor-pointer'
                         : 'opacity-50 cursor-not-allowed'
@@ -126,7 +126,7 @@ export const QuizGroupSelector: React.FC<QuizGroupSelectorProps> = ({
       </div>
 
       {/* Rodapé fixo */}
-      <div className="fixed bottom-0 inset-x-0 z-10 bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(64,56,58,0.06)]">
+      <div className="fixed bottom-0 inset-x-0 z-10 bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(var(--shadow-rgb),0.06)]">
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
           <button
             onClick={onClose}

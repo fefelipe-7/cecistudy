@@ -157,7 +157,7 @@ const PerspectiveCard: React.FC<{
   answer?: string;
   featured?: boolean;
 }> = ({ entity, answer, featured = false }) => (
-  <div className={`rounded-xl p-4 border min-w-0 ${featured ? 'bg-surface-rose border-ceci-border-brand' : 'bg-white border-ceci-border-default'}`}>
+  <div className={`rounded-xl p-4 border min-w-0 ${featured ? 'bg-surface-rose border-ceci-border-brand' : 'bg-surface-default border-ceci-border-default'}`}>
     <div className="flex items-center gap-2 text-ceci-brand-strong">
       {entity.icon}
       <span className="text-[10px] uppercase tracking-wider font-bold">{TYPE_LABELS[entity.ref.tipoEntidade]}</span>
@@ -173,21 +173,21 @@ const PerspectiveCard: React.FC<{
 const ComparisonMap: React.FC<{ entities: ResolvedEntity[] }> = ({ entities }) => (
   <TempleSectionCard title="mapa da comparação" accent="brand" highlighted>
     <div className="flex flex-col items-center gap-2 text-center">
-      <div className="rounded-2xl bg-white border border-ceci-border-brand px-4 py-2.5 shadow-2xs">
+      <div className="rounded-2xl bg-surface-default border border-ceci-border-brand px-4 py-2.5 shadow-2xs">
         <p className="text-[10px] uppercase tracking-wider font-bold text-ceci-brand-strong">fenômeno ou pergunta</p>
         <p className="text-xs text-ceci-primary mt-0.5">o que está sendo compreendido?</p>
       </div>
       <ArrowDown className="w-4 h-4 text-ceci-brand-strong" />
       <div className={`grid gap-2 w-full ${entities.length > 2 ? 'sm:grid-cols-3' : 'sm:grid-cols-2'}`}>
         {entities.map((entity) => (
-          <div key={`${entity.ref.tipoEntidade}-${entity.ref.entidadeId}`} className="bg-white rounded-2xl border border-ceci-border-default p-3">
+          <div key={`${entity.ref.tipoEntidade}-${entity.ref.entidadeId}`} className="bg-surface-default rounded-2xl border border-ceci-border-default p-3">
             <p className="text-xs font-bold text-ceci-primary truncate">{entity.name}</p>
             <p className="text-[11px] text-ceci-secondary mt-1">perspectiva</p>
           </div>
         ))}
       </div>
       <ArrowDown className="w-4 h-4 text-ceci-brand-strong" />
-      <div className="rounded-2xl bg-white border border-ceci-border-brand px-4 py-2.5 shadow-2xs">
+      <div className="rounded-2xl bg-surface-default border border-ceci-border-brand px-4 py-2.5 shadow-2xs">
         <p className="text-[10px] uppercase tracking-wider font-bold text-ceci-brand-strong">leitura e mudança</p>
         <p className="text-xs text-ceci-primary mt-0.5">o que cada modelo torna visível?</p>
       </div>
@@ -258,7 +258,7 @@ export const ComparisonDetailScreen: React.FC<{
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-5 pb-1 relative">
       <TempleBackButton onClick={onBack} label="voltar às comparações" ariaLabel="voltar para a lista de comparações" />
 
-      <header className="bg-white rounded-2xl p-5 border border-ceci-border-default shadow-2xs space-y-4">
+      <header className="bg-surface-default rounded-2xl p-5 border border-ceci-border-default shadow-2xs space-y-4">
         <div className="flex items-center gap-2 text-ceci-brand-strong">
           <GitCompare className="w-4 h-4" />
           <span className="text-[10px] uppercase tracking-wider font-bold">{isMultiPerspective ? 'múltiplas perspectivas' : 'comparação editorial'}</span>
@@ -304,7 +304,7 @@ export const ComparisonDetailScreen: React.FC<{
           <h2 className="text-sm uppercase tracking-wider font-bold text-ceci-primary">eixos de leitura</h2>
         </div>
         {axisEntries.map((axis, index) => (
-          <section key={axis.key} className="rounded-xl bg-white border border-ceci-border-default shadow-2xs overflow-hidden">
+          <section key={axis.key} className="rounded-xl bg-surface-default border border-ceci-border-default shadow-2xs overflow-hidden">
             <div className="px-4 py-3 bg-surface-muted border-b border-ceci-border-subtle">
               <p className="text-[10px] uppercase tracking-wider font-bold text-ceci-brand-strong">{String(index + 1).padStart(2, '0')} · {axis.label}</p>
               <h2 className="text-sm font-bold font-display text-ceci-primary mt-1">{axis.question}</h2>
@@ -338,7 +338,7 @@ export const ComparisonDetailScreen: React.FC<{
             <h2 className="text-sm uppercase tracking-wider font-bold text-ceci-primary">pontos de divergência</h2>
           </div>
           {comparison.divergencias.map((entry, index) => (
-            <div key={`${entry.tema}-${index}`} className="rounded-xl bg-white border border-ceci-border-default shadow-2xs p-4">
+            <div key={`${entry.tema}-${index}`} className="rounded-xl bg-surface-default border border-ceci-border-default shadow-2xs p-4">
               <p className="text-[10px] uppercase tracking-wider font-bold text-ceci-brand-strong">{String(index + 1).padStart(2, '0')} · {entry.tema}</p>
               <div className="space-y-3 mt-3">
                 {entities.map((entity) => {

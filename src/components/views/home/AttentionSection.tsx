@@ -72,7 +72,7 @@ const AttentionSection: React.FC<AttentionSectionProps> = ({ items, remainingCou
           )}
         </div>
       ) : (
-        <div className="p-5 rounded-xl bg-white border border-ceci-border-subtle shadow-sm text-center space-y-1">
+        <div className="p-5 rounded-xl bg-surface-default border border-ceci-border-subtle shadow-sm text-center space-y-1">
           <p className="text-sm font-display font-semibold text-ceci-primary">
             nada urgente por aqui ✨
           </p>
@@ -89,7 +89,7 @@ const AttentionSection: React.FC<AttentionSectionProps> = ({ items, remainingCou
           value={newTaskTitle}
           onChange={(e) => setNewTaskTitle(e.target.value)}
           placeholder="adicionar uma tarefa para hoje..."
-          className="flex-1 text-sm px-4 py-3 rounded-full border border-ceci-border-default bg-white focus:outline-none focus:border-rose-500 text-ceci-primary placeholder-ceci-faded shadow-2xs"
+          className="flex-1 text-sm px-4 py-3 rounded-full border border-ceci-border-default bg-surface-default focus:outline-none focus:border-rose-500 text-ceci-primary placeholder-ceci-faded shadow-2xs"
         />
         <motion.button
           whileTap={{ scale: 0.95 }}

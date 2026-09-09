@@ -35,7 +35,7 @@ export const CompletionToggle: React.FC<CompletionToggleProps> = ({
         dims,
         checked
           ? 'bg-green-500 border-green-500 text-white shadow-sm'
-          : 'bg-white border-ceci-border-strong text-transparent hover:border-green-400',
+          : 'bg-surface-default border-ceci-border-strong text-transparent hover:border-green-400',
         className
       )}
     >

@@ -10,38 +10,39 @@
  */
 
 .desktop-shell {
-  /* ---- surface (Notion-like, contraste moderado entre zonas) ---- */
-  --ds-surface-canvas: #ffffff;
-  --ds-surface-sidebar: #f7f6f4;
-  --ds-surface-raised: #ffffff;
-  --ds-surface-inspector: #fbfaf9;
-  --ds-surface-hover: #f2efeb;
-  --ds-surface-active: #ebe7e1;
+  /* ---- surface (Notion-like, contraste moderado entre zonas) ----
+     Aquecido junto com o tema rosa-claro: superfícies em papel quente. */
+  --ds-surface-canvas: var(--color-canvas); /* #FFF9F0 */
+  --ds-surface-sidebar: var(--color-surface-muted); /* #F7F1EA */
+  --ds-surface-raised: var(--color-surface-default); /* #FFFDF8 */
+  --ds-surface-inspector: var(--color-surface-subtle); /* #FFF3E7 */
+  --ds-surface-hover: var(--color-surface-warm); /* #FFF6E9 */
+  --ds-surface-active: var(--color-ceci-border-subtle); /* #F0E6DD */
 
   /* ---- text (reuso dos tokens móveis via var) ---- */
-  --ds-text-primary: var(--color-ceci-primary); /* #40383A */
-  --ds-text-secondary: var(--color-ceci-secondary); /* #6D6366 */
-  --ds-text-tertiary: var(--color-ceci-tertiary); /* #918689 */
-  --ds-text-muted: var(--color-ceci-muted); /* #ADA3A5 */
+  --ds-text-primary: var(--color-ceci-primary); /* #3B3233 */
+  --ds-text-secondary: var(--color-ceci-secondary); /* #6B5F5E */
+  --ds-text-tertiary: var(--color-ceci-tertiary); /* #8E7F7B */
+  --ds-text-muted: var(--color-ceci-muted); /* #A99A94 */
 
   /* ---- border ---- */
-  --ds-border-subtle: #eeebe7;
-  --ds-border-default: #e4dfd9;
-  --ds-border-strong: #d6cfc5;
-  --ds-border-focus: var(--color-ceci-brand); /* #D85F79 */
+  --ds-border-subtle: var(--color-ceci-border-subtle); /* #F0E6DD */
+  --ds-border-default: var(--color-ceci-border-default); /* #E7DACF */
+  --ds-border-strong: var(--color-ceci-border-strong); /* #D8C7BA */
+  --ds-border-focus: var(--color-ceci-brand); /* #D4617C */
 
   /* ---- focus (acessibilidade) ---- */
-  --ds-focus-ring: 0 0 0 3px rgba(216, 95, 121, 0.25);
-  --ds-focus-ring-neutral: 0 0 0 3px rgba(40, 32, 34, 0.18);
+  --ds-focus-ring: 0 0 0 3px rgba(212, 97, 124, 0.25);
+  --ds-focus-ring-neutral: 0 0 0 3px rgba(59, 50, 51, 0.18);
 
   /* ---- accent (rosa: nunca fundo de painel/seção) ---- */
-  --ds-accent: var(--color-ceci-brand); /* #D85F79 */
-  --ds-accent-strong: var(--color-ceci-brand-strong); /* #B94862 */
-  --ds-accent-subtle: #fbeef1;
+  --ds-accent: var(--color-ceci-brand); /* #D4617C */
+  --ds-accent-strong: var(--color-ceci-brand-strong); /* #AF465F */
+  --ds-accent-subtle: #fbe9ee;
 
   /* ---- info ---- */
   --ds-info: var(--color-ceci-academic); /* #4A879F */
-  --ds-info-subtle: #eef5f8;
+  --ds-info-subtle: #edf4f7;
 
   /* ---- status ---- */
   --ds-status-success: #5a9f76;
@@ -64,9 +65,9 @@
   --ds-radius-xl: 20px;
 
   /* ---- elevation (borda separa zonas; sombra só em flutuante) ---- */
-  --ds-elevation-xs: 0 1px 2px rgba(40, 32, 34, 0.04);
-  --ds-elevation-sm: 0 2px 6px rgba(40, 32, 34, 0.06);
-  --ds-elevation-md: 0 8px 24px rgba(40, 32, 34, 0.1);
+  --ds-elevation-xs: 0 1px 2px rgba(var(--shadow-rgb), 0.05);
+  --ds-elevation-sm: 0 2px 6px rgba(var(--shadow-rgb), 0.06);
+  --ds-elevation-md: 0 8px 24px rgba(var(--shadow-rgb), 0.1);
 
   /* ---- typographic scale (desktop) ---- */
   --ds-text-xl: 1.375rem;

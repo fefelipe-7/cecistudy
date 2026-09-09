@@ -75,7 +75,7 @@ const CalendarMonth: React.FC<CalendarMonthProps> = ({
           <button
             onClick={() => shiftMonth(-1)}
             aria-label="mês anterior"
-            className="w-8 h-8 rounded-xl bg-white border border-ceci-border-default flex items-center justify-center text-ceci-secondary hover:bg-surface-muted transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-xl bg-surface-default border border-ceci-border-default flex items-center justify-center text-ceci-secondary hover:bg-surface-muted transition-colors cursor-pointer"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
@@ -90,7 +90,7 @@ const CalendarMonth: React.FC<CalendarMonthProps> = ({
           <button
             onClick={() => shiftMonth(1)}
             aria-label="próximo mês"
-            className="w-8 h-8 rounded-xl bg-white border border-ceci-border-default flex items-center justify-center text-ceci-secondary hover:bg-surface-muted transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-xl bg-surface-default border border-ceci-border-default flex items-center justify-center text-ceci-secondary hover:bg-surface-muted transition-colors cursor-pointer"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
@@ -171,7 +171,7 @@ const CalendarMonth: React.FC<CalendarMonthProps> = ({
                         {course.room ? ` · ${course.room}` : ''}
                       </p>
                     </div>
-                    <span className="text-[10px] font-bold px-2.5 py-1 rounded-full border shrink-0 text-ceci-academic-strong bg-white border-ceci-border-academic">
+                    <span className="text-[10px] font-bold px-2.5 py-1 rounded-full border shrink-0 text-ceci-academic-strong bg-surface-default border-ceci-border-academic">
                       aula
                     </span>
                   </button>
@@ -190,8 +190,8 @@ const CalendarMonth: React.FC<CalendarMonthProps> = ({
                       <span
                         className={`text-[10px] font-bold px-2.5 py-1 rounded-full border shrink-0 ${
                           ev.kind === 'prova'
-                            ? 'text-ceci-brand-strong bg-white border-ceci-border-brand'
-                            : 'text-ceci-academic-strong bg-white border-ceci-border-academic'
+                            ? 'text-ceci-brand-strong bg-surface-default border-ceci-border-brand'
+                            : 'text-ceci-academic-strong bg-surface-default border-ceci-border-academic'
                         }`}
                       >
                         {ev.kind}

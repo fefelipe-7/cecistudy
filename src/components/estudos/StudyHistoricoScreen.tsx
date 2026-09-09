@@ -101,7 +101,7 @@ export const StudyHistoricoScreen: React.FC = () => {
       <div className="grid sm:grid-cols-2 gap-3">
         <div className="rounded-2xl p-5 bg-surface-subtle border border-ceci-border-subtle shadow-sm flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="w-9 h-9 rounded-full bg-white border border-ceci-border-default flex items-center justify-center">
+            <span className="w-9 h-9 rounded-full bg-surface-default border border-ceci-border-default flex items-center justify-center">
               <Flame className="w-4 h-4 text-ceci-brand-strong fill-ceci-brand" />
             </span>
             <div>
@@ -114,7 +114,7 @@ export const StudyHistoricoScreen: React.FC = () => {
           <span className="font-display font-bold text-lg text-ceci-primary">{weekFocusMinutes} min</span>
         </div>
 
-        <div className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm flex items-center justify-between">
+        <div className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="w-9 h-9 rounded-full bg-surface-rose border border-ceci-border-brand flex items-center justify-center">
               <Flame className={`w-4 h-4 ${streakStats.alive ? 'fill-rose-500 text-rose-500' : 'text-ceci-muted'}`} />
@@ -133,7 +133,7 @@ export const StudyHistoricoScreen: React.FC = () => {
       </div>
 
       {!hasAnything ? (
-        <div className="rounded-2xl p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
+        <div className="rounded-2xl p-6 bg-surface-default border border-ceci-border-default shadow-sm text-center space-y-3">
           <Mascote expression="pause-kind" className="w-14 h-14 mx-auto" decorative />
           <p className="text-xs text-ceci-secondary leading-relaxed">
             nenhuma sessão anotada ainda. quando você concluir seu primeiro foco, ela aparece aqui ♡
@@ -178,7 +178,7 @@ export const StudyHistoricoScreen: React.FC = () => {
                   key={s.id}
                   kind="session"
                   id={s.id}
-                  className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm flex items-center justify-between gap-3"
+                  className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm flex items-center justify-between gap-3"
                 >
                   <div className="min-w-0">
                     <h3 className="font-semibold text-xs text-ceci-primary truncate">{s.topic}</h3>
@@ -208,7 +208,7 @@ export const StudyHistoricoScreen: React.FC = () => {
                   key={q.id}
                   kind="quizSession"
                   id={q.id}
-                  className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm flex items-center justify-between gap-3"
+                  className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm flex items-center justify-between gap-3"
                 >
                   <div className="min-w-0 flex items-center gap-2.5">
                     <span className="w-8 h-8 rounded-xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center shrink-0">
@@ -241,7 +241,7 @@ export const StudyHistoricoScreen: React.FC = () => {
                 {weakestAreas.map(({ area, avg }) => (
                   <span
                     key={area}
-                    className="text-[11px] font-semibold text-ceci-brand-strong bg-white px-2.5 py-1 rounded-full border border-ceci-border-brand"
+                    className="text-[11px] font-semibold text-ceci-brand-strong bg-surface-default px-2.5 py-1 rounded-full border border-ceci-border-brand"
                   >
                     {area} · {avg}%
                   </span>
@@ -259,7 +259,7 @@ export const StudyHistoricoScreen: React.FC = () => {
                   key={r.id}
                   kind="reading"
                   id={r.id}
-                  className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm flex items-center justify-between gap-3"
+                  className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm flex items-center justify-between gap-3"
                 >
                   <div className="min-w-0 flex items-center gap-2.5">
                     <span className="w-8 h-8 rounded-xl bg-surface-blue border border-ceci-border-academic flex items-center justify-center shrink-0">

@@ -92,7 +92,7 @@ export const StudyFocusScreen: React.FC = () => {
 
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-4">
-      <div className="rounded-2xl p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-4">
+      <div className="rounded-2xl p-6 bg-surface-default border border-ceci-border-default shadow-sm text-center space-y-4">
         <h2 className="font-display text-xl font-bold text-ceci-primary">cantinho de foco ceci</h2>
         <p className="text-xs text-ceci-secondary -mt-2">
           {isRunning ? '✨ em andamento...' : timeLeft === 0 ? 'finalizada!' : 'pronto para começar'}
@@ -114,7 +114,7 @@ export const StudyFocusScreen: React.FC = () => {
             placeholder="custom"
             buttonClassName={`px-3.5 py-2 rounded-full text-xs font-semibold border transition-colors ${
               PRESETS.includes(preset)
-                ? 'bg-white text-ceci-tertiary border-ceci-border-default'
+                ? 'bg-surface-default text-ceci-tertiary border-ceci-border-default'
                 : 'bg-ceci-primary text-white border-ceci-primary'
             }`}
             sheetTitle="quantos minutos de foco?"
@@ -180,7 +180,7 @@ export const StudyFocusScreen: React.FC = () => {
               value={sessionTopic}
               onChange={(e) => setSessionTopic(e.target.value)}
               placeholder="ex: revisar semiologia dos transtornos do humor"
-              className="w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 focus:border-ceci-brand"
+              className="w-full bg-surface-default border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 focus:border-ceci-brand"
               autoFocus
             />
           </div>
@@ -192,7 +192,7 @@ export const StudyFocusScreen: React.FC = () => {
             onChange={setSessionCourseId}
             options={[{ value: '', label: 'geral' }, ...courses.map((c) => ({ value: c.id, label: c.name }))]}
             placeholder="geral"
-            buttonClassName="bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs"
+            buttonClassName="bg-surface-default border border-ceci-border-default rounded-xl px-3 py-2 text-xs"
             sheetTitle="disciplina da sessão"
           />
           </div>
@@ -222,7 +222,7 @@ export const StudyFocusScreen: React.FC = () => {
       </div>
 
       <Modal open={pendingReset} onClose={() => setPendingReset(false)} closeOnBackdrop={false}>
-        <div className="w-full max-w-sm bg-white rounded-2xl shadow-floating p-6">
+        <div className="w-full max-w-sm bg-surface-default rounded-2xl shadow-floating p-6">
           <h3 className="font-display font-bold text-lg text-ceci-primary mb-2">reiniciar sessão?</h3>
           <p className="text-sm text-ceci-secondary leading-relaxed mb-5">
             isso zera o timer e descarta o tempo já decorrido. tem certeza?
@@ -240,7 +240,7 @@ export const StudyFocusScreen: React.FC = () => {
             <div className="flex gap-2">
               <button
                 onClick={() => setPendingReset(false)}
-                className="flex-1 py-3 rounded-2xl text-sm font-semibold text-ceci-secondary bg-white border border-ceci-border-default cursor-pointer active:scale-95 transition-transform"
+                className="flex-1 py-3 rounded-2xl text-sm font-semibold text-ceci-secondary bg-surface-default border border-ceci-border-default cursor-pointer active:scale-95 transition-transform"
               >
                 cancelar
               </button>

@@ -34,7 +34,7 @@ export const SchedulePicker: React.FC<SchedulePickerProps> = ({ value, onChange 
               <button
                 type="button"
                 onClick={() => remove(idx)}
-                className="w-7 h-7 rounded-lg bg-white border border-ceci-border-default flex items-center justify-center text-ceci-brand-strong hover:bg-ceci-border-brand/40 cursor-pointer"
+                className="w-7 h-7 rounded-lg bg-surface-default border border-ceci-border-default flex items-center justify-center text-ceci-brand-strong hover:bg-ceci-border-brand/40 cursor-pointer"
                 aria-label="remover horário"
               >
                 <Trash2 className="w-3.5 h-3.5" />
@@ -53,7 +53,7 @@ export const SchedulePicker: React.FC<SchedulePickerProps> = ({ value, onChange 
                   className={`px-2.5 py-1.5 rounded-full text-[11px] font-semibold border transition-all cursor-pointer ${
                     active
                       ? 'bg-ceci-primary text-white border-ceci-primary'
-                      : 'bg-white text-ceci-secondary border-ceci-border-default hover:bg-surface-muted'
+                      : 'bg-surface-default text-ceci-secondary border-ceci-border-default hover:bg-surface-muted'
                   }`}
                 >
                   {label}
@@ -78,7 +78,7 @@ export const SchedulePicker: React.FC<SchedulePickerProps> = ({ value, onChange 
       <button
         type="button"
         onClick={add}
-        className="w-full flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-2xl bg-white border border-dashed border-ceci-border-strong text-ceci-secondary text-xs font-semibold hover:bg-surface-muted cursor-pointer"
+        className="w-full flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-2xl bg-surface-default border border-dashed border-ceci-border-strong text-ceci-secondary text-xs font-semibold hover:bg-surface-muted cursor-pointer"
       >
         <Plus className="w-4 h-4" /> adicionar horário
       </button>

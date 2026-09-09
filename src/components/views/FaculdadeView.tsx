@@ -38,15 +38,6 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
   const examIds = useMemo(() => new Set(exams.map((e) => e.id)), [exams]);
   const taskIds = useMemo(() => new Set(tasks.map((t) => t.id)), [tasks]);
 
-  // If a course detail is active, render CourseDetailView
-  if (course) {
-    return <CourseDetailView course={course} />;
-  }
-
-  // ---- dados reais derivados do estado ----
-  const pendingExams = exams.filter((e) => !e.completed);
-  const pendingTasks = tasks.filter((t) => !t.completed);
-
   // Unified internship records for calendar and totals (derived from logs)
   const allInternshipRecords = useMemo<InternshipRecordPreview[]>(() => {
     const list: InternshipRecordPreview[] = [];
@@ -55,6 +46,15 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
     });
     return list;
   }, [internshipLogs]);
+
+  // If a course detail is active, render CourseDetailView
+  if (course) {
+    return <CourseDetailView course={course} />;
+  }
+
+  // ---- dados reais derivados do estado ----
+  const pendingExams = exams.filter((e) => !e.completed);
+  const pendingTasks = tasks.filter((t) => !t.completed);
 
   const internshipTotalHours = allInternshipRecords.reduce((acc, r) => acc + r.hours, 0);
 

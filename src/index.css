@@ -104,28 +104,35 @@
    --color-red-900: #68332F;
 
    /* SEMANTIC SHORTCUT ALIASES FOR TAILWIND UTILITIES */
-   --color-canvas: #FFFCF8;
-   --color-surface-default: #FFFFFF;
-   --color-surface-subtle: #FFF8F1;
-   --color-surface-muted: #FAF8F5;
-   --color-surface-rose: #FFF5F7;
-   --color-surface-blue: #F3F9FC;
-   --color-surface-input: #F7F7F7;
+   /* Tema rosa-claro aquecido ("cozy academia"): superfícies em papel quente,
+      sombras com temperatura de cacau e atmosfera de abajur (F1/F3). */
+   --color-canvas: #FFF9F0;
+   --color-surface-default: #FFFDF8;
+   --color-surface-subtle: #FFF3E7;
+   --color-surface-muted: #F7F1EA;
+   --color-surface-rose: #FFEFF3;
+   --color-surface-blue: #F1F7FA;
+   --color-surface-input: #FBF5EF;
+   --color-surface-warm: #FFF6E9;
 
-   --color-ceci-primary: #40383A;
-   --color-ceci-secondary: #6D6366;
-   --color-ceci-tertiary: #918689;
-   --color-ceci-muted: #ADA3A5;
-   --color-ceci-brand: #D85F79;
-   --color-ceci-brand-strong: #B94862;
+   --color-ceci-primary: #3B3233;
+   --color-ceci-secondary: #6B5F5E;
+   --color-ceci-tertiary: #8E7F7B;
+   --color-ceci-muted: #A99A94;
+   --color-ceci-brand: #D4617C;
+   --color-ceci-brand-strong: #AF465F;
    --color-ceci-academic: #4A879F;
    --color-ceci-academic-strong: #396D82;
 
-   --color-ceci-border-subtle: #F2EBE8;
-   --color-ceci-border-default: #E9DFDC;
-   --color-ceci-border-strong: #DCCFCA;
-   --color-ceci-border-brand: #FFD3DD;
+   --color-ceci-border-subtle: #F0E6DD;
+   --color-ceci-border-default: #E7DACF;
+   --color-ceci-border-strong: #D8C7BA;
+   --color-ceci-border-brand: #FFD0DB;
    --color-ceci-border-academic: #CEE7F0;
+
+   /* Atmosfera — glows de "abajur" aplicados na camada de canvas (F3) */
+   --color-canvas-glow-rose: #FFE9E6;
+   --color-canvas-glow-amber: #FFE6C4;
 
    /* ORPHAN HEX → SEMANTIC TOKENS (migração A.2) */
    --color-surface-paper: #FFFDF0;
@@ -164,16 +171,39 @@
    --radius-2xl: 24px;
    --radius-3xl: 32px;
 
-   /* SHADOWS */
-   --shadow-xs: 0 1px 2px rgba(64, 56, 58, 0.04);
-   --shadow-sm: 0 2px 8px rgba(64, 56, 58, 0.05);
-   --shadow-md: 0 6px 18px rgba(64, 56, 58, 0.07);
-   --shadow-lg: 0 12px 32px rgba(64, 56, 58, 0.09);
-   --shadow-xl: 0 20px 48px rgba(64, 56, 58, 0.12);
-   --shadow-floating: 0 8px 28px rgba(64, 56, 58, 0.12);
-   --shadow-floating-strong: 0 8px 28px rgba(64, 56, 58, 0.25);
-   --shadow-brand: 0 4px 16px rgba(185, 72, 98, 0.4);
-   --shadow-brand-soft: 0 4px 14px rgba(185, 72, 98, 0.3);
+   /* SHADOWS — base cacau (temperatura). `--shadow-rgb` é o pré-requisito do
+      sistema de temas (themes.md §2/§4.3): applyTheme seta inline no root. */
+   --shadow-rgb: 122, 88, 72;
+   --shadow-xs: 0 1px 2px rgba(var(--shadow-rgb), 0.05);
+   --shadow-sm: 0 2px 8px rgba(var(--shadow-rgb), 0.06);
+   --shadow-md: 0 6px 18px rgba(var(--shadow-rgb), 0.08);
+   --shadow-lg: 0 12px 32px rgba(var(--shadow-rgb), 0.10);
+   --shadow-xl: 0 20px 48px rgba(var(--shadow-rgb), 0.14);
+   --shadow-floating: 0 8px 28px rgba(var(--shadow-rgb), 0.14);
+   --shadow-floating-strong: 0 8px 30px rgba(var(--shadow-rgb), 0.28);
+   --shadow-brand: 0 4px 16px rgba(175, 70, 95, 0.38);
+   --shadow-brand-soft: 0 4px 14px rgba(175, 70, 95, 0.28);
+}
+
+@layer base {
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ceci-primary);
+  }
+
+  /* Atmosfera "cozy academia" (F3): luz de abajur atrás do conteúdo —
+     rosa-quente no topo-esquerda, âmbar na base-direita. Camada fixa,
+     sem interação; opacidade baixa para não roubar legibilidade. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      radial-gradient(58% 42% at 10% -4%, var(--color-canvas-glow-rose), transparent 68%),
+      radial-gradient(60% 48% at 102% 104%, var(--color-canvas-glow-amber), transparent 70%);
+  }
 }
 
 /* ===== Utilities ===== */
@@ -186,10 +216,15 @@
 
 /* Cozy Academic Card Styling aligned with Design Tokens */
 .journal-card {
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-surface-default),
+    var(--color-surface-warm)
+  );
   background-color: var(--color-surface-default);
   border-radius: 20px;
   box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-ceci-border-subtle);
+  border: 1px solid var(--color-ceci-border-default);
   transition:
     transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
     box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
@@ -198,7 +233,38 @@
 
 .journal-card:hover {
   box-shadow: var(--shadow-md);
-  border-color: var(--color-ceci-border-default);
+  border-color: var(--color-ceci-border-strong);
+}
+
+/* "Paper card" — o card-cocoon (papel quente com luz de abajur no topo).
+   Receita usada nos blocos de conteúdo: gradiente papel → quente, borda
+   marrom-latente e sombra cacau em duas camadas (toque suave + respiro). */
+.paper-card {
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-surface-default),
+    var(--color-surface-warm)
+  );
+  background-color: var(--color-surface-default);
+  border-radius: 20px;
+  border: 1px solid var(--color-ceci-border-default);
+  box-shadow:
+    0 2px 8px rgba(var(--shadow-rgb), 0.06),
+    0 10px 30px rgba(var(--shadow-rgb), 0.05);
+  transition:
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.2s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .paper-card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 4px 12px rgba(var(--shadow-rgb), 0.08),
+      0 16px 40px rgba(var(--shadow-rgb), 0.08);
+    border-color: var(--color-ceci-border-strong);
+  }
 }
 
 /* Transição de propriedades específicas p/ elementos interativos (iOS-like, sem jank) */
@@ -268,6 +334,13 @@
   transform: translateY(-1px) scale(1.02);
 }
 
+/* Serifa acadêmica de afeto (DM Serif Display) — momentos-chave:
+   saudações, empty states e citações. Uso deliberado e esparso (F5). */
+.font-serif-academic {
+  font-family: var(--font-serif);
+  letter-spacing: 0;
+}
+
 /* Touch Targets Ensure 44px min */
 .touch-target {
   min-height: 44px;
@@ -330,10 +403,10 @@
    backdrop-blur + saturate fazem o "frosted" (vidro fosco puro em CSS,
    sem filtro SVG — barato, robusto e idêntico entre navegadores). */
 .liquid-glass-nav {
-  background-color: color-mix(in srgb, var(--color-canvas) 75%, transparent);
+  background-color: color-mix(in srgb, var(--color-surface-rose) 72%, transparent);
   backdrop-filter: blur(24px) saturate(140%);
   -webkit-backdrop-filter: blur(24px) saturate(140%);
-  border-color: color-mix(in srgb, white 60%, transparent);
+  border-color: color-mix(in srgb, var(--color-surface-default) 60%, transparent);
   transition:
     background-color 0.3s ease,
     box-shadow 0.3s ease;
@@ -364,7 +437,7 @@
   border-color: color-mix(in srgb, white 45%, transparent);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.4),
-    inset 0 -1px 0 rgba(64, 56, 58, 0.15);
+    inset 0 -1px 0 rgba(var(--shadow-rgb), 0.15);
 }
 
 /* Reduce motion for users who prefer it */

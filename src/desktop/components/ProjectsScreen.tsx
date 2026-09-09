@@ -73,7 +73,7 @@ export const ProjectsScreen: React.FC = () => {
             onChange={(e) => setTitle(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') handleCreate(); }}
             placeholder="meu tcc"
-            className="rounded-[10px] border border-ceci-border-default px-2.5 py-1.5 text-xs text-ceci-primary bg-white focus:outline-none focus:ring-2 focus:ring-ceci-border-brand"
+            className="rounded-[10px] border border-ceci-border-default px-2.5 py-1.5 text-xs text-ceci-primary bg-surface-default focus:outline-none focus:ring-2 focus:ring-ceci-border-brand"
           />
         </label>
         <label className="flex flex-col gap-1 text-[11px] text-ceci-muted">
@@ -81,7 +81,7 @@ export const ProjectsScreen: React.FC = () => {
           <select
             value={type}
             onChange={(e) => setType(e.target.value as ProjectType)}
-            className="rounded-[10px] border border-ceci-border-default px-2.5 py-1.5 text-xs text-ceci-primary bg-white focus:outline-none focus:ring-2 focus:ring-ceci-border-brand"
+            className="rounded-[10px] border border-ceci-border-default px-2.5 py-1.5 text-xs text-ceci-primary bg-surface-default focus:outline-none focus:ring-2 focus:ring-ceci-border-brand"
           >
             {(Object.keys(TYPE_LABEL) as ProjectType[]).map((t) => (
               <option key={t} value={t}>{TYPE_LABEL[t]}</option>
@@ -157,7 +157,7 @@ export const ProjectsScreen: React.FC = () => {
               onChange={(e) => setOutputName(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') handleCreateOutput(); }}
               placeholder="texto final"
-              className="rounded-[10px] border border-ceci-border-default px-2.5 py-1.5 text-xs text-ceci-primary bg-white focus:outline-none focus:ring-2 focus:ring-ceci-border-brand"
+              className="rounded-[10px] border border-ceci-border-default px-2.5 py-1.5 text-xs text-ceci-primary bg-surface-default focus:outline-none focus:ring-2 focus:ring-ceci-border-brand"
             />
           </label>
           <button
@@ -174,7 +174,7 @@ export const ProjectsScreen: React.FC = () => {
         ) : (
           <ul className="flex flex-col gap-1.5">
             {selectedOutputs.map((o) => (
-              <li key={o.id} className="flex items-center gap-2 rounded-[10px] bg-white border border-ceci-border-default px-3 py-2">
+              <li key={o.id} className="flex items-center gap-2 rounded-[10px] bg-surface-default border border-ceci-border-default px-3 py-2">
                 <span className="text-xs font-medium text-ceci-primary flex-1 truncate">{o.name}</span>
                 <span className="text-[10px] text-ceci-muted uppercase">{o.format}</span>
                 <button

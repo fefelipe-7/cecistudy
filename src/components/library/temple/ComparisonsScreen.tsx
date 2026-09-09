@@ -63,7 +63,7 @@ const ComparisonCard: React.FC<{
     className={`w-full text-left rounded-xl p-4 border shadow-2xs transition-all cursor-pointer group hover:-translate-y-0.5 hover:shadow-sm ${
       featured
         ? 'bg-surface-gold border-ceci-border-gold'
-        : 'bg-white border-ceci-border-default hover:border-ceci-border-brand'
+        : 'bg-surface-default border-ceci-border-default hover:border-ceci-border-brand'
     }`}
   >
     <div className="flex items-start justify-between gap-3">
@@ -85,7 +85,7 @@ const ComparisonCard: React.FC<{
       {comparison.itens.slice(0, 3).map((item) => (
         <span
           key={`${comparison.id}-${item.tipoEntidade}-${item.entidadeId}`}
-          className="text-[10px] px-2 py-1 rounded-full bg-white/70 border border-ceci-border-subtle text-ceci-secondary"
+          className="text-[10px] px-2 py-1 rounded-full bg-surface-default/70 border border-ceci-border-subtle text-ceci-secondary"
         >
           {ENTITY_LABELS[item.tipoEntidade]}
         </span>
@@ -188,7 +188,7 @@ export const ComparisonsScreen: React.FC<{ onOpen: (slug: string) => void }> = (
               className={`shrink-0 px-3 py-1.5 rounded-full border text-[11px] font-semibold whitespace-nowrap transition-colors cursor-pointer ${
                 kindFilter === filter.id
                   ? 'bg-surface-gold border-ceci-border-gold text-gold'
-                  : 'bg-white border-ceci-border-default text-ceci-secondary hover:bg-surface-gold'
+                  : 'bg-surface-default border-ceci-border-default text-ceci-secondary hover:bg-surface-gold'
               }`}
             >
               {filter.label}

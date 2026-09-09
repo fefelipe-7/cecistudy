@@ -44,7 +44,7 @@ const DisciplinasGrid: React.FC<DisciplinasGridProps> = ({
             kind="course"
             id={c.id}
             onTap={() => onOpenCourse(c.id)}
-            className="rounded-2xl p-5 bg-white border border-ceci-border-default cursor-pointer hover:border-ceci-border-brand card-lift press-card space-y-3 shadow-sm group"
+            className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default cursor-pointer hover:border-ceci-border-brand card-lift press-card space-y-3 shadow-sm group"
             style={{ borderLeftWidth: '4px', borderLeftColor: c.color || '#B94862' }}
           >
             <div className="flex items-start justify-between gap-3">

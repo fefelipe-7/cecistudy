@@ -88,7 +88,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
 
   /** Toggle de agenda agora vive na revisão (§5.3): opção posterior, não etapa para todos. */
   const agendaRow = (
-    <div className="flex items-center justify-between gap-3 rounded-2xl border border-ceci-border-default bg-white px-4 py-3">
+    <div className="flex items-center justify-between gap-3 rounded-2xl border border-ceci-border-default bg-surface-default px-4 py-3">
       <div className="min-w-0">
         <p className="text-xs font-semibold text-ceci-primary">marcar no Google Agenda</p>
         <p className="text-[11px] text-ceci-secondary">opcional — só se fizer sentido</p>
@@ -113,7 +113,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
             setKind('task');
             setStep(0);
           }}
-          className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white border-2 border-ceci-border-default hover:border-ceci-border-brand text-left transition-all active:scale-[0.98] cursor-pointer shadow-sm"
+          className="w-full flex items-center gap-4 p-5 rounded-2xl bg-surface-default border-2 border-ceci-border-default hover:border-ceci-border-brand text-left transition-all active:scale-[0.98] cursor-pointer shadow-sm"
         >
           <span className="w-12 h-12 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
             <CheckCircle2 className="w-6 h-6" />
@@ -130,7 +130,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
             setKind('exam');
             setStep(0);
           }}
-          className="w-full flex items-center gap-4 p-5 rounded-2xl bg-white border-2 border-ceci-border-default hover:border-ceci-border-academic text-left transition-all active:scale-[0.98] cursor-pointer shadow-sm"
+          className="w-full flex items-center gap-4 p-5 rounded-2xl bg-surface-default border-2 border-ceci-border-default hover:border-ceci-border-academic text-left transition-all active:scale-[0.98] cursor-pointer shadow-sm"
         >
           <span className="w-12 h-12 rounded-2xl bg-surface-blue border border-ceci-border-academic flex items-center justify-center text-ceci-academic-strong shrink-0">
             <ClipboardList className="w-6 h-6" />

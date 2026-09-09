@@ -123,7 +123,7 @@ export const Picker: React.FC<PickerProps> = ({
             position="bottom"
             className="w-full max-w-md"
           >
-            <div className="bg-white rounded-t-[28px] sm:rounded-2xl border border-ceci-border-default shadow-xl overflow-hidden text-ceci-primary">
+            <div className="bg-surface-default rounded-t-[28px] sm:rounded-2xl border border-ceci-border-default shadow-xl overflow-hidden text-ceci-primary">
               <div className="px-5 pt-4 pb-2 border-b border-ceci-border-subtle">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-ceci-tertiary">
                   {sheetTitle ?? label ?? 'escolher'}
@@ -208,7 +208,7 @@ export const Picker: React.FC<PickerProps> = ({
                         onChange('');
                         closeSheet();
                       }}
-                      className="flex-1 min-h-[44px] rounded-2xl border border-ceci-border-default bg-white text-ceci-secondary text-xs font-semibold active:scale-[0.98] transition-transform cursor-pointer"
+                      className="flex-1 min-h-[44px] rounded-2xl border border-ceci-border-default bg-surface-default text-ceci-secondary text-xs font-semibold active:scale-[0.98] transition-transform cursor-pointer"
                     >
                       sem vínculo
                     </button>

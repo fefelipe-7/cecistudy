@@ -68,7 +68,7 @@ export function GithubSyncCard() {
 
   return (
     <>
-      <div className="rounded-2xl p-5 bg-white border border-ceci-border-brand shadow-sm space-y-4">
+      <div className="rounded-2xl p-5 bg-surface-default border border-ceci-border-brand shadow-sm space-y-4">
         <div className="flex items-center gap-2">
           <Cloud className="w-4 h-4 text-ceci-brand-strong" />
           <h2 className="font-display font-bold text-xl text-ceci-primary">sincronização (github)</h2>
@@ -123,7 +123,7 @@ export function GithubSyncCard() {
               </button>
               <button
                 onClick={clearGithubSync}
-                className="flex items-center justify-center gap-2 bg-white border border-ceci-border-default text-ceci-secondary px-4 py-3 rounded-2xl text-xs font-semibold cursor-pointer active:scale-95 transition-transform"
+                className="flex items-center justify-center gap-2 bg-surface-default border border-ceci-border-default text-ceci-secondary px-4 py-3 rounded-2xl text-xs font-semibold cursor-pointer active:scale-95 transition-transform"
               >
                 <CloudOff className="w-4 h-4" /> desconectar
               </button>
@@ -133,7 +133,7 @@ export function GithubSyncCard() {
       </div>
 
       <Modal open={pendingSyncPreview != null} onClose={discardSyncPreview}>
-        <div className="w-full max-w-sm bg-white rounded-2xl shadow-floating p-6 space-y-4">
+        <div className="w-full max-w-sm bg-surface-default rounded-2xl shadow-floating p-6 space-y-4">
           <h3 className="font-display font-bold text-lg text-ceci-primary">ha uma versao mais nova</h3>
           <p className="text-sm text-ceci-secondary leading-relaxed">
             seu outro dispositivo enviou mudancas. quer mesclar com o que voce tem aqui?
@@ -147,7 +147,7 @@ export function GithubSyncCard() {
           <div className="flex gap-2">
             <button
               onClick={discardSyncPreview}
-              className="flex-1 py-3 rounded-2xl text-sm font-semibold text-ceci-secondary bg-white border border-ceci-border-default cursor-pointer active:scale-95 transition-transform"
+              className="flex-1 py-3 rounded-2xl text-sm font-semibold text-ceci-secondary bg-surface-default border border-ceci-border-default cursor-pointer active:scale-95 transition-transform"
             >
               depois
             </button>

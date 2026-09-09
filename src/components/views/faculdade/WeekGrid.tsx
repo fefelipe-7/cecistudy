@@ -49,7 +49,7 @@ const WeekGrid: React.FC<WeekGridProps> = ({ courses, now, onOpenCourse }) => {
                     ? 'bg-ceci-primary text-white border-transparent shadow-sm'
                     : isTodayDow
                       ? 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand'
-                      : 'bg-white text-ceci-secondary border-ceci-border-default hover:bg-surface-subtle'
+                      : 'bg-surface-default text-ceci-secondary border-ceci-border-default hover:bg-surface-subtle'
                 }`}
               >
                 <span className="text-[10px] font-semibold uppercase tracking-wide">
@@ -89,7 +89,7 @@ const WeekGrid: React.FC<WeekGridProps> = ({ courses, now, onOpenCourse }) => {
               <button
                 key={`${c.id}-${slot.day}-${slot.start}`}
                 onClick={() => onOpenCourse(c.id)}
-                className="w-full p-4 rounded-xl bg-white border border-ceci-border-default hover:border-ceci-border-brand shadow-sm tap-interactive cursor-pointer flex items-center justify-between gap-3 text-left"
+                className="w-full p-4 rounded-xl bg-surface-default border border-ceci-border-default hover:border-ceci-border-brand shadow-sm tap-interactive cursor-pointer flex items-center justify-between gap-3 text-left"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <span className="text-xs font-bold text-ceci-academic-strong bg-surface-blue border border-ceci-border-academic px-2.5 py-1.5 rounded-xl shrink-0 tabular-nums">

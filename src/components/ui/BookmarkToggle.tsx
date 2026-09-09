@@ -37,7 +37,7 @@ export const BookmarkToggle: React.FC<BookmarkToggleProps> = ({
         dims,
         active
           ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
-          : 'bg-white border-ceci-border-default text-ceci-secondary hover:bg-surface-muted',
+          : 'bg-surface-default border-ceci-border-default text-ceci-secondary hover:bg-surface-muted',
         className
       )}
     >

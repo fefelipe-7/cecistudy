@@ -135,8 +135,12 @@ do usuário; na web vêm de facades lazy, no nativo do `.db` embutido):
   `TempleAuthor`, `TempleTechnique`, `TempleTechniqueCategory` (prefixo `Temple*` — distintos da
   entidade editável `Technique` do usuário).
 - **Web:** facades lazy em `src/data/temple/` (gerados por `content/build-temple-facades.mjs`):
-  índice + autores + técnicas num chunk único; corpo dos conceitos em **12 chunks por domínio**
-  (`concepts/<domainId>.json`, carregados sob demanda). Facade tipado: `src/data/temple/index.ts`.
+  cada dataset tem seu próprio módulo/chunk — `conceptChunks.ts` (manifest leve),
+  `conceptIndex.ts` (índice), `authors.ts`, `techniques.ts`, `comparisons.ts`,
+  `registry.ts` (abordagens); corpo dos conceitos em **12 chunks por domínio**
+  (`concepts/<domainId>.json`, carregados sob demanda). Loader que escolhe o módulo:
+  `src/data/temple/lib/templeData.ts`. **Não recriar um `index.ts` monolítico** — o
+  chunk único de ~4,9 MB foi substituído por chunks por dataset (fix de performance).
 - **Nativo:** tabelas novas no `.db` do catálogo (`concept`, `concept_domain`, `catalog_author`,
   `technique`, `technique_category`, `question_category`, `topic`) — queries em
   `src/lib/db/catalogDb.ts`.

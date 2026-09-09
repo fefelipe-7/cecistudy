@@ -33,7 +33,7 @@ export const CourseMasterList: React.FC = () => {
         <button
           onClick={() => openWizard('course')}
           aria-label="nova disciplina"
-          className="w-7 h-7 rounded-[10px] bg-white border border-ceci-border-default text-ceci-secondary flex items-center justify-center cursor-pointer hover:bg-[var(--ds-surface-hover)] hover:border-ceci-border-strong hover:text-ceci-primary transition-colors focus-visible:outline-none focus-visible:[box-shadow:var(--ds-focus-ring-neutral)]"
+          className="w-7 h-7 rounded-[10px] bg-surface-default border border-ceci-border-default text-ceci-secondary flex items-center justify-center cursor-pointer hover:bg-[var(--ds-surface-hover)] hover:border-ceci-border-strong hover:text-ceci-primary transition-colors focus-visible:outline-none focus-visible:[box-shadow:var(--ds-focus-ring-neutral)]"
         >
           <Plus className="w-4 h-4" />
         </button>

@@ -66,7 +66,7 @@ export const SupervisionView: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-3 rounded-2xl p-4 bg-white border border-ceci-border-default shadow-sm">
+      <div className="flex items-center justify-between gap-3 rounded-2xl p-4 bg-surface-default border border-ceci-border-default shadow-sm">
         <div className="flex items-center gap-3 min-w-0">
           <span className="w-10 h-10 rounded-2xl bg-surface-blue border border-ceci-border-academic flex items-center justify-center text-ceci-academic-strong shrink-0">
             <Compass className="w-5 h-5" />
@@ -85,7 +85,7 @@ export const SupervisionView: React.FC = () => {
       </div>
 
       {form && (
-        <div className="space-y-4 p-4 rounded-2xl bg-white border border-ceci-border-default shadow-sm">
+        <div className="space-y-4 p-4 rounded-2xl bg-surface-default border border-ceci-border-default shadow-sm">
           <FieldLabel>data</FieldLabel>
           <DateInput value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
           <div>
@@ -133,7 +133,7 @@ export const SupervisionView: React.FC = () => {
 
       <div className="space-y-3">
         {sorted.map((entry) => (
-          <div key={entry.id} className="p-4 rounded-2xl bg-white border border-ceci-border-default shadow-2xs space-y-3">
+          <div key={entry.id} className="p-4 rounded-2xl bg-surface-default border border-ceci-border-default shadow-2xs space-y-3">
             <div className="flex items-center justify-between gap-2 flex-wrap">
               <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-ceci-academic-strong bg-surface-blue border border-ceci-border-academic px-2.5 py-1 rounded-full">
                 <Compass className="w-3.5 h-3.5" /> supervisão
@@ -170,9 +170,9 @@ export const SupervisionView: React.FC = () => {
                   <div key={step} className="flex items-center justify-between gap-2 p-2 rounded-xl bg-surface-muted border border-ceci-border-subtle">
                     <span className="text-xs text-ceci-primary truncate">{step}</span>
                     <div className="flex items-center gap-1 shrink-0">
-                      <button onClick={() => actions.toTask(step)} title="virar tarefa" className="w-7 h-7 rounded-lg bg-white border border-ceci-border-default flex items-center justify-center text-ceci-primary hover:border-ceci-border-brand cursor-pointer"><FileText className="w-3.5 h-3.5" /></button>
-                      <button onClick={() => actions.toReading(step)} title="virar leitura" className="w-7 h-7 rounded-lg bg-white border border-ceci-border-default flex items-center justify-center text-ceci-primary hover:border-ceci-border-brand cursor-pointer"><BookOpen className="w-3.5 h-3.5" /></button>
-                      <button onClick={() => actions.toFocus(step)} title="virar foco" className="w-7 h-7 rounded-lg bg-white border border-ceci-border-default flex items-center justify-center text-ceci-primary hover:border-ceci-border-brand cursor-pointer"><Brain className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => actions.toTask(step)} title="virar tarefa" className="w-7 h-7 rounded-lg bg-surface-default border border-ceci-border-default flex items-center justify-center text-ceci-primary hover:border-ceci-border-brand cursor-pointer"><FileText className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => actions.toReading(step)} title="virar leitura" className="w-7 h-7 rounded-lg bg-surface-default border border-ceci-border-default flex items-center justify-center text-ceci-primary hover:border-ceci-border-brand cursor-pointer"><BookOpen className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => actions.toFocus(step)} title="virar foco" className="w-7 h-7 rounded-lg bg-surface-default border border-ceci-border-default flex items-center justify-center text-ceci-primary hover:border-ceci-border-brand cursor-pointer"><Brain className="w-3.5 h-3.5" /></button>
                     </div>
                   </div>
                 ))}

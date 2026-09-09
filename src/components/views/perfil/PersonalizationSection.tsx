@@ -40,7 +40,7 @@ const PersonalizationSection: React.FC<PersonalizationSectionProps> = ({
   onDailyQuoteChange,
   onSaveProfile,
 }) => (
-  <div className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
+  <div className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm space-y-4">
     <div className="flex items-center gap-2">
       <Settings className="w-4 h-4 text-rose-500" />
       <h2 className="font-display font-bold text-xl text-ceci-primary">
@@ -71,7 +71,7 @@ const PersonalizationSection: React.FC<PersonalizationSectionProps> = ({
             value={reminderSettings.time}
             onChange={(e) => onUpdateReminder({ ...reminderSettings, time: e.target.value })}
             disabled={!reminderSettings.enabled}
-            className="bg-white border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3 py-1.5 text-sm text-ceci-primary disabled:opacity-50"
+            className="bg-surface-default border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3 py-1.5 text-sm text-ceci-primary disabled:opacity-50"
           />
           <span className="text-[11px] text-ceci-tertiary">todas as noites</span>
         </div>
@@ -94,7 +94,7 @@ const PersonalizationSection: React.FC<PersonalizationSectionProps> = ({
       />
       {!gcalConfigured && (
         <p className="text-[11px] text-ceci-tertiary">
-          adicione <code className="rounded bg-white px-1 border border-ceci-border-default">VITE_GOOGLE_CLIENT_ID_WEB</code> no ambiente.
+          adicione <code className="rounded bg-surface-default px-1 border border-ceci-border-default">VITE_GOOGLE_CLIENT_ID_WEB</code> no ambiente.
         </p>
       )}
     </div>

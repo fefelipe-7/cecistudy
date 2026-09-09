@@ -1,11 +1,11 @@
 ﻿import React, { useState } from 'react';
 import { motion, AnimatePresence, useDragControls, type Variants } from 'framer-motion';
 import { getTransition, prefersReducedMotion } from '@/lib/motion';
-import { MapPin } from 'lucide-react';
+import { CalendarClock, GraduationCap, MapPin } from 'lucide-react';
 import { CourseIcon } from '../ui/CourseIcon';
 import { UnderlineTabBar } from '../ui/UnderlineTabBar';
 import { useMobileApp } from '@/context/mobileApp';
-import { formatCourseSchedule } from '../../lib/schedule';
+import { formatCourseSchedule, formatShortDate, getTodaySchedule } from '../../lib/schedule';
 import {
   canStartTabSwipe,
   shouldIgnorePanTarget,
@@ -41,10 +41,26 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
   const [activeTab, setActiveTab] = useState<DetailTab>('info');
   const [direction, setDirection] = useState(1);
   const dragControls = useDragControls();
-  const { classes, exams } = useMobileApp();
+  const { classes, exams, courses } = useMobileApp();
 
   const courseClasses = classes.filter((c) => c.courseId === course.id);
   const courseExams = exams.filter((e) => e.courseId === course.id);
+
+  const courseColor = course.color || '#B94862';
+
+  /** Chip "do agora" — hoje tem aula? senão a próxima prova no radar. */
+  const nowChip = (() => {
+    const hasClassToday = getTodaySchedule(courses, new Date()).some(
+      (s) => s.course.id === course.id
+    );
+    if (hasClassToday) return { Icon: GraduationCap, label: 'hoje tem aula ♡' };
+    const next = courseExams
+      .filter((e) => !e.completed)
+      .sort((a, b) => a.date.localeCompare(b.date))[0];
+    return next
+      ? { Icon: CalendarClock, label: `próxima prova ${formatShortDate(next.date)}` }
+      : null;
+  })();
 
   const goToTab = (next: DetailTab, dir?: number) => {
     if (next === activeTab) return;
@@ -82,39 +98,64 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
 
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-4 pb-24 relative">
-      {/* Hero compacto — acento na cor da matéria */}
-<div className="px-1 pt-1">
-         <motion.div
-           layoutId="course-hero"
-           className="rounded-xl bg-white border border-ceci-border-default p-3.5 flex items-center gap-3 shadow-sm"
-           style={{ borderLeftWidth: '4px', borderLeftColor: course.color || '#B94862' }}
-         >
-           <motion.span
-             layoutId="course-icon-bg"
-             className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-             style={{ backgroundColor: `${course.color}20` }}
-           >
-             <CourseIcon icon={course.icon} className="w-5 h-5" />
-           </motion.span>
-           <div className="min-w-0 space-y-1">
-             <motion.h2
-               layoutId="course-title"
-               className="font-display text-base font-bold text-ceci-primary leading-tight"
-             >
-               {course.name}
-             </motion.h2>
-             <p className="text-[11px] font-medium text-ceci-secondary flex items-center flex-wrap gap-x-1.5 gap-y-0.5">
-               <MapPin className="w-3 h-3 text-ceci-muted shrink-0" />
-               {contextBits.map((bit, i) => (
-                 <React.Fragment key={i}>
-                   {i > 0 && <span aria-hidden className="text-ceci-muted">·</span>}
-                   <span>{bit}</span>
-                 </React.Fragment>
-               ))}
-             </p>
-           </div>
-         </motion.div>
-       </div>
+      {/* Capinha da disciplina — canto afetuoso com a cor da matéria */}
+      <div className="px-1 pt-1">
+        <motion.div
+          layoutId="course-hero"
+          className="rounded-[26px] border border-ceci-border-subtle shadow-sm p-4 relative overflow-hidden"
+          style={{
+            background: `linear-gradient(135deg, #FFFFFF 0%, ${courseColor}1A 100%)`,
+            borderLeftWidth: 4,
+            borderLeftColor: courseColor,
+          }}
+        >
+          <div className="relative flex items-start gap-3.5">
+            <motion.span
+              layoutId="course-icon-bg"
+              className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-xs border border-white/70"
+              style={{ backgroundColor: `${courseColor}26` }}
+            >
+              <CourseIcon icon={course.icon} className="w-6 h-6" />
+            </motion.span>
+            <div className="min-w-0">
+              <motion.h2
+                layoutId="course-title"
+                className="font-display text-lg font-bold text-ceci-primary leading-snug tracking-tight"
+              >
+                {course.name}
+              </motion.h2>
+              <p className="text-[11px] font-medium text-ceci-secondary flex items-center flex-wrap gap-x-1.5 gap-y-0.5 mt-1">
+                <MapPin className="w-3 h-3 text-ceci-muted shrink-0" />
+                {contextBits.map((bit, i) => (
+                  <React.Fragment key={i}>
+                    {i > 0 && <span aria-hidden className="text-ceci-muted">·</span>}
+                    <span>{bit}</span>
+                  </React.Fragment>
+                ))}
+              </p>
+            </div>
+          </div>
+
+          {nowChip && (
+            <div className="relative mt-3.5 flex items-center gap-2 min-w-0">
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold text-ceci-primary shrink-0"
+                style={{ backgroundColor: `${courseColor}26` }}
+              >
+                <nowChip.Icon className="w-3.5 h-3.5" />
+                {nowChip.label}
+              </span>
+            </div>
+          )}
+
+          {/* fitinha da matéria */}
+          <div
+            aria-hidden
+            className="absolute bottom-0 left-5 right-5 h-[3px] rounded-full"
+            style={{ background: courseColor }}
+          />
+        </motion.div>
+      </div>
 
       {/* Sub-tabs + conteúdo deslizável */}
       <UnderlineTabBar

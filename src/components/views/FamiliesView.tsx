@@ -16,7 +16,7 @@ export const FamiliesView: React.FC = () => {
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-5 pb-1 relative">
       {/* Intro */}
-      <div className="bg-white rounded-2xl p-5 border border-ceci-border-default space-y-1.5 shadow-2xs">
+      <div className="bg-surface-default rounded-2xl p-5 border border-ceci-border-default space-y-1.5 shadow-2xs">
         <div className="flex items-center gap-2.5">
           <div className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
             <Network className="w-5 h-5" />
@@ -39,7 +39,7 @@ export const FamiliesView: React.FC = () => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="procurar família…"
-          className="w-full bg-white border border-ceci-border-default rounded-2xl pl-11 pr-4 py-3 text-sm text-ceci-primary placeholder:text-ceci-muted focus:border-ceci-border-brand focus:outline-none shadow-2xs"
+          className="w-full bg-surface-default border border-ceci-border-default rounded-2xl pl-11 pr-4 py-3 text-sm text-ceci-primary placeholder:text-ceci-muted focus:border-ceci-border-brand focus:outline-none shadow-2xs"
           aria-label="procurar família de psicoterapia"
         />
       </div>
@@ -58,7 +58,7 @@ export const FamiliesView: React.FC = () => {
           <button
             key={family.id}
             onClick={() => openFamily(family.id)}
-            className="w-full text-left bg-white rounded-xl p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
+            className="w-full text-left bg-surface-default rounded-xl p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
           >
             <div className="flex items-center gap-3 min-w-0 pr-2">
               <div

@@ -52,7 +52,7 @@ const StepCard: React.FC<{ children: React.ReactNode; className?: string }> = ({
   children,
   className = '',
 }) => (
-  <div className={`rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm ${className}`}>
+  <div className={`rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm ${className}`}>
     {children}
   </div>
 );
@@ -215,7 +215,7 @@ export const SyncScreen: React.FC = () => {
 
             <button
               onClick={startHost}
-              className="w-full text-left rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm hover:border-ceci-border-brand transition-colors cursor-pointer active:scale-[0.99] transition-transform"
+              className="w-full text-left rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm hover:border-ceci-border-brand transition-colors cursor-pointer active:scale-[0.99] transition-transform"
             >
               <div className="flex items-start gap-3">
                 <span className="w-11 h-11 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center shrink-0">
@@ -234,7 +234,7 @@ export const SyncScreen: React.FC = () => {
 
             <button
               onClick={startJoin}
-              className="w-full text-left rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm hover:border-ceci-border-academic transition-colors cursor-pointer active:scale-[0.99]"
+              className="w-full text-left rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm hover:border-ceci-border-academic transition-colors cursor-pointer active:scale-[0.99]"
             >
               <div className="flex items-start gap-3">
                 <span className="w-11 h-11 rounded-2xl bg-surface-blue border border-ceci-border-academic flex items-center justify-center shrink-0">
@@ -267,7 +267,7 @@ export const SyncScreen: React.FC = () => {
               no outro dispositivo, toque em “conectar a outro dispositivo”
             </p>
 
-            <div className="w-56 h-56 rounded-xl bg-white border border-ceci-border-default shadow-sm flex items-center justify-center overflow-hidden mb-4">
+            <div className="w-56 h-56 rounded-xl bg-surface-default border border-ceci-border-default shadow-sm flex items-center justify-center overflow-hidden mb-4">
               {qrDataUrl ? (
                 <img src={qrDataUrl} alt="QR code de pareamento" className="w-full h-full object-contain" />
               ) : (
@@ -331,7 +331,7 @@ export const SyncScreen: React.FC = () => {
                 autoComplete="off"
                 spellCheck={false}
                 aria-label="código de pareamento"
-                className="flex-1 min-w-0 rounded-xl border border-ceci-border-default px-4 py-3 font-mono text-lg tracking-[0.2em] uppercase text-ceci-primary placeholder:text-ceci-muted focus:outline-none focus:border-ceci-border-brand bg-white"
+                className="flex-1 min-w-0 rounded-xl border border-ceci-border-default px-4 py-3 font-mono text-lg tracking-[0.2em] uppercase text-ceci-primary placeholder:text-ceci-muted focus:outline-none focus:border-ceci-border-brand bg-surface-default"
               />
             </div>
 
@@ -401,7 +401,7 @@ export const SyncScreen: React.FC = () => {
             </p>
             <button
               onClick={backToChoose}
-              className="px-6 py-2.5 rounded-2xl text-sm font-semibold text-ceci-secondary bg-white border border-ceci-border-default cursor-pointer active:scale-95 transition-transform"
+              className="px-6 py-2.5 rounded-2xl text-sm font-semibold text-ceci-secondary bg-surface-default border border-ceci-border-default cursor-pointer active:scale-95 transition-transform"
             >
               voltar
             </button>
@@ -417,7 +417,7 @@ export const SyncScreen: React.FC = () => {
             <div className="flex gap-2 w-full max-w-[280px]">
               <button
                 onClick={backToChoose}
-                className="flex-1 py-3 rounded-2xl text-sm font-semibold text-ceci-secondary bg-white border border-ceci-border-default cursor-pointer active:scale-95 transition-transform"
+                className="flex-1 py-3 rounded-2xl text-sm font-semibold text-ceci-secondary bg-surface-default border border-ceci-border-default cursor-pointer active:scale-95 transition-transform"
               >
                 voltar
               </button>

@@ -78,7 +78,7 @@ export const ExploreSections: React.FC<ExploreSectionsProps> = ({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="pesquisar por obra, autor, Beck, Freud, TCC..."
-              className="w-full bg-white border border-ceci-border-default rounded-2xl pl-10 pr-8 py-3 text-xs text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 shadow-2xs"
+              className="w-full bg-surface-default border border-ceci-border-default rounded-2xl pl-10 pr-8 py-3 text-xs text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 shadow-2xs"
             />
             {searchTerm && (
               <button
@@ -95,7 +95,7 @@ export const ExploreSections: React.FC<ExploreSectionsProps> = ({
             className={`px-3.5 py-3 rounded-2xl border flex items-center gap-2 tap-interactive cursor-pointer shadow-2xs text-xs font-bold ${
               hasActiveFilters
                 ? 'bg-ceci-primary text-white border-ceci-primary'
-                : 'bg-white text-ceci-secondary border-ceci-border-default hover:bg-surface-muted'
+                : 'bg-surface-default text-ceci-secondary border-ceci-border-default hover:bg-surface-muted'
             }`}
             title="abrir filtros"
           >

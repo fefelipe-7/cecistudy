@@ -16,14 +16,14 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   name,
   dayMessage,
 }) => (
-  <section className="rounded-[26px] bg-gradient-to-br from-white to-surface-rose border border-ceci-border-subtle shadow-sm p-5 relative overflow-hidden">
+  <section className="rounded-[26px] bg-gradient-to-br from-surface-default to-surface-rose border border-ceci-border-subtle shadow-sm p-5 relative overflow-hidden">
     <div className="flex items-start justify-between gap-3">
       <div className="min-w-0">
         <div className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
           <p className="text-xs font-medium text-ceci-secondary lowercase">{formattedDate}</p>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-ceci-primary mt-1 tracking-tight font-display">
+        <h1 className="font-serif-academic text-3xl sm:text-4xl text-ceci-primary mt-1 tracking-tight">
           {greeting}, {name} ✨
         </h1>
       </div>

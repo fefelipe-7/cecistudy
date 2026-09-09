@@ -80,7 +80,7 @@ export const PillGroupMulti = <T extends string>({
                   SIZES[size],
                   sel
                     ? VARIANT_CLASSES[variant]
-                    : 'bg-white text-ceci-secondary border border-ceci-border-default hover:bg-surface-muted'
+                    : 'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-surface-muted'
                 )}
               >
                 {o.emoji ? `${o.emoji} ` : ''}

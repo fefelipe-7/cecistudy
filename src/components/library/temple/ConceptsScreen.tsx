@@ -101,7 +101,7 @@ export const ConceptsScreen: React.FC = () => {
           ariaLabel="voltar para a lista de conceitos"
         />
 
-        <div className="bg-white rounded-2xl p-5 border border-ceci-border-default space-y-3 shadow-2xs">
+        <div className="bg-surface-default rounded-2xl p-5 border border-ceci-border-default space-y-3 shadow-2xs">
           <div className="flex items-start justify-between gap-3">
             <h1 className="text-xl font-bold font-display text-ceci-primary leading-tight min-w-0">
               {selected.name}
@@ -160,7 +160,7 @@ export const ConceptsScreen: React.FC = () => {
             return (
               <div
                 key={domain.id}
-                className="bg-white rounded-xl border border-ceci-border-default shadow-2xs overflow-hidden"
+                className="bg-surface-default rounded-xl border border-ceci-border-default shadow-2xs overflow-hidden"
               >
                 <TempleAccordionHeader
                   title={domain.name}

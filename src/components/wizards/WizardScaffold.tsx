@@ -123,7 +123,7 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
         <div className="max-w-md sm:max-w-xl lg:max-w-2xl mx-auto flex items-center justify-between gap-2">
           <button
             onClick={requestClose}
-            className="w-9 h-9 rounded-2xl bg-white border border-ceci-border-default hover:bg-surface-rose flex items-center justify-center text-ceci-primary shadow-2xs transition-all active:scale-95 cursor-pointer"
+            className="w-9 h-9 rounded-2xl bg-surface-default border border-ceci-border-default hover:bg-surface-rose flex items-center justify-center text-ceci-primary shadow-2xs transition-all active:scale-95 cursor-pointer"
             title="voltar"
             aria-label={isLast ? 'voltar' : 'cancelar'}
           >
@@ -208,11 +208,11 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
       </div>
 
       {/* Barra de ação fixa na base da tela (sticky footer) */}
-      <div className="fixed bottom-0 inset-x-0 z-10 bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(64,56,58,0.06)]">
+      <div className="fixed bottom-0 inset-x-0 z-10 bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(var(--shadow-rgb),0.06)]">
         <div className="max-w-md sm:max-w-xl lg:max-w-2xl mx-auto flex flex-col gap-1.5 px-3.5 sm:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
           {/* confirmação de descarte com alteração real */}
           {confirmingDiscard ? (
-            <div className="rounded-2xl bg-white border border-ceci-border-default p-3 space-y-2">
+            <div className="rounded-2xl bg-surface-default border border-ceci-border-default p-3 space-y-2">
               <p className="text-xs font-semibold text-ceci-primary text-center">
                 tem coisas escritas aqui — sair sem guardar?
               </p>
@@ -225,7 +225,7 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
                 </button>
                 <button
                   onClick={onClose}
-                  className="flex-1 min-h-[44px] rounded-xl border border-ceci-border-default bg-white text-red-700 text-xs font-semibold active:scale-[0.98] transition-transform cursor-pointer"
+                  className="flex-1 min-h-[44px] rounded-xl border border-ceci-border-default bg-surface-default text-red-700 text-xs font-semibold active:scale-[0.98] transition-transform cursor-pointer"
                 >
                   descartar
                 </button>

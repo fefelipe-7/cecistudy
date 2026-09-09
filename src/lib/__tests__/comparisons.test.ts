@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { COMPARISON_AXES } from '../../types';
-import { comparisonsFile } from '../../data/temple/index';
+import { comparisonsFile } from '../../data/temple/comparisons';
 import { getTempleComparison, getTempleComparisons } from '../templeData';
 
 describe('comparações do Templo', () => {

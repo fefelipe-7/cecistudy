@@ -25,7 +25,7 @@ const WeekRhythmCard: React.FC<WeekRhythmCardProps> = ({
     <button
       onClick={onOpenStreak}
       aria-label="ver sua ofensiva de estudos"
-      className="w-full card-lift bg-white rounded-xl p-5 border border-ceci-border-default hover:border-ceci-border-brand shadow-sm cursor-pointer space-y-4 tap-interactive text-left"
+      className="w-full card-lift bg-surface-default rounded-xl p-5 border border-ceci-border-default hover:border-ceci-border-brand shadow-sm cursor-pointer space-y-4 tap-interactive text-left"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">

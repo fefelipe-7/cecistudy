@@ -54,7 +54,7 @@ export const WorkspaceSwitcher: React.FC = () => {
       {open && (
         <div
           role="menu"
-          className="absolute z-30 mt-1.5 w-full rounded-[14px] border border-ceci-border-default bg-white p-1.5"
+          className="absolute z-30 mt-1.5 w-full rounded-[14px] border border-ceci-border-default bg-surface-default p-1.5"
           style={{ boxShadow: 'var(--ds-elevation-md)' }}
         >
           {app.workspaces.map((ws) => (

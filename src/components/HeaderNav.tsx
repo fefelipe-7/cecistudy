@@ -79,7 +79,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               {headerConfig.onBack && (
                 <button
                   onClick={headerConfig.onBack}
-                  className="w-9 h-9 rounded-2xl bg-white border border-ceci-border-default hover:border-ceci-border-brand flex items-center justify-center text-ceci-primary shadow-2xs hover:bg-surface-rose tap-interactive cursor-pointer shrink-0 active:scale-95"
+                  className="w-9 h-9 rounded-2xl bg-surface-default border border-ceci-border-default hover:border-ceci-border-brand flex items-center justify-center text-ceci-primary shadow-2xs hover:bg-surface-rose tap-interactive cursor-pointer shrink-0 active:scale-95"
                   title="voltar"
                   aria-label="voltar"
                 >
@@ -102,7 +102,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                     {headerConfig.title}
                   </h2>
                   {headerConfig.code && (
-                    <span className="text-[9px] font-extrabold uppercase tracking-wider bg-white px-2 py-0.2 rounded-full border border-ceci-border-default text-ceci-primary shrink-0 shadow-2xs">
+                    <span className="text-[9px] font-extrabold uppercase tracking-wider bg-surface-default px-2 py-0.2 rounded-full border border-ceci-border-default text-ceci-primary shrink-0 shadow-2xs">
                       {headerConfig.code}
                     </span>
                   )}
@@ -139,7 +139,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               {/* Quick Search */}
               <button
                 onClick={onOpenSearch}
-                className="w-9 h-9 rounded-2xl bg-white border border-ceci-border-default hover:border-ceci-border-brand flex items-center justify-center text-ceci-primary shadow-2xs tap-interactive cursor-pointer active:scale-95"
+                className="w-9 h-9 rounded-2xl bg-surface-default border border-ceci-border-default hover:border-ceci-border-brand flex items-center justify-center text-ceci-primary shadow-2xs tap-interactive cursor-pointer active:scale-95"
                 title="buscar no cantinho"
                 aria-label="buscar no cantinho"
               >
@@ -233,7 +233,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               {/* Mobile Search Button */}
               <button
                 onClick={onOpenSearch}
-                className={`md:hidden rounded-full text-ceci-primary bg-white border border-ceci-border-default hover:bg-surface-rose tap-interactive flex items-center justify-center cursor-pointer ${
+                className={`md:hidden rounded-full text-ceci-primary bg-surface-default border border-ceci-border-default hover:bg-surface-rose tap-interactive flex items-center justify-center cursor-pointer ${
                   scrolled ? 'w-8 h-8' : 'w-10 h-10'
                 }`}
                 title="buscar"

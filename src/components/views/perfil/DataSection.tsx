@@ -14,7 +14,7 @@ interface DataSectionProps {
 const DataSection: React.FC<DataSectionProps> = ({ onOpenSync, onExport, onImport, onReset }) => {
   const [pendingReset, setPendingReset] = useState(false);
   return (
-    <div className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
+    <div className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm space-y-4">
       <div className="flex items-center gap-2">
         <Database className="w-4 h-4 text-ceci-academic-strong" />
         <h2 className="font-display font-bold text-xl text-ceci-primary">
@@ -27,7 +27,7 @@ const DataSection: React.FC<DataSectionProps> = ({ onOpenSync, onExport, onImpor
 
       <button
         onClick={onOpenSync}
-        className="w-full flex items-center gap-2 bg-white border border-ceci-border-brand text-ceci-primary px-4 py-3 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer hover:bg-surface-rose transition-colors"
+        className="w-full flex items-center gap-2 bg-surface-default border border-ceci-border-brand text-ceci-primary px-4 py-3 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer hover:bg-surface-rose transition-colors"
       >
         <RefreshCw className="w-4 h-4 text-ceci-brand-strong" />
         sincronizar entre dispositivos
@@ -43,7 +43,7 @@ const DataSection: React.FC<DataSectionProps> = ({ onOpenSync, onExport, onImpor
           exportar backup
         </button>
 
-        <label className="flex items-center gap-2 bg-white border border-ceci-border-default text-ceci-primary px-4 py-3 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer hover:border-ceci-border-brand transition-colors">
+        <label className="flex items-center gap-2 bg-surface-default border border-ceci-border-default text-ceci-primary px-4 py-3 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer hover:border-ceci-border-brand transition-colors">
           <Upload className="w-4 h-4" />
           importar backup
           <input
@@ -63,7 +63,7 @@ const DataSection: React.FC<DataSectionProps> = ({ onOpenSync, onExport, onImpor
 
         <button
           onClick={() => setPendingReset(true)}
-          className="flex items-center gap-2 bg-white border border-ceci-border-default text-ceci-secondary px-4 py-3 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer hover:border-red-400 hover:text-red-700 transition-colors"
+          className="flex items-center gap-2 bg-surface-default border border-ceci-border-default text-ceci-secondary px-4 py-3 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer hover:border-red-400 hover:text-red-700 transition-colors"
         >
           <RotateCcw className="w-4 h-4" />
           resetar cantinho
@@ -74,7 +74,7 @@ const DataSection: React.FC<DataSectionProps> = ({ onOpenSync, onExport, onImpor
           onClose={() => setPendingReset(false)}
           closeOnBackdrop={false}
         >
-          <div className="w-full max-w-sm bg-white rounded-2xl shadow-floating p-6">
+          <div className="w-full max-w-sm bg-surface-default rounded-2xl shadow-floating p-6">
             <h3 className="font-display font-bold text-lg text-ceci-primary mb-2">
               resetar cantinho?
             </h3>
@@ -84,7 +84,7 @@ const DataSection: React.FC<DataSectionProps> = ({ onOpenSync, onExport, onImpor
             <div className="flex gap-2">
               <button
                 onClick={() => setPendingReset(false)}
-                className="flex-1 py-3 rounded-2xl text-sm font-semibold text-ceci-secondary bg-white border border-ceci-border-default cursor-pointer active:scale-95 transition-transform"
+                className="flex-1 py-3 rounded-2xl text-sm font-semibold text-ceci-secondary bg-surface-default border border-ceci-border-default cursor-pointer active:scale-95 transition-transform"
               >
                 cancelar
               </button>

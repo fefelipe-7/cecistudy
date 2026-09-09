@@ -6,14 +6,12 @@ import { describe, it, expect } from 'vitest';
  */
 import {
   approachRegistryFile,
-  conceptChunkLoader,
-  conceptDomains,
-  conceptIndex,
-  curatedAuthorsFile,
   resolveApproach,
-  templeTechniques,
-  techniqueCategories,
-} from '../../data/temple/index';
+} from '../../data/temple/registry';
+import { conceptChunkLoader, conceptDomains } from '../../data/temple/conceptChunks';
+import { conceptIndex } from '../../data/temple/conceptIndex';
+import { curatedAuthorsFile } from '../../data/temple/authors';
+import { templeTechniques, techniqueCategories } from '../../data/temple/techniques';
 import { normalize } from './normalizeTestHelper';
 
 describe('approachRegistry (A1)', () => {

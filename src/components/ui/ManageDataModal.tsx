@@ -243,7 +243,7 @@ const db: ManagedDB = useMemo(
 
     return (
       <Modal open onClose={reset} position="bottom" className="max-w-md">
-        <div className="rounded-t-3xl sm:rounded-3xl bg-white px-5 pt-2 pb-6 shadow-floating">
+        <div className="rounded-t-3xl sm:rounded-3xl bg-surface-default px-5 pt-2 pb-6 shadow-floating">
           <div className="flex items-center gap-3 mt-1 mb-4">
             <span className="w-10 h-10 rounded-2xl bg-surface-rose text-ceci-brand-strong flex items-center justify-center shrink-0">
               {KIND_ICON[itemContext.kind]}
@@ -273,7 +273,7 @@ const db: ManagedDB = useMemo(
   if (phase === 'confirm-delete') {
     return (
       <Modal open onClose={reset} position="bottom" className="max-w-md">
-        <div className="rounded-t-3xl sm:rounded-3xl bg-white px-5 pt-2 pb-6 shadow-floating">
+        <div className="rounded-t-3xl sm:rounded-3xl bg-surface-default px-5 pt-2 pb-6 shadow-floating">
           <div className="flex items-center gap-3 mt-1 mb-4">
             <span className="w-10 h-10 rounded-2xl bg-surface-rose text-red-700 flex items-center justify-center">
               <Trash2 className="w-5 h-5" />
@@ -303,7 +303,7 @@ const db: ManagedDB = useMemo(
           <div className="flex gap-2.5">
             <button
               onClick={backToMenu}
-              className="flex-1 py-3.5 rounded-2xl border border-ceci-border-default bg-white text-ceci-secondary text-sm font-semibold active:scale-[0.98] transition-all cursor-pointer"
+              className="flex-1 py-3.5 rounded-2xl border border-ceci-border-default bg-surface-default text-ceci-secondary text-sm font-semibold active:scale-[0.98] transition-all cursor-pointer"
             >
               não, deixa
             </button>
@@ -334,15 +334,15 @@ const db: ManagedDB = useMemo(
           isRecommended
             ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
             : action.tone === 'danger'
-              ? 'border-ceci-border-default bg-white text-red-700'
-              : 'border-ceci-border-default bg-white text-ceci-primary'
+              ? 'border-ceci-border-default bg-surface-default text-red-700'
+              : 'border-ceci-border-default bg-surface-default text-ceci-primary'
         )}
       >
         <span
           className={cn(
             'w-9 h-9 rounded-xl flex items-center justify-center shrink-0',
             isRecommended
-              ? 'bg-white text-ceci-brand-strong border border-ceci-border-brand'
+              ? 'bg-surface-default text-ceci-brand-strong border border-ceci-border-brand'
               : action.tone === 'danger'
                 ? 'bg-surface-rose text-red-700'
                 : 'bg-surface-blue text-ceci-academic-strong'
@@ -364,7 +364,7 @@ const db: ManagedDB = useMemo(
 
   return (
     <Modal open onClose={reset} position="bottom" className="max-w-md">
-      <div className="rounded-t-3xl sm:rounded-3xl bg-white px-5 pt-2 pb-6 shadow-floating">
+      <div className="rounded-t-3xl sm:rounded-3xl bg-surface-default px-5 pt-2 pb-6 shadow-floating">
         <div className="flex items-center gap-3 mt-1 mb-4">
           <span className="w-10 h-10 rounded-2xl bg-surface-rose text-ceci-brand-strong flex items-center justify-center shrink-0">
             {KIND_ICON[itemContext.kind]}

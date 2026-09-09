@@ -28,7 +28,7 @@ const RecentItemCard = React.memo(function RecentItemCard({
   const Icon = kind === 'aula' ? BookOpen : Sparkles;
   return (
     <div
-      className="flex items-center gap-3 rounded-[16px] border bg-white p-3"
+      className="flex items-center gap-3 rounded-[16px] border bg-surface-default p-3"
       style={{ borderColor: 'var(--ds-border-subtle)' }}
     >
       <span
@@ -203,7 +203,7 @@ export const HomeScreen: React.FC = () => {
                 key={m.label}
                 onClick={m.onSelect}
                 aria-label={`abrir ${m.label}`}
-                className="flex items-center gap-3 rounded-xl border bg-white p-4 text-left transition-colors hover:bg-surface-muted"
+                className="flex items-center gap-3 rounded-xl border bg-surface-default p-4 text-left transition-colors hover:bg-surface-muted"
                 style={{ borderColor: 'var(--ds-border-subtle)' }}
               >
                 <span

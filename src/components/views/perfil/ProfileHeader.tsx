@@ -18,7 +18,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   onPickPhoto,
   onRemovePhoto,
 }) => (
-  <div className="rounded-2xl p-5 bg-gradient-to-r from-white via-surface-muted to-surface-rose/80 border border-ceci-border-default shadow-sm space-y-4">
+  <div className="rounded-2xl p-5 bg-gradient-to-r from-surface-default via-surface-muted to-surface-rose/80 border border-ceci-border-default shadow-sm space-y-4">
     <div className="flex items-center gap-4">
       <div className="relative shrink-0">
         <div className="w-16 h-16 rounded-3xl bg-surface-rose border-2 border-ceci-border-brand flex items-center justify-center font-display font-bold text-3xl text-ceci-primary shadow-2xs overflow-hidden">
@@ -41,7 +41,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             onClick={onRemovePhoto}
             aria-label="remover foto de perfil"
             title="remover foto"
-            className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-white border border-ceci-border-default text-ceci-secondary hover:text-red-700 hover:border-red-400 flex items-center justify-center shadow-xs tap-interactive cursor-pointer active:scale-95"
+            className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-surface-default border border-ceci-border-default text-ceci-secondary hover:text-red-700 hover:border-red-400 flex items-center justify-center shadow-xs tap-interactive cursor-pointer active:scale-95"
           >
             <Trash2 className="w-3 h-3" />
           </button>
@@ -59,7 +59,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
     </div>
 
     {/* progresso da graduação — inline */}
-    <div className="rounded-2xl bg-white p-3.5 border border-ceci-border-default space-y-2">
+    <div className="rounded-2xl bg-surface-default p-3.5 border border-ceci-border-default space-y-2">
       <div className="flex items-center justify-between text-[11px]">
         <span className="font-bold text-ceci-tertiary">progresso da graduação</span>
         <span className="font-display font-bold text-sm text-ceci-brand-strong">

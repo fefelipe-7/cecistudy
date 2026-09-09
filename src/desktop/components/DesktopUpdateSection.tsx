@@ -61,7 +61,7 @@ export const DesktopUpdateSection: React.FC = () => {
             : 'tudo em dia ✨';
 
   return (
-    <div className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
+    <div className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm space-y-4">
       <div className="flex items-center gap-2">
         <Smartphone className="w-4 h-4 text-ceci-academic-strong" />
         <h2 className="font-display font-bold text-xl text-ceci-primary">
@@ -82,7 +82,7 @@ export const DesktopUpdateSection: React.FC = () => {
           <button
             onClick={() => void check()}
             disabled={busy}
-            className="flex items-center gap-2 bg-white border border-ceci-border-default text-ceci-primary px-4 py-2.5 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer hover:border-ceci-border-brand transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 bg-surface-default border border-ceci-border-default text-ceci-primary px-4 py-2.5 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer hover:border-ceci-border-brand transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <RefreshCw className={`w-4 h-4 ${status === 'checking' ? 'animate-spin' : ''}`} />
             verificar atualização

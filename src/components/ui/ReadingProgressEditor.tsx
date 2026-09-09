@@ -37,7 +37,7 @@ export const ReadingProgressEditor: React.FC<ReadingProgressEditorProps> = ({
   };
 
   const stepperBtn =
-    'w-11 h-11 rounded-2xl border border-ceci-border-default bg-white text-ceci-primary font-bold flex items-center justify-center transition-all active:scale-90 tap-interactive cursor-pointer disabled:opacity-35 disabled:pointer-events-none';
+    'w-11 h-11 rounded-2xl border border-ceci-border-default bg-surface-default text-ceci-primary font-bold flex items-center justify-center transition-all active:scale-90 tap-interactive cursor-pointer disabled:opacity-35 disabled:pointer-events-none';
 
   return (
     <div className="space-y-4">
@@ -72,7 +72,7 @@ export const ReadingProgressEditor: React.FC<ReadingProgressEditorProps> = ({
             inputMode="numeric"
             aria-label="digite a nova página lida"
             className={cn(
-              'w-20 text-center bg-white border rounded-2xl py-2.5 font-display font-bold text-xl text-ceci-primary tabular-nums focus:outline-none focus:ring-2 focus:ring-rose-500/30 transition-shadow',
+              'w-20 text-center bg-surface-input border rounded-2xl py-2.5 font-display font-bold text-xl text-ceci-primary tabular-nums focus:outline-none focus:ring-2 focus:ring-rose-500/30 transition-shadow',
               invalid ? 'border-red-400' : 'border-ceci-border-default'
             )}
           />
@@ -95,7 +95,7 @@ export const ReadingProgressEditor: React.FC<ReadingProgressEditorProps> = ({
               type="button"
               onClick={() => setClamped((parseInt(draft, 10) || currentPages) + n)}
               disabled={totalPages !== undefined && (parseInt(draft, 10) || 0) >= totalPages}
-              className="px-3 py-1.5 rounded-full border border-ceci-border-default bg-white text-ceci-secondary text-[11px] font-semibold hover:bg-surface-rose hover:text-ceci-brand-strong hover:border-ceci-border-brand transition-colors tap-interactive cursor-pointer disabled:opacity-35 disabled:pointer-events-none"
+              className="px-3 py-1.5 rounded-full border border-ceci-border-default bg-surface-default text-ceci-secondary text-[11px] font-semibold hover:bg-surface-rose hover:text-ceci-brand-strong hover:border-ceci-border-brand transition-colors tap-interactive cursor-pointer disabled:opacity-35 disabled:pointer-events-none"
             >
               +{n}
             </button>
@@ -134,7 +134,7 @@ export const ReadingProgressEditor: React.FC<ReadingProgressEditorProps> = ({
           <button
             type="button"
             onClick={() => onSave(Number.MAX_SAFE_INTEGER)}
-            className="w-full min-h-[44px] rounded-2xl border border-ceci-border-default bg-white text-ceci-secondary text-xs font-semibold active:scale-[0.98] transition-transform cursor-pointer"
+            className="w-full min-h-[44px] rounded-2xl border border-ceci-border-default bg-surface-default text-ceci-secondary text-xs font-semibold active:scale-[0.98] transition-transform cursor-pointer"
           >
             marcar como concluído
           </button>

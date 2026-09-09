@@ -126,7 +126,7 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({ isOpen, onClose, o
               onPick(opt.type);
               onClose();
             }}
-            className="flex items-center gap-2.5 p-3 rounded-2xl bg-white border border-ceci-border-default hover:border-ceci-border-brand text-left tap-interactive active:scale-95 cursor-pointer shadow-2xs min-h-[64px]"
+            className="flex items-center gap-2.5 p-3 rounded-2xl bg-surface-default border border-ceci-border-default hover:border-ceci-border-brand text-left tap-interactive active:scale-95 cursor-pointer shadow-2xs min-h-[64px]"
           >
             <span className={cn('w-9 h-9 rounded-xl flex items-center justify-center border shrink-0', opt.accent)}>
               <Icon className="w-4 h-4" />

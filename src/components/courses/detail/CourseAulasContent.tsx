@@ -7,10 +7,37 @@ import { ClassNoteModal } from '../ClassNoteModal';
 import { ClassNoteListItem } from '../ClassNoteListItem';
 import { useMobileApp } from '@/context/mobileApp';
 import { formatShortDate } from '../../../lib/schedule';
-import { Course, ClassNote } from '../../../types';
+import { Course, ClassNote, Exam } from '../../../types';
 
 interface CourseAulasContentProps {
   course: Course;
+}
+
+/** Dias até uma data (YYYY-MM-DD), no fuso local. */
+function daysUntil(date: string): number {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const target = new Date(`${date}T00:00:00`);
+  return Math.round((target.getTime() - today.getTime()) / 86400000);
+}
+
+/** Rótulo de urgência da prova pendente ("hoje 11/08", "em 3 dias · 12/08"...). */
+function examPillLabel(exam: Exam): string {
+  const days = daysUntil(exam.date);
+  if (days < 0) return formatShortDate(exam.date);
+  if (days === 0) return `hoje ${formatShortDate(exam.date)}`;
+  if (days === 1) return `amanhã ${formatShortDate(exam.date)}`;
+  if (days <= 7) return `${days} dias · ${formatShortDate(exam.date)}`;
+  return formatShortDate(exam.date);
+}
+
+/** Cor do pill: âmbar quando a prova está em menos de 3 dias. */
+function examPillClass(exam: Exam): string {
+  const days = daysUntil(exam.date);
+  const urgent = days >= 0 && days <= 3;
+  return urgent
+    ? 'text-amber-text bg-amber-bg px-2 py-0.5 rounded-full border border-amber-border'
+    : 'text-ceci-brand-strong bg-surface-rose px-2 py-0.5 rounded-full border border-ceci-border-brand';
 }
 
 /**
@@ -48,7 +75,7 @@ export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }
           </h3>
           <button
             onClick={() => openWizard('exam', course.id)}
-            className="text-xs font-bold text-ceci-brand-strong hover:underline flex items-center gap-1 cursor-pointer"
+            className="text-xs font-bold text-ceci-brand-strong hover:underline flex items-center gap-1 cursor-pointer px-2 -mx-2 py-1.5 -my-1.5 rounded-full"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>nova prova</span>
@@ -68,8 +95,8 @@ export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }
               >
                 <div className="space-y-1 flex-1 pr-2">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-[10px] font-bold text-ceci-brand-strong bg-surface-rose px-2 py-0.5 rounded-full border border-ceci-border-brand">
-                      {formatShortDate(exam.date)}
+                    <span className={`text-[10px] font-bold ${examPillClass(exam)}`}>
+                      {examPillLabel(exam)}
                     </span>
                     <span className="text-[10px] font-semibold text-ceci-secondary">{exam.weight}</span>
                   </div>
@@ -166,7 +193,7 @@ export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }
           </h3>
           <button
             onClick={() => openCompose(course.id)}
-            className="text-xs font-bold text-ceci-brand-strong hover:underline flex items-center gap-1 cursor-pointer"
+            className="text-xs font-bold text-ceci-brand-strong hover:underline flex items-center gap-1 cursor-pointer px-2 -mx-2 py-1.5 -my-1.5 rounded-full"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>nova aula</span>
@@ -177,10 +204,11 @@ export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }
           <ol className="relative space-y-0 border-l border-ceci-border-default ml-1.5">
             {courseClasses.map((cl) => (
               <li key={cl.id} className="relative pl-4 pb-1 last:pb-0">
-                <span
-                  aria-hidden
-                  className="absolute -left-[5px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 border-ceci-brand-strong shrink-0"
-                />
+                  <span
+                    aria-hidden
+                    className="absolute -left-[5px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 shrink-0"
+                    style={{ borderColor: course.color }}
+                  />
                 <ClassNoteListItem note={cl} onClick={() => setSelectedClassNote(cl)} />
               </li>
             ))}
@@ -218,7 +246,7 @@ export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }
           ) : (
             <button
               onClick={() => openWizard('task', course.id)}
-              className="text-xs font-bold text-ceci-brand-strong hover:underline flex items-center gap-1 cursor-pointer shrink-0"
+              className="text-xs font-bold text-ceci-brand-strong hover:underline flex items-center gap-1 cursor-pointer shrink-0 px-2 -mx-2 py-1.5 -my-1.5 rounded-full"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>nova tarefa</span>

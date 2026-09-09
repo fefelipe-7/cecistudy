@@ -217,7 +217,7 @@ export const DesktopAppShell: React.FC = () => {
               initial="enter"
               animate="center"
               exit="exit"
-              className="w-full max-w-2xl rounded-xl border border-ceci-border-default bg-white overflow-hidden my-auto"
+              className="w-full max-w-2xl rounded-xl border border-ceci-border-default bg-surface-default overflow-hidden my-auto"
               style={{ boxShadow: 'var(--ds-elevation-md)' }}
             >
                <DesktopOverlayContent />

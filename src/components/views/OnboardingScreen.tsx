@@ -145,13 +145,13 @@ export const OnboardingScreen: React.FC = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="seu nome (ex.: maria)"
-                className="w-full bg-white border border-ceci-border-default rounded-2xl px-4 py-3.5 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 shadow-2xs"
+                className="w-full bg-surface-default border border-ceci-border-default rounded-2xl px-4 py-3.5 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 shadow-2xs"
               />
 
               <div className="flex gap-2 pt-2">
                 <button
                   onClick={() => setStep(0)}
-                  className="flex items-center gap-1.5 bg-white border border-ceci-border-default text-ceci-secondary px-5 py-3 rounded-full text-xs font-semibold cursor-pointer"
+                  className="flex items-center gap-1.5 bg-surface-default border border-ceci-border-default text-ceci-secondary px-5 py-3 rounded-full text-xs font-semibold cursor-pointer"
                 >
                   <ArrowLeft className="w-4 h-4" /> voltar
                 </button>
@@ -204,7 +204,7 @@ export const OnboardingScreen: React.FC = () => {
               <div className="flex gap-2 pt-2">
                 <button
                   onClick={() => setStep(1)}
-                  className="flex items-center gap-1.5 bg-white border border-ceci-border-default text-ceci-secondary px-5 py-3 rounded-full text-xs font-semibold cursor-pointer"
+                  className="flex items-center gap-1.5 bg-surface-default border border-ceci-border-default text-ceci-secondary px-5 py-3 rounded-full text-xs font-semibold cursor-pointer"
                 >
                   <ArrowLeft className="w-4 h-4" /> voltar
                 </button>
@@ -235,7 +235,7 @@ export const OnboardingScreen: React.FC = () => {
                 value={university}
                 onChange={(e) => setUniversity(e.target.value)}
                 placeholder="universidade (opcional)"
-                className="w-full bg-white border border-ceci-border-default rounded-2xl px-4 py-3.5 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 shadow-2xs"
+                className="w-full bg-surface-default border border-ceci-border-default rounded-2xl px-4 py-3.5 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 shadow-2xs"
               />
 
               <input
@@ -243,13 +243,13 @@ export const OnboardingScreen: React.FC = () => {
                 value={targetCareer}
                 onChange={(e) => setTargetCareer(e.target.value)}
                 placeholder="objetivo profissional (opcional)"
-                className="w-full bg-white border border-ceci-border-default rounded-2xl px-4 py-3.5 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 shadow-2xs"
+                className="w-full bg-surface-default border border-ceci-border-default rounded-2xl px-4 py-3.5 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 shadow-2xs"
               />
 
               <div className="flex gap-2 pt-2">
                 <button
                   onClick={() => setStep(2)}
-                  className="flex items-center gap-1.5 bg-white border border-ceci-border-default text-ceci-secondary px-5 py-3 rounded-full text-xs font-semibold cursor-pointer"
+                  className="flex items-center gap-1.5 bg-surface-default border border-ceci-border-default text-ceci-secondary px-5 py-3 rounded-full text-xs font-semibold cursor-pointer"
                 >
                   <ArrowLeft className="w-4 h-4" /> voltar
                 </button>
@@ -296,7 +296,7 @@ export const OnboardingScreen: React.FC = () => {
                   {photoUrl && (
                     <button
                       onClick={() => setPhotoUrl('')}
-                      className="inline-flex items-center gap-1.5 bg-white border border-ceci-border-default text-ceci-secondary px-5 py-2.5 rounded-full text-xs font-semibold transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1.5 bg-surface-default border border-ceci-border-default text-ceci-secondary px-5 py-2.5 rounded-full text-xs font-semibold transition-colors cursor-pointer"
                     >
                       <Trash2 className="w-4 h-4" /> remover
                     </button>
@@ -308,7 +308,7 @@ export const OnboardingScreen: React.FC = () => {
               <div className="flex gap-2 pt-2">
                 <button
                   onClick={() => setStep(3)}
-                  className="flex items-center gap-1.5 bg-white border border-ceci-border-default text-ceci-secondary px-5 py-3 rounded-full text-xs font-semibold cursor-pointer"
+                  className="flex items-center gap-1.5 bg-surface-default border border-ceci-border-default text-ceci-secondary px-5 py-3 rounded-full text-xs font-semibold cursor-pointer"
                 >
                   <ArrowLeft className="w-4 h-4" /> voltar
                 </button>
@@ -412,7 +412,7 @@ const PermissionsStep: React.FC<{ onFinish: () => void; onBack: () => void }> = 
               }
               className={cn(
                 'rounded-2xl p-4 border',
-                granted ? 'bg-surface-rose border-ceci-border-brand' : 'bg-white border-ceci-border-default'
+                granted ? 'bg-surface-rose border-ceci-border-brand' : 'bg-surface-default border-ceci-border-default'
               )}
             />
           );
@@ -422,7 +422,7 @@ const PermissionsStep: React.FC<{ onFinish: () => void; onBack: () => void }> = 
       <div className="flex gap-2 pt-2">
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 bg-white border border-ceci-border-default text-ceci-secondary px-5 py-3 rounded-full text-xs font-semibold cursor-pointer"
+          className="flex items-center gap-1.5 bg-surface-default border border-ceci-border-default text-ceci-secondary px-5 py-3 rounded-full text-xs font-semibold cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" /> voltar
         </button>

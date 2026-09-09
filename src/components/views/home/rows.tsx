@@ -28,7 +28,7 @@ export const TaskRow: React.FC<{ task: Task }> = ({ task }) => {
       transition={getTransition({ duration: 0.2, ease: [0.16, 1, 0.3, 1] })}
       whileTap={{ scale: 0.98 }}
       {...handlers}
-      className={`p-4 rounded-xl bg-white border shadow-sm tap-interactive cursor-pointer flex items-center justify-between gap-3 ${
+      className={`p-4 rounded-xl bg-surface-default border shadow-sm tap-interactive cursor-pointer flex items-center justify-between gap-3 ${
         task.completed
           ? 'opacity-60 bg-surface-muted border-ceci-border-subtle'
           : 'border-ceci-border-default hover:border-ceci-border-brand'
@@ -76,7 +76,7 @@ export const ExamRow: React.FC<{ examId: string }> = ({ examId }) => {
       transition={getTransition({ duration: 0.2, ease: [0.16, 1, 0.3, 1] })}
       whileTap={{ scale: 0.98 }}
       onClick={() => handleNavigate('faculdade', undefined, exam.courseId)}
-      className="w-full p-4 rounded-xl bg-white border border-ceci-border-default shadow-sm hover:border-ceci-border-academic tap-interactive cursor-pointer flex items-center justify-between gap-3 text-left"
+      className="w-full p-4 rounded-xl bg-surface-default border border-ceci-border-default shadow-sm hover:border-ceci-border-academic tap-interactive cursor-pointer flex items-center justify-between gap-3 text-left"
     >
       <div className="flex items-center gap-3 min-w-0">
         <span className="w-11 h-11 rounded-2xl bg-surface-blue border border-ceci-border-academic flex items-center justify-center shrink-0">

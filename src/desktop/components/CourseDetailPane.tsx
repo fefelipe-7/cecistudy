@@ -153,7 +153,7 @@ export const CourseDetailPane: React.FC<CourseDetailPaneProps> = ({ course }) =>
           <CourseCreateMenu courseId={course.id} variant="inline" />
         </div>
 
-        <div className="bg-white rounded-2xl border border-ceci-border-subtle p-5 min-h-[320px]">
+        <div className="bg-surface-default rounded-2xl border border-ceci-border-subtle p-5 min-h-[320px]">
           <div role="tabpanel" aria-label={`aba ${activeTab}`}>
             {activeTab === 'info' && <CourseInfoContent course={course} />}
             {activeTab === 'aulas' && <CourseAulasContent course={course} />}

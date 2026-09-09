@@ -120,7 +120,7 @@ export const DesktopTopbar: React.FC = () => {
           onClick={() => setViewOpen((v) => !v)}
           aria-label="preferências de visualização"
           aria-expanded={viewOpen}
-          className="flex items-center gap-1.5 px-2.5 h-9 rounded-[10px] border border-ceci-border-default bg-white text-xs text-ceci-secondary hover:border-ceci-border-strong transition-colors cursor-pointer focus-visible:outline-none focus-visible:[box-shadow:var(--ds-focus-ring-neutral)]"
+          className="flex items-center gap-1.5 px-2.5 h-9 rounded-[10px] border border-ceci-border-default bg-surface-default text-xs text-ceci-secondary hover:border-ceci-border-strong transition-colors cursor-pointer focus-visible:outline-none focus-visible:[box-shadow:var(--ds-focus-ring-neutral)]"
         >
           <SlidersHorizontal className="w-3.5 h-3.5" />
           <span className="hidden lg:inline">{session.canvasClarity}</span>
@@ -135,7 +135,7 @@ export const DesktopTopbar: React.FC = () => {
             />
             <div
               role="menu"
-              className="absolute right-0 z-30 mt-1.5 w-56 rounded-[14px] border border-ceci-border-default bg-white p-3 flex flex-col gap-3"
+              className="absolute right-0 z-30 mt-1.5 w-56 rounded-[14px] border border-ceci-border-default bg-surface-default p-3 flex flex-col gap-3"
               style={{ boxShadow: 'var(--ds-elevation-md)' }}
             >
               <div>
@@ -148,7 +148,7 @@ export const DesktopTopbar: React.FC = () => {
                       aria-pressed={session.canvasClarity === opt.value}
                       className={`flex-1 rounded-[8px] px-2 py-1 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:[box-shadow:var(--ds-focus-ring-neutral)] ${
                         session.canvasClarity === opt.value
-                          ? 'bg-white text-ceci-brand-strong shadow-xs'
+                          ? 'bg-surface-default text-ceci-brand-strong shadow-xs'
                           : 'text-ceci-secondary hover:text-ceci-primary'
                       }`}
                     >
@@ -167,7 +167,7 @@ export const DesktopTopbar: React.FC = () => {
                       aria-pressed={session.density === opt.value}
                       className={`flex-1 rounded-[8px] px-2 py-1 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:[box-shadow:var(--ds-focus-ring-neutral)] ${
                         session.density === opt.value
-                          ? 'bg-white text-ceci-brand-strong shadow-xs'
+                          ? 'bg-surface-default text-ceci-brand-strong shadow-xs'
                           : 'text-ceci-secondary hover:text-ceci-primary'
                       }`}
                     >

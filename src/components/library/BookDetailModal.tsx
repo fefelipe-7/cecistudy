@@ -37,13 +37,13 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
   const step = (delta: number) => onUpdateProgress(Math.min(Math.max(clamped + delta, 0), maxPages));
 
   const stepperBtn =
-    'w-11 h-11 rounded-full border border-ceci-border-default bg-white text-ceci-primary flex items-center justify-center transition-all active:scale-90 tap-interactive cursor-pointer disabled:opacity-35 disabled:pointer-events-none';
+    'w-11 h-11 rounded-full border border-ceci-border-default bg-surface-default text-ceci-primary flex items-center justify-center transition-all active:scale-90 tap-interactive cursor-pointer disabled:opacity-35 disabled:pointer-events-none';
 
   return (
     <Modal
       open
       onClose={onClose}
-      className="w-full max-w-sm bg-white rounded-[28px] border border-ceci-border-default shadow-2xl overflow-hidden text-ceci-primary flex flex-col max-h-[85dvh]"
+      className="w-full max-w-sm bg-surface-default rounded-[28px] border border-ceci-border-default shadow-2xl overflow-hidden text-ceci-primary flex flex-col max-h-[85dvh]"
     >
       {/* Hero da capa */}
       <div
@@ -148,7 +148,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
                 key={n}
                 onClick={() => step(n)}
                 disabled={book.totalPages !== undefined && clamped >= book.totalPages}
-                className="px-3 py-1 rounded-full bg-white border border-ceci-border-subtle text-ceci-secondary text-[11px] font-semibold hover:bg-surface-rose hover:text-ceci-brand-strong hover:border-ceci-border-brand transition-colors tap-interactive cursor-pointer disabled:opacity-35 disabled:pointer-events-none"
+                className="px-3 py-1 rounded-full bg-surface-default border border-ceci-border-subtle text-ceci-secondary text-[11px] font-semibold hover:bg-surface-rose hover:text-ceci-brand-strong hover:border-ceci-border-brand transition-colors tap-interactive cursor-pointer disabled:opacity-35 disabled:pointer-events-none"
               >
                 +{n}
               </button>
@@ -183,7 +183,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
       </div>
 
       {/* Rodapé fixo — sempre visível */}
-      <div className="shrink-0 flex items-center gap-2 px-6 py-4 border-t border-ceci-border-subtle bg-white">
+      <div className="shrink-0 flex items-center gap-2 px-6 py-4 border-t border-ceci-border-subtle bg-surface-default">
         <BookmarkToggle
           active={isSaved}
           onToggle={onToggleSave}

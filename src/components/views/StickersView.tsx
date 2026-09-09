@@ -21,7 +21,7 @@ export const StickersView: React.FC = () => {
   return (
     <div className="space-y-4 pb-1">
       {/* Cabeçalho */}
-      <div className="flex items-center justify-between gap-3 rounded-2xl p-4 bg-white border border-ceci-border-default shadow-sm">
+      <div className="flex items-center justify-between gap-3 rounded-2xl p-4 bg-surface-default border border-ceci-border-default shadow-sm">
         <div className="flex items-center gap-3 min-w-0">
           <span className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
             <Sparkles className="w-5 h-5" />
@@ -47,7 +47,7 @@ export const StickersView: React.FC = () => {
         const groupUnlocked = group.filter((s) => s.unlocked).length;
 
         return (
-          <div key={category} className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm space-y-3">
+          <div key={category} className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="font-display font-bold text-base text-ceci-primary">
                 {CATEGORY_LABELS[category]}
@@ -63,7 +63,7 @@ export const StickersView: React.FC = () => {
                   key={st.id}
                   className={`p-3.5 rounded-2xl border text-center transition-colors ${
                     st.unlocked
-                      ? 'bg-white border-ceci-border-brand shadow-2xs'
+                      ? 'bg-surface-default border-ceci-border-brand shadow-2xs'
                       : 'bg-surface-muted border-dashed border-ceci-border-default'
                   }`}
                 >

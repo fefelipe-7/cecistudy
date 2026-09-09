@@ -176,7 +176,7 @@ export const CommandPalette: React.FC = () => {
         onClick={() => setOpen(false)}
       >
         <motion.div
-          className="w-full max-w-[560px] overflow-hidden rounded-[16px] bg-white"
+          className="w-full max-w-[560px] overflow-hidden rounded-[16px] bg-surface-default"
           style={{ boxShadow: 'var(--ds-elevation-md)', border: '1px solid var(--ds-border-default)' }}
           initial={{ opacity: 0, y: -8, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}

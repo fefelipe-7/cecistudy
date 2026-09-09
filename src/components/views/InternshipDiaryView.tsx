@@ -57,7 +57,7 @@ export const InternshipDiaryView: React.FC = () => {
 
   return (
     <div className="space-y-4 pb-1">
-      <div className="flex items-center justify-between gap-3 rounded-2xl p-4 bg-white border border-ceci-border-default shadow-sm">
+      <div className="flex items-center justify-between gap-3 rounded-2xl p-4 bg-surface-default border border-ceci-border-default shadow-sm">
         <div className="flex items-center gap-3 min-w-0">
           <span className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
             <HeartHandshake className="w-5 h-5" />
@@ -92,7 +92,7 @@ export const InternshipDiaryView: React.FC = () => {
               className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                 active
                   ? 'bg-ceci-primary text-white shadow-xs'
-                  : 'bg-white text-ceci-secondary border border-ceci-border-default hover:bg-surface-muted'
+                  : 'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-surface-muted'
               }`}
             >
               <t.Icon className="w-4 h-4" />
@@ -106,15 +106,15 @@ export const InternshipDiaryView: React.FC = () => {
         <>
           {/* Resumo */}
           <div className="grid grid-cols-3 gap-2">
-            <div className="rounded-2xl p-3 bg-white border border-ceci-border-default shadow-sm text-center">
+            <div className="rounded-2xl p-3 bg-surface-default border border-ceci-border-default shadow-sm text-center">
               <p className="font-bold text-ceci-academic-strong text-base">{totalHours}</p>
               <p className="text-[10px] text-ceci-secondary">horas totais</p>
             </div>
-            <div className="rounded-2xl p-3 bg-white border border-ceci-border-default shadow-sm text-center">
+            <div className="rounded-2xl p-3 bg-surface-default border border-ceci-border-default shadow-sm text-center">
               <p className="font-bold text-ceci-academic-strong text-base">{hoursThisWeek}</p>
               <p className="text-[10px] text-ceci-secondary">esta semana</p>
             </div>
-            <div className="rounded-2xl p-3 bg-white border border-ceci-border-default shadow-sm text-center">
+            <div className="rounded-2xl p-3 bg-surface-default border border-ceci-border-default shadow-sm text-center">
               <p className="font-bold text-ceci-academic-strong text-base">{supervisionCount}</p>
               <p className="text-[10px] text-ceci-secondary">supervisões</p>
             </div>
@@ -142,7 +142,7 @@ export const InternshipDiaryView: React.FC = () => {
 
           {/* Gráfico de horas por semana */}
           {internshipLogs.length > 0 ? (
-            <div className="rounded-2xl p-4 bg-white border border-ceci-border-default shadow-sm">
+            <div className="rounded-2xl p-4 bg-surface-default border border-ceci-border-default shadow-sm">
               <DitherGrowthChart
                 data={weeklySeries}
                 title="horas de campo por semana"
@@ -160,7 +160,7 @@ export const InternshipDiaryView: React.FC = () => {
             {internshipLogs.length === 0 && (
               <div className="bg-surface-muted border border-ceci-border-subtle rounded-2xl p-5 text-center space-y-2">
                 <Mascote expression="field-prepare" className="w-14 h-14 mx-auto" decorative />
-                <p className="text-xs text-ceci-secondary">
+                <p className="font-serif-academic text-sm text-ceci-secondary">
                   ainda não tem registro de estágio — que tal anotar o primeiro? ♡
                 </p>
               </div>

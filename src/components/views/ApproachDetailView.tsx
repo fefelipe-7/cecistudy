@@ -191,7 +191,7 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
                 <button
                   key={author}
                   onClick={() => setSelectedAuthor(author)}
-                  className="text-left bg-white rounded-2xl p-3 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
+                  className="text-left bg-surface-default rounded-2xl p-3 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
                 >
                   <span className="text-sm font-semibold text-ceci-primary pr-1">{author}</span>
                   <ChevronRight className="w-4 h-4 text-ceci-tertiary shrink-0 group-hover:text-ceci-brand-strong" />
@@ -241,7 +241,7 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
                     <button
                       key={rel.id}
                       onClick={() => openApproach(rel.id)}
-                      className="w-full text-left bg-white rounded-2xl p-3.5 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
+                      className="w-full text-left bg-surface-default rounded-2xl p-3.5 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
                     >
                       <span className="text-sm font-semibold text-ceci-primary pr-1">{rel.name}</span>
                       <ChevronRight className="w-4 h-4 text-ceci-tertiary shrink-0 group-hover:text-ceci-brand-strong" />
@@ -265,7 +265,7 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
       <Modal
         open={Boolean(selectedAuthor)}
         onClose={() => setSelectedAuthor(null)}
-        className="w-full max-w-md bg-white rounded-2xl p-5 space-y-3 shadow-floating"
+        className="w-full max-w-md bg-surface-default rounded-2xl p-5 space-y-3 shadow-floating"
       >
         <div className="flex items-center justify-between">
           <h2 className="font-display font-bold text-base text-ceci-primary">{selectedAuthor}</h2>

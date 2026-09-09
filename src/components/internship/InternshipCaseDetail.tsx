@@ -55,7 +55,7 @@ export const InternshipCaseDetail: React.FC<Props> = ({ caseData, isOpen, onClos
             .slice()
             .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
             .map((log) => (
-              <div key={log.id} className="p-3 rounded-xl bg-white border border-ceci-border-default shadow-sm">
+              <div key={log.id} className="p-3 rounded-xl bg-surface-default border border-ceci-border-default shadow-sm">
                 <div className="flex items-center justify-between gap-2 mb-2">
                   <span className="font-semibold text-ceci-primary">
                     Sessão {log.sessionNumber ?? '—'}

@@ -95,7 +95,7 @@ export const TechniquesScreen: React.FC = () => {
           ariaLabel="voltar para a lista de técnicas"
         />
 
-        <div className="bg-white rounded-2xl p-5 border border-ceci-border-default space-y-3 shadow-2xs">
+        <div className="bg-surface-default rounded-2xl p-5 border border-ceci-border-default space-y-3 shadow-2xs">
           <div className="flex items-start justify-between gap-3">
             <h1 className="text-xl font-bold font-display text-ceci-primary leading-tight min-w-0">
               {selected.nome}
@@ -138,7 +138,7 @@ export const TechniquesScreen: React.FC = () => {
                 {related.map((name) => (
                   <span
                     key={name}
-                    className="text-[11px] px-2 py-0.5 rounded-full bg-white text-ceci-secondary border border-ceci-border-subtle"
+                    className="text-[11px] px-2 py-0.5 rounded-full bg-surface-default text-ceci-secondary border border-ceci-border-subtle"
                   >
                     {name}
                   </span>
@@ -179,7 +179,7 @@ export const TechniquesScreen: React.FC = () => {
             return (
               <div
                 key={category.id}
-                className="bg-white rounded-xl border border-ceci-border-default shadow-2xs overflow-hidden"
+                className="bg-surface-default rounded-xl border border-ceci-border-default shadow-2xs overflow-hidden"
               >
                 <TempleAccordionHeader
                   title={category.nome}

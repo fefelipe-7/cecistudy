@@ -36,7 +36,7 @@ export const StreakView: React.FC = () => {
           transition={{ duration: 1.6, repeat: Infinity, repeatType: 'reverse' }}
           className="flex items-center justify-center"
         >
-          <span className="w-16 h-16 rounded-full bg-white border border-ceci-border-brand flex items-center justify-center shadow-sm">
+          <span className="w-16 h-16 rounded-full bg-surface-default border border-ceci-border-brand flex items-center justify-center shadow-sm">
             <Flame className={`w-9 h-9 ${streakStats.alive ? 'fill-rose-500 text-rose-500' : 'text-ceci-muted'}`} />
           </span>
         </motion.div>
@@ -53,7 +53,7 @@ export const StreakView: React.FC = () => {
         <span
           className={`inline-block text-xs font-bold px-3 py-1 rounded-full border ${
             streakStats.alive
-              ? 'bg-white text-ceci-brand-strong border-ceci-border-brand'
+              ? 'bg-surface-default text-ceci-brand-strong border-ceci-border-brand'
               : 'bg-surface-muted text-ceci-secondary border-ceci-border-default'
           }`}
         >
@@ -84,7 +84,7 @@ export const StreakView: React.FC = () => {
         )}
 
         <div className="grid grid-cols-2 gap-3 pt-2">
-          <div className="rounded-2xl bg-white border border-ceci-border-brand px-3 py-2.5">
+          <div className="rounded-2xl bg-surface-default border border-ceci-border-brand px-3 py-2.5">
             <div className="flex items-center justify-center gap-1 text-ceci-brand-strong">
               <Trophy className="w-3.5 h-3.5" />
               <span className="text-[10px] font-bold uppercase tracking-wider">recorde</span>
@@ -94,7 +94,7 @@ export const StreakView: React.FC = () => {
               <span className="text-xs font-normal text-ceci-secondary ml-1">dias</span>
             </p>
           </div>
-          <div className="rounded-2xl bg-white border border-ceci-border-brand px-3 py-2.5">
+          <div className="rounded-2xl bg-surface-default border border-ceci-border-brand px-3 py-2.5">
             <div className="flex items-center justify-center gap-1 text-ceci-brand-strong">
               <CalendarDays className="w-3.5 h-3.5" />
               <span className="text-[10px] font-bold uppercase tracking-wider">dias ativos</span>
@@ -108,7 +108,7 @@ export const StreakView: React.FC = () => {
       </div>
 
       {/* Sua semana */}
-      <div className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
+      <div className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="font-display font-bold text-base text-ceci-primary">sua semana</h2>
           <span className="text-[11px] font-bold text-ceci-brand-strong bg-surface-rose px-2.5 py-1 rounded-full border border-ceci-border-brand">
@@ -154,7 +154,7 @@ export const StreakView: React.FC = () => {
       </div>
 
       {/* Histórico das últimas semanas */}
-      <div className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm space-y-3.5">
+      <div className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm space-y-3.5">
         <h2 className="font-display font-bold text-base text-ceci-primary">últimas semanas</h2>
         <div className="space-y-2.5">
           {recentWeeks.map((week) => (

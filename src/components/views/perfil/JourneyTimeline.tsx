@@ -10,7 +10,7 @@ interface JourneyTimelineProps {
 }
 
 const JourneyTimeline: React.FC<JourneyTimelineProps> = ({ profile, percentDegree }) => (
-  <div className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
+  <div className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm space-y-4">
     <div className="flex items-center justify-between gap-2">
       <div>
         <h2 className="font-display font-bold text-xl text-ceci-primary">
@@ -38,7 +38,7 @@ const JourneyTimeline: React.FC<JourneyTimelineProps> = ({ profile, percentDegre
                 ? 'bg-surface-rose border-2 border-ceci-border-brand text-ceci-brand-strong shadow-2xs font-bold'
                 : isPast
                 ? 'bg-surface-blue/80 border-ceci-border-academic text-ceci-academic-strong'
-                : 'bg-white border-ceci-border-default opacity-60 text-ceci-secondary'
+                : 'bg-surface-default border-ceci-border-default opacity-60 text-ceci-secondary'
             }`}
           >
             <p className="text-xs opacity-80">semestre</p>

@@ -54,7 +54,7 @@ export const InternshipLogCard: React.FC<InternshipLogCardProps> = ({ log }) => 
     <ManageSurface
       kind="internship"
       id={log.id}
-      className="p-4 rounded-2xl bg-white border border-ceci-border-default shadow-2xs space-y-3"
+      className="p-4 rounded-2xl bg-surface-default border border-ceci-border-default shadow-2xs space-y-3"
     >
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-ceci-brand-strong bg-surface-rose border border-ceci-border-brand px-2.5 py-1 rounded-full">

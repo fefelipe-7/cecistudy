@@ -15,7 +15,7 @@ interface EditCourseModalProps {
 }
 
 const inputClass =
-  'w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500';
+  'w-full bg-surface-default border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500';
 const labelClass = 'block text-xs font-medium text-ceci-secondary mb-1';
 
 export const EditCourseModal: React.FC<EditCourseModalProps> = ({
@@ -182,7 +182,7 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
                     className={`w-10 h-10 rounded-xl border flex items-center justify-center tap-interactive cursor-pointer active:scale-95 ${
                       icon === iconName
                         ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
-                        : 'bg-white border-ceci-border-default text-ceci-secondary hover:bg-surface-muted'
+                        : 'bg-surface-default border-ceci-border-default text-ceci-secondary hover:bg-surface-muted'
                     }`}
                     aria-label={`ícone ${label}`}
                     title={label}

@@ -18,7 +18,7 @@ interface JourneySummaryProps {
 }
 
 const JourneySummary: React.FC<JourneySummaryProps> = ({ tiles, semestersLeft }) => (
-  <div className="rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
+  <div className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm space-y-4">
     <div>
       <h2 className="font-display font-bold text-xl text-ceci-primary">
         resumo da minha jornada
@@ -43,7 +43,7 @@ const JourneySummary: React.FC<JourneySummaryProps> = ({ tiles, semestersLeft })
           }}
           className="p-3 rounded-2xl bg-surface-muted border border-ceci-border-default hover:border-ceci-border-brand tap-interactive cursor-pointer"
         >
-          <div className="w-7 h-7 rounded-lg bg-white border border-ceci-border-subtle flex items-center justify-center mb-1.5">
+          <div className="w-7 h-7 rounded-lg bg-surface-default border border-ceci-border-subtle flex items-center justify-center mb-1.5">
             <tile.Icon className="w-3.5 h-3.5 text-ceci-brand-strong" />
           </div>
           <p className="font-display font-bold text-lg text-ceci-primary leading-none">

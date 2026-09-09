@@ -89,7 +89,7 @@ export const CalendarToolbar: React.FC<CalendarToolbarProps> = ({
               aria-pressed={view === v.value}
               className={`rounded-[8px] px-3 py-1.5 text-sm font-medium transition-colors ${
                 view === v.value
-                  ? 'bg-white text-ceci-brand-strong shadow-xs'
+                  ? 'bg-surface-default text-ceci-brand-strong shadow-xs'
                   : 'text-ceci-secondary hover:text-ceci-primary'
               }`}
             >

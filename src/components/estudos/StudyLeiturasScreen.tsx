@@ -46,9 +46,9 @@ export const StudyLeiturasScreen: React.FC = () => {
         </div>
       )}
       {readings.length === 0 ? (
-        <div className="rounded-2xl p-6 bg-white border border-ceci-border-default shadow-sm text-center space-y-3">
+        <div className="rounded-2xl p-6 bg-surface-default border border-ceci-border-default shadow-sm text-center space-y-3">
           <Mascote expression="reading-curious" className="w-14 h-14 mx-auto" decorative />
-          <p className="text-xs text-ceci-secondary leading-relaxed">
+          <p className="font-serif-academic text-sm text-ceci-secondary leading-relaxed">
             nenhuma leitura anotada ainda. que tal adicionar seu primeiro livro ou artigo ♡
           </p>
         </div>
@@ -72,7 +72,7 @@ export const StudyLeiturasScreen: React.FC = () => {
                 id={r.id}
                 onTap={() => setReaderModalReading(r)}
                 data-target={r.id}
-                className={`rounded-2xl p-5 bg-white border border-ceci-border-default shadow-sm space-y-3 ${
+                className={`rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm space-y-3 ${
                   isDone ? 'opacity-70' : ''
                 }`}
               >

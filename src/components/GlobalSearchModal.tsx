@@ -153,7 +153,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     >
         
         {/* Search Bar Input */}
-        <div className="p-4 border-b border-ceci-border-subtle flex items-center gap-3 bg-white">
+        <div className="p-4 border-b border-ceci-border-subtle flex items-center gap-3 bg-surface-default">
           <Search className="w-5 h-5 text-ceci-brand-soft" />
           <input
             type="text"

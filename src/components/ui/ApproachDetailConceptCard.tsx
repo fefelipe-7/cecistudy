@@ -14,7 +14,7 @@ export const ApproachDetailConceptCard: React.FC<ApproachDetailConceptCardProps>
   return (
     <button
       onClick={onSelect}
-      className="w-[120px] flex flex-col items-center p-3 border border-ceci-border-default rounded-[18px] bg-white hover:border-ceci-brand-strong cursor-pointer transition-colors"
+      className="w-[120px] flex flex-col items-center p-3 border border-ceci-border-default rounded-[18px] bg-surface-default hover:border-ceci-brand-strong cursor-pointer transition-colors"
     >
       <div className="w-10 h-10 rounded-full bg-surface-rose flex items-center justify-center mb-2">
         <Sparkles className="w-5 h-5 text-ceci-brand-strong" />

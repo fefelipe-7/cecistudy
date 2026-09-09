@@ -12,7 +12,7 @@ interface EditTccModalProps {
 }
 
 const inputClass =
-  'w-full bg-white border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500';
+  'w-full bg-surface-default border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500';
 const labelClass = 'block text-xs font-medium text-ceci-secondary mb-1';
 
 const STATUS_OPTIONS: { value: TccData['status']; label: string }[] = [
@@ -198,7 +198,7 @@ export const EditTccModal: React.FC<EditTccModalProps> = ({ isOpen, tcc, onClose
                       type="date"
                       value={ch.dueDate ?? ''}
                       onChange={(e) => setChapters(updateAt(chapters, idx, { ...ch, dueDate: e.target.value || undefined }))}
-                      className="flex-1 bg-white border border-ceci-border-default rounded-xl px-3 py-1.5 text-xs text-ceci-secondary focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
+                      className="flex-1 bg-surface-default border border-ceci-border-default rounded-xl px-3 py-1.5 text-xs text-ceci-secondary focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
                     />
                   </div>
                 </div>

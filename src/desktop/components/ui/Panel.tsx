@@ -15,7 +15,7 @@ export const Panel: React.FC<PanelProps> = ({ className, dashed, children, ...re
   <div
     {...rest}
     className={cn(
-      'bg-white rounded-2xl border p-4',
+      'bg-surface-default rounded-2xl border p-4',
       dashed ? 'border-dashed border-ceci-border-default' : 'border-ceci-border-subtle',
       className
     )}

@@ -30,7 +30,7 @@ const QuickActions: React.FC<QuickActionsProps> = ({ dueCardsCount, onFocus, onR
       <motion.button
         whileTap={{ scale: 0.97 }}
         onClick={onReview}
-        className="bg-white hover:border-ceci-border-brand rounded-2xl p-5 text-left border border-ceci-border-default tap-interactive cursor-pointer space-y-2 shadow-sm min-h-[110px]"
+        className="bg-surface-default hover:border-ceci-border-brand rounded-2xl p-5 text-left border border-ceci-border-default tap-interactive cursor-pointer space-y-2 shadow-sm min-h-[110px]"
       >
         <Clock className="w-6 h-6 text-ceci-brand-strong" />
         <div className="flex items-center gap-2">

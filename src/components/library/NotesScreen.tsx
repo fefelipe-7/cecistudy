@@ -74,13 +74,13 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-5 pb-1 relative">
       {/* Counter badge (voltado para o header detail) */}
       <div className="flex items-center justify-end pt-1 px-1">
-        <span className="text-xs font-semibold text-ceci-secondary bg-white px-3 py-1 rounded-full border border-ceci-border-default">
+        <span className="text-xs font-semibold text-ceci-secondary bg-surface-default px-3 py-1 rounded-full border border-ceci-border-default">
           {looseNotes.length} {looseNotes.length === 1 ? 'nota salva' : 'notas salvas'}
         </span>
       </div>
 
       {/* Screen Title Banner */}
-      <div className="bg-white rounded-2xl p-5 border border-ceci-border-default space-y-1.5 shadow-2xs">
+      <div className="bg-surface-default rounded-2xl p-5 border border-ceci-border-default space-y-1.5 shadow-2xs">
         <div className="flex items-center gap-2.5">
           <div className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
             <FileText className="w-5 h-5" />
@@ -105,7 +105,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
             value={noteSearchTerm}
             onChange={(e) => setNoteSearchTerm(e.target.value)}
             placeholder="pesquisar em suas notas..."
-            className="w-full bg-white border border-ceci-border-default rounded-2xl pl-10 pr-8 py-2.5 text-xs text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 shadow-2xs"
+            className="w-full bg-surface-default border border-ceci-border-default rounded-2xl pl-10 pr-8 py-2.5 text-xs text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 shadow-2xs"
           />
           {noteSearchTerm && (
             <button
@@ -136,7 +136,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
 
       {/* New Note Form */}
       {isCreatingNote && (
-        <div className="bg-white rounded-xl p-4 border border-ceci-border-brand bg-surface-rose/30 space-y-3 shadow-2xs">
+        <div className="bg-surface-default rounded-xl p-4 border border-ceci-border-brand bg-surface-rose/30 space-y-3 shadow-2xs">
           <div className="flex items-center justify-between border-b border-ceci-border-brand/60 pb-2">
             <h3 className="text-xs font-bold text-ceci-primary font-display uppercase tracking-wider">
               criar nova nota avulsa
@@ -155,7 +155,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
               value={newNoteTitle}
               onChange={(e) => setNewNoteTitle(e.target.value)}
               placeholder="título da nota (ex: reflexão sobre acolhimento)"
-              className="w-full bg-white border border-ceci-border-default rounded-xl px-3 py-2 text-xs font-semibold text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500"
+              className="w-full bg-surface-default border border-ceci-border-default rounded-xl px-3 py-2 text-xs font-semibold text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500"
             />
 
             <div className="flex items-center gap-2 pt-1">
@@ -173,7 +173,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
               onChange={(e) => setNewNoteContent(e.target.value)}
               placeholder="escreva o conteúdo da sua nota aqui..."
               rows={4}
-              className="w-full bg-white border border-ceci-border-default rounded-xl p-3 text-xs text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 resize-none"
+              className="w-full bg-surface-default border border-ceci-border-default rounded-xl p-3 text-xs text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 resize-none"
             />
           </div>
 
@@ -224,7 +224,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
               key={note.id}
               kind="looseNote"
               id={note.id}
-              className="bg-white rounded-xl p-4 border border-ceci-border-default hover:border-ceci-border-brand tap-interactive space-y-2.5 shadow-2xs flex flex-col justify-between group"
+              className="bg-surface-default rounded-xl p-4 border border-ceci-border-default hover:border-ceci-border-brand tap-interactive space-y-2.5 shadow-2xs flex flex-col justify-between group"
             >
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-2 border-b border-ceci-border-subtle pb-2">
@@ -342,7 +342,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
         })}
 
         {filteredNotes.length === 0 && (
-          <div className="bg-white rounded-xl p-8 text-center border border-dashed border-ceci-border-default space-y-2">
+          <div className="bg-surface-default rounded-xl p-8 text-center border border-dashed border-ceci-border-default space-y-2">
             <Mascote expression="no-results" className="w-14 h-14 mx-auto" decorative />
             <p className="text-xs font-bold text-ceci-primary">nenhuma nota encontrada</p>
             <p className="text-xs text-ceci-secondary">

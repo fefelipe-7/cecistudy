@@ -162,7 +162,7 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
               value={theme}
               onChange={(v) => setTheme(v)}
               options={[
-                { value: 'paper', label: 'papel', activeClassName: 'bg-white text-ceci-primary shadow-2xs' },
+                { value: 'paper', label: 'papel', activeClassName: 'bg-surface-default text-ceci-primary shadow-2xs' },
                 { value: 'sepia', label: 'sépia', activeClassName: 'bg-surface-paper text-beige-700 shadow-2xs' },
                 { value: 'dark', label: 'noturno', activeClassName: 'bg-ceci-primary text-white shadow-2xs' },
               ]}

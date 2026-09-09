@@ -107,7 +107,7 @@ const handleNext = useCallback(() => {
                 exit: (dir: number) => ({ x: -dir * 40, opacity: 0, transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] } }),
               }}
             >
-              <div className="rounded-xl p-5 bg-white border border-ceci-border-default shadow-sm space-y-4">
+              <div className="rounded-xl p-5 bg-surface-default border border-ceci-border-default shadow-sm space-y-4">
                 {/* Timer da questão */}
                 <div className="flex items-center justify-between text-xs mb-2">
                   <span className="text-ceci-secondary flex items-center gap-1">
@@ -141,7 +141,7 @@ const handleNext = useCallback(() => {
                             ? isCorrect
                               ? 'bg-green-50 border-green-300 text-green-800'
                               : 'bg-red-50 border-red-300 text-red-800'
-                            : 'bg-white border-ceci-border-default hover:bg-surface-rose hover:border-ceci-border-brand active:scale-[0.99]'
+                            : 'bg-surface-default border-ceci-border-default hover:bg-surface-rose hover:border-ceci-border-brand active:scale-[0.99]'
                         )}
                       >
                         <div className="flex items-center gap-3">
@@ -151,7 +151,7 @@ const handleNext = useCallback(() => {
                               ? isCorrect
                                 ? 'bg-green-400 border-green-400 text-white'
                                 : 'bg-red-400 border-red-400 text-white'
-                              : 'border-ceci-border-default text-ceci-secondary bg-white'
+                              : 'border-ceci-border-default text-ceci-secondary bg-surface-default'
                           )}>
                             {letter}
                           </span>
@@ -205,7 +205,7 @@ const handleNext = useCallback(() => {
 
       {/* Footer sticky - botão próxima (quando não há explicação) */}
       {!showExplanation && selectedOption && (
-        <div className="fixed bottom-0 inset-x-0 z-10 bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(64,56,58,0.06)]">
+        <div className="fixed bottom-0 inset-x-0 z-10 bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(var(--shadow-rgb),0.06)]">
           <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
             <button
               onClick={handleNext}
