@@ -58,7 +58,7 @@ export const FAM_02_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas incluem possível vagueza operacional, risco de o terapeuta confundir não diretividade com passividade e menor quantidade de ensaios específicos em algumas condições graves. Uma postura exclusivamente facilitadora pode ser insuficiente para certos problemas que demandem exposição, intervenção familiar, manejo de crise ou habilidades estruturadas. Inversamente, aplicar metas e técnicas de maneira impositiva pode contrariar o núcleo da abordagem.",
       "leituras_fundamentais": "Carl Rogers: *Counseling and Psychotherapy* (1942), *Client-Centered Therapy* (1951), *On Becoming a Person* (1961) e *A Way of Being* (1980). Para produção brasileira, consultar revisões de pesquisa clínica em ACP e periódicos de fenomenologia/abordagem centrada na pessoa. [2]"
     }
-  },,
+  },
   {
     "id": "psic-02-02",
     "name": "Gestalt-terapia",
@@ -114,7 +114,7 @@ export const FAM_02_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas históricas apontam risco de técnicas intensas sem suficiente contenção, dependência de carisma do terapeuta e baixa padronização. Uma aplicação superficial pode confundir expressão emocional com elaboração ou pressionar pessoas traumatizadas a reviver experiências. A terminologia de “responsabilidade” exige cuidado para não culpabilizar sofrimento produzido por opressão ou violência.",
       "leituras_fundamentais": "Perls, Hefferline e Goodman: *Gestalt Therapy* (1951). Laura Perls: textos clínicos reunidos. Perls: *Ego, Hunger and Aggression* e *The Gestalt Approach*. Para desenvolvimentos contemporâneos, ver Yontef e Jacobs, *Gestalt Therapy*, e Robine, *Gestalt Therapy: The Art of Contact*. [4]"
     }
-  },,
+  },
   {
     "id": "psic-02-03",
     "name": "Terapia Existencial‑Humanista",
@@ -178,7 +178,7 @@ export const FAM_02_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas enfatizam a heterogeneidade conceitual e prática, a menor padronização para pesquisa experimental, dificuldade em mensurar processos subjetivos e a necessidade de mais estudos controlados e de acompanhamento a longo prazo. Algumas aplicações clínicas exigem adaptação para populações com limitações cognitivas ou crises psicóticas.",
       "leituras_fundamentais": "- Obras clássicas e representativas de autores como Viktor Frankl (logoterapia), Rollo May e Irvin D. Yalom (psicoterapia existencial).\n- Textos fundamentais da tradição humanista, por exemplo Carl R. Rogers (terapia centrada na pessoa) e James F. T. Bugental (psicoterapia existencial‑humanista).\n- Trabalhos sobre abordagens experienciais e processos emocionais, incluindo contribuições de Eugene Gendlin (Focusing) e revisões contemporâneas sobre terapias experienciais e humanistas."
     }
-  },,
+  },
   {
     "id": "psic-02-04",
     "name": "Terapia Focada nas Emoções (Emotion‑Focused Therapy — EFT, vertente de Leslie Greenberg)",
@@ -234,7 +234,7 @@ export const FAM_02_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas destacam dependência da habilidade clínica do terapeuta em métodos experienciais, desafios na formação padronizada, limites de evidência em algumas áreas clínicas e a necessidade de adaptar procedimentos para populações com regulação emocional gravemente comprometida. Existe também risco de generalizar resultados de estudos específicos para todo tipo de problema emocional sem cautela.",
       "leituras_fundamentais": "- Trabalhos de Leslie S. Greenberg sobre teoria do processamento emocional e aplicações clínicas (textos que apresentam fundamentos teóricos e guias clínicos da EFT individual).\n- Revisões e estudos empíricos sobre terapias experienciais e emocionais que discutem mecanismos de mudança emocional e integração com pesquisa sobre apego.\n- Textos metodológicos e de processo terapêutico que tratam de intervenção experiencial, regulação emocional e trabalho com emoção em psicoterapia.\n> **Nota editorial:** Os dois registros acima serão submetidos à revisão final de citações e uniformização terminológica com as fontes verificadas antes da entrega consolidada."
     }
-  },,
+  },
   {
     "id": "psic-02-05",
     "name": "Logoterapia",
@@ -288,7 +288,7 @@ export const FAM_02_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas apontam para: (a) risco de simplificação ao atribuir centralidade excessiva ao sentido como causa única do sofrimento; (b) necessidade de melhor fundamentação empírica em algumas aplicações; (c) possíveis dificuldades de aplicação em quadros psiquiátricos graves sem integrações biomédicas adequadas; (d) desafios na mensuração e operacionalização de sentido e mudança existencial. A logoterapia é útil em muitos contextos, mas tem limitações quando tratada como abordagem exclusiva para problemas com forte componente biológico ou neuropsiquiátrico.",
       "leituras_fundamentais": "Obras de Viktor E. Frankl, incluindo os textos clássicos sobre sua abordagem (ex.: Man's Search for Meaning / Em Busca de Sentido), além de trabalhos críticos e revisões contemporâneas que analisam aplicações clínicas e pesquisas sobre sentido e saúde mental."
     }
-  },,
+  },
   {
     "id": "psic-02-06",
     "name": "Terapia Experiencial",
@@ -345,7 +345,7 @@ export const FAM_02_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Limitações apontadas pela crítica incluem: (a) heterogeneidade e falta de padronização que dificultam avaliação comparativa; (b) em alguns casos, evidência empírica insuficiente ou de baixa qualidade para determinadas aplicações; (c) risco de ênfase excessiva na experiência aqui-e-agora sem considerar fatores estruturais, sociais ou biológicos relevantes; (d) necessidade de formação específica e supervisão para trabalhar com processos corporais e emocionais profundos, sobretudo em contextos de trauma.",
       "leituras_fundamentais": "Textos e autores centrais associados ao campo experiencial, como Eugene Gendlin (Focusing; Focusing-Oriented Psychotherapy) e obras fundadoras do movimento humanista que influenciaram práticas experienciais (por exemplo, textos de Carl Rogers sobre terapia centrada na pessoa e presença terapêutica). Leituras adicionais incluem trabalhos que discutem integração processual, fundamentação fenomenológica e pesquisas empíricas sobre processos experienciais.### nome\nDaseinsanalyse (tradicionalmente associada a Ludwig Binswanger e Medard Boss)"
     }
-  },,
+  },
   {
     "id": "psic-02-07",
     "name": "Daseinsanalyse (tradicionalmente associada a Ludwig Binswanger e Medard Boss)",
@@ -403,7 +403,7 @@ export const FAM_02_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Apontamentos sobre falta de operacionalidade para investigação quantitativa, possível elitismo filosófico, variação de formação entre praticantes e desafios para integração com modelos baseados em evidência estrita.",
       "leituras_fundamentais": "Obras de base na fenomenologia e existencialismo (p. ex. Martin Heidegger, Being and Time/Ser e Tempo); textos e coletâneas de Binswanger e Medard Boss sobre a aplicação fenomenológica à clínica; compilações críticas contemporâneas sobre Daseinsanalyse e psiquiatria existencial."
     }
-  },,
+  },
   {
     "id": "psic-02-08",
     "name": "Terapia Existencial Britânica (vertente clínica contemporânea)",
@@ -458,7 +458,7 @@ export const FAM_02_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas sobre imprecisão conceitual em algumas vertentes, variação na formação e supervisão, e desafios para articular protocolos replicáveis para pesquisa controlada.",
       "leituras_fundamentais": "Textos introdutórios e práticos de autores associados à tradição britânica (p. ex. Emmy van Deurzen, Mick Cooper), coletâneas sobre prática clínica existencial e obras que articulam filosofia e prática psicoterapêutica no contexto britânico."
     }
-  },,
+  },
   {
     "id": "psic-02-09",
     "name": "Psicologia Humanista (movimento amplo)",
@@ -516,7 +516,7 @@ export const FAM_02_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas incluem vaguidade conceitual em algumas formulações, risco de subestimar fatores sociais e estruturais, e desafios para padronização em pesquisa controlada; algumas técnicas carecem de estudos robustos.",
       "leituras_fundamentais": "Obras clássicas de Carl Rogers (p. ex. textos sobre terapia centrada na pessoa), Abraham Maslow (sobre autoatualização), literatura sobre gestalt e sobre psicologia humanista em revisão—incluindo compilações e textos contemporâneos de síntese."
     }
-  },,
+  },
   {
     "id": "psic-02-10",
     "name": "Terapia Transpessoal",
@@ -570,5 +570,5 @@ export const FAM_02_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas incluem falta de padronização metodológica, risco de interpretação pseudocientífica, potencial para abuso de autoridade e apropriação cultural, além de lacunas na evidência de eficácia e segurança em muitos procedimentos.",
       "leituras_fundamentais": "Obras clássicas e textos de referência de autores associados ao campo (p. ex. Stanislav Grof, textos sobre psicologia transpersonal e compilações críticas); literatura contemporânea que examina práticas contemplativas e integrações entre espiritualidade e psicoterapia."
     }
-  },,
+  },
 ];

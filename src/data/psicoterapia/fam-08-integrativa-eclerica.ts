@@ -57,7 +57,7 @@ export const FAM_08_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Risco de sincretismo sem fundamentação, demanda elevada de formação do terapeuta, dificuldade de padronizar modelos para pesquisa, possibilidade de incoerências teóricas.",
       "leituras_fundamentais": "Coleções e revisões sobre integração (p.ex., manuais editados por especialistas em integração psicoterapêutica), textos sobre processos trans-teóricos e revisões críticas da eficácia psicoterapêutica."
     }
-  },,
+  },
   {
     "id": "psic-08-02",
     "name": "Ecletismo Técnico",
@@ -111,7 +111,7 @@ export const FAM_08_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Risco de intervenções desconexas, ausência de explicação sobre por que técnicas funcionam em conjunto, problemas de treinamento e supervisão, risco ético se técnicas aplicadas sem compreensão teórica.",
       "leituras_fundamentais": "Textos e capítulos que discutem ecletismo técnico, críticas à prática técnica não fundamentada e guias sobre decisão clínica baseada em evidências."
     }
-  },,
+  },
   {
     "id": "psic-08-03",
     "name": "Integração Assimilativa",
@@ -165,7 +165,7 @@ export const FAM_08_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Pode limitar inovação se a teoria-base for inadequada; risco de resistência em admitir incompatibilidades; necessidade de supervisão sofisticada.",
       "leituras_fundamentais": "Trabalhos que discutem estratégias de assimilação e integração com fidelidade teórica, capítulos em manuais de integração que abordam modelos assimilativos."
     }
-  },,
+  },
   {
     "id": "psic-08-04",
     "name": "Terapia Multimodal",
@@ -219,7 +219,7 @@ export const FAM_08_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Risco de fragmentação em execução, demanda intensa de treinamento, possibilidade de perda de profundidade teórica em prol da abrangência técnica.",
       "leituras_fundamentais": "Textos e manuais que descrevem avaliação e intervenção por modalidades e que reúnem técnicas aplicáveis a cada domínio funcional."
     }
-  },,
+  },
   {
     "id": "psic-08-05",
     "name": "Psicodinâmica Cíclica (Wachtel)",
@@ -275,7 +275,7 @@ export const FAM_08_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Dificuldade de padronização para pesquisa, risco de superficialidade se integração for mal conduzida, necessidade de alta competência teórica e técnica do terapeuta.",
       "leituras_fundamentais": "Escritos e capítulos de Jerome D. Wachtel sobre psicodinâmica cíclica e integração; trabalhos que abordam a intersecção entre psicanálise, comportamento e processos relacionais.\nobservacao_classificacao_cruzada: Este modelo é classicamente classificado como integrativo (combina tradição psicodinâmica e comportamental); pode ser visto também como abordagem relacional e contextual, pois enfatiza contingências interacionais e processos funcionais."
     }
-  },,
+  },
   {
     "id": "psic-08-06",
     "name": "Terapia de Aceitação e Compromisso (ACT) como modelo integrativo/contextual",
@@ -329,7 +329,7 @@ export const FAM_08_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas sobre clareza conceitual em alguns constructos, desafios metodológicos para medir processos e necessidade de padronização de procedimentos; adaptação cultural e treinamento exigente.",
       "leituras_fundamentais": "Trabalhos e manuais de autores centrais (textos fundadores sobre ACT e sobre contextual behavioral science), revisões que discutem processo e eficácia.\nobservacao_classificacao_cruzada: ACT pode ser classificada cruzadamente como terapia comportamental/contextual (por sua história e base filosófica) e, simultaneamente, como abordagem integrativa/contextual por enfatizar processos trans-teóricos e ser aplicável em combinação com outras práticas; essa dupla classificação reflete sua posição entre técnicas comportamentais, processos experiencialistas e integração prática com outras abordagens.\n---### Registro 1 — Formulação de Caso em Psicoterapia"
     }
-  },,
+  },
   {
     "id": "psic-08-07",
     "name": "Formulação de Caso em Psicoterapia",
@@ -383,7 +383,7 @@ export const FAM_08_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Possibilidade de subjetividade e vieses do terapeuta; variação na qualidade entre praticantes; consumo de tempo; a formulação pode ser insuficiente se não houver tradução clara em intervenções específicas; desafios para demonstrar validade científica uniforme.",
       "leituras_fundamentais": "Textos e manuais sobre formulation em psicoterapia e práticas integrativas; obras clássicas que sistematizam formulação clínica em abordagens cognitivas, psicodinâmicas e sistêmicas; materiais metodológicos sobre avaliação clínica e planejamento terapêutico."
     }
-  },,
+  },
   {
     "id": "psic-08-08",
     "name": "Modelo Transteórico de Mudança (Modelo dos Estágios)",
@@ -437,7 +437,7 @@ export const FAM_08_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Risco de simplificação excessiva; dificuldade de mensurar com precisão o estágio; possível uso burocrático sem atenção à individualidade; algumas revisões apontam limitações na previsão de mudança quando comparado a outras abordagens.",
       "leituras_fundamentais": "Obras e revisões sobre o Modelo Transteórico, textos sobre aconselhamento motivacional e sobre intervenções em promoção de saúde que discutem aplicação e limitações do modelo."
     }
-  },,
+  },
   {
     "id": "psic-08-09",
     "name": "Prática Baseada em Evidências em Psicologia (PBE)",
@@ -491,5 +491,5 @@ export const FAM_08_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Risco de reduçãoismo ao privilegiar apenas determinados tipos de evidência; problemas de generalização de estudos para a prática cotidiana; desigualdades no acesso a intervenções \"evidence-based\"; possíveis conflitos entre evidência e valores culturais/pessoais do paciente.",
       "leituras_fundamentais": "Obras e textos clássicos que discutem epistemologia da prática baseada em evidências, guias metodológicos sobre avaliação de evidências e materiais sobre implementação clínica e tomada de decisão compartilhada."
     }
-  },,
+  },
 ];

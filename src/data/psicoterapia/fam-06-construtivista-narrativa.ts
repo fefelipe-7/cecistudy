@@ -60,7 +60,7 @@ export const FAM_06_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas apontam falta relativa de estudos randomizados, dificuldade de padronização para pesquisa, potencial subestimação de fatores biológicos em alguns quadros e risco de banalização de problemas graves se utilizados sem integração clínica adequada.",
       "leituras_fundamentais": "- Michael White & David Epston — Narrative Means to Therapeutic Ends (1990)\n- Textos clássicos sobre linguagem, discurso e construcionismo social (ver leituras sobre construcionismo social)"
     }
-  },,
+  },
   {
     "id": "psic-06-02",
     "name": "Psicoterapias Construtivas",
@@ -116,7 +116,7 @@ export const FAM_06_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas incluem diversidade excessiva sem padronização, dificuldades de medição de processos internos, e necessidade de mais estudos controlados para validar protocolos específicos.",
       "leituras_fundamentais": "- George A. Kelly — The Psychology of Personal Constructs (1955)\n- Obras de Vittorio Guidano sobre enfoque pós-racionalista do eu (ex.: textos sobre \"self in process\")\n- Revisões e coletâneas contemporâneas sobre construtivismo em psicoterapia (consultar literatura acadêmica específica)"
     }
-  },,
+  },
   {
     "id": "psic-06-03",
     "name": "Terapia de Construção Pessoal (Psicologia dos Construtos Pessoais)",
@@ -170,7 +170,7 @@ export const FAM_06_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Limitações incluem aplicabilidade restrita sem adaptação, necessidade de treinamento na técnica do Repertory Grid e evidência empírica limitada em comparação com terapias mais manualizadas.",
       "leituras_fundamentais": "- George A. Kelly — The Psychology of Personal Constructs (1955)\n- Trabalhos metodológicos sobre Repertory Grid e aplicações clínicas"
     }
-  },,
+  },
   {
     "id": "psic-06-04",
     "name": "Terapia Colaborativa (Diálica/Colaborativa)",
@@ -227,7 +227,7 @@ export const FAM_06_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas apontam tendência à heterogeneidade conceitual, desafios de mensuração do processo terapêutico e possíveis limitações em situações que requerem intervenções mais diretivas.",
       "leituras_fundamentais": "- Harlene Anderson — Conversation, Language, and Possibilities: A Postmodern Approach to Therapy (1997)\n- Anderson & Goolishian — textos fundadores sobre sistemas humanos enquanto sistemas linguísticos (finals dos anos 1980)"
     }
-  },,
+  },
   {
     "id": "psic-06-05",
     "name": "Terapia Pós-moderna",
@@ -281,7 +281,7 @@ export const FAM_06_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Acusações de vaguidade conceitual, dificuldade de padronização para pesquisa quantitativa e risco de minimizar dimensões biológicas ou estruturais de sofrimento quando aplicado de forma simplista.",
       "leituras_fundamentais": "- Textos e compilações sobre pós-modernismo em terapia e construcionismo social; obras específicas incluem contribuições de autores como Michael White, Harlene Anderson e outros práticos dialogais."
     }
-  },,
+  },
   {
     "id": "psic-06-06",
     "name": "Construcionismo Social",
@@ -335,7 +335,7 @@ export const FAM_06_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Limitações incluem acusações de relativismo excessivo, dificuldades em operacionalizar conceitos para pesquisa quantitativa e risco de desconsiderar fatores biológicos e estruturais quando aplicado de forma acrítica.",
       "leituras_fundamentais": "- Kenneth J. Gergen — Realities and Relationships (1994)\n- Vivien Burr — An Introduction to Social Constructionism (1995)\n---### Coherence Therapy"
     }
-  },,
+  },
   {
     "id": "psic-06-07",
     "name": "Coherence Therapy",
@@ -389,7 +389,7 @@ export const FAM_06_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Possível ênfase excessiva em processos individuais de memória sem abordar contextos sociais; necessidade de operadores bem treinados; evidência controlada limitada em algumas áreas clínicas.",
       "leituras_fundamentais": "Obras e textos clínicos que sistematizam o modelo e sua interface com teoria da memória emocional (bibliografia especializada do próprio campo; procurar compilações de autores que descrevem Coherence Therapy e trabalhos sobre reconsolidação de memória)."
     }
-  },,
+  },
   {
     "id": "psic-06-08",
     "name": "Terapia Ericksoniana",
@@ -443,7 +443,7 @@ export const FAM_06_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Técnicas podem ser menos padronizadas, exigem formação especializada; risco de uso inadequado ou de exploração de sugestibilidade; evidência específica heterogênea.",
       "leituras_fundamentais": "Coletâneas e textos sobre Milton H. Erickson e hipnose clínica; compilações de histórias clínicas e teoria ericksoniana; manuais de hipnose clínica contemporâneos."
     }
-  },,
+  },
   {
     "id": "psic-06-09",
     "name": "Terapia Centrada em Soluções (TCS)",
@@ -497,7 +497,7 @@ export const FAM_06_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Pode negligenciar história profunda e fatores sociais; eficácia depende de adequação ao problema e da habilidade do terapeuta em balancear solução e exploração quando necessário.",
       "leituras_fundamentais": "Textos que sistematizam perguntas de solução, técnicas de entrevista e manualizações clínicas produzidas por praticantes e pesquisadores do campo de terapia breve e centrada em soluções."
     }
-  },,
+  },
   {
     "id": "psic-06-10",
     "name": "Prática Baseada em Resposta",
@@ -551,7 +551,7 @@ export const FAM_06_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Risco de subestimar necessidades de tratamento clínico quando foco é excessivo na agência; necessidade de formação cuidadosa para evitar revitimização; dependência de contextos institucionais que ofereçam recursos.",
       "leituras_fundamentais": "Literatura sobre práticas de atendimento a vítimas, trauma-informed care e textos que discutem centralização da agência e estratégias de resistência em contextos de violência (obras basilares sobre trauma e práticas forenses/psicossociais são recomendadas como fundamento)."
     }
-  },,
+  },
   {
     "id": "psic-06-11",
     "name": "Terapia de Renegociação de Identidade",
@@ -605,5 +605,5 @@ export const FAM_06_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Conceitualmente amplo e heterogêneo — risco de falta de especificidade técnica; desafios metodológicos para medir mudança de identidade; necessidade de abordagem sensível ao contexto sociocultural.",
       "leituras_fundamentais": "Obras clássicas sobre identidade e desenvolvimento (teorias do desenvolvimento identitário), textos sobre terapia narrativa e sobre identidade social; recomenda-se integrar leituras de autores de identidade, narrativa terapêutica e estudos culturais para fundamentar intervenções.\nObservações gerais\n- Em todos os registros acima a classificação entre “técnica”, “tradição” e “modelo transversal” foi indicada na seção de evidências ou explicitada: Coherence Therapy (técnica/modelo terapêutico focal); Terapia Ericksoniana (tradição/técnica de hipnose clínica); Terapia Centrada em Soluções (técnica/tradição dentro do construtivismo-narrativo); Prática Baseada em Resposta (modelo transversal/prática aplicada em vários campos); Terapia de Renegociação de Identidade (modelo transversal/integrativo).\n- Não foram inventados estudos, números ou URLs: as referências a “evidência” foram qualificadas de forma geral e indicam necessidade de consulta a revisões e manuais específicos para decisão clínica.\n- Se desejar, posso fornecer uma bibliografia comentada com títulos e autores concretos (livros e artigos clássicos/recentes) para cada abordagem."
     }
-  },,
+  },
 ];

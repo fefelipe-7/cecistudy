@@ -56,7 +56,7 @@ export const FAM_10_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Pode ser insuficiente para transtornos graves (psicose, risco suicida elevado), traumas complexos ou problemas que exigem intervenção biomédica; risco de ser interpretada erroneamente como “positivismo” superficial — precisa-se distinguir ênfase em estratégias concretas de um apelo ingênuo ao pensamento positivo.",
       "leituras_fundamentais": "Obras e autores fundadores (por exemplo, escritos de Steve de Shazer e Insoo Kim Berg) e revisões críticas sobre terapia breve e modelos orientados para solução; literatura sobre técnicas concretas (perguntas do milagre, scaling) e revisões sistemáticas sobre terapia breve."
     }
-  },,
+  },
   {
     "id": "psic-10-02",
     "name": "Entrevista Motivacional (EM)",
@@ -110,7 +110,7 @@ export const FAM_10_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Não é, por definição, um tratamento completo para transtornos complexos; pode ser insuficiente quando o paciente requer intervenções técnicas específicas (p. ex., terapia cognitivo-comportamental prolongada, farmacoterapia); exige formação para aplicação fiel.",
       "leituras_fundamentais": "Obras e manuais de William R. Miller e Stephen Rollnick sobre Entrevista Motivacional, revisões e diretrizes de aplicação em saúde comportamental e dependência."
     }
-  },,
+  },
   {
     "id": "psic-10-03",
     "name": "Terapia da Realidade",
@@ -164,7 +164,7 @@ export const FAM_10_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Pode subestimar efeitos de trauma, desigualdades sociais e fatores biológicos; abordagem mais diretiva pode conflitar com pacientes que esperam escuta exploratória; menos apropriada para crises suicidas ou psicose sem integração de outras intervenções.",
       "leituras_fundamentais": "Escritos de William Glasser e textos sobre Choice Theory e aplicações em educação e aconselhamento; revisões críticas que contextualizam uso em escolas e instituições."
     }
-  },,
+  },
   {
     "id": "psic-10-04",
     "name": "Terapia de Resolução de Problemas (TRP / Problem-Solving Therapy)",
@@ -218,7 +218,7 @@ export const FAM_10_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Pode ser percebida como técnica demais por alguns pacientes; menos adequada isoladamente para traumas complexos ou transtornos com forte componente biológico sem integração com outras intervenções.",
       "leituras_fundamentais": "Literatura clássica sobre social problem solving e manuais de aplicação da terapia de resolução de problemas; revisões na interface com TCC e intervenções em idosos e saúde física."
     }
-  },,
+  },
   {
     "id": "psic-10-05",
     "name": "Terapia Breve Orientada a Metas",
@@ -272,7 +272,7 @@ export const FAM_10_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Risco de subtratar pacientes que precisam de intervenções mais longas; efeitos podem ser temporários se fatores contextuais não forem abordados; exige avaliação cuidadosa de adequação ao cliente.",
       "leituras_fundamentais": "Literatura sobre terapia breve, modelos de estabelecimento de metas (incluindo teoria do goal-setting em psicologia), manuais de intervenções breves e revisões sobre eficácia de tratamentos de curta duração.\n---### Terapia Breve (guarda‑chuva geral)"
     }
-  },,
+  },
   {
     "id": "psic-10-06",
     "name": "Terapia Breve Orientada a Metas",
@@ -326,7 +326,7 @@ export const FAM_10_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Risco de subtratar pacientes que precisam de intervenções mais longas; efeitos podem ser temporários se fatores contextuais não forem abordados; exige avaliação cuidadosa de adequação ao cliente.",
       "leituras_fundamentais": "Literatura sobre terapia breve, modelos de estabelecimento de metas (incluindo teoria do goal-setting em psicologia), manuais de intervenções breves e revisões sobre eficácia de tratamentos de curta duração.\n---### Terapia Breve (guarda‑chuva geral)"
     }
-  },,
+  },
   {
     "id": "psic-10-07",
     "name": "Aconselhamento de Carreira",
@@ -380,7 +380,7 @@ export const FAM_10_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Risco de tecnicismo excessivo quando ignora contextos sociais; dependência de instrumentos que podem não refletir diversidade cultural; limitações em realidades de mercado adversas.",
       "leituras_fundamentais": "Obras clássicas e contemporâneas sobre teoria de carreira (autores de referência: Holland, Super, Savickas) e manuais de prática clínica em aconselhamento de carreira; textos que integram avaliação e intervenção prática."
     }
-  },,
+  },
   {
     "id": "psic-10-08",
     "name": "Terapia Baseada em Forças (perspectiva baseada em forças)",
@@ -434,7 +434,7 @@ export const FAM_10_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Pode subestimar problemas graves que exigem intervenções específicas; evidência empírica ainda heterogênea; desafios em operacionalizar e replicar intervenções estritamente centradas em forças.",
       "leituras_fundamentais": "Textos sobre psicologia positiva, perspectiva de forças no trabalho social e obras que discutem aplicação clínica de intervenções baseadas em recursos e resiliência."
     }
-  },,
+  },
   {
     "id": "psic-10-09",
     "name": "Terapia de Casal e Família de Curto Prazo (MRI — Mental Research Institute / modelo estratégico)",

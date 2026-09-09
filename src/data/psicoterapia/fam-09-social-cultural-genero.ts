@@ -57,7 +57,7 @@ export const FAM_09_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Risco de essencializar “mulher” se não for interseccional; pode subestimar fatores biológicos quando mal aplicada; necessidade de competência cultural e autocrítica do terapeuta.",
       "leituras_fundamentais": "Jean Baker Miller — Toward a New Psychology of Women; obras introdutórias sobre terapia feminista e textos contemporâneos que articulam teoria feminista e prática clínica (consultar bibliografias especializadas)."
     }
-  },,
+  },
   {
     "id": "psic-09-02",
     "name": "Terapia Multicultural",
@@ -111,7 +111,7 @@ export const FAM_09_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Risco de estereotipar culturas; necessidade de evitar simplificações e tratar interseccionalidade; falta de formação adequada em muitos contextos.",
       "leituras_fundamentais": "Derald Wing Sue & David Sue — Counseling the Culturally Diverse; documentos de competências multiculturais de associações profissionais."
     }
-  },,
+  },
   {
     "id": "psic-09-03",
     "name": "Terapia Afirmativa LGBTQ+",
@@ -165,7 +165,7 @@ export const FAM_09_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Não é uma técnica única — pode ser mal aplicada por profissionais sem competência; risco de práticas danosas por falta de conhecimento (ex.: pathologização, outing, tentativa de conversão); exige ética, supervisão e atenção a poder.",
       "leituras_fundamentais": "Diretrizes da American Psychological Association sobre prática com pessoas LGB (2000/2012) e com pessoas trans (2015); textos contemporâneos sobre saúde mental LGBTQ+ e competências afirmativas."
     }
-  },,
+  },
   {
     "id": "psic-09-04",
     "name": "Terapia Antirracista",
@@ -219,7 +219,7 @@ export const FAM_09_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Risco de instrumentalizar a experiência racial sem ação concreta; necessidade de formação específica, supervisão e mudanças institucionais para evitar resposta simbólica sem impacto real.",
       "leituras_fundamentais": "Trabalhos sobre teoria racial contemporânea (p. ex. textos fundadores da interseccionalidade) e publicações críticas que conectam racismo e saúde mental; consultar bibliografias especializadas e literatura antirracista aplicada à clínica."
     }
-  },,
+  },
   {
     "id": "psic-09-05",
     "name": "Terapia Interseccional",
@@ -273,7 +273,7 @@ export const FAM_09_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Desafio metodológico para pesquisa e treinamento; risco de paralisação analítica se não traduzida em passos práticos; exige recursos institucionais para implementação.",
       "leituras_fundamentais": "Kimberlé Crenshaw — textos sobre interseccionalidade; obras fundacionais em teoria feminista negra e estudos críticos que informam práticas clínicas."
     }
-  },,
+  },
   {
     "id": "psic-09-06",
     "name": "Terapia Comunitária",
@@ -327,7 +327,7 @@ export const FAM_09_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Risco de sobrecarregar facilitadores voluntários, de soluções insuficientes para necessidades clínicas graves; necessidade de articulação com serviços formais e supervisão.",
       "leituras_fundamentais": "Obras e manuais sobre Terapia Comunitária Integrativa e literatura de psicologia comunitária; estudos de implementação e avaliações locais para consulta."
     }
-  },,
+  },
   {
     "id": "psic-09-07",
     "name": "Abordagens Transculturais e Internacionais",
@@ -381,7 +381,7 @@ export const FAM_09_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Possibilidade de tratá‑las como lista de habilidades técnicas (competência cultural simplificada) em vez de postura reflexiva; risco de estereotipização se houver generalização cultural; lacunas em evidência experimental em alguns contextos; limites institucionais para atuação sobre determinantes sociais.",
       "leituras_fundamentais": "Textos e autores que abordam cultura e saúde mental (obras de antropologia médica e psiquiatria transcultural), literatura sobre humildade cultural e frameworks de adaptação cultural de intervenções, e estudos sobre saúde global e migração. Recomenda‑se consultar tanto trabalhos clássicos da antropologia e psiquiatria quanto produções contemporâneas que problematizam colonialidade e evidência em saúde mental."
     }
-  },,
+  },
   {
     "id": "psic-09-08",
     "name": "Terapia Feminista",
@@ -436,7 +436,7 @@ export const FAM_09_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Risco de essencializar “mulher” se não for interseccional; pode subestimar fatores biológicos quando mal aplicada; necessidade de competência cultural e autocrítica do terapeuta.",
       "leituras_fundamentais": "Jean Baker Miller — Toward a New Psychology of Women; obras introdutórias sobre terapia feminista e textos contemporâneos que articulam teoria feminista e prática clínica (consultar bibliografias especializadas)."
     }
-  },,
+  },
   {
     "id": "psic-09-09",
     "name": "Terapia Familiar Feminista",
@@ -491,5 +491,5 @@ export const FAM_09_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Possibilidade de interpretar famílias como culpadas por condições estruturais; risco de intervenções focalizadas na família quando soluções exigem políticas públicas; desafios em contextos onde denunciar ou modificar estruturas pode aumentar risco de violência para membros vulneráveis. Importante evitar essencialismos culturais e reconhecer diversidade de arranjos familiares.",
       "leituras_fundamentais": "Textos que articulam terapia familiar e perspectiva feminista, estudos sobre divisão sexual do trabalho nas famílias, literatura sobre intervenção em situações de violência doméstica e trabalhos que promovem práticas terapêuticas sensíveis ao gênero e à interseccionalidade; recomenda‑se consultar tanto autores de terapia sistêmica quanto produções feministas contemporâneas."
     }
-  },,
+  },
 ];

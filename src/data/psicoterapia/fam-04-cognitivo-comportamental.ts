@@ -59,7 +59,7 @@ export const FAM_04_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas apontam para possível ênfase excessiva em técnicas estruturadas em detrimento da exploração emocional profunda, limitações em casos de transtornos de personalidade complexos e desafios na generalização de resultados de ensaios clínicos para a prática clínica cotidiana. A adesão estrita a protocolos pode não capturar nuances culturais e individuais.",
       "leituras_fundamentais": "Obras de Aaron T. Beck sobre terapia cognitiva (manuais e textos básicos) e livros de programas de treinamento clínico que apresentam técnicas de reestruturação cognitiva, registros de pensamentos e formulação de caso. Leituras complementares incluem manuais práticos de CBT e textos sobre métodos de avaliação e supervisão clínica."
     }
-  },,
+  },
   {
     "id": "psic-04-02",
     "name": "Terapia Racional-Emotiva Comportamental (REBT)",
@@ -115,7 +115,7 @@ export const FAM_04_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas incluem risco de simplificação excessiva do sofrimento, potencial desconforto em pacientes sensíveis ao estilo confrontativo e desafios para adaptar a linguagem e premissas da REBT a valores culturais ou religiosos diversos. Em casos muito complexos, pode ser necessário complementar com abordagens mais exploratórias.",
       "leituras_fundamentais": "Obras de Albert Ellis que apresentam a formulação teórica e aplicações clínicas da REBT, textos introdutórios para prática e manuais que descrevem o uso do modelo ABC(D)E e técnicas emocionais e comportamentais associadas."
     }
-  },,
+  },
   {
     "id": "psic-04-03",
     "name": "TCC Integrada/Geral",
@@ -172,7 +172,7 @@ export const FAM_04_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Limitações apontadas envolvem a padronização excessiva, possíveis insuficiências em capturar processos relacionais profundos em quadros complexos, e desafios de implementação em ambientes com pouca formação especializada. Há também discussão sobre como equilibrar manualização com flexibilidade clínica.",
       "leituras_fundamentais": "Textos gerais sobre terapia cognitivo-comportamental, manuais de tratamento para condições específicas, e obras que abordam integração de técnicas de terceira onda e formulação de caso transdiagnóstica. Leituras de referência incluem manuais clínicos e compêndios atualizados da área."
     }
-  },,
+  },
   {
     "id": "psic-04-04",
     "name": "Terapia do Esquema",
@@ -226,7 +226,7 @@ export const FAM_04_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas apontam para a necessidade de tratamentos mais longos e recursos intensivos, potencial dependência do terapeuta e questionamentos sobre como mensurar e padronizar intervenções experiencial-emocionais. Há também preocupações sobre generalização dos achados e necessidade de mais estudos controlados e replicações independentes.",
       "leituras_fundamentais": "Obras de Jeffrey Young que sistematizam a teoria e a prática da terapia do esquema, manuais clínicos que descrevem avaliação de esquemas e modos, e textos que integram essas ideias com técnicas cognitivas, emocionais e interpessoais para o tratamento de problemas crônicos.### nome\nTerapia Cognitiva Baseada em Mindfulness (MBCT)"
     }
-  },,
+  },
   {
     "id": "psic-04-05",
     "name": "Terapia Cognitiva (Beck)",
@@ -283,7 +283,7 @@ export const FAM_04_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas apontam para possível ênfase excessiva em técnicas estruturadas em detrimento da exploração emocional profunda, limitações em casos de transtornos de personalidade complexos e desafios na generalização de resultados de ensaios clínicos para a prática clínica cotidiana. A adesão estrita a protocolos pode não capturar nuances culturais e individuais.",
       "leituras_fundamentais": "Obras de Aaron T. Beck sobre terapia cognitiva (manuais e textos básicos) e livros de programas de treinamento clínico que apresentam técnicas de reestruturação cognitiva, registros de pensamentos e formulação de caso. Leituras complementares incluem manuais práticos de CBT e textos sobre métodos de avaliação e supervisão clínica."
     }
-  },,
+  },
   {
     "id": "psic-04-06",
     "name": "Terapia de Aceitação e Compromisso (ACT)",
@@ -342,7 +342,7 @@ export const FAM_04_APPROACHES: PsychologyApproach[] = [
         "psic-08-06"
       ]
     }
-  },,
+  },
   {
     "id": "psic-04-07",
     "name": "Terapia Focada na Compaixão (CFT)",
@@ -396,7 +396,7 @@ export const FAM_04_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas apontam para número menor de RCTs comparativos, possibilidade de viés de publicação, necessidade de padronização de protocolos e questões de treinamento clínico. Além disso, em algumas populações exposições afetivas durante o treino podem exigir cuidado e ajustes clínicos cuidadosos.",
       "leituras_fundamentais": "Referências fundamentais incluem obras que apresentam a teoria evolucionária e clínica da compaixão, manuais práticos de treinamento compassivo e revisões críticas sobre aplicações e evidências empíricas, úteis para clínicos que buscam formação aprofundada."
     }
-  },,
+  },
   {
     "id": "psic-04-08",
     "name": "Terapia Metacognitiva de Wells (MCT)",
@@ -453,7 +453,7 @@ export const FAM_04_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas incluem dependência de evidencia originada por desenvolvedores, necessidade de mais estudos independentes, questões de generalização para populações clínicas diversas e lacunas sobre efeitos a longo prazo. Há também desafios práticos relacionados ao treinamento de terapeutas em técnicas metacognitivas específicas.",
       "leituras_fundamentais": "Textos centrais compreendem manuais que descrevem a teoria metacognitiva, protocolos clínicos e coleções acadêmicas sobre avaliação e intervenção metacognitiva, recomendados para clínicos que buscam especialização na abordagem.### nome\nTerapia do Processamento Cognitivo (para TEPT)"
     }
-  },,
+  },
   {
     "id": "psic-04-09",
     "name": "Terapia do Processamento Cognitivo (para TEPT)",
@@ -508,7 +508,7 @@ export const FAM_04_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas e limitações incluem que protocolos manualizados podem não capturar complexidades individuais e que a ênfase em tarefas estruturadas pode ser insuficiente para pacientes com comorbidades severas ou instabilidade psicossocial. A exposição a lembranças traumáticas, mesmo em formato escrito, pode exacerbar sintomas se feita precipitadamente ou sem suporte adequado — portanto, avaliação de risco e preparação são essenciais.\nAlém disso, a maioria das evidências vem de contextos específicos (serviços especializados e amostras selecionadas), o que levanta questões sobre generalização, custos de implementação e necessidade de treinamentos adequados para garantir segurança e eficácia.",
       "leituras_fundamentais": "Leituras recomendadas incluem manuais e textos que descrevem o protocolo e sua aplicação clínica, revisões sobre tratamentos baseados em evidência para TEPT e materiais de formação para terapeutas. Procure por manuais clínicos de CPT que detalham a sequência de sessões e exercícios, além de revisões sistemáticas sobre intervenções para TEPT que discutem eficácia e mecanismos.\nTambém são úteis textos sobre avaliação e manejo de risco em terapia com trauma e guias que abordam adaptações culturais e formatos de aplicação (individual, grupo, formatos intensivos)."
     }
-  },,
+  },
   {
     "id": "psic-04-10",
     "name": "Terapia Cognitivo‑Comportamental Baseada em Protocolo Transdiagnóstico",
@@ -563,5 +563,5 @@ export const FAM_04_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas apontam que a abordagem transdiagnóstica, apesar de promissora, pode simplificar demais a diversidade clínica se aplicada sem formulação cuidadosa; não é uma solução “tamanho único”. Limitações incluem evidência heterogênea entre protocolos, necessidade de treinamento qualificado e potenciais dificuldades em tratar casos com necessidades complexas (por exemplo, risco elevado, comorbidades severas, ou histórico de trauma não resolvido).\nTambém é necessário cautela quando os protocolos envolvem exposição a emoções ou conteúdos traumáticos: essas técnicas devem ser aplicadas com avaliação prévia, preparação, suporte e monitoramento, para evitar piora temporária ou reativação de sintomas.",
       "leituras_fundamentais": "Sugestões de leituras fundamentais incluem manuais e revisões sobre protocolos transdiagnósticos, textos que discutem mecanismos transversais de psicopatologia e guias de implementação em serviços de saúde. Procure autores e manuais que descrevem protocolos unificados e trabalhos de revisão que sintetizam evidências empíricas sobre intervenções transdiagnósticas.\nComplementarmente, leituras sobre formulação clínica, avaliação de risco e técnicas de exposição e regulação emocional são essenciais para quem pretende aplicar esses protocolos com segurança e eficácia."
     }
-  },,
+  },
 ];

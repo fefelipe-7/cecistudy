@@ -57,7 +57,7 @@ export const FAM_03_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas apontam para reducionismo, possível subestimação de significados subjetivos e de fatores sociohistóricos, e limitação na explicação de processos cognitivos complexos sem integração teórica. Também se destaca a necessidade de considerar ética na aplicação técnica das contingências, evitando instrumentalização de sujeitos.",
       "leituras_fundamentais": "Leituras fundamentais incluem os corpus clássicos e críticos que articulam a análise experimental do comportamento e suas aplicações, bem como textos que discutem a filosofia das ciências do comportamento. Recomenda-se abordar tanto os formuladores centrais que sistematizaram o behaviorismo quanto análises críticas contemporâneas que problematizam seus pressupostos."
     }
-  },,
+  },
   {
     "id": "psic-03-02",
     "name": "Terapia Comportamental Clássica",
@@ -111,7 +111,7 @@ export const FAM_03_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "São apontadas limitações na abordagem de questões existenciais, traumas complexos e fatores socioeconômicos que não se reduzem a contingências individuais; além disso, críticas éticas emergem quando procedimentos são aplicados sem sensibilidade cultural ou sem envolvimento compartilhado na definição de objetivos.",
       "leituras_fundamentais": "As leituras fundamentais englobam manuais e artigos que apresentam técnicas de modificação comportamental, textos de referência sobre condicionamento clássico e operante e trabalhos que descrevem a aplicação clínica desses princípios, incluindo obras de clínicos que sistematizaram procedimentos como exposição, dessensibilização e treinamento de habilidades."
     }
-  },,
+  },
   {
     "id": "psic-03-03",
     "name": "Análise do Comportamento Aplicada (ABA)",
@@ -165,7 +165,7 @@ export const FAM_03_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas salientam riscos éticos e limitações: potencial para violar autonomia se intervenções forem impostas sem consentimento informado; risco de priorizar normalização social em detrimento de objetivos significativos para o indivíduo; histórico de uso de procedimentos aversivos; e limites na generalização e manutenção de ganhos quando intervenções não são socialmente validadas. Ademais, há preocupações sobre práticas que visam suprimir traços centrais de identidades (por exemplo, comportamentos associados à neurodivergência) em vez de promover bem-estar.\nNo que tange limites éticos específicos, ABA exige salvaguardas: obtenção de consentimento livre e informado sempre que possível; uso de assentimento e envolvimento familiar ou de representantes legais quando incapacidade de consentir for presente; priorização da autonomia e das preferências do indivíduo ao selecionar metas; avaliação explícita da validade social dos objetivos (social validity) — isto é, verificar se os alvos são importantes para o indivíduo e sua comunidade; e restrição do uso de procedimentos aversivos, assegurando que sejam empregados apenas quando absolutamente necessários, subsidiados por avaliação cuidadosa, documentação rigorosa e supervisão ética. No atendimento a pessoas autistas, as controvérsias concentram-se na tensão entre intervenções que buscam habilidades funcionais que ampliem autonomia e intervenções que objetivam reduzir comportamentos que, embora socialmente atípicos, possam ser formas de expressão identitária; muitos defensores da neurodiversidade criticam abordagens que visam «mascaramento» ou conformação às normas sociais em detrimento da saúde mental e da autodeterminação do indivíduo.",
       "leituras_fundamentais": "Leituras fundamentais contemplam textos que sistematizam princípios e procedimentos da análise do comportamento aplicada, trabalhos que descrevem avaliação funcional e desenho de programas, e literatura crítica que discute ética, validade social e integração com abordagens centradas na pessoa. Recomenda-se a análise tanto de manuais técnicos quanto de reflexões éticas e estudos sobre qualidade de vida e direitos das populações atendidas.### nome\nDessensibilização Sistemática (Wolpe)"
     }
-  },,
+  },
   {
     "id": "psic-03-04",
     "name": "Dessensibilização Sistemática (Wolpe)",
@@ -221,7 +221,7 @@ export const FAM_03_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas incluem a dependência de imaginação para inicialmente enfrentar estímulos, a possível lentidão do processo e a limitação para problemas sem estímulos bem definidos. Além disso, a técnica pode ser insuficiente para casos complexos com comorbidades psiquiátricas ou quando intervenções cognitivas e contextuais são centrais.",
       "leituras_fundamentais": "Obras de Joseph Wolpe que descrevem a técnica e sua base teórica são leituras fundamentais para entender a origem da dessensibilização sistemática. Revisões históricas sobre terapias comportamentais e textos contemporâneos sobre intervenções de exposição também ajudam a situar a técnica em relação a práticas atuais."
     }
-  },,
+  },
   {
     "id": "psic-03-05",
     "name": "Terapia de Exposição",
@@ -275,7 +275,7 @@ export const FAM_03_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Limitações práticas envolvem desafios de adesão, possível agravamento agudo de sintomas se mal conduzida e a necessidade de supervisão profissional para casos de risco. Não é indicada a autoconduta sem orientação, pois a exposição mal planejada pode aumentar a angústia, levar à retraumatização ou falhar por evitar-se estímulos demasiado difícil sem suporte adequado.",
       "leituras_fundamentais": "Textos e manuais sobre terapia de exposição e protocolos específicos (por exemplo, para TEPT, pânico, fobias) e revisões sistemáticas são leituras fundamentais para entender modelos, aplicações e adaptações clínicas. Leituras que combinam teoria de aprendizagem com práticas clínicas fornecem base para implementação responsável."
     }
-  },,
+  },
   {
     "id": "psic-03-06",
     "name": "Terapia Comportamental Dialética (DBT)",
@@ -331,7 +331,7 @@ export const FAM_03_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Limitações apontadas incluem demanda alta por recursos (tempo, equipe de consulta, formação terapeuta), complexidade operacional e desafios de disseminação em serviços com poucos recursos. Há também discussão sobre a necessidade de adaptação cultural e contextual, e sobre possíveis limites na eficácia para comorbidades severas sem tratamento integrado.",
       "leituras_fundamentais": "Obras de Marsha Linehan que descrevem o modelo, manuais de treinamento em DBT e revisões que consolidam a evidência são leituras fundamentais. Leituras sobre habilidades específicas (mindfulness, regulação emocional) e sobre implementação em serviços também são recomendadas."
     }
-  },,
+  },
   {
     "id": "psic-03-07",
     "name": "Ativação Comportamental",
@@ -385,7 +385,7 @@ export const FAM_03_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Limitações incluem potencial insuficiência isolada em casos com sintomas psicopatológicos complexos, risco de baixa adesão em depressões severas e necessidade de avaliação cuidadosa de risco suicida. A implementação efetiva exige monitoramento clínico e, em alguns casos, integração com outros tratamentos.",
       "leituras_fundamentais": "Textos clássicos sobre terapia comportamental da depressão e manuais contemporâneos sobre ativação comportamental, além de revisões sistemáticas que avaliam sua eficácia e mecanismos, são leituras recomendadas. Manuais práticos que descrevem passos para avaliação funcional e planejamento de atividades são úteis para a implementação clínica.### nome\nTreinamento de Habilidades Sociais"
     }
-  },,
+  },
   {
     "id": "psic-03-08",
     "name": "Treinamento de Habilidades Sociais",
@@ -439,7 +439,7 @@ export const FAM_03_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Limitações apontadas são: possíveis dificuldades de generalização para contextos naturais sem suporte ambiental; risco de focar comportamentos superficiais sem trabalhar emoções subjacentes; e necessidade de sensibilidade cultural. Em populações infantis, exige atenção ética: intervenções precisam de consentimento informado, assentimento quando possível, proporcionalidade, preservação da dignidade da criança, e evitar rotular ou culpabilizar cuidadores. Importante distinguir THS (ensino de habilidades específicas) de terapia infantil (que aborda sofrimento e relações familiares mais amplas) e de terapia de casal (focada na dinâmica conjugal), para aplicar técnicas apropriadas ao alvo terapêutico.",
       "leituras_fundamentais": "Recomenda-se leitura de manuais e revisões sobre treino de habilidades sociais, textos clássicos sobre aprendizagem e modelagem na psicologia comportamental e obras que tratem de integração com abordagens cognitivas. Buscar obras de autores que sistematizaram programas de treino social, bem como revisões críticas e guias clínicos que tratem de implementação e adaptação cultural."
     }
-  },,
+  },
   {
     "id": "psic-03-09",
     "name": "Modificação de Comportamento Infantil",
@@ -493,7 +493,7 @@ export const FAM_03_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Limitações éticas e práticas: intervenções devem respeitar direitos da criança, garantir consentimento informado dos cuidadores e assentimento da criança quando adequado, evitar técnicas punitivas danosas e priorizar estratégias positivas. É fundamental não culpabilizar cuidadores: muitos fatores sociais, econômicos e pessoais afetam práticas parentais. Intervenções devem ser culturalmente sensíveis, feasíveis no contexto familiar, e coordenadas com serviços sociais quando necessário. Alguns críticos apontam que foco excessivo em contingências pode negligenciar experiências emocionais profundas e determinantes estruturais do comportamento.",
       "leituras_fundamentais": "Sugere-se leitura de manuais sobre análise funcional aplicada, guias sobre treino de pais e revisões sobre intervenções em comportamento infantil, bem como obras que tratam de implementação em serviços públicos e precauções éticas na intervenção com menores. Procurar autores e revisões reconhecidos na área de intervenção comportamental e de saúde infantil."
     }
-  },,
+  },
   {
     "id": "psic-03-10",
     "name": "Terapia Comportamental de Casais",
@@ -547,5 +547,5 @@ export const FAM_03_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas apontam que foco predominantemente comportamental pode subestimar experiências emocionais profundas e contextos institucionais que influenciam relações. Limitações éticas: quando há violência, abuso de substâncias severo ou riscos à segurança, intervenções de casal isoladas podem ser inadequadas; nesses casos é necessário priorizar segurança, usar avaliações específicas e coordenar recursos. É essencial distinguir terapia de casal (foco na dinâmica conjugal) de intervenções individuais e de treinamento de habilidades (que podem ser usados isoladamente); não culpabilizar parceiros por padrões aprendidos, mas trabalhar com responsabilidade compartilhada e suporte contextual.",
       "leituras_fundamentais": "Recomenda-se consultar manuais e revisões sobre terapia comportamental de casais, textos que abordam integração com enfoques emocionais e guias de boas práticas éticas para intervenção conjugal. Procurar literatura que discuta efeitos, mediadores de mudança e adaptações culturais, bem como orientações sobre manejo de risco e violência doméstica."
     }
-  },,
+  },
 ];

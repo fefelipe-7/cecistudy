@@ -58,7 +58,7 @@ export const FAM_05_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Pode subestimar fatores intraindividuais e sociodemográficos, exigir grande habilidade técnica do terapeuta e apresentar desafios éticos quando usado de forma diretiva; necessidade de adaptação cultural.",
       "leituras_fundamentais": "Obras e textos de Salvador Minuchin sobre terapia familiar estrutural e técnicas de intervenção familiar (leituras clássicas da abordagem estrutural)."
     }
-  },,
+  },
   {
     "id": "psic-05-02",
     "name": "Terapia Familiar Estratégica (Jay Haley)",
@@ -114,7 +114,7 @@ export const FAM_05_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Potencial de manipulação percebida, menos enfoque em processos intrapsíquicos profundos e na construção compartilhada de sentido; eficácia dependente da perícia do terapeuta.",
       "leituras_fundamentais": "Escritos de Jay Haley sobre terapia estratégica e terapia breve, incluindo formulações sobre técnicas de prescrição e paradoxos terapêuticos."
     }
-  },,
+  },
   {
     "id": "psic-05-03",
     "name": "Terapia Familiar Boweniana (Murray Bowen)",
@@ -170,7 +170,7 @@ export const FAM_05_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Pode ser abstrata e demorada; menor foco em intervenções comportamentais imediatas; risco de subestimar fatores sociais e culturais; exige compromisso para mudanças pessoais duradouras.",
       "leituras_fundamentais": "Escritos de Murray Bowen sobre teoria familiar multigeracional, genograma e diferenciação do self."
     }
-  },,
+  },
   {
     "id": "psic-05-04",
     "name": "Escola de Milão (Terapia Sistêmica de Milão)",
@@ -224,7 +224,7 @@ export const FAM_05_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Complexidade metodológica, possível distanciamento afetivo vivo com a família, dificuldade de replicação empírica, e necessidade de grande coordenação de equipe.",
       "leituras_fundamentais": "Textos e coletâneas produzidos pelos membros da Escola de Milão sobre hipótese, circularidade e neutralidade clínica."
     }
-  },,
+  },
   {
     "id": "psic-05-05",
     "name": "Terapia Centrada em Soluções",
@@ -283,7 +283,7 @@ export const FAM_05_APPROACHES: PsychologyApproach[] = [
         "psic-06-09"
       ]
     }
-  },,
+  },
   {
     "id": "psic-05-06",
     "name": "Terapia Familiar Geral",
@@ -337,7 +337,7 @@ export const FAM_05_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Risco de heterogeneidade excessiva entre práticas rotuladas como \"familiar geral\", dificuldade de mensurar componentes ativos e necessidade de maior padronização em alguns contextos de pesquisa.",
       "leituras_fundamentais": "Obras que coletam princípios sistêmicos, técnicas de intervenção com famílias e discussões teóricas sobre a clínica familiar em diferentes configurações."
     }
-  },,
+  },
   {
     "id": "psic-05-07",
     "name": "Terapia de Casais Integrativa",
@@ -392,7 +392,7 @@ export const FAM_05_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Pode exigir treinamento extenso; algumas críticas apontam dificuldade de aplicação padrão em pares com problemas severos não relacionais (por exemplo, transtornos mentais graves) sem abordagens complementares.",
       "leituras_fundamentais": "Textos que descrevem a integração de processos emocionais e comportamentais na terapia de casal, com guias práticos para intervenções e estudos sobre resultados clínicos."
     }
-  },,
+  },
   {
     "id": "psic-05-08",
     "name": "Terapia Familiar Experiencial",
@@ -446,7 +446,7 @@ export const FAM_05_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Pode ser inadequada sem preparo clínico quando há trauma complexo, risco de desregulação intensa ou quando membros não conseguem tolerar experiências emocionais sem suporte adicional.",
       "leituras_fundamentais": "Obras sobre técnicas vivenciais, teoria da experiência emocional em contextos familiares e guias para intervenção prática com atenção à contenção e à ética."
     }
-  },,
+  },
   {
     "id": "psic-05-09",
     "name": "Terapia Familiar Baseada em Apego",
@@ -500,7 +500,7 @@ export const FAM_05_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Desafios na implementação quando fatores sociais, econômicos e de saúde complicam a capacidade dos cuidadores de responder consistentemente; necessidade de abordagens multi‑modal quando há múltiplas adversidades.",
       "leituras_fundamentais": "Textos que conectam teoria do apego com práticas clínicas, guias para intervenção com cuidadores e crianças e estudos sobre processos de mudança relacional."
     }
-  },,
+  },
   {
     "id": "psic-05-10",
     "name": "Terapia Multissistêmica",
@@ -555,5 +555,5 @@ export const FAM_05_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Desafios logísticos e de financiamento, necessidade de formação de equipes especializadas e complexidade na manutenção da fidelidade do modelo em larga escala; resultados dependem fortemente da infraestrutura de apoio.",
       "leituras_fundamentais": "Materiais que descrevem princípios de intervenção multissistêmica, planejamento comunitário e relatos de implementação em serviços sociais e de saúde."
     }
-  },,
+  },
 ];

@@ -59,7 +59,7 @@ export const FAM_01_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas frequentes apontam que conceitos clássicos podem ser vagos, dependentes de interpretação e difíceis de falsificar ou medir de forma consistente. A formação varia entre institutos, e a fidelidade ao método pode ser menos padronizada do que em protocolos manualizados. Algumas formulações históricas reproduzem pressupostos normativos sobre sexualidade, gênero, família e cultura que exigem revisão crítica. Além disso, interpretações mal temporizadas, postura excessivamente distante ou uso autoritário da posição de especialista podem prejudicar aliança e tratamento.\nTambém é limitador tratar problemas graves de risco, condições médicas, psicose aguda ou sofrimento ligado a violência e privação social apenas por uma leitura intrapsíquica. A prática clínica responsável exige avaliação de risco, articulação com rede de saúde quando necessária e reconhecimento de fatores biológicos, traumáticos, sociais e culturais.",
       "leituras_fundamentais": "Sigmund Freud: *A interpretação dos sonhos* (1900), *Três ensaios sobre a teoria da sexualidade* (1905), *Cinco lições de psicanálise* (1910), *Recordar, repetir e elaborar* (1914), *Observações sobre o amor transferencial* (1915), *Além do princípio do prazer* (1920), *O ego e o id* (1923), *Inibições, sintomas e ansiedade* (1926) e *Análise terminável e interminável* (1937). Para uma síntese clínica contemporânea e comparativa, ver Gabbard, *Long-Term Psychodynamic Psychotherapy*; McWilliams, *Psychoanalytic Diagnosis*; e o capítulo de Sharma e Spiro em StatPearls. [2]"
     }
-  },,
+  },
   {
     "id": "psic-01-02",
     "name": "Psicologia do Ego",
@@ -115,7 +115,7 @@ export const FAM_01_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "A abordagem foi criticada por alguns autores por dar peso excessivo à adaptação e ao domínio do ego, por supor modelos desenvolvimentais normativos e por não incorporar suficientemente intersubjetividade, gênero, raça, cultura e contexto social. Sua linguagem pode ser usada de modo reificante quando trata “força do ego” como traço fixo. Clinicamente, interpretações de defesa sem consideração por trauma, segurança e desigualdade podem ser vividas como culpabilizantes.",
       "leituras_fundamentais": "Anna Freud: *O ego e os mecanismos de defesa* (1936) e *Normalidade e patologia na infância*. Heinz Hartmann: *Ego Psychology and the Problem of Adaptation* (1939). Para contexto histórico e clínico comparativo, ver Blanck e Blanck, *Ego Psychology*; e Sharma e Spiro, *Psychoanalytic Therapy*. [2]"
     }
-  },,
+  },
   {
     "id": "psic-01-03",
     "name": "Teoria das Relações Objetais",
@@ -169,7 +169,7 @@ export const FAM_01_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas incluem linguagem densa, escolas internas divergentes, dificuldade de mensuração de conceitos e risco de interpretações circulares. Alguns modelos históricos foram questionados por pressupostos de gênero e família e por não diferenciar adequadamente falhas ambientais, violência e sofrimento socioestrutural. Também há risco de o terapeuta atribuir cedo demais ao paciente fantasias destrutivas quando uma reação pode ser resposta compreensível a negligência, discriminação ou ameaça real.",
       "leituras_fundamentais": "Melanie Klein: *Amor, culpa e reparação* e *Inveja e gratidão*. Ronald Fairbairn: *Psychoanalytic Studies of the Personality*. Donald Winnicott: *O ambiente e os processos de maturação*, *Brincar e realidade* e *O brincar e a realidade*. John Bowlby: trilogia *Attachment and Loss*. Otto Kernberg: *Borderline Conditions and Pathological Narcissism*. Para síntese histórica, ver Greenberg e Mitchell, *Object Relations in Psychoanalytic Theory*, e Sharma e Spiro. [2]"
     }
-  },,
+  },
   {
     "id": "psic-01-04",
     "name": "Psicologia do Self (Kohut)",
@@ -225,7 +225,7 @@ export const FAM_01_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "As limitações incluem dificuldade de operacionalizar conceitos como coesão do self, selfobject e internalização transmutadora; risco de romantizar necessidades de admiração; e escassez de ensaios específicos de alta qualidade. Um uso dogmático pode transformar toda frustração em “falha empática” do ambiente ou do terapeuta, negligenciando responsabilidade, conflito real e dinâmica social. Como toda psicoterapia psicodinâmica, exige monitoramento de aliança, risco e efeitos adversos.",
       "leituras_fundamentais": "Heinz Kohut: *The Analysis of the Self* (1971), *The Restoration of the Self* (1977) e *How Does Analysis Cure?* (1984). Para desenvolvimentos posteriores, ver Bacal e Newman, *Theories of Object Relations: Bridges to Self Psychology*, e Lee e Martin, *Psychotherapy After Kohut*. [2]"
     }
-  },,
+  },
   {
     "id": "psic-01-05",
     "name": "Psicanálise Relacional",
@@ -282,7 +282,7 @@ export const FAM_01_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticos apontam que o campo pode se tornar excessivamente amplo, dificultando fidelidade e avaliação empírica. A linguagem de co-construção pode ser mal usada para responsabilizar paciente por falhas do terapeuta ou para justificar limites frouxos. Além disso, uma atenção intensa ao aqui-e-agora relacional pode negligenciar sintomas urgentes, condições materiais e objetivos concretos se não for integrada a avaliação clínica abrangente.",
       "leituras_fundamentais": "Stephen A. Mitchell: *Relational Concepts in Psychoanalysis* (1988). Mitchell e Lewis Aron (orgs.): *Relational Psychoanalysis: The Emergence of a Tradition*. Jessica Benjamin: *The Bonds of Love* e *Beyond Doer and Done To*. Para contexto histórico, ver artigos de Mitchell, Aron e autores da tradição interpessoal. [2]"
     }
-  },,
+  },
   {
     "id": "psic-01-06",
     "name": "Terapia Psicodinâmica Breve",
@@ -336,7 +336,7 @@ export const FAM_01_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Nem todo paciente, momento de crise ou problema é adequadamente atendido por formato breve. Prazos rígidos podem aumentar pressão, abandono ou sensação de fracasso. Estudos mais antigos possuem limitações metodológicas e não permitem alegar superioridade generalizada. Protocolização pode reduzir responsividade se aplicada mecanicamente.",
       "leituras_fundamentais": "Malan, *The Frontier of Brief Psychotherapy*; Davanloo, trabalhos sobre ISTDP; Luborsky, *Principles of Psychoanalytic Psychotherapy*; Leichsenring e colaboradores sobre STPP. [4]"
     }
-  },,
+  },
   {
     "id": "psic-01-07",
     "name": "Psicologia Analítica Junguiana",
@@ -390,7 +390,7 @@ export const FAM_01_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas apontam risco de essencialismo, universalismo cultural, interpretações excessivamente livres e insuficiência de validação empírica de alguns constructos. A ênfase simbólica pode desviar atenção de urgências concretas se mal aplicada. Também é limitador usar “arquétipo” como explicação pronta para sofrimento, identidade ou diferenças culturais. Em quadros graves, técnicas de imaginação e mergulho em material inconsciente requerem avaliação de estabilidade, suporte e integração com cuidados de saúde adequados.",
       "leituras_fundamentais": "C. G. Jung: *Os arquétipos e o inconsciente coletivo*, *Aion*, *Tipos psicológicos*, *O homem e seus símbolos*, *Memórias, sonhos, reflexões* e *O Livro Vermelho*. Para introdução clínica contemporânea, ver Samuels, Shorter e Plaut, *A Critical Dictionary of Jungian Analysis*, e documentos da International Association for Analytical Psychology. [6]"
     }
-  },,
+  },
   {
     "id": "psic-01-08",
     "name": "Psicologia Individual Adleriana",
@@ -447,7 +447,7 @@ export const FAM_01_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Alguns constructos são difíceis de operacionalizar e podem ser aplicados de modo excessivamente interpretativo. A ênfase em escolha e coragem deve ser modulada para não culpabilizar pessoas submetidas a violência, pobreza, racismo ou deficiência. A base de resultados é menos consolidada que a de modelos mais estudados.",
       "leituras_fundamentais": "Alfred Adler: *Understanding Human Nature*, *The Practice and Theory of Individual Psychology* e *What Life Should Mean to You*. Para síntese: Ansbacher e Ansbacher (orgs.), *The Individual Psychology of Alfred Adler*; e textos contemporâneos de psicoterapia adleriana. [2]"
     }
-  },,
+  },
   {
     "id": "psic-01-09",
     "name": "Psicanálise Interpessoal (Sullivan)",
@@ -510,7 +510,7 @@ export const FAM_01_APPROACHES: PsychologyApproach[] = [
         "psic-07-03"
       ]
     }
-  },,
+  },
   {
     "id": "psic-01-10",
     "name": "Psicoterapia Psicodinâmica Contemporânea (integrativa)",
@@ -564,5 +564,5 @@ export const FAM_01_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "A amplitude da categoria pode dissolver precisão: se tudo que valoriza relação se chama psicodinâmico, torna-se impossível estudar fidelidade. Há risco de usar linguagem sofisticada sem metas, monitoramento ou avaliação de risco. Barreiras de custo, duração e disponibilidade persistem em muitos contextos. A integração deve ser teoricamente justificada e não uma coleção indiscriminada de técnicas.",
       "leituras_fundamentais": "Gabbard, *Psychodynamic Psychiatry in Clinical Practice* e *Long-Term Psychodynamic Psychotherapy*; Lemma, Target e Fonagy, *Brief Dynamic Interpersonal Therapy*; McWilliams, *Psychoanalytic Psychotherapy*; Shedler, textos sobre eficácia de terapia psicodinâmica; e revisões sistemáticas de Leichsenring e colaboradores. [3] [4]"
     }
-  },,
+  },
 ];

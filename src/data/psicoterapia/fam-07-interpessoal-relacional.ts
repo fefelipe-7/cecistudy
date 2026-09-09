@@ -57,7 +57,7 @@ export const FAM_07_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Pode ser insuficiente para transtornos de personalidade graves ou problemas crônicos sem comorbidade; foco curto pode não abarcar história de desenvolvimento complexa; eficácia dependente de treinamento adequado.",
       "leituras_fundamentais": "Textos-manualizados e trabalhos fundadores sobre IPT e sua aplicação em depressão; revisões críticas que situam IPT entre terapias breves baseadas em evidência."
     }
-  },,
+  },
   {
     "id": "psic-07-02",
     "name": "Terapia Relacional‑Cultural (Relational‑Cultural Therapy, RCT)",
@@ -111,7 +111,7 @@ export const FAM_07_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Falta de padronização técnica dificulta pesquisa comparativa; menor presença em guidelines baseados em evidência RCT; críticas sobre possível insuficiente ênfase em técnicas estratégicas para transtornos com forte componente sintomático.",
       "leituras_fundamentais": "Jean Baker Miller — Toward a New Psychology of Women; trabalhos de Irene Stiver, Janet Surrey e Judith Jordan; coletâneas e textos do Wellesley Centers for Women sobre Relational‑Cultural Theory (obras clássicas e revisões teóricas)."
     }
-  },,
+  },
   {
     "id": "psic-07-03",
     "name": "Psicanálise Interpessoal (Interpersonal Psychoanalysis) — enquadramento relacional associado a Harry Stack Sullivan",
@@ -169,7 +169,7 @@ export const FAM_07_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Modelo amplo e menos padronizado para pesquisa; criticas metodológicas sobre falta de evidência RCT direta; potencial para variação clínica excessiva entre terapeutas.",
       "leituras_fundamentais": "Harry Stack Sullivan — obras sobre teoria interpessoal (coletâneas sobre interpersonal theory); textos históricos e comentários críticos que reúnem seus artigos clássicos."
     }
-  },,
+  },
   {
     "id": "psic-07-04",
     "name": "Terapia Baseada em Mentalização (MBT)",
@@ -223,7 +223,7 @@ export const FAM_07_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Requer treinamento específico e supervisão; evidência mais robusta para BPD do que para outras condições; implementação complexa em larga escala.",
       "leituras_fundamentais": "Obras e manuais que apresentam a teoria da mentalização, sua relação com apego e protocolos clínicos para MBT; textos de referência sobre aplicação em transtornos de personalidade."
     }
-  },,
+  },
   {
     "id": "psic-07-05",
     "name": "Teoria dos Sistemas Intersubjetivos (Intersubjective Systems / Intersubjective Relational framework)",
@@ -277,7 +277,7 @@ export const FAM_07_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Dificuldade de padronização para pesquisa controlada; risco de subjetivismo e variabilidade clínica; necessidade de metodologias mistas e estudos que conectem processos intersubjetivos a desfechos mensuráveis.",
       "leituras_fundamentais": "Obras de Robert D. Stolorow e George E. Atwood (textos que articulam a perspectiva intersubjetiva), contribuições de Donna Orange e outros autores do movimento relacional/intersubjetivo; coletâneas sobre psicanálise relacional."
     }
-  },,
+  },
   {
     "id": "psic-07-06",
     "name": "Psicodinâmica Cíclica (terapia cíclica psicodinâmica)",
@@ -338,7 +338,7 @@ export const FAM_07_APPROACHES: PsychologyApproach[] = [
         "psic-08-05"
       ]
     }
-  },,
+  },
   {
     "id": "psic-07-07",
     "name": "Terapia de Casais Baseada em Apego (EFT de Casais)",
@@ -392,7 +392,7 @@ export const FAM_07_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Requer treinamento intensivo; menos indicada quando há violência ativa ou incapacidade de segurança; manutenção de ganhos a longo prazo depende de fatores externos e empenho do casal.",
       "leituras_fundamentais": "Manuais e textos sobre terapia emocionalmente focada para casais e sobre aplicação de conceitos de apego à terapia conjugal."
     }
-  },,
+  },
   {
     "id": "psic-07-08",
     "name": "Método Gottman de Terapia de Casais (Gottman Method Couples Therapy)",
@@ -448,7 +448,7 @@ export const FAM_07_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Críticas quanto à predominância de estudos realizados pelo próprio grupo desenvolvedor, necessidade de mais pesquisas independentes e de longo prazo, e limites quando há violência doméstica grave, problemas psicopatológicos severos ou questões estruturais não abordadas por intervenções de curto prazo.",
       "leituras_fundamentais": "Obras de John M. Gottman e Julie Schwartz Gottman — publicações que apresentam teoria, avaliação e prática clínica (incluem manuais e livros de divulgação profissional e científica, como The Marriage Clinic e textos sobre princípios e intervenções do método)."
     }
-  },,
+  },
   {
     "id": "psic-07-09",
     "name": "Terapia Familiar Focada nas Emoções",
@@ -502,5 +502,5 @@ export const FAM_07_APPROACHES: PsychologyApproach[] = [
       "criticas_limitacoes": "Implementação complexa em sistemas com resistência, aliança familiar conflituosa ou violência; protocolos menos padronizados que terapias individuais, o que dificulta replicação estrita em pesquisa.",
       "leituras_fundamentais": "Obras que combinam emoção, apego e prática sistêmica em contexto familiar; manuais que expõem fases e técnicas para intervenção em famílias."
     }
-  },,
+  },
 ];
