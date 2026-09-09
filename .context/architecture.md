@@ -199,8 +199,8 @@ O cecistudy é **dois produtos em uma base de código**:
 
 ### OTA self-hosted (web bundle)
 Atualizações **over-the-air** do bundle web sem novo `.ipa`/`.apk`:
-- **Publicação:** o pipeline único `.github/workflows/release.yml` (tag `v*` ou
-  `workflow_dispatch`) → `npm ci` → lint → test → build → zip do `dist/` → SHA-256 →
+- **Publicação:** o pipeline único `.github/workflows/release.yml` (push na main,
+  tag `v*` ou `workflow_dispatch`) → `npm ci` → lint → test → build → zip do `dist/` → SHA-256 →
   `version.json` + `bundles/` (mantém as últimas 5) → **GitHub Pages** (Source: "GitHub Actions").
   A versão semver do OTA é a **versão do release** (ex.: tag `v1.2.3` → OTA `1.2.3`) — todo
   release vira também uma atualização over-the-air. Script do manifest:
@@ -231,7 +231,7 @@ npm run cap:assets     → regenera ícones/splash a partir de assets/*.svg
 - Notificação Android usa `ic_stat_cecistudy.png` (drawable).
 
 ### Builds (CI)
-`.github/workflows/release.yml` (mobile) + `.github/workflows/release-desktop.yml` (desktop) — pipelines independentes de release (tag `v*` ou dispatch manual):
+`.github/workflows/release.yml` (mobile) + `.github/workflows/release-desktop.yml` (desktop) — pipelines independentes de release (push na main, tag `v*` ou dispatch manual):
 - **prepare:** lint + testes + build web → zip do bundle OTA (sha256) + `dist/`.
 - **Android:** ubuntu + JDK 21 + Android SDK → `assembleRelease` assinado (keystore via
   secrets `ANDROID_KEYSTORE*`) ou `assembleDebug` sem keystore → APK no release.

@@ -2,7 +2,8 @@ name: release mobile (apk + ipa + ota)
 
 # Pipeline único de CD do cecistudy ♡
 #
-# Em um tag v* (ex.: `v1.2.3`) ou via dispatch manual, ele:
+# Roda automaticamente em todo push na main, além de tag v* (ex.: `v1.2.3`)
+# ou via dispatch manual. Em cada execução, ele:
 #   1. valida o código (lint + testes) e builda o bundle web;
 #   2. builda o APK Android (release assinado quando há keystore, senão debug);
 #   3. builda o IPA iOS (release assinado quando há certificado; senão unsigned de
@@ -15,8 +16,9 @@ name: release mobile (apk + ipa + ota)
 #      todo release vira também uma atualização over-the-air do app.
 #
 # Versão:
-#   - tag push  v1.2.3  → versão "1.2.3"
-#   - dispatch manual   → versão digitada, ou "1.0.<nº de commits>" se vazia
+#   - push na main        → "1.0.<nº de commits>" (todo push vira release + OTA)
+#   - tag push  v1.2.3    → versão "1.2.3"
+#   - dispatch manual     → versão digitada, ou "1.0.<nº de commits>" se vazia
 #
 # Secrets de assinatura (opcionais — sem eles o build cai para debug/simulador):
 #   ANDROID_KEYSTORE                base64 do .jks/.keystore
@@ -31,6 +33,7 @@ name: release mobile (apk + ipa + ota)
 
 on:
   push:
+    branches: [main]
     tags: ['v*']
   workflow_dispatch:
     inputs:

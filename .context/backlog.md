@@ -327,8 +327,8 @@ e não persistidos. Unificar o modelo evita divergência.
 - **UI:** modal `ui/OtaUpdateModal.tsx` ("atualização pronta ♡") + card "atualização do
   app" no Perfil (versão atual, progresso de download, "verificar atualização",
   "aplicar agora") — só nativo.
-- **Publicação:** o pipeline único `.github/workflows/release.yml` (tag `v*` ou
-  `workflow_dispatch`) → `npm ci` → lint → test → build → zip do `dist/` → SHA-256 →
+- **Publicação:** o pipeline único `.github/workflows/release.yml` (push na main,
+  tag `v*` ou `workflow_dispatch`) → `npm ci` → lint → test → build → zip do `dist/` → SHA-256 →
   `version.json` + `bundles/` (mantém as últimas 5 em `available`) → GitHub Pages.
   A versão semver do OTA é a **versão do release** (ex.: tag `v1.2.3` → OTA `1.2.3`).
   Script do manifest: `.github/scripts/ota-manifest.mjs`.
