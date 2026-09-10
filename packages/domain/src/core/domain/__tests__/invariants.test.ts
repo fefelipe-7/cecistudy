@@ -88,4 +88,25 @@ describe('core/domain — capabilities matrix', () => {
     expect(m.canEdit).toBe(false);
     expect(m.canView).toBe(true);
   });
+  it('acadêmicas legadas são desktop-only (D7) e com CRUD completo', () => {
+    const legacy = [
+      'course',
+      'task',
+      'exam',
+      'classNote',
+      'flashcard',
+      'reading',
+      'studySession',
+      'material',
+      'internshipLog',
+      'tcc',
+      'sticker',
+      'quizSession',
+    ] as const;
+    for (const entity of legacy) {
+      const d = capabilityFor(entity, 'desktop')!;
+      expect(d && d.canView && d.canCreate && d.canEdit && d.canDelete).toBe(true);
+      expect(capabilityFor(entity, 'mobile')).toBeUndefined();
+    }
+  });
 });

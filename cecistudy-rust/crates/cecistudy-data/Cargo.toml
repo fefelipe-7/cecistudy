@@ -1,0 +1,15 @@
+[package]
+name = "cecistudy-data"
+description = "SQLite de dados da usuária (rusqlite single-writer) + aplicação do DDL canônico."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+cecistudy-common = { path = "../cecistudy-common" }
+thiserror.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+rusqlite = { version = "0.32", features = ["bundled"] }
+regex = "1"

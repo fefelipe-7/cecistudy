@@ -1,0 +1,9 @@
+# cecistudy-rust — formato Rust (alinhado ao código crates/*)
+
+max_width = 100
+tab_spaces = 2
+newline_style = "Unix"
+use_small_heuristics = "Max"
+edition = "2024"
+
+# Nenhuma macro de crate externa com regras especiais no momento.

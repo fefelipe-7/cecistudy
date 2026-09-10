@@ -9,7 +9,21 @@ export type CapabilityEntity =
   | 'project'
   | 'output'
   | 'contentBase'
-  | 'publication';
+  | 'publication'
+  // ---- entidades acadêmicas legadas (D7: integração desktop, CRUD completo).
+  // Mobile NÃO recebe rows aqui — o comportamento móvel atual fica intacto.
+  | 'course'
+  | 'task'
+  | 'exam'
+  | 'classNote'
+  | 'flashcard'
+  | 'reading'
+  | 'studySession'
+  | 'material'
+  | 'internshipLog'
+  | 'tcc'
+  | 'sticker'
+  | 'quizSession';
 
 export type Projection = 'compact' | 'standard' | 'rich';
 
@@ -47,6 +61,19 @@ export const DEFAULT_CAPABILITIES: PlatformCapability[] = [
   { entity: 'contentBase', platform: 'mobile', canView: true, canCreate: true, canEdit: true, canDelete: false, projection: 'compact' },
   { entity: 'publication', platform: 'desktop', canView: true, canCreate: true, canEdit: true, canDelete: true, projection: 'standard' },
   { entity: 'publication', platform: 'mobile', canView: true, canCreate: false, canEdit: false, canDelete: false, projection: 'compact' },
+  // ---- acadêmicas legadas: desktop-only (CRUD completo via domínio Rust; D7).
+  { entity: 'course', platform: 'desktop', canView: true, canCreate: true, canEdit: true, canDelete: true, projection: 'rich' },
+  { entity: 'task', platform: 'desktop', canView: true, canCreate: true, canEdit: true, canDelete: true, projection: 'standard' },
+  { entity: 'exam', platform: 'desktop', canView: true, canCreate: true, canEdit: true, canDelete: true, projection: 'standard' },
+  { entity: 'classNote', platform: 'desktop', canView: true, canCreate: true, canEdit: true, canDelete: true, projection: 'rich' },
+  { entity: 'flashcard', platform: 'desktop', canView: true, canCreate: true, canEdit: true, canDelete: true, projection: 'standard' },
+  { entity: 'reading', platform: 'desktop', canView: true, canCreate: true, canEdit: true, canDelete: true, projection: 'standard' },
+  { entity: 'studySession', platform: 'desktop', canView: true, canCreate: true, canEdit: true, canDelete: true, projection: 'standard' },
+  { entity: 'material', platform: 'desktop', canView: true, canCreate: true, canEdit: true, canDelete: true, projection: 'standard' },
+  { entity: 'internshipLog', platform: 'desktop', canView: true, canCreate: true, canEdit: true, canDelete: true, projection: 'rich' },
+  { entity: 'tcc', platform: 'desktop', canView: true, canCreate: true, canEdit: true, canDelete: true, projection: 'rich' },
+  { entity: 'sticker', platform: 'desktop', canView: true, canCreate: true, canEdit: true, canDelete: true, projection: 'compact' },
+  { entity: 'quizSession', platform: 'desktop', canView: true, canCreate: true, canEdit: true, canDelete: true, projection: 'standard' },
 ];
 
 export function capabilityFor(

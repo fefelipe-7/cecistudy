@@ -25,3 +25,10 @@ ota-site/
 desktop/keyring/*.key
 desktop/src-tauri/target/
 assets/mascote_expressoes_svgs/
+
+# Núcleo Rust (desktop) — artefatos de build
+cecistudy-rust/target/
+
+# Python (skills/scripts)
+**/__pycache__/
+*.pyc

@@ -1,0 +1,30 @@
+[workspace]
+resolver = "2"
+# Novos crates são adicionados a `members` quando criados (mantém o build
+# reprodutível e o manifesto honesto com o que existe em crates/).
+members = [
+  "crates/cecistudy-common",
+  "crates/cecistudy-domain",
+  "crates/cecistudy-data",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+rust-version = "1.98"
+
+[workspace.dependencies]
+thiserror = "2"
+serde = { version = "1", features = ["derive", "rc"] }
+serde_json = "1"
+ryu = "1"
+unicode-normalization = "0.1"
+uuid = { version = "1", features = ["v4", "serde"] }
+
+[profile.release]
+lto = "thin"
+strip = true
+
+[profile.test]
+opt-level = 1

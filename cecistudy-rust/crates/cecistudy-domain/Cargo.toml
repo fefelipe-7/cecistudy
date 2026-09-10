@@ -1,0 +1,15 @@
+[package]
+name = "cecistudy-domain"
+description = "Entidades de domínio + matriz de capacidades (porta de packages/domain)."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+cecistudy-common = { path = "../cecistudy-common" }
+thiserror.workspace = true
+serde.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true
