@@ -86,6 +86,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "cecistudy-content"
+version = "0.1.0"
+dependencies = [
+ "cecistudy-common",
+ "rusqlite",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "cecistudy-data"
 version = "0.1.0"
 dependencies = [
