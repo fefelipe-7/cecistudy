@@ -117,3 +117,13 @@ pub fn load_collection(conn: &Connection, key: &str) -> Result<Option<Value>, Er
     },
   }
 }
+
+/// Lê todas as coleções presentes no banco (chamada única de hidratação).
+/// Espelho de `loadAllCollections`: todas as chaves aparecem, `None` quando
+/// a coleção nunca foi gravada (o chamador decide o default — seeds/empty).
+pub fn load_all_collections(conn: &Connection) -> Result<Vec<(String, Option<Value>)>, Error> {
+  crate::repositories::USER_COLLECTION_KEYS
+    .iter()
+    .map(|key| Ok(((*key).to_owned(), load_collection(conn, key)?)))
+    .collect()
+}

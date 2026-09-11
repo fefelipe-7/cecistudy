@@ -10,7 +10,10 @@ use std::fs;
 use std::path::Path;
 
 use cecistudy_common::canonicalize;
-use cecistudy_data::{UserDb, load_collection, save_collection};
+use cecistudy_data::{
+  USER_COLLECTION_KEYS, UserDb, is_user_collection_key, load_all_collections, load_collection,
+  save_collection,
+};
 use serde_json::Value;
 
 const GOLDEN: &str = "../../contracts/golden/collections";
@@ -81,6 +84,104 @@ fn reading_progress_roundtrip() {
 #[test]
 fn streak_data_roundtrip() {
   roundtrip_case("streakData");
+}
+
+#[test]
+fn courses_roundtrip() {
+  roundtrip_case("courses");
+}
+
+#[test]
+fn classes_roundtrip() {
+  roundtrip_case("classes");
+}
+
+#[test]
+fn tasks_roundtrip() {
+  roundtrip_case("tasks");
+}
+
+#[test]
+fn exams_roundtrip() {
+  roundtrip_case("exams");
+}
+
+#[test]
+fn concepts_roundtrip() {
+  roundtrip_case("concepts");
+}
+
+#[test]
+fn readings_roundtrip() {
+  roundtrip_case("readings");
+}
+
+#[test]
+fn internship_logs_roundtrip() {
+  roundtrip_case("internshipLogs");
+}
+
+#[test]
+fn tcc_roundtrip() {
+  roundtrip_case("tcc");
+}
+
+#[test]
+fn sessions_roundtrip() {
+  roundtrip_case("sessions");
+}
+
+#[test]
+fn loose_notes_roundtrip() {
+  roundtrip_case("looseNotes");
+}
+
+#[test]
+fn quiz_sessions_roundtrip() {
+  roundtrip_case("quizSessions");
+}
+
+/// `supervision` está na base (tabela `supervision_notebook`) mas não sai no
+/// payload/golden — roundtrip próprio (save → load == entidade gravada).
+#[test]
+fn supervision_roundtrip_proprio() {
+  let db = UserDb::in_memory().unwrap();
+  let conn = db.connection();
+  let value = serde_json::json!([
+    { "id": "sup-1", "date": "2026-09-10", "supervisor": "Maria", "notes": "ok", "verified": true }
+  ]);
+  save_collection(conn, "supervision", &value).unwrap();
+  assert_eq!(load_collection(conn, "supervision").unwrap(), Some(value));
+}
+
+#[test]
+fn load_all_cobre_as_22_colecoes() {
+  let db = UserDb::in_memory().unwrap();
+  let conn = db.connection();
+
+  // Banco vazio: todas as chaves presentes, singletons/prefs = None.
+  let all = load_all_collections(conn).unwrap();
+  let keys: Vec<&str> = all.iter().map(|(k, _)| k.as_str()).collect();
+  assert_eq!(keys.len(), 22, "precisamente as 22 chaves");
+  for k in USER_COLLECTION_KEYS {
+    assert!(keys.contains(k), "chave {k} faltando em load_all (obtidas: {keys:?})");
+    assert!(is_user_collection_key(k));
+  }
+
+  // Após gravar alguns sample, o valor surge em load_all.
+  let profile = serde_json::from_str::<Value>(golden("sample", "profile").trim()).unwrap();
+  save_collection(conn, "profile", &profile).unwrap();
+  let authors = serde_json::from_str::<Value>(golden("sample", "authors").trim()).unwrap();
+  save_collection(conn, "authors", &authors).unwrap();
+
+  let all = load_all_collections(conn).unwrap();
+  let map: std::collections::HashMap<&str, &Option<Value>> =
+    all.iter().map(|(k, v)| (k.as_str(), v)).collect();
+  assert!(map["profile"].is_some());
+  assert!(map["authors"].is_some());
+  // Coleção array não gravada → `Some([])` (default branch do load TS).
+  assert_eq!(map["courses"], &Some(serde_json::json!([])));
+  assert!(map["tcc"].is_none(), "singleton tcc nunca gravado → None");
 }
 
 #[test]

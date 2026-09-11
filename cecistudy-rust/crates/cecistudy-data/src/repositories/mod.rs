@@ -8,7 +8,7 @@
 pub mod read;
 pub mod write;
 
-pub use read::load_collection;
+pub use read::{load_all_collections, load_collection};
 pub use write::save_collection;
 
 use serde_json::Value;
@@ -64,9 +64,22 @@ pub(crate) fn num(value: &Value) -> Option<f64> {
   value.as_f64().filter(|n| n.is_finite())
 }
 
+/// Trunca número (Math.trunc); `0` para ausente.
+pub(crate) fn int(value: &Value) -> i64 {
+  num(value).map_or(0, |n| n.trunc() as i64)
+}
+
 /// Serializa compacto (o `data_json` guarda a entidade completa).
 pub(crate) fn json(value: &Value) -> String {
   serde_json::to_string(value).expect("serializar Value não falha")
+}
+
+/// IDs string de um campo de relação (`conceptIds`, `authorIds`, `materials`, …).
+pub(crate) fn ref_ids<'a>(entity: &'a Value, field: &str) -> Vec<&'a str> {
+  entity
+    .get(field)
+    .and_then(Value::as_array)
+    .map_or(Vec::new(), |a| a.iter().filter_map(Value::as_str).collect())
 }
 
 /// `id` da entidade (usado nas join-tables / chaves filhas).

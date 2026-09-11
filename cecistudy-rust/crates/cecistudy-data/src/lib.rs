@@ -26,7 +26,8 @@ pub use connection::{CatalogDb, UserDb};
 pub use migrations::{SCHEMA_VERSION, apply_step, migrate};
 pub use payload::{import_backup, validate_payload};
 pub use repositories::{
-  USER_COLLECTION_KEYS, is_user_collection_key, load_collection, save_collection,
+  USER_COLLECTION_KEYS, is_user_collection_key, load_all_collections, load_collection,
+  save_collection,
 };
 pub use schema::{
   EXPECTED_CATALOG_TABLES, EXPECTED_TABLES_COUNT, EXPECTED_USER_TABLES, apply_schema, verify_schema,
