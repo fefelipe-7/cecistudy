@@ -37,7 +37,7 @@ export const ReadingProgressEditor: React.FC<ReadingProgressEditorProps> = ({
   };
 
   const stepperBtn =
-    'w-11 h-11 rounded-2xl border border-ceci-border-default bg-surface-default text-ceci-primary font-bold flex items-center justify-center transition-all active:scale-90 tap-interactive cursor-pointer disabled:opacity-35 disabled:pointer-events-none';
+    'w-11 h-11 rounded-2xl border border-ceci-border-default bg-surface-default text-ceci-primary font-bold flex items-center justify-center transition active:scale-90 tap-interactive cursor-pointer disabled:opacity-35 disabled:pointer-events-none';
 
   return (
     <div className="space-y-4">
@@ -113,7 +113,7 @@ export const ReadingProgressEditor: React.FC<ReadingProgressEditorProps> = ({
         {totalPages !== undefined && (
           <div className="w-full bg-ceci-border-default h-2 rounded-full overflow-hidden">
             <div
-              className={cn('h-full rounded-full transition-all duration-300', (parsed ?? 0) > 0 ? 'bg-ceci-brand-strong' : '')}
+              className={cn('h-full rounded-full transition-colors duration-300', (parsed ?? 0) > 0 ? 'bg-ceci-brand-strong' : '')}
               style={{ width: `${Math.round(((parsed ?? 0) / totalPages) * 100)}%` }}
             />
           </div>

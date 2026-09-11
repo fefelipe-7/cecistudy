@@ -205,7 +205,7 @@ export const EstudosView: React.FC = () => {
           {readingInProgress?.totalPages ? (
             <div className="w-full h-2 bg-surface-muted border border-ceci-border-subtle rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-ceci-brand to-ceci-brand-strong rounded-full transition-all"
+                className="h-full bg-gradient-to-r from-ceci-brand to-ceci-brand-strong rounded-full transition-[width]"
                 style={{ width: `${readingPct}%` }}
               />
             </div>

@@ -1412,8 +1412,9 @@ export function useNavigationEngine(
     dueCardsCount,
   ]);
 
-  return {
-    activeTab,
+  return useMemo(
+    () => ({
+      activeTab,
     screenKey,
     slideKey,
     overlayKey,
@@ -1556,5 +1557,38 @@ export function useNavigationEngine(
     currentQuizResultTotalCount,
     currentQuizResultPool,
     headerConfig,
-  };
+    }),
+    [
+      activeTab, canGoBack, closeAllNoteScreens, closeAllQuizScreens, closeApproach,
+      closeComparison, closeCompose, closeComposeDetails, closeCourseDetail, closeDetailPrompt,
+      closeEditCourse, closeEditTcc, closeFamilies, closeFamily, closeInternshipDiary,
+      closeManageItem, closeNoteDetail, closeNoteTransform, closeNotesScreen, closeQuickAdd,
+      closeQuizCategory, closeQuizDetail, closeQuizLoading, closeQuizPlay, closeQuizResult,
+      closeSearch, closeStickersScreen, closeStreak, closeStudy, closeSyncScreen, closeTccScreen,
+      closeTemple, closeTempleSection, closeWizard, composeCourseId, currentQuizGroup,
+      currentQuizLoadingConfig, currentQuizPlayState, currentQuizResultAnswers,
+      currentQuizResultConfig, currentQuizResultCorrectCount, currentQuizResultPool,
+      currentQuizResultStartTime, currentQuizResultTotalCount, currentWizardType,
+      deleteManagedItem, detailNoteId, editCourseId, editManagedItem, ensureQuestionsLoaded,
+      focusedApproach, focusedApproachId, focusedComparisonSlug, focusedCourse, focusedCourseId,
+      focusedFamily, focusedFamilyId, focusedNote, focusedNoteId, focusedStudyScreen,
+      focusedTempleSection, handleNavigate, handleSystemBack, hasTabBase, headerConfig,
+      isBottomNavVisible, isComposeDetailsOpen, isComposeScreenOpen, isCreatingLooseNote,
+      isDetailPromptOpen, isEditCourseOpen, isEditTccOpen, isFamiliesScreenOpen,
+      isInternshipDiaryOpen, isNoteDetailOpen, isNoteTransformOpen, isNotesScreenOpen,
+      isQuickAddOpen, isQuizCategoryOpen, isQuizGroupDetailOpen, isQuizLoadingOpen,
+      isQuizPlayOpen, isQuizResultOpen, isSearchOpen, isStickersScreenOpen, isStreakScreenOpen,
+      isSyncScreenOpen, isTccScreenOpen, isTempleScreenOpen, isWizardOpen, managedItem,
+      navDirection, navigationStack, newQuizFromResult, openApproach, openComparison, openCompose,
+      openComposeDetails, openCourseDetail, openDetailPrompt, openEditCourse, openEditTcc,
+      openFamilies, openFamily, openInternshipDiary, openManageItem, openNoteDetail,
+      openNoteTransform, openNotesScreen, openQuickAdd, openQuizCategory, openQuizGroupDetail,
+      openQuizLoading, openQuizPlay, openQuizResult, openSearch, openStickersScreen, openStreak,
+      openStudy, openSyncScreen, openTaskExamWizard, openTccScreen, openTemple, openTempleSection,
+      openWizard, overlayKey, screenKey, setActiveTab, setFocusedCourseId, setIsCreatingLooseNote,
+      setStack, setSubTabBiblioteca, setSubTabFaculdade, setTargetId, slideKey,
+      subTabBiblioteca, subTabFaculdade, syncHash, targetId, updateQuizPlayState,
+      wizardCourseId, wizardEdit, wizardNoteId,
+    ]
+  );
 }

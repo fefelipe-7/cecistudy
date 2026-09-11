@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Exam, Task } from '../types';
 import type { Workspace } from '../core/domain';
 import { DEFAULT_WORKSPACE_ID } from '../data/schema';
 import type { DataClientValue, ReminderSettings } from './DataClientProvider';
-import { useDataActions, type DataActions } from './dataActions';
+import { useDataActions, type DataActions, type DataActionGroups } from './dataActions';
 import { useWorkspaceActions, type WorkspaceActions } from './workspaceActions';
 import { computeStreak, getWeekProgress, isStudyDay, toDateKey } from '../lib/streak';
 import type { StreakStats, WeekDayCell } from '../lib/streak';
@@ -40,7 +40,7 @@ export interface SharedAppValue {
   gcalSyncTask: (task: Task, op: 'upsert' | 'delete') => Promise<void>;
   toggleSaveBook: (bookId: string) => void;
   updateReadingProgress: (bookId: string, readPages: number) => void;
-  dataActions: DataActions;
+  dataActions: DataActions & DataActionGroups;
   workspaceActions: WorkspaceActions;
 }
 
@@ -118,10 +118,17 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
   );
   const currentWorkspace = workspaces.find((w) => w.id === currentWorkspaceId) ?? workspaces[0];
 
-  // Streak — derivados (a data é calculada a cada render; o app entende "qual dia é" por aqui)
-  const todayKey = toDateKey(new Date());
-  const streakStats = computeStreak(streakData.activeDays, todayKey);
-  const currentWeekProgress = getWeekProgress(streakData.activeDays, todayKey);
+  // Streak — derivados (a data é calculada uma vez por sessão; o app entende
+  // "qual dia é" por aqui). Memoizados: só recomputam quando os dias ativos mudam.
+  const todayKey = useMemo(() => toDateKey(new Date()), []);
+  const streakStats = useMemo(
+    () => computeStreak(streakData.activeDays, todayKey),
+    [streakData.activeDays, todayKey]
+  );
+  const currentWeekProgress = useMemo(
+    () => getWeekProgress(streakData.activeDays, todayKey),
+    [streakData.activeDays, todayKey]
+  );
 
   // Stickers: reconcilia o catálogo com o progresso persistido (uma vez, ao iniciar)
   useEffect(() => {
@@ -229,18 +236,21 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
     );
   }, []);
 
-  const updateReminder = (settings: ReminderSettings) => {
-    setReminderSettings(settings);
-    if (settings.enabled) {
-      void scheduleDailyReminder(settings.time).then((scheduled) => {
-        if (scheduled) hapticSuccess();
-      });
-      void syncClassReminders(courses);
-    } else {
-      void cancelDailyReminder();
-      void cancelClassReminders();
-    }
-  };
+  const updateReminder = useCallback(
+    (settings: ReminderSettings) => {
+      setReminderSettings(settings);
+      if (settings.enabled) {
+        void scheduleDailyReminder(settings.time).then((scheduled) => {
+          if (scheduled) hapticSuccess();
+        });
+        void syncClassReminders(courses);
+      } else {
+        void cancelDailyReminder();
+        void cancelClassReminders();
+      }
+    },
+    [courses, setReminderSettings]
+  );
 
   // mantém os lembretes de aula em dia quando o horário das matérias muda
   useEffect(() => {
@@ -248,63 +258,72 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courses]);
 
-  const setGcalEnabled = async (on: boolean) => {
-    if (on) {
-      const ok = await connectGcal();
-      setGcalEnabledState(ok);
-      if (!ok) {
-        showToast('configura o client id do google para usar a agenda ♡');
-      }
-      return ok;
-    }
-    disconnectGcal();
-    setGcalEnabledState(false);
-    return false;
-  };
-
-  const gcalSyncExam = async (exam: Exam, op: 'upsert' | 'delete') => {
-    if (!gcalEnabled) return;
-    try {
-      if (op === 'upsert') {
-        const gid = await syncExam(exam, courses);
-        if (gid) setGcalMap((m) => ({ ...m, [`exam-${exam.id}`]: gid }));
-      } else {
-        const gid = gcalMap[`exam-${exam.id}`];
-        if (gid) {
-          await unsyncEvent(gid);
-          setGcalMap((m) => {
-            const next = { ...m };
-            delete next[`exam-${exam.id}`];
-            return next;
-          });
+  const setGcalEnabled = useCallback(
+    async (on: boolean) => {
+      if (on) {
+        const ok = await connectGcal();
+        setGcalEnabledState(ok);
+        if (!ok) {
+          showToast('configura o client id do google para usar a agenda ♡');
         }
+        return ok;
       }
-    } catch {
-      /* falha silenciosa: a agenda é um espelho opcional */
-    }
-  };
+      disconnectGcal();
+      setGcalEnabledState(false);
+      return false;
+    },
+    [setGcalEnabledState, showToast]
+  );
 
-  const gcalSyncTask = async (task: Task, op: 'upsert' | 'delete') => {
-    if (!gcalEnabled) return;
-    try {
-      if (op === 'upsert') {
-        const gid = await syncTask(task, courses);
-        if (gid) setGcalMap((m) => ({ ...m, [`task-${task.id}`]: gid }));
-      } else {
-        const gid = gcalMap[`task-${task.id}`];
-        if (gid) {
-          await unsyncEvent(gid);
-          setGcalMap((m) => {
-            const next = { ...m };
-            delete next[`task-${task.id}`];
-            return next;
-          });
+  const gcalSyncExam = useCallback(
+    async (exam: Exam, op: 'upsert' | 'delete') => {
+      if (!gcalEnabled) return;
+      try {
+        if (op === 'upsert') {
+          const gid = await syncExam(exam, courses);
+          if (gid) setGcalMap((m) => ({ ...m, [`exam-${exam.id}`]: gid }));
+        } else {
+          const gid = gcalMap[`exam-${exam.id}`];
+          if (gid) {
+            await unsyncEvent(gid);
+            setGcalMap((m) => {
+              const next = { ...m };
+              delete next[`exam-${exam.id}`];
+              return next;
+            });
+          }
         }
+      } catch {
+        /* falha silenciosa: a agenda é um espelho opcional */
       }
-    } catch {
-      /* falha silenciosa */
-    }
-  };
+    },
+    [gcalEnabled, courses, gcalMap, setGcalMap]
+  );
+
+  const gcalSyncTask = useCallback(
+    async (task: Task, op: 'upsert' | 'delete') => {
+      if (!gcalEnabled) return;
+      try {
+        if (op === 'upsert') {
+          const gid = await syncTask(task, courses);
+          if (gid) setGcalMap((m) => ({ ...m, [`task-${task.id}`]: gid }));
+        } else {
+          const gid = gcalMap[`task-${task.id}`];
+          if (gid) {
+            await unsyncEvent(gid);
+            setGcalMap((m) => {
+              const next = { ...m };
+              delete next[`task-${task.id}`];
+              return next;
+            });
+          }
+        }
+      } catch {
+        /* falha silenciosa */
+      }
+    },
+    [gcalEnabled, courses, gcalMap, setGcalMap]
+  );
 
   const toggleSaveBook = useCallback((bookId: string) => {
     setSavedBookIds((prev) =>
@@ -363,21 +382,40 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
     showToast,
   });
 
-  return {
-    data,
-    currentWorkspaceId,
-    currentWorkspace,
-    streakStats,
-    currentWeekProgress,
-    toggleBookmarkCourse,
-    registerActivity,
-    updateReminder,
-    setGcalEnabled,
-    gcalSyncExam,
-    gcalSyncTask,
-    toggleSaveBook,
-    updateReadingProgress,
-    dataActions,
-    workspaceActions,
-  };
+  return useMemo(
+    () => ({
+      data,
+      currentWorkspaceId,
+      currentWorkspace,
+      streakStats,
+      currentWeekProgress,
+      toggleBookmarkCourse,
+      registerActivity,
+      updateReminder,
+      setGcalEnabled,
+      gcalSyncExam,
+      gcalSyncTask,
+      toggleSaveBook,
+      updateReadingProgress,
+      dataActions,
+      workspaceActions,
+    }),
+    [
+      data,
+      currentWorkspaceId,
+      currentWorkspace,
+      streakStats,
+      currentWeekProgress,
+      toggleBookmarkCourse,
+      registerActivity,
+      updateReminder,
+      setGcalEnabled,
+      gcalSyncExam,
+      gcalSyncTask,
+      toggleSaveBook,
+      updateReadingProgress,
+      dataActions,
+      workspaceActions,
+    ]
+  );
 }

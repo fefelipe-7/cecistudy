@@ -33,7 +33,7 @@ export const BookmarkToggle: React.FC<BookmarkToggleProps> = ({
       aria-label={ariaLabel ?? (active && activeLabel ? activeLabel : label)}
       title={active && activeLabel ? activeLabel : label}
       className={cn(
-        'border flex items-center justify-center shrink-0 tap-interactive cursor-pointer transition-all active:scale-95',
+        'border flex items-center justify-center shrink-0 tap-interactive cursor-pointer transition active:scale-95',
         dims,
         active
           ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'

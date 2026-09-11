@@ -104,7 +104,7 @@ function FilterSection({
                   key={opt}
                   onClick={() => onToggle(opt)}
                   className={cn(
-                    'w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-xs transition-all',
+                    'w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-xs transition',
                     isSel
                       ? 'bg-ceci-brand-strong text-white'
                       : 'bg-surface-muted text-ceci-primary hover:bg-surface-rose'
@@ -313,7 +313,7 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
             <button
               onClick={handleStart}
               disabled={pool.length === 0}
-              className={`w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold cursor-pointer transition-all active:scale-[0.98] ${
+              className={`w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold cursor-pointer transition active:scale-[0.98] ${
                 pool.length === 0
                   ? 'bg-ceci-muted text-ceci-secondary cursor-not-allowed'
                   : 'bg-ceci-brand hover:bg-ceci-brand-strong text-white shadow-2xs'

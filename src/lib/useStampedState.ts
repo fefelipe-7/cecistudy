@@ -40,6 +40,14 @@ export function useStampedState<T>(
     if (valueRef.current !== value) valueRef.current = value;
   }, [value]);
 
+  // Espelho do índice de sync: `set` lê o índice mais recente no momento da
+  // chamada (mesmo raciocínio do `valueRef`), tornando o callback estável.
+  // Sem isso, QUALQUER gravação em qualquer coleção trocaria a identidade de
+  // todos os `set`, inviabilizando memoizações por domínio (PERF-001 A.3).
+  // Atribuição idempotente durante o render (espelho que não afeta a saída).
+  const syncIndexRef = useRef(syncIndex);
+  if (syncIndexRef.current !== syncIndex) syncIndexRef.current = syncIndex;
+
   const set = useCallback(
     (action: SetStateAction<T>) => {
       const prev = valueRef.current;
@@ -49,10 +57,10 @@ export function useStampedState<T>(
       valueRef.current = next;
       rawSet(next);
       const now = Date.now();
-      const { index } = applyStampChange(syncIndex, key, prev, next, now);
-      if (index !== syncIndex) setSyncIndex(index);
+      const { index } = applyStampChange(syncIndexRef.current, key, prev, next, now);
+      if (index !== syncIndexRef.current) setSyncIndex(index);
     },
-    [rawSet, syncIndex, key, setSyncIndex]
+    [rawSet, key, setSyncIndex]
   );
 
   const setRaw = useCallback(

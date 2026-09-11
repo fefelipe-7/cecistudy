@@ -4,6 +4,7 @@ import type {
   ReminderSettings,
 } from './DataClientProvider';
 import type { SharedAppValue } from './sharedAppValue';
+import type { DataActions, DataActionGroups } from './dataActions';
 import type { NavigationValue } from './navigationEngine';
 import type {
   NavTab,
@@ -419,6 +420,22 @@ export interface AppContextValue {
 }
 
 /**
+ * Remove os grupos por domínio de `DataActions & DataActionGroups`, devolvendo
+ * apenas os handlers achatados (`DataActions`). Os grupos (PERF-001 A.3) são
+ * expostos pelas cascas em contextos próprios — aqui só interessam os handlers.
+ */
+export function pickDomainActions(
+  actions: DataActions & DataActionGroups,
+): DataActions {
+  const { courses: _courses, study: _study, knowledge: _knowledge, app: _app, ...handlers } = actions;
+  void _courses;
+  void _study;
+  void _knowledge;
+  void _app;
+  return handlers;
+}
+
+/**
  * Monta o `AppContextValue` flat a partir das três camadas (spec 07 §6.6):
  * dados (`DataClientValue`), valor compartilhado (workspace/streak/handlers
  * comuns) e navegação por app. Usado pelos providers de cada plataforma
@@ -442,7 +459,10 @@ export function buildAppContextValue(
     toggleSaveBook: shared.toggleSaveBook,
     updateReadingProgress: shared.updateReadingProgress,
     // ações de domínio / workspace
-    ...shared.dataActions,
+    // ⚠️ os grupos por domínio (PERF-001 A.3) ficam nos sub-contextos
+    // (CoursesActionsContext etc. montados pelas cascas) — não vazam para o
+    // value flat, onde os nomes colidiriam com os arrays de dados (courses…).
+    ...pickDomainActions(shared.dataActions),
     ...shared.workspaceActions,
     // navegação (pilha por app)
     ...nav,

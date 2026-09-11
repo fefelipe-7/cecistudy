@@ -19,12 +19,12 @@ import { DesktopAppShell } from '@/shells/DesktopAppShell';
 import { DesktopOverlays } from '@/overlays/DesktopOverlays';
 import { DesktopAppProvider } from '../DesktopAppProvider';
 import { initPlatformFlags } from '@/lib/platform';
-import { prefetchViewChunks } from '@/lib/prefetchViews';
+import { preloadScreenChunks } from '@/shells/SharedScreenLayers';
 import '@/index.css';
 import '@/desktop/styles/desktop-tokens.css';
 
 initPlatformFlags();
-prefetchViewChunks();
+preloadScreenChunks();
 
 /**
  * Entrypoint próprio do cliente desktop (Fase 6).

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
    UserProfile,
    SupervisionNotebook,
@@ -71,6 +71,156 @@ import { getUserDb, clearUserData } from '../lib/db/userDb';
 export interface ReminderSettings {
   enabled: boolean;
   time: string; // "HH:MM"
+}
+
+/**
+ * Fatias coarse do cliente de dados (PERF-001 A.3): vistas por domínio que
+ * permitem aos consumidores re-renderizar SÓ quando o domínio relevante muda.
+ * Cada fatia é memoizada com as referências de valor/setter (estáveis desde o
+ * `useStampedState`/`useSqliteState`); um novel objeto só nasce quando aquele
+ * domínio muda. O valor monolítico (`DataClientValue`) continua igual para o
+ * restante do app — estas fatias são um acréscimo para os consumidores pesados.
+ */
+export interface DataClientCoursesSlice {
+  courses: Course[];
+  setCourses: React.Dispatch<React.SetStateAction<Course[]>>;
+  setCoursesRaw: React.Dispatch<React.SetStateAction<Course[]>>;
+  classes: ClassNote[];
+  setClasses: React.Dispatch<React.SetStateAction<ClassNote[]>>;
+  setClassesRaw: React.Dispatch<React.SetStateAction<ClassNote[]>>;
+  tasks: Task[];
+  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+  setTasksRaw: React.Dispatch<React.SetStateAction<Task[]>>;
+  exams: Exam[];
+  setExams: React.Dispatch<React.SetStateAction<Exam[]>>;
+  setExamsRaw: React.Dispatch<React.SetStateAction<Exam[]>>;
+  materials: MaterialItem[];
+  setMaterials: React.Dispatch<React.SetStateAction<MaterialItem[]>>;
+  setMaterialsRaw: React.Dispatch<React.SetStateAction<MaterialItem[]>>;
+  bookmarkedCourseIds: string[];
+  setBookmarkedCourseIds: React.Dispatch<React.SetStateAction<string[]>>;
+  setBookmarkedCourseIdsRaw: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+export interface DataClientStudySlice {
+  sessions: StudySession[];
+  setSessions: React.Dispatch<React.SetStateAction<StudySession[]>>;
+  setSessionsRaw: React.Dispatch<React.SetStateAction<StudySession[]>>;
+  readings: ReadingItem[];
+  setReadings: React.Dispatch<React.SetStateAction<ReadingItem[]>>;
+  setReadingsRaw: React.Dispatch<React.SetStateAction<ReadingItem[]>>;
+  flashcards: Flashcard[];
+  setFlashcards: React.Dispatch<React.SetStateAction<Flashcard[]>>;
+  setFlashcardsRaw: React.Dispatch<React.SetStateAction<Flashcard[]>>;
+  streakData: StreakData;
+  setStreakData: React.Dispatch<React.SetStateAction<StreakData>>;
+  setStreakDataRaw: React.Dispatch<React.SetStateAction<StreakData>>;
+  quizSessions: QuizSession[];
+  setQuizSessions: React.Dispatch<React.SetStateAction<QuizSession[]>>;
+  setQuizSessionsRaw: React.Dispatch<React.SetStateAction<QuizSession[]>>;
+  techniques: Technique[];
+  setTechniques: React.Dispatch<React.SetStateAction<Technique[]>>;
+  setTechniquesRaw: React.Dispatch<React.SetStateAction<Technique[]>>;
+  questions: StudyQuestion[];
+  setQuestions: React.Dispatch<React.SetStateAction<StudyQuestion[]>>;
+}
+
+export interface DataClientKnowledgeSlice {
+  authors: PsychologyAuthor[];
+  setAuthors: React.Dispatch<React.SetStateAction<PsychologyAuthor[]>>;
+  setAuthorsRaw: React.Dispatch<React.SetStateAction<PsychologyAuthor[]>>;
+  concepts: PsychologyConcept[];
+  setConcepts: React.Dispatch<React.SetStateAction<PsychologyConcept[]>>;
+  setConceptsRaw: React.Dispatch<React.SetStateAction<PsychologyConcept[]>>;
+  approaches: PsychologyApproach[];
+  setApproaches: React.Dispatch<React.SetStateAction<PsychologyApproach[]>>;
+  savedBookIds: string[];
+  setSavedBookIds: React.Dispatch<React.SetStateAction<string[]>>;
+  setSavedBookIdsRaw: React.Dispatch<React.SetStateAction<string[]>>;
+  readingProgress: Record<string, number>;
+  setReadingProgress: React.Dispatch<React.SetStateAction<Record<string, number>>>;
+  setReadingProgressRaw: React.Dispatch<React.SetStateAction<Record<string, number>>>;
+  looseNotes: LooseNote[];
+  setLooseNotes: React.Dispatch<React.SetStateAction<LooseNote[]>>;
+  setLooseNotesRaw: React.Dispatch<React.SetStateAction<LooseNote[]>>;
+}
+
+export interface DataClientAppSlice {
+  profile: UserProfile;
+  setProfile: React.Dispatch<React.SetStateAction<UserProfile>>;
+  setProfileRaw: React.Dispatch<React.SetStateAction<UserProfile>>;
+  internshipLogs: InternshipLog[];
+  setInternshipLogs: React.Dispatch<React.SetStateAction<InternshipLog[]>>;
+  setInternshipLogsRaw: React.Dispatch<React.SetStateAction<InternshipLog[]>>;
+  tcc: TccData;
+  setTcc: React.Dispatch<React.SetStateAction<TccData>>;
+  setTccRaw: React.Dispatch<React.SetStateAction<TccData>>;
+  stickers: Sticker[];
+  setStickers: React.Dispatch<React.SetStateAction<Sticker[]>>;
+  setStickersRaw: React.Dispatch<React.SetStateAction<Sticker[]>>;
+  reminderSettings: ReminderSettings;
+  setReminderSettings: React.Dispatch<React.SetStateAction<ReminderSettings>>;
+  gcalEnabled: boolean;
+  setGcalEnabledState: React.Dispatch<React.SetStateAction<boolean>>;
+  gcalMap: Record<string, string>;
+  setGcalMap: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  onboarding: import('../types').OnboardingState;
+  setOnboarding: React.Dispatch<React.SetStateAction<import('../types').OnboardingState>>;
+  workspaces: Workspace[];
+  setWorkspaces: React.Dispatch<React.SetStateAction<Workspace[]>>;
+  relations: Relation[];
+  setRelations: React.Dispatch<React.SetStateAction<Relation[]>>;
+  suggestions: Suggestion[];
+  setSuggestions: React.Dispatch<React.SetStateAction<Suggestion[]>>;
+  associationPolicies: AssociationPolicy[];
+  setAssociationPolicies: React.Dispatch<React.SetStateAction<AssociationPolicy[]>>;
+  projects: Project[];
+  setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
+  outputs: Output[];
+  setOutputs: React.Dispatch<React.SetStateAction<Output[]>>;
+  toast: string | null;
+  showToast: (message: string) => void;
+  deviceId: string;
+  syncCheckpoint: SyncCheckpoint;
+  setSyncCheckpoint: React.Dispatch<React.SetStateAction<SyncCheckpoint>>;
+  githubSyncConfig: { owner: string; repo: string; token: string } | null;
+  setGithubSyncConfig: React.Dispatch<
+    React.SetStateAction<{ owner: string; repo: string; token: string } | null>
+  >;
+  syncStatus: 'idle' | 'checking' | 'syncing' | 'synced' | 'upToDate' | 'error' | 'preview';
+  setSyncStatus: React.Dispatch<
+    React.SetStateAction<'idle' | 'checking' | 'syncing' | 'synced' | 'upToDate' | 'error' | 'preview'>
+  >;
+  syncErrorMessage: string | null;
+  setSyncErrorMessage: React.Dispatch<React.SetStateAction<string | null>>;
+  pendingSyncPreview: {
+    preview: SyncPreview;
+    mergedJson: string;
+    remoteManifest: SyncManifest;
+    remoteSha: string;
+  } | null;
+  setPendingSyncPreview: React.Dispatch<
+    React.SetStateAction<{
+      preview: SyncPreview;
+      mergedJson: string;
+      remoteManifest: SyncManifest;
+      remoteSha: string;
+    } | null>
+  >;
+  applyDatabase: (db: ReturnType<typeof emptyDatabase>) => void;
+  resetApp: () => void;
+  completeOnboarding: (profileUpdate: Partial<UserProfile>) => void;
+  exportData: () => Promise<void>;
+  importData: (json: string) => void;
+  getSyncPayloadJson: () => Promise<string>;
+  applySyncedDatabase: (db: ReturnType<typeof emptyDatabase>) => void;
+  configureGithubSync: (cfg: { owner: string; repo: string; token: string }) => void;
+  clearGithubSync: () => void;
+  syncNow: () => Promise<void>;
+  syncInBackground: () => Promise<void>;
+  applySyncPreview: () => void;
+  discardSyncPreview: () => void;
+  dataClient: DataClient;
 }
 
 /**
@@ -216,6 +366,10 @@ questions: StudyQuestion[];
     applySyncPreview: () => void;
     discardSyncPreview: () => void;
     dataClient: DataClient;
+    domainCourses: DataClientCoursesSlice;
+    domainStudy: DataClientStudySlice;
+    domainKnowledge: DataClientKnowledgeSlice;
+    domainApp: DataClientAppSlice;
 }
 
 export function useDataClient(): DataClientValue {
@@ -637,6 +791,196 @@ export function useDataClient(): DataClientValue {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // ---------- Fatias coarse por domínio (PERF-001 A.3) ----------
+  // Cada fatia é memoizada com as próprias referências de valor/setter (estáveis
+  // desde `useStampedState`/`useSqliteState`): um novo objeto só nasce quando
+  // aquele domínio muda, permitindo re-render seletivo nos consumidores pesados.
+  const domainCourses = useMemo(
+    () => ({
+      courses,
+      setCourses,
+      setCoursesRaw,
+      classes,
+      setClasses,
+      setClassesRaw,
+      tasks,
+      setTasks,
+      setTasksRaw,
+      exams,
+      setExams,
+      setExamsRaw,
+      materials,
+      setMaterials,
+      setMaterialsRaw,
+      bookmarkedCourseIds,
+      setBookmarkedCourseIds,
+      setBookmarkedCourseIdsRaw,
+    }),
+    [
+      courses, setCourses, setCoursesRaw,
+      classes, setClasses, setClassesRaw,
+      tasks, setTasks, setTasksRaw,
+      exams, setExams, setExamsRaw,
+      materials, setMaterials, setMaterialsRaw,
+      bookmarkedCourseIds, setBookmarkedCourseIds, setBookmarkedCourseIdsRaw,
+    ]
+  );
+
+  const domainStudy = useMemo(
+    () => ({
+      sessions,
+      setSessions,
+      setSessionsRaw,
+      readings,
+      setReadings,
+      setReadingsRaw,
+      flashcards,
+      setFlashcards,
+      setFlashcardsRaw,
+      streakData,
+      setStreakData,
+      setStreakDataRaw,
+      quizSessions,
+      setQuizSessions,
+      setQuizSessionsRaw,
+      techniques,
+      setTechniques,
+      setTechniquesRaw,
+      questions,
+      setQuestions,
+    }),
+    [
+      sessions, setSessions, setSessionsRaw,
+      readings, setReadings, setReadingsRaw,
+      flashcards, setFlashcards, setFlashcardsRaw,
+      streakData, setStreakData, setStreakDataRaw,
+      quizSessions, setQuizSessions, setQuizSessionsRaw,
+      techniques, setTechniques, setTechniquesRaw,
+      questions, setQuestions,
+    ]
+  );
+
+  const domainKnowledge = useMemo(
+    () => ({
+      authors,
+      setAuthors,
+      setAuthorsRaw,
+      concepts,
+      setConcepts,
+      setConceptsRaw,
+      approaches,
+      setApproaches,
+      savedBookIds,
+      setSavedBookIds,
+      setSavedBookIdsRaw,
+      readingProgress,
+      setReadingProgress,
+      setReadingProgressRaw,
+      looseNotes,
+      setLooseNotes,
+      setLooseNotesRaw,
+    }),
+    [
+      authors, setAuthors, setAuthorsRaw,
+      concepts, setConcepts, setConceptsRaw,
+      approaches, setApproaches,
+      savedBookIds, setSavedBookIds, setSavedBookIdsRaw,
+      readingProgress, setReadingProgress, setReadingProgressRaw,
+      looseNotes, setLooseNotes, setLooseNotesRaw,
+    ]
+  );
+
+  const domainApp = useMemo(
+    () => ({
+      profile,
+      setProfile,
+      setProfileRaw,
+      internshipLogs,
+      setInternshipLogs,
+      setInternshipLogsRaw,
+      tcc,
+      setTcc,
+      setTccRaw,
+      stickers,
+      setStickers,
+      setStickersRaw,
+      reminderSettings,
+      setReminderSettings,
+      gcalEnabled,
+      setGcalEnabledState,
+      gcalMap,
+      setGcalMap,
+      onboarding,
+      setOnboarding,
+      workspaces,
+      setWorkspaces,
+      relations,
+      setRelations,
+      suggestions,
+      setSuggestions,
+      associationPolicies,
+      setAssociationPolicies,
+      projects,
+      setProjects,
+      outputs,
+      setOutputs,
+      toast,
+      showToast,
+      deviceId,
+      syncCheckpoint,
+      setSyncCheckpoint,
+      githubSyncConfig,
+      setGithubSyncConfig,
+      syncStatus,
+      setSyncStatus,
+      syncErrorMessage,
+      setSyncErrorMessage,
+      pendingSyncPreview,
+      setPendingSyncPreview,
+      applyDatabase,
+      resetApp,
+      completeOnboarding,
+      exportData,
+      importData,
+      getSyncPayloadJson,
+      applySyncedDatabase,
+      configureGithubSync,
+      clearGithubSync,
+      syncNow,
+      syncInBackground,
+      applySyncPreview,
+      discardSyncPreview,
+      dataClient,
+    }),
+    [
+      profile, setProfile, setProfileRaw,
+      internshipLogs, setInternshipLogs, setInternshipLogsRaw,
+      tcc, setTcc, setTccRaw,
+      stickers, setStickers, setStickersRaw,
+      reminderSettings, setReminderSettings,
+      gcalEnabled, setGcalEnabledState, gcalMap, setGcalMap,
+      onboarding, setOnboarding,
+      workspaces, setWorkspaces,
+      relations, setRelations,
+      suggestions, setSuggestions,
+      associationPolicies, setAssociationPolicies,
+      projects, setProjects,
+      outputs, setOutputs,
+      toast, showToast,
+      deviceId,
+      syncCheckpoint, setSyncCheckpoint,
+      githubSyncConfig, setGithubSyncConfig,
+      syncStatus, setSyncStatus,
+      syncErrorMessage, setSyncErrorMessage,
+      pendingSyncPreview, setPendingSyncPreview,
+      applyDatabase, resetApp, completeOnboarding,
+      exportData, importData, getSyncPayloadJson,
+      applySyncedDatabase, configureGithubSync, clearGithubSync,
+      syncNow, syncInBackground, applySyncPreview, discardSyncPreview,
+      dataClient,
+    ]
+  );
+
   return {
     syncIndex,
     setSyncIndex,
@@ -754,10 +1098,19 @@ questions,
       applySyncPreview,
       discardSyncPreview,
       dataClient,
+      domainCourses,
+      domainStudy,
+      domainKnowledge,
+      domainApp,
   };
 }
 
 export const DataClientContext = createContext<DataClientValue | undefined>(undefined);
+
+export const DataClientCoursesContext = createContext<DataClientCoursesSlice | undefined>(undefined);
+export const DataClientStudyContext = createContext<DataClientStudySlice | undefined>(undefined);
+export const DataClientKnowledgeContext = createContext<DataClientKnowledgeSlice | undefined>(undefined);
+export const DataClientAppContext = createContext<DataClientAppSlice | undefined>(undefined);
 
 /** Lê o contexto canônico de dados (dono: DataClientProvider). Lança se usado fora do provider. */
 export function useDataClientContext(): DataClientValue {
@@ -768,7 +1121,55 @@ export function useDataClientContext(): DataClientValue {
   return ctx;
 }
 
+/** Fatia coarse "faculdade" (cursos/aulas/tarefas/provas/materiais/favoritos). */
+export function useDataClientCourses(): DataClientCoursesSlice {
+  const ctx = useContext(DataClientCoursesContext);
+  if (!ctx) {
+    throw new Error('useDataClientCourses must be used within a DataClientProvider');
+  }
+  return ctx;
+}
+
+/** Fatia coarse "estudos" (sessões/leituras/flashcards/streak/quiz/técnicas). */
+export function useDataClientStudy(): DataClientStudySlice {
+  const ctx = useContext(DataClientStudyContext);
+  if (!ctx) {
+    throw new Error('useDataClientStudy must be used within a DataClientProvider');
+  }
+  return ctx;
+}
+
+/** Fatia coarse "biblioteca/conhecimento" (autores/conceitos/abordagens/livros/notas). */
+export function useDataClientKnowledge(): DataClientKnowledgeSlice {
+  const ctx = useContext(DataClientKnowledgeContext);
+  if (!ctx) {
+    throw new Error('useDataClientKnowledge must be used within a DataClientProvider');
+  }
+  return ctx;
+}
+
+/** Fatia coarse "app/perfil/sync" (perfil, stickers, TCC, agenda, workspaces, backup). */
+export function useDataClientApp(): DataClientAppSlice {
+  const ctx = useContext(DataClientAppContext);
+  if (!ctx) {
+    throw new Error('useDataClientApp must be used within a DataClientProvider');
+  }
+  return ctx;
+}
+
 export function DataClientProvider({ children }: { children: React.ReactNode }) {
   const data = useDataClient();
-  return <DataClientContext.Provider value={data}>{children}</DataClientContext.Provider>;
+  return (
+    <DataClientContext.Provider value={data}>
+      <DataClientCoursesContext.Provider value={data.domainCourses}>
+        <DataClientStudyContext.Provider value={data.domainStudy}>
+          <DataClientKnowledgeContext.Provider value={data.domainKnowledge}>
+            <DataClientAppContext.Provider value={data.domainApp}>
+              {children}
+            </DataClientAppContext.Provider>
+          </DataClientKnowledgeContext.Provider>
+        </DataClientStudyContext.Provider>
+      </DataClientCoursesContext.Provider>
+    </DataClientContext.Provider>
+  );
 }

@@ -84,7 +84,7 @@ export const CourseCreateMenu: React.FC<CourseCreateMenuProps> = ({
                     key={action.type}
                     role="menuitem"
                     onClick={() => pick(action.type)}
-                    className="flex items-center gap-2.5 w-full pl-2 pr-3 py-2 rounded-xl text-left hover:bg-surface-rose active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+                    className="flex items-center gap-2.5 w-full pl-2 pr-3 py-2 rounded-xl text-left hover:bg-surface-rose active:scale-95 transition cursor-pointer whitespace-nowrap"
                   >
                     <span className="w-7 h-7 rounded-full bg-surface-muted border border-ceci-border-default flex items-center justify-center shrink-0 text-ceci-brand-strong">
                       <Icon className="w-3.5 h-3.5" />

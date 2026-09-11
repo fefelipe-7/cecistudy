@@ -207,12 +207,6 @@
 }
 
 /* ===== Utilities ===== */
-.touch-target {
-  @media (hover:hover) and (pointer: fine) {
-    min-width: 44px;
-    min-height: 44px;
-  }
-}
 
 /* Cozy Academic Card Styling aligned with Design Tokens */
 .journal-card {
@@ -404,8 +398,8 @@
    sem filtro SVG — barato, robusto e idêntico entre navegadores). */
 .liquid-glass-nav {
   background-color: color-mix(in srgb, var(--color-surface-rose) 72%, transparent);
-  backdrop-filter: blur(24px) saturate(140%);
-  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
   border-color: color-mix(in srgb, var(--color-surface-default) 60%, transparent);
   transition:
     background-color 0.3s ease,
@@ -432,8 +426,8 @@
    ceci-brand-strong no lugar do canvas + highlights internos de vidro. */
 .liquid-glass-fab {
   background-color: color-mix(in srgb, var(--color-ceci-brand-strong) 85%, transparent);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
   border-color: color-mix(in srgb, white 45%, transparent);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.4),

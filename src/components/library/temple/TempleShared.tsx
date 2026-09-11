@@ -114,7 +114,7 @@ export const TempleChip: React.FC<{ label: string; active: boolean; onClick: () 
   <button
     onClick={onClick}
     aria-pressed={active}
-    className={`shrink-0 px-3.5 py-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap transition-all cursor-pointer ${
+    className={`shrink-0 px-3.5 py-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap transition cursor-pointer ${
       active ? ACCENTS.brand.chipActive : ACCENTS.brand.chipIdle
     }`}
   >

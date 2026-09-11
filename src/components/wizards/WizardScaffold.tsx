@@ -123,7 +123,7 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
         <div className="max-w-md sm:max-w-xl lg:max-w-2xl mx-auto flex items-center justify-between gap-2">
           <button
             onClick={requestClose}
-            className="w-9 h-9 rounded-2xl bg-surface-default border border-ceci-border-default hover:bg-surface-rose flex items-center justify-center text-ceci-primary shadow-2xs transition-all active:scale-95 cursor-pointer"
+            className="w-9 h-9 rounded-2xl bg-surface-default border border-ceci-border-default hover:bg-surface-rose flex items-center justify-center text-ceci-primary shadow-2xs transition active:scale-95 cursor-pointer"
             title="voltar"
             aria-label={isLast ? 'voltar' : 'cancelar'}
           >

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import type {
   UserProfile,
   Course,
@@ -105,7 +105,39 @@ export interface DataActions {
   handleUpdateMaterial: (material: MaterialItem) => void;
 }
 
-export function useDataActions(deps: DataActionsDeps): DataActions {
+/**
+ * Grupos por domínio (PERF-001 A.3): subconjuntos de `DataActions` memoizados
+ * por domínio — identidade estável enquanto aquele domínio não muda. As cascas
+ * fornecem estes grupos em contextos próprios p/ re-render seletivo das views.
+ */
+export interface DataActionGroups {
+  courses: Pick<
+    DataActions,
+    | 'handleToggleTask' | 'handleToggleExam' | 'handleAddTask' | 'handleUpdateTask'
+    | 'handleAddClassNote' | 'handleUpdateClassNote'
+    | 'handleAddExam' | 'handleUpdateExam' | 'handleAddCourse' | 'handleUpdateCourse'
+    | 'handleAddMaterial' | 'handleUpdateMaterial'
+  >;
+  study: Pick<
+    DataActions,
+    | 'handleAddReading' | 'handleUpdateReadingPages' | 'handleUpdateReadingChapters'
+    | 'handleUpdateReading' | 'handleAddFlashcard' | 'handleReviewFlashcard'
+    | 'handleUpdateFlashcard' | 'handleAddSession' | 'handleUpdateSession'
+    | 'handleSaveQuizSession' | 'handleAddTechnique'
+  >;
+  knowledge: Pick<
+    DataActions,
+    | 'addLooseNote' | 'deleteLooseNote' | 'updateLooseNote'
+    | 'handleAddConcept' | 'handleUpdateConcept' | 'handleAddAuthor' | 'handleUpdateAuthor'
+    | 'adoptAcervoConcept' | 'adoptAcervoAuthor'
+  >;
+  app: Pick<
+    DataActions,
+    'handleAddInternshipLog' | 'handleUpdateInternshipLog' | 'handleUpdateProfile' | 'handleUpdateTcc'
+  >;
+}
+
+export function useDataActions(deps: DataActionsDeps): DataActions & DataActionGroups {
   const {
     tasks,
     readings,
@@ -137,7 +169,7 @@ export function useDataActions(deps: DataActionsDeps): DataActions {
     gcalSyncExam,
   } = deps;
 
-  const handleToggleTask = (taskId: string) => {
+  const handleToggleTask = useCallback((taskId: string) => {
     hapticTap();
     const nextTasks = tasks.map((t) => (t.id === taskId ? { ...t, completed: !t.completed } : t));
     setTasks(nextTasks);
@@ -148,45 +180,45 @@ export function useDataActions(deps: DataActionsDeps): DataActions {
       celebrate('tasks-done');
       showToast(`plano do dia completo! parabéns${profile.name.trim() ? `, ${profile.name.trim()}` : ''} 🎉`);
     }
-  };
+  }, [tasks, setTasks, registerActivity, showToast, profile]);
 
-  const handleToggleExam = (examId: string) => {
+  const handleToggleExam = useCallback((examId: string) => {
     hapticTap();
     setExams((prev) =>
       prev.map((e) => (e.id === examId ? { ...e, completed: !e.completed } : e))
     );
-  };
+  }, [setExams]);
 
-  const handleAddTask = (task: Task) => {
+  const handleAddTask = useCallback((task: Task) => {
     const withWs = { ...task, workspaceId: currentWorkspaceId };
     setTasks((prev) => [withWs, ...prev]);
     void gcalSyncTask(withWs, 'upsert');
-  };
+  }, [currentWorkspaceId, setTasks, gcalSyncTask]);
 
-  const handleUpdateTask = (taskId: string, patch: Partial<Task>) => {
+  const handleUpdateTask = useCallback((taskId: string, patch: Partial<Task>) => {
     setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, ...patch } : t)));
     if (patch.title || patch.dueDate || patch.disciplineId) {
       const updated = tasks.find((t) => t.id === taskId);
       if (updated) void gcalSyncTask({ ...updated, ...patch }, 'upsert');
     }
-  };
+  }, [tasks, setTasks, gcalSyncTask]);
 
-  const handleAddClassNote = (note: ClassNote) => {
+  const handleAddClassNote = useCallback((note: ClassNote) => {
     setClasses((prev) => [{ ...note, workspaceId: currentWorkspaceId }, ...prev]);
     registerActivity();
-  };
+  }, [currentWorkspaceId, setClasses, registerActivity]);
 
-  const handleUpdateClassNote = (note: ClassNote) => {
+  const handleUpdateClassNote = useCallback((note: ClassNote) => {
     setClasses((prev) => prev.map((c) => (c.id === note.id ? note : c)));
-  };
+  }, [setClasses]);
 
-  const addLooseNote = (note: LooseNote) => {
+  const addLooseNote = useCallback((note: LooseNote) => {
     setLooseNotes((prev) => [{ ...note, workspaceId: currentWorkspaceId }, ...prev]);
-  };
+  }, [currentWorkspaceId, setLooseNotes]);
 
-  const deleteLooseNote = (id: string) => {
+  const deleteLooseNote = useCallback((id: string) => {
     setLooseNotes((prev) => prev.filter((n) => n.id !== id));
-  };
+  }, [setLooseNotes]);
 
   const updateLooseNote = useCallback((id: string, patch: Partial<LooseNote>) => {
     setLooseNotes((prev) =>
@@ -204,11 +236,11 @@ export function useDataActions(deps: DataActionsDeps): DataActions {
     setMaterials((prev) => [{ ...material, workspaceId: currentWorkspaceId }, ...prev]);
   }, [setMaterials, currentWorkspaceId]);
 
-  const handleAddReading = (reading: ReadingItem) => {
+  const handleAddReading = useCallback((reading: ReadingItem) => {
     setReadings((prev) => [{ ...reading, workspaceId: currentWorkspaceId }, ...prev]);
-  };
+  }, [currentWorkspaceId, setReadings]);
 
-  const handleUpdateReadingPages = (readingId: string, newPages: number) => {
+  const handleUpdateReadingPages = useCallback((readingId: string, newPages: number) => {
     const prev = readings.find((r) => r.id === readingId);
     const nextReadings = readings.map((r) => {
       if (r.id === readingId) {
@@ -227,13 +259,13 @@ export function useDataActions(deps: DataActionsDeps): DataActions {
       celebrate('reading-done');
       showToast('leitura concluída! que orgulho de você ♡');
     }
-  };
+  }, [readings, setReadings, registerActivity, showToast]);
 
-  const handleAddFlashcard = (card: Flashcard) => {
+  const handleAddFlashcard = useCallback((card: Flashcard) => {
     setFlashcards((prev) => [{ ...card, workspaceId: currentWorkspaceId }, ...prev]);
-  };
+  }, [currentWorkspaceId, setFlashcards]);
 
-  const handleReviewFlashcard = (id: string, correct: boolean) => {
+  const handleReviewFlashcard = useCallback((id: string, correct: boolean) => {
     hapticTap();
     const today = new Date().toISOString().split('T')[0];
     registerActivity();
@@ -252,25 +284,25 @@ export function useDataActions(deps: DataActionsDeps): DataActions {
         };
       })
     );
-  };
+  }, [setFlashcards, registerActivity]);
 
-  const handleAddInternshipLog = (log: InternshipLog) => {
+  const handleAddInternshipLog = useCallback((log: InternshipLog) => {
     setInternshipLogs((prev) => [{ ...log, workspaceId: currentWorkspaceId }, ...prev]);
-  };
+  }, [currentWorkspaceId, setInternshipLogs]);
 
-  const handleAddExam = (exam: Exam) => {
+  const handleAddExam = useCallback((exam: Exam) => {
     const withWs = { ...exam, workspaceId: currentWorkspaceId };
     setExams((prev) => [withWs, ...prev]);
     void gcalSyncExam(withWs, 'upsert');
-  };
+  }, [currentWorkspaceId, setExams, gcalSyncExam]);
 
   const handleAddCourse = useCallback((course: Course) => {
     setCourses((prev) => [{ ...course, workspaceId: currentWorkspaceId }, ...prev]);
   }, [setCourses, currentWorkspaceId]);
 
-  const handleAddAuthor = (author: PsychologyAuthor) => {
+  const handleAddAuthor = useCallback((author: PsychologyAuthor) => {
     setAuthors((prev) => [{ ...author, workspaceId: currentWorkspaceId }, ...prev]);
-  };
+  }, [currentWorkspaceId, setAuthors]);
 
   // Acervo do templo → banco pessoal ("copiar ao selecionar"): idempotente por
   // nome normalizado — se já existe, devolve o id existente em vez de duplicar.
@@ -283,10 +315,10 @@ export function useDataActions(deps: DataActionsDeps): DataActions {
     return id;
   }, [concepts, setConcepts, currentWorkspaceId]);
 
-  const handleAddSession = (session: StudySession) => {
+  const handleAddSession = useCallback((session: StudySession) => {
     setSessions((prev) => [{ ...session, workspaceId: currentWorkspaceId }, ...prev]);
     registerActivity();
-  };
+  }, [currentWorkspaceId, setSessions, registerActivity]);
 
   const adoptAcervoAuthor = useCallback((draft: AuthorDraft): string => {
     const name = normalizeText(draft.name);
@@ -297,100 +329,171 @@ export function useDataActions(deps: DataActionsDeps): DataActions {
     return id;
   }, [authors, setAuthors]);
 
-  const handleSaveQuizSession = (session: QuizSession) => {
+  const handleSaveQuizSession = useCallback((session: QuizSession) => {
     setQuizSessions((prev) => [{ ...session, workspaceId: currentWorkspaceId }, ...prev]);
     registerActivity();
-  };
+  }, [currentWorkspaceId, setQuizSessions, registerActivity]);
 
-  const handleAddTechnique = (technique: Technique) => {
+  const handleAddTechnique = useCallback((technique: Technique) => {
     setTechniques((prev) => [{ ...technique, workspaceId: currentWorkspaceId }, ...prev]);
-  };
+  }, [currentWorkspaceId, setTechniques]);
 
-  const handleUpdateReadingChapters = (readingId: string, chapters: ReadingItem['chapters']) => {
+  const handleUpdateReadingChapters = useCallback((readingId: string, chapters: ReadingItem['chapters']) => {
     setReadings((prev) => prev.map((r) => (r.id === readingId ? { ...r, chapters } : r)));
-  };
+  }, [setReadings]);
 
-  const handleUpdateProfile = (updated: Partial<UserProfile>) => {
+  const handleUpdateProfile = useCallback((updated: Partial<UserProfile>) => {
     setProfile((prev) => ({ ...prev, ...updated }));
-  };
+  }, [setProfile]);
 
-  const handleUpdateTcc = (updated: TccData) => {
+  const handleUpdateTcc = useCallback((updated: TccData) => {
     setTcc(updated);
-  };
+  }, [setTcc]);
 
   const handleUpdateCourse = useCallback((updated: Course) => {
     setCourses((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
   }, [setCourses]);
 
-  const handleUpdateExam = (exam: Exam) => {
+  const handleUpdateExam = useCallback((exam: Exam) => {
     setExams((prev) => prev.map((e) => (e.id === exam.id ? exam : e)));
     void gcalSyncExam(exam, 'upsert');
-  };
+  }, [setExams, gcalSyncExam]);
 
-  const handleUpdateReading = (reading: ReadingItem) => {
+  const handleUpdateReading = useCallback((reading: ReadingItem) => {
     setReadings((prev) => prev.map((r) => (r.id === reading.id ? reading : r)));
-  };
+  }, [setReadings]);
 
-  const handleUpdateFlashcard = (card: Flashcard) => {
+  const handleUpdateFlashcard = useCallback((card: Flashcard) => {
     setFlashcards((prev) => prev.map((c) => (c.id === card.id ? card : c)));
-  };
+  }, [setFlashcards]);
 
-  const handleUpdateSession = (session: StudySession) => {
+  const handleUpdateSession = useCallback((session: StudySession) => {
     setSessions((prev) => prev.map((s) => (s.id === session.id ? session : s)));
-  };
+  }, [setSessions]);
 
-  const handleUpdateInternshipLog = (log: InternshipLog) => {
+  const handleUpdateInternshipLog = useCallback((log: InternshipLog) => {
     setInternshipLogs((prev) => prev.map((l) => (l.id === log.id ? log : l)));
-  };
+  }, [setInternshipLogs]);
 
-  const handleUpdateAuthor = (author: PsychologyAuthor) => {
+  const handleUpdateAuthor = useCallback((author: PsychologyAuthor) => {
     setAuthors((prev) => prev.map((a) => (a.id === author.id ? author : a)));
-  };
+  }, [setAuthors]);
 
-  const handleUpdateConcept = (concept: PsychologyConcept) => {
+  const handleUpdateConcept = useCallback((concept: PsychologyConcept) => {
     setConcepts((prev) => prev.map((c) => (c.id === concept.id ? concept : c)));
-  };
+  }, [setConcepts]);
 
-  const handleUpdateMaterial = (material: MaterialItem) => {
+  const handleUpdateMaterial = useCallback((material: MaterialItem) => {
     setMaterials((prev) => prev.map((m) => (m.id === material.id ? material : m)));
-  };
+  }, [setMaterials]);
+
+  // Grupos por domínio (PERF-001 A.3): cada grupo memoizado nas próprias
+  // dependências — a identidade só muda quando aquele domínio muda, permitindo
+  // re-render seletivo nos consumidores pesados. O objeto agregado mantém a
+  // mesma forma pública de sempre (`DataActions`).
+  const groupCourses = useMemo(
+    () => ({
+      handleToggleTask,
+      handleToggleExam,
+      handleAddTask,
+      handleUpdateTask,
+      handleAddClassNote,
+      handleUpdateClassNote,
+      handleAddExam,
+      handleUpdateExam,
+      handleAddCourse,
+      handleUpdateCourse,
+      handleAddMaterial,
+      handleUpdateMaterial,
+    }),
+    [
+      handleToggleTask,
+      handleToggleExam,
+      handleAddTask,
+      handleUpdateTask,
+      handleAddClassNote,
+      handleUpdateClassNote,
+      handleAddExam,
+      handleUpdateExam,
+      handleAddCourse,
+      handleUpdateCourse,
+      handleAddMaterial,
+      handleUpdateMaterial,
+    ]
+  );
+
+  const groupStudy = useMemo(
+    () => ({
+      handleAddReading,
+      handleUpdateReadingPages,
+      handleUpdateReadingChapters,
+      handleUpdateReading,
+      handleAddFlashcard,
+      handleReviewFlashcard,
+      handleUpdateFlashcard,
+      handleAddSession,
+      handleUpdateSession,
+      handleSaveQuizSession,
+      handleAddTechnique,
+    }),
+    [
+      handleAddReading,
+      handleUpdateReadingPages,
+      handleUpdateReadingChapters,
+      handleUpdateReading,
+      handleAddFlashcard,
+      handleReviewFlashcard,
+      handleUpdateFlashcard,
+      handleAddSession,
+      handleUpdateSession,
+      handleSaveQuizSession,
+      handleAddTechnique,
+    ]
+  );
+
+  const groupKnowledge = useMemo(
+    () => ({
+      addLooseNote,
+      deleteLooseNote,
+      updateLooseNote,
+      handleAddConcept,
+      handleUpdateConcept,
+      handleAddAuthor,
+      handleUpdateAuthor,
+      adoptAcervoConcept,
+      adoptAcervoAuthor,
+    }),
+    [
+      addLooseNote,
+      deleteLooseNote,
+      updateLooseNote,
+      handleAddConcept,
+      handleUpdateConcept,
+      handleAddAuthor,
+      handleUpdateAuthor,
+      adoptAcervoConcept,
+      adoptAcervoAuthor,
+    ]
+  );
+
+  const groupApp = useMemo(
+    () => ({
+      handleAddInternshipLog,
+      handleUpdateInternshipLog,
+      handleUpdateProfile,
+      handleUpdateTcc,
+    }),
+    [handleAddInternshipLog, handleUpdateInternshipLog, handleUpdateProfile, handleUpdateTcc]
+  );
 
   return {
-    handleToggleTask,
-    handleToggleExam,
-    handleAddTask,
-    handleUpdateTask,
-    handleAddClassNote,
-    handleUpdateClassNote,
-    addLooseNote,
-    deleteLooseNote,
-    updateLooseNote,
-    handleAddConcept,
-    handleAddMaterial,
-    handleAddReading,
-    handleUpdateReadingPages,
-    handleAddFlashcard,
-    handleReviewFlashcard,
-    handleAddInternshipLog,
-    handleAddExam,
-    handleAddCourse,
-    handleAddAuthor,
-    adoptAcervoConcept,
-    handleAddSession,
-    adoptAcervoAuthor,
-    handleSaveQuizSession,
-    handleAddTechnique,
-    handleUpdateReadingChapters,
-    handleUpdateProfile,
-    handleUpdateTcc,
-    handleUpdateCourse,
-    handleUpdateExam,
-    handleUpdateReading,
-    handleUpdateFlashcard,
-    handleUpdateSession,
-    handleUpdateInternshipLog,
-    handleUpdateAuthor,
-    handleUpdateConcept,
-    handleUpdateMaterial,
+    ...groupCourses,
+    ...groupStudy,
+    ...groupKnowledge,
+    ...groupApp,
+    courses: groupCourses,
+    study: groupStudy,
+    knowledge: groupKnowledge,
+    app: groupApp,
   };
 }

@@ -303,13 +303,13 @@ const db: ManagedDB = useMemo(
           <div className="flex gap-2.5">
             <button
               onClick={backToMenu}
-              className="flex-1 py-3.5 rounded-2xl border border-ceci-border-default bg-surface-default text-ceci-secondary text-sm font-semibold active:scale-[0.98] transition-all cursor-pointer"
+              className="flex-1 py-3.5 rounded-2xl border border-ceci-border-default bg-surface-default text-ceci-secondary text-sm font-semibold active:scale-[0.98] transition cursor-pointer"
             >
               não, deixa
             </button>
             <button
               onClick={() => deleteManagedItem(itemContext.kind, itemContext.id)}
-              className="flex-1 py-3.5 rounded-2xl bg-red-700 text-white text-sm font-semibold active:scale-[0.98] transition-all cursor-pointer"
+              className="flex-1 py-3.5 rounded-2xl bg-red-700 text-white text-sm font-semibold active:scale-[0.98] transition cursor-pointer"
             >
               sim, excluir ♡
             </button>
@@ -330,7 +330,7 @@ const db: ManagedDB = useMemo(
         onClick={() => runAction(action)}
         aria-label={action.label}
         className={cn(
-          'flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl border text-sm font-semibold active:scale-[0.98] transition-all cursor-pointer',
+          'flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl border text-sm font-semibold active:scale-[0.98] transition cursor-pointer',
           isRecommended
             ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
             : action.tone === 'danger'
@@ -402,7 +402,7 @@ const db: ManagedDB = useMemo(
           <div className="mt-4 pt-4 border-t border-ceci-border-subtle">
             <button
               onClick={() => setPhase('confirm-delete')}
-              className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-red-700 active:scale-[0.98] transition-all cursor-pointer hover:bg-surface-rose"
+              className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-red-700 active:scale-[0.98] transition cursor-pointer hover:bg-surface-rose"
             >
               <Trash2 className="w-4 h-4 shrink-0" />
               excluir {kindLabel}

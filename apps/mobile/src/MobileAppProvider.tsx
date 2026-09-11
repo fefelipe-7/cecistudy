@@ -2,6 +2,13 @@ import React from 'react';
 import { AppBaseContext, DataClientContext, MobileAppContext } from '@/context/appContexts';
 import { DataClientProvider, useDataClientContext } from '@/context/DataClientProvider';
 import { useSharedAppValue } from '@/context/sharedAppValue';
+import {
+  AppActionsContext,
+  CoursesActionsContext,
+  KnowledgeActionsContext,
+  NavValueContext,
+  StudyActionsContext,
+} from '@/context/shellNavContexts';
 import { buildAppContextValue, type AppContextValue } from '@/context/AppContext';
 import { useMobileNavigation } from './mobileNavigation';
 
@@ -30,7 +37,19 @@ function MobileShellInner({ children }: { children: React.ReactNode }) {
   return (
     <AppBaseContext.Provider value={value}>
       <DataClientContext.Provider value={value}>
-        <MobileAppContext.Provider value={value}>{children}</MobileAppContext.Provider>
+        <MobileAppContext.Provider value={value}>
+          <CoursesActionsContext.Provider value={shared.dataActions.courses}>
+            <StudyActionsContext.Provider value={shared.dataActions.study}>
+              <KnowledgeActionsContext.Provider value={shared.dataActions.knowledge}>
+                <AppActionsContext.Provider value={shared.dataActions.app}>
+                  <NavValueContext.Provider value={nav}>
+                    {children}
+                  </NavValueContext.Provider>
+                </AppActionsContext.Provider>
+              </KnowledgeActionsContext.Provider>
+            </StudyActionsContext.Provider>
+          </CoursesActionsContext.Provider>
+        </MobileAppContext.Provider>
       </DataClientContext.Provider>
     </AppBaseContext.Provider>
   );

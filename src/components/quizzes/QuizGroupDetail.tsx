@@ -133,7 +133,7 @@ export const QuizGroupDetail: React.FC<QuizGroupDetailProps> = ({
             onClick={handleStart}
             disabled={group.questionCount === 0}
             className={cn(
-              'w-full flex items-center justify-center gap-1.5 py-3.5 rounded-2xl text-sm font-semibold transition-all active:scale-[0.98] cursor-pointer',
+              'w-full flex items-center justify-center gap-1.5 py-3.5 rounded-2xl text-sm font-semibold transition active:scale-[0.98] cursor-pointer',
               group.questionCount > 0
                 ? 'bg-ceci-brand hover:bg-ceci-brand-strong text-white shadow-2xs'
                 : 'bg-ceci-muted text-ceci-secondary cursor-not-allowed'

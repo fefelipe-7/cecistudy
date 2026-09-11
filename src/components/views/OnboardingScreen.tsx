@@ -97,7 +97,7 @@ export const OnboardingScreen: React.FC = () => {
               <span
                 key={i}
                 className={cn(
-                  'h-1.5 rounded-full transition-all duration-300',
+                  'h-1.5 rounded-full transition-[width] duration-300',
                   step >= i ? 'bg-ceci-brand w-5' : 'bg-ceci-border-default w-1.5'
                 )}
               />

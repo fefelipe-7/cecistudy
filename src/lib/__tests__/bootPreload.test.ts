@@ -19,7 +19,7 @@ beforeEach(() => {
   resetBootPreloadForTests();
   localStorage.removeItem(PREFIXED_KEY);
   // Todos os passos viram promises instantâneas — nada de imports reais.
-  (['userDb', 'catalog', 'approaches', 'questions', 'books', 'views'] as const).forEach(
+  (['userDb', 'catalog', 'approaches', 'questions', 'views'] as const).forEach(
     (id) => setStepImplForTests(id, ok)
   );
 });
@@ -43,9 +43,9 @@ describe('isWithinWarmTtl', () => {
 });
 
 describe('planBootSteps', () => {
-  it('boot frio na web: abordagens, questões, livros e telas', () => {
+  it('boot frio na web: abordagens, questões e telas', () => {
     const ids = planBootSteps(false, false).map((s) => s.id);
-    expect(ids).toEqual(['approaches', 'questions', 'books', 'views']);
+    expect(ids).toEqual(['approaches', 'questions', 'views']);
   });
 
   it('boot morno pula os passos pesados', () => {
@@ -62,7 +62,6 @@ describe('planBootSteps', () => {
       'catalog',
       'approaches',
       'questions',
-      'books',
       'views',
     ]);
   });
@@ -73,9 +72,9 @@ describe('runBootPreload', () => {
     const events: BootProgress[] = [];
     await runBootPreload((p) => events.push(p));
 
-    expect(events[0]).toMatchObject({ done: 0, total: 4, fraction: 0 });
-    expect(events[events.length - 1]).toMatchObject({ done: 4, total: 4, fraction: 1 });
-    expect(events.map((e) => e.done)).toEqual([0, 1, 2, 3, 4]);
+    expect(events[0]).toMatchObject({ done: 0, total: 3, fraction: 0 });
+    expect(events[events.length - 1]).toMatchObject({ done: 3, total: 3, fraction: 1 });
+    expect(events.map((e) => e.done)).toEqual([0, 1, 2, 3]);
 
     const saved = Number(localStorage.getItem(PREFIXED_KEY));
     expect(Number.isFinite(saved) && saved > 0).toBe(true);
@@ -103,7 +102,7 @@ describe('runBootPreload', () => {
     const events: BootProgress[] = [];
     await expect(runBootPreload((p) => events.push(p))).resolves.toBeUndefined();
 
-    expect(events[events.length - 1]).toMatchObject({ done: 4, total: 4, fraction: 1 });
+    expect(events[events.length - 1]).toMatchObject({ done: 3, total: 3, fraction: 1 });
     warnSpy.mockRestore();
   });
 });

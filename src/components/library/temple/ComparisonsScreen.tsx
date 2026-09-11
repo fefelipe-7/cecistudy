@@ -60,7 +60,7 @@ const ComparisonCard: React.FC<{
 }> = ({ comparison, onOpen, featured = false }) => (
   <button
     onClick={onOpen}
-    className={`w-full text-left rounded-xl p-4 border shadow-2xs transition-all cursor-pointer group hover:-translate-y-0.5 hover:shadow-sm ${
+    className={`w-full text-left rounded-xl p-4 border shadow-2xs transition cursor-pointer group hover:-translate-y-0.5 hover:shadow-sm ${
       featured
         ? 'bg-surface-gold border-ceci-border-gold'
         : 'bg-surface-default border-ceci-border-default hover:border-ceci-border-brand'
@@ -73,7 +73,7 @@ const ComparisonCard: React.FC<{
         </TempleBadge>
         <span className="text-[11px] text-ceci-muted">fase {comparison.fase}</span>
       </div>
-      <ArrowRight className="w-4 h-4 text-ceci-tertiary group-hover:text-ceci-brand-strong group-hover:translate-x-0.5 transition-all shrink-0" />
+      <ArrowRight className="w-4 h-4 text-ceci-tertiary group-hover:text-ceci-brand-strong group-hover:translate-x-0.5 transition shrink-0" />
     </div>
     <h3 className="text-sm font-bold font-display text-ceci-primary mt-3 leading-snug group-hover:text-ceci-brand-strong transition-colors">
       {comparison.titulo}

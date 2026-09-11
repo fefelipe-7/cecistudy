@@ -2,6 +2,13 @@ import React, { useCallback } from 'react';
 import { AppBaseContext, DataClientContext, MobileAppContext, DesktopAppContext } from '@/context/appContexts';
 import { DataClientProvider, useDataClientContext } from '@/context/DataClientProvider';
 import { useSharedAppValue } from '@/context/sharedAppValue';
+import {
+  AppActionsContext,
+  CoursesActionsContext,
+  KnowledgeActionsContext,
+  NavValueContext,
+  StudyActionsContext,
+} from '@/context/shellNavContexts';
 import { buildAppContextValue, type AppContextValue } from '@/context/AppContext';
 import { DesktopUpdateSection } from '@/desktop/components/DesktopUpdateSection';
 import { useDesktopSession, DesktopSessionProvider } from './desktopSessionState';
@@ -48,7 +55,17 @@ function DesktopShellInner({ children }: { children: React.ReactNode }) {
     <AppBaseContext.Provider value={base}>
       <DataClientContext.Provider value={base}>
         <MobileAppContext.Provider value={base}>
-          <DesktopAppContext.Provider value={augmented}>{children}</DesktopAppContext.Provider>
+          <DesktopAppContext.Provider value={augmented}>
+            <CoursesActionsContext.Provider value={shared.dataActions.courses}>
+              <StudyActionsContext.Provider value={shared.dataActions.study}>
+                <KnowledgeActionsContext.Provider value={shared.dataActions.knowledge}>
+                  <AppActionsContext.Provider value={shared.dataActions.app}>
+                    <NavValueContext.Provider value={nav}>{children}</NavValueContext.Provider>
+                  </AppActionsContext.Provider>
+                </KnowledgeActionsContext.Provider>
+              </StudyActionsContext.Provider>
+            </CoursesActionsContext.Provider>
+          </DesktopAppContext.Provider>
         </MobileAppContext.Provider>
       </DataClientContext.Provider>
     </AppBaseContext.Provider>

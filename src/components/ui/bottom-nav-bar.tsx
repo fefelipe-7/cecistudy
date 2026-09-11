@@ -51,9 +51,9 @@ export function BottomNavBar({
               key={item.id || item.label}
               whileTap={{ scale: 0.94 }}
               className={cn(
-                "flex items-center gap-0 px-3 py-2 rounded-full transition-colors duration-200 relative h-10 min-w-[44px] min-h-[40px] max-h-[44px] cursor-pointer",
+                "flex items-center gap-0 px-3 py-2 rounded-full transition-colors duration-200 relative h-10 min-w-[44px] min-h-[44px] max-h-[44px] cursor-pointer",
                 isActive ? "text-ceci-brand-strong gap-2" : "bg-transparent text-ceci-tertiary hover:bg-white/40",
-                "focus:outline-none focus-visible:ring-0",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-ceci-brand focus-visible:ring-offset-2",
               )}
               onClick={() => handleSelect(idx)}
               aria-label={item.label}

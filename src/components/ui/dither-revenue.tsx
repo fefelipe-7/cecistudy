@@ -229,7 +229,7 @@ export const RevenueLineChart: React.FC<RevenueLineChartProps> = ({
                 key={v.label}
                 onClick={() => setVariantIndex(idx)}
                 className={cn(
-                  'px-2.5 py-1 rounded-full transition-all cursor-pointer',
+                  'px-2.5 py-1 rounded-full transition cursor-pointer',
                   variantIndex === idx
                     ? 'bg-ceci-primary text-white'
                     : theme === 'dark'

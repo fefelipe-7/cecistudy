@@ -99,7 +99,7 @@ export const ComposeNoteView: React.FC = () => {
         <div className="max-w-md sm:max-w-xl lg:max-w-2xl mx-auto flex items-center justify-between gap-2">
           <button
             onClick={closeCompose}
-            className="w-9 h-9 rounded-2xl bg-surface-default border border-ceci-border-default hover:bg-surface-rose flex items-center justify-center text-ceci-primary shadow-2xs transition-all active:scale-95 cursor-pointer"
+            className="w-9 h-9 rounded-2xl bg-surface-default border border-ceci-border-default hover:bg-surface-rose flex items-center justify-center text-ceci-primary shadow-2xs transition active:scale-95 cursor-pointer"
             title="voltar"
             aria-label="voltar"
           >
@@ -116,7 +116,7 @@ export const ComposeNoteView: React.FC = () => {
           <button
             onClick={handleSave}
             disabled={!canSave}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-[14px] text-xs font-bold transition-all active:scale-95 min-h-[44px] cursor-pointer ${
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-[14px] text-xs font-bold transition active:scale-95 min-h-[44px] cursor-pointer ${
               canSave
                 ? 'bg-ceci-brand-strong hover:bg-ceci-brand-hover text-white shadow-2xs'
                 : 'bg-surface-muted text-ceci-tertiary cursor-not-allowed'
@@ -133,7 +133,7 @@ export const ComposeNoteView: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsClassNote(!isClassNote)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold transition cursor-pointer ${
               isClassNote
                 ? 'bg-ceci-primary text-white shadow-2xs'
                 : 'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-surface-rose'

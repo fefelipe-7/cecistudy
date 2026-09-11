@@ -63,7 +63,7 @@ export const DateField: React.FC<{
   placeholder?: string;
 }> = ({ label, value, onChange, placeholder }) => {
   const chipBase =
-    'px-3 py-1.5 rounded-full border text-[11px] font-semibold tap-interactive cursor-pointer transition-all active:scale-95';
+    'px-3 py-1.5 rounded-full border text-[11px] font-semibold tap-interactive cursor-pointer transition active:scale-95';
   return (
     <div>
       {label && <FieldLabel>{label}</FieldLabel>}

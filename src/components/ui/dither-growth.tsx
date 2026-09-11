@@ -326,7 +326,7 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
                 key={r.label}
                 onClick={() => setRangeIndex(idx)}
                 className={cn(
-                  'px-3 py-1 rounded-full transition-all cursor-pointer',
+                  'px-3 py-1 rounded-full transition cursor-pointer',
                   rangeIndex === idx
                     ? 'bg-ceci-primary text-white shadow-xs'
                     : theme === 'dark'

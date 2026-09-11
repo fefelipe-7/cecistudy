@@ -47,7 +47,7 @@ export const ChoiceCardGrid = <T extends string>({
               onClick={() => onChange(o.value)}
               aria-pressed={sel}
               className={cn(
-                'border-2 rounded-[16px] text-left transition-all active:scale-[0.98] cursor-pointer',
+                'border-2 rounded-[16px] text-left transition active:scale-[0.98] cursor-pointer',
                 columns === 1 ? 'w-full px-4 py-3.5' : 'px-3.5 py-3.5',
                 sel
                   ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong shadow-2xs'

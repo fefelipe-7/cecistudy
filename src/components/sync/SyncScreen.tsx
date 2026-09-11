@@ -188,7 +188,7 @@ export const SyncScreen: React.FC = () => {
         <button
           onClick={phase === 'choose' ? closeSyncScreen : backToChoose}
           aria-label="voltar"
-          className="touch-target w-11 h-11 -ml-2 rounded-2xl flex items-center justify-center text-ceci-secondary hover:bg-surface-muted active:scale-95 transition-all cursor-pointer"
+          className="touch-target w-11 h-11 -ml-2 rounded-2xl flex items-center justify-center text-ceci-secondary hover:bg-surface-muted active:scale-95 transition cursor-pointer"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
@@ -337,7 +337,7 @@ export const SyncScreen: React.FC = () => {
 
             <button
               onClick={beginJoinWithTimeout}
-              className="w-full py-3 rounded-2xl text-sm font-semibold text-white bg-ceci-brand-strong hover:bg-ceci-primary cursor-pointer active:scale-95 transition-all"
+              className="w-full py-3 rounded-2xl text-sm font-semibold text-white bg-ceci-brand-strong hover:bg-ceci-primary cursor-pointer active:scale-95 transition"
             >
               conectar
             </button>
@@ -370,7 +370,7 @@ export const SyncScreen: React.FC = () => {
             )}
             <button
               disabled={phase === 'applying'}
-              className="w-full py-3 rounded-2xl text-sm font-semibold text-white bg-ceci-brand-strong hover:bg-ceci-primary cursor-pointer active:scale-95 transition-all disabled:opacity-60"
+              className="w-full py-3 rounded-2xl text-sm font-semibold text-white bg-ceci-brand-strong hover:bg-ceci-primary cursor-pointer active:scale-95 transition disabled:opacity-60"
             >
               {phase === 'applying' ? 'juntando…' : 'juntar os cantinhos'}
             </button>

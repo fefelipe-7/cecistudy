@@ -22,7 +22,7 @@ const TodayClasses: React.FC<TodayClassesProps> = ({ todaySchedule, onOpenCourse
           <button
             key={`${course.id}-${slot.start}`}
             onClick={() => onOpenCourse(course.id)}
-            className="flex items-center gap-3 p-3.5 rounded-xl bg-surface-default border border-ceci-border-default hover:border-ceci-border-brand shadow-sm tap-interactive active:scale-[0.99] transition-all cursor-pointer text-left"
+            className="flex items-center gap-3 p-3.5 rounded-xl bg-surface-default border border-ceci-border-default hover:border-ceci-border-brand shadow-sm tap-interactive active:scale-[0.99] transition cursor-pointer text-left"
           >
             <div className="text-center shrink-0 w-12">
               <p className="font-display font-bold text-base text-ceci-primary leading-none tabular-nums">

@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { storage, isNativePlatform } from './storage';
 
+/** Aguarda inatividade antes de gravar; flush imediato ao ocultar/fechar. */
+const WRITE_DEBOUNCE_MS = 200;
+
 /**
  * Estado persistente com camada dual:
  * - Web/PWA  → localStorage síncrono (inicialização imediata, sem flash)
@@ -49,7 +52,34 @@ export const usePersistentState = <T,>(
 
   useEffect(() => {
     if (!hydratedRef.current) return;
-    storage.set(key, JSON.stringify(state));
+    const json = JSON.stringify(state);
+    let cancelled = false;
+
+    const write = () => {
+      if (!cancelled) void storage.set(key, json);
+    };
+
+    const timer = window.setTimeout(write, WRITE_DEBOUNCE_MS);
+
+    const onVisibility = () => {
+      if (document.visibilityState === 'hidden') {
+        window.clearTimeout(timer);
+        write();
+      }
+    };
+    const onPageHide = () => {
+      window.clearTimeout(timer);
+      write();
+    };
+    window.addEventListener('pagehide', onPageHide);
+    document.addEventListener('visibilitychange', onVisibility);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+      window.removeEventListener('pagehide', onPageHide);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
   }, [key, state]);
 
   return [state, setState];

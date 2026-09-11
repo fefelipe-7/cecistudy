@@ -113,7 +113,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
             setKind('task');
             setStep(0);
           }}
-          className="w-full flex items-center gap-4 p-5 rounded-2xl bg-surface-default border-2 border-ceci-border-default hover:border-ceci-border-brand text-left transition-all active:scale-[0.98] cursor-pointer shadow-sm"
+          className="w-full flex items-center gap-4 p-5 rounded-2xl bg-surface-default border-2 border-ceci-border-default hover:border-ceci-border-brand text-left transition active:scale-[0.98] cursor-pointer shadow-sm"
         >
           <span className="w-12 h-12 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
             <CheckCircle2 className="w-6 h-6" />
@@ -130,7 +130,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
             setKind('exam');
             setStep(0);
           }}
-          className="w-full flex items-center gap-4 p-5 rounded-2xl bg-surface-default border-2 border-ceci-border-default hover:border-ceci-border-academic text-left transition-all active:scale-[0.98] cursor-pointer shadow-sm"
+          className="w-full flex items-center gap-4 p-5 rounded-2xl bg-surface-default border-2 border-ceci-border-default hover:border-ceci-border-academic text-left transition active:scale-[0.98] cursor-pointer shadow-sm"
         >
           <span className="w-12 h-12 rounded-2xl bg-surface-blue border border-ceci-border-academic flex items-center justify-center text-ceci-academic-strong shrink-0">
             <ClipboardList className="w-6 h-6" />

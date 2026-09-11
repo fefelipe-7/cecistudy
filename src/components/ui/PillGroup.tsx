@@ -64,7 +64,7 @@ export const PillGroup = <T extends string>({
               onClick={() => onChange(o.value)}
               aria-pressed={sel}
               className={cn(
-                'rounded-full font-semibold capitalize whitespace-nowrap tap-interactive cursor-pointer transition-all',
+                'rounded-full font-semibold capitalize whitespace-nowrap tap-interactive cursor-pointer transition',
                 SIZES[size],
                 sel
                   ? VARIANT_CLASSES[variant]

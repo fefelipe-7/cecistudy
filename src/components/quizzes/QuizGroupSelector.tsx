@@ -89,7 +89,7 @@ export const QuizGroupSelector: React.FC<QuizGroupSelectorProps> = ({
                     onClick={() => handleClick(group)}
                     disabled={group.questionCount === 0}
                     className={cn(
-                      'w-full flex items-center gap-3 p-4 rounded-xl border text-left transition-all active:scale-[0.98]',
+                      'w-full flex items-center gap-3 p-4 rounded-xl border text-left transition active:scale-[0.98]',
                       isGeral
                         ? 'bg-surface-default border-ceci-border-default shadow-sm'
                         : 'bg-surface-default border-ceci-border-subtle',

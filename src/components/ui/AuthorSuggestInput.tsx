@@ -98,7 +98,7 @@ export const AuthorSuggestInput: React.FC<AuthorSuggestInputProps> = ({
             onCreateAuthor?.(trimmed);
             setCreatedFor(trimmed);
           }}
-          className="mt-1.5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong hover:bg-ceci-border-brand/40 tap-interactive cursor-pointer transition-all active:scale-95"
+          className="mt-1.5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong hover:bg-ceci-border-brand/40 tap-interactive cursor-pointer transition active:scale-95"
         >
           <UserPlus className="w-3.5 h-3.5" />
           guardar "{trimmed}" como autor ♡

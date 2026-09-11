@@ -50,7 +50,7 @@ export const SchedulePicker: React.FC<SchedulePickerProps> = ({ value, onChange 
                   key={day}
                   type="button"
                   onClick={() => setDay(idx, day)}
-                  className={`px-2.5 py-1.5 rounded-full text-[11px] font-semibold border transition-all cursor-pointer ${
+                  className={`px-2.5 py-1.5 rounded-full text-[11px] font-semibold border transition cursor-pointer ${
                     active
                       ? 'bg-ceci-primary text-white border-ceci-primary'
                       : 'bg-surface-default text-ceci-secondary border-ceci-border-default hover:bg-surface-muted'

@@ -89,7 +89,7 @@ export const InternshipDiaryView: React.FC = () => {
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+              className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-xs font-semibold transition cursor-pointer ${
                 active
                   ? 'bg-ceci-primary text-white shadow-xs'
                   : 'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-surface-muted'

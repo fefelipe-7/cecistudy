@@ -266,7 +266,7 @@ export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
                   setHoverIndex(null);
                 }}
                 className={cn(
-                  'px-2.5 py-1 rounded-full transition-all cursor-pointer',
+                  'px-2.5 py-1 rounded-full transition cursor-pointer',
                   periodIndex === idx
                     ? 'bg-ceci-primary text-white'
                     : theme === 'dark'
@@ -309,7 +309,7 @@ export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
                 onMouseEnter={() => setHoverIndex(idx)}
                 onMouseLeave={() => setHoverIndex(null)}
                 className={cn(
-                  'flex items-center justify-between p-2 rounded-xl transition-all cursor-pointer border',
+                  'flex items-center justify-between p-2 rounded-xl transition cursor-pointer border',
                   isHovered
                     ? theme === 'dark'
                       ? 'bg-white/10 border-white/20'

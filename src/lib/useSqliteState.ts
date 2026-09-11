@@ -21,6 +21,9 @@ import {
   saveCollection,
 } from './db/normalize.ts';
 
+/** Aguarda inatividade antes de escrever; flush imediato ao ocultar/fechar. */
+const WRITE_DEBOUNCE_MS = 200;
+
 export function useSqliteState<T>(
   key: string,
   initialValue: T
@@ -70,24 +73,49 @@ export function useSqliteState<T>(
     };
   }, [key]);
 
-  // Write-through: grava após hidratação (evita sobrescrever com seeds).
+  // Write-through com debounce: aguarda inatividade (200ms) e faz flush
+  // imediato ao ocultar/fechar (evita perder a última mudança).
   useEffect(() => {
     if (!hydratedRef.current) return;
     let cancelled = false;
-    (async () => {
-      const db = await getUserDb();
-      try {
-        if (db && isUserCollectionKey(key)) {
-          if (!cancelled) await saveCollection(db, key, state);
-        } else {
-          if (!cancelled) await storage.set(key, JSON.stringify(state));
+
+    const write = () => {
+      if (cancelled) return;
+      void (async () => {
+        if (cancelled) return;
+        const db = await getUserDb();
+        try {
+          if (db && isUserCollectionKey(key)) {
+            if (!cancelled) await saveCollection(db, key, state);
+          } else {
+            if (!cancelled) await storage.set(key, JSON.stringify(state));
+          }
+        } catch (e) {
+          console.error(`[useSqliteState] falha ao gravar "${key}"`, e);
         }
-      } catch (e) {
-        console.error(`[useSqliteState] falha ao gravar "${key}"`, e);
+      })();
+    };
+
+    const timer = window.setTimeout(write, WRITE_DEBOUNCE_MS);
+
+    const onVisibility = () => {
+      if (document.visibilityState === 'hidden') {
+        window.clearTimeout(timer);
+        write();
       }
-    })();
+    };
+    const onPageHide = () => {
+      window.clearTimeout(timer);
+      write();
+    };
+    window.addEventListener('pagehide', onPageHide);
+    document.addEventListener('visibilitychange', onVisibility);
+
     return () => {
       cancelled = true;
+      window.clearTimeout(timer);
+      window.removeEventListener('pagehide', onPageHide);
+      document.removeEventListener('visibilitychange', onVisibility);
     };
   }, [key, state]);
 

@@ -31,7 +31,7 @@ export const CompletionToggle: React.FC<CompletionToggleProps> = ({
         onChange?.();
       }}
       className={cn(
-        'shrink-0 rounded-full border-2 flex items-center justify-center tap-interactive cursor-pointer transition-all active:scale-90',
+        'shrink-0 rounded-full border-2 flex items-center justify-center tap-interactive cursor-pointer transition active:scale-90',
         dims,
         checked
           ? 'bg-green-500 border-green-500 text-white shadow-sm'

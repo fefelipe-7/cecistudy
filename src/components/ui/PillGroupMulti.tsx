@@ -76,7 +76,7 @@ export const PillGroupMulti = <T extends string>({
                 onClick={() => toggle(o.value)}
                 aria-pressed={sel}
                 className={cn(
-                  'rounded-full font-semibold capitalize whitespace-nowrap tap-interactive cursor-pointer transition-all',
+                  'rounded-full font-semibold capitalize whitespace-nowrap tap-interactive cursor-pointer transition',
                   SIZES[size],
                   sel
                     ? VARIANT_CLASSES[variant]
@@ -128,7 +128,7 @@ export const PillGroupMulti = <T extends string>({
               onClick={() => toggle(o.value)}
               aria-label={`remover ${o.label}`}
               className={cn(
-                'inline-flex items-center gap-1 rounded-full font-semibold tap-interactive cursor-pointer transition-all',
+                'inline-flex items-center gap-1 rounded-full font-semibold tap-interactive cursor-pointer transition',
                 SIZES[size],
                 VARIANT_CLASSES[variant]
               )}

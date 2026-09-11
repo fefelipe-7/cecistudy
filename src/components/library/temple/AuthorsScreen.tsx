@@ -201,7 +201,7 @@ export const AuthorsScreen: React.FC = () => {
             <button
               key={value}
               onClick={() => setSortMode(value)}
-              className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+              className={`px-4 py-2 rounded-full text-xs font-semibold transition cursor-pointer ${
                 sortMode === value
                   ? 'bg-surface-muted text-beige-700 border border-ceci-border-strong shadow-xs'
                   : 'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-surface-muted'

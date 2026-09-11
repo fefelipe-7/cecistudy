@@ -135,7 +135,7 @@ export const StudyFocusScreen: React.FC = () => {
               strokeLinecap="round"
               strokeDasharray={2 * Math.PI * 88}
               strokeDashoffset={2 * Math.PI * 88 * (1 - progressPct / 100)}
-              className="transition-all duration-1000 ease-linear"
+              className="transition-[width] duration-1000 ease-linear"
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">

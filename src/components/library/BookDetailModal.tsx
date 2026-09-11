@@ -37,7 +37,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
   const step = (delta: number) => onUpdateProgress(Math.min(Math.max(clamped + delta, 0), maxPages));
 
   const stepperBtn =
-    'w-11 h-11 rounded-full border border-ceci-border-default bg-surface-default text-ceci-primary flex items-center justify-center transition-all active:scale-90 tap-interactive cursor-pointer disabled:opacity-35 disabled:pointer-events-none';
+    'w-11 h-11 rounded-full border border-ceci-border-default bg-surface-default text-ceci-primary flex items-center justify-center transition active:scale-90 tap-interactive cursor-pointer disabled:opacity-35 disabled:pointer-events-none';
 
   return (
     <Modal
@@ -121,7 +121,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
               {book.totalPages ? (
                 <div className="w-full bg-ceci-border-default h-2 rounded-full overflow-hidden">
                   <div
-                    className={cn('h-full rounded-full transition-all duration-300', clamped > 0 ? 'bg-ceci-brand-strong' : '')}
+                    className={cn('h-full rounded-full transition-colors duration-300', clamped > 0 ? 'bg-ceci-brand-strong' : '')}
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>

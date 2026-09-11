@@ -136,7 +136,7 @@ const handleNext = useCallback(() => {
                         onClick={() => handleOptionClick(letter)}
                         disabled={!!selectedOption}
                         className={cn(
-                          'w-full text-left p-4 rounded-xl border-2 transition-all text-sm',
+                          'w-full text-left p-4 rounded-xl border-2 transition text-sm',
                           isSelected
                             ? isCorrect
                               ? 'bg-green-50 border-green-300 text-green-800'

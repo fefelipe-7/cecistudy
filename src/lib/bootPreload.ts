@@ -2,7 +2,7 @@
  * Pré-carga do boot — alimenta a splash com progresso REAL.
  *
  * Cada passo pesado do arranque (SQLite da usuária, catálogo, abordagens,
- * questões, facade da biblioteca, chunks das telas) vira um passo nomeado com
+ * questões, chunks das telas) vira um passo nomeado com
  * promise memoizada: a splash acompanha o progresso e o resto do app (ex.:
  * seed effects do AppContext) reaproveita as MESMAS promises — sem carga dupla.
  *
@@ -29,7 +29,6 @@ export type BootStepId =
   | 'catalog'
   | 'approaches'
   | 'questions'
-  | 'books'
   | 'views';
 
 export interface BootStep {
@@ -76,7 +75,6 @@ const stepImpls: StepImpls = {
 
 let approachesPromise: Promise<unknown> | undefined;
 let questionsPromise: Promise<unknown> | undefined;
-let booksPromise: Promise<unknown> | undefined;
 
 const stepRunners: Record<BootStepId, () => Promise<unknown>> = {
   /** Nativo: abre/migra o SQLite da usuária (singleton; no-op na web). */
@@ -87,16 +85,6 @@ const stepRunners: Record<BootStepId, () => Promise<unknown>> = {
   approaches: () => memoize('approaches'),
   /** Questões (745): mesmo tratamento das abordagens. */
   questions: () => memoize('questions'),
-  /** Facade da biblioteca (chunk pesado de dados estáticos). */
-  books: () => {
-    if (!booksPromise) {
-      booksPromise = import('../data/books').catch((e) => {
-        booksPromise = undefined;
-        throw e;
-      });
-    }
-    return booksPromise;
-  },
   /** Chunk da tela inicial — primeira aba instantânea ao sair da splash. */
   views: () => import('../components/views/HomeView'),
 };
@@ -130,11 +118,6 @@ export function ensureQuestions<T = unknown>(): Promise<T[]> {
   return stepRunners.questions() as Promise<T[]>;
 }
 
-/** Módulo facade da biblioteca (`src/data/books`) já resolvido. */
-export function ensureBooksFacade(): Promise<typeof import('../data/books')> {
-  return stepRunners.books() as Promise<typeof import('../data/books')>;
-}
-
 // ---------------------------------------------------------------------------
 // Cache quente (TTL)
 // ---------------------------------------------------------------------------
@@ -166,8 +149,7 @@ export function planBootSteps(warm: boolean, native: boolean): BootStep[] {
     if (native) steps.push({ id: 'catalog', label: 'folheando o acervo' });
     steps.push(
       { id: 'approaches', label: 'organizando as abordagens' },
-      { id: 'questions', label: 'contando as questõezinhas' },
-      { id: 'books', label: 'colocando os livros nas prateleiras' }
+      { id: 'questions', label: 'contando as questõezinhas' }
     );
   }
   steps.push({ id: 'views', label: 'arrumando a mesinha' });
@@ -253,7 +235,6 @@ const defaultRunners: Record<BootStepId, () => Promise<unknown>> = { ...stepRunn
 export function resetBootPreloadForTests(): void {
   approachesPromise = undefined;
   questionsPromise = undefined;
-  booksPromise = undefined;
   idlePrefetchScheduled = false;
   stepImpls.approachesImpl = defaultApproachesImpl;
   stepImpls.questionsImpl = defaultQuestionsImpl;

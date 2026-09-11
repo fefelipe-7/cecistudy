@@ -19,11 +19,11 @@ import { MobileAppShell } from '@/shells/MobileAppShell';
 import { MobileOverlays } from '@/overlays/MobileOverlays';
 import { MobileAppProvider } from '../MobileAppProvider';
 import { initPlatformFlags } from '@/lib/platform';
-import { prefetchViewChunks } from '@/lib/prefetchViews';
+import { preloadScreenChunks } from '@/shells/SharedScreenLayers';
 import '@/index.css';
 
 initPlatformFlags();
-prefetchViewChunks();
+preloadScreenChunks();
 
 /**
  * Entrypoint próprio do cliente mobile (Fase 5).

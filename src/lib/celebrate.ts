@@ -1,4 +1,5 @@
-import confetti from 'canvas-confetti';
+import type confetti from 'canvas-confetti';
+import type { Options } from 'canvas-confetti';
 
 /** Tipos de celebração do app — cada um com um burst específico. */
 export type CelebrationKind =
@@ -26,8 +27,18 @@ function prefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
+/** Resolve a instância do canvas-confetti só quando uma celebração dispara. */
+let confettiPromise: Promise<typeof confetti> | null = null;
+async function getConfetti(): Promise<typeof confetti> {
+  if (!confettiPromise) {
+    confettiPromise = import('canvas-confetti').then((m) => m.default);
+  }
+  return confettiPromise;
+}
+
 /** Burst único partindo do centro — base de todas as celebrações. */
-function burstFromCenter(count: number, opts: confetti.Options = {}) {
+async function burstFromCenter(count: number, opts: Options = {}) {
+  const confetti = await getConfetti();
   confetti({
     colors: CONFETTI_COLORS,
     particleCount: count,
@@ -42,8 +53,9 @@ function burstFromCenter(count: number, opts: confetti.Options = {}) {
 }
 
 /** Canhões laterais (celebração grande e estilosa). */
-function sideCannons(count: number, delay = 120) {
-  const opts: confetti.Options = {
+async function sideCannons(count: number, delay = 120) {
+  const confetti = await getConfetti();
+  const opts: Options = {
     colors: CONFETTI_COLORS,
     particleCount: count,
     spread: 55,
@@ -67,18 +79,18 @@ export function celebrate(kind: CelebrationKind): void {
 
   switch (kind) {
     case 'tasks-done':
-      burstFromCenter(130, { spread: 100, startVelocity: 45 });
-      sideCannons(90);
+      void burstFromCenter(130, { spread: 100, startVelocity: 45 });
+      void sideCannons(90);
       break;
     case 'session-done':
     case 'flashcards-done':
-      burstFromCenter(110, { spread: 82, startVelocity: 42 });
+      void burstFromCenter(110, { spread: 82, startVelocity: 42 });
       break;
     case 'sticker-unlocked':
-      burstFromCenter(150, { spread: 96, startVelocity: 40 });
+      void burstFromCenter(150, { spread: 96, startVelocity: 40 });
       break;
     case 'reading-done':
-      burstFromCenter(80, { spread: 70 });
+      void burstFromCenter(80, { spread: 70 });
       break;
   }
 }
