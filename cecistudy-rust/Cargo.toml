@@ -6,6 +6,7 @@ members = [
   "crates/cecistudy-common",
   "crates/cecistudy-domain",
   "crates/cecistudy-data",
+  "crates/cecistudy-sync",
 ]
 
 [workspace.package]
