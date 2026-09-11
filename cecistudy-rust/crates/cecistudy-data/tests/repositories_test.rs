@@ -207,6 +207,49 @@ fn banco_vazio_semanticas_do_ts() {
 }
 
 #[test]
+fn paridade_integrada_payload_sample() {
+  // F1.16 nível DB: importa o payload sample inteiro (todas as coleções
+  // com golden), regrava tudo num único banco e confere que `load_all`
+  // reproduz cada fixture em canonical v1 (mesmo fluxo do nativo TS).
+  let db = UserDb::in_memory().unwrap();
+  let conn = db.connection();
+
+  let mut gravadas = 0;
+  let mut check_width: Option<usize> = None;
+  for &key in USER_COLLECTION_KEYS {
+    let path = Path::new(GOLDEN).join("sample").join(format!("{key}.json"));
+    if !path.exists() {
+      continue; // `supervision` não sai no payload/golden (teste próprio separado)
+    }
+    let raw = fs::read_to_string(&path).unwrap_or_else(|e| panic!("{path:?}: {e}"));
+    let value: Value = serde_json::from_str(raw.trim()).unwrap();
+    save_collection(conn, key, &value).expect("save_collection do sample");
+    gravadas += 1;
+  }
+
+  let all = load_all_collections(conn).unwrap();
+  let mut carregadas = 0;
+  for (key, loaded) in &all {
+    let path = Path::new(GOLDEN).join("sample").join(format!("{key}.json"));
+    if !path.exists() {
+      continue;
+    }
+    let raw = fs::read_to_string(&path).unwrap();
+    let loaded = loaded.as_ref().expect("coleção gravada deve recarregar");
+    let mut canonical = canonicalize(loaded);
+    canonical.push('\n');
+    assert_eq!(canonical, raw, "paridade integrada divergente para `{key}`");
+    carregadas += 1;
+    check_width = check_width.or(Some(raw.len()));
+  }
+
+  // Todas as coleções com fixture passaram pelos dois fluxos.
+  assert_eq!(gravadas, carregadas, "toda collection gravada deve ser recarregada e idêntica");
+  assert!(gravadas >= 21, "esperava ~21 coleções com golden sample, obtive {gravadas}");
+  assert!(check_width.is_some());
+}
+
+#[test]
 fn sobrescrita_substitui_colecao_inteira() {
   let db = UserDb::in_memory().unwrap();
   let conn = db.connection();
@@ -225,4 +268,37 @@ fn colecao_desconhecida_ignorada_sem_falhar() {
   let db = UserDb::in_memory().unwrap();
   save_collection(db.connection(), "algumaColecaoExtra", &serde_json::json!({ "x": 1 })).unwrap();
   assert_eq!(load_collection(db.connection(), "algumaColecaoExtra").unwrap(), None);
+}
+
+/// F1.16 — paridade integrada do payload: grava TODAS as coleções sample num
+/// mesmo banco (join-tables e tudo) e reconstrói com `load_all_collections`;
+/// cada coleção deve continuar byte-a-byte igual ao seu golden.
+#[test]
+fn payload_sample_integrado_reproducao_dos_fixtures() {
+  let db = UserDb::in_memory().unwrap();
+  let conn = db.connection();
+
+  let mut gravadas = 0usize;
+  for key in USER_COLLECTION_KEYS {
+    let path = Path::new(GOLDEN).join("sample").join(format!("{key}.json"));
+    if !path.exists() {
+      continue; // supervision: só DB, sem golden/payload
+    }
+    let value: Value = serde_json::from_str(golden("sample", key).trim()).unwrap();
+    save_collection(conn, key, &value).unwrap();
+    gravadas += 1;
+  }
+  assert_eq!(gravadas, 21, "esperava 21 coleções golden gravadas (das 22 − supervision)");
+
+  let all = load_all_collections(conn).unwrap();
+  for (key, loaded) in &all {
+    let path = Path::new(GOLDEN).join("sample").join(format!("{key}.json"));
+    if !path.exists() {
+      continue;
+    }
+    let loaded = loaded.as_ref().expect("coleção gravada presente no load_all");
+    let mut canonical = canonicalize(loaded);
+    canonical.push('\n');
+    assert_eq!(canonical, golden("sample", key), "payload integrado divergiu em `{key}`");
+  }
 }
