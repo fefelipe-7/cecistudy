@@ -19,7 +19,7 @@ GOLDEN_WRITE=1 npm run test -- src/lib/__tests__/goldenFixtures.test.ts
 ```
 
 Depois **revise o diff** — os arquivos são o contrato dos testes de paridade Rust
-(`cecistudy-rust/tests/golden_parity_test.rs`, Fase 1).
+(`cecistudy-rust/crates/cecistudy-common/tests/golden_parity_test.rs`, Fase 1).
 
 ## Contrato relacionado
 

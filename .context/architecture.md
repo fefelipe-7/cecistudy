@@ -244,7 +244,11 @@ npm run cap:assets     → regenera ícones/splash a partir de assets/*.svg
 > Os builds nativos rodam no CI; para gerar APK/IPA **instaláveis** (assinados) é preciso
 > configurar keystore (Android) e signing/provisioning (iOS) — ver `backlog.md`.
 
-## 6.1 Desktop (`desktop/` — Tauri 2)
+## 6.1 Desktop Tauri — **legado** (migrando para Flutter+Rust)
+
+> ⚠️ **Este é o desktop legado.** O novo desktop é **Flutter (UI) + Rust (domínio/dados/sync)**
+> — ver seção 6.2 abaixo. O shell Tauri continua vivo até a migração completar,
+> mas **não recebe features novas**.
 
 Terceira casca sobre o **mesmo bundle web** (`dist/` da raiz):
 
@@ -271,6 +275,22 @@ Terceira casca sobre o **mesmo bundle web** (`dist/` da raiz):
 - **Layout ≥ lg:** sidebar fixa à esquerda (`src/components/DesktopSidebar.tsx`)
   substitui BottomNav/FAB; container alarga (`lg:max-w-3xl xl:max-w-4xl`). Abaixo
   de `lg:` tudo idêntico ao mobile/web.
+
+## 6.2 Desktop novo (Flutter + Rust)
+
+> **Status (2026-09-11): núcleo Rust em Fase 1 (20/23)** — workspace em `cecistudy-rust/`
+> com crates `common/domain/data/content/sync/app` e gate verde
+> (`cargo clippy -D warnings` + `cargo fmt --check` + 116 testes). UI Flutter ainda não iniciada.
+
+- **Plano:** `plano-desktop-flutter-rust.md` (spec macro) → `desktop/spec/01-task-breakdown-flutter-rust.md`
+  (fonte de verdade de status, com reconciliação de numeramento) → `desktop/spec/PLANO-CONSOLIDADO-FLUTTER-RUST.md`
+  (consulta de planejamento). Regras do workspace em `cecistudy-rust/AGENTS.md`.
+- **Contrato cross-língua:** `cecistudy-rust/contracts/` (schema.sql canônico, backup-v2-spec,
+  golden files canonical JSON v1, verify-schema.mjs).
+- **Gate:** o workspace Rust tem gate próprio via `cargo` (`clippy -D warnings` + `fmt --check` +
+  `cargo test`); não passa pelo `eslint`/`tsc` da raiz.
+- **Próximos passos:** portar módulos de domínio que faltam (`calendar/knowledge/marketing/
+  projects/internship`) → `cecistudy-ffi` (flutter_rust_bridge) → Fases 2+ (UI Flutter).
 
 ## 7. Pontos de atenção arquitetural (resumo)
 

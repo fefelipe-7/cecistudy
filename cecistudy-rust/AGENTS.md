@@ -26,13 +26,18 @@ cecistudy-rust/            ← workspace Cargo (resolver 2)
 │   ├── cecistudy-data/    SQLite (rusqlite single-writer), migrações, repos
 │   ├── cecistudy-content/ catálogo .db read-only
 │   ├── cecistudy-sync/    stamp/merge LWW + provider GitHub
-│   ├── cecistudy-integrations/ Google Calendar (OAuth installed-app)
 │   ├── cecistudy-app/     casos de uso (única superfície p/ FFI)
-│   └── cecistudy-ffi/     bridge flutter_rust_bridge
+│   ├── cecistudy-ffi/     bridge flutter_rust_bridge  🔲 planejado (não existe)
+│   └── cecistudy-integrations/ Google Calendar (OAuth installed-app) 🔲 planejado (não existe)
 ├── docs/                  architecture, domain-port-guide, sync, canonical-json
-├── tests/                 golden_parity_test.rs, migration_runner_test.rs
+├── crates/*/tests/        golden_parity_test.rs, migration_runner_test.rs (em cada crate)
 └── Cargo.toml
 ```
+
+> **Status (2026-09-11):** workspace + `common/domain/data/content/sync/app` implementados
+> (Fase 1, 20/23). `cecistudy-ffi` e `cecistudy-integrations` ainda **não existem** — são os
+> próximos passos (ver `desktop/spec/01-task-breakdown-flutter-rust.md`). `cecistudy-common` foi
+> absorvido por `cecistudy-domain`/`cecistudy-data` (ids/timestamps/erros em `domain/src`).
 
 ## Regras
 - **crates NUNCA importam Flutter/React.** FFI (bridge) só em `cecistudy-ffi`/`cecistudy-app`.

@@ -46,11 +46,22 @@ Guidance for OpenCode sessions in **cecistudy ♡** — personal, mobile-first, 
 ## Persistence & Native
 - **Tri-modal storage:** web = `localStorage` · native domain data = **SQLite** (`@capacitor-community/sqlite`, `cecistudy_user`) via `src/lib/db/` · small prefs (`reminder`, `onboarding`, `gcal`) = `@capacitor/preferences` (through `usePersistentState`). Static catalog (questions/approaches/works) ships in `public/assets/databases/*.db` (built by `content:build`, checked by `db:verify`); web reads it via JS facades.
 - **Native (`android/`, `ios/`):** committed. Releases OTA/mobile (APK+IPA+OTA) rodam em CI (`.github/workflows/release.yml`); releases desktop (Tauri, msi/dmg/AppImage/deb) em `.github/workflows/release-desktop.yml` — pipelines **independentes** por app. Gates de PR em `.github/workflows/ci.yml` (lint+test+boundary). This Linux box has no JDK/SDK/Xcode, so you cannot compile native here.
-- **Desktop (`desktop/` — Tauri 2):** `desktop/src-tauri` wraps the root `dist/`. No app code lives in `desktop/`; no Tauri deps enter root `package.json`. Preview the desktop shell in-browser with `npm run dev:desktop` (or `?platform=desktop`); `?platform=web` forces the mobile/web shell. Detection: `isDesktop` in `src/lib/platform.ts`.
+- **Desktop (`desktop/` — Tauri 2):** `desktop/src-tauri` wraps the root `dist/`. No app code lives in `desktop/`; no Tauri deps enter root `package.json`. Preview the desktop shell in-browser with `npm run dev:desktop` (or `?platform=desktop`); `?platform=web` forces the mobile/web shell. Detection: `isDesktop` in `src/lib/platform.ts`. **⚠️ Legado — o novo desktop é Flutter+Rust (abaixo).**
+- **Desktop novo (`cecistudy-rust/` — Flutter + Rust, em progresso):** o plano de migração
+  Tauri→Flutter+Rust vive em `plano-desktop-flutter-rust.md`
+  (spec macro) + `desktop/spec/01-task-breakdown-flutter-rust.md` (fonte de verdade de status)
+  + `desktop/spec/PLANO-CONSOLIDADO-FLUTTER-RUST.md` (consulta de planejamento; numeração
+  diferente do breakdown). O núcleo Rust (workspace em `cecistudy-rust/`) está na **Fase 1 (20/23)**:
+  crates `common/domain/data/content/sync/app` implementados e com gate verde
+  (`cargo clippy -D warnings` + `cargo fmt --check` + 116 testes). Regras do workspace em
+  `cecistudy-rust/AGENTS.md`. Próximos passos: portar módulos de domínio que faltam
+  (`calendar/knowledge/marketing/projects/internship`), depois `cecistudy-ffi` (bridge
+  flutter_rust_bridge) e então as Fases 2+ (UI Flutter). **Não tocar os crates Rust através do
+  `eslint`/`tsc` da raiz — o gate Rust é o `cargo`.**
 
 ## Gotchas & Environment Quirks
 - **Node:** `engines >=22` / `.nvmrc` = 22. If running on Node 26, jsdom's `localStorage` is shadowed by an experimental global; handled in `vitest.setup.ts`.
-- **No `.git` here:** local workspace is not a git repo; CI expects branch `main`.
+- **Git repo:** workspace clonado de `https://github.com/fefelipe-7/cecistudy.git`, branch `main` (push OK daqui). CI espera `main`.
 - **Docs drift:** `.context/*.md` and the separation plan in `desktop/context-desktop/` may be stale in places — trust the code and `packages/data/src/schema` / `packages/domain` as source of truth.
 - **GitHub network is blocked from this machine** (api/cdn = 000); npm, PyPI, and Microsoft CDN work. Native desktop installers build only in CI.
 

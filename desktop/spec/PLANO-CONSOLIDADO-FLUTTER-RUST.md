@@ -5,6 +5,22 @@
 
 ---
 
+## ⚠️ Status de implementação (2026-09-11)
+
+> **Este documento é a consulta de planejamento; a FONTE DE VERDADE de status é
+> `01-task-breakdown-flutter-rust.md`** (numeração e checklist diferentes — ver reconciliação lá).
+
+- **Fase 0 (contrato): 5/5 ✅** — `contracts/{schema.sql, backup-v2-spec.md, golden/*, verify-schema.mjs}`.
+- **Fase 1 (núcleo Rust): 20/23 ✅** — workspace + `cecistudy-common/domain/data/sync/content/app`.
+  Implementado nos commits `5ee35fb`→`bf9790a` (gate: clippy -D warnings ✓, fmt ✓, 116 testes ✓).
+  Pendentes: módulos de domínio `calendar/knowledge/marketing/projects/internship` (só workspace+capabilities),
+  validação de paridade full e `cecistudy-ffi`.
+- **Fase 2+ (Flutter): 🔲 não iniciada** — exige FFI (1.22) concluído.
+- **Próximo passo real:** terminar o porte de domínio (`calendar.rs`, `knowledge.rs`, `marketing.rs`,
+  `projects.rs`, `internship.rs`) e depois `cecistudy-ffi` (1.22) para destravar a Fase 2.
+
+---
+
 ## sumário executivo
 
 **O que é:** abandonar Tauri + React no desktop. Novo desktop = Flutter (apresentação) + Rust (domínio, dados, sync, integrações). Mobile (React + Capacitor) continua como está.

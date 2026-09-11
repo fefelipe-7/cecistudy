@@ -12,6 +12,25 @@
 
 ---
 
+## Status de implementação (2026-09-11)
+
+> Acompanhamento operacional vive em **`tasks/perf-plan.md`** (checkboxes por tarefa).
+> Resumo por fase — implementado no commit `28ec55e` (gate: lint 0 erros, 575 testes, build,
+> check-boundaries ✓):
+
+| Fase | Itens | Feitos | Faltam |
+|------|-------|--------|--------|
+| [A. Contexto](#fase-a--estabilização-do-contexto-e-re-renders) | 8 | A.2, A.3, A.5 | A.1 (value useMemo), A.4 (`React.memo` views), A.6 (BottomNav), A.7 (split values), A.8 (derived useMemo) |
+| [B. Bundle](#fase-b--bundle-e-loading) | 10 | B.2, B.5, B.6, B.9 | B.1 (JSON 5MB), B.3, B.4, B.7, B.8, B.10 |
+| [C. Visual Perf & CSS](#fase-c--visual-perf-e-css) | 9 | C.1, C.2, C.3, C.4, C.9 | C.5, C.6, C.7, C.8 |
+| [D. Runtime & Dados](#fase-d--runtime-e-data) | 8 | D.3 | D.1, D.2, D.4, D.5, D.6, D.7, D.8 |
+| [E. Capacitor & Nativo](#fase-e--capacitor-e-nativo) | 8 | E.6 | E.1–E.5, E.7, E.8 |
+
+> Os marcadores `⬛` nos itens são indicadores de severidade da auditoria, **não** status de
+> implementação. Consulte `tasks/perf-plan.md` para o que está concluído vs. pendente.
+
+---
+
 ## Índice
 
 | Fase | Escopo | Itens | Impacto |

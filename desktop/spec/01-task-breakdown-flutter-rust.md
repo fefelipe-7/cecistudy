@@ -6,6 +6,29 @@
 
 ---
 
+## Status de implementação (2026-09-11)
+
+**Fase 0 (contrato): 5/5 ✅ · Fase 1 (núcleo Rust): 20/23 ✅ · Fases 2+ (Flutter): 🔲**
+
+Implementado (commits `5ee35fb`→`bf9790a`):
+- **Fase 0 completa** — `contracts/{schema.sql, backup-v2-spec.md, golden/*, verify-schema.mjs}`.
+- **Fase 1:** workspace; `cecistudy-common`; `cecistudy-domain` (workspace + capabilities);
+  `cecistudy-data` (schema, migrações 1→13, backup, payload, repositórios);
+  `cecistudy-sync` (stamp, merge, provider/github); `cecistudy-content`; `cecistudy-app` (use cases).
+  Gate numa caixa: `cargo clippy -D warnings` ✓ · `cargo fmt --check` ✓ · 116 testes ✓.
+
+Pendente na Fase 1:
+- Domain modules `calendar`, `knowledge`, `marketing`, `projects`, `internship` (só `workspace`+`capabilities`)
+- `cecistudy-ffi` (F1.21), validação de paridade full (F1.22)
+- `cecistudy-integrations` (Google Calendar) — ainda não existe
+
+> **Numeramento:** este breakdown (origem) numera 1.13=stamp, 1.16=engine, 1.17–1.18=content,
+> 1.19–1.20=app+use cases. O plano consolidado (`PLANO-CONSOLIDADO-FLUTTER-RUST.md`) numera
+> diferente (stamp=1.17 … app=1.21). Os commits usam o consolidado em sync/content
+> (`F1.17`–`F1.20`) mas o app como `F1.19–F1.20` (origem). Veja a reconciliação no fim deste doc.
+
+---
+
 ## 0. Resumo executivo
 
 **O que é:**
@@ -105,9 +128,9 @@ Fase 0 (contrato)
 - **Dependências:** Nenhuma
 - **Arquivos tocados:** `content/schemas/user.ddl.sql` (novo)
 - **Aceitação:**
-  - [ ] DDL do `migrations/user.ts` traduzido para PostgreSQL/SQLite `.sql` numerado
-  - [ ] Versão do DDL indexada (ex.: `user_schema_001.sql`)
-  - [ ] O `schema.ts` do TS e o `.sql` descrevem a mesma estrutura
+  - [x] DDL do `migrations/user.ts` traduzido para PostgreSQL/SQLite `.sql` numerado
+  - [x] Versão do DDL indexada (ex.: `user_schema_001.sql`)
+  - [x] O `schema.ts` do TS e o `.sql` descrevem a mesma estrutura
 - **Verificação:** Script que compara as chaves de `emptyDatabase()` vs tabelas do DDL
 
 #### 0.2 — Escrever spec formal do backup v2
@@ -115,9 +138,9 @@ Fase 0 (contrato)
 - **Dependências:** Nenhuma
 - **Arquivos tocados:** `desktop/spec/backup-v2-spec.md` (novo), `desktop/spec/backup-v2-schema.json` (novo, JSON Schema)
 - **Aceitação:**
-  - [ ] JSON Schema que espelha campo a campo o Zod de `backupSchema.ts`
-  - [ ] Cada coleção documentada com: nome, tipo, campos obrigatórios, campos pass-through
-  - [ ] Documento de "campos legados" (o que `.passthrough()` preserva)
+  - [x] JSON Schema que espelha campo a campo o Zod de `backupSchema.ts`
+  - [x] Cada coleção documentada com: nome, tipo, campos obrigatórios, campos pass-through
+  - [x] Documento de "campos legados" (o que `.passthrough()` preserva)
 - **Verificação:** Validador JSON Schema rejeita payloads inválidos que o Zod rejeita
 
 #### 0.3 — Criar golden files de paridade
@@ -125,10 +148,10 @@ Fase 0 (contrato)
 - **Dependências:** 0.1, 0.2
 - **Arquivos tocados:** `desktop/spec/golden/` (diretório novo)
 - **Aceitação:**
-  - [ ] Fixture JSON para cada coleção (courses, classes, tasks, exams, authors, concepts, readings, flashcards, materials, internshipLogs, supervision, tcc, stickers, sessions, streakData, reminder, looseNotes, savedBookIds, bookmarkedCourseIds, readingProgress, questions, techniques, quizSessions, onboarding, syncIndex)
-  - [ ] Fixture "mínimo" (banco vazio com defaults)
-  - [ ] Fixture "cheio" (cada coleção com 2-3 itens variados)
-  - [ ] Fixture "edge cases" (ids com prefixos variados, strings com acentos, datas ISO, etc.)
+  - [x] Fixture JSON para cada coleção (courses, classes, tasks, exams, authors, concepts, readings, flashcards, materials, internshipLogs, supervision, tcc, stickers, sessions, streakData, reminder, looseNotes, savedBookIds, bookmarkedCourseIds, readingProgress, questions, techniques, quizSessions, onboarding, syncIndex)
+  - [x] Fixture "mínimo" (banco vazio com defaults)
+  - [x] Fixture "cheio" (cada coleção com 2-3 itens variados)
+  - [x] Fixture "edge cases" (ids com prefixos variados, strings com acentos, datas ISO, etc.)
 - **Verificação:** Script Node que lê os fixtures e valida contra o Zod
 
 #### 0.4 — Criar teste de round-trip TS→JSON→Rust→JSON
@@ -136,8 +159,8 @@ Fase 0 (contrato)
 - **Dependências:** 0.3
 - **Arquivos tocados:** `desktop/spec/parity-test.sh` (novo, placeholder — Rust não existe ainda)
 - **Aceitação:**
-  - [ ] Script descreve o protocolo: (1) TS serializa fixture → JSON, (2) Rust desserializa → re-serializa → JSON, (3) compara byte-a-byte
-  - [ ] Script é executável (mas falha "Rust not ready" até Fase 1)
+  - [x] Script descreve o protocolo: (1) TS serializa fixture → JSON, (2) Rust desserializa → re-serializa → JSON, (3) compara byte-a-byte
+  - [x] Script é executável (mas falha "Rust not ready" até Fase 1)
 - **Verificação:** Com a Fase 1 concluída, o script passa
 
 #### 0.5 — Definir lista canônica de coleções sincronizáveis
@@ -145,9 +168,9 @@ Fase 0 (contrato)
 - **Dependências:** Nenhuma
 - **Arquivos tocados:** `desktop/spec/syncable-collections.md` (novo)
 - **Aceitação:**
-  - [ ] Lista das 16 record collections + 7 single collections + 2 set collections (de `stamp.ts`)
-  - [ ] Documentado: por que `approaches` e `questions` são EXCLUÍDAS do sync
-  - [ ] Referência cruzada com `RECORD_COLLECTION_KEYS`, `SINGLE_COLLECTION_KEYS`, `SET_COLLECTION_KEYS` do `stamp.ts`
+  - [x] Lista das 16 record collections + 7 single collections + 2 set collections (de `stamp.ts`)
+  - [x] Documentado: por que `approaches` e `questions` são EXCLUÍDAS do sync
+  - [x] Referência cruzada com `RECORD_COLLECTION_KEYS`, `SINGLE_COLLECTION_KEYS`, `SET_COLLECTION_KEYS` do `stamp.ts`
 
 ---
 
@@ -164,9 +187,9 @@ Fase 0 (contrato)
 - **Dependências:** Fase 0 completa
 - **Arquivos tocados:** `cecistudy-rust/Cargo.toml`, `cecistudy-rust/crates/cecistudy-domain/Cargo.toml`, `cecistudy-rust/crates/cecistudy-domain/src/lib.rs`
 - **Aceitação:**
-  - [ ] Workspace com `members = ["crates/*"]`
-  - [ ] `cecistudy-domain` compila com `cargo check`
-  - [ ] `cargo test` roda (mesmo vazio)
+  - [x] Workspace com `members = ["crates/*"]`
+  - [x] `cecistudy-domain` compila com `cargo check`
+  - [x] `cargo test` roda (mesmo vazio)
 - **Verificação:** `cargo build --workspace` sem erros
 
 #### 1.1 — Portar `common.ts` e `ids.ts`
@@ -174,12 +197,12 @@ Fase 0 (contrato)
 - **Dependências:** 1.0
 - **Arquivos tocados:** `crates/cecistudy-domain/src/common.rs`, `crates/cecistudy-domain/src/ids.rs`
 - **Aceitação:**
-  - [ ] `EntityId = String` (alias)
-  - [ ] `Platform` enum (`Desktop`, `Mobile`)
-  - [ ] `EntityPrefix` enum com todas as variantes
-  - [ ] `make_id(prefix) -> EntityId` gera IDs no mesmo formato (`prefix-base36-counter36-random`)
-  - [ ] Teste: `make_id` gera prefixos válidos
-  - [ ] Teste: `prefix_of` extrai o prefixo corretamente
+  - [x] `EntityId = String` (alias)
+  - [x] `Platform` enum (`Desktop`, `Mobile`)
+  - [x] `EntityPrefix` enum com todas as variantes
+  - [x] `make_id(prefix) -> EntityId` gera IDs no mesmo formato (`prefix-base36-counter36-random`)
+  - [x] Teste: `make_id` gera prefixos válidos
+  - [x] Teste: `prefix_of` extrai o prefixo corretamente
 - **Verificação:** IDs gerados pelo Rust são intercambiáveis com IDs do TS
 
 ### 3.2 Crate `cecistudy-domain` — módulos de entidade
@@ -189,10 +212,10 @@ Fase 0 (contrato)
 - **Dependências:** 1.1
 - **Arquivos tocados:** `crates/cecistudy-domain/src/workspace.rs`
 - **Aceitação:**
-  - [ ] `WorkspaceKind`, `DefaultModule` enums
-  - [ ] `WorkspaceSettings`, `Workspace` structs (Serialize/Deserialize)
-  - [ ] `create_workspace(input) -> Workspace`
-  - [ ] Teste: criação com defaults corretos
+  - [x] `WorkspaceKind`, `DefaultModule` enums
+  - [x] `WorkspaceSettings`, `Workspace` structs (Serialize/Deserialize)
+  - [x] `create_workspace(input) -> Workspace`
+  - [x] Teste: criação com defaults corretos
 - **Verificação:** JSON serializado é idêntico ao TS
 
 #### 1.3 — Portar `calendar.ts`
@@ -250,11 +273,11 @@ Fase 0 (contrato)
 - **Dependências:** 1.1
 - **Arquivos tocados:** `crates/cecistudy-domain/src/capabilities.rs`
 - **Aceitação:**
-  - [ ] `CapabilityEntity`, `Projection` enums
-  - [ ] `PlatformCapability` struct
-  - [ ] `DEFAULT_CAPABILITIES` array (18 entries: 9 entities × 2 platforms)
-  - [ ] `capability_for(entity, platform, matrix) -> Option<PlatformCapability>`
-  - [ ] Teste: `capability_for('document', Platform::Desktop)` retorna `canCreate: true, projection: 'rich'`
+  - [x] `CapabilityEntity`, `Projection` enums
+  - [x] `PlatformCapability` struct
+  - [x] `DEFAULT_CAPABILITIES` array (18 entries: 9 entities × 2 platforms)
+  - [x] `capability_for(entity, platform, matrix) -> Option<PlatformCapability>`
+  - [x] Teste: `capability_for('document', Platform::Desktop)` retorna `canCreate: true, projection: 'rich'`
 - **Verificação:** Matriz idêntica ao TS
 
 ### 3.3 Crate `cecistudy-data`
@@ -264,9 +287,9 @@ Fase 0 (contrato)
 - **Dependências:** 1.0, 1.2-1.7
 - **Arquivos tocados:** `crates/cecistudy-data/Cargo.toml`, `crates/cecistudy-data/src/lib.rs`
 - **Aceitação:**
-  - [ ] Dependências: `rusqlite` (ou `sqlx`), `serde`, `serde_json`, `thiserror`
-  - [ ] Re-exporta `cecistudy-domain` para convenience
-  - [ ] `cargo check` verde
+  - [x] Dependências: `rusqlite` (ou `sqlx`), `serde`, `serde_json`, `thiserror`
+  - [x] Re-exporta `cecistudy-domain` para convenience
+  - [x] `cargo check` verde
 - **Verificação:** Compila sem erros
 
 #### 1.9 — Portar schema de entidades com serde
@@ -274,11 +297,11 @@ Fase 0 (contrato)
 - **Dependências:** 1.8
 - **Arquivos tocados:** `crates/cecistudy-data/src/entities/` (diretório novo: `profile.rs`, `course.rs`, `class_note.rs`, `task.rs`, `exam.rs`, `reading.rs`, `flashcard.rs`, `material.rs`, `internship.rs`, `sticker.rs`, `session.rs`, `technique.rs`, `quiz.rs`, `loose_note.rs`)
 - **Aceitação:**
-  - [ ] Cada entidade de `types.ts` tem um struct Rust equivalente
-  - [ ] `#[derive(Serialize, Deserialize, Clone, Debug)]` em todas
-  - [ ] `#[serde(default)]` em campos opcionais (compatibilidade com backups antigos)
-  - [ ] Enums com `#[serde(rename_all = "snake_case")]` para serialização idêntica
-  - [ ] Teste: cada entidade serializa para JSON idêntico ao fixture TS correspondente
+  - [x] Cada entidade de `types.ts` tem um struct Rust equivalente
+  - [x] `#[derive(Serialize, Deserialize, Clone, Debug)]` em todas
+  - [x] `#[serde(default)]` em campos opcionais (compatibilidade com backups antigos)
+  - [x] Enums com `#[serde(rename_all = "snake_case")]` para serialização idêntica
+  - [x] Teste: cada entidade serializa para JSON idêntico ao fixture TS correspondente
 - **Verificação:** Script de paridade passa para todas as entidades
 
 #### 1.10 — Portar DDL e migrações
@@ -286,13 +309,13 @@ Fase 0 (contrato)
 - **Dependências:** 1.9, 0.1
 - **Arquivos tocados:** `crates/cecistudy-data/src/migrations/` (diretório novo: `mod.rs`, `m001_initial.rs`, `m002_techniques.rs`, ... `m013_internship_rename.rs`)
 - **Aceitação:**
-  - [ ] 13 migrações numeradas, idênticas ao `schema.ts`
-  - [ ] `SCHEMA_VERSION = 13` const
-  - [ ] `migrate_database(from_version, data) -> Option<Record>` (mesma semântica)
-  - [ ] Migração 9 (schedule string → slots) parseia o mesmo formato
-  - [ ] Migração 12 (workspaceId) idêntica
-  - [ ] Teste: migração de v1→v13 em dados de teste
-  - [ ] Teste: versão futura retorna None
+  - [x] 13 migrações numeradas, idênticas ao `schema.ts`
+  - [x] `SCHEMA_VERSION = 13` const
+  - [x] `migrate_database(from_version, data) -> Option<Record>` (mesma semântica)
+  - [x] Migração 9 (schedule string → slots) parseia o mesmo formato
+  - [x] Migração 12 (workspaceId) idêntica
+  - [x] Teste: migração de v1→v13 em dados de teste
+  - [x] Teste: versão futura retorna None
 - **Verificação:** Round-trip migração TS→Rust produce o mesmo output
 
 #### 1.11 — Portar backup schema com serde
@@ -300,15 +323,15 @@ Fase 0 (contrato)
 - **Dependências:** 1.9, 0.2
 - **Arquivos tocados:** `crates/cecistudy-data/src/backup.rs`
 - **Aceitação:**
-  - [ ] `BackupV2` struct (format, formatVersion, userSchemaVersion, schemaVersion, catalogRelease, exportedAt, payload)
-  - [ ] `backup_data_schema()` ou equivalente (validação deserialization)
-  - [ ] Coleções opcionais com `#[serde(default)]`
-  - [ ] `.passthrough()` via `serde_json::Value` para campos legados
-  - [ ] `preview_backup(json) -> Option<BackupPreview>`
-  - [ ] `import_app_database(json) -> Option<PersistedDatabase>` (valida + migra)
-  - [ ] `build_backup_payload(db) -> BackupV2`
-  - [ ] Teste: fixtures golden files passam pela validação Rust
-  - [ ] Teste: payload inválido é rejeitado
+  - [x] `BackupV2` struct (format, formatVersion, userSchemaVersion, schemaVersion, catalogRelease, exportedAt, payload)
+  - [x] `backup_data_schema()` ou equivalente (validação deserialization)
+  - [x] Coleções opcionais com `#[serde(default)]`
+  - [x] `.passthrough()` via `serde_json::Value` para campos legados
+  - [x] `preview_backup(json) -> Option<BackupPreview>`
+  - [x] `import_app_database(json) -> Option<PersistedDatabase>` (valida + migra)
+  - [x] `build_backup_payload(db) -> BackupV2`
+  - [x] Teste: fixtures golden files passam pela validação Rust
+  - [x] Teste: payload inválido é rejeitado
 - **Verificação:** Mesmos fixtures que o TS rejeita são rejeitados pelo Rust
 
 #### 1.12 — Implementar SQLite repository
@@ -316,13 +339,13 @@ Fase 0 (contrato)
 - **Dependências:** 1.9, 1.10
 - **Arquivos tocados:** `crates/cecistudy-data/src/db.rs` (novo), `crates/cecistudy-data/src/repositories/` (diretório novo)
 - **Aceitação:**
-  - [ ] `UserDatabase` struct com `rusqlite::Connection`
-  - [ ] `open(path) -> Result<UserDatabase>` (cria tabelas se não existirem)
-  - [ ] CRUD por coleção: `get_all<T>`, `get_by_id<T>`, `upsert<T>`, `remove<T>`, `replace_all<T>`
-  - [ ] `apply_migrations(&mut self) -> Result<()>` no boot
-  - [ ] `read_database() -> PersistedDatabase` (snapshot completo)
-  - [ ] `write_database(db: &PersistedDatabase) -> Result<()>` (batch write)
-  - [ ] Teste: round-trip write→read preserva todos os campos
+  - [x] `UserDatabase` struct com `rusqlite::Connection`
+  - [x] `open(path) -> Result<UserDatabase>` (cria tabelas se não existirem)
+  - [x] CRUD por coleção: `get_all<T>`, `get_by_id<T>`, `upsert<T>`, `remove<T>`, `replace_all<T>`
+  - [x] `apply_migrations(&mut self) -> Result<()>` no boot
+  - [x] `read_database() -> PersistedDatabase` (snapshot completo)
+  - [x] `write_database(db: &PersistedDatabase) -> Result<()>` (batch write)
+  - [x] Teste: round-trip write→read preserva todos os campos
 - **Verificação:** `cargo test` verde; fixture golden file persistido e recuperado idêntico
 
 ### 3.4 Crate `cecistudy-sync`
@@ -332,13 +355,13 @@ Fase 0 (contrato)
 - **Dependências:** 1.9
 - **Arquivos tocados:** `crates/cecistudy-sync/src/stamp.rs`
 - **Aceitação:**
-  - [ ] `SyncIndex` struct (stamps, records, tombstones)
-  - [ ] `RECORD_COLLECTION_KEYS`, `SINGLE_COLLECTION_KEYS`, `SET_COLLECTION_KEYS` arrays
-  - [ ] `empty_sync_index() -> SyncIndex`
-  - [ ] `apply_stamp_change(prev, key, old_value, new_value, now) -> StampChangeResult`
-  - [ ] `record_ts`, `tombstone_ts`, `tie_break`, `merge_indexes`, `max_stamp`
-  - [ ] `tie_break` usa serialização JSON estável (mesmo resultado nos dois lados)
-  - [ ] Teste: todos os fixtures de `stamp.test.ts` passam
+  - [x] `SyncIndex` struct (stamps, records, tombstones)
+  - [x] `RECORD_COLLECTION_KEYS`, `SINGLE_COLLECTION_KEYS`, `SET_COLLECTION_KEYS` arrays
+  - [x] `empty_sync_index() -> SyncIndex`
+  - [x] `apply_stamp_change(prev, key, old_value, new_value, now) -> StampChangeResult`
+  - [x] `record_ts`, `tombstone_ts`, `tie_break`, `merge_indexes`, `max_stamp`
+  - [x] `tie_break` usa serialização JSON estável (mesmo resultado nos dois lados)
+  - [x] Teste: todos os fixtures de `stamp.test.ts` passam
 - **Verificação:** 17 testes portados do TS passam
 
 #### 1.14 — Portar `merge.ts`
@@ -346,15 +369,15 @@ Fase 0 (contrato)
 - **Dependências:** 1.13, 1.9
 - **Arquivos tocados:** `crates/cecistudy-sync/src/merge.rs`
 - **Aceitação:**
-  - [ ] `merge_synced_databases(local, remote) -> MergeResult`
-  - [ ] LWW por registro com tombstones
-  - [ ] LWW por coleção para singles
-  - [ ] União para sets
-  - [ ] Streak merge por união
-  - [ ] `diff_stats` para local/remote
-  - [ ] Ordenação estável por id
-  - [ ] Teste: fixture de merge do TS passa no Rust
-  - [ ] Teste: empate de timestamp → tie_break idêntico
+  - [x] `merge_synced_databases(local, remote) -> MergeResult`
+  - [x] LWW por registro com tombstones
+  - [x] LWW por coleção para singles
+  - [x] União para sets
+  - [x] Streak merge por união
+  - [x] `diff_stats` para local/remote
+  - [x] Ordenação estável por id
+  - [x] Teste: fixture de merge do TS passa no Rust
+  - [x] Teste: empate de timestamp → tie_break idêntico
 - **Verificação:** Mesmo input → mesmo output nos dois lados
 
 #### 1.15 — Portar `provider.ts` e `providers/github.ts`
@@ -362,25 +385,28 @@ Fase 0 (contrato)
 - **Dependências:** 1.9
 - **Arquivos tocados:** `crates/cecistudy-sync/src/provider.rs`, `crates/cecistudy-sync/src/providers/github.rs`
 - **Aceitação:**
-  - [ ] `SyncManifest`, `SyncPackage`, `RemotePackage` structs
-  - [ ] `SyncProvider` trait (get_manifest, download_package, upload_package)
-  - [ ] `SyncProviderError` enum
-  - [ ] `hash_content(input) -> String` (FNV-1a 32-bit)
-  - [ ] `GitHubSyncProvider` implementa `SyncProvider` via `reqwest`
-  - [ ] CAS via `sha` no upload
-  - [ ] Teste: `hash_content` idêntico ao TS
+  - [x] `SyncManifest`, `SyncPackage`, `RemotePackage` structs
+  - [x] `SyncProvider` trait (get_manifest, download_package, upload_package)
+  - [x] `SyncProviderError` enum
+  - [x] `hash_content(input) -> String` (FNV-1a 32-bit)
+  - [x] `GitHubSyncProvider` implementa `SyncProvider` via `reqwest`
+  - [x] CAS via `sha` no upload
+  - [x] Teste: `hash_content` idêntico ao TS
 - **Verificação:** Hash gerado é o mesmo em TS e Rust
 
-#### 1.16 — Portar `engine.ts`
+#### 1.16 — Portar `engine.ts` → `use_cases/sync.rs`
+> **Nota:** implementado como `crates/cecistudy-app/src/use_cases/sync.rs` (porta no
+> `cecistudy-app`, não crate separado `cecistudy-sync/src/engine.rs`).
+
 - **Escopo:** M (1 arquivo)
 - **Dependências:** 1.13, 1.14, 1.15
-- **Arquivos tocados:** `crates/cecistudy-sync/src/engine.rs`
+- **Arquivos tocados:** `crates/cecistudy-app/src/use_cases/sync.rs`
 - **Aceitação:**
-  - [ ] `SyncEngine` struct (provider, deps)
-  - [ ] `SyncCheckpoint`, `SyncEngineDeps`, `SyncPreview` structs
-  - [ ] `inspect()`, `needs_upload()`, `pull_and_merge()`, `push()`
-  - [ ] Teste: lógica de revisão monotônica
-  - [ ] Teste: `needs_upload` com stamps variados
+  - [x] `SyncEngine` struct (provider, deps)
+  - [x] `SyncCheckpoint`, `SyncEngineDeps`, `SyncPreview` structs
+  - [x] `inspect()`, `needs_upload()`, `pull_and_merge()`, `push()`
+  - [x] Teste: lógica de revisão monotônica
+  - [x] Teste: `needs_upload` com stamps variados
 - **Verificação:** Lógica de sync idêntica ao TS
 
 ### 3.5 Crate `cecistudy-content`
@@ -390,7 +416,7 @@ Fase 0 (contrato)
 - **Dependências:** 1.0
 - **Arquivos tocados:** `crates/cecistudy-content/Cargo.toml`, `crates/cecistudy-content/src/lib.rs`
 - **Aceitação:**
-  - [ ] Dependência: `rusqlite` (read-only)
+  - [x] Dependência: `rusqlite` (read-only)
   - [ ] `CatalogDatabase` struct com `open(path)` (abre `.db` read-only)
   - [ ] Sem escrita — só queries
 - **Verificação:** Abre o `.db` do catálogo sem erros
@@ -400,9 +426,9 @@ Fase 0 (contrato)
 - **Dependências:** 1.17
 - **Arquivos tocados:** `crates/cecistudy-content/src/queries/` (diretório novo)
 - **Aceitação:**
-  - [ ] Queries para: abordagens, questões, obras, conceitos, autores, técnicas
-  - [ ] Structs de retorno tipados
-  - [ ] Teste: abre o `.db` embutido e conta registros (espera 3002 questões, 225 conceitos, etc.)
+  - [x] Queries para: abordagens, questões, obras, conceitos, autores, técnicas
+  - [x] Structs de retorno tipados
+  - [x] Teste: abre o `.db` embutido e conta registros (espera 3002 questões, 225 conceitos, etc.)
 - **Verificação:** Contagens batem com `catalog.manifest.json`
 
 ### 3.6 Crate `cecistudy-app`
@@ -412,9 +438,9 @@ Fase 0 (contrato)
 - **Dependências:** 1.8-1.18
 - **Arquivos tocados:** `crates/cecistudy-app/Cargo.toml`, `crates/cecistudy-app/src/lib.rs`
 - **Aceitação:**
-  - [ ] Depende de todos os crates anteriores
-  - [ ] `App` struct que orquestra domain+data+sync+content
-  - [ ] `cargo check` verde
+  - [x] Depende de todos os crates anteriores
+  - [x] `App` struct que orquestra domain+data+sync+content
+  - [x] `cargo check` verde
 - **Verificação:** Compila sem erros
 
 #### 1.20 — Implementar use cases básicos
@@ -422,13 +448,13 @@ Fase 0 (contrato)
 - **Dependências:** 1.19
 - **Arquivos tocados:** `crates/cecistudy-app/src/use_cases/` (diretório novo: `mod.rs`, `profile.rs`, `courses.rs`, `tasks.rs`, `calendar.rs`, `backup.rs`, `sync.rs`)
 - **Aceitação:**
-  - [ ] `get_profile`, `update_profile`
-  - [ ] `list_courses`, `create_course`, `update_course`, `delete_course`
-  - [ ] `list_tasks`, `create_task`, `toggle_task`, `delete_task`
-  - [ ] `get_calendar_events`, `create_event`, `update_event`
-  - [ ] `export_backup`, `import_backup`
-  - [ ] `sync_push`, `sync_pull`
-  - [ ] Cada use case delega para data+domain, não contém lógica própria
+  - [x] `get_profile`, `update_profile`
+  - [x] `list_courses`, `create_course`, `update_course`, `delete_course`
+  - [x] `list_tasks`, `create_task`, `toggle_task`, `delete_task`
+  - [x] `get_calendar_events`, `create_event`, `update_event`
+  - [x] `export_backup`, `import_backup`
+  - [x] `sync_push`, `sync_pull`
+  - [x] Cada use case delega para data+domain, não contém lógica própria
   - [ ] Teste: cada use case com dados mockados
 - **Verificação:** `cargo test` verde
 
@@ -1256,6 +1282,33 @@ Fase 0 (contrato)
 5. **Migrações são append-only.** Nunca editar uma migração existente; sempre criar nova.
 6. **TCC é trilha própria.** Não tratar como "mais uma tela"; seguir as 5 fases de MVP.
 7. **Google Calendar é trilha própria.** Não bloquear outros módulos; pode ser implementado depois.
+
+---
+
+## 16. Reconciliação de numeramento (handoff)
+
+Este breakdown (origem, 01-task-breakdown-flutter-rust.md) e o `PLANO-CONSOLIDADO-FLUTTER-RUST.md`
+usam **numeração diferente** para a mesma Fase 1. Mapeamento real entre as duas fontes:
+
+| Este doc (origem) | Consolidado | Caminho real | Status |
+|---|---|---|---|
+| 1.13 stamp.rs | 1.17 | `cecistudy-sync/src/stamp.rs` | ✅ |
+| 1.14 merge.rs | 1.18 | `cecistudy-sync/src/merge.rs` | ✅ |
+| 1.15 provider.rs + github.rs | 1.19 | `cecistudy-sync/src/provider.rs` + `providers/github.rs` | ✅ |
+| 1.16 engine.ts → `use_cases/sync.rs` | 1.21 (dentro do app) | `cecistudy-app/src/use_cases/sync.rs` | ✅ |
+| 1.17 content crate setup | 1.20 | `cecistudy-content/` | ✅ |
+| 1.18 content queries | 1.20 (dentro) | `cecistudy-content/src/queries/` | ✅ |
+| 1.19 app crate setup | 1.21 | `cecistudy-app/` | ✅ |
+| 1.20 use cases básicos | 1.21 (dentro) | `cecistudy-app/src/use_cases/` | ✅ |
+| 1.21 FFI (flutter_rust_bridge) | 1.22 | `cecistudy-ffi/` | 🔲 (não existe ainda) |
+| — | 1.23 Google Calendar | `cecistudy-integrations/` | 🔲 (não existe ainda) |
+
+> **Portas extras já feitas:** além do spec, `cecistudy-app` já implementa `App::open`,
+> `App::in_memory`, `App::verify`, `App::open_catalog`, `App::capability_for` (entrypoints
+> da superfície FFI do futuro `cecistudy-ffi`).
+>
+> **Fonte de verdade para status:** este doc (01-task-breakdown-flutter-rust.md).
+> O consolidado foi referência de planejamento; a numeração dele não bate com os commits.
 8. **Sync P2P não é bloqueador.** GitHub provider resolve interop no dia 1.
 9. **Manter `packages/*.ts` intactos.** Mobile não muda nesta fase.
 10. **Testar cross-platform.** O mesmo fixture deve produzir o mesmo JSON em TS e Rust.
