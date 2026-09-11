@@ -7,10 +7,13 @@ license.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+base64.workspace = true
 cecistudy-common = { path = "../cecistudy-common" }
+reqwest.workspace = true
 serde = { workspace = true, features = ["derive"] }
 serde_json.workspace = true
 
 [dev-dependencies]
 cecistudy-common = { path = "../cecistudy-common" }
+mockito.workspace = true
 serde_json.workspace = true
