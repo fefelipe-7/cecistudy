@@ -11,17 +11,23 @@
 //!   migração) + serialização canônica.
 //! - [`payload`] — validação por coleção (porta do `backupSchema` Zod) e
 //!   import validado.
+//! - [`repositories`] — CRUD por coleção na base da usuária (porta do
+//!   normalize.ts).
 
 pub mod backup;
 pub mod connection;
 pub mod migrations;
 pub mod payload;
+pub mod repositories;
 pub mod schema;
 
 pub use backup::{BackupV2, build_backup, parse_backup};
 pub use connection::{CatalogDb, UserDb};
 pub use migrations::{SCHEMA_VERSION, apply_step, migrate};
 pub use payload::{import_backup, validate_payload};
+pub use repositories::{
+  USER_COLLECTION_KEYS, is_user_collection_key, load_collection, save_collection,
+};
 pub use schema::{
   EXPECTED_CATALOG_TABLES, EXPECTED_TABLES_COUNT, EXPECTED_USER_TABLES, apply_schema, verify_schema,
 };
