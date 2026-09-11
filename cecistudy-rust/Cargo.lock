@@ -74,6 +74,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "cecistudy-app"
+version = "0.1.0"
+dependencies = [
+ "cecistudy-common",
+ "cecistudy-content",
+ "cecistudy-data",
+ "cecistudy-domain",
+ "cecistudy-sync",
+ "serde",
+ "serde_json",
+ "thiserror",
+]
+
+[[package]]
 name = "cecistudy-common"
 version = "0.1.0"
 dependencies = [
