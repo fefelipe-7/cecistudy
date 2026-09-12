@@ -1,17 +1,26 @@
-import React, { memo, useCallback, useEffect } from 'react';
+import React, { Suspense, lazy, memo, useCallback, useEffect } from 'react';
 import { FileText } from 'lucide-react';
 import type { AppContextValue } from '@/context/AppContext';
 import { initOta } from '@/lib/ota';
 import { QuickType } from '@/types';
-
-import { QuickAddModal } from '@/components/QuickAddModal';
-import { GlobalSearchModal } from '@/components/GlobalSearchModal';
-import { EditCourseModal } from '@/components/courses/EditCourseModal';
-import { EditTccModal } from '@/components/tcc/EditTccModal';
-import { ManageDataModal } from '@/components/ui/ManageDataModal';
 import { Modal } from '@/components/ui/Modal';
-import { OtaUpdateModal } from '@/components/ui/OtaUpdateModal';
 import { Toast } from '@/components/ui/Toast';
+
+// B.3 — modais pesados fora do chunk de boot (só carregam ao montar, e como
+// chunks próprios): QuickAdd/Search/EditCourse são formulários densos; só
+// aparecem por interação. `Modal`/`Toast` ficam eager (leves e instantâneos).
+const loadQuickAddModal = () => import('@/components/QuickAddModal').then((m) => ({ default: m.QuickAddModal }));
+const loadGlobalSearchModal = () => import('@/components/GlobalSearchModal').then((m) => ({ default: m.GlobalSearchModal }));
+const loadEditCourseModal = () => import('@/components/courses/EditCourseModal').then((m) => ({ default: m.EditCourseModal }));
+const loadEditTccModal = () => import('@/components/tcc/EditTccModal').then((m) => ({ default: m.EditTccModal }));
+const loadManageDataModal = () => import('@/components/ui/ManageDataModal').then((m) => ({ default: m.ManageDataModal }));
+const loadOtaUpdateModal = () => import('@/components/ui/OtaUpdateModal').then((m) => ({ default: m.OtaUpdateModal }));
+const QuickAddModal = lazy(loadQuickAddModal);
+const GlobalSearchModal = lazy(loadGlobalSearchModal);
+const EditCourseModal = lazy(loadEditCourseModal);
+const EditTccModal = lazy(loadEditTccModal);
+const ManageDataModal = lazy(loadManageDataModal);
+const OtaUpdateModal = lazy(loadOtaUpdateModal);
 
 // Componentes orientados a props com memo: não re-renderizam quando a shell
 // re-renderiza por mudança de dados (ex.: togglar tarefa) sem que suas props mudem.
@@ -113,7 +122,7 @@ export const OverlaysContent: React.FC<{ app: AppContextValue }> = ({ app }) => 
   }, [app.onboarding.completed]);
 
   return (
-    <>
+    <Suspense fallback={null}>
       <QuickAddModalMemo
         isOpen={app.isQuickAddOpen}
         onClose={app.closeQuickAdd}
@@ -163,6 +172,6 @@ export const OverlaysContent: React.FC<{ app: AppContextValue }> = ({ app }) => 
       <OtaUpdateModal />
 
       <ToastMemo message={app.toast} />
-    </>
+    </Suspense>
   );
 };

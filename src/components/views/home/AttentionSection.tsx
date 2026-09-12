@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, ArrowRight, Plus } from 'lucide-react';
 import type { Task } from '../../../types';
-import { useMobileApp } from '@/context/mobileApp';
+import { useDataClientCourses } from '@/context/DataClientProvider';
+import { useCoursesActions, useNavValue } from '@/context/shellNavContexts';
 import { SectionTitle } from '../../ui/SectionTitle';
 import { TaskRow, ExamRow } from './rows';
 
@@ -16,7 +17,9 @@ interface AttentionSectionProps {
 }
 
 const AttentionSection: React.FC<AttentionSectionProps> = ({ items, remainingCount }) => {
-  const { tasks, handleAddTask, handleNavigate } = useMobileApp();
+  const { tasks } = useDataClientCourses();
+  const { handleAddTask } = useCoursesActions();
+  const { handleNavigate } = useNavValue();
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
   const handleAddNewTask = (e: React.FormEvent) => {

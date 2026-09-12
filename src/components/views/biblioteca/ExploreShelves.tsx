@@ -24,7 +24,7 @@ import ExploreSection from './ExploreSection';
 
 interface ExploreShelvesProps {
   filter: LibraryFilterResult;
-  savedBookIds: string[];
+  savedBookIds: Set<string>;
   readingProgress: Record<string, number>;
   onSelectBook: (book: CollectionBook) => void;
   onSelectArticle: (article: Article) => void;
@@ -67,7 +67,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 pt-1">
             {filteredTrendingBooks.map((book) => {
-              const isSaved = savedBookIds.includes(book.id);
+              const isSaved = savedBookIds.has(book.id);
               return (
                 <ManageSurface
                   key={book.id}
@@ -375,7 +375,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
                     <ArticleCard
                       key={article.id}
                       article={article}
-                      isSaved={savedBookIds.includes(article.id)}
+                      isSaved={savedBookIds.has(article.id)}
                       onSelect={() => onSelectArticle(article)}
                     />
                   ))}

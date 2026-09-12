@@ -14,9 +14,21 @@
  */
 
 import { EmptyDatabase, emptyDatabase } from '@/data/empty';
-import { backupDataSchema } from './backupSchema';
-import { PersistedStateSnapshot, buildBackupData } from './persistentData';
+import type { PersistedStateSnapshot } from './persistentData';
+import { buildBackupData } from './persistentData';
 import { SCHEMA_VERSION, USER_SCHEMA_VERSION, migrateDatabase } from '@/data/schema';
+import type { backupDataSchema } from './backupSchema';
+
+// B.7 — o schema Zod (e o zod) só é carregado quando uma importação roda de
+// verdade: `import('./backupSchema')` cria um chunk próprio, fora do boot.
+// `importAppDatabase` é async por isso. `importData`/`applyMerged` (UI e sync)
+// já são caminhos assíncronos, então a mudança é invisível.
+type BackupSchemaModule = { backupDataSchema: typeof backupDataSchema };
+let backupSchemaPromise: Promise<BackupSchemaModule> | null = null;
+function getBackupSchema(): Promise<BackupSchemaModule> {
+  if (!backupSchemaPromise) backupSchemaPromise = import('./backupSchema');
+  return backupSchemaPromise;
+}
 
 export const BACKUP_FILE_NAME = 'cecistudy-backup.json';
 export const BACKUP_FORMAT = 'cecistudy-user-backup';
@@ -74,9 +86,9 @@ export function previewBackup(json: string): {
 /**
  * Valida e restaura um backup v2. Rejeita formatos desconhecidos e payloads
  * estruturalmente inválidos. Retorna `null` quando inválido — nunca retorna um
- * banco parcial.
+ * banco parcial. Async: carrega o schema Zod (e o zod) sob demanda (B.7).
  */
-export function importAppDatabase(json: string): EmptyDatabase | null {
+export async function importAppDatabase(json: string): Promise<EmptyDatabase | null> {
   let parsed: unknown;
   try {
     parsed = JSON.parse(json);
@@ -102,6 +114,7 @@ export function importAppDatabase(json: string): EmptyDatabase | null {
 
   // Validação runtime por coleção (Zod): rejeita shapes inválidos com erro
   // específico. O estado atual NUNCA é substituído antes da validação completa.
+  const { backupDataSchema } = await getBackupSchema();
   const validated = backupDataSchema.safeParse(payloadData);
   if (!validated.success) {
     console.warn('[import] backup inválido:', validated.error.flatten());

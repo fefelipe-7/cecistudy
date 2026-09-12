@@ -1,13 +1,17 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { AppBaseContext, DataClientContext, MobileAppContext, DesktopAppContext } from '@/context/appContexts';
 import { DataClientProvider, useDataClientContext } from '@/context/DataClientProvider';
 import { useSharedAppValue } from '@/context/sharedAppValue';
 import {
   AppActionsContext,
+  AppBundle,
   CoursesActionsContext,
+  CoursesBundle,
   KnowledgeActionsContext,
+  KnowledgeBundle,
   NavValueContext,
   StudyActionsContext,
+  StudyBundle,
 } from '@/context/shellNavContexts';
 import { buildAppContextValue, type AppContextValue } from '@/context/AppContext';
 import { DesktopUpdateSection } from '@/desktop/components/DesktopUpdateSection';
@@ -22,6 +26,54 @@ function DesktopShellInner({ children }: { children: React.ReactNode }) {
   const nav = useDesktopNavigation(data, shared);
   const base: AppContextValue = buildAppContextValue(data, shared, nav);
   const { session, patch } = useDesktopSession();
+
+  const coursesBundle: CoursesBundle = useMemo(
+    () => ({
+      ...shared.dataActions.courses,
+      toggleBookmarkCourse: shared.toggleBookmarkCourse,
+    }),
+    [shared.dataActions.courses, shared.toggleBookmarkCourse]
+  );
+
+  const studyBundle: StudyBundle = useMemo(
+    () => ({
+      ...shared.dataActions.study,
+      streakStats: shared.streakStats,
+      currentWeekProgress: shared.currentWeekProgress,
+      registerActivity: shared.registerActivity,
+    }),
+    [
+      shared.dataActions.study,
+      shared.streakStats,
+      shared.currentWeekProgress,
+      shared.registerActivity,
+    ]
+  );
+
+  const knowledgeBundle: KnowledgeBundle = useMemo(
+    () => ({
+      ...shared.dataActions.knowledge,
+      toggleSaveBook: shared.toggleSaveBook,
+      updateReadingProgress: shared.updateReadingProgress,
+      showToast: data.showToast,
+    }),
+    [
+      shared.dataActions.knowledge,
+      shared.toggleSaveBook,
+      shared.updateReadingProgress,
+      data.showToast,
+    ]
+  );
+
+  const appBundle: AppBundle = useMemo(
+    () => ({
+      ...shared.dataActions.app,
+      showToast: data.showToast,
+      updateReminder: shared.updateReminder,
+      setGcalEnabled: shared.setGcalEnabled,
+    }),
+    [shared.dataActions.app, data.showToast, shared.updateReminder, shared.setGcalEnabled]
+  );
 
   const openKnowledgeGraph = useCallback(() => patch({ isKnowledgeGraphOpen: true }), [patch]);
   const closeKnowledgeGraph = useCallback(() => patch({ isKnowledgeGraphOpen: false }), [patch]);
@@ -56,10 +108,10 @@ function DesktopShellInner({ children }: { children: React.ReactNode }) {
       <DataClientContext.Provider value={base}>
         <MobileAppContext.Provider value={base}>
           <DesktopAppContext.Provider value={augmented}>
-            <CoursesActionsContext.Provider value={shared.dataActions.courses}>
-              <StudyActionsContext.Provider value={shared.dataActions.study}>
-                <KnowledgeActionsContext.Provider value={shared.dataActions.knowledge}>
-                  <AppActionsContext.Provider value={shared.dataActions.app}>
+            <CoursesActionsContext.Provider value={coursesBundle}>
+              <StudyActionsContext.Provider value={studyBundle}>
+                <KnowledgeActionsContext.Provider value={knowledgeBundle}>
+                  <AppActionsContext.Provider value={appBundle}>
                     <NavValueContext.Provider value={nav}>{children}</NavValueContext.Provider>
                   </AppActionsContext.Provider>
                 </KnowledgeActionsContext.Provider>

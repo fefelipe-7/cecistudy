@@ -631,13 +631,15 @@ export function useDataClient(): DataClientValue {
 
   /** Restaura um payload exportado (backup/migração), validando a versão do schema. */
   const importData = (json: string) => {
-    const db = importAppDatabase(json);
-    if (!db) {
-      showToast('ops, esse arquivo de backup não é compatível ♡');
-      return;
-    }
-    applyDatabase(db);
-    showToast('backup restaurado com carinho ♡');
+    void (async () => {
+      const db = await importAppDatabase(json);
+      if (!db) {
+        showToast('ops, esse arquivo de backup não é compatível ♡');
+        return;
+      }
+      applyDatabase(db);
+      showToast('backup restaurado com carinho ♡');
+    })();
   };
 
   /** Snapshot local (JSON do backup v2) para enviar na sincronização entre dispositivos. */
@@ -673,14 +675,14 @@ export function useDataClient(): DataClientValue {
       deviceId,
       appVersion: APP_VERSION,
       schemaVersion: SCHEMA_VERSION,
-      parseBackup: (json) => importAppDatabase(json),
+      parseBackup: async (json) => await importAppDatabase(json),
       stringifyBackup: (db) => JSON.stringify(db),
     });
   }, [githubSyncConfig, deviceId]);
 
   const applyMerged = useCallback(
-    (mergedJson: string, remoteManifest: SyncManifest, remoteSha: string) => {
-      const db = importAppDatabase(mergedJson);
+    async (mergedJson: string, remoteManifest: SyncManifest, remoteSha: string) => {
+      const db = await importAppDatabase(mergedJson);
       if (db) applyDatabase(db);
       setSyncCheckpoint({
         baseRevision: remoteManifest.revision,
@@ -716,7 +718,7 @@ export function useDataClient(): DataClientValue {
             setSyncStatus('preview');
             return;
           }
-          applyMerged(mergedJson, remoteManifest, remoteSha);
+          await applyMerged(mergedJson, remoteManifest, remoteSha);
           showToast('sincronizado com carinho ♡');
           setSyncStatus('synced');
         } else if (engine.needsUpload(cp, localStamp) || !hasRemote) {
@@ -752,14 +754,16 @@ export function useDataClient(): DataClientValue {
   }, []);
   const applySyncPreview = useCallback(() => {
     if (!pendingSyncPreview) return;
-    applyMerged(
-      pendingSyncPreview.mergedJson,
-      pendingSyncPreview.remoteManifest,
-      pendingSyncPreview.remoteSha,
-    );
-    setPendingSyncPreview(null);
-    showToast('sincronizado com carinho ♡');
-    setSyncStatus('synced');
+    void (async () => {
+      await applyMerged(
+        pendingSyncPreview.mergedJson,
+        pendingSyncPreview.remoteManifest,
+        pendingSyncPreview.remoteSha,
+      );
+      setPendingSyncPreview(null);
+      showToast('sincronizado com carinho ♡');
+      setSyncStatus('synced');
+    })();
   }, [pendingSyncPreview, applyMerged]);
   const discardSyncPreview = useCallback(() => {
     setPendingSyncPreview(null);

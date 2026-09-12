@@ -3,7 +3,8 @@ import { BookOpen, Calendar as CalendarIcon, HeartHandshake } from 'lucide-react
 import { SubTabFaculdade, Course } from '../../types';
 import { CourseDetailView } from './CourseDetailView';
 import { UnderlineTabBar } from '../ui/UnderlineTabBar';
-import { useMobileApp } from '@/context/mobileApp';
+import { useDataClientApp, useDataClientCourses } from '@/context/DataClientProvider';
+import { useNavValue } from '@/context/shellNavContexts';
 import { getTodaySchedule, upcomingEvents } from '../../lib/schedule';
 import type { CalendarEvent } from '../../lib/schedule';
 import HeroSection from './faculdade/HeroSection';
@@ -19,19 +20,15 @@ interface FaculdadeViewProps {
 }
 
 export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
+  const { profile, internshipLogs } = useDataClientApp();
+  const { courses, classes, exams, tasks } = useDataClientCourses();
   const {
-    profile,
-    courses,
-    classes,
-    exams,
-    tasks,
-    internshipLogs,
     subTabFaculdade: subTab,
     setSubTabFaculdade: setSubTab,
     openCourseDetail,
     openInternshipDiary,
     openWizard,
-  } = useMobileApp();
+  } = useNavValue();
 
   const now = useMemo(() => new Date(), []);
 

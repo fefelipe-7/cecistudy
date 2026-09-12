@@ -1,5 +1,6 @@
 ﻿import React, { useMemo } from 'react';
-import { useMobileApp } from '@/context/mobileApp';
+import { useDataClientApp, useDataClientCourses, useDataClientStudy } from '@/context/DataClientProvider';
+import { useNavValue, useStudyActions } from '@/context/shellNavContexts';
 import { getGreeting, getDailyGoalMessage, ATTENTION_LIMIT } from '../../lib/homeMeta';
 import { pickTip } from '../../lib/tips';
 import { getTodaySchedule } from '../../lib/schedule';
@@ -12,18 +13,11 @@ import QuickActions from './home/QuickActions';
 import CecinhoTip from './home/CecinhoTip';
 
 export const HomeView: React.FC = () => {
-  const {
-    profile,
-    courses,
-    tasks,
-    exams,
-    flashcards,
-    handleNavigate,
-    openStreak,
-    openStudy,
-    streakStats,
-    currentWeekProgress,
-  } = useMobileApp();
+  const { profile } = useDataClientApp();
+  const { courses, tasks, exams } = useDataClientCourses();
+  const { flashcards } = useDataClientStudy();
+  const { streakStats, currentWeekProgress } = useStudyActions();
+  const { handleNavigate, openStreak, openStudy } = useNavValue();
 
   const greeting = getGreeting();
 

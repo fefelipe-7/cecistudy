@@ -29,7 +29,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
 
 interface MixedCollectionBlockProps {
   collection: MixedCollection;
-  savedBookIds: string[];
+  savedBookIds: Set<string>;
   readProgress?: Record<string, number>;
   onSelectBook: (book: CollectionBook) => void;
   onSelectArticle: (article: Article) => void;
@@ -77,7 +77,7 @@ export const MixedCollectionBlock: React.FC<MixedCollectionBlockProps> = ({
       {/* Grade mista expandida: livros + artigos */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-3 gap-y-4">
         {collection.books.map((book) => {
-          const isSaved = savedBookIds.includes(book.id);
+          const isSaved = savedBookIds.has(book.id);
           const readPages = readProgress?.[book.id];
           const isReading = (readPages ?? 0) > 0;
           const progressPercent =
@@ -149,7 +149,7 @@ export const MixedCollectionBlock: React.FC<MixedCollectionBlockProps> = ({
           <ArticleCard
             key={article.id}
             article={article}
-            isSaved={savedBookIds.includes(article.id)}
+            isSaved={savedBookIds.has(article.id)}
             onSelect={() => onSelectArticle(article)}
           />
         ))}

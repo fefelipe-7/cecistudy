@@ -28,7 +28,7 @@ const deps = (deviceId: string) => ({
   deviceId,
   appVersion: '1.0.0',
   schemaVersion: 10,
-  parseBackup: (j: string) => JSON.parse(j) as SyncableDatabase,
+  parseBackup: async (j: string) => JSON.parse(j) as SyncableDatabase,
   stringifyBackup: (d: SyncableDatabase) => JSON.stringify(d),
 });
 

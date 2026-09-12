@@ -3,6 +3,7 @@ import { Capacitor } from '@capacitor/core';
 import { App as CapacitorApp } from '@capacitor/app';
 import { AnimatePresence, motion, useMotionValue } from 'framer-motion';
 import { useMobileApp } from '@/context/mobileApp';
+import { useNavValue } from '@/context/shellNavContexts';
 import { setupNativeShell } from '../lib/native';
 import { overlayVariants, PUSH_DURATION, PUSH_EXIT_DURATION } from '../lib/motion';
 import { nativeNavigation } from '../navigation/native-navigation';
@@ -24,6 +25,9 @@ const BottomNavMemo = memo(BottomNav);
  */
 export const MobileAppShell: React.FC = () => {
   const app = useMobileApp();
+  // Campos de navegação via NavValueContext (identidade estável entre mudanças de
+  // dados) — o BottomNavMemo só re-renderiza quando a NAVEGAÇÃO muda de fato.
+  const nav = useNavValue();
 
   useEffect(() => {
     setupNativeShell();
@@ -75,10 +79,8 @@ export const MobileAppShell: React.FC = () => {
   const {
     profile,
     headerConfig,
-    activeTab,
-    handleNavigate,
-    openCompose,
   } = app;
+  const { activeTab, handleNavigate, openCompose, openWizard, openTaskExamWizard } = nav;
 
   const onNavigateToPerfil = useCallback(() => handleNavigate('perfil'), [handleNavigate]);
 
@@ -173,8 +175,8 @@ export const MobileAppShell: React.FC = () => {
             <BottomNavMemo
               activeTab={activeTab}
               onChangeTab={handleNavigate}
-              onOpenWizard={app.openWizard}
-              onOpenTaskExamWizard={app.openTaskExamWizard}
+              onOpenWizard={openWizard}
+              onOpenTaskExamWizard={openTaskExamWizard}
               onOpenCompose={openCompose}
             />
           </motion.div>

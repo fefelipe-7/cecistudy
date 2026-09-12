@@ -133,15 +133,15 @@ describe('backup/restore round-trip', () => {
     ];
     const payload = await buildBackupPayload(db);
     const json = JSON.stringify(payload);
-    const restored = importAppDatabase(json);
+    const restored = await importAppDatabase(json);
     expect(restored).not.toBeNull();
     expect(restored?.courses[0]?.id).toBe('c1');
     // bancos estáticos NÃO viajam no backup
     expect((payload.payload as any).approaches).toBeUndefined();
   });
 
-  it('rejeita payload de formato desconhecido', () => {
-    expect(importAppDatabase('{"format":"x"}')).toBeNull();
+  it('rejeita payload de formato desconhecido', async () => {
+    expect(await importAppDatabase('{"format":"x"}')).toBeNull();
   });
 });
 

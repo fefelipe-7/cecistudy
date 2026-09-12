@@ -17,6 +17,8 @@ import {
   Users,
 } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
+import { useDataClientApp, useDataClientCourses, useDataClientStudy } from '@/context/DataClientProvider';
+import { useAppActions, useNavValue } from '@/context/shellNavContexts';
 import { DitherFunnelChart } from '../ui/dither-funnel';
 import { CHART_PASTELS, formatCount } from '../../lib/ditherChart';
 import { isReminderSupported } from '../../lib/notifications';
@@ -46,6 +48,16 @@ import { deriveCases } from '../../lib/internshipCases';
 
 const scrollToSection = (id: string) => {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
+/**
+ * Renderiza a seção extra injetada pela casca (ex.: card de atualização do
+ * desktop Tauri). Isolada num leaf para o PerfilView não depender do valor
+ * agregado do app (que muda a cada alteração de qualquer domínio).
+ */
+const ShellExtrasSection: React.FC = () => {
+  const { shellExtras } = useMobileApp();
+  return <>{shellExtras?.updateSection && <shellExtras.updateSection />}</>;
 };
 
 /** Card de atualização OTA (auto-suficiente; renderizado só no app nativo). */
@@ -125,33 +137,25 @@ interface PerfilViewProps {
 export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
   const {
     profile,
-    courses,
-    classes,
-    tasks,
-    exams,
-    readings,
-    flashcards,
-    sessions,
     internshipLogs,
     tcc,
     stickers,
-    handleUpdateProfile,
+    reminderSettings,
+    gcalEnabled,
+    resetApp,
+    exportData,
+    importData,
+  } = useDataClientApp();
+  const { courses, classes, tasks, exams } = useDataClientCourses();
+  const { readings, flashcards, sessions } = useDataClientStudy();
+  const { handleUpdateProfile, showToast, updateReminder, setGcalEnabled } = useAppActions();
+  const {
     handleNavigate,
     openInternshipDiary,
     openTccScreen,
     openStickersScreen,
-    reminderSettings,
-    updateReminder,
-    gcalEnabled,
-    setGcalEnabled,
-    showToast,
-    resetApp,
-    exportData,
-    importData,
     openSyncScreen,
-  } = useMobileApp();
-
-  const { shellExtras } = useMobileApp();
+  } = useNavValue();
 
   const [name, setName] = useState(profile.name);
   const [semester, setSemester] = useState(profile.semester);
@@ -343,7 +347,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
       />
 
       {isNativePlatform && <OtaSection />}
-      {shellExtras?.updateSection && <shellExtras.updateSection />}
+      <ShellExtrasSection />
       <GithubSyncCard />
 
       <DataSection

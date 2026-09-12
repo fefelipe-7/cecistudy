@@ -12,7 +12,8 @@ import {
   Activity,
   GraduationCap,
 } from 'lucide-react';
-import { useMobileApp } from '@/context/mobileApp';
+import { useDataClientApp, useDataClientCourses, useDataClientStudy } from '@/context/DataClientProvider';
+import { useNavValue, useStudyActions } from '@/context/shellNavContexts';
 import { isDueToday, intervalFor } from '../../lib/review';
 import { toDateKey } from '../../lib/streak';
 import { pickTip } from '../../lib/tips';
@@ -21,20 +22,11 @@ import { Mascote } from '../ui/Mascote';
 import { SectionTitle } from '../ui/SectionTitle';
 
 export const EstudosView: React.FC = () => {
-  const {
-    flashcards,
-    readings,
-    sessions,
-    tcc,
-    courses,
-    questions,
-    streakStats,
-    currentWeekProgress,
-    openStudy,
-    openQuizCategory,
-    openTccScreen,
-    openWizard,
-  } = useMobileApp();
+  const { tcc } = useDataClientApp();
+  const { courses } = useDataClientCourses();
+  const { flashcards, readings, sessions, questions } = useDataClientStudy();
+  const { streakStats, currentWeekProgress } = useStudyActions();
+  const { openStudy, openQuizCategory, openTccScreen, openWizard } = useNavValue();
 
   // ---- dados reais derivados do estado ----
   const dueCards = useMemo(() => flashcards.filter(isDueToday), [flashcards]);

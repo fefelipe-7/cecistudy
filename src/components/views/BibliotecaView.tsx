@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import {
   BookOpen,
   User,
@@ -61,26 +61,38 @@ import { Mascote } from '../ui/Mascote';
 import { TagChip } from '../ui/TagChip';
 import { BookDetailModal } from '../library/BookDetailModal';
 import { LibraryFilterModal } from '../library/LibraryFilterModal';
-import { NotesScreen } from '../library/NotesScreen';
-import { TempleScreen } from '../library/TempleScreen';
-import { ConceptsScreen } from '../library/temple/ConceptsScreen';
-import { AuthorsScreen } from '../library/temple/AuthorsScreen';
-import { TechniquesScreen } from '../library/temple/TechniquesScreen';
-import { ComparisonsScreen } from '../library/temple/ComparisonsScreen';
-import { ComparisonDetailScreen } from '../library/temple/ComparisonDetailScreen';
-import { TempleEmptyState, TempleLoading } from '../library/temple/TempleShared';
-import { getTempleComparison } from '../../lib/templeData';
-import { FamiliesView } from './FamiliesView';
-import { FamilyDetailView } from './FamilyDetailView';
-import { ApproachDetailView } from './ApproachDetailView';
+import { TempleLoading } from '../library/temple/TempleShared';
 import { ArticleCard } from '../library/ArticleCard';
 import { ArticleDetailModal } from '../library/ArticleDetailModal';
 import { MixedCollectionBlock } from '../library/MixedCollectionBlock';
 import { ManageSurface } from '../ui/ManageSurface';
 import { useMobileApp } from '@/context/mobileApp';
+import { useDataClientCourses, useDataClientKnowledge } from '@/context/DataClientProvider';
+import { useKnowledgeActions, useNavValue } from '@/context/shellNavContexts';
 import { useLibraryFilters } from './biblioteca/useLibraryFilters';
 import { MyMaterialsSection } from './biblioteca/MyMaterialsSection';
 import { ExploreSections, LibraryModals } from './biblioteca/ExploreSections';
+
+// B.4 — sub-telas da biblioteca (notas/templo/famílias/abordagens) só carregam
+// quando o modo da aba as monta: cada uma vira chunk próprio sob Suspense.
+const loadNotesScreen = () => import('../library/NotesScreen').then((m) => ({ default: m.NotesScreen }));
+const loadTempleScreen = () => import('../library/TempleScreen').then((m) => ({ default: m.TempleScreen }));
+const loadConceptsScreen = () => import('../library/temple/ConceptsScreen').then((m) => ({ default: m.ConceptsScreen }));
+const loadAuthorsScreen = () => import('../library/temple/AuthorsScreen').then((m) => ({ default: m.AuthorsScreen }));
+const loadTechniquesScreen = () => import('../library/temple/TechniquesScreen').then((m) => ({ default: m.TechniquesScreen }));
+const loadComparisonRouteView = () => import('./biblioteca/ComparisonRouteView').then((m) => ({ default: m.ComparisonRouteView }));
+const loadFamiliesView = () => import('./FamiliesView').then((m) => ({ default: m.FamiliesView }));
+const loadFamilyDetailView = () => import('./FamilyDetailView').then((m) => ({ default: m.FamilyDetailView }));
+const loadApproachDetailView = () => import('./ApproachDetailView').then((m) => ({ default: m.ApproachDetailView }));
+const NotesScreen = lazy(loadNotesScreen);
+const TempleScreen = lazy(loadTempleScreen);
+const ConceptsScreen = lazy(loadConceptsScreen);
+const AuthorsScreen = lazy(loadAuthorsScreen);
+const TechniquesScreen = lazy(loadTechniquesScreen);
+const ComparisonRouteView = lazy(loadComparisonRouteView);
+const FamiliesView = lazy(loadFamiliesView);
+const FamilyDetailView = lazy(loadFamilyDetailView);
+const ApproachDetailView = lazy(loadApproachDetailView);
 
 export type BibliotecaViewMode =
   | 'library'
@@ -98,48 +110,20 @@ interface BibliotecaViewProps {
   approachId?: string;
   comparisonSlug?: string;
 }
-const ComparisonRouteView: React.FC<{ comparisonSlug?: string }> = ({ comparisonSlug }) => {
-  const { openComparison, closeComparison } = useMobileApp();
-  const [focusedComparison, setFocusedComparison] = useState<TempleComparison | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    if (!comparisonSlug) {
-      setFocusedComparison(null);
-      setLoading(false);
-      setError(false);
-      return;
-    }
-    let alive = true;
-    setLoading(true);
-    setError(false);
-    void getTempleComparison(comparisonSlug)
-      .then((comparison) => {
-        if (!alive) return;
-        setFocusedComparison(comparison);
-        setError(!comparison);
-        setLoading(false);
-      })
-      .catch(() => {
-        if (!alive) return;
-        setFocusedComparison(null);
-        setError(true);
-        setLoading(false);
-      });
-    return () => {
-      alive = false;
-    };
-  }, [comparisonSlug]);
-
-  if (!comparisonSlug) return <ComparisonsScreen onOpen={openComparison} />;
-  if (loading) return <TempleLoading label="carregando comparação…" />;
-  if (error || !focusedComparison) return <TempleEmptyState message="comparação não encontrada ♡" />;
-  return <ComparisonDetailScreen comparison={focusedComparison} onBack={closeComparison} />;
-};
 
 export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library', familyId, approachId, comparisonSlug }) => {
-  const { openNotesScreen, isCreatingLooseNote, setIsCreatingLooseNote, openTemple, looseNotes, addLooseNote, deleteLooseNote, courses, concepts, authors, openNoteDetail, openNoteTransform, savedBookIds, toggleSaveBook, readingProgress, updateReadingProgress, openApproach } = useMobileApp();
+  const { looseNotes, savedBookIds, readingProgress, concepts, authors } = useDataClientKnowledge();
+  const { courses } = useDataClientCourses();
+  const { addLooseNote, deleteLooseNote, toggleSaveBook, updateReadingProgress } = useKnowledgeActions();
+  const {
+    openNotesScreen,
+    isCreatingLooseNote,
+    setIsCreatingLooseNote,
+    openTemple,
+    openNoteDetail,
+    openNoteTransform,
+    openApproach,
+  } = useNavValue();
 
   // Detail & Modal States
   const [selectedBook, setSelectedBook] = useState<CollectionBook | null>(null);
@@ -159,57 +143,92 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
   const library = nativeLibrary ?? staticLibrary;
 
   // Filtros, status e coleções derivadas do acervo (extraídos p/ `biblioteca/useLibraryFilters`).
-  const filter = useLibraryFilters({ library, savedBookIds, readingProgress });
+  const savedSet = useMemo(() => new Set(savedBookIds), [savedBookIds]);
+  const filter = useLibraryFilters({ library, savedBookIds: savedSet, readingProgress });
   const { savedBooks, readingBooks, availableTags } = filter;
   if (mode === 'notes') {
     return (
-      <NotesScreen
-        looseNotes={looseNotes}
-        onAddNote={addLooseNote}
-        onDeleteNote={deleteLooseNote}
-        onEditNote={openNoteDetail}
-        onTransformNote={openNoteTransform}
-        courses={courses}
-        concepts={concepts}
-        authors={authors}
-        isCreatingNote={isCreatingLooseNote}
-        setIsCreatingNote={setIsCreatingLooseNote}
-      />
+      <Suspense fallback={null}>
+        <NotesScreen
+          looseNotes={looseNotes}
+          onAddNote={addLooseNote}
+          onDeleteNote={deleteLooseNote}
+          onEditNote={openNoteDetail}
+          onTransformNote={openNoteTransform}
+          courses={courses}
+          concepts={concepts}
+          authors={authors}
+          isCreatingNote={isCreatingLooseNote}
+          setIsCreatingNote={setIsCreatingLooseNote}
+        />
+      </Suspense>
     );
   }
 
   // Dedicated Screen View for "Templo de Conhecimento"
   if (mode === 'temple') {
-    return <TempleScreen />;
+    return (
+      <Suspense fallback={null}>
+        <TempleScreen />
+      </Suspense>
+    );
   }
 
   // Seções internas do templo (conceitos / autores / técnicas)
   if (mode === 'conceitos') {
-    return <ConceptsScreen />;
+    return (
+      <Suspense fallback={<TempleLoading label="carregando conceitos…" />}>
+        <ConceptsScreen />
+      </Suspense>
+    );
   }
   if (mode === 'autores') {
-    return <AuthorsScreen />;
+    return (
+      <Suspense fallback={<TempleLoading label="carregando autores…" />}>
+        <AuthorsScreen />
+      </Suspense>
+    );
   }
   if (mode === 'tecnicas') {
-    return <TechniquesScreen />;
+    return (
+      <Suspense fallback={<TempleLoading label="carregando técnicas…" />}>
+        <TechniquesScreen />
+      </Suspense>
+    );
   }
   if (mode === 'comparacoes') {
-    return <ComparisonRouteView comparisonSlug={comparisonSlug} />;
+    return (
+      <Suspense fallback={<TempleLoading label="carregando comparações…" />}>
+        <ComparisonRouteView comparisonSlug={comparisonSlug} />
+      </Suspense>
+    );
   }
 
   // Dedicated Screen View for "Famílias de Psicoterapias"
   if (mode === 'families') {
-    return <FamiliesView />;
+    return (
+      <Suspense fallback={null}>
+        <FamiliesView />
+      </Suspense>
+    );
   }
 
   // Dedicated Screen View for a Família específica
   if (mode === 'family' && familyId) {
-    return <FamilyDetailView familyId={familyId} />;
+    return (
+      <Suspense fallback={<TempleLoading label="carregando família…" />}>
+        <FamilyDetailView familyId={familyId} />
+      </Suspense>
+    );
   }
 
   // Dedicated Screen View for a Abordagem específica (página de leitura)
   if (mode === 'approach' && approachId) {
-    return <ApproachDetailView approachId={approachId} />;
+    return (
+      <Suspense fallback={<TempleLoading label="carregando abordagem…" />}>
+        <ApproachDetailView approachId={approachId} />
+      </Suspense>
+    );
   }
 
   return (
@@ -254,7 +273,7 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
       {/* ==================================================================== */}
       <ExploreSections
         filter={filter}
-        savedBookIds={savedBookIds}
+        savedBookIds={savedSet}
         readingProgress={readingProgress}
         selectedBook={selectedBook}
         selectedArticle={selectedArticle}
@@ -269,7 +288,7 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
       <LibraryModals
         filter={filter}
         availableTags={availableTags}
-        savedBookIds={savedBookIds}
+        savedBookIds={savedSet}
         readingProgress={readingProgress}
         selectedBook={selectedBook}
         selectedArticle={selectedArticle}

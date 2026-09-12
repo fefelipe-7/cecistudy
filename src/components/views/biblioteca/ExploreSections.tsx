@@ -25,7 +25,7 @@ import { ExploreShelves } from './ExploreShelves';
 interface ExploreSectionsProps {
   /** Estado + coleções filtradas do acervo (retorno de `useLibraryFilters`). */
   filter: LibraryFilterResult;
-  savedBookIds: string[];
+  savedBookIds: Set<string>;
   readingProgress: Record<string, number>;
   selectedBook: CollectionBook | null;
   selectedArticle: Article | null;
@@ -202,7 +202,7 @@ export const ExploreSections: React.FC<ExploreSectionsProps> = ({
 export const LibraryModals: React.FC<{
   filter: LibraryFilterResult;
   availableTags: string[];
-  savedBookIds: string[];
+  savedBookIds: Set<string>;
   readingProgress: Record<string, number>;
   selectedBook: CollectionBook | null;
   selectedArticle: Article | null;
@@ -244,7 +244,7 @@ export const LibraryModals: React.FC<{
       {selectedBook && (
         <BookDetailModal
           book={selectedBook}
-          isSaved={savedBookIds.includes(selectedBook.id)}
+          isSaved={savedBookIds.has(selectedBook.id)}
           readPages={readingProgress[selectedBook.id] ?? 0}
           onClose={onCloseBook}
           onToggleSave={() => toggleSaveBook(selectedBook.id)}
@@ -255,7 +255,7 @@ export const LibraryModals: React.FC<{
       {selectedArticle && (
         <ArticleDetailModal
           article={selectedArticle}
-          isSaved={savedBookIds.includes(selectedArticle.id)}
+          isSaved={savedBookIds.has(selectedArticle.id)}
           onClose={onCloseArticle}
           onToggleSave={() => toggleSaveBook(selectedArticle.id)}
         />

@@ -4,7 +4,7 @@ import { getTransition, prefersReducedMotion } from '@/lib/motion';
 import { CalendarClock, GraduationCap, MapPin } from 'lucide-react';
 import { CourseIcon } from '../ui/CourseIcon';
 import { UnderlineTabBar } from '../ui/UnderlineTabBar';
-import { useMobileApp } from '@/context/mobileApp';
+import { useDataClientCourses } from '@/context/DataClientProvider';
 import { formatCourseSchedule, formatShortDate, getTodaySchedule } from '../../lib/schedule';
 import {
   canStartTabSwipe,
@@ -41,7 +41,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
   const [activeTab, setActiveTab] = useState<DetailTab>('info');
   const [direction, setDirection] = useState(1);
   const dragControls = useDragControls();
-  const { classes, exams, courses } = useMobileApp();
+  const { classes, exams, courses } = useDataClientCourses();
 
   const courseClasses = classes.filter((c) => c.courseId === course.id);
   const courseExams = exams.filter((e) => e.courseId === course.id);

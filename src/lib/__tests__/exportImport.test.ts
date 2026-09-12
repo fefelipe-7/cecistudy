@@ -176,7 +176,7 @@ describe('contrato do banco persistido (backup v2)', () => {
     const snapshot = makeSnapshot();
     const payload = await buildBackupPayload(snapshot);
     const json = JSON.stringify(payload);
-    const restored = importAppDatabase(json);
+    const restored = await importAppDatabase(json);
 
     expect(restored).not.toBeNull();
     expect(restored!.quizSessions).toEqual(snapshot.quizSessions);
@@ -208,21 +208,21 @@ describe('contrato do banco persistido (backup v2)', () => {
 });
 
 describe('validação de backup v2 (P2-1)', () => {
-  it('rejeita JSON não-objeto', () => {
-    expect(importAppDatabase('null')).toBeNull();
-    expect(importAppDatabase('42')).toBeNull();
-    expect(importAppDatabase('"texto"')).toBeNull();
-    expect(importAppDatabase('[1,2]')).toBeNull();
+  it('rejeita JSON não-objeto', async () => {
+    expect(await importAppDatabase('null')).toBeNull();
+    expect(await importAppDatabase('42')).toBeNull();
+    expect(await importAppDatabase('"texto"')).toBeNull();
+    expect(await importAppDatabase('[1,2]')).toBeNull();
   });
 
-  it('rejeita formato desconhecido (ex.: backup legado v1/schema 7)', () => {
-    expect(importAppDatabase('{}')).toBeNull();
-    expect(importAppDatabase('{"version":7}')).toBeNull();
-    expect(importAppDatabase('{"data":{}}')).toBeNull();
-    expect(importAppDatabase('{"format":"cecistudy-backup-antigo","payload":{}}')).toBeNull();
+  it('rejeita formato desconhecido (ex.: backup legado v1/schema 7)', async () => {
+    expect(await importAppDatabase('{}')).toBeNull();
+    expect(await importAppDatabase('{"version":7}')).toBeNull();
+    expect(await importAppDatabase('{"data":{}}')).toBeNull();
+    expect(await importAppDatabase('{"format":"cecistudy-backup-antigo","payload":{}}')).toBeNull();
   });
 
-  it('rejeita formatVersion incompatível', () => {
+  it('rejeita formatVersion incompatível', async () => {
     const payload = {
       format: BACKUP_FORMAT,
       formatVersion: 99,
@@ -231,10 +231,10 @@ describe('validação de backup v2 (P2-1)', () => {
       exportedAt: '',
       payload: {},
     };
-    expect(importAppDatabase(JSON.stringify(payload))).toBeNull();
+    expect(await importAppDatabase(JSON.stringify(payload))).toBeNull();
   });
 
-  it('rejeita payload ausente ou não-objeto', () => {
+  it('rejeita payload ausente ou não-objeto', async () => {
     const base = {
       format: BACKUP_FORMAT,
       formatVersion: BACKUP_FORMAT_VERSION,
@@ -242,14 +242,14 @@ describe('validação de backup v2 (P2-1)', () => {
       catalogRelease: null,
       exportedAt: '',
     };
-    expect(importAppDatabase(JSON.stringify({ ...base, payload: undefined }))).toBeNull();
-    expect(importAppDatabase(JSON.stringify({ ...base, payload: 'não é objeto' }))).toBeNull();
+    expect(await importAppDatabase(JSON.stringify({ ...base, payload: undefined }))).toBeNull();
+    expect(await importAppDatabase(JSON.stringify({ ...base, payload: 'não é objeto' }))).toBeNull();
   });
 
   it('rejeita coleção com shape inválido (courses não-array)', async () => {
     const payload = await buildBackupPayload(makeSnapshot());
     const bad = { ...payload, payload: { ...payload.payload, courses: 'não é array' } };
-    expect(importAppDatabase(JSON.stringify(bad))).toBeNull();
+    expect(await importAppDatabase(JSON.stringify(bad))).toBeNull();
   });
 
   it('rejeita entidade com campos obrigatórios ausentes (course sem cor)', async () => {
@@ -258,13 +258,13 @@ describe('validação de backup v2 (P2-1)', () => {
       ...payload,
       payload: { ...payload.payload, courses: [{ id: 'c1', name: 'x' }] },
     };
-    expect(importAppDatabase(JSON.stringify(bad))).toBeNull();
+    expect(await importAppDatabase(JSON.stringify(bad))).toBeNull();
   });
 
   it('rejeita quizSessions malformado', async () => {
     const payload = await buildBackupPayload(makeSnapshot());
     const bad = { ...payload, payload: { ...payload.payload, quizSessions: [{ id: 'qs-1' }] } };
-    expect(importAppDatabase(JSON.stringify(bad))).toBeNull();
+    expect(await importAppDatabase(JSON.stringify(bad))).toBeNull();
   });
 
   it('aceita backup válido e preserva campos legados (passthrough)', async () => {
@@ -272,7 +272,7 @@ describe('validação de backup v2 (P2-1)', () => {
     (payload.payload as Record<string, unknown>).approaches = [
       { id: 'psic-01-01', name: 'x', shortName: 'x', description: 'x', foundingAuthors: [], color: '#fff' },
     ];
-    const restored = importAppDatabase(JSON.stringify(payload));
+    const restored = await importAppDatabase(JSON.stringify(payload));
     expect(restored).not.toBeNull();
     expect(restored!.approaches).toHaveLength(1);
   });
@@ -357,15 +357,15 @@ function makeLegacyBackupV5() {
 }
 
 describe('migração de backups antigos (Fase 0)', () => {
-  it('recusa backup de versão de schema futura (> atual)', () => {
+  it('recusa backup de versão de schema futura (> atual)', async () => {
     const legacy = makeLegacyBackupV5();
     legacy.schemaVersion = 999;
-    expect(importAppDatabase(JSON.stringify(legacy))).toBeNull();
+    expect(await importAppDatabase(JSON.stringify(legacy))).toBeNull();
   });
 
-  it('migra backup v5 → atual e normaliza shapes (mood, schedule, progress)', () => {
+  it('migra backup v5 → atual e normaliza shapes (mood, schedule, progress)', async () => {
     const legacy = makeLegacyBackupV5();
-    const restored = importAppDatabase(JSON.stringify(legacy));
+    const restored = await importAppDatabase(JSON.stringify(legacy));
 
     expect(restored).not.toBeNull();
     // Mood removido pelas migrações 6 (campos de mood do backup) — não vaza para o banco.
@@ -388,7 +388,7 @@ expect(restored!.quizSessions).toEqual([]);
     expect(restored!.techniques).toHaveLength(1);
   });
 
-  it('migra backup v8 (sem syncIndex/quizSessions já presentes) sem duplicar', () => {
+  it('migra backup v8 (sem syncIndex/quizSessions já presentes) sem duplicar', async () => {
     const snapshot = makeSnapshot();
     const payload = { ...snapshot, syncIndex: undefined, quizSessions: undefined } as Record<string, unknown>;
     const envelope = {
@@ -400,7 +400,7 @@ expect(restored!.quizSessions).toEqual([]);
       schemaVersion: 8,
       payload,
     };
-    const restored = importAppDatabase(JSON.stringify(envelope));
+    const restored = await importAppDatabase(JSON.stringify(envelope));
     expect(restored).not.toBeNull();
     expect(restored!.quizSessions).toEqual([]);
     expect(restored!.syncIndex).toEqual({ stamps: {}, records: {}, tombstones: {} });

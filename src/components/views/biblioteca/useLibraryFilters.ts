@@ -18,7 +18,7 @@ import type { LibraryDataset } from '../../../data/books/curate';
 export interface LibraryFilterDeps {
   /** Catálogo em uso (facade estático ou nativo SQLite). */
   library: LibraryDataset;
-  savedBookIds: string[];
+  savedBookIds: Set<string>;
   readingProgress: Record<string, number>;
 }
 
@@ -79,7 +79,7 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
 
   const matchesCategory = (col: ContextCollection, allowed: string[]) => {
     if (activeCategory === 'todos') return true;
-    if (activeCategory === 'salvos') return col.books.some((b) => savedBookIds.includes(b.id));
+    if (activeCategory === 'salvos') return col.books.some((b) => savedBookIds.has(b.id));
     if (activeCategory === 'em_leitura') return col.books.some((b) => isBookReading(b));
     return allowed.includes(col.blockCategory) && col.blockCategory === activeCategory;
   };
@@ -156,7 +156,7 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
       initialTrendingBooks.filter((b) => {
         const bookStatus = getBookStatus(b);
         if (activeStatus !== 'todos' && bookStatus !== activeStatus) return false;
-        if (activeCategory === 'salvos' && !savedBookIds.includes(b.id)) return false;
+        if (activeCategory === 'salvos' && !savedBookIds.has(b.id)) return false;
         if (activeCategory === 'em_leitura' && bookStatus !== 'lendo') return false;
         if (selectedTag && !b.tags.some((t) => t.toLowerCase().includes(selectedTag.toLowerCase()))) return false;
 
@@ -175,7 +175,7 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
     if (activeCategory === 'todos' || activeCategory === 'artigos') {
       // ok
     } else if (activeCategory === 'salvos') {
-      if (!savedBookIds.includes(a.id)) return false;
+      if (!savedBookIds.has(a.id)) return false;
     } else {
       return false;
     }
@@ -221,7 +221,7 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
       activeCategory === 'multidisciplinar' ||
       activeCategory === 'mistas' ||
       (activeCategory === 'salvos' &&
-        col.books.some((b) => savedBookIds.includes(b.id))) ||
+        col.books.some((b) => savedBookIds.has(b.id))) ||
       (activeCategory === 'em_leitura' && col.books.some((b) => isBookReading(b)));
 
     const articleCategoryOk =
@@ -229,7 +229,7 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
       activeCategory === 'artigos' ||
       activeCategory === 'mistas' ||
       (activeCategory === 'salvos' &&
-        col.articles.some((a) => savedBookIds.includes(a.id)));
+        col.articles.some((a) => savedBookIds.has(a.id)));
 
     if (!bookCategoryOk && !articleCategoryOk) return false;
 
@@ -304,7 +304,7 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
   }, []);
 
   const savedBooks = useMemo(
-    () => [...allBooksById.values()].filter((b) => savedBookIds.includes(b.id)),
+    () => [...allBooksById.values()].filter((b) => savedBookIds.has(b.id)),
     [allBooksById, savedBookIds]
   );
   const readingBooks = useMemo(

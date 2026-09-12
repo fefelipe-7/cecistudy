@@ -25,7 +25,7 @@ export interface SyncEngineDeps {
   appVersion: string;
   schemaVersion: number;
   workspaceScope?: string;
-  parseBackup(json: string): SyncableDatabase | null;
+  parseBackup(json: string): Promise<SyncableDatabase | null>;
   stringifyBackup(db: SyncableDatabase): string;
 }
 
@@ -79,8 +79,10 @@ export class SyncEngine {
   async pullAndMerge(localJson: string): Promise<PullResult> {
     const remote = await this.provider.downloadPackage();
     if (!remote) throw new SyncProviderError('NOT_FOUND', 'sem pacote remoto');
-    const localDb = this.deps.parseBackup(localJson);
-    const remoteDb = this.deps.parseBackup(JSON.stringify(remote.package.snapshot));
+    const [localDb, remoteDb] = await Promise.all([
+      this.deps.parseBackup(localJson),
+      this.deps.parseBackup(JSON.stringify(remote.package.snapshot)),
+    ]);
     if (!localDb || !remoteDb) throw new SyncProviderError('UNKNOWN', 'backup inválido');
     const result = mergeSyncedDatabases(localDb, remoteDb);
     return {

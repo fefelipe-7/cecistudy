@@ -5,7 +5,7 @@ import { ManageSurface } from '../ui/ManageSurface';
 
 interface InlineCollectionBlockProps {
   collection: ContextCollection;
-  savedBookIds: string[];
+  savedBookIds: Set<string>;
   readProgress?: Record<string, number>;
   onSelectBook: (book: CollectionBook) => void;
 }
@@ -40,7 +40,7 @@ export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = ({
       {/* Grade expandida de livros */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-3 gap-y-4">
         {collection.books.map((book) => {
-          const isSaved = savedBookIds.includes(book.id);
+          const isSaved = savedBookIds.has(book.id);
           const readPages = readProgress?.[book.id];
           const isReading = (readPages ?? 0) > 0;
           const progressPercent =

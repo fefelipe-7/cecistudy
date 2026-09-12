@@ -10,4 +10,18 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('node_modules/react') || id.includes('node_modules/scheduler')) return 'vendor-react';
+            if (id.includes('node_modules/framer-motion')) return 'vendor-motion';
+            if (id.includes('node_modules/lucide-react')) return 'vendor-icons';
+          }
+          return undefined;
+        },
+      },
+    },
+  },
 });

@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, memo } from 'react';
 import { useMobileApp } from '@/context/mobileApp';
 import { ViewSkeleton } from '../components/ui/Skeleton';
 
@@ -40,11 +40,11 @@ const loadTccView = () => import('../components/views/TccView').then((m) => ({ d
 // aqui: a camada compartilhada não conhece o desktop. O `DesktopScreenLayers` (apps/desktop)
 // importa e resolve essas telas a partir do `DesktopSessionState`.
 
-const HomeView = lazy(loadHomeView);
-const FaculdadeView = lazy(loadFaculdadeView);
-const EstudosView = lazy(loadEstudosView);
-const BibliotecaView = lazy(loadBibliotecaView);
-const PerfilView = lazy(loadPerfilView);
+const HomeView = memo(lazy(loadHomeView));
+const FaculdadeView = memo(lazy(loadFaculdadeView));
+const EstudosView = memo(lazy(loadEstudosView));
+const BibliotecaView = memo(lazy(loadBibliotecaView));
+const PerfilView = memo(lazy(loadPerfilView));
 const StreakView = lazy(loadStreakView);
 const SyncScreen = lazy(loadSyncScreen);
 const ComposeNoteView = lazy(loadComposeNoteView);

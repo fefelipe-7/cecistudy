@@ -5,14 +5,17 @@ import { motion } from 'framer-motion';
 import { getTransition } from '@/lib/motion';
 import { GraduationCap, ArrowRight } from 'lucide-react';
 import { Task } from '../../../types';
-import { useMobileApp } from '@/context/mobileApp';
+import { useDataClientCourses } from '@/context/DataClientProvider';
+import { useCoursesActions, useNavValue } from '@/context/shellNavContexts';
 import { useLongPress } from '../../../lib/useLongPress';
 import { CompletionToggle } from '../../ui/CompletionToggle';
 import { formatDueLabel, DUE_STYLES } from '../../../lib/homeMeta';
 
 /** Tarefa do plano de ação: toque alterna, long-press/clique direito abre o menu contextual. */
 export const TaskRow: React.FC<{ task: Task }> = ({ task }) => {
-  const { courses, handleToggleTask, openManageItem } = useMobileApp();
+  const { courses } = useDataClientCourses();
+  const { handleToggleTask } = useCoursesActions();
+  const { openManageItem } = useNavValue();
   const handlers = useLongPress({
     onLongPress: () => openManageItem('task', task.id),
     onClick: () => handleToggleTask(task.id),
@@ -63,7 +66,8 @@ export const TaskRow: React.FC<{ task: Task }> = ({ task }) => {
 
 /** Prova no bloco de atenção: leva à disciplina. Mesmo peso visual da tarefa. */
 export const ExamRow: React.FC<{ examId: string }> = ({ examId }) => {
-  const { exams, courses, handleNavigate } = useMobileApp();
+  const { exams, courses } = useDataClientCourses();
+  const { handleNavigate } = useNavValue();
   const exam = exams.find((e) => e.id === examId);
   if (!exam) return null;
   const course = courses.find((c) => c.id === exam.courseId);
