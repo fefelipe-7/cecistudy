@@ -186,6 +186,35 @@ impl fmt::Display for SyncPreview {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use crate::App;
+  use std::sync::Mutex;
+
+  struct InMemoryProvider {
+    pkg: Mutex<Option<cecistudy_sync::SyncRemotePackage>>,
+  }
+
+  impl SyncProvider for InMemoryProvider {
+    fn get_manifest(&self) -> std::result::Result<Option<SyncManifest>, SyncProviderError> {
+      Ok(self.pkg.lock().unwrap().as_ref().map(|r| r.package.manifest.clone()))
+    }
+
+    fn download_package(
+      &self,
+    ) -> std::result::Result<Option<cecistudy_sync::SyncRemotePackage>, SyncProviderError> {
+      Ok(self.pkg.lock().unwrap().clone())
+    }
+
+    fn upload_package(
+      &self,
+      pkg: &SyncPackage,
+      _base_sha: Option<&str>,
+    ) -> std::result::Result<UploadResult, SyncProviderError> {
+      let sha = format!("sha-{}", pkg.manifest.revision);
+      *self.pkg.lock().unwrap() =
+        Some(cecistudy_sync::SyncRemotePackage::new(pkg.clone(), sha.clone()));
+      Ok(UploadResult { revision: pkg.manifest.revision, sha })
+    }
+  }
 
   #[test]
   fn checkpoint_inicial_eh_zero() {
@@ -200,5 +229,63 @@ mod tests {
   fn preview_display_formata_stats() {
     let p = SyncPreview { added: 2, updated: 1, removed: 0 };
     assert_eq!(p.to_string(), "+2 ~1 -0");
+  }
+
+  #[test]
+  fn push_sobe_pacote_e_avanca_o_checkpoint() {
+    let app = App::in_memory().unwrap();
+    cecistudy_data::save_collection(
+      app.db.connection(),
+      "profile",
+      &serde_json::json!({
+        "name": "Ceci", "university": "U", "targetCareer": "psi",
+        "dailyQuote": "bora", "semester": 6, "totalSemesters": 10, "stickersCollected": 0
+      }),
+    )
+    .unwrap();
+
+    let provider = InMemoryProvider { pkg: Mutex::new(None) };
+    let deps = SyncEngineDeps { device_id: "notebook".into(), app_version: "0.1.0".into() };
+
+    let outcome = app.sync_push(&provider, &deps, &INITIAL_CHECKPOINT).unwrap();
+    assert_eq!(outcome.revision, 1);
+    assert_eq!(outcome.checkpoint.base_revision, 1);
+    assert_eq!(outcome.checkpoint.last_device_id.as_deref(), Some("notebook"));
+    assert!(provider.get_manifest().unwrap().is_some());
+  }
+
+  #[test]
+  fn pull_merge_aplica_e_devolve_previa() {
+    let remote = App::in_memory().unwrap();
+    cecistudy_data::save_collection(
+      remote.db.connection(),
+      "profile",
+      &serde_json::json!({
+        "name": "Ana", "university": "U", "targetCareer": "psi",
+        "dailyQuote": "bora", "semester": 5, "totalSemesters": 10, "stickersCollected": 1
+      }),
+    )
+    .unwrap();
+    let provider = InMemoryProvider { pkg: Mutex::new(None) };
+    let deps = SyncEngineDeps { device_id: "notebook".into(), app_version: "0.1.0".into() };
+    remote.sync_push(&provider, &deps, &INITIAL_CHECKPOINT).unwrap();
+
+    let local = App::in_memory().unwrap();
+    let pull = local.sync_pull(&provider).unwrap();
+    assert!(!pull.preview.to_string().is_empty());
+    assert_eq!(pull.remote_sha, "sha-1");
+    let got = cecistudy_data::load_collection(local.db.connection(), "profile").unwrap().unwrap();
+    assert_eq!(got.get("name").unwrap().as_str().unwrap(), "Ana");
+  }
+
+  #[test]
+  fn pull_sem_pacote_remoto_reporta_not_found() {
+    let provider = InMemoryProvider { pkg: Mutex::new(None) };
+    let app = App::in_memory().unwrap();
+    let err = app.sync_pull(&provider).unwrap_err();
+    assert!(matches!(
+      err,
+      SyncUseCaseError::Provider(e) if e.kind == SyncProviderErrorKind::NotFound
+    ));
   }
 }

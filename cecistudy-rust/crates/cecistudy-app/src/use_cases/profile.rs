@@ -33,3 +33,34 @@ impl App {
     update_profile(self, profile)
   }
 }
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn aceita_e_devolve_o_perfil() {
+    let app = App::in_memory().unwrap();
+    assert!(app.get_profile().unwrap().is_none());
+
+    let profile = serde_json::json!({
+      "name": "Ceci",
+      "university": "UNESP",
+      "targetCareer": "psicóloga clínica",
+      "dailyQuote": "bora estudar?",
+      "semester": 6,
+      "totalSemesters": 10,
+      "stickersCollected": 0
+    });
+    app.update_profile(&profile).unwrap();
+    let got = app.get_profile().unwrap().unwrap();
+    assert_eq!(got.get("name").unwrap().as_str().unwrap(), "Ceci");
+  }
+
+  #[test]
+  fn rejeita_perfil_incompleto() {
+    let app = App::in_memory().unwrap();
+    let err = app.update_profile(&serde_json::json!({ "name": "Ceci" })).unwrap_err();
+    assert!(!err.to_string().is_empty());
+  }
+}

@@ -70,3 +70,50 @@ fn validate_one(task: &Value) -> Result<()> {
   payload.insert(KEY.to_string(), Value::Array(vec![task.clone()]));
   validate_payload(&payload)
 }
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  fn valid_task(id: &str) -> Value {
+    serde_json::json!({
+      "id": id,
+      "title": "ler cap. 3",
+      "completed": false,
+      "priority": "media",
+      "category": "leitura"
+    })
+  }
+
+  #[test]
+  fn criar_toggle_e_deletar() {
+    let app = App::in_memory().unwrap();
+    let created = app.create_task(&valid_task("")).unwrap();
+    let id = created.get("id").unwrap().as_str().unwrap().to_owned();
+    assert!(!id.is_empty());
+    assert_eq!(app.list_tasks().unwrap().len(), 1);
+
+    let toggled = app.toggle_task(&id).unwrap();
+    assert_eq!(toggled.get("completed").unwrap().as_bool(), Some(true));
+
+    app.delete_task(&id).unwrap();
+    app.delete_task(&id).unwrap();
+    assert!(app.list_tasks().unwrap().is_empty());
+  }
+
+  #[test]
+  fn toggle_erro_quando_nao_existe() {
+    let app = App::in_memory().unwrap();
+    let err = app.toggle_task("t9").unwrap_err();
+    assert!(err.to_string().contains("não encontrada"));
+  }
+
+  #[test]
+  fn criar_valida_payload() {
+    let app = App::in_memory().unwrap();
+    let err = app
+      .create_task(&serde_json::json!({ "id": "t9", "title": "x", "completed": true }))
+      .unwrap_err();
+    assert!(err.to_string().contains("priority"));
+  }
+}

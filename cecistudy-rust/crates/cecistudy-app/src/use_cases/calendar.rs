@@ -148,6 +148,7 @@ fn weekday_index(year: u32, month: u32, day: u32) -> u64 {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use cecistudy_data::save_collection;
 
   #[test]
   fn dias_no_mes() {
@@ -162,5 +163,89 @@ mod tests {
     assert_eq!(weekday_index(1970, 1, 1), 4); // quinta
     assert_eq!(weekday_index(2026, 9, 1), 2); // terça
     assert_eq!(weekday_index(2026, 9, 7), 1); // segunda
+  }
+
+  #[test]
+  fn projeta_aulas_recorrentes_do_mes() {
+    let app = App::in_memory().unwrap();
+    save_collection(
+      app.db.connection(),
+      "courses",
+      &serde_json::json!([
+        {
+          "id": "c1",
+          "name": "Teorias da Personalidade",
+          "professor": "Helena",
+          "semester": "6º",
+          "color": "#D85F79",
+          "icon": "Brain",
+          "schedule": [{ "day": 1, "start": "08:00" }, { "day": 2, "start": "10:00" }]
+        }
+      ]),
+    )
+    .unwrap();
+
+    let events = app.get_calendar_events(2026, 9).unwrap();
+    let aulas: Vec<_> = events.iter().filter(|e| e.kind == CalendarEventKind::Aula).collect();
+    // segundas (day=1): 7,14,21,28 · terças (day=2): 1,8,15,22,29
+    assert_eq!(aulas.len(), 9);
+    for e in &aulas {
+      assert!(e.date.starts_with("2026-09-"));
+      assert_eq!(e.course_id.as_deref(), Some("c1"));
+      assert_eq!(e.title, "Teorias da Personalidade");
+      assert!(!e.completed);
+    }
+  }
+
+  #[test]
+  fn inclui_prova_e_tarefa_do_mes_apenas() {
+    let app = App::in_memory().unwrap();
+    save_collection(
+      app.db.connection(),
+      "exams",
+      &serde_json::json!([
+        { "id": "e1", "courseId": "c1", "title": "P1", "date": "2026-09-15", "weight": "P1", "topics": [], "completed": false },
+        { "id": "e2", "courseId": "c1", "title": "P2", "date": "2026-10-02", "weight": "P2", "topics": [], "completed": false }
+      ]),
+    )
+    .unwrap();
+    save_collection(
+      app.db.connection(),
+      "tasks",
+      &serde_json::json!([
+        { "id": "t1", "title": "ler cap. 3", "completed": true, "priority": "alta", "category": "leitura", "dueDate": "2026-09-10", "disciplineId": "c1" },
+        { "id": "t2", "title": "resumo tcc", "completed": false, "priority": "baixa", "category": "trabalho", "dueDate": "2026-10-01" }
+      ]),
+    )
+    .unwrap();
+
+    let events = app.get_calendar_events(2026, 9).unwrap();
+    let prova = events.iter().find(|e| e.kind == CalendarEventKind::Prova).unwrap();
+    assert_eq!(prova.date, "2026-09-15");
+    assert_eq!(prova.title, "P1");
+
+    let tarefa = events.iter().find(|e| e.kind == CalendarEventKind::Tarefa).unwrap();
+    assert_eq!(tarefa.date, "2026-09-10");
+    assert!(tarefa.completed);
+
+    let fora_do_mes = events.iter().any(|e| e.date.starts_with("2026-10"));
+    assert!(!fora_do_mes);
+  }
+
+  #[test]
+  fn eventos_ficam_ordenados_por_data() {
+    let app = App::in_memory().unwrap();
+    save_collection(
+      app.db.connection(),
+      "exams",
+      &serde_json::json!([
+        { "id": "e1", "courseId": "c1", "title": "P2", "date": "2026-09-20", "weight": "P2", "topics": [], "completed": false },
+        { "id": "e2", "courseId": "c1", "title": "P1", "date": "2026-09-03", "weight": "P1", "topics": [], "completed": false }
+      ]),
+    )
+    .unwrap();
+    let events = app.get_calendar_events(2026, 9).unwrap();
+    let dates: Vec<_> = events.iter().map(|e| e.date.as_str()).collect();
+    assert_eq!(dates, ["2026-09-03", "2026-09-20"]);
   }
 }

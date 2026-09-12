@@ -40,3 +40,65 @@ fn present_collections(app: &App) -> Result<Map<String, Value>> {
   }
   Ok(payload)
 }
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  use cecistudy_data::{load_collection, save_collection};
+
+  #[test]
+  fn export_import_roundtrip_preserva_colecoes() {
+    let app = App::in_memory().unwrap();
+    save_collection(
+      app.db.connection(),
+      "courses",
+      &serde_json::json!([
+        { "id": "c1", "name": "Teorias da Personalidade", "professor": "x", "semester": "6º", "color": "#D85F79", "icon": "Brain", "schedule": [{ "day": 2, "start": "08:00" }] }
+      ]),
+    )
+    .unwrap();
+    save_collection(app.db.connection(), "profile", &serde_json::json!({
+      "name": "Ceci", "university": "U", "targetCareer": "psi", "dailyQuote": "bora", "semester": 6, "totalSemesters": 10, "stickersCollected": 0
+    })).unwrap();
+
+    let json = app.export_backup().unwrap();
+    assert!(json.contains("cecistudy-user-backup"));
+
+    let fresh = App::in_memory().unwrap();
+    assert!(fresh.get_profile().unwrap().is_none());
+    fresh.import_backup(&json).unwrap();
+    let courses = load_collection(fresh.db.connection(), "courses").unwrap().unwrap();
+    assert_eq!(courses.as_array().unwrap()[0].get("id").unwrap(), "c1");
+  }
+
+  #[test]
+  fn import_ignora_colecoes_nao_de_usuario() {
+    let app = App::in_memory().unwrap();
+    let payload = serde_json::json!({
+      "approaches": [{ "id": "app-1", "name": "Psicanálise" }],
+      "courses": []
+    });
+    let backup = cecistudy_data::build_backup(
+      payload.as_object().unwrap().clone(),
+      "2026-09-10T12:00:00.000Z".into(),
+    );
+    app.import_backup(&backup.to_canonical()).unwrap();
+    // escolha por não ser coleção de usuário: approaches NÃO foi gravada.
+    assert!(load_collection(app.db.connection(), "approaches").unwrap().is_none());
+  }
+
+  #[test]
+  fn importa_o_fixture_dourado_de_contrato() {
+    let fixture =
+      concat!(env!("CARGO_MANIFEST_DIR"), "/../../contracts/golden/full_backup.sample.json");
+    let json = std::fs::read_to_string(fixture).unwrap();
+
+    let app = App::in_memory().unwrap();
+    app.import_backup(&json).unwrap();
+
+    let courses = load_collection(app.db.connection(), "courses").unwrap().unwrap();
+    assert_eq!(courses.as_array().unwrap().len(), 2);
+    let profile = load_collection(app.db.connection(), "profile").unwrap().unwrap();
+    assert_eq!(profile.get("name").unwrap().as_str().unwrap(), "Maite");
+  }
+}

@@ -70,3 +70,63 @@ fn validate_one(course: &Value) -> Result<()> {
   payload.insert(KEY.to_string(), Value::Array(vec![course.clone()]));
   validate_payload(&payload)
 }
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  fn valid_course(id: &str) -> Value {
+    serde_json::json!({
+      "id": id,
+      "name": "Teorias da Personalidade",
+      "professor": "Profa. Helena",
+      "semester": "6º Semestre",
+      "color": "#D85F79",
+      "icon": "Brain",
+      "schedule": [{ "day": 2, "start": "08:00", "end": "09:40" }]
+    })
+  }
+
+  #[test]
+  fn criar_listar_e_ler() {
+    let app = App::in_memory().unwrap();
+    let created = app.create_course(&valid_course("")).unwrap();
+    assert!(!created.get("id").unwrap().as_str().unwrap().is_empty());
+    assert_eq!(app.list_courses().unwrap().len(), 1);
+  }
+
+  #[test]
+  fn criar_valida_payload_imcompleto() {
+    let app = App::in_memory().unwrap();
+    let err = app.create_course(&serde_json::json!({ "id": "c9" })).unwrap_err();
+    assert!(err.to_string().contains("course"));
+  }
+
+  #[test]
+  fn atualizar_upsert_por_id() {
+    let app = App::in_memory().unwrap();
+    app.create_course(&valid_course("c1")).unwrap();
+    let mut updated = valid_course("c1");
+    updated["name"] = Value::String("Psicologia da Personalidade".into());
+    app.update_course(&updated).unwrap();
+    let all = app.list_courses().unwrap();
+    assert_eq!(all[0].get("name").unwrap().as_str().unwrap(), "Psicologia da Personalidade");
+    assert_eq!(all.len(), 1);
+  }
+
+  #[test]
+  fn atualizar_exige_id() {
+    let app = App::in_memory().unwrap();
+    let err = app.update_course(&valid_course("")).unwrap_err();
+    assert!(err.to_string().contains("id"));
+  }
+
+  #[test]
+  fn deletar_idempotente() {
+    let app = App::in_memory().unwrap();
+    app.create_course(&valid_course("c1")).unwrap();
+    app.delete_course("c1").unwrap();
+    app.delete_course("c1").unwrap();
+    assert!(app.list_courses().unwrap().is_empty());
+  }
+}
