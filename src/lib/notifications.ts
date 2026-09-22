@@ -1,61 +1,23 @@
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { isNativePlatform } from './storage';
-import { isDesktop } from './platform';
 
 /** id fixo do lembrete diário (para cancelar/substituir com segurança) */
 const DAILY_REMINDER_ID = 1001;
 
 export const REMINDER_CHANNEL = 'study-reminder';
 
-/**
- * lembrete agendado: nativo (Capacitor) agenda via plugin; desktop (Tauri)
- * agenda via timer JS — só dispara com o app aberto.
- */
+/** lembrete agendado: nativo (Capacitor) agenda via plugin; sem suporte na web. */
 export function isReminderSupported(): boolean {
-  return isNativePlatform || isDesktop;
+  return isNativePlatform;
 }
-
-/* ===== timer do lembrete no desktop ===== */
-let desktopReminderTimer: ReturnType<typeof setTimeout> | null = null;
 
 function parseTime(time: string): ReminderTime {
   const [hour, minute] = time.split(':').map(Number);
   return { hour: hour || 19, minute: minute || 0 };
 }
 
-function reminderBody(): string {
-  const now = new Date();
-  return now.getHours() < 12
-    ? 'uma pausinha para revisar o dia? com leveza e foco! ♡'
-    : 'hora de fechar o dia com uma sessão leve de estudos ♡';
-}
-
-/** agenda o próximo disparo do timer desktop para o horário pedido */
-function scheduleDesktopTimer(time: string): void {
-  cancelDailyReminder();
-  const { hour, minute } = parseTime(time);
-  const fire = async () => {
-    const { desktopNotify } = await import('../../apps/desktop/lib/desktop');
-    void desktopNotify('cecistudy ♡ lembrete de estudo', reminderBody());
-    desktopReminderTimer = setTimeout(() => void fire(), msUntilNext(hour, minute));
-  };
-  desktopReminderTimer = setTimeout(() => void fire(), msUntilNext(hour, minute));
-}
-
-function msUntilNext(hour: number, minute: number): number {
-  const now = new Date();
-  const next = new Date();
-  next.setHours(hour, minute, 0, 0);
-  if (next.getTime() <= now.getTime()) next.setDate(next.getDate() + 1);
-  return next.getTime() - now.getTime();
-}
-
 /** pede (e devolve) permissão para notificações */
 export async function ensureNotificationPermission(): Promise<boolean> {
-  if (isDesktop) {
-    const { desktopEnsureNotificationPermission } = await import('../../apps/desktop/lib/desktop');
-    return desktopEnsureNotificationPermission();
-  }
   if (!isNativePlatform) return false;
   const perm = await LocalNotifications.checkPermissions();
   if (perm.display === 'granted') return true;
@@ -73,7 +35,6 @@ export interface ReminderTime {
 
 /** agenda (ou substitui) o lembrete diário de estudo */
 export async function scheduleDailyReminder(time: string): Promise<boolean> {
-  if (isDesktop) return scheduleDesktopReminder(time);
   if (!isNativePlatform) return false;
   const granted = await ensureNotificationPermission();
   if (!granted) return false;
@@ -105,25 +66,12 @@ export async function scheduleDailyReminder(time: string): Promise<boolean> {
 
 /** remove o lembrete diário */
 export async function cancelDailyReminder(): Promise<void> {
-  if (desktopReminderTimer !== null) {
-    clearTimeout(desktopReminderTimer);
-    desktopReminderTimer = null;
-  }
   if (!isNativePlatform) return;
   try {
     await LocalNotifications.cancel({ notifications: [{ id: DAILY_REMINDER_ID }] });
   } catch (e) {
     console.error('Reminder cancel error', e);
   }
-}
-
-/** caminho desktop do lembrete diário: pede permissão e arma o timer. */
-async function scheduleDesktopReminder(time: string): Promise<boolean> {
-  const { desktopEnsureNotificationPermission } = await import('../../apps/desktop/lib/desktop');
-  const granted = await desktopEnsureNotificationPermission();
-  if (!granted) return false;
-  scheduleDesktopTimer(time);
-  return true;
 }
 
 /** ids reservados para lembretes de aula (espaço para até 200 slots). */

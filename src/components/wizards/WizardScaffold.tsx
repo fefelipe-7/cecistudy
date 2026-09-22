@@ -1,9 +1,9 @@
 ﻿import React, { useRef, useState } from 'react';
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
-import { ArrowLeft, Check, ChevronRight, Loader2 } from 'lucide-react';
 import { IOS_EASE } from '../../lib/motion';
-import { cn } from '../../lib/utils';
 import { Mascote, type MascoteExpression } from '../ui/Mascote';
+import { WizardScaffoldHeader } from './WizardScaffoldHeader';
+import { WizardScaffoldFooter } from './WizardScaffoldFooter';
 
 export interface WizardStep {
   id: string;
@@ -119,54 +119,17 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
   return (
     <div className="min-h-[70vh] flex flex-col pb-44">
       {/* Header */}
-      <div className="sticky top-0 z-10 -mx-3.5 sm:-mx-5 px-3.5 sm:px-5 pt-[calc(0.5rem+env(safe-area-inset-top,0px))] pb-3 bg-canvas/95 backdrop-blur-md border-b border-ceci-border-subtle">
-        <div className="max-w-md sm:max-w-xl lg:max-w-2xl mx-auto flex items-center justify-between gap-2">
-          <button
-            onClick={requestClose}
-            className="w-9 h-9 rounded-2xl bg-surface-default border border-ceci-border-default hover:bg-surface-rose flex items-center justify-center text-ceci-primary shadow-2xs transition active:scale-95 cursor-pointer"
-            title="voltar"
-            aria-label={isLast ? 'voltar' : 'cancelar'}
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-
-          <div className="flex items-center gap-2 min-w-0">
-            <span
-              className={cn(
-                'w-7 h-7 rounded-xl border flex items-center justify-center shrink-0',
-                iconClass ?? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
-              )}
-            >
-              {icon}
-            </span>
-            <div className="min-w-0 text-center">
-              <h1 className="font-display font-bold text-sm text-ceci-primary truncate leading-tight">{title}</h1>
-              {subtitle && <p className="text-[11px] text-ceci-secondary truncate">{subtitle}</p>}
-            </div>
-          </div>
-
-          {/* indicador de etapa — "a usuária sabe em que passo está" */}
-          {showStepCount && (
-            <span
-              className="w-9 h-9 shrink-0 flex items-center justify-center text-[10px] font-bold text-ceci-tertiary tabular-nums"
-              aria-label={`etapa ${step + 1} de ${steps.length}`}
-            >
-              {step + 1}/{steps.length}
-            </span>
-          )}
-          {!showStepCount && <span className="w-9 h-9 shrink-0" aria-hidden />}
-        </div>
-
-        {/* Barra de progresso linear fina (o único indicador de progresso) */}
-        <div className="max-w-md sm:max-w-xl lg:max-w-2xl mx-auto mt-3 h-0.5 rounded-full bg-ceci-border-subtle overflow-hidden">
-          <motion.div
-            className="h-full rounded-full bg-ceci-brand-strong"
-            initial={false}
-            animate={{ width: `${((step + 1) / steps.length) * 100}%` }}
-            transition={{ duration: 0.35, ease: IOS_EASE }}
-          />
-        </div>
-      </div>
+      <WizardScaffoldHeader
+        title={title}
+        subtitle={subtitle}
+        icon={icon}
+        iconClass={iconClass}
+        step={step}
+        stepsLength={steps.length}
+        showStepCount={showStepCount}
+        isLast={isLast}
+        onBack={requestClose}
+      />
 
       {/* Corpo — um passo por vez, com pergunta em destaque. Troca CONCORRENTE
           (popLayout): o passo que sai desliza enquanto o novo entra — sem o
@@ -208,89 +171,24 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
       </div>
 
       {/* Barra de ação fixa na base da tela (sticky footer) */}
-      <div className="fixed bottom-0 inset-x-0 z-10 bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(var(--shadow-rgb),0.06)]">
-        <div className="max-w-md sm:max-w-xl lg:max-w-2xl mx-auto flex flex-col gap-1.5 px-3.5 sm:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
-          {/* confirmação de descarte com alteração real */}
-          {confirmingDiscard ? (
-            <div className="rounded-2xl bg-surface-default border border-ceci-border-default p-3 space-y-2">
-              <p className="text-xs font-semibold text-ceci-primary text-center">
-                tem coisas escritas aqui — sair sem guardar?
-              </p>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setConfirmingDiscard(false)}
-                  className="flex-1 min-h-[44px] rounded-xl bg-ceci-primary text-white text-xs font-semibold active:scale-[0.98] transition-transform cursor-pointer"
-                >
-                  continuar editando
-                </button>
-                <button
-                  onClick={onClose}
-                  className="flex-1 min-h-[44px] rounded-xl border border-ceci-border-default bg-surface-default text-red-700 text-xs font-semibold active:scale-[0.98] transition-transform cursor-pointer"
-                >
-                  descartar
-                </button>
-              </div>
-            </div>
-          ) : (
-            <>
-              {!hideNext && (
-                <>
-                  <button
-                    onClick={handleNext}
-                    disabled={!canConfirm || saving}
-                    className={cn(
-                      'w-full min-h-[56px] rounded-[14px] text-sm font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition-transform active:scale-[0.98] cursor-pointer',
-                      isLast
-                        ? 'bg-rose-500 hover:bg-ceci-brand-strong text-white'
-                        : 'bg-ceci-primary hover:bg-ceci-primary-hover text-white',
-                      (!canConfirm || saving) && 'opacity-40 cursor-not-allowed'
-                    )}
-                  >
-                    {saving ? (
-                      <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                        <span>salvando...</span>
-                      </>
-                    ) : isLast ? (
-                      <>
-                        <Check className="w-5 h-5 stroke-[2.5]" />
-                        <span>{saveLabel}</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>continuar</span>
-                        <ChevronRight className="w-5 h-5" />
-                      </>
-                    )}
-                  </button>
-
-                  {/* motivo explicado do bloqueio — nunca um botão mudo */}
-                  {showBlockedHint && (
-                    <p className="text-[11px] text-ceci-tertiary text-center">{blockedReason}</p>
-                  )}
-
-                  {/* salvamento mínimo antes do fim (registro essencial) */}
-                  {!isLast && onSaveMinimal && canNext && (
-                    <button
-                      onClick={onSaveMinimal}
-                      className="w-full min-h-[36px] rounded-lg text-[11px] font-semibold text-ceci-academic-strong hover:bg-surface-blue transition-colors cursor-pointer"
-                    >
-                      {saveMinimalLabel}
-                    </button>
-                  )}
-                </>
-              )}
-
-              <button
-                onClick={() => (step === 0 ? requestClose() : goTo(step - 1))}
-                className="w-full min-h-[40px] rounded-xl text-xs font-medium text-ceci-tertiary hover:text-ceci-primary hover:bg-surface-muted transition-colors cursor-pointer"
-              >
-                {step === 0 ? 'cancelar' : 'voltar'}
-              </button>
-            </>
-          )}
-        </div>
-      </div>
+      <WizardScaffoldFooter
+        isLast={isLast}
+        hideNext={hideNext}
+        canConfirm={canConfirm}
+        saving={saving}
+        saveLabel={saveLabel}
+        blockedReason={blockedReason}
+        showBlockedHint={showBlockedHint}
+        canNext={canNext}
+        onSaveMinimal={onSaveMinimal}
+        saveMinimalLabel={saveMinimalLabel}
+        confirmingDiscard={confirmingDiscard}
+        onCancelDiscard={() => setConfirmingDiscard(false)}
+        onPrimary={handleNext}
+        onClose={onClose}
+        onBack={() => (step === 0 ? requestClose() : goTo(step - 1))}
+        isFirst={step === 0}
+      />
     </div>
   );
 };

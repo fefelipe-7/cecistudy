@@ -36,7 +36,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               this.setState({ hasError: false });
               window.location.hash = '#/home';
             }}
-            className="mt-2 px-5 py-2.5 rounded-full bg-ceci-brand-strong text-white text-xs font-bold cursor-pointer active:scale-95 transition-transform"
+            className="mt-2 px-5 py-2.5 rounded-full bg-ceci-brand-strong text-ceci-on-brand text-xs font-bold cursor-pointer active:scale-95 transition-transform"
           >
             voltar para o começo
           </button>

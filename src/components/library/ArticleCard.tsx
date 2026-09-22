@@ -19,11 +19,11 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSaved, onSe
     <button
       onClick={onSelect}
       className="card-lift relative w-full h-[150px] sm:h-[160px] rounded-2xl p-3 flex flex-col justify-between shadow-xs cursor-pointer overflow-hidden border border-black/5 select-none text-left"
-      style={{ backgroundColor: color }}
+      style={{ backgroundColor: `color-mix(in srgb, ${color} 70%, var(--color-cover-base))` }}
       aria-label={`abrir artigo ${article.titulo}`}
     >
-      {/* Dobradinha de folha de papel (canto superior direito) */}
-      <div className="absolute top-0 right-0 w-0 h-0 border-t-[18px] border-t-white/70 border-l-[18px] border-l-transparent" />
+       {/* Dobradinha de folha de papel (canto superior direito) */}
+      <div className="absolute top-0 right-0 w-0 h-0 border-t-[18px] border-t-cover-base/70 border-l-[18px] border-l-transparent" />
       <div className="absolute top-0 right-0 w-[18px] h-[18px] bg-black/10 rounded-bl-[10px]" />
 
       {/* Linhas de pauta (folha pautada) */}
@@ -33,27 +33,27 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSaved, onSe
         ))}
       </div>
 
-      {/* Badge + salvos */}
+       {/* Badge + salvos */}
       <div className="relative flex items-center justify-between gap-1">
         <span
-          className="text-[8px] font-extrabold uppercase tracking-wider bg-white/90 px-1.5 py-0.5 rounded shadow-2xs line-clamp-1 max-w-[80px]"
+          className="text-[8px] font-extrabold uppercase tracking-wider bg-cover-base/90 px-1.5 py-0.5 rounded shadow-2xs line-clamp-1 max-w-[80px]"
           style={{ color: accent }}
         >
           artigo
         </span>
-        {isSaved && <Bookmark className="w-3 h-3 fill-ceci-primary text-ceci-primary" />}
+        {isSaved && <Bookmark className="w-3 h-3 fill-cover-ink text-cover-ink" />}
       </div>
 
       {/* Título sobre a pauta */}
       <div className="relative my-auto pt-2">
-        <p className="font-display font-bold text-[11px] sm:text-[12px] leading-tight text-ceci-primary line-clamp-4">
+        <p className="font-display font-bold text-[11px] sm:text-[12px] leading-tight text-cover-ink line-clamp-4">
           {article.titulo}
         </p>
       </div>
 
       {/* Autores + ano */}
       <div className="relative space-y-0.5">
-        <p className="text-[9px] font-semibold text-ceci-primary/80 line-clamp-1">
+        <p className="text-[9px] font-semibold text-cover-ink/80 line-clamp-1">
           {article.autores}
         </p>
         <p className="text-[9px] font-bold" style={{ color: accent }}>

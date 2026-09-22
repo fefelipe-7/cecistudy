@@ -9,8 +9,8 @@ Refatoração completa do aplicativo cecistudy em três eixos paralelos:
 ## Architecture Decisions
 - **Extração por domínio**: handlers de estado extraídos como hooks de ação (`*Actions.ts`).
 - **Tokens semânticos**: substituir todo hex em classNames por tokens do design system (`ceci-*`, `surface-*`, etc.).
-- **Facade por plataforma**: `useMobileApp` / `useDesktopApp` como únicas portas de entrada para views.
-- **`src/desktop/` removido**: todo código desktop migrado para `apps/desktop/src/`.
+- **Facade de dados**: `useMobileApp` como porta de entrada das views (facade desktop `useDesktopApp`/`src/desktop/` removidos na limpeza do legado, 2026-09).
+- **Legado desktop removido (2026-09)**: `desktop/`, `apps/desktop/`, `src/desktop/` **não existem mais**; o desktop novo é Flutter+Rust em `cecistudy-rust/` (sem base React/JS).
 - **`ScreenLayers` removido**: transições incorporadas em cada `AppShell` específico.
 
 ## Task List
@@ -64,8 +64,11 @@ Refatoração completa do aplicativo cecistudy em três eixos paralelos:
   - Verify: `npm run lint` + `npm run test` (521 verdes) + `npm run build`
   - Files: `src/components/views/biblioteca/*.tsx`, `src/components/views/BibliotecaView.tsx`
 
-- [ ] **B.5** Extrair steps de `NoteTransformWizard.tsx` em componentes
+- [x] **B.5** Extrair steps de `NoteTransformWizard.tsx` em componentes
   - Acceptance: `NoteTransformWizard.tsx` ≤ 300 linhas; 5 steps como componentes
+  - **Status:** concluído com **acceptance parcial** (reconciliado com `todo.md`): constantes + 8 forms
+    extraídos (`src/components/wizards/note/`); wizard 991 → **753** linhas. Meta ≤ 300 **não atingida**
+    (orquestração de estado ainda acoplada — diferido a fase futura). Checks verdes.
   - Verify: `npm run lint` + `npm run test`
   - Files: `src/components/wizards/note/*.tsx`, `src/components/views/NoteTransformWizard.tsx`
 
@@ -83,46 +86,72 @@ Refatoração completa do aplicativo cecistudy em três eixos paralelos:
 
 ### Fase C: Separação Mobile/Desktop (SEP-001)
 
-- [ ] **C.1** Migrar `DesktopSidebar.tsx` de `src/desktop/` para `apps/desktop/src/components/`
-  - Acceptance: import atualizado; `src/desktop/` reduzido
-  - Verify: `npm run build --workspace=apps/desktop` + `check-boundaries`
-  - Files: `apps/desktop/src/components/DesktopSidebar.tsx`, `src/desktop/`
+> **Atualizado 2026-09-12 (auditoria por agentes):** espelha o estado real do `todo.md`. C.2–C.5
+> **concluídos de fato** (zero `useApp` no código; `ScreenLayers` removido; `AppContext` só-tipos).
+> Pendentes: C.1/C.6 (movimentação de `src/desktop/` — decisão em aberto vs. Flutter+Rust) e C.7
+> (overlays — desvio deliberado por compatibilidade com vitest).
+>
+> **Atualizado 2026-09 (limpeza do legado):** o desktop legado foi **removido por completo** —
+> `desktop/`, `apps/desktop/` e `src/desktop/` **não existem mais** (`dev:desktop`, `release-desktop.yml`,
+> `src/lib/platform.ts` também). C.1/C.6 foram executados na limpeza; C.7 segue como desvio do vitest.
 
-- [ ] **C.2** Substituir `ScreenLayers.tsx` por animações diretas nos `AppShell`s
+- [x] **C.1** Migrar `DesktopSidebar.tsx` de `src/desktop/` para `apps/desktop/src/components/`
+  - Acceptance: import atualizado; `src/desktop/` reduzido
+  - **Status:** superseded (2026-09-12) → **executado na limpeza do legado (2026-09)**: `apps/desktop/`
+    + `src/desktop/` + `desktop/` removidos por completo (desktop novo é Flutter+Rust, sem base React/JS).
+  - Verify: `node .github/scripts/check-boundaries.mjs`
+  - Files: removidos (2026-09)
+
+- [x] **C.2** Substituir `ScreenLayers.tsx` por animações diretas nos `AppShell`s
   - Acceptance: `ScreenLayers.tsx` removido; transições funcionando em mobile e desktop
+  - **Status:** concluído — `ScreenLayers.tsx` deletado; `SharedScreenLayers.tsx` + `SlideScreen.tsx`
+    + `src/desktop/screens/DesktopScreenLayers.tsx`. 3 builds verdes.
   - Verify: `npm run test` + builds
   - Files: `src/shells/ScreenLayers.tsx` → deletado, `src/shells/MobileAppShell.tsx`, `src/shells/DesktopAppShell.tsx`
 
-- [ ] **C.3** Migrar views restantes para `useMobileApp`/`useDesktopApp`
+- [x] **C.3** Migrar views restantes para `useMobileApp`/`useDesktopApp`
   - Acceptance: zero imports de `useApp` em `src/components/views/*`
+  - **Status: excedeu o critério** — zero `useApp` em todo `src/`+`apps/`; views em `useMobileApp`
+    / `useDataClient*` / `useNavValue`; desktop só `useDesktopApp` na superfície.
   - Verify: `npm run test` + grep
   - Files: `src/components/views/**/*.tsx`, `src/context/mobileApp.ts`, `src/context/desktopApp.ts`
 
-- [ ] **C.4** Remover `useApp` legado de `AppContext.tsx` (manter apenas para testes)
+- [x] **C.4** Remover `useApp` legado de `AppContext.tsx` (manter apenas para testes)
   - Acceptance: `useApp` exportado apenas para compatibilidade de testes
-  - Verify: `npm run test` — todos os 480+ testes verdes
+  - **Status: excedeu o critério** — hook `useApp` deletado por completo; `AppContext.tsx` = 470 linhas
+    só de tipos (`AppContextValue`, `pickDomainActions`, `buildAppContextValue`); provider/hook em `appContexts.ts`.
+  - Verify: `npm run test` — todos os testes verdes
   - Files: `src/context/AppContext.tsx`
 
-- [ ] **C.5** Remover `isDesktop` de `src/App.tsx` e `src/shells/*`
+- [x] **C.5** Remover `isDesktop` de `src/App.tsx` e `src/shells/*`
   - Acceptance: `src/App.tsx` é shell web mobile-only; `isDesktop` só em `src/lib/platform.ts`
+  - **Status:** concluído — `src/App.tsx` mobile-first sem branch; `isDesktop` só em `platform.ts` e
+    `notifications.ts`; `src/lib/platform.ts` removido na limpeza do legado (2026-09).
   - Verify: `npm run build` + grep
   - Files: `src/App.tsx`, `src/shells/*`
 
-- [ ] **C.6** Remover `src/desktop/` completamente
+- [x] **C.6** Remover `src/desktop/` completamente
   - Acceptance: diretório vazio ou removido; boundary check verde
+  - **Status:** superseded (2026-09-12) → **executado na limpeza do legado (2026-09)**: `src/desktop/`
+    (37 arquivos) removido com `apps/desktop/` e `desktop/`. Especificações arquivadas em
+    `cecistudy-rust/spec/` + `docs/archive/`.
   - Verify: `node .github/scripts/check-boundaries.mjs`
-  - Files: `src/desktop/`
+  - Files: removidos (2026-09)
 
 - [ ] **C.7** Mover overlays de `src/overlays/` para `apps/*/src/overlays/` (Fase 10.3)
   - Acceptance: overlays específicos por app; sem overlay compartilhado
+  - **Status:** pendente com desvio documentado (vitest: `src`→`apps/*` quebra dual-context; 3 testes
+    desktop falhavam → overlays ficam em `src/overlays/`). Reavaliar quando o vitest isolar workspaces.
   - Verify: `npm run test` + builds
-  - Files: `apps/mobile/src/overlays/`, `apps/desktop/src/overlays/`
+  - Files: `apps/mobile/src/overlays/`
 
 ## Checkpoints
 
 - [x] **Checkpoint A**: Fim da Fase A — `npm run lint` + `npm run test` + `npm run build` verdes (521 testes verdes)
 - [x] **Checkpoint B**: Fim da Fase B — `npm run lint` + `npm run test` + `npm run build` verdes (521 testes); nenhum arquivo > 400 linhas nos diretórios extraídos ✓
-- [ ] **Checkpoint C**: Fim da Fase C — `npm run lint` + `npm run test` + builds mobile/desktop verdes; `check-boundaries` verde
+- [x] **Checkpoint C**: Fim da Fase C — `npm run lint` + `npm run test` + builds mobile/desktop verdes; `check-boundaries` verde
+  > Fechado (2026-09-12): C.2–C.5 ✅; C.1/C.6 superseded. **2026-09:** C.1/C.6 executados na limpeza
+  > do legado (`desktop/`, `apps/desktop/`, `src/desktop/` removidos); C.7 permanece como desvio do vitest.
 
 ## Risks and Mitigations
 | Risco | Impacto | Mitigação |
@@ -136,5 +165,5 @@ Refatoração completa do aplicativo cecistudy em três eixos paralelos:
 ## Open Questions
 - `copy.ts` será único ou por módulo? → Começar único, dividir se > 300 linhas.
 - `ScreenLayers.tsx` — substituir ou mover? → Substituir por animações diretas nos `AppShell`s.
-- `isDesktop` — manter ou remover completamente? → Manter apenas em `src/lib/platform.ts`.
+- `isDesktop` — manter ou remover completamente? → **Removido** (2026-09) com o legado desktop; `src/lib/platform.ts` deletado.
 - Ordem de execução: MOD-001 → HAR-001 → SEP-001 (modularização facilita separação).

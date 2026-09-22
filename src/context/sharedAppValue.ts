@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { Exam, Task } from '../types';
+import type { Exam, Sticker, Task } from '../types';
 import type { Workspace } from '../core/domain';
 import { DEFAULT_WORKSPACE_ID } from '../data/schema';
 import type { DataClientValue, ReminderSettings } from './DataClientProvider';
@@ -7,7 +7,9 @@ import { useDataActions, type DataActions, type DataActionGroups } from './dataA
 import { useWorkspaceActions, type WorkspaceActions } from './workspaceActions';
 import { computeStreak, getWeekProgress, isStudyDay, toDateKey } from '../lib/streak';
 import type { StreakStats, WeekDayCell } from '../lib/streak';
-import { applyStickerUnlocks, countUnlocked, mergeCatalogWithProgress } from '../lib/stickers';
+import { applyStickerUnlocks, countUnlocked, mergeCatalogWithProgress, type StickerState } from '../lib/stickers';
+import { stickerDefinitionFor } from '../data/stickerCatalog';
+import { categoryXpOrDefault, generalTitle, levelFor, levelTitle, XP_BY_RARITY } from '../lib/levels';
 import { celebrate } from '../lib/celebrate';
 import { hapticSuccess } from '../lib/haptics';
 import { storage } from '../lib/storage';
@@ -40,6 +42,8 @@ export interface SharedAppValue {
   gcalSyncTask: (task: Task, op: 'upsert' | 'delete') => Promise<void>;
   toggleSaveBook: (bookId: string) => void;
   updateReadingProgress: (bookId: string, readPages: number) => void;
+  /** Snapshot do estado usado para avaliar as condições dos stickers (barras de progresso da UI). */
+  stickerState: StickerState | null;
   dataActions: DataActions & DataActionGroups;
   workspaceActions: WorkspaceActions;
 }
@@ -86,7 +90,6 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
     setQuizSessions,
     techniques,
     setTechniques,
-    questions,
     stickers,
     setStickers,
     tcc,
@@ -149,6 +152,7 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
 
   // Stickers: avalia desbloqueios (conquistas) quando o estado de estudo muda.
   // `applyStickerUnlocks` devolve a mesma referência quando nada muda — sem loop.
+  const [stickerState, setStickerState] = useState<StickerState | null>(null);
   useEffect(() => {
     const state = {
       profile,
@@ -161,7 +165,7 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
       authors,
       materials,
       courses,
-      questions,
+      quizSessions,
       techniques,
       internshipLogs,
       currentStreak: streakStats.current,
@@ -172,13 +176,49 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
       concepts,
       looseNotes,
     };
+    setStickerState(state);
     const { updated, newlyUnlocked } = applyStickerUnlocks(stickers, state, todayKey);
     const hasRealNewUnlock = newlyUnlocked.some((item) => !stickers.some((existing) => existing.id === item.id && existing.unlocked));
+
+    // XP retroativo único: perfis salvos antes dos níveis (sem categoryXp) ganham
+    // o XP dos stickers já desbloqueados assim que a hidratação termina — silencioso.
+    if (!bootWindowRef.current && profile.categoryXp === undefined) {
+      const retro: Record<Sticker['category'], number> = { faculdade: 0, estudo: 0, leituras: 0, jornada: 0 };
+      let added = false;
+      for (const s of stickers) {
+        if (!s.unlocked) continue;
+        const def = stickerDefinitionFor(s.id);
+        if (def) {
+          retro[def.category] += XP_BY_RARITY[def.rarity];
+          added = true;
+        }
+      }
+      if (added) {
+        setProfile((p) => (p.categoryXp === undefined ? { ...p, categoryXp: retro } : p));
+      }
+    }
+
     if (newlyUnlocked.length > 0 && hasRealNewUnlock) {
+      const before = categoryXpOrDefault(profile);
+      const gained = newlyUnlocked.reduce<Record<Sticker['category'], number>>(
+        (acc, item) => {
+          const def = stickerDefinitionFor(item.id);
+          if (def) acc[def.category] += XP_BY_RARITY[def.rarity];
+          return acc;
+        },
+        { faculdade: 0, estudo: 0, leituras: 0, jornada: 0 }
+      );
+      const after: Record<Sticker['category'], number> = {
+        faculdade: before.faculdade + gained.faculdade,
+        estudo: before.estudo + gained.estudo,
+        leituras: before.leituras + gained.leituras,
+        jornada: before.jornada + gained.jornada,
+      };
       setStickers(updated);
       setProfile((p) => ({
         ...p,
         stickersCollected: countUnlocked(updated),
+        categoryXp: after,
       }));
       if (!bootWindowRef.current) {
         celebrate('sticker-unlocked');
@@ -186,6 +226,22 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
         showToast(
           `conquista desbloqueada: ${newlyUnlocked[0].emoji} ${newlyUnlocked[0].name} ♡`
         );
+        const categoryUp = (['faculdade', 'estudo', 'leituras', 'jornada'] as const).find(
+          (cat) => levelFor(after[cat]) > levelFor(before[cat])
+        );
+        const generalBefore = levelFor(before.faculdade + before.estudo + before.leituras + before.jornada);
+        const generalAfter = levelFor(after.faculdade + after.estudo + after.leituras + after.jornada);
+        if (categoryUp) {
+          celebrate('level-up');
+          hapticSuccess();
+          showToast(
+            `nível ${levelFor(after[categoryUp])} alcançado: ${levelTitle(categoryUp, levelFor(after[categoryUp]))} 🎉`
+          );
+        } else if (generalAfter > generalBefore) {
+          celebrate('level-up');
+          hapticSuccess();
+          showToast(`nível geral ${generalAfter} alcançado: ${generalTitle(generalAfter)} 🎉`);
+        }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -201,7 +257,7 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
     authors,
     materials,
     courses,
-    questions,
+    quizSessions,
     techniques,
     internshipLogs,
     streakStats.current,
@@ -397,6 +453,7 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
       gcalSyncTask,
       toggleSaveBook,
       updateReadingProgress,
+      stickerState,
       dataActions,
       workspaceActions,
     }),
@@ -414,6 +471,7 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
       gcalSyncTask,
       toggleSaveBook,
       updateReadingProgress,
+      stickerState,
       dataActions,
       workspaceActions,
     ]

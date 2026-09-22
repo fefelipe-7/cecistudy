@@ -78,43 +78,101 @@
 
 ## Fase C: Separação Mobile/Desktop (SEP-001)
 
-- [ ] **C.1** Migrar `DesktopSidebar.tsx` de `src/desktop/` para `apps/desktop/src/components/`
-  - Acceptance: import atualizado; `src/desktop/` reduzido
-  - Verify: `npm run build --workspace=apps/desktop` + `check-boundaries`
-  - Files: `apps/desktop/src/components/DesktopSidebar.tsx`, `src/desktop/`
+> **Atualizado 2026-09-12 (auditoria por agentes do workspace):** a Fase C está **muito à frente dos
+> docs** — os itens C.2–C.5 estão **concluídos de fato** (o código está no arquivo mesmo com os checks
+> marcados `[ ]`). O estado real: **C.2 ✅ · C.3 ✅ (excedeu critério) · C.4 ✅ (excedeu critério) ·
+> C.5 ✅**. Restam **C.1, C.6 e C.7** (movimentação de arquivos — 2 deles com decisão em aberto).
+> Gate atual verificado: lint 0 · 71 arquivos de teste / 575 testes · 3 builds + boundary OK
+> (números 480+/521 nos checks abaixo eram o estado antigo).
+>
+> **Atualizado 2026-09 (limpeza do legado):** o desktop legado foi **removido por completo** —
+> `desktop/`, `apps/desktop/` e `src/desktop/` **não existem mais**; `dev:desktop`,
+> `release-desktop.yml` e `src/lib/platform.ts` também foram removidos. Planejamento arquivado em
+> `docs/archive/` e `cecistudy-rust/spec/`. Os registros C.1/C.6 abaixo ("superseded") são históricos.
 
-- [ ] **C.2** Substituir `ScreenLayers.tsx` por animações diretas nos `AppShell`s
+- [x] **C.1** Migrar `DesktopSidebar.tsx` de `src/desktop/` para `apps/desktop/src/components/`
+  - Acceptance: import atualizado; `src/desktop/` reduzido
+  - **Status: superseded → executado na limpeza do legado (2026-09).** Foi encerrado como "superseded"
+    (decisão 2026-09-12: `DesktopSidebar.tsx` permaneceu em `src/desktop/components/`), e depois
+    `apps/desktop/` + `src/desktop/` + `desktop/` foram **removidos por completo** quando o desktop
+    React/Tauri saiu do repositório (o desktop novo é Flutter+Rust, sem base React/JS).
+  - Verify: `node .github/scripts/check-boundaries.mjs`
+  - Files: `apps/desktop/src/components/DesktopSidebar.tsx`, `src/desktop/` — removidos (2026-09)
+
+- [x] **C.2** Substituir `ScreenLayers.tsx` por animações diretas nos `AppShell`s
   - Acceptance: `ScreenLayers.tsx` removido; transições funcionando em mobile e desktop
+  - **Status real:** concluído — `ScreenLayers.tsx` deletado; substituído por `src/shells/SharedScreenLayers.tsx`
+    + `SlideScreen.tsx` + `src/desktop/screens/DesktopScreenLayers.tsx`. 3 builds verdes.
   - Verify: `npm run test` + builds
   - Files: `src/shells/ScreenLayers.tsx` → deletado, `src/shells/MobileAppShell.tsx`, `src/shells/DesktopAppShell.tsx`
 
-- [ ] **C.3** Migrar views restantes para `useMobileApp`/`useDesktopApp`
+- [x] **C.3** Migrar views restantes para `useMobileApp`/`useDesktopApp`
   - Acceptance: zero imports de `useApp` em `src/components/views/*`
+  - **Status real: excedeu o critério** — **zero ocorrências de `useApp` em todo `src/`+`apps/`**.
+    Views usam `useMobileApp()` (`mobileApp.ts`), os bundles `useDataClient*/useNavValue` (Home/Faculdade/Estudos)
+    ou `useDataClientCourses` (CourseDetailView); `useDesktopApp()` só na superfície desktop
+    (`src/desktop/**`, `DesktopAppShell`, `DesktopOverlays`).
   - Verify: `npm run test` + grep
   - Files: `src/components/views/**/*.tsx`, `src/context/mobileApp.ts`, `src/context/desktopApp.ts`
 
-- [ ] **C.4** Remover `useApp` legado de `AppContext.tsx` (manter apenas para testes)
+- [x] **C.4** Remover `useApp` legado de `AppContext.tsx` (manter apenas para testes)
   - Acceptance: `useApp` exportado apenas para compatibilidade de testes
-  - Verify: `npm run test` — todos os 480+ testes verdes
+  - **Status real: excedeu o critério** — hook `useApp` **deletado por completo**, nem para testes.
+    `src/context/AppContext.tsx` virou módulo **só de tipos** (470 linhas): `AppContextValue`,
+    `ShellExtras`, `pickDomainActions`, `buildAppContextValue`; o provider/hook vive em
+    `src/context/appContexts.ts`. 71 arquivos de teste / 575 testes verdes.
+  - Verify: `npm run test` — todos os testes verdes
   - Files: `src/context/AppContext.tsx`
 
-- [ ] **C.5** Remover `isDesktop` de `src/App.tsx` e `src/shells/*`
+- [x] **C.5** Remover `isDesktop` de `src/App.tsx` e `src/shells/*`
   - Acceptance: `src/App.tsx` é shell web mobile-only; `isDesktop` só em `src/lib/platform.ts`
+  - **Status real:** concluído — `src/App.tsx` monta `MobileAppProvider → MobileAppShell + MobileOverlays`
+    sem branch; `isDesktop` só em `src/lib/platform.ts` e `src/lib/notifications.ts` (timer desktop).
+    Sobra apenas **1 import morto** em `src/shells/DesktopAppShell.tsx:9` (limpeza de 1 linha — ver Próximos passos).
   - Verify: `npm run build` + grep
   - Files: `src/App.tsx`, `src/shells/*`
 
-- [ ] **C.6** Remover `src/desktop/` completamente
+- [x] **C.6** Remover `src/desktop/` completamente
   - Acceptance: diretório vazio ou removido; boundary check verde
+  - **Status: superseded → executado na limpeza do legado (2026-09).** Foi encerrado como "superseded"
+    (decisão 2026-09-12: `src/desktop/` mantido como lar do React legado), e depois **removido por
+    completo** junto com `apps/desktop/` e `desktop/` (desktop novo é Flutter+Rust, sem base React/JS;
+    especificações arquivadas em `cecistudy-rust/spec/` + `docs/archive/`).
   - Verify: `node .github/scripts/check-boundaries.mjs`
-  - Files: `src/desktop/`
+  - Files: `src/desktop/` — removido (2026-09)
 
 - [ ] **C.7** Mover overlays de `src/overlays/` para `apps/*/src/overlays/` (Fase 10.3)
   - Acceptance: overlays específicos por app; sem overlay compartilhado
+  - **Status real: pendente com desvio deliberado documentado** (07-estado-execucao.md, Fase 7):
+    importar `apps/*` a partir de `src/` quebra o dual-context do vitest (3 testes desktop falhavam; solução
+    atual `src/overlays/` → verdes). Mostrado como "migração futura" quando o vitest tratar workspaces isolados.
   - Verify: `npm run test` + builds
-  - Files: `apps/mobile/src/overlays/`, `apps/desktop/src/overlays/`
+  - Files: `apps/mobile/src/overlays/` (overlays desktop encerrados com o legado — 2026-09)
 
 ## Checkpoints
 
 - [x] **Checkpoint A**: Fim da Fase A — `npm run lint` + `npm run test` + `npm run build` verdes (521 testes verdes)
 - [x] **Checkpoint B**: Fim da Fase B — `npm run lint` + `npm run test` + `npm run build` verdes (521 testes); nenhum arquivo > 400 linhas nos diretórios extraídos (biblioteca/perfil/home/faculdade) ✓
-- [ ] **Checkpoint C**: Fim da Fase C — `npm run lint` + `npm run test` + builds mobile/desktop verdes; `check-boundaries` verde
+- [x] **Checkpoint C**: Fim da Fase C — `npm run lint` + `npm run test` + builds mobile/desktop verdes; `check-boundaries` verde
+  > **Fechado (2026-09-12):** C.2–C.5 concluídos; **C.1/C.6 encerrados como superseded** (decisão da usuária:
+  > manter `src/desktop/`; desktop novo é Flutter+Rust sem base React/JS). C.7 permanece como desvio
+  > documentado do vitest (overlays em `src/overlays/`). Gate real hoje verde (lint 0 · 71 arquivos de teste / 575 testes · 3 builds · boundary OK).
+
+## Próximos passos (atualizado 2026-09-12)
+
+> **Foco priorizado pela usuária (2026-09-12): Rust Fase 1 → FFI.** Decisões tomadas: C.1/C.6 encerrados
+> (manter `src/desktop/`); **data crate alinhada a entidades tipadas** (schema.sql como fonte de forma);
+> **desktop novo sem base React/JS** — domínio spec-first em Rust, TS só como oráculo de paridade;
+> lote de higiene incluído.
+
+1. **Higiene rápida** (1 sessão curta, antes de mexer no Rust):
+   - Remover o import morto de `isDesktop` em `src/shells/DesktopAppShell.tsx:9` (C.5).
+   - Reconciliar "técnicas" docs vs `.db` (136 no `.db` vs 135 nos docs) e comentário obsoleto do
+     `catalogDb.ts` (745 → 3002) — ver R0 no breakdown.
+2. **Rust Fase 1 completo (ver `cecistudy-rust/spec/01-task-breakdown-flutter-rust.md` → "Próximos passos"):**
+   R1 data→entidades tipadas · R2 domínio faltante (calendar/knowledge/marketing/projects/internship)
+   spec-first · R3 content naming · R4 paridade full (1.22) · R5 `cecistudy-ffi` (1.21).
+3. **Fase 2 Flutter (UI greenfield, sem React/JS):** skeleton + bridge sobre `cecistudy-ffi` + primeiras telas.
+4. **Desktop React visual:** **cancelado e removido** (2026-09) — sem legado no repositório.
+5. **Library base psicoterapias:** completar família 05 → expandir 06–10 → revisão transversal
+   (sequência em `library/cecistudy_base_psicoterapias/notas/sequencia_proximos_lotes.md`).

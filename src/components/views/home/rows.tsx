@@ -49,7 +49,7 @@ export const TaskRow: React.FC<{ task: Task }> = ({ task }) => {
           </p>
           <p className={`text-[11px] mt-1 flex items-center gap-1.5 flex-wrap`}>
             {task.priority === 'alta' && !task.completed && (
-              <span className="font-bold text-red-700">🔥 alta</span>
+              <span className="font-bold text-status-danger-strong">🔥 alta</span>
             )}
             <span className={DUE_STYLES[due.urgency]}>{due.label}</span>
             {courseName && <span className="text-ceci-muted">• {courseName}</span>}

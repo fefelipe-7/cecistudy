@@ -65,7 +65,7 @@ export const AuthorSuggestInput: React.FC<AuthorSuggestInputProps> = ({
         autoFocus={autoFocus}
         autoComplete="off"
         aria-label="autor da obra"
-        className="w-full bg-surface-input border border-transparent rounded-2xl px-4 py-4 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 transition-shadow"
+        className="w-full bg-surface-input border border-transparent rounded-2xl px-4 py-4 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 focus:border-ceci-brand transition-shadow"
       />
 
       {focused && matches.length > 0 && (

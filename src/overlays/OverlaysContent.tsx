@@ -69,7 +69,7 @@ const DetailPromptModal = memo(function DetailPromptModal({
             if (noteId) onOpenComposeDetails(noteId);
             onClose();
           }}
-          className="w-full bg-ceci-primary hover:bg-ceci-primary-hover text-white py-2.5 rounded-2xl text-xs font-bold cursor-pointer transition-colors"
+          className="w-full bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary py-2.5 rounded-2xl text-xs font-bold cursor-pointer transition-colors"
         >
           dar mais detalhes
         </button>
@@ -88,11 +88,9 @@ const DetailPromptModal = memo(function DetailPromptModal({
 });
 
 /**
- * Overlays globais por casca (spec 07 §6.4): mobile monta `MobileOverlays`
- * (lê `useMobileApp()`), desktop monta `DesktopOverlays` (lê `useDesktopApp()`).
+ * Overlays globais: mobile monta `MobileOverlays` (lê `useMobileApp()`).
  * Este componente é agnóstico de plataforma — recebe o `AppContextValue` via
- * props, sem hook de casca. A moldura de montagem (tela cheia vs. janela
- * centralizada) fica na shell. Efeitos globais: atalho ⌘K e checagem OTA.
+ * props, sem hook de casca. Efeitos globais: atalho ⌘K e checagem OTA.
  */
 export const OverlaysContent: React.FC<{ app: AppContextValue }> = ({ app }) => {
   const onPickQuickAdd = useCallback(
@@ -138,7 +136,12 @@ export const OverlaysContent: React.FC<{ app: AppContextValue }> = ({ app }) => 
         concepts={app.concepts}
         approaches={app.approaches}
         readings={app.readings}
+        tasks={app.tasks}
+        exams={app.exams}
+        looseNotes={app.looseNotes}
         onNavigate={app.handleNavigate}
+        onOpenNoteDetail={app.openNoteDetail}
+        onOpenCourseDetail={app.openCourseDetail}
       />
 
       <EditCourseModalMemo

@@ -5,6 +5,7 @@ import type {
   SubTabFaculdade,
   SubTabBiblioteca,
   Course,
+  ClassNote,
   PsychologyApproach,
   PsicoterapiaFamily,
   StudyScreen,
@@ -25,6 +26,7 @@ import { getCatalogQuestions } from '../lib/db/catalogDb';
 import { isNativePlatform } from '../lib/storage';
 import { hapticSuccess } from '../lib/haptics';
 import { scrollToTop } from '../lib/scroll';
+import { setNavMotionContext } from '../lib/motion';
 import { parseRoute, routeToStack, stackToHash } from '../lib/routing';
 import {
   stackAfterOpenQuizCategory,
@@ -41,10 +43,35 @@ import type { DataClientValue } from './DataClientProvider';
 import type { SharedAppValue } from './sharedAppValue';
 
 /**
+ * Fluxo de wizard correspondente a cada entidade editável (identidade, exceto
+ * os casos especiais tratados direto no `editManagedItem`: course, class,
+ * looseNote, quizSession).
+ */
+const MANAGED_KIND_TO_FLOW: Partial<Record<ManagedItemKind, WizardFlow>> = {
+  task: 'task',
+  exam: 'exam',
+  concept: 'concept',
+  material: 'material',
+  reading: 'reading',
+  flashcard: 'flashcard',
+  session: 'session',
+  internship: 'internship',
+  author: 'author',
+};
+
+/** Kinds que vivem na camada overlay (fade+scale) — push/pop deles não muda a camada de slide. */
+const OVERLAY_KINDS = new Set<NavScreen['kind']>([
+  'compose',
+  'composeDetails',
+  'wizard',
+  'noteDetail',
+  'noteTransform',
+]);
+
+/**
  * Motor de navegação compartilhado (spec 07 §6.6): a pilha push/pop + telas
- * derivadas + modais + header dinâmico. Não depende da plataforma — cada casca
- * (mobile/desktop) instancia o SEU motor via `useMobileNavigation`/
- * `useDesktopNavigation`, mantendo uma pilha de navegação independente por app.
+ * derivadas + modais + header dinâmico. Não depende da plataforma — a casca
+ * mobile instancia o SEU motor via `useMobileNavigation`, mantendo pilha própria.
  */
 export interface NavigationValue {
   activeTab: NavTab;
@@ -65,6 +92,8 @@ export interface NavigationValue {
   subTabBiblioteca: SubTabBiblioteca;
   setSubTabBiblioteca: (t: SubTabBiblioteca) => void;
   focusedStudyScreen: StudyScreen | null;
+  /** Sessão de foco imersiva em tela (chrome preto + orientação landscape). */
+  isFocusImmersiveOpen: boolean;
   openStudy: (screen: StudyScreen) => void;
   closeStudy: () => void;
   targetId: string | undefined;
@@ -74,9 +103,13 @@ export interface NavigationValue {
   focusedCourse: Course | undefined;
   openCourseDetail: (courseId: string) => void;
   closeCourseDetail: () => void;
+  /** Detalhe full-screen de uma aula, empilhado sobre o curso (`#/faculdade/:courseId/aula/:classNoteId`). */
+  isClassNoteDetailOpen: boolean;
+  focusedClassNoteId: string | null;
+  focusedClassNote: ClassNote | undefined;
+  openClassNoteDetail: (classNoteId: string) => void;
+  closeClassNoteDetail: () => void;
   isBottomNavVisible: boolean;
-  /** Base da pilha é uma tab — mantém o padding inferior do main estável durante push/pop. */
-  hasTabBase: boolean;
   /** Se existe algo para voltar (cadeia do back do Android / gesto de borda). */
   canGoBack: boolean;
   isNotesScreenOpen: boolean;
@@ -284,17 +317,42 @@ export function useNavigationEngine(
   const navigationRevisionRef = useRef(0);
   const [navigationRevision, setNavigationRevision] = useState(0);
 
-  /** Atualiza a pilha e deriva a direção da transição (push=1 · pop=-1 · troca=0). */
+  /**
+   * Atualiza a pilha e deriva a direção da transição (push=1 · pop=-1 · troca=0).
+   * A `navigationRevision` (que alimenta o `slideKey`) só bumpa quando a camada de
+   * slide muda de verdade — push/pop de OVERLAY_KINDS (compose/wizard/nota) não
+   * remonta a tela de baixo, preservando o estado local (ex.: sub-tab ativa).
+   */
   const setStack = useCallback((next: NavScreen[]) => {
     const prev = navigationStackRef.current;
     const dir = next.length > prev.length ? 1 : next.length < prev.length ? -1 : 0;
-    const revision = navigationRevisionRef.current + 1;
-    navigationRevisionRef.current = revision;
+    const prevTop = prev[prev.length - 1];
+    const nextTop = next[next.length - 1];
+    const isOverlayChange =
+      OVERLAY_KINDS.has(prevTop.kind) || OVERLAY_KINDS.has(nextTop.kind);
+    // Direção fresca para as variantes de exit (lida no frame em que a tela sai).
+    setNavMotionContext(dir);
     setNavDirection(dir);
-    setNavigationRevision(revision);
+    setNavigationStack(next);
+    navigationStackRef.current = next;
+    if (!isOverlayChange) {
+      const revision = navigationRevisionRef.current + 1;
+      navigationRevisionRef.current = revision;
+      setNavigationRevision(revision);
+    }
+  }, []);
+
+  /**
+   * Atualização de payload da pilha que NÃO é navegação: não bumpa
+   * `navigationRevision`/`navDirection`, não toca hash nem scroll. Usado para
+   * estado interno de telas persistidas na pilha (ex.: QuizPlayState) sem
+   * causar remount do SlideScreen (`slideKey` inclui a revisão).
+   */
+  const setStackSilent = useCallback((next: NavScreen[]) => {
     setNavigationStack(next);
     navigationStackRef.current = next;
   }, []);
+
   const [subTabFaculdade, setSubTabFaculdade] = useState<SubTabFaculdade>('calendario');
   const [subTabBiblioteca, setSubTabBiblioteca] = useState<SubTabBiblioteca>('autores');
   const [targetId, setTargetId] = useState<string | undefined>(undefined);
@@ -361,9 +419,6 @@ export function useNavigationEngine(
     : undefined;
   const focusedComparisonSlug = currentScreen.kind === 'comparison' ? currentScreen.slug : null;
   const isBottomNavVisible = currentScreen.kind === 'tab';
-  /** Base da pilha é uma tab: o padding da shell não muda ao empilhar/desempilhar telas
-      auxiliares dentro da mesma aba (evita drift vertical no meio da transição). */
-  const hasTabBase = navigationStack[0]?.kind === 'tab';
   const isComposeScreenOpen = currentScreen.kind === 'compose';
   const isComposeDetailsOpen = currentScreen.kind === 'composeDetails';
   const isWizardOpen = currentScreen.kind === 'wizard';
@@ -388,10 +443,23 @@ export function useNavigationEngine(
       : (navigationStack.find(
           (s) => s.kind === 'quiz-play'
         ) as Extract<NavScreen, { kind: 'quiz-play' }> | undefined)?.state.pool ?? null) ?? null;
-  const focusedCourseId = currentScreen.kind === 'course' ? currentScreen.courseId : null;
+  const focusedCourseId =
+    currentScreen.kind === 'course'
+      ? currentScreen.courseId
+      : currentScreen.kind === 'classNote'
+        ? currentScreen.courseId
+        : null;
   const focusedCourse = focusedCourseId ? courses.find((c) => c.id === focusedCourseId) : undefined;
+  const isClassNoteDetailOpen = currentScreen.kind === 'classNote';
+  const focusedClassNoteId = currentScreen.kind === 'classNote' ? currentScreen.classNoteId : null;
+  const focusedClassNote = focusedClassNoteId
+    ? classes.find((n) => n.id === focusedClassNoteId)
+    : undefined;
   const focusedStudyScreen: StudyScreen | null =
     currentScreen.kind === 'study' ? currentScreen.screen : null;
+  /** Sessão de foco imersiva em tela (chrome preto + orientação landscape). */
+  const isFocusImmersiveOpen =
+    focusedStudyScreen !== null && focusedStudyScreen === 'focus';
 
   // Flashcards vencidos (dias desde a última revisão >= intervalo da repetição espaçada)
   const dueCardsCount = useMemo(() => {
@@ -409,9 +477,11 @@ export function useNavigationEngine(
       ? `tab-${currentScreen.tab}`
       : currentScreen.kind === 'course'
         ? `course-${currentScreen.courseId}`
-        : currentScreen.kind === 'notes'
-          ? 'notes'
-          : currentScreen.kind === 'temple'
+        : currentScreen.kind === 'classNote'
+          ? `classNote-${currentScreen.classNoteId}`
+          : currentScreen.kind === 'notes'
+            ? 'notes'
+            : currentScreen.kind === 'temple'
             ? 'temple'
             : currentScreen.kind === 'comparison'
               ? `comparison-${currentScreen.slug}`
@@ -455,9 +525,11 @@ export function useNavigationEngine(
       ? `tab-${currentScreen.tab}`
       : currentScreen.kind === 'course'
         ? `course-${currentScreen.courseId}`
-        : currentScreen.kind === 'notes'
-          ? 'notes'
-          : currentScreen.kind === 'noteDetail' || currentScreen.kind === 'noteTransform'
+        : currentScreen.kind === 'classNote'
+          ? `course-${currentScreen.courseId}`
+          : currentScreen.kind === 'notes'
+            ? 'notes'
+            : currentScreen.kind === 'noteDetail' || currentScreen.kind === 'noteTransform'
             ? 'notes'
             : currentScreen.kind === 'temple'
               ? 'temple'
@@ -699,6 +771,36 @@ export function useNavigationEngine(
   );
 
   const closeCourseDetail = useCallback(() => goBack(), [goBack]);
+
+  /** Abre o detalhe full-screen de uma aula, empilhado sobre o curso da matéria. */
+  const openClassNoteDetail = useCallback(
+    (classNoteId: string) => {
+      const note = classes.find((c) => c.id === classNoteId);
+      if (!note) return;
+      const top = navigationStack[navigationStack.length - 1];
+      if (top.kind === 'classNote' && top.classNoteId === classNoteId) return;
+      const courseBelow = navigationStack.find(
+        (s): s is Extract<NavScreen, { kind: 'course' }> => s.kind === 'course'
+      );
+      const courseIdx = courseBelow ? navigationStack.indexOf(courseBelow) : -1;
+      // Base sobre o curso da aula (substitui qualquer detalhe acima dele) — nunca empilha
+      // um detalhe sobre outro.
+      const base: NavScreen[] =
+        courseBelow && courseBelow.courseId === note.courseId
+          ? navigationStack.slice(0, courseIdx + 1)
+          : [{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: note.courseId }];
+      const next: NavScreen[] = [
+        ...base,
+        { kind: 'classNote', classNoteId, courseId: note.courseId },
+      ];
+      setStack(next);
+      syncHash(next);
+      scrollToTop();
+    },
+    [classes, navigationStack, setStack, syncHash]
+  );
+
+  const closeClassNoteDetail = useCallback(() => goBack(), [goBack]);
 
   const openNotesScreen = useCallback(() => {
     const top = navigationStack[navigationStack.length - 1];
@@ -1077,9 +1179,9 @@ export function useNavigationEngine(
       const stack = navigationStack.map((screen) =>
         screen.kind === 'quiz-play' ? { ...screen, state: updatedState } : screen
       );
-      setStack(stack);
+      setStackSilent(stack);
     },
-    [navigationStack, setStack]
+    [navigationStack, setStackSilent]
   );
 
   /** Volta de todas as telas de quiz para tab de estudos em um só goBack. */
@@ -1315,38 +1417,8 @@ export function useNavigationEngine(
           break;
       }
       const courseId = resolveManageCourseId(kind, id);
-      let type: WizardFlow;
-      switch (kind) {
-        case 'task':
-          type = 'task';
-          break;
-        case 'exam':
-          type = 'exam';
-          break;
-        case 'concept':
-          type = 'concept';
-          break;
-        case 'material':
-          type = 'material';
-          break;
-        case 'reading':
-          type = 'reading';
-          break;
-        case 'flashcard':
-          type = 'flashcard';
-          break;
-        case 'session':
-          type = 'session';
-          break;
-        case 'internship':
-          type = 'internship';
-          break;
-        case 'author':
-          type = 'author';
-          break;
-        default:
-          return;
-      }
+      const type = MANAGED_KIND_TO_FLOW[kind];
+      if (!type) return;
       openWizard(type, courseId);
       setWizardEdit({ kind, id });
     },
@@ -1376,6 +1448,7 @@ export function useNavigationEngine(
       focusedFamily,
       focusedApproach,
       focusedCourse,
+      focusedClassNote,
       bookmarkedCourseIds,
       tccTitle: tcc.title,
       questionsCount: questions.length,
@@ -1390,12 +1463,14 @@ export function useNavigationEngine(
       openEditTcc,
       toggleBookmarkCourse,
       setIsCreatingLooseNote,
+      editManagedItem,
     });
   }, [
     currentScreen,
     focusedFamily,
     focusedApproach,
     focusedCourse,
+    focusedClassNote,
     bookmarkedCourseIds,
     setIsCreatingLooseNote,
     goBack,
@@ -1407,6 +1482,7 @@ export function useNavigationEngine(
     tcc.title,
     questions.length,
     currentQuizPlayState,
+    editManagedItem,
     currentQuizResultCorrectCount,
     currentQuizResultTotalCount,
     dueCardsCount,
@@ -1429,6 +1505,7 @@ export function useNavigationEngine(
     subTabBiblioteca,
     setSubTabBiblioteca,
     focusedStudyScreen,
+    isFocusImmersiveOpen,
     openStudy,
     closeStudy,
     targetId,
@@ -1438,8 +1515,12 @@ export function useNavigationEngine(
     focusedCourse,
     openCourseDetail,
     closeCourseDetail,
+    isClassNoteDetailOpen,
+    focusedClassNoteId,
+    focusedClassNote,
+    openClassNoteDetail,
+    closeClassNoteDetail,
     isBottomNavVisible,
-    hasTabBase,
     canGoBack,
     isNotesScreenOpen,
     openNotesScreen,
@@ -1561,7 +1642,7 @@ export function useNavigationEngine(
     [
       activeTab, canGoBack, closeAllNoteScreens, closeAllQuizScreens, closeApproach,
       closeComparison, closeCompose, closeComposeDetails, closeCourseDetail, closeDetailPrompt,
-      closeEditCourse, closeEditTcc, closeFamilies, closeFamily, closeInternshipDiary,
+      closeClassNoteDetail, closeEditCourse, closeEditTcc, closeFamilies, closeFamily, closeInternshipDiary,
       closeManageItem, closeNoteDetail, closeNoteTransform, closeNotesScreen, closeQuickAdd,
       closeQuizCategory, closeQuizDetail, closeQuizLoading, closeQuizPlay, closeQuizResult,
       closeSearch, closeStickersScreen, closeStreak, closeStudy, closeSyncScreen, closeTccScreen,
@@ -1570,10 +1651,11 @@ export function useNavigationEngine(
       currentQuizResultConfig, currentQuizResultCorrectCount, currentQuizResultPool,
       currentQuizResultStartTime, currentQuizResultTotalCount, currentWizardType,
       deleteManagedItem, detailNoteId, editCourseId, editManagedItem, ensureQuestionsLoaded,
-      focusedApproach, focusedApproachId, focusedComparisonSlug, focusedCourse, focusedCourseId,
+      focusedApproach, focusedApproachId, focusedClassNote, focusedClassNoteId,
+      focusedComparisonSlug, focusedCourse, focusedCourseId,
       focusedFamily, focusedFamilyId, focusedNote, focusedNoteId, focusedStudyScreen,
-      focusedTempleSection, handleNavigate, handleSystemBack, hasTabBase, headerConfig,
-      isBottomNavVisible, isComposeDetailsOpen, isComposeScreenOpen, isCreatingLooseNote,
+      focusedTempleSection, handleNavigate, handleSystemBack, headerConfig,
+      isBottomNavVisible, isClassNoteDetailOpen, isComposeDetailsOpen, isComposeScreenOpen, isCreatingLooseNote,
       isDetailPromptOpen, isEditCourseOpen, isEditTccOpen, isFamiliesScreenOpen,
       isInternshipDiaryOpen, isNoteDetailOpen, isNoteTransformOpen, isNotesScreenOpen,
       isQuickAddOpen, isQuizCategoryOpen, isQuizGroupDetailOpen, isQuizLoadingOpen,
@@ -1581,7 +1663,7 @@ export function useNavigationEngine(
       isSyncScreenOpen, isTccScreenOpen, isTempleScreenOpen, isWizardOpen, managedItem,
       navDirection, navigationStack, newQuizFromResult, openApproach, openComparison, openCompose,
       openComposeDetails, openCourseDetail, openDetailPrompt, openEditCourse, openEditTcc,
-      openFamilies, openFamily, openInternshipDiary, openManageItem, openNoteDetail,
+      openClassNoteDetail, openFamilies, openFamily, openInternshipDiary, openManageItem, openNoteDetail,
       openNoteTransform, openNotesScreen, openQuickAdd, openQuizCategory, openQuizGroupDetail,
       openQuizLoading, openQuizPlay, openQuizResult, openSearch, openStickersScreen, openStreak,
       openStudy, openSyncScreen, openTaskExamWizard, openTccScreen, openTemple, openTempleSection,

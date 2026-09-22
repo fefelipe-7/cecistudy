@@ -12,12 +12,52 @@
 //! — o TS loga o flatten inteiro, mas ambos rejeitam o arquivo. Suficiente para o
 //! roteiro de import: `parse_backup` → `validate_payload` → merge (F1.14).
 
+use rusqlite::Connection;
 use serde_json::{Map, Value};
 
 use crate::backup::{BackupV2, parse_backup};
+use crate::collections::Collection;
+use crate::repositories::USER_COLLECTION_KEYS;
 use cecistudy_common::Error;
 
 type JsonMap = Map<String, Value>;
+
+/// Payload tipificado pós-import (R1c): as coleções de usuário mapeadas para
+/// [`Collection`] (forma verificada por serde) + as "prefs"/coleções extras
+/// sem entidade tipada (`reminder`, `onboarding`, `syncIndex`, passthrough)
+/// preservadas como `Value`.
+#[derive(Debug, Clone, PartialEq)]
+pub struct TypedPayload {
+  pub collections: Vec<(String, Collection)>,
+  pub prefs: JsonMap,
+}
+
+impl TypedPayload {
+  /// Grava todas as coleções tipadas no banco (mesma semântica de regravação
+  /// completa por coleção do `save_collection`).
+  pub fn apply(&self, conn: &Connection) -> Result<(), Error> {
+    for (_, collection) in &self.collections {
+      collection.save(conn)?;
+    }
+    Ok(())
+  }
+}
+
+/// Converte um payload **já validado** para a forma tipada: cada coleção de
+/// `USER_COLLECTION_KEYS` presente vira [`Collection`]; o restante (prefs e
+/// coleções extras do passthrough) fica em `prefs`.
+pub fn typed_payload(payload: &JsonMap) -> Result<TypedPayload, Error> {
+  let mut collections = Vec::with_capacity(USER_COLLECTION_KEYS.len());
+  let mut prefs = JsonMap::new();
+  for (key, value) in payload {
+    if USER_COLLECTION_KEYS.contains(&key.as_str()) {
+      collections.push((key.clone(), Collection::from_value(key, value.clone())?));
+    } else {
+      prefs.insert(key.clone(), value.clone());
+    }
+  }
+  Ok(TypedPayload { collections, prefs })
+}
 
 /// Valida o payload (migrado) de um backup. `Ok(())` = aceito.
 pub fn validate_payload(payload: &JsonMap) -> Result<(), Error> {
@@ -110,6 +150,12 @@ pub fn import_backup(json: &str) -> Result<JsonMap, Error> {
   let backup: BackupV2 = parse_backup(json)?;
   validate_payload(&backup.payload)?;
   Ok(backup.payload)
+}
+
+/// Importa validando e devolve o payload **tipado** (R1c): as coleções de
+/// usuário como [`Collection`], prontas para `TypedPayload::apply`.
+pub fn import_backup_typed(json: &str) -> Result<TypedPayload, Error> {
+  typed_payload(&import_backup(json)?)
 }
 
 fn f_for(key: &str, item: &Value) -> Result<(), String> {
@@ -368,6 +414,7 @@ fn enum_in(v: Option<&Value>, allowed: &[&str], name: &str) -> Result<(), String
 #[cfg(test)]
 mod tests {
   use super::*;
+  use cecistudy_common::canonicalize;
 
   fn read_sample_payload() -> JsonMap {
     let raw = std::fs::read_to_string("../../contracts/golden/full_backup.sample.json").unwrap();
@@ -428,5 +475,63 @@ mod tests {
   fn sample_atende_todo_o_schema() {
     let p = read_sample_payload();
     assert!(validate_payload(&p).is_ok(), "sample deve ser válido");
+  }
+
+  #[test]
+  fn import_backup_typed_mapeia_todas_as_colecoes_usuario() {
+    let raw = std::fs::read_to_string("../../contracts/golden/full_backup.sample.json").unwrap();
+    let root: Value = serde_json::from_str(raw.trim()).unwrap();
+    let payload = root["payload"].as_object().unwrap();
+
+    let typed = import_backup_typed(raw.trim()).unwrap();
+    // Todas as coleções com golden viram Collection (21 de 22; supervision não sai no payload).
+    assert_eq!(typed.collections.len(), 21, "esperava 21 coleções tipadas");
+    for (key, collection) in &typed.collections {
+      assert!(USER_COLLECTION_KEYS.contains(&key.as_str()), "{key} não é coleção de usuário");
+      let raw_value = payload.clone().get(key.as_str()).cloned().unwrap();
+      assert_eq!(
+        canonicalize(&collection.to_value()),
+        canonicalize(&raw_value),
+        "canonical divergiu no payload tipado para `{key}`"
+      );
+    }
+    assert!(typed.prefs.keys().all(|k| !USER_COLLECTION_KEYS.contains(&k.as_str())));
+  }
+
+  #[test]
+  fn typed_payload_preserva_prefs_e_passthrough() {
+    let p: JsonMap = serde_json::from_str(
+      r#"{"profile":{"name":"Maite","semester":6,"totalSemesters":8,"university":"USP","targetCareer":"clínica","dailyQuote":"ok","stickersCollected":0},"reminder":{"enabled":true,"time":"08:00"},"onboarding":{"completed":true},"syncIndex":{"stamps":{}},"unknownCollection":{"sonho":"miguel"}}"#,
+    )
+    .unwrap();
+    let typed = typed_payload(&p).unwrap();
+    assert_eq!(typed.collections.len(), 1);
+    assert_eq!(typed.collections[0].0, "profile");
+    for k in ["reminder", "onboarding", "syncIndex", "unknownCollection"] {
+      assert!(typed.prefs.contains_key(k), "pref/passthrough {k} sumiu");
+    }
+  }
+
+  #[test]
+  fn typed_payload_apply_grava_em_banco() {
+    use crate::UserDb;
+    let raw = std::fs::read_to_string("../../contracts/golden/full_backup.sample.json").unwrap();
+    let typed = import_backup_typed(raw.trim()).unwrap();
+    let db = UserDb::in_memory().unwrap();
+
+    // Aplica um subconjunto (courses + readings) e reconstrói tipado do banco.
+    let subset: Vec<(String, crate::Collection)> = typed
+      .collections
+      .iter()
+      .filter(|(k, _)| matches!(k.as_str(), "courses" | "readings"))
+      .cloned()
+      .collect();
+    for (_, collection) in &subset {
+      collection.save(db.connection()).unwrap();
+    }
+    for (key, expected) in &subset {
+      let loaded = crate::Collection::load(db.connection(), key).unwrap().unwrap();
+      assert_eq!(loaded.to_value(), expected.to_value(), "aplicação tipada divergiu em {key}");
+    }
   }
 }

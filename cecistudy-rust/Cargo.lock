@@ -114,6 +114,7 @@ name = "cecistudy-data"
 version = "0.1.0"
 dependencies = [
  "cecistudy-common",
+ "cecistudy-domain",
  "regex",
  "rusqlite",
  "serde",
@@ -128,6 +129,15 @@ dependencies = [
  "cecistudy-common",
  "serde",
  "serde_json",
+ "thiserror",
+]
+
+[[package]]
+name = "cecistudy-ffi"
+version = "0.1.0"
+dependencies = [
+ "cecistudy-app",
+ "cecistudy-common",
  "thiserror",
 ]
 

@@ -1,6 +1,7 @@
 import React, { useId } from 'react';
 import { motion } from 'framer-motion';
 import { cn, NoInfer } from '@/lib/utils';
+import { iOS_SPRING } from '@/lib/motion';
 
 export interface SegmentedOption<T extends string> {
   value: T;
@@ -19,7 +20,7 @@ interface SegmentedControlProps<T extends string> {
 }
 
 const VARIANT_CLASSES: Record<NonNullable<SegmentedControlProps<string>['variant']>, string> = {
-  primary: 'bg-ceci-primary text-white shadow-2xs',
+  primary: 'bg-ceci-primary text-ceci-on-primary shadow-2xs',
   rose: 'bg-surface-rose text-ceci-brand-strong shadow-2xs',
 };
 
@@ -64,7 +65,7 @@ export const SegmentedControl = <T extends string>({
                   'absolute inset-0 rounded-full',
                   active ? o.activeClassName ?? VARIANT_CLASSES[variant] : ''
                 )}
-                transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                transition={iOS_SPRING}
               />
             )}
             <span className="relative z-10">{o.label}</span>

@@ -45,20 +45,20 @@ export const COURSE_ICON_COMPONENTS: Record<string, LucideIcon> = COURSE_ICON_MA
 const COURSE_ICON_COLOR: Record<CourseIconName, string> = {
   Brain: 'text-ceci-brand-strong',
   FileText: 'text-ceci-academic-strong',
-  Sparkles: 'text-beige-700',
-  Users: 'text-success-deep',
-  HeartHandshake: 'text-gold',
+  Sparkles: 'text-ceci-tertiary',
+  Users: 'text-status-success-strong',
+  HeartHandshake: 'text-status-warning-strong',
   GraduationCap: 'text-ceci-brand-strong',
   Landmark: 'text-ceci-brand-strong',
-  Flame: 'text-rose-500',
+  Flame: 'text-ceci-brand-strong',
   Target: 'text-ceci-academic-strong',
   Trophy: 'text-ceci-brand-strong',
   Clock: 'text-ceci-academic-strong',
-  BookOpen: 'text-beige-700',
+  BookOpen: 'text-ceci-tertiary',
   History: 'text-ceci-brand-strong',
   Lightbulb: 'text-ceci-academic-strong',
-  User: 'text-beige-700',
-  Wrench: 'text-success-deep',
+  User: 'text-ceci-tertiary',
+  Wrench: 'text-status-success-strong',
 };
 
 /** Nomes de ícones resolvíveis (ordem estável p/ testes). */

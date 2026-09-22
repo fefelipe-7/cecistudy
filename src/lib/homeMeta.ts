@@ -76,9 +76,9 @@ export function getDailyGoalMessage(
 export type DueUrgency = 'overdue' | 'today' | 'tomorrow' | 'soon' | 'later' | 'none';
 
 export const DUE_STYLES: Record<DueUrgency, string> = {
-  overdue: 'text-red-700 font-bold',
-  today: 'text-red-700 font-bold',
-  tomorrow: 'text-amber-text font-semibold',
+  overdue: 'text-status-danger-strong font-bold',
+  today: 'text-status-danger-strong font-bold',
+  tomorrow: 'text-status-warning-strong font-semibold',
   soon: 'text-ceci-secondary',
   later: 'text-ceci-secondary',
   none: 'text-ceci-muted',

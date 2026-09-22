@@ -1,21 +1,43 @@
-﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, BookOpen, Check, FileText, Tag } from 'lucide-react';
+﻿import React, { useMemo, useRef, useState } from 'react';
+import { ArrowLeft } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
-import { ClassNote } from '../../types';
-import type { LooseNote } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { usePersistentState } from '../../lib/usePersistentState';
-import { StarRating } from '../ui/StarRating';
-import { PillGroup } from '../ui/PillGroup';
+import { Modal } from '../ui/Modal';
 import { Picker } from '../ui/Picker';
+import { ComposeModeSwitch } from '../compose/ComposeModeSwitch';
+import { ComposeSheet } from '../compose/ComposeSheet';
+import { ComposeConfigAccordion } from '../compose/ComposeConfigAccordion';
+import { ComposeActionBar } from '../compose/ComposeActionBar';
+import {
+  COMPOSE_DRAFT_KEY,
+  buildClassNoteFromCompose,
+  buildLooseNoteFromCompose,
+  composeTitle,
+  emptyDraft,
+  initialCourseId,
+  initialMode,
+  nextClassNumber,
+  nextComposePrefs,
+  shouldShowClassNudge,
+  type ComposeDraft,
+  type ComposePrefs,
+} from '../../lib/composeLogic';
 
-const LOOSE_CATEGORIES: LooseNote['category'][] = ['reflexão', 'estudo', 'ideia', 'lembrete'];
-
-/** Última escolha do quick capture (abre no último modo/disciplina). */
-interface ComposePrefs {
-  mode: 'aula' | 'avulsa';
-  courseId?: string;
-}
+/** Rascunho inicial reidratado (texto/tag/rating/categoria da última vez). */
+const draftFromContext = (
+  previous: ComposeDraft | undefined,
+  composeCourseId: string | undefined,
+  lastPrefs: ComposePrefs | undefined,
+  courses: { id: string }[]
+): ComposeDraft => {
+  const base = previous ?? emptyDraft();
+  return {
+    ...base,
+    mode: initialMode(composeCourseId, lastPrefs),
+    courseId: initialCourseId(composeCourseId, lastPrefs ?? base, courses),
+  };
+};
 
 export const ComposeNoteView: React.FC = () => {
   const {
@@ -30,75 +52,116 @@ export const ComposeNoteView: React.FC = () => {
   } = useMobileApp();
 
   const [lastPrefs, setLastPrefs] = usePersistentState<ComposePrefs>('composePrefs', { mode: 'avulsa' });
+  const [draft, setDraft] = usePersistentState<ComposeDraft>(COMPOSE_DRAFT_KEY, emptyDraft());
 
-  const [text, setText] = useState('');
-  const [isClassNote, setIsClassNote] = useState<boolean>(!!composeCourseId || lastPrefs.mode === 'aula');
-  const [courseId, setCourseId] = useState<string>(composeCourseId || lastPrefs.courseId || courses[0]?.id || '');
-  const [tag, setTag] = useState('');
-  const [rating, setRating] = useState(0);
-  const [category, setCategory] = useState<LooseNote['category']>('reflexão');
+  const [initial] = useState<ComposeDraft>(() =>
+    draftFromContext(draft, composeCourseId, lastPrefs, courses)
+  );
+  const [mode, setMode] = useState<ComposeDraft['mode']>(initial.mode);
+  const [courseId, setCourseId] = useState<string | undefined>(initial.courseId);
+  const [text, setText] = useState(initial.text);
+  const [tag, setTag] = useState(initial.tag);
+  const [rating, setRating] = useState(initial.rating);
+  const [category, setCategory] = useState(initial.category);
+
+  const [confirmDiscard, setConfirmDiscard] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
-    textareaRef.current?.focus();
-  }, []);
+  const hasCourses = courses.length > 0;
+  const selectedCourse = courses.find((c) => c.id === courseId);
+  const isClassNote = mode === 'aula';
 
-  const nextNumber = useMemo(() => {
-    const nums = classes.filter((c) => c.courseId === courseId).map((c) => c.number || 0);
-    return (nums.length ? Math.max(...nums) : 0) + 1;
-  }, [classes, courseId]);
+  const patchDraft = (patch: Partial<ComposeDraft>) => {
+    setDraft({ text, mode, courseId, category, tag, rating, ...patch });
+  };
 
-  const firstLine = (content: string) => content.split('\n')[0].slice(0, 60);
+  const updateText = (v: string) => {
+    setText(v);
+    patchDraft({ text: v });
+  };
+  const updateTag = (v: string) => {
+    setTag(v);
+    patchDraft({ tag: v });
+  };
+  const updateRating = (n: number) => {
+    setRating(n);
+    patchDraft({ rating: n });
+  };
+  const updateCategory = (c: ComposeDraft['category']) => {
+    setCategory(c);
+    patchDraft({ category: c });
+  };
+  const updateCourseId = (id: string | undefined) => {
+    setCourseId(id);
+    patchDraft({ courseId: id });
+  };
+  const switchMode = (m: ComposeDraft['mode']) => {
+    setMode(m);
+    setDraft({ text, mode: m, courseId, category, tag, rating });
+  };
+
+  const classNumber = useMemo(() => nextClassNumber(classes, courseId), [classes, courseId]);
+
+  const handleBack = () => {
+    if (text.trim()) {
+      setConfirmDiscard(true);
+      return;
+    }
+    closeCompose();
+  };
+
+  const handleDiscard = () => {
+    setConfirmDiscard(false);
+    setDraft(emptyDraft());
+    closeCompose();
+  };
 
   const handleSave = () => {
     const content = text.trim();
     if (!content) return;
 
     if (isClassNote) {
-      const note: ClassNote = {
-        id: 'cl-' + Date.now(),
-        courseId,
-        title: tag.trim() || firstLine(content) || 'aula anotada no cantinho',
-        number: nextNumber,
-        date: new Date().toISOString().split('T')[0],
-        summary: content,
-        fullNotes: content,
-        conceptIds: [],
-        authorIds: [],
-        approachIds: [],
-        materials: [],
-        hasQuestions: false,
-        rating: rating || undefined,
-      };
-      setLastPrefs({ mode: 'aula', courseId });
-      hapticSuccess();
+      const note = buildClassNoteFromCompose({
+        text: content,
+        tag,
+        courseId: courseId || courses[0]?.id,
+        number: classNumber,
+        rating,
+      });
+      setLastPrefs(nextComposePrefs('aula', courseId));
       handleAddClassNote(note);
+      hapticSuccess();
+      setConfirmDiscard(false);
+      setDraft(emptyDraft());
       closeCompose();
       openDetailPrompt(note.id);
     } else {
-      setLastPrefs({ mode: 'avulsa' });
+      setLastPrefs(nextComposePrefs('avulsa'));
+      addLooseNote(
+        buildLooseNoteFromCompose({
+          text: content,
+          category,
+          courseId,
+        })
+      );
       hapticSuccess();
-      addLooseNote({
-        id: 'note-' + Date.now(),
-        title: firstLine(content) || 'nota sem título',
-        content,
-        category,
-        date: new Date().toISOString(),
-      });
+      setConfirmDiscard(false);
+      setDraft(emptyDraft());
       closeCompose();
       showToast('nota salva nas notas avulsas ♡');
     }
   };
 
   const canSave = text.trim().length > 0;
+  const showNudge = shouldShowClassNudge(text, mode, hasCourses);
 
   return (
     <div className="min-h-[70vh] flex flex-col">
-      {/* Cabeçalho sutil da tela de captura */}
+      {/* Cabeçalho contextual da tela de captura */}
       <div className="sticky top-0 z-10 -mx-3.5 sm:-mx-5 px-3.5 sm:px-5 pt-[calc(0.5rem+env(safe-area-inset-top,0px))] pb-3 bg-canvas/95 backdrop-blur-md border-b border-ceci-border-subtle">
         <div className="max-w-md sm:max-w-xl lg:max-w-2xl mx-auto flex items-center justify-between gap-2">
           <button
-            onClick={closeCompose}
+            onClick={handleBack}
             className="w-9 h-9 rounded-2xl bg-surface-default border border-ceci-border-default hover:bg-surface-rose flex items-center justify-center text-ceci-primary shadow-2xs transition active:scale-95 cursor-pointer"
             title="voltar"
             aria-label="voltar"
@@ -106,91 +169,111 @@ export const ComposeNoteView: React.FC = () => {
             <ArrowLeft className="w-4 h-4" />
           </button>
 
-          <div className="flex items-center gap-1.5 min-w-0">
-            <span className="w-7 h-7 rounded-xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
-              <FileText className="w-3.5 h-3.5" />
-            </span>
-            <h1 className="font-display font-bold text-sm text-ceci-primary truncate">nova nota</h1>
-          </div>
+          <h1 className="font-display font-bold text-sm text-ceci-primary truncate">
+            {composeTitle(mode, selectedCourse?.name)}
+          </h1>
 
-          <button
-            onClick={handleSave}
-            disabled={!canSave}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-[14px] text-xs font-bold transition active:scale-95 min-h-[44px] cursor-pointer ${
-              canSave
-                ? 'bg-ceci-brand-strong hover:bg-ceci-brand-hover text-white shadow-2xs'
-                : 'bg-surface-muted text-ceci-tertiary cursor-not-allowed'
-            }`}
-          >
-            <Check className="w-4 h-4 stroke-[2.5]" />
-            <span>salvar</span>
-          </button>
+          <span className="w-9 h-9 rounded-full bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0 text-sm">
+            {isClassNote ? '📚' : '♡'}
+          </span>
         </div>
       </div>
 
-      {/* Linha quase imperceptível: escolha de aula + tag/categoria */}
-      <div className="pt-3 space-y-2.5">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setIsClassNote(!isClassNote)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold transition cursor-pointer ${
-              isClassNote
-                ? 'bg-ceci-primary text-white shadow-2xs'
-                : 'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-surface-rose'
-            }`}
-          >
-            <BookOpen className="w-3.5 h-3.5" />
-            <span>{isClassNote ? 'é uma aula ♡' : 'é uma aula?'}</span>
-          </button>
-
-          {isClassNote && (
-            <Picker
-              value={courseId}
-              onChange={setCourseId}
-              options={courses.map((c) => ({ value: c.id, label: c.name }))}
-              placeholder="disciplina"
-              buttonClassName="flex-1 min-w-0 bg-surface-default border border-ceci-border-default rounded-full px-3 py-1.5 text-[11px] font-medium"
-              sheetTitle="disciplina da aula"
-            />
-          )}
-        </div>
+      <div className="pt-3 flex-1 min-h-0 flex flex-col gap-2.5">
+        <ComposeModeSwitch mode={mode} onChange={switchMode} />
 
         {isClassNote ? (
-          <div className="flex items-center gap-1.5">
-            <Tag className="w-3.5 h-3.5 text-ceci-tertiary shrink-0" />
-            <input
-              type="text"
-              value={tag}
-              onChange={(e) => setTag(e.target.value)}
-              placeholder="tag para classificar a aula (ex.: ansiedade)"
-              className="flex-1 min-w-0 bg-surface-default/60 border border-ceci-border-subtle rounded-full px-3.5 py-1.5 text-[11px] text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500"
-            />
-          </div>
+          <>
+            {hasCourses && (
+              <Picker
+                value={courseId ?? ''}
+                onChange={(v) => updateCourseId(v || undefined)}
+                options={courses.map((c) => ({ value: c.id, label: c.name }))}
+                placeholder="escolher disciplina"
+                buttonClassName="flex-1 min-w-0 bg-surface-default border border-ceci-border-default rounded-full px-3.5 py-2 text-[11px] font-semibold text-ceci-primary"
+                sheetTitle="disciplina da aula"
+                clearable={!composeCourseId}
+              />
+            )}
+            {!hasCourses && (
+              <p className="text-[11px] text-ceci-tertiary text-center px-6 leading-snug">
+                cadastre uma matéria na aba faculdade para anotar aulas aqui ♡
+              </p>
+            )}
+          </>
         ) : (
-          <PillGroup
-            variant="brand"
-            options={LOOSE_CATEGORIES.map((cat) => ({ value: cat, label: cat }))}
-            value={category}
-            onChange={(v) => setCategory(v)}
+          <ComposeConfigAccordion
+            mode={mode}
+            category={category}
+            onCategoryChange={updateCategory}
+            courseId={courseId}
+            onCourseIdChange={updateCourseId}
+            courses={courses}
           />
         )}
 
-        {isClassNote && (
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[11px] font-medium text-ceci-tertiary">avaliação:</span>
-            <StarRating value={rating} onChange={setRating} showLabel />
-          </div>
-        )}
+        <ComposeSheet
+          mode={mode}
+          courseLabel={selectedCourse?.name}
+          classNumber={classNumber}
+          tag={tag}
+          onTagChange={updateTag}
+          rating={rating}
+          onRatingChange={updateRating}
+          hasCourses={hasCourses}
+          className="min-h-[40vh]"
+        >
+          <textarea
+            ref={textareaRef}
+            value={text}
+            onChange={(e) => updateText(e.target.value)}
+            placeholder="escreva aqui... ✨"
+            className="flex-1 w-full bg-transparent px-4 pt-3 pb-4 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none resize-none leading-relaxed"
+            autoFocus
+          />
+        </ComposeSheet>
       </div>
 
-      {/* Campo de texto grande — digitação quase instantânea */}
-      <textarea
-        ref={textareaRef}
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="escreva sua nota aqui... ✨"
-        className="flex-1 min-h-[45vh] mt-3 w-full bg-surface-default rounded-xl border border-ceci-border-default shadow-2xs p-4 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 resize-none leading-relaxed"
+      <ComposeActionBar
+        canSave={canSave}
+        saveLabel="guardar ♡"
+        showNudge={showNudge}
+        onNudge={() => {
+          switchMode('aula');
+          textareaRef.current?.focus();
+        }}
+        onSave={handleSave}
       />
+
+      <Modal
+        open={confirmDiscard}
+        onClose={() => setConfirmDiscard(false)}
+        closeOnBackdrop={false}
+        labelledBy="compose-discard-title"
+      >
+        <div className="bg-surface-default rounded-[20px] border border-ceci-border-default shadow-xl p-5 max-w-sm w-full text-center">
+          <p id="compose-discard-title" className="font-display font-bold text-sm text-ceci-primary">
+            descartar essa nota?
+          </p>
+          <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
+            parece que você estava no meio de uma anotação. ainda dá tempo de guardar ♡
+          </p>
+          <div className="grid grid-cols-2 gap-2 mt-4">
+            <button
+              onClick={() => setConfirmDiscard(false)}
+              className="min-h-[44px] rounded-2xl border border-ceci-border-default bg-surface-default text-ceci-secondary text-xs font-semibold cursor-pointer active:scale-[0.98] transition-transform"
+            >
+              continuar escrevendo
+            </button>
+            <button
+              onClick={handleDiscard}
+              className="min-h-[44px] rounded-2xl bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong text-xs font-bold cursor-pointer active:scale-[0.98] transition-transform"
+            >
+              sim, descartar
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

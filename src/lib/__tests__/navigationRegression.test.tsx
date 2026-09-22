@@ -4,13 +4,15 @@ import { MobileAppProvider } from '../../../apps/mobile/src/MobileAppProvider';
 import { useMobileApp } from '../../context/mobileApp';
 
 const NavigationProbe = () => {
-  const { activeTab, slideKey, handleNavigate } = useMobileApp();
+  const { activeTab, slideKey, handleNavigate, openCompose, closeCompose } = useMobileApp();
   return (
     <div>
       <output data-testid="active-tab">{activeTab}</output>
       <output data-testid="slide-key">{slideKey}</output>
       <button type="button" onClick={() => handleNavigate('biblioteca')}>abrir biblioteca</button>
       <button type="button" onClick={() => handleNavigate('home')}>voltar para home</button>
+      <button type="button" onClick={() => openCompose()}>abrir composição</button>
+      <button type="button" onClick={() => closeCompose()}>fechar composição</button>
     </div>
   );
 };
@@ -42,5 +44,22 @@ describe('regressão da navegação entre abas', () => {
     expect(initialKey).not.toBe(libraryKey);
     expect(libraryKey).not.toBe(homeKey);
     expect(homeKey).not.toBe(initialKey);
+  });
+
+  it('mantém a camada de slide estável ao abrir/fechar um overlay (compose)', () => {
+    render(
+      <MobileAppProvider>
+        <NavigationProbe />
+      </MobileAppProvider>
+    );
+
+    const initialKey = screen.getByTestId('slide-key').textContent;
+    fireEvent.click(screen.getByRole('button', { name: 'abrir composição' }));
+    const withOverlayKey = screen.getByTestId('slide-key').textContent;
+    fireEvent.click(screen.getByRole('button', { name: 'fechar composição' }));
+    const afterCloseKey = screen.getByTestId('slide-key').textContent;
+
+    expect(initialKey).toBe(withOverlayKey);
+    expect(withOverlayKey).toBe(afterCloseKey);
   });
 });

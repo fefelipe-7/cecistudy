@@ -10,6 +10,8 @@ export interface UserProfile {
   targetCareer: string;
   dailyQuote: string;
   stickersCollected: number;
+  /** XP por categoria de sticker (sistema de níveis). Opcional — retrocompatível com perfis salvos antes dos níveis. */
+  categoryXp?: Record<Sticker['category'], number>;
   /** Foto de perfil (data URL). Vazia quando não definida. */
   photoUrl?: string;
 }
@@ -32,6 +34,9 @@ export interface Sticker {
   /** Condição de desbloqueio (lida do catálogo em `src/data/stickerCatalog.ts`). */
   condition?: StickerCondition;
 }
+
+/** Raridade de um sticker — determina o XP concedido ao desbloquear. */
+export type StickerRarity = 'semente' | 'broto' | 'raiz' | 'copa' | 'floresta';
 
 /** Regra de desbloqueio de um sticker (conquista), avaliada contra o estado do app. */
 export type StickerCondition =

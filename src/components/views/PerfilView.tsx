@@ -20,7 +20,8 @@ import { useMobileApp } from '@/context/mobileApp';
 import { useDataClientApp, useDataClientCourses, useDataClientStudy } from '@/context/DataClientProvider';
 import { useAppActions, useNavValue } from '@/context/shellNavContexts';
 import { DitherFunnelChart } from '../ui/dither-funnel';
-import { CHART_PASTELS, formatCount } from '../../lib/ditherChart';
+import { formatCount } from '../../lib/ditherChart';
+import { isDarkTheme } from '../../lib/themes';
 import { isReminderSupported } from '../../lib/notifications';
 import { isGcalConfigured } from '../../lib/gcal';
 import { isNativePlatform } from '../../lib/storage';
@@ -45,19 +46,10 @@ import PersonalizationSection from './perfil/PersonalizationSection';
 import DataSection from './perfil/DataSection';
 
 import { deriveCases } from '../../lib/internshipCases';
+import { totalXp, levelFor, generalTitle } from '../../lib/levels';
 
 const scrollToSection = (id: string) => {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-};
-
-/**
- * Renderiza a seção extra injetada pela casca (ex.: card de atualização do
- * desktop Tauri). Isolada num leaf para o PerfilView não depender do valor
- * agregado do app (que muda a cada alteração de qualquer domínio).
- */
-const ShellExtrasSection: React.FC = () => {
-  const { shellExtras } = useMobileApp();
-  return <>{shellExtras?.updateSection && <shellExtras.updateSection />}</>;
 };
 
 /** Card de atualização OTA (auto-suficiente; renderizado só no app nativo). */
@@ -113,7 +105,7 @@ const OtaSection: React.FC = () => {
           {ota.status === 'ready' && (
             <button
               onClick={() => void applyNow()}
-              className="flex items-center gap-2 bg-ceci-primary hover:bg-ceci-primary-hover text-white px-4 py-2.5 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer transition-colors"
+              className="flex items-center gap-2 bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary px-4 py-2.5 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer transition-colors"
             >
               aplicar agora
             </button>
@@ -135,6 +127,11 @@ interface PerfilViewProps {
 }
 
 export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
+  // Early return for stickers mode - must be before any hooks
+  if (mode === 'stickers') {
+    return <StickersView />;
+  }
+
   const {
     profile,
     internshipLogs,
@@ -145,7 +142,10 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
     resetApp,
     exportData,
     importData,
+    themePref,
+    setThemePref,
   } = useDataClientApp();
+  const appIsDark = isDarkTheme(themePref);
   const { courses, classes, tasks, exams } = useDataClientCourses();
   const { readings, flashcards, sessions } = useDataClientStudy();
   const { handleUpdateProfile, showToast, updateReminder, setGcalEnabled } = useAppActions();
@@ -160,12 +160,11 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
   const [name, setName] = useState(profile.name);
   const [semester, setSemester] = useState(profile.semester);
   const [university, setUniversity] = useState(profile.university);
-  const [dailyQuote, setDailyQuote] = useState(profile.dailyQuote);
+const [dailyQuote, setDailyQuote] = useState(profile.dailyQuote);
 
-  // Tela cheia de stickers & conquistas (empilhada sobre o perfil)
-  if (mode === 'stickers') {
-    return <StickersView />;
-  }
+const profileTotalXp = totalXp(profile);
+  const profileLevel = levelFor(profileTotalXp);
+  const profileTitle = generalTitle(profileLevel);
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
@@ -212,13 +211,13 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
   const tccChaptersTotal = tcc.chapters.length;
   const stickersUnlocked = stickers.filter((s) => s.unlocked).length;
 
-  // ---- funil da jornada (dithered) ----
+  // ---- funil da jornada (dithered, gradiente de cor única) ----
   const doneReadings = readings.filter((r) => r.status === 'concluido').length;
   const journeyStages = [
-    { label: 'disciplinas', value: courses.length, color: CHART_PASTELS[0] },
-    { label: 'aulas anotadas', value: classes.length, color: CHART_PASTELS[1] },
-    { label: 'leituras concluídas', value: doneReadings, color: CHART_PASTELS[2] },
-    { label: 'flashcards revisados', value: flashcardsReviewed, color: CHART_PASTELS[3] },
+    { label: 'disciplinas', value: courses.length },
+    { label: 'aulas anotadas', value: classes.length },
+    { label: 'leituras concluídas', value: doneReadings },
+    { label: 'flashcards revisados', value: flashcardsReviewed },
   ];
 
   const tiles: {
@@ -315,6 +314,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
       />
       <JourneySummary tiles={tiles} semestersLeft={profile.totalSemesters - profile.semester} />
       <DitherFunnelChart
+        theme={appIsDark ? 'dark' : 'light'}
         stages={journeyStages}
         title="sua jornada até aqui"
         subtitle="do começo aos revisados"
@@ -326,7 +326,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
 
       <JourneyTimeline profile={profile} percentDegree={percentDegree} />
 
-      <StickersSection stickers={stickers} unlocked={stickersUnlocked} onOpen={openStickersScreen} />
+      <StickersSection stickers={stickers} unlocked={stickersUnlocked} onOpen={openStickersScreen} level={profileLevel} title={profileTitle} />
 
       <PersonalizationSection
         reminderSettings={reminderSettings}
@@ -344,11 +344,11 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
         dailyQuote={dailyQuote}
         onDailyQuoteChange={setDailyQuote}
         onSaveProfile={handleSaveProfile}
+        themePref={themePref}
+        onThemeSelect={setThemePref}
       />
 
       {isNativePlatform && <OtaSection />}
-      <ShellExtrasSection />
-      <GithubSyncCard />
 
       <DataSection
         onOpenSync={openSyncScreen}

@@ -21,7 +21,10 @@ export const UnderlineTabBar = <T extends string,>({
   onChange,
   className,
 }: UnderlineTabBarProps<T>) => (
-  <div className={cn('flex items-center gap-4 overflow-x-auto scrollbar-none border-b border-ceci-border-default px-1', className)}>
+  <div className={cn('overflow-x-auto scrollbar-none border-b border-ceci-border-default', className)}>
+    {/* w-max + mx-auto: centraliza quando cabe na tela e rola a partir da
+        esquerda quando estoura (justify-center puro cortaria as 1ªs abas) */}
+    <div className="flex items-center gap-4 px-1 w-max mx-auto">
     {tabs.map((tab) => {
       const isActive = tab.id === active;
       return (
@@ -47,5 +50,6 @@ export const UnderlineTabBar = <T extends string,>({
         </button>
       );
     })}
+    </div>
   </div>
 );

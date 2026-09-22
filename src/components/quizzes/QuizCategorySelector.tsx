@@ -3,7 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp, Check, Target, Filter, Sparkles } from 'lucide-react';
 import { Mascote } from '../ui/Mascote';
 import { PillGroup } from '../ui/PillGroup';
+import { FixedBottomBar } from '../ui/FixedBottomBar';
 import { cn } from '../../lib/utils';
+import { IOS_EASE_OUT } from '../../lib/motion';
 import { filterQuestionPool } from '../../lib/quizLogic';
 import type { QuizConfig, StudyQuestion } from '../../types';
 
@@ -79,7 +81,7 @@ function FilterSection({
           selected.length > 0 ? 'text-ceci-brand-strong' : 'text-ceci-secondary'
         }`}>
           {selected.length > 0 && (
-            <span className="w-5 h-5 rounded-full bg-ceci-brand-strong text-white flex items-center justify-center">
+            <span className="w-5 h-5 rounded-full bg-ceci-brand-strong text-ceci-on-brand flex items-center justify-center">
               {selected.length}
             </span>
           )}
@@ -94,7 +96,7 @@ function FilterSection({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+            transition={{ duration: 0.25, ease: IOS_EASE_OUT }}
             className="border-t border-ceci-border-default p-3 space-y-2 max-h-48 overflow-y-auto"
           >
             {options.map((opt) => {
@@ -106,7 +108,7 @@ function FilterSection({
                   className={cn(
                     'w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-xs transition',
                     isSel
-                      ? 'bg-ceci-brand-strong text-white'
+                      ? 'bg-ceci-brand-strong text-ceci-on-brand'
                       : 'bg-surface-muted text-ceci-primary hover:bg-surface-rose'
                   )}
                 >
@@ -316,7 +318,7 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
               className={`w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold cursor-pointer transition active:scale-[0.98] ${
                 pool.length === 0
                   ? 'bg-ceci-muted text-ceci-secondary cursor-not-allowed'
-                  : 'bg-ceci-brand hover:bg-ceci-brand-strong text-white shadow-2xs'
+                  : 'bg-ceci-brand hover:bg-ceci-brand-strong text-ceci-on-brand shadow-2xs'
               }`}
             >
               <Target className="w-4 h-4" /> {pool.length === 0 ? 'nenhuma questão com esses filtros' : `começar quiz (${config.count} questões)`}
@@ -325,7 +327,7 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
         </div>
       </div>
 
-      <div className="fixed bottom-0 inset-x-0 z-10 bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(var(--shadow-rgb),0.06)]">
+      <FixedBottomBar>
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
           <button
             onClick={onClose}
@@ -334,7 +336,7 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
             cancelar
           </button>
         </div>
-      </div>
+      </FixedBottomBar>
       </>
       )}
     </div>

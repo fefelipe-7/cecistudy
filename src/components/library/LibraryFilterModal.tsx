@@ -117,7 +117,7 @@ export const LibraryFilterModal: React.FC<LibraryFilterModalProps> = ({
           </button>
           <button
             onClick={onClose}
-            className="flex-1 bg-ceci-primary text-white py-2.5 rounded-2xl text-xs font-bold shadow-2xs hover:bg-ceci-primary-hover cursor-pointer"
+            className="flex-1 bg-ceci-primary text-ceci-on-primary py-2.5 rounded-2xl text-xs font-bold shadow-2xs hover:bg-ceci-primary-hover cursor-pointer"
           >
             aplicar filtros
           </button>

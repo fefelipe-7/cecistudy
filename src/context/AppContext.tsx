@@ -4,6 +4,8 @@ import type {
   ReminderSettings,
 } from './DataClientProvider';
 import type { SharedAppValue } from './sharedAppValue';
+import type { StickerState } from '../lib/stickers';
+import type { ThemeId } from '../lib/themes';
 import type { DataActions, DataActionGroups } from './dataActions';
 import type { NavigationValue } from './navigationEngine';
 import type {
@@ -66,14 +68,6 @@ import type {
 // ReminderSettings é definido em ./DataClientProvider e re-exportado para compatibilidade.
 export type { ReminderSettings } from './DataClientProvider';
 
-/** Extensões de UI específicas da casca (desktop/mobile), injetadas pelo
- *  provider de cada plataforma. Views compartilhadas NUNCA brancham por
- *  `isDesktop` — consomem este slot opcional. */
-export interface ShellExtras {
-  /** Seção de atualização do app (Tauri updater) — só desktop. */
-  updateSection?: React.ComponentType;
-}
-
 export interface AppContextValue {
   // data
   profile: UserProfile;
@@ -90,6 +84,8 @@ export interface AppContextValue {
   internshipLogs: InternshipLog[];
   tcc: TccData;
   stickers: Sticker[];
+  /** Snapshot do estado avaliado para as condições dos stickers (barras de progresso). */
+  stickerState: StickerState | null;
   sessions: StudySession[];
   questions: StudyQuestion[];
   techniques: Technique[];
@@ -104,10 +100,9 @@ export interface AppContextValue {
   updateReminder: (settings: ReminderSettings) => void;
   gcalEnabled: boolean;
   setGcalEnabled: (on: boolean) => Promise<boolean>;
-
-  /** Extensões de UI da casca (desktop/mobile), injetadas pelo provider.
-   *  Mantém views compartilhadas agnósticas de plataforma. */
-  shellExtras?: ShellExtras;
+  /** Tema ativo (TEM-001) — preferência de app persistida (`themePref`). */
+  themePref: ThemeId;
+  setThemePref: React.Dispatch<React.SetStateAction<ThemeId>>;
 
   // onboarding / ciclo de vida dos dados
   onboarding: OnboardingState;
@@ -140,6 +135,8 @@ export interface AppContextValue {
   subTabBiblioteca: SubTabBiblioteca;
   setSubTabBiblioteca: (t: SubTabBiblioteca) => void;
   focusedStudyScreen: StudyScreen | null;
+  /** Sessão de foco imersiva em tela (chrome preto + orientação landscape). */
+  isFocusImmersiveOpen: boolean;
   openStudy: (screen: StudyScreen) => void;
   closeStudy: () => void;
   targetId: string | undefined;
@@ -149,9 +146,12 @@ export interface AppContextValue {
   focusedCourse: Course | undefined;
   openCourseDetail: (courseId: string) => void;
   closeCourseDetail: () => void;
+  isClassNoteDetailOpen: boolean;
+  focusedClassNoteId: string | null;
+  focusedClassNote: ClassNote | undefined;
+  openClassNoteDetail: (classNoteId: string) => void;
+  closeClassNoteDetail: () => void;
   isBottomNavVisible: boolean;
-  /** Base da pilha é uma tab — mantém o padding inferior do main estável durante push/pop. */
-  hasTabBase: boolean;
   /** Se existe algo para voltar (cadeia do back do Android / gesto de borda). */
   canGoBack: boolean;
   isNotesScreenOpen: boolean;
@@ -458,6 +458,7 @@ export function buildAppContextValue(
     setGcalEnabled: shared.setGcalEnabled,
     toggleSaveBook: shared.toggleSaveBook,
     updateReadingProgress: shared.updateReadingProgress,
+    stickerState: shared.stickerState,
     // ações de domínio / workspace
     // ⚠️ os grupos por domínio (PERF-001 A.3) ficam nos sub-contextos
     // (CoursesActionsContext etc. montados pelas cascas) — não vazam para o

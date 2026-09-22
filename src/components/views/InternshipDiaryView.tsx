@@ -6,6 +6,7 @@ import { SupervisionView } from './SupervisionView';
 import { Mascote } from '../ui/Mascote';
 import { DitherGrowthChart } from '../ui/dither-growth';
 import { deriveCases } from '../../lib/internshipCases';
+import { isDarkTheme } from '../../lib/themes';
 import { InternshipCaseCard } from '../internship/InternshipCaseCard';
 import { InternshipCaseDetail } from '../internship/InternshipCaseDetail';
 
@@ -19,7 +20,8 @@ function weekStart(d: Date): Date {
 
 /** Tela do estágio 2.0: diário + supervisão + pendências. */
 export const InternshipDiaryView: React.FC = () => {
-  const { internshipLogs, openWizard } = useMobileApp();
+  const { internshipLogs, openWizard, themePref } = useMobileApp();
+  const appIsDark = isDarkTheme(themePref);
   const [tab, setTab] = useState<'diario' | 'supervisao' | 'pacientes'>('diario');
   const [selectedCase, setSelectedCase] = useState<ReturnType<typeof deriveCases>[0] | null>(null);
 
@@ -69,7 +71,7 @@ export const InternshipDiaryView: React.FC = () => {
         </div>
         <button
           onClick={() => openWizard('internship')}
-          className="flex items-center gap-1.5 bg-ceci-primary hover:bg-ceci-ink text-white px-3.5 py-2 rounded-full text-xs font-semibold shadow-xs cursor-pointer shrink-0"
+          className="flex items-center gap-1.5 bg-ceci-primary hover:bg-ceci-ink text-ceci-on-primary px-3.5 py-2 rounded-full text-xs font-semibold shadow-xs cursor-pointer shrink-0"
         >
           <Plus className="w-4 h-4" /> anotar
         </button>
@@ -91,7 +93,7 @@ export const InternshipDiaryView: React.FC = () => {
               onClick={() => setTab(t.key)}
               className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-xs font-semibold transition cursor-pointer ${
                 active
-                  ? 'bg-ceci-primary text-white shadow-xs'
+                  ? 'bg-ceci-primary text-ceci-on-primary shadow-xs'
                   : 'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-surface-muted'
               }`}
             >
@@ -128,11 +130,11 @@ export const InternshipDiaryView: React.FC = () => {
                 pendências
               </div>
               <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="bg-white/60 rounded-xl p-2 text-center">
+                <div className="bg-surface-default rounded-xl p-2 text-center">
                   <p className="font-bold text-ceci-primary">{pendingReflection}</p>
                   <p className="text-ceci-secondary">reflexões em aberto</p>
                 </div>
-                <div className="bg-white/60 rounded-xl p-2 text-center">
+                <div className="bg-surface-default rounded-xl p-2 text-center">
                   <p className="font-bold text-ceci-primary">{pendingSupervision}</p>
                   <p className="text-ceci-secondary">supervisões pendentes</p>
                 </div>
@@ -144,6 +146,7 @@ export const InternshipDiaryView: React.FC = () => {
           {internshipLogs.length > 0 ? (
             <div className="rounded-2xl p-4 bg-surface-default border border-ceci-border-default shadow-sm">
               <DitherGrowthChart
+                theme={appIsDark ? 'dark' : 'light'}
                 data={weeklySeries}
                 title="horas de campo por semana"
                 unitLabel="h"

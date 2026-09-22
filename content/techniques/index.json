@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "posicoesNominais": 142,
-  "tecnicasCanonicas": 135,
+  "tecnicasCanonicas": 136,
   "techniqueIds": [
     "tec-identificacao-de-pensamentos-automaticos",
     "tec-registro-de-pensamentos",
@@ -125,6 +125,7 @@
     "tec-identificacao-de-recursos",
     "tec-estabelecimento-de-metas",
     "tec-planejamento-de-mudanca",
+    "tec-psicoeducacao",
     "tec-atencao-plena",
     "tec-respiracao-consciente",
     "tec-body-scan",

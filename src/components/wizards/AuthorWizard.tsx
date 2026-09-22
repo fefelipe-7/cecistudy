@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { UserCheck } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import type { ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { TOAST } from '../../lib/copy';
+import { useWizardForm } from '../../lib/useWizardForm';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import {
   ReviewCard,
@@ -13,19 +14,33 @@ import {
 import { Picker } from '../ui/Picker';
 import { TagField } from '../ui/TagField';
 
+interface AuthorValues {
+  name: string;
+  bio: string;
+  lifespan: string;
+  approachId: string;
+  keyConcepts: string[];
+  majorWorks: string[];
+}
+
 export const AuthorWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
   const { approaches, authors, handleAddAuthor, handleUpdateAuthor, closeWizard, showToast } = useMobileApp();
   const editingAuthor = editing?.kind === 'author'
     ? authors.find((a) => a.id === editing.id)
     : undefined;
 
-  const [step, setStep] = useState(0);
-  const [name, setName] = useState(editingAuthor?.name ?? '');
-  const [bio, setBio] = useState(editingAuthor?.bio ?? '');
-  const [lifespan, setLifespan] = useState(editingAuthor?.lifespan ?? '');
-  const [approachId, setApproachId] = useState(editingAuthor?.approachId ?? '');
-  const [keyConcepts, setKeyConcepts] = useState<string[]>(editingAuthor?.keyConcepts ?? []);
-  const [majorWorks, setMajorWorks] = useState<string[]>(editingAuthor?.majorWorks ?? []);
+  const { values, patch, step, setStep } = useWizardForm<AuthorValues>({
+    initial: {
+      name: editingAuthor?.name ?? '',
+      bio: editingAuthor?.bio ?? '',
+      lifespan: editingAuthor?.lifespan ?? '',
+      approachId: editingAuthor?.approachId ?? '',
+      keyConcepts: editingAuthor?.keyConcepts ?? [],
+      majorWorks: editingAuthor?.majorWorks ?? [],
+    },
+    editing: !!editingAuthor,
+  });
+  const { name, bio, lifespan, approachId, keyConcepts, majorWorks } = values;
 
   const approachName = approaches.find((a) => a.id === approachId)?.name ?? '';
 
@@ -39,13 +54,13 @@ export const AuthorWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editi
         <div className="space-y-4">
           <TextInput
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => patch({ name: e.target.value })}
             placeholder="nome do autor — ex: aaron beck"
             autoFocus
           />
           <TextInput
             value={lifespan}
-            onChange={(e) => setLifespan(e.target.value)}
+            onChange={(e) => patch({ lifespan: e.target.value })}
             placeholder="lifespan (opcional) — ex: 1921–2021"
           />
         </div>
@@ -61,13 +76,13 @@ export const AuthorWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editi
           <TextArea
             rows={6}
             value={bio}
-            onChange={(e) => setBio(e.target.value)}
+            onChange={(e) => patch({ bio: e.target.value })}
             placeholder="a biografia e a contribuição dele para a psicologia..."
           />
           <Picker
             label="abordagem (opcional)"
             value={approachId}
-            onChange={setApproachId}
+            onChange={(v) => patch({ approachId: v })}
             options={approaches.map((a) => ({ value: a.id, label: a.name }))}
             emptyMessage="ainda não há abordagens registradas."
           />
@@ -84,14 +99,14 @@ export const AuthorWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editi
           <TagField
             label="obras principais"
             tags={majorWorks}
-            onChange={setMajorWorks}
+            onChange={(v) => patch({ majorWorks: v })}
             placeholder="ex: terapia cognitiva da depressão"
             emptyMessage="não precisa preencher tudo ♡"
           />
           <TagField
             label="conceitos-chave"
             tags={keyConcepts}
-            onChange={setKeyConcepts}
+            onChange={(v) => patch({ keyConcepts: v })}
             placeholder="ex: tríade cognitiva"
           />
         </div>

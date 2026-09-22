@@ -43,7 +43,7 @@ function daysUntil(date: string): number {
 const RHYTHM_ICON: Record<'aulas' | 'provas' | 'foco', string> = {
   aulas: 'text-ceci-academic-strong',
   provas: 'text-ceci-brand-strong',
-  foco: 'text-success-deep',
+  foco: 'text-status-success-strong',
 };
 
 /** Telha de métrica — número grande + rótulo pequeno (padrão de stats do app). */
@@ -132,17 +132,17 @@ export const CourseInfoContent: React.FC<CourseInfoContentProps> = ({ course }) 
 
   const frequencyColor = attendance
     ? attendance.pct >= 75
-      ? 'var(--color-success-deep)'
+      ? 'var(--color-status-success-strong)'
       : attendance.pct >= 50
-        ? 'var(--color-amber-text)'
-        : 'var(--color-red-700)'
+        ? 'var(--color-status-warning-strong)'
+        : 'var(--color-status-danger-strong)'
     : undefined;
   const frequencyBar = attendance
     ? attendance.pct >= 75
-      ? 'bg-success-deep'
+      ? 'bg-status-success'
       : attendance.pct >= 50
-        ? 'bg-amber-text'
-        : 'bg-red-700'
+        ? 'bg-status-warning'
+        : 'bg-status-danger'
     : '';
 
   return (
@@ -268,7 +268,7 @@ export const CourseInfoContent: React.FC<CourseInfoContentProps> = ({ course }) 
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0">
                   {typeof ex.grade === 'number' && (
-                    <span className="font-bold text-success-deep bg-surface-mint-soft px-2 py-0.5 rounded border border-green-200">
+                    <span className="font-bold text-status-success-strong bg-status-success-surface px-2 py-0.5 rounded border border-status-success-border">
                       nota {ex.grade}
                     </span>
                   )}

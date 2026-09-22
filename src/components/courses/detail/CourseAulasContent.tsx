@@ -3,11 +3,10 @@ import { AlertCircle, CheckCircle2, ChevronDown, FileText, Plus } from 'lucide-r
 import { Mascote } from '../../ui/Mascote';
 import { CompletionToggle } from '../../ui/CompletionToggle';
 import { ManageSurface } from '../../ui/ManageSurface';
-import { ClassNoteModal } from '../ClassNoteModal';
 import { ClassNoteListItem } from '../ClassNoteListItem';
 import { useMobileApp } from '@/context/mobileApp';
 import { formatShortDate } from '../../../lib/schedule';
-import { Course, ClassNote, Exam } from '../../../types';
+import { Course, Exam } from '../../../types';
 
 interface CourseAulasContentProps {
   course: Course;
@@ -36,7 +35,7 @@ function examPillClass(exam: Exam): string {
   const days = daysUntil(exam.date);
   const urgent = days >= 0 && days <= 3;
   return urgent
-    ? 'text-amber-text bg-amber-bg px-2 py-0.5 rounded-full border border-amber-border'
+    ? 'text-status-warning-strong bg-status-warning-surface px-2 py-0.5 rounded-full border border-status-warning-border'
     : 'text-ceci-brand-strong bg-surface-rose px-2 py-0.5 rounded-full border border-ceci-border-brand';
 }
 
@@ -46,11 +45,18 @@ function examPillClass(exam: Exam): string {
  * Compartilhado entre mobile e desktop.
  */
 export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }) => {
-  const [selectedClassNote, setSelectedClassNote] = useState<ClassNote | null>(null);
   const [showDoneExams, setShowDoneExams] = useState(false);
   const [showDoneTasks, setShowDoneTasks] = useState(false);
-  const { classes, exams, tasks, handleToggleExam, handleToggleTask, openWizard, openCompose } =
-    useMobileApp();
+  const {
+    classes,
+    exams,
+    tasks,
+    handleToggleExam,
+    handleToggleTask,
+    openWizard,
+    openCompose,
+    openClassNoteDetail,
+  } = useMobileApp();
 
   const courseClasses = classes
     .filter((c) => c.courseId === course.id)
@@ -159,7 +165,7 @@ export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }
                           {formatShortDate(exam.date)}
                         </span>
                         {typeof exam.grade === 'number' && (
-                          <span className="text-[10px] font-bold text-success-deep bg-surface-mint-soft px-2 py-0.5 rounded-full border border-green-200">
+                          <span className="text-[10px] font-bold text-status-success-strong bg-status-success-surface px-2 py-0.5 rounded-full border border-status-success-border">
                             nota: {exam.grade}
                           </span>
                         )}
@@ -206,10 +212,10 @@ export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }
               <li key={cl.id} className="relative pl-4 pb-1 last:pb-0">
                   <span
                     aria-hidden
-                    className="absolute -left-[5px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 shrink-0"
+                    className="absolute -left-[5px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-surface-default border-2 shrink-0"
                     style={{ borderColor: course.color }}
                   />
-                <ClassNoteListItem note={cl} onClick={() => setSelectedClassNote(cl)} />
+                <ClassNoteListItem note={cl} onClick={() => openClassNoteDetail(cl.id)} />
               </li>
             ))}
           </ol>
@@ -231,7 +237,7 @@ export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }
       <div className="space-y-3 pt-1">
         <div className="flex items-center justify-between gap-2">
           <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-success-deep" />
+            <CheckCircle2 className="w-4 h-4 text-status-success-strong" />
             <span>tarefas & entregas</span>
           </h3>
           {courseTasks.length > 0 ? (
@@ -292,7 +298,7 @@ export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }
             {!showDoneTasks &&
               courseTasks.length > 0 &&
               courseTasks.every((t) => t.completed) && (
-                <p className="py-3 text-xs text-success-deep flex items-center gap-1.5">
+                <p className="py-3 text-xs text-status-success-strong flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4" /> todas as tarefas desta disciplina estão
                   concluídas ♡
                 </p>
@@ -305,8 +311,6 @@ export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }
           </p>
         )}
       </div>
-
-      <ClassNoteModal note={selectedClassNote} onClose={() => setSelectedClassNote(null)} />
     </div>
   );
 };

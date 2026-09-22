@@ -22,12 +22,13 @@ cecistudy/
 
 # Site OTA gerado pelo workflow (.github/workflows/ota.yml)
 ota-site/
-desktop/keyring/*.key
-desktop/src-tauri/target/
 assets/mascote_expressoes_svgs/
 
 # Núcleo Rust (desktop) — artefatos de build
 cecistudy-rust/target/
+
+# Backup em zip de projeto (não versionar)
+apps/desktop-flutter.zip
 
 # Python (skills/scripts)
 **/__pycache__/

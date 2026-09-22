@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Brain } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import type { ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
-import { TOAST } from '../../lib/copy';
+import { useWizardForm } from '../../lib/useWizardForm';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import { ReviewCard, TextArea, TextInput } from './wizardFields';
 import { Picker } from '../ui/Picker';
+import { CourseSelect } from './CourseSelect';
 import { useAcervoTheory } from './useAcervoTheory';
+
+interface FlashcardValues {
+  question: string;
+  answer: string;
+  courseId: string;
+  conceptId: string;
+}
 
 export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
   const {
@@ -18,29 +26,26 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
     handleAddFlashcard,
     handleUpdateFlashcard,
     closeWizard,
-    openEditCourse,
     showToast,
   } = useMobileApp();
   const editingCard = editing?.kind === 'flashcard'
     ? flashcards.find((c) => c.id === editing.id)
     : undefined;
 
-  const [step, setStep] = useState(0);
-  const [question, setQuestion] = useState(editingCard?.question ?? '');
-  const [answer, setAnswer] = useState(editingCard?.answer ?? '');
-  const [courseId, setCourseId] = useState(
-    editingCard?.courseId ?? (wizardCourseId || courses[0]?.id || '')
-  );
-  const [conceptId, setConceptId] = useState(editingCard?.conceptId ?? '');
+  const { values, patch, step, setStep } = useWizardForm<FlashcardValues>({
+    initial: {
+      question: editingCard?.question ?? '',
+      answer: editingCard?.answer ?? '',
+      courseId: editingCard?.courseId ?? (wizardCourseId || courses[0]?.id || ''),
+      conceptId: editingCard?.conceptId ?? '',
+    },
+    editing: !!editingCard,
+  });
+  const { question, answer, courseId, conceptId } = values;
   const { conceptOptions, resolveIds } = useAcervoTheory();
 
   const courseName = courses.find((c) => c.id === courseId)?.name ?? '';
   const conceptName = concepts.find((c) => c.id === conceptId)?.name ?? '';
-
-  const createCourseInline = () => {
-    showToast(TOAST.courseRegistered);
-    openEditCourse();
-  };
 
   const steps: WizardStep[] = [
     {
@@ -51,7 +56,7 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
       content: (
         <TextInput
           value={question}
-          onChange={(e) => setQuestion(e.target.value)}
+          onChange={(e) => patch({ question: e.target.value })}
           placeholder="ex: o que é a tríade cognitiva da depressão?"
           autoFocus
         />
@@ -66,7 +71,7 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
         <TextArea
           rows={6}
           value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
+          onChange={(e) => patch({ answer: e.target.value })}
           placeholder="explique a resposta com suas palavras..."
         />
       ),
@@ -81,18 +86,15 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
           <Picker
             label="conceito relacionado (opcional)"
             value={conceptId}
-            onChange={(v) => setConceptId(resolveIds([v])[0])}
+            onChange={(v) => patch({ conceptId: resolveIds([v])[0] })}
             options={conceptOptions}
             emptyMessage="ainda não há conceitos no cantinho."
           />
-          <Picker
-            label="disciplina (opcional)"
+          <CourseSelect
             value={courseId}
-            onChange={setCourseId}
-            options={courses.map((c) => ({ value: c.id, label: c.name }))}
-            emptyMessage="ainda não há disciplinas cadastradas."
-            createLabel="criar matéria agora"
-            onCreate={createCourseInline}
+            onChange={(v) => patch({ courseId: v })}
+            label="disciplina (opcional)"
+            optional
           />
         </div>
       ),

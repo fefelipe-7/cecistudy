@@ -120,7 +120,7 @@ export const OnboardingScreen: React.FC = () => {
               <div className="pt-4">
                 <button
                   onClick={() => setStep(1)}
-                  className="inline-flex items-center gap-2 bg-ceci-primary hover:bg-ceci-primary-hover text-white px-7 py-3.5 rounded-full text-sm font-semibold shadow-xs transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-2 bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary px-7 py-3.5 rounded-full text-sm font-semibold shadow-xs transition-colors cursor-pointer"
                 >
                   começar <ArrowRight className="w-4 h-4" />
                 </button>
@@ -145,7 +145,7 @@ export const OnboardingScreen: React.FC = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="seu nome (ex.: maria)"
-                className="w-full bg-surface-default border border-ceci-border-default rounded-2xl px-4 py-3.5 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 shadow-2xs"
+                className="w-full bg-surface-default border border-ceci-border-default rounded-2xl px-4 py-3.5 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-ceci-brand shadow-2xs"
               />
 
               <div className="flex gap-2 pt-2">
@@ -159,8 +159,8 @@ export const OnboardingScreen: React.FC = () => {
                   onClick={() => setStep(2)}
                   disabled={!canProceedName}
                   className={cn(
-                    'flex-1 flex items-center justify-center gap-2 text-white py-3 rounded-full text-xs font-semibold transition-colors cursor-pointer',
-                    canProceedName ? 'bg-ceci-brand hover:bg-ceci-brand-strong' : 'bg-ceci-faded cursor-not-allowed'
+                    'flex-1 flex items-center justify-center gap-2 text-ceci-on-brand py-3 rounded-full text-xs font-semibold transition-colors cursor-pointer',
+                    canProceedName ? 'bg-ceci-brand-strong hover:bg-ceci-brand' : 'bg-ceci-faded cursor-not-allowed'
                   )}
                 >
                   continuar <ArrowRight className="w-4 h-4" />
@@ -210,7 +210,7 @@ export const OnboardingScreen: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setStep(3)}
-                  className="flex-1 flex items-center justify-center gap-2 bg-ceci-brand hover:bg-ceci-brand-strong text-white py-3 rounded-full text-xs font-semibold transition-colors cursor-pointer"
+                  className="flex-1 flex items-center justify-center gap-2 bg-ceci-brand hover:bg-ceci-brand-strong text-ceci-on-brand py-3 rounded-full text-xs font-semibold transition-colors cursor-pointer"
                 >
                   continuar <ArrowRight className="w-4 h-4" />
                 </button>
@@ -235,7 +235,7 @@ export const OnboardingScreen: React.FC = () => {
                 value={university}
                 onChange={(e) => setUniversity(e.target.value)}
                 placeholder="universidade (opcional)"
-                className="w-full bg-surface-default border border-ceci-border-default rounded-2xl px-4 py-3.5 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 shadow-2xs"
+                className="w-full bg-surface-default border border-ceci-border-default rounded-2xl px-4 py-3.5 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-ceci-brand shadow-2xs"
               />
 
               <input
@@ -243,7 +243,7 @@ export const OnboardingScreen: React.FC = () => {
                 value={targetCareer}
                 onChange={(e) => setTargetCareer(e.target.value)}
                 placeholder="objetivo profissional (opcional)"
-                className="w-full bg-surface-default border border-ceci-border-default rounded-2xl px-4 py-3.5 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 shadow-2xs"
+                className="w-full bg-surface-default border border-ceci-border-default rounded-2xl px-4 py-3.5 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-ceci-brand shadow-2xs"
               />
 
               <div className="flex gap-2 pt-2">
@@ -255,7 +255,7 @@ export const OnboardingScreen: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setStep(4)}
-                  className="flex-1 flex items-center justify-center gap-2 bg-ceci-brand hover:bg-ceci-brand-strong text-white py-3 rounded-full text-xs font-semibold transition-colors cursor-pointer"
+                  className="flex-1 flex items-center justify-center gap-2 bg-ceci-brand hover:bg-ceci-brand-strong text-ceci-on-brand py-3 rounded-full text-xs font-semibold transition-colors cursor-pointer"
                 >
                   continuar <ArrowRight className="w-4 h-4" />
                 </button>
@@ -289,7 +289,7 @@ export const OnboardingScreen: React.FC = () => {
                 <div className="flex flex-wrap items-center justify-center gap-2">
                   <button
                     onClick={pickPhoto}
-                    className="inline-flex items-center gap-1.5 bg-ceci-primary hover:bg-ceci-primary-hover text-white px-5 py-2.5 rounded-full text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary px-5 py-2.5 rounded-full text-xs font-semibold shadow-xs transition-colors cursor-pointer"
                   >
                     <Camera className="w-4 h-4" /> escolher foto
                   </button>
@@ -314,7 +314,7 @@ export const OnboardingScreen: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setStep(5)}
-                  className="flex-1 flex items-center justify-center gap-2 bg-ceci-brand hover:bg-ceci-brand-strong text-white py-3 rounded-full text-xs font-semibold transition-colors cursor-pointer"
+                  className="flex-1 flex items-center justify-center gap-2 bg-ceci-brand hover:bg-ceci-brand-strong text-ceci-on-brand py-3 rounded-full text-xs font-semibold transition-colors cursor-pointer"
                 >
                   continuar <ArrowRight className="w-4 h-4" />
                 </button>
@@ -405,7 +405,7 @@ const PermissionsStep: React.FC<{ onFinish: () => void; onBack: () => void }> = 
               loading={loading}
               extra={
                 state === 'denied' ? (
-                  <p className="text-[10px] text-red-700 mt-1 flex items-center gap-1">
+                  <p className="text-[10px] text-status-danger-strong mt-1 flex items-center gap-1">
                     <X className="w-3 h-3" /> não concedido — dá pra ativar depois nas configurações.
                   </p>
                 ) : undefined
@@ -428,7 +428,7 @@ const PermissionsStep: React.FC<{ onFinish: () => void; onBack: () => void }> = 
         </button>
         <button
           onClick={onFinish}
-          className="flex-1 flex items-center justify-center gap-2 bg-ceci-primary hover:bg-ceci-primary-hover text-white py-3 rounded-full text-xs font-semibold transition-colors cursor-pointer"
+          className="flex-1 flex items-center justify-center gap-2 bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary py-3 rounded-full text-xs font-semibold transition-colors cursor-pointer"
         >
           montar meu cantinho <Heart className="w-4 h-4" />
         </button>

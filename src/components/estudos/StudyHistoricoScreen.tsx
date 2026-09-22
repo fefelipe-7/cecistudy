@@ -1,11 +1,13 @@
 ﻿import React, { useMemo } from 'react';
-import { Flame, ChevronRight, Play, Target, BookOpen, Timer } from 'lucide-react';
+import { Flame, ChevronRight, Play, Target, BookOpen, Timer, Activity } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import { Mascote } from '../ui/Mascote';
 import { ManageSurface } from '../ui/ManageSurface';
 import { DitherGrowthChart } from '../ui/dither-growth';
 import { DitherDonutChart } from '../ui/dither-donut';
+import { RevenueLineChart } from '../ui/dither-revenue';
 import { formatCount } from '../../lib/ditherChart';
+import { isDarkTheme } from '../../lib/themes';
 
 const toISODate = (d: Date) => d.toISOString().split('T')[0];
 const formatPct = (n: number) => `${Math.round(n)}%`;
@@ -17,7 +19,8 @@ const formatShortDate = (daysAgo: number) => {
 
 /** Tela dedicada de histórico — sessões de foco, quizzes e leituras concluídas. */
 export const StudyHistoricoScreen: React.FC = () => {
-  const { sessions, quizSessions, readings, courses, streakStats, openStudy } = useMobileApp();
+  const { sessions, quizSessions, readings, courses, streakStats, openStudy, themePref } = useMobileApp();
+  const appIsDark = isDarkTheme(themePref);
 
   const courseName = (id?: string) => courses.find((c) => c.id === id)?.name || 'geral';
 
@@ -75,6 +78,15 @@ export const StudyHistoricoScreen: React.FC = () => {
   });
   const weekLabels = Array.from({ length: 8 }, (_, i) => formatShortDate((7 - i) * 7));
 
+  // ---- minutos de foco por dia (últimos 14 dias) ----
+  const dayMinutes = Array.from({ length: 14 }, (_, i) => {
+    const dayISO = toISODate(new Date(Date.now() - (13 - i) * 86400000));
+    return sessions
+      .filter((s) => s.date === dayISO)
+      .reduce((acc, s) => acc + (s.durationMinutes || 0), 0);
+  });
+  const dayLabels = Array.from({ length: 14 }, (_, i) => formatShortDate(13 - i));
+
   // ---- distribuição do tempo por disciplina ----
   const topCourseMinutes = new Map<string, number>();
   sessions.forEach((s) => {
@@ -117,7 +129,7 @@ export const StudyHistoricoScreen: React.FC = () => {
         <div className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="w-9 h-9 rounded-full bg-surface-rose border border-ceci-border-brand flex items-center justify-center">
-              <Flame className={`w-4 h-4 ${streakStats.alive ? 'fill-rose-500 text-rose-500' : 'text-ceci-muted'}`} />
+              <Flame className={`w-4 h-4 ${streakStats.alive ? 'fill-ceci-brand text-ceci-brand-strong' : 'text-ceci-muted'}`} />
             </span>
             <div>
               <p className="text-xs font-semibold text-ceci-primary">sua ofensiva</p>
@@ -140,15 +152,16 @@ export const StudyHistoricoScreen: React.FC = () => {
           </p>
           <button
             onClick={() => openStudy('focus')}
-            className="mx-auto flex items-center gap-1.5 bg-ceci-brand hover:bg-ceci-brand-strong text-white px-5 py-2.5 rounded-full text-xs font-semibold shadow-xs cursor-pointer"
+            className="mx-auto flex items-center gap-1.5 bg-ceci-brand hover:bg-ceci-brand-strong text-ceci-on-brand px-5 py-2.5 rounded-full text-xs font-semibold shadow-xs cursor-pointer"
           >
-            <Play className="w-3.5 h-3.5 fill-white" /> começar a estudar
+            <Play className="w-3.5 h-3.5 fill-ceci-on-brand" /> começar a estudar
           </button>
         </div>
       ) : (
         <>
           {/* Seu ritmo: minutos de foco por semana */}
           <DitherGrowthChart
+            theme={appIsDark ? 'dark' : 'light'}
             data={focusByWeek}
             dates={weekLabels}
             title="minutos de foco"
@@ -157,9 +170,22 @@ export const StudyHistoricoScreen: React.FC = () => {
             icon={<Timer className="w-4 h-4" />}
           />
 
+          {/* Minutos de foco por dia, últimos 14 dias */}
+          <RevenueLineChart
+            theme={appIsDark ? 'dark' : 'light'}
+            data={dayMinutes}
+            labels={dayLabels}
+            title="foco no dia a dia"
+            subtitle="minutos de foco nos últimos 14 dias"
+            unitLabel="min"
+            color="#4A879F"
+            icon={<Activity className="w-4 h-4" />}
+          />
+
           {/* Seu ritmo: distribuição do tempo por disciplina */}
           {courseMinutes.length > 0 && (
             <DitherDonutChart
+              theme={appIsDark ? 'dark' : 'light'}
               data={courseMinutes}
               title="onde seu tempo foi"
               subtitle="minutos de foco por área"
@@ -272,7 +298,7 @@ export const StudyHistoricoScreen: React.FC = () => {
                       </p>
                     </div>
                   </div>
-                  <span className="text-xs font-semibold text-green-700 bg-green-50 px-3 py-1.5 rounded-full border border-green-200 shrink-0">
+                  <span className="text-xs font-semibold text-status-success-strong bg-status-success-surface px-3 py-1.5 rounded-full border border-status-success-border shrink-0">
                     concluída
                   </span>
                 </ManageSurface>
@@ -284,7 +310,7 @@ export const StudyHistoricoScreen: React.FC = () => {
 
       <button
         onClick={() => openStudy('focus')}
-        className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-white bg-ceci-brand hover:bg-ceci-brand-strong cursor-pointer"
+        className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-ceci-on-brand bg-ceci-brand hover:bg-ceci-brand-strong cursor-pointer"
       >
         <ChevronRight className="w-4 h-4" /> nova sessão de foco
       </button>

@@ -58,7 +58,7 @@ export const ClassNoteDetailWizard: React.FC = () => {
         <p className="text-xs text-ceci-secondary">essa anotação não foi encontrada.</p>
         <button
           onClick={closeComposeDetails}
-          className="px-4 py-2 bg-ceci-primary text-white rounded-full text-xs font-bold cursor-pointer"
+          className="px-4 py-2 bg-ceci-primary text-ceci-on-primary rounded-full text-xs font-bold cursor-pointer"
         >
           voltar
         </button>

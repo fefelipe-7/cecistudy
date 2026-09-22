@@ -13,7 +13,7 @@ const CecinhoTip: React.FC<CecinhoTipProps> = ({ tip }) => (
     <Mascote expression="celebrate-small" className="w-12 h-12 shrink-0" decorative />
     <div className="min-w-0">
       <div className="flex items-center gap-2 text-xs font-semibold text-ceci-primary font-display">
-        <Sparkles className="w-4 h-4 text-rose-500" />
+        <Sparkles className="w-4 h-4 text-ceci-brand-strong" />
         <span>dica do cecinho ✨</span>
       </div>
       <p className="text-xs text-ceci-secondary mt-1 leading-relaxed font-serif-academic">

@@ -100,7 +100,7 @@ export const StudyRevisarScreen: React.FC = () => {
             {flashcards.length > 0 && (
               <button
                 onClick={() => buildReviewQueue(flashcards)}
-                className="mx-auto flex items-center gap-1.5 bg-ceci-primary hover:bg-ceci-primary-hover text-white px-5 py-2.5 rounded-full text-xs font-semibold shadow-xs cursor-pointer"
+                className="mx-auto flex items-center gap-1.5 bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary px-5 py-2.5 rounded-full text-xs font-semibold shadow-xs cursor-pointer"
               >
                 <RefreshCcw className="w-3.5 h-3.5" /> revisar todos ({flashcards.length})
               </button>
@@ -119,7 +119,7 @@ export const StudyRevisarScreen: React.FC = () => {
             </div>
             <button
               onClick={() => buildReviewQueue([])}
-              className="mx-auto bg-ceci-primary hover:bg-ceci-primary-hover text-white px-5 py-2.5 rounded-full text-xs font-semibold shadow-xs cursor-pointer"
+              className="mx-auto bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary px-5 py-2.5 rounded-full text-xs font-semibold shadow-xs cursor-pointer"
             >
               fechar revisão
             </button>
@@ -153,13 +153,13 @@ export const StudyRevisarScreen: React.FC = () => {
               <div className="grid grid-cols-2 gap-3 pt-2">
                 <button
                   onClick={() => handleReview(false)}
-                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-red-700 bg-red-50 border border-red-200 cursor-pointer"
+                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-status-danger-strong bg-status-danger-surface border border-status-danger-border cursor-pointer"
                 >
                   <X className="w-4 h-4" /> errei
                 </button>
                 <button
                   onClick={() => handleReview(true)}
-                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-green-700 hover:bg-green-600 cursor-pointer"
+                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-status-success-on bg-status-success hover:bg-status-success-strong cursor-pointer"
                 >
                   <CheckCircle2 className="w-4 h-4" /> acertei
                 </button>

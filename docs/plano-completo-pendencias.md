@@ -4,9 +4,9 @@
 > implementadas pela metade e débito técnico identificados no projeto. Criado do zero a partir
 > de varredura paralela por agentes (2026-09-04).
 >
-> **Fonte dos achados:** `tasks/plan.md` (Fase C) · `specs/` · `.context/backlog.md` ·
-> `.context/docs/plano-estagio-v3.md` · `desktop/context-desktop/*` ·
-> `desktop/spec/` · `docs/*` · varredura de stubs/features pela metade no código.
+> **Fonte dos achados:** `tasks/plan.md` (Fase C) · `docs/archive/specs/` · `.context/backlog.md` ·
+> `.context/docs/plano-estagio-v3.md` · `docs/archive/desktop-context/` ·
+> `cecistudy-rust/spec/` · `docs/*` · varredura de stubs/features pela metade no código.
 >
 > **Nota sobre work-in-progress:** este plano NÃO substitui `tasks/plan.md`/`tasks/todo.md`
 > (refatoração MOD-001/HAR-001/SEP-001, ~90% concluída). Ele é complementar: a **Fase C** do
@@ -45,21 +45,27 @@
 > `07-estado-execucao.md` diz "feito" mas o código **não tem** (`src/overlays/SharedOverlays.tsx`
 > é o único; não há `MobileOverlays`/`DesktopOverlays`).
 >
+> **Atualizado 2026-09 (limpeza do legado):** o desktop React/Tauri foi **removido por completo**
+> (`desktop/`, `apps/desktop/`, `src/desktop/` não existem mais). Os T-1.x que descreviam a remoção
+> (T-1.5/T-1.6) foram **executados**; T-1.8 (Desacoplar `DesktopAppProvider`) ficou **superseded**.
+> As features "desktop" das Fases 3/8 (marketing/calendar/projects) ficam **canceladas** como
+> produto React — habitam o plano Flutter+Rust (`cecistudy-rust/spec/`).
+>
 > **Gate principal:** `npm run lint` + `npm run test` + `npm run build` + builds `apps/*` +
 > `node .github/scripts/check-boundaries.mjs`.
 
 ### T-1.1 Mover overlays para cada app (10.3 / C.7)
-- **Acceptance:** `apps/mobile/src/overlays/MobileOverlays.tsx` e `apps/desktop/src/overlays/DesktopOverlays.tsx` existem; `src/overlays/SharedOverlays.tsx` removido; cada shell renderiza seus overlays.
+- **Acceptance:** `apps/mobile/src/overlays/MobileOverlays.tsx` existe; `src/overlays/SharedOverlays.tsx` removido; cada shell renderiza seus overlays. (Overlays desktop encerrados com o legado — 2026-09.)
 - **Verify:** `npm run lint` + `npm run test` + builds `apps/*` + `check-boundaries`
 - **Files:** `apps/*/src/overlays/*`, `src/shells/*AppShell.tsx`, `src/overlays/`
 
 ### T-1.2 Remover `ScreenLayers.tsx`, animações diretas no shell (C.2 / 10.4)
-- **Acceptance:** `src/shells/ScreenLayers.tsx` deletado; mobile e desktop usam transições próprias (`MobileAppShell`/`DesktopScreenLayers` existente).
+- **Acceptance:** `src/shells/ScreenLayers.tsx` deletado; o shell mobile usa transições próprias (`MobileAppShell`/`SharedScreenLayers`). (O shell desktop foi removido com o legado — 2026-09.)
 - **Verify:** `npm run test` + builds; swipe-back (Fase 13) continua funcionando.
 - **Files:** `src/shells/ScreenLayers.tsx` (deletar), `MobileAppShell.tsx`
 
 ### T-1.3 Zerar imports de `useApp` em views (C.3)
-- **Acceptance:** zero `useApp` em `src/components/views/**` e `src/shells/**`; tudo via `useMobileApp`/`useDesktopApp`.
+- **Acceptance:** zero `useApp` em `src/components/views/**` e `src/shells/**`; tudo via `useMobileApp` (o `useDesktopApp` foi removido com o legado — 2026-09).
 - **Verify:** `npm run test` + grep `useApp`
 - **Files:** `src/components/views/**`, `src/context/mobileApp.ts`, `src/context/desktopApp.ts`
 
@@ -72,11 +78,13 @@
 - **Acceptance:** `src/App.tsx` é web mobile-only; `isDesktop` só em `src/lib/platform.ts`.
 - **Verify:** `npm run build` + grep `isDesktop`
 - **Files:** `src/App.tsx`, `src/shells/*`
+- **Status (2026-09):** executado — `src/lib/platform.ts` foi **removido** com o legado desktop.
 
 ### T-1.6 Remover `src/desktop/` legado (C.6)
 - **Acceptance:** `src/desktop/` removido (componentes migrados para `apps/desktop`); boundary verde.
 - **Verify:** `node .github/scripts/check-boundaries.mjs`
 - **Files:** `src/desktop/`
+- **Status (2026-09):** executado — `src/desktop/`, `apps/desktop/` e `desktop/` **removidos por completo**.
 
 ### T-1.7 Tornar `MobileAppProvider` real (extrair estado mobile)
 - **Acceptance:** `apps/mobile/src/MobileAppProvider.tsx` deixa de ser facade puro; navigation/quick-actions state mobile extraído (verbo comentado "será extraído aqui nas próximas fases").
@@ -87,6 +95,7 @@
 - **Acceptance:** `DesktopAppProvider` carrega seu próprio valor base a partir de `DataClient`/`AppBaseContext`, sem ler via `useMobileApp()` (seam da refatoração 10.5).
 - **Verify:** `npm run test` (`appProviders`/`desktopSession`) + builds
 - **Files:** `apps/desktop/src/DesktopAppProvider.tsx`, `src/context/appContexts.ts`
+- **Status (2026-09):** **superseded** — `apps/desktop` foi removido com o legado desktop.
 
 ### T-1.9 Limpar `packages/application` (stub)
 - **Acceptance:** `packages/application` deixa de re-exportar `src/core/application/use-cases`; contém use-cases reais ou é consolidador.
@@ -125,10 +134,10 @@
 > Estado real confirmado por varredura. Cada item é independente (ordem por impacto).
 
 ### T-3.1 Marketing: montar UI sobre o domínio pronto (porta de entrada do `mkt`)
-- **Estado:** `packages/domain/src/core/domain/marketing.ts` + use-cases + spec existem; sidebar/home desktop mostram "marketing chega em breve ♡"; **nenhuma tela**.
-- **Acceptance:** screen `MarketingScreen` (desktop) consumindo os use-cases; nav item ativo; CPF/Canal variant visíveis.
-- **Verify:** `npm run lint` + `npm run test` + build desktop
-- **Files:** `apps/desktop/` ou `src/desktop/screens/MarketingScreen.tsx`, sidebar
+- **Estado (2026-09):** **cancelado como produto React** — a UI desktop foi removida com o legado. O domínio (`packages/domain/src/core/domain/marketing.ts`) permanece; a UI passa para o plano Flutter+Rust (`cecistudy-rust/spec/`).
+- **Acceptance:** screen `MarketingScreen` (mobile ou desktop-novo) consumindo os use-cases; nav item ativo; CPF/Canal variant visíveis.
+- **Verify:** `npm run lint` + `npm run test` + build mobile
+- **Files:** — (legado `apps/desktop/`/`src/desktop/screens/MarketingScreen.tsx` removidos)
 - **Scope:** esse é o começo do `mkt` (ver Fase 8). **Decisão de produto** necessária antes (positioning profile vazio?).
 
 ### T-3.2 Synchronizer P2P: implementar o transporte (`sync-p2p` — ver Fase 8)
@@ -139,17 +148,17 @@
 - **Nota:** transporte network (Trystero/nostr) é decisão de arquitetura → **abrir antes de implementar**.
 
 ### T-3.3 Projects: árvore acadêmica + editor paginado visual
-- **Estado:** CRUD de projetos/outputs prontos; painel é placeholder ("serão implementados na próxima etapa ♡").
+- **Estado (2026-09):** a UI desktop (`src/desktop/components/ProjectsScreen.tsx`) foi **removida** com o legado. CRUD de projetos/outputs no domain permanece; UI passa para o plano Flutter+Rust.
 - **Acceptance:** editor visual paginado renderiza seções; árvore configurável navegável.
 - **Verify:** build + testes de projeto
-- **Files:** `src/desktop/components/ProjectsScreen.tsx`
+- **Files:** — (legado `src/desktop/components/ProjectsScreen.tsx` removido)
 - **Nota:** depende do `doc` (Fase 8) para o editor de blocos; se `doc` não estiver pronto, implementar um editor mínimo local.
 
 ### T-3.4 Calendário desktop: implementar o menu "⋯" (mais opções)
-- **Estado:** `CalendarScreen.tsx:238` mostra toast "mais opções em breve ♡".
+- **Estado (2026-09):** **cancelado como produto React** — a UI desktop de calendário (`src/desktop/components/calendar/`) foi **removida** com o legado; o domínio de calendário dos planos segue no Rust (módulo `calendar` portado).
 - **Acceptance:** menu com ações reais (ex.: nova tarefa/reunião, filtros).
 - **Verify:** build + teste manual
-- **Files:** `src/desktop/components/calendar/CalendarScreen.tsx`
+- **Files:** — (legado `src/desktop/components/calendar/CalendarScreen.tsx` removido)
 
 ### T-3.5 ApproachDetailView: conectar "conceitos e técnicas" em vez de "chegam em breve"
 - **Estado:** `ApproachDetailView.tsx:200-203` mostra placeholder; authors ok, conceitos/técnicas não vinculados.
@@ -314,31 +323,34 @@
 ## 7. Fase 7 — Fase C legada (referência) — ver Fase 1
 
 > A Fase C de `tasks/plan.md` (C.1–C.7) é **equivalente** à Fase 1 deste plano. Não duplicar esforço:
-> acompanhar pelos T-1.x. Os itens C.1/C.2 já estão materialmente feitos (DesktopSidebar migrado,
-> `DesktopScreenLayers` existe); confirmar e fechar os checkboxes no plano antigo conforme o código.
+> acompanhar pelos T-1.x. Os itens C.1/C.2 já estão materialmente feitos (`DesktopSidebar` migrado,
+> `DesktopScreenLayers` existia); com a **limpeza do legado (2026-09)** o desktop React/Tauri foi
+> **removido por completo** e os T-1.5/T-1.6 foram executados (T-1.8 superseded).
 > **Deixar `tasks/plan.md`/`tasks/todo.md` intactos** (plano de outro trabalho); este doc é o executor.
 
 ---
 
 ## 8. Fase 8 — Módulos Greenfield (planejados, spec-required) — foco executável
 
-> Estes são features grandes de `desktop/spec/` + `desktop/context-desktop/`. Cada um exige sua
-> própria **spec-driven development** (capability map + spec + plan) antes de codar. Aqui ficam
-> mapeados com o ponto de partida; **não** quebrar em tasks até a spec daquele módulo ser aprovada.
+> Estes são features grandes de `cecistudy-rust/spec/` + `docs/archive/desktop-context/`. Cada um
+> exige sua própria **spec-driven development** (capability map + spec + plan) antes de codar.
+> Aqui ficam mapeados com o ponto de partida; **não** quebrar em tasks até a spec daquele módulo ser
+> aprovada. **Nota (2026-09):** as UI "desktop" React foram removidas com o legado — estes módulos
+> agora são miras do desktop novo (Flutter+Rust).
 
 | Módulo | Spec/rota de onde vem | Estado | Bloqueado por |
 |---|---|---|---|
-| `mkt` — Studio de Marketing | `desktop/spec/05-...` + `marketing.ts` | domain pronto, 0 UI (T-3.1) | decisão de produto sobre CPF/Canal |
-| `cal` — Calendário como domínio | `F7` do PLANO-IMPLEMENTACAO; `schedule.ts` | reusa camada de dados | `sep` (estado sessão desktop) |
+| `mkt` — Studio de Marketing | `cecistudy-rust/spec/05-...` + `marketing.ts` | domain pronto, 0 UI (T-3.1) | decisão de produto sobre CPF/Canal |
+| `cal` — Calendário como domínio | `F7` do PLANO-IMPLEMENTACAO; `schedule.ts` | reusa camada de dados; módulo portado no Rust | `sep` (estado sessão desktop) |
 | `doc` — Documents & Blocks | `F5` greenfield | nada | `cal?(rota)`; destrava TCC editor (T-3.3) |
 | `sync-p2p` — transporte | `F10` + `transport-bridge.ts` | stub (T-3.2) | decisão de transporte (Trystero/nostr) |
 | `engine` — Context Engine | `F11` | nada | `sep`; infra |
-| Desktop Biblioteca master-detail | `desktop/spec/05` M-LIB | nada | `sep` |
-| DOCX/ABNT export (TCC) | `desktop/spec/05` M-DOCX | nada | `doc` |
-| Desktop Settings/updater window | `desktop/spec/04` | nada | `sep` |
-| Command Palette agrupado (G5) + `recentItems` (G4) | `desktop/spec/03` + sweep GAP | parcial | `sep` |
-| Knowledge Graph filtros/focus | `desktop/spec/03` | parcial (`KnowledgeGraphScreen`) | `sep` |
-| Desktop-aware onboarding | `desktop/spec/04` | nada | `sep` |
+| Desktop Biblioteca master-detail | `cecistudy-rust/spec/05` M-LIB | nada | `sep` |
+| DOCX/ABNT export (TCC) | `cecistudy-rust/spec/05` M-DOCX | nada | `doc` |
+| Desktop Settings/updater window | `cecistudy-rust/spec/04` | nada | `sep` |
+| Command Palette agrupado (G5) + `recentItems` (G4) | `cecistudy-rust/spec/03` + sweep GAP | parcial | `sep` |
+| Knowledge Graph filtros/focus | `cecistudy-rust/spec/03` | parcial (`KnowledgeGraphScreen` removido com o legado) | `sep` |
+| Desktop-aware onboarding | `cecistudy-rust/spec/04` | nada | `sep` |
 
 **Recomendação de ordem dentro da Fase 8 (após Fases 1–5):**
 1. `mkt` (menor, domínio pronto) → 2. `cal` → 3. `doc` (destrava TCC/DOCX) → 4. `sync-p2p` → 5. `engine`.
@@ -377,7 +389,7 @@ os mesmos arquivos na prática) → podem rodar em agentes paralelos. Fase 6 e 8
 | Migração `SupervisionNotebook` perde dados | Alto | Migração one-shot + backup; testar criação→migra→verifica |
 | Features greenfield grandes (doc/sync) | Médio | Spec-driven antes de codar; não quebrar em tasks cedo demais |
 | HomeView derivar dados muda visual | Baixo | Usar tokens; empty states acolhedores |
-| Remover `src/desktop/` quebra import escondido | Médio | Busca global + `check-boundaries.mjs` como guard |
+| Remover `src/desktop/` quebra import escondido | Médio | **Executado (2026-09)** — busca global + `check-boundaries.mjs` como guard |
 
 ## 11. Open Questions (precisam de input humano)
 
@@ -394,6 +406,6 @@ os mesmos arquivos na prática) → podem rodar em agentes paralelos. Fase 6 e 8
 - `tasks/plan.md` + `tasks/todo.md` (Fase C — absorvida na Fase 1)
 - `.context/docs/plano-estagio-v3.md` (Fase 2 — executor detalhado)
 - `.context/backlog.md` · `.context/docs/liquid-glass-nav.md` · `.context/docs/plano-templo-catalogo.md`
-- `desktop/context-desktop/PLANO-IMPLEMENTACAO.md` · `ROADMAP-FUNCIONALIDADES-DESKTOP.md` · `separacao-interface/*`
-- `desktop/spec/*` (00-relatorio-varredura, 01–06, SPEC-VISUAL-*)
+- `docs/archive/desktop-context/PLANO-IMPLEMENTACAO.md` · `ROADMAP-FUNCIONALIDADES-DESKTOP.md` · `separacao-interface/*`
+- `cecistudy-rust/spec/*` (00-relatorio-varredura, 01–06, SPEC-VISUAL-*)
 - `docs/reconstruction.md` · `docs/auditor.md` · `docs/manual-findings.md` · `docs/manual-tests.md` · `docs/modais-wizards.md`

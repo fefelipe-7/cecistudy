@@ -85,7 +85,7 @@ export const EstudosView: React.FC = () => {
             </h1>
           </div>
           <span className="flex items-center gap-1 bg-surface-default/80 px-3 py-1.5 rounded-full border border-ceci-border-brand shrink-0">
-            <Flame className={`w-4 h-4 ${streakStats.alive ? 'fill-rose-500 text-rose-500' : 'text-ceci-muted'}`} />
+            <Flame className={`w-4 h-4 ${streakStats.alive ? 'fill-ceci-brand text-ceci-brand-strong' : 'text-ceci-muted'}`} />
             <span className="text-xs font-bold text-ceci-brand-strong">
               {streakStats.current} {streakStats.current === 1 ? 'dia' : 'dias'}
             </span>
@@ -122,11 +122,11 @@ export const EstudosView: React.FC = () => {
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={() => openStudy('focus')}
-            className="bg-ceci-primary hover:bg-ceci-ink text-white rounded-2xl p-5 text-left tap-interactive cursor-pointer space-y-2 shadow-sm min-h-[110px]"
+            className="bg-ceci-primary hover:bg-ceci-ink text-ceci-on-primary rounded-2xl p-5 text-left tap-interactive cursor-pointer space-y-2 shadow-sm min-h-[110px]"
           >
-            <Brain className="w-6 h-6 text-rose-200" />
+            <Brain className="w-6 h-6 text-ceci-brand-soft" />
             <p className="text-base font-bold font-display">bora focar?</p>
-            <p className="text-[11px] text-white/70">
+            <p className="text-[11px] text-ceci-on-primary/70">
               {weekFocusMinutes > 0
                 ? `${weekFocusMinutes} min nesta semana`
                 : 'timer em tela cheia, sem distrações'}
@@ -222,7 +222,7 @@ export const EstudosView: React.FC = () => {
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Activity className="w-4 h-4 text-rose-500" />
+              <Activity className="w-4 h-4 text-ceci-brand-strong" />
               <h2 className="text-xs font-bold text-ceci-primary font-display uppercase tracking-wider">
                 seu ritmo
               </h2>
@@ -251,7 +251,7 @@ export const EstudosView: React.FC = () => {
           </div>
 
           <p className="text-xs text-ceci-secondary flex items-center gap-1.5 border-t border-ceci-border-subtle pt-3.5 -mb-0.5">
-            <Flame className={`w-4 h-4 shrink-0 ${streakStats.alive ? 'fill-rose-500 text-rose-500' : 'text-ceci-muted'}`} />
+            <Flame className={`w-4 h-4 shrink-0 ${streakStats.alive ? 'fill-ceci-brand text-ceci-brand-strong' : 'text-ceci-muted'}`} />
             <span>
               sequência de {streakStats.current} {streakStats.current === 1 ? 'dia' : 'dias'}
               {streakStats.alive ? ' — bora manter! 🔥' : ' — hoje é um bom dia para recomeçar ♡'}
@@ -304,7 +304,7 @@ export const EstudosView: React.FC = () => {
         <Mascote expression="celebrate-small" className="w-12 h-12 shrink-0 ml-0.5 lg:ml-0" decorative />
         <div className="min-w-0">
           <div className="flex items-center gap-2 text-xs font-semibold text-ceci-primary font-display">
-            <Sparkles className="w-4 h-4 text-rose-500" />
+            <Sparkles className="w-4 h-4 text-ceci-brand-strong" />
             <span>dica do cecinho ✨</span>
           </div>
           <p className="font-serif-academic text-sm text-ceci-secondary leading-relaxed mt-0.5">

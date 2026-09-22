@@ -2,7 +2,9 @@ import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2, X, RotateCcw, Target, BarChart2, Clock, Brain } from 'lucide-react';
 import { Mascote } from '../ui/Mascote';
+import { FixedBottomBar } from '../ui/FixedBottomBar';
 import { cn } from '../../lib/utils';
+import { IOS_EASE_OUT } from '../../lib/motion';
 import type { StudyQuestion, QuizConfig, QuizAnswer } from '../../types';
 
 interface QuizResultScreenProps {
@@ -54,10 +56,11 @@ function BarStat({ label, count, total, colorClass, barClass }: {
       </div>
       <div className="h-2 rounded-full bg-ceci-border-subtle overflow-hidden">
         <motion.div
-          className={`h-full rounded-full ${barClass}`}
-          initial={{ width: 0 }}
-          animate={{ width: `${pct}%` }}
-          transition={{ duration: 0.5, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
+          className={`h-full w-full rounded-full ${barClass}`}
+          style={{ originX: 0 }}
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: pct / 100 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: IOS_EASE_OUT }}
         />
       </div>
     </div>
@@ -150,16 +153,16 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
               </p>
             </div>
             <div className="flex items-center justify-center gap-4 text-3xl font-display font-bold">
-              <span className="text-green-600">{correctCount}</span>
+              <span className="text-status-success">{correctCount}</span>
               <span className="text-ceci-muted">/</span>
               <span className="text-ceci-primary">{totalCount}</span>
             </div>
             <div className="flex items-center justify-center gap-2">
               <span className={`inline-flex items-center gap-1 px-4 py-1.5 rounded-full text-sm font-bold ${
-                scorePct === 100 ? 'bg-green-100 text-green-700' :
-                scorePct >= 70 ? 'bg-blue-100 text-blue-700' :
-                scorePct >= 50 ? 'bg-yellow-100 text-yellow-700' :
-                'bg-red-100 text-red-700'
+                scorePct === 100 ? 'bg-status-success-surface text-status-success-strong' :
+                scorePct >= 70 ? 'bg-surface-blue text-ceci-academic-strong' :
+                scorePct >= 50 ? 'bg-status-warning-surface text-status-warning-strong' :
+                'bg-status-danger-surface text-status-danger-strong'
               }`}>
                 {scorePct}%
               </span>
@@ -172,22 +175,22 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
               icon={<CheckCircle2 className="w-4 h-4" />}
               label="acertos"
               value={correctCount}
-              colorClass="text-green-700"
-              bgClass="bg-green-100 text-green-600"
+              colorClass="text-status-success-strong"
+              bgClass="bg-status-success-surface text-status-success"
             />
             <StatCard
               icon={<X className="w-4 h-4" />}
               label="erros"
               value={totalCount - correctCount}
-              colorClass="text-red-700"
-              bgClass="bg-red-100 text-red-600"
+              colorClass="text-status-danger-strong"
+              bgClass="bg-status-danger-surface text-status-danger-strong"
             />
             <StatCard
               icon={<Clock className="w-4 h-4" />}
               label="tempo total"
               value={`${totalTimeMin} min`}
-              colorClass="text-purple-700"
-              bgClass="bg-purple-100 text-purple-600"
+              colorClass="text-ceci-academic-strong"
+              bgClass="bg-surface-blue text-ceci-academic"
             />
             <StatCard
               icon={<Brain className="w-4 h-4" />}
@@ -209,8 +212,8 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
                     label={area}
                     count={data.correct}
                     total={data.total}
-                    colorClass="text-green-700"
-                    barClass="bg-green-700"
+                    colorClass="text-status-success-strong"
+                    barClass="bg-status-success"
                   />
                 ))}
               </div>
@@ -228,8 +231,8 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
                     label={dif.charAt(0).toUpperCase() + dif.slice(1)}
                     count={data.correct}
                     total={data.total}
-                    colorClass="text-purple-700"
-                    barClass="bg-purple-700"
+                    colorClass="text-ceci-academic-strong"
+                    barClass="bg-ceci-academic-strong"
                   />
                 ))}
               </div>
@@ -268,12 +271,12 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
                     key={i}
                     className={cn(
                       'p-3 rounded-xl bg-surface-muted text-[11px] flex items-start gap-2',
-                      isCorrect ? 'border-l-2 border-green-400' : 'border-l-2 border-red-400'
+                      isCorrect ? 'border-l-2 border-status-success' : 'border-l-2 border-status-danger'
                     )}
                   >
                     <span className={cn(
                       'w-6 h-6 rounded-full border flex items-center justify-center font-bold flex-shrink-0',
-                      isCorrect ? 'bg-green-100 border-green-300 text-green-700' : 'bg-red-100 border-red-300 text-red-700'
+                      isCorrect ? 'bg-status-success-surface border-status-success-border text-status-success-strong' : 'bg-status-danger-surface border-status-danger-border text-status-danger-strong'
                     )}>
                       {userLetter}
                     </span>
@@ -288,9 +291,9 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
                       </p>
                     </div>
                     {isCorrect ? (
-                      <CheckCircle2 className="w-4 h-4 text-green-500 fill-green-500 flex-shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 text-status-success fill-status-success flex-shrink-0" />
                     ) : (
-                      <X className="w-4 h-4 text-red-500 flex-shrink-0" />
+                      <X className="w-4 h-4 text-status-danger-strong flex-shrink-0" />
                     )}
                   </div>
                 );
@@ -301,14 +304,14 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
       </div>
 
       {/* Footer sticky - ações */}
-      <div className="fixed bottom-0 inset-x-0 z-10 bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(var(--shadow-rgb),0.06)]">
+      <FixedBottomBar>
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] space-y-2">
           <button
             onClick={() => {
               const sessionId = `qs-${Date.now()}`;
               onSave(sessionId);
             }}
-            className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-sm font-semibold text-white bg-ceci-brand hover:bg-ceci-brand-strong cursor-pointer active:scale-[0.98]"
+            className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-sm font-semibold text-ceci-on-brand bg-ceci-brand hover:bg-ceci-brand-strong cursor-pointer active:scale-[0.98]"
           >
             <CheckCircle2 className="w-4 h-4" /> guardar sessão
           </button>
@@ -327,7 +330,7 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
             </button>
           </div>
         </div>
-      </div>
+      </FixedBottomBar>
     </div>
   );
 };

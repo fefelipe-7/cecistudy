@@ -128,7 +128,7 @@ export async function getCatalogApproaches<T = unknown>(): Promise<T[]> {
   return parseJsonRows(rows) as T[];
 }
 
-/** Questões (745) — substitui o seed lazy de `bancoQuestoes`. */
+/** Questões (3.002 — MC 2.283 · C/E 719) — substitui o seed lazy de `bancoQuestoes`. */
 export async function getCatalogQuestions<T = unknown>(): Promise<T[]> {
   const db = await getCatalogDb();
   if (!db) return [];

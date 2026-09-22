@@ -3,7 +3,9 @@
 import React from 'react';
 import { Settings } from 'lucide-react';
 import type { ReminderSettings } from '../../../context/DataClientProvider';
+import type { ThemeId } from '../../../lib/themes';
 import { ToggleRow } from '../../ui/ToggleRow';
+import ThemePickerCard from './ThemePickerCard';
 
 interface PersonalizationSectionProps {
   reminderSettings: ReminderSettings;
@@ -21,6 +23,8 @@ interface PersonalizationSectionProps {
   dailyQuote: string;
   onDailyQuoteChange: (v: string) => void;
   onSaveProfile: (e: React.FormEvent) => void;
+  themePref: ThemeId;
+  onThemeSelect: (id: ThemeId) => void;
 }
 
 const PersonalizationSection: React.FC<PersonalizationSectionProps> = ({
@@ -39,14 +43,19 @@ const PersonalizationSection: React.FC<PersonalizationSectionProps> = ({
   dailyQuote,
   onDailyQuoteChange,
   onSaveProfile,
+  themePref,
+  onThemeSelect,
 }) => (
   <div className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm space-y-4">
     <div className="flex items-center gap-2">
-      <Settings className="w-4 h-4 text-rose-500" />
+      <Settings className="w-4 h-4 text-ceci-brand-strong" />
       <h2 className="font-display font-bold text-xl text-ceci-primary">
         personalize seu cantinho
       </h2>
     </div>
+
+    {/* Tema do app (TEM-001) — acima do formulário, antes do lembrete */}
+    <ThemePickerCard currentTheme={themePref} onSelect={onThemeSelect} />
 
     {/* Lembrete diário de estudo (app nativo) */}
     <div className={`rounded-2xl p-4 border ${reminderSupported ? 'bg-surface-rose border-ceci-border-brand' : 'bg-surface-muted border-ceci-border-default'} space-y-3`}>
@@ -71,7 +80,7 @@ const PersonalizationSection: React.FC<PersonalizationSectionProps> = ({
             value={reminderSettings.time}
             onChange={(e) => onUpdateReminder({ ...reminderSettings, time: e.target.value })}
             disabled={!reminderSettings.enabled}
-            className="bg-surface-default border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3 py-1.5 text-sm text-ceci-primary disabled:opacity-50"
+            className="bg-surface-default border border-ceci-border-default focus:outline-none focus:border-ceci-brand rounded-xl px-3 py-1.5 text-sm text-ceci-primary disabled:opacity-50"
           />
           <span className="text-[11px] text-ceci-tertiary">todas as noites</span>
         </div>
@@ -106,7 +115,7 @@ const PersonalizationSection: React.FC<PersonalizationSectionProps> = ({
           type="text"
           value={name}
           onChange={(e) => onNameChange(e.target.value)}
-          className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
+          className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-ceci-brand rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
         />
       </div>
 
@@ -117,7 +126,7 @@ const PersonalizationSection: React.FC<PersonalizationSectionProps> = ({
             type="number"
             value={semester}
             onChange={(e) => onSemesterChange(Number(e.target.value))}
-            className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
+            className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-ceci-brand rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
           />
         </div>
 
@@ -127,7 +136,7 @@ const PersonalizationSection: React.FC<PersonalizationSectionProps> = ({
             type="text"
             value={university}
             onChange={(e) => onUniversityChange(e.target.value)}
-            className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
+            className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-ceci-brand rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
           />
         </div>
       </div>
@@ -138,13 +147,13 @@ const PersonalizationSection: React.FC<PersonalizationSectionProps> = ({
           rows={2}
           value={dailyQuote}
           onChange={(e) => onDailyQuoteChange(e.target.value)}
-          className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-rose-500 rounded-xl px-3.5 py-2 text-xs text-ceci-primary"
+          className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-ceci-brand rounded-xl px-3.5 py-2 text-xs text-ceci-primary"
         />
       </div>
 
       <button
         type="submit"
-        className="bg-rose-500 hover:bg-ceci-brand text-white px-5 py-2.5 rounded-xl text-xs font-medium shadow-2xs cursor-pointer"
+        className="bg-ceci-brand hover:bg-ceci-brand text-ceci-on-brand px-5 py-2.5 rounded-xl text-xs font-medium shadow-2xs cursor-pointer"
       >
         guardar configurações do cantinho
       </button>

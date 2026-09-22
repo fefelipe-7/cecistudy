@@ -1,0 +1,16 @@
+[package]
+name = "cecistudy-ffi"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+cecistudy-app = { path = "../cecistudy-app" }
+cecistudy-common = { path = "../cecistudy-common" }
+thiserror = { workspace = true }
+flutter_rust_bridge = { version = "2", features = ["build"] }
+
+[package.metadata.flutter_rust_bridge]
+name = "cecistudy"
+class-name = "CecistudyFfi"

@@ -5,8 +5,7 @@ import type { InternshipLog } from '../../types';
 import { TagField } from '../ui/TagField';
 import { DateInput, FieldLabel, TextArea, TextInput } from '../wizards/wizardFields';
 import { Mascote } from '../ui/Mascote';
-
-const today = () => new Date().toISOString().split('T')[0];
+import { today } from '../wizards/note/constants';
 
 const emptyEntry = (): InternshipLog => ({
   id: 'sup-' + Date.now(),
@@ -78,7 +77,7 @@ export const SupervisionView: React.FC = () => {
         </div>
         <button
           onClick={openNew}
-          className="flex items-center gap-1.5 bg-ceci-primary hover:bg-ceci-ink text-white px-3.5 py-2 rounded-full text-xs font-semibold shadow-xs cursor-pointer shrink-0"
+          className="flex items-center gap-1.5 bg-ceci-primary hover:bg-ceci-ink text-ceci-on-primary px-3.5 py-2 rounded-full text-xs font-semibold shadow-xs cursor-pointer shrink-0"
         >
           <Plus className="w-4 h-4" /> anotar
         </button>
@@ -123,7 +122,7 @@ export const SupervisionView: React.FC = () => {
             </div>
           </div>
           <div className="flex gap-2 pt-1">
-            <button onClick={save} className="flex-1 bg-rose-500 hover:bg-ceci-brand text-white py-2.5 rounded-full text-xs font-semibold cursor-pointer flex items-center justify-center gap-1.5">
+            <button onClick={save} className="flex-1 bg-ceci-brand hover:bg-ceci-brand text-ceci-on-brand py-2.5 rounded-full text-xs font-semibold cursor-pointer flex items-center justify-center gap-1.5">
               <Check className="w-4 h-4" /> guardar
             </button>
             <button onClick={closeForm} className="px-4 py-2.5 rounded-full text-xs font-semibold text-ceci-secondary border border-ceci-border-default cursor-pointer">cancelar</button>

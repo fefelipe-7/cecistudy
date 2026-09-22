@@ -1,6 +1,6 @@
 # Plano de Implementação: PERF-001 — Performance Mobile
 
-> Execution plan for `specs/PERF-001-performance-mobile.md`. Follows incremental
+> Execution plan for `docs/archive/specs/PERF-001-performance-mobile.md` (spec arquivada 2026-09). Follows incremental
 > implementation: implement → verify → next slice. Never overwrote the MOD/SEP refactoring
 > plan (`tasks/plan.md` + `tasks/todo.md`).
 

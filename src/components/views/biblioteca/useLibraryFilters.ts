@@ -301,7 +301,9 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
       if (!map.has(b.id)) map.set(b.id, b);
     });
     return map;
-  }, []);
+    // As referências são estáveis no web (facade estático); no nativo, trocam
+    // quando o dataset SQLite chega — aí o pool precisa ser reconstruído.
+  }, [psychotherapyCollections, complementaryCollections, mixedCollections]);
 
   const savedBooks = useMemo(
     () => [...allBooksById.values()].filter((b) => savedBookIds.has(b.id)),
@@ -327,7 +329,7 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
           ...complementaryCollections.flatMap((c) => c.books.flatMap((b) => b.tags)),
         ])
       ).sort((a, b) => a.localeCompare(b)),
-    []
+    [psychotherapyCollections, complementaryCollections]
   );
 
   return {

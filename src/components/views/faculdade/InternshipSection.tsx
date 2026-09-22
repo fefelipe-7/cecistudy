@@ -53,7 +53,7 @@ const InternshipSection: React.FC<InternshipSectionProps> = ({
 
     <button
       onClick={onOpenWizard}
-      className="w-full flex items-center justify-center gap-1.5 py-3 rounded-full text-xs font-semibold bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand hover:bg-rose-100 transition-colors cursor-pointer tap-interactive"
+      className="w-full flex items-center justify-center gap-1.5 py-3 rounded-full text-xs font-semibold bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand hover:bg-surface-rose transition-colors cursor-pointer tap-interactive"
     >
       <Plus className="w-4 h-4" /> anotar ou agendar um estágio
     </button>

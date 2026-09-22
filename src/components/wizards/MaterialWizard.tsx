@@ -1,24 +1,27 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BookOpen } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import type { MaterialItem, ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
+import { useWizardForm } from '../../lib/useWizardForm';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import {
   ReviewCard,
   TextInput,
 } from './wizardFields';
 import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
-import { Picker } from '../ui/Picker';
 import { TagField } from '../ui/TagField';
+import { CourseSelect } from './CourseSelect';
+import { MATERIAL_TYPES } from './note/constants';
 
-const MATERIAL_TYPES: { value: MaterialItem['type']; label: string; emoji?: string }[] = [
-  { value: 'artigo', label: 'artigo', emoji: '📄' },
-  { value: 'livro', label: 'livro', emoji: '📖' },
-  { value: 'pdf', label: 'pdf', emoji: '🗂️' },
-  { value: 'link', label: 'link', emoji: '🔗' },
-  { value: 'slides', label: 'slides', emoji: '📽️' },
-];
+interface MaterialValues {
+  title: string;
+  type: MaterialItem['type'];
+  author: string;
+  courseId: string;
+  url: string;
+  tags: string[];
+}
 
 export const MaterialWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
   const { courses, materials, wizardCourseId, handleAddMaterial, handleUpdateMaterial, closeWizard, showToast } = useMobileApp();
@@ -26,15 +29,18 @@ export const MaterialWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edi
     ? materials.find((m) => m.id === editing.id)
     : undefined;
 
-  const [step, setStep] = useState(0);
-  const [title, setTitle] = useState(editingMaterial?.title ?? '');
-  const [type, setType] = useState<MaterialItem['type']>(editingMaterial?.type ?? 'artigo');
-  const [author, setAuthor] = useState(editingMaterial?.author ?? '');
-  const [courseId, setCourseId] = useState(
-    editingMaterial?.courseId ?? (wizardCourseId || courses[0]?.id || '')
-  );
-  const [url, setUrl] = useState(editingMaterial?.url ?? '');
-  const [tags, setTags] = useState<string[]>(editingMaterial?.tags ?? []);
+  const { values, patch, step, setStep } = useWizardForm<MaterialValues>({
+    initial: {
+      title: editingMaterial?.title ?? '',
+      type: editingMaterial?.type ?? 'artigo',
+      author: editingMaterial?.author ?? '',
+      courseId: editingMaterial?.courseId ?? (wizardCourseId || courses[0]?.id || ''),
+      url: editingMaterial?.url ?? '',
+      tags: editingMaterial?.tags ?? [],
+    },
+    editing: !!editingMaterial,
+  });
+  const { title, type, author, courseId, url, tags } = values;
 
   const courseName = courses.find((c) => c.id === courseId)?.name ?? '';
 
@@ -48,14 +54,14 @@ export const MaterialWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edi
         <div className="space-y-4">
           <TextInput
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => patch({ title: e.target.value })}
             placeholder="título do material — ex: manual diagnóstico e estatístico"
             autoFocus
           />
-          <ChoiceCardGrid label="tipo" options={MATERIAL_TYPES} value={type} onChange={(v) => setType(v)} />
+          <ChoiceCardGrid label="tipo" options={MATERIAL_TYPES} value={type} onChange={(v) => patch({ type: v })} />
           <TextInput
             value={author}
-            onChange={(e) => setAuthor(e.target.value)}
+            onChange={(e) => patch({ author: e.target.value })}
             placeholder="autor(a)"
           />
         </div>
@@ -68,21 +74,20 @@ export const MaterialWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edi
       subtitle: 'disciplina, link e tags ajudam a encontrar o material na biblioteca ♡',
       content: (
         <div className="space-y-4">
-          <Picker
-            label="disciplina (opcional)"
+          <CourseSelect
             value={courseId}
-            onChange={setCourseId}
-            options={courses.map((c) => ({ value: c.id, label: c.name }))}
-            emptyMessage="ainda não há disciplinas cadastradas."
+            onChange={(v) => patch({ courseId: v })}
+            label="disciplina (opcional)"
+            optional
           />
           <TextInput
             value={url}
-            onChange={(e) => setUrl(e.target.value)}
+            onChange={(e) => patch({ url: e.target.value })}
             placeholder="link (se houver)"
           />
           <TagField
             tags={tags}
-            onChange={setTags}
+            onChange={(v) => patch({ tags: v })}
             placeholder="tags do material"
             emptyMessage="não precisa preencher tudo, pode deixar vazio ♡"
           />

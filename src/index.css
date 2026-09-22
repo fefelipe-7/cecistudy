@@ -7,20 +7,12 @@
 @source not "../**/*.md";
 @source not "../**/*.mdx";
 
-/* Fontes explícitas de classes — independentes do cwd do build. O build desktop
-   roda com cwd=apps/desktop (script de workspace npm), então o detecção automática
-   do Tailwind v4 não enxergaria src/** e geraria CSS sem utilitários (tela "sem
-   estilo" no app desktop). Força o escopo aqui, relativo a este CSS. */
+/* Fontes explícitas de classes — independentes do cwd do build. Os builds dos
+   workspaces apps/* rodam com cwd próprio, então a detecção automática do
+   Tailwind v4 não enxergaria src/** e geraria CSS sem utilitários. Força o
+   escopo aqui, relativo a este CSS. */
 @source "../src/**/*.{ts,tsx}";
 @source "../apps/**/*.{ts,tsx}";
-
-/*
- * Variante de plataforma (não de viewport): aplica utilitários só quando o
- * bundle roda dentro da casca Tauri (`<html data-platform="desktop">`, setado
- * por `initPlatformFlags()` no boot). Uso: `desktop:max-w-none`, etc.
- * O responsivo interno da janela continua existindo (min 420×720).
- */
-@custom-variant desktop ([data-platform="desktop"] &);
 
 @theme {
    /* cecistudy DESIGN SYSTEM PRIMITIVE TOKENS */
@@ -130,6 +122,56 @@
    --color-ceci-border-brand: #FFD0DB;
    --color-ceci-border-academic: #CEE7F0;
 
+   /* TEM-001 — texto sobre preenchimentos (inverte junto com o tema para
+      dark não perder legibilidade: `bg-ceci-primary text-ceci-on-primary`).
+      O `ceci-primary` é usado como texto E como fundo de botão — o `on-*`
+      desacopla as duas funções quando o tema escurece/clareia. */
+   --color-ceci-on-primary: #FFFFFF;
+   --color-ceci-on-brand: #FFFFFF;
+   --color-ceci-on-academic: #FFFFFF;
+
+   /* TEM-001 — glass (liquid-glass-nav/pill/fab). `color-mix` com branco fixo
+      quebra em dark; estes tokens carregam o grau do vidro por tema. */
+   --color-glass-hairline: rgba(255, 255, 255, 0.5);
+   --color-glass-pill-start: rgba(255, 255, 255, 0.9);
+   --color-glass-pill-end: rgba(255, 255, 255, 0.5);
+   --color-glass-pill-border: rgba(255, 255, 255, 0.7);
+
+   /* TEM-001 (dark polish) — família de status theme-aware. O tom base é o
+      preenchimento (`bg-status-success`) e o `-strong` é o texto/borda sobre
+      superfície. `-surface`/`-border` derivam do base misturado ao
+      `surface-default`, então acompanham claro/escuro sem 6 valores por tema. */
+   --color-status-success: #427E5B;
+   --color-status-success-strong: #2D6A4F;
+   --color-status-success-on: #FFFFFF;
+   --color-status-success-surface: color-mix(in srgb, var(--color-status-success) 12%, var(--color-surface-default));
+   --color-status-success-border: color-mix(in srgb, var(--color-status-success) 38%, var(--color-surface-default));
+   --color-status-danger: #B2554D;
+   --color-status-danger-strong: #A8514B;
+   --color-status-danger-on: #FFFFFF;
+   --color-status-danger-surface: color-mix(in srgb, var(--color-status-danger) 12%, var(--color-surface-default));
+   --color-status-danger-border: color-mix(in srgb, var(--color-status-danger) 38%, var(--color-surface-default));
+   --color-status-warning: #8A6524;
+   --color-status-warning-strong: #725016;
+   --color-status-warning-on: #FFFFFF;
+   --color-status-warning-surface: color-mix(in srgb, var(--color-status-warning) 12%, var(--color-surface-default));
+   --color-status-warning-border: color-mix(in srgb, var(--color-status-warning) 38%, var(--color-surface-default));
+
+   /* TEM-001 — leitor (ReaderModeModal): temas FIXOS do leitor (papel/
+      sépia/noturno), independentes do tema do app — não invertem no dark. */
+   --color-reader-paper-bg: #FAF8F5;
+   --color-reader-paper-text: #40383A;
+   --color-reader-paper-border: rgba(64, 56, 58, 0.10);
+   --color-reader-paper-soft: rgba(64, 56, 58, 0.06);
+   --color-reader-sepia-bg: #FFFDF0;
+   --color-reader-sepia-text: #756354;
+   --color-reader-sepia-border: rgba(117, 99, 84, 0.16);
+   --color-reader-sepia-soft: rgba(117, 99, 84, 0.08);
+   --color-reader-dark-bg: #2A2527;
+   --color-reader-dark-text: #E9E2DE;
+   --color-reader-dark-border: rgba(233, 226, 222, 0.12);
+   --color-reader-dark-soft: rgba(233, 226, 222, 0.07);
+
    /* Atmosfera — glows de "abajur" aplicados na camada de canvas (F3) */
    --color-canvas-glow-rose: #FFE9E6;
    --color-canvas-glow-amber: #FFE6C4;
@@ -156,6 +198,19 @@
    --color-ceci-brand-soft: #EA718F;
    --color-ceci-text-soft: #524B4D;
 
+   /* CAPAS DE LIVRO & HEROS DE ARTE — "capa física", invariante ao tema
+      (como os tokens fixos do leitor, TEM-001 B.5): a arte/clara + tinta escura
+      se comportam igual em todos os temas, para que a capa não "lambe" no dark. */
+   --color-cover-base: #FFFFFF;
+   --color-cover-ink: #3B3233;
+
+   /* FOCO IMERSIVO (EST-002) — chrome preto da sessão landscape full-screen */
+   --color-focus-bg: #0B0B0C;
+   --color-focus-primary: #FFFFFF;
+   --color-focus-muted: #9E9EA3;
+   --color-focus-track: rgba(255, 255, 255, 0.14);
+   --color-focus-accent: #E97891;
+
    /* FONTS */
    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
    --font-display: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, sans-serif;
@@ -171,9 +226,14 @@
    --radius-2xl: 24px;
    --radius-3xl: 32px;
 
-   /* SHADOWS — base cacau (temperatura). `--shadow-rgb` é o pré-requisito do
-      sistema de temas (themes.md §2/§4.3): applyTheme seta inline no root. */
-   --shadow-rgb: 122, 88, 72;
+   /* SHADOWS — base cacau (temperatura). `--color-shadow-rgb` (o runtime
+      temático, TEM-001) e `--color-shadow-brand-rgb` são setados inline no
+      root por applyTheme. `--shadow-rgb` segue como ALIAS de compat para as
+      referências espalhadas (.paper-card, glass-fab, sombras de quiz) —
+      assim tudo muda junto com o tema sem reescrever 8 arquivos. */
+   --color-shadow-rgb: 122, 88, 72;
+   --color-shadow-brand-rgb: 175, 70, 95;
+   --shadow-rgb: var(--color-shadow-rgb);
    --shadow-xs: 0 1px 2px rgba(var(--shadow-rgb), 0.05);
    --shadow-sm: 0 2px 8px rgba(var(--shadow-rgb), 0.06);
    --shadow-md: 0 6px 18px rgba(var(--shadow-rgb), 0.08);
@@ -181,8 +241,28 @@
    --shadow-xl: 0 20px 48px rgba(var(--shadow-rgb), 0.14);
    --shadow-floating: 0 8px 28px rgba(var(--shadow-rgb), 0.14);
    --shadow-floating-strong: 0 8px 30px rgba(var(--shadow-rgb), 0.28);
-   --shadow-brand: 0 4px 16px rgba(175, 70, 95, 0.38);
-   --shadow-brand-soft: 0 4px 14px rgba(175, 70, 95, 0.28);
+   --shadow-brand: 0 4px 16px rgba(var(--color-shadow-brand-rgb), 0.38);
+   --shadow-brand-soft: 0 4px 14px rgba(var(--color-shadow-brand-rgb), 0.28);
+}
+
+/* TEM-001 — transição suave de troca de tema (classe aplicada/removida por
+   applyTheme durante a troca explícita; nunca no boot). Mantém a transição
+   mínima (cor/borda/sombra) para não interferir em animações de layout.
+   Honor do prefers-reduced-motion: sem transição quando o usuário pede. */
+@media (prefers-reduced-motion: no-preference) {
+  html.theme-transitioning,
+  html.theme-transitioning *,
+  html.theme-transitioning *::before,
+  html.theme-transitioning *::after {
+    transition:
+      background-color 0.45s ease,
+      color 0.45s ease,
+      border-color 0.45s ease,
+      box-shadow 0.45s ease,
+      fill 0.45s ease,
+      stroke 0.45s ease !important;
+    transition-delay: 0ms !important;
+  }
 }
 
 @layer base {
@@ -412,13 +492,13 @@
 .liquid-glass-pill {
   background-image: linear-gradient(
     to bottom,
-    color-mix(in srgb, white 90%, transparent),
-    color-mix(in srgb, white 50%, transparent)
+    var(--color-glass-pill-start),
+    var(--color-glass-pill-end)
   );
-  border-color: color-mix(in srgb, white 70%, transparent);
+  border-color: var(--color-glass-pill-border);
   box-shadow:
     var(--shadow-xs),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    inset 0 1px 0 var(--color-glass-hairline);
 }
 
 /* FAB — vidro fosco na cor da marca: mesma receita do container
@@ -430,8 +510,38 @@
   -webkit-backdrop-filter: blur(16px) saturate(140%);
   border-color: color-mix(in srgb, white 45%, transparent);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 1px 0 var(--color-glass-hairline),
     inset 0 -1px 0 rgba(var(--shadow-rgb), 0.15);
+}
+
+/* Leitor (ReaderModeModal) — temas fixos do leitor, independentes do tema
+   do app (TEM-001 B.5). Cada classe carrega as variáveis --reader-bg/--text/
+   --border/--soft que os elementos internos reutilizam (bordas, hover, corpo). */
+.reader-paper {
+  --reader-bg: var(--color-reader-paper-bg);
+  --reader-text: var(--color-reader-paper-text);
+  --reader-border: var(--color-reader-paper-border);
+  --reader-soft: var(--color-reader-paper-soft);
+  background-color: var(--reader-bg);
+  color: var(--reader-text);
+}
+
+.reader-sepia {
+  --reader-bg: var(--color-reader-sepia-bg);
+  --reader-text: var(--color-reader-sepia-text);
+  --reader-border: var(--color-reader-sepia-border);
+  --reader-soft: var(--color-reader-sepia-soft);
+  background-color: var(--reader-bg);
+  color: var(--reader-text);
+}
+
+.reader-dark {
+  --reader-bg: var(--color-reader-dark-bg);
+  --reader-text: var(--color-reader-dark-text);
+  --reader-border: var(--color-reader-dark-border);
+  --reader-soft: var(--color-reader-dark-soft);
+  background-color: var(--reader-bg);
+  color: var(--reader-text);
 }
 
 /* Reduce motion for users who prefer it */
@@ -441,4 +551,205 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
+}
+
+/* ============================================================ */
+/* FOCO IMERSIVO — sessão de foco full-screen (EST-002)         */
+/* Camada preta por cima de tudo (z-45, abaixo dos modais z-50) */
+/* ============================================================ */
+.focus-immersive {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background-color: var(--color-focus-bg);
+  color: var(--color-focus-primary);
+  padding:
+    calc(env(safe-area-inset-top, 0px) + 1.25rem)
+    calc(env(safe-area-inset-right, 0px) + 1.5rem)
+    calc(env(safe-area-inset-bottom, 0px) + 1.25rem)
+    calc(env(safe-area-inset-left, 0px) + 1.5rem);
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.focus-immersive button {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.focus-top {
+  width: 100%;
+  max-width: 30rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.focus-top-label {
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-focus-primary);
+  letter-spacing: -0.01em;
+}
+
+.focus-exit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 9999px;
+  border: 1px solid var(--color-focus-track);
+  color: var(--color-focus-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.focus-exit:hover {
+  color: var(--color-focus-primary);
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.focus-preset-row {
+  width: 100%;
+  max-width: 30rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.focus-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 0.875rem;
+  border-radius: 9999px;
+  border: 1px solid var(--color-focus-track);
+  color: var(--color-focus-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.focus-pill:hover {
+  color: var(--color-focus-primary);
+}
+
+.focus-pill-active {
+  background-color: var(--color-focus-primary);
+  border-color: var(--color-focus-primary);
+  color: var(--color-focus-bg);
+}
+
+/* Variante usada como botão do Picker de minutos customizados (sobrepõe o
+   estilo claro padrão do Picker dentro do chrome escuro). */
+.focus-pill-static {
+  background-color: transparent;
+  border-color: var(--color-focus-track);
+  justify-content: center;
+}
+
+.focus-clock-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(62vw, 264px);
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  background: transparent;
+}
+
+.focus-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.focus-clock {
+  font-family: var(--font-mono);
+  font-size: clamp(2.75rem, 9vw, 4.25rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-focus-primary);
+  line-height: 1;
+}
+
+.focus-toggle {
+  margin-top: 0.625rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  color: var(--color-focus-accent);
+}
+
+.focus-bottom {
+  width: 100%;
+  max-width: 30rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.focus-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.focus-save {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 1.125rem;
+  border-radius: 9999px;
+  background-color: var(--color-focus-accent);
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.focus-save:active {
+  transform: scale(0.96);
+}
+
+.focus-reset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  border: 1px solid var(--color-focus-track);
+  color: var(--color-focus-muted);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.focus-reset:hover {
+  color: var(--color-focus-primary);
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.focus-hint {
+  max-width: 22rem;
+  text-align: center;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--color-focus-muted);
 }

@@ -129,10 +129,10 @@ describe('contrato do banco persistido (backup v2)', () => {
     expect(data.onboarding).toEqual({ completed: true, completedAt: '2026-08-01' });
   });
 
-  it('backup NÃO exporta o estado visual de sessão desktop (separação B6/B7)', async () => {
-    // O DesktopSessionState é dono exclusivo de apps/desktop e vive fora do
-    // snapshot do banco (chave própria 'desktopSession'); jamais deve aparecer
-    // no payload de backup compartilhado entre as cascas.
+  it('backup NÃO exporta estado visual de sessão (separação B6/B7)', async () => {
+    // O estado visual de sessão (ex-DesktopSessionState, apps/desktop — legado
+    // removido 2026-09) vive fora do snapshot do banco (chaves próprias como
+    // 'desktopSession'); jamais deve aparecer no payload de backup compartilhado.
     const snapshot = makeSnapshot();
     const payload = await buildBackupPayload(snapshot);
     expect(payload.payload).not.toHaveProperty('desktopSession');
@@ -188,6 +188,24 @@ describe('contrato do banco persistido (backup v2)', () => {
     // Bancos estáticos não são exportados → voltam vazios (re-semeados lazy).
     expect(restored!.approaches).toEqual([]);
     expect(restored!.questions).toEqual([]);
+  });
+
+  it('round-trip preserva categoryXp (campo opcional dos níveis)', async () => {
+    const snapshot = makeSnapshot({
+      profile: {
+        ...makeSnapshot().profile,
+        categoryXp: { faculdade: 20, estudo: 170, leituras: 0, jornada: 50 },
+      },
+    });
+    const payload = await buildBackupPayload(snapshot);
+    const restored = await importAppDatabase(JSON.stringify(payload));
+    expect(restored).not.toBeNull();
+    expect(restored!.profile.categoryXp).toEqual({
+      faculdade: 20,
+      estudo: 170,
+      leituras: 0,
+      jornada: 50,
+    });
   });
 
   it('previewBackup lê os metadados sem validar o payload', async () => {
@@ -404,5 +422,52 @@ expect(restored!.quizSessions).toEqual([]);
     expect(restored).not.toBeNull();
     expect(restored!.quizSessions).toEqual([]);
     expect(restored!.syncIndex).toEqual({ stamps: {}, records: {}, tombstones: {} });
+  });
+
+  it('migra backup v13: course sem repertório ganha arrays vazios (SPEC-001)', async () => {
+    // Backup produzido ANTES da SPEC-001: courses ainda não têm os vínculos
+    // explícitos de repertório. `SCHEMA_VERSION` 14 deve fazer o backfill `[]`.
+    const snapshot = makeSnapshot();
+    const payload = { ...snapshot } as Record<string, unknown>;
+    const envelope = {
+      format: BACKUP_FORMAT,
+      formatVersion: BACKUP_FORMAT_VERSION,
+      userSchemaVersion: USER_SCHEMA_VERSION,
+      catalogRelease: null,
+      exportedAt: '2026-09-20T00:00:00.000Z',
+      schemaVersion: 13,
+      payload,
+    };
+    const restored = await importAppDatabase(JSON.stringify(envelope));
+    expect(restored).not.toBeNull();
+    const course = restored!.courses[0] as unknown as Record<string, unknown>;
+    expect(course.conceptIds).toEqual([]);
+    expect(course.authorIds).toEqual([]);
+    expect(course.bibliographyIds).toEqual([]);
+  });
+
+  it('round-trip preserva vínculos de repertório da disciplina', async () => {
+    const snapshot = makeSnapshot({
+      courses: [
+        {
+          id: 'c1',
+          name: 'Psicopatologia I',
+          professor: 'Ana',
+          semester: '6º semestre',
+          schedule: [{ day: 1, start: '09:00' }],
+          color: '#FFD3DD',
+          icon: 'Brain',
+          conceptIds: ['con-1'],
+          authorIds: ['aut-1'],
+          bibliographyIds: ['cat-1', 'r-1'],
+        },
+      ],
+    });
+    const payload = await buildBackupPayload(snapshot);
+    const restored = await importAppDatabase(JSON.stringify(payload));
+    expect(restored).not.toBeNull();
+    expect(restored!.courses[0].conceptIds).toEqual(['con-1']);
+    expect(restored!.courses[0].authorIds).toEqual(['aut-1']);
+    expect(restored!.courses[0].bibliographyIds).toEqual(['cat-1', 'r-1']);
   });
 });

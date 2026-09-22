@@ -1,18 +1,15 @@
 /**
- * Falha o CI se encontrar importações que violam as fronteiras de separação
- * mobile/desktop/packages. Regras:
+ * Falha o CI se encontrar importações que violam as fronteiras do monorepo:
  *
- * 1. apps/mobile nunca importa apps/desktop, e vice-versa.
- * 2. packages/* nunca importa react/ui de cliente, @capacitor/* ou __TAURI__.
- * 3. A camada mobile (apps/mobile, src/App.tsx, src/shells/MobileAppShell,
- *    src/shells/SharedScreenLayers, src/overlays/MobileOverlays) NUNCA importa
- *    estaticamente código desktop (src/desktop, apps/desktop, desktopApp,
- *    desktop-tokens). Import dinâmico (import('...')) é permitido — vira chunk
- *    separado e não entra no bundle mobile.
- * 4. A camada desktop (apps/desktop, src/desktop, src/shells/DesktopAppShell,
- *    src/overlays/DesktopOverlays) NUNCA importa estaticamente a UI mobile
- *    (views de src/components/views, BottomNav, EdgeSwipeBack, SlideScreen,
- *    useMobileApp, MobileAppShell, src/App.tsx, apps/mobile).
+ * 1. packages/* nunca importa react/ui de cliente, @capacitor/* ou __TAURI__.
+ * 2. A camada mobile (apps/mobile, src/shells/MobileAppShell,
+ *    src/shells/SharedScreenLayers, src/overlays/MobileOverlays) usa o engine
+ *    de navegação puro e nunca importa estado/UI de outra casca.
+ * 3. A shared UI (src/components, shells/overlays compartilhados) NÃO branca
+ *    por plataforma (sem isMobile/Capacitor.isNativePlatform).
+ *
+ * O desktop legado (Tauri + React desktop) foi removido; estas regras valem
+ * para mobile/web + packages.
  *
  * Uso: node .github/scripts/check-boundaries.mjs
  * Saída: 0 = ok, 1 = violação encontrada.
@@ -69,58 +66,6 @@ function resolveTargets(targets) {
 
 const checks = [
   {
-    name: 'mobile → desktop (proibido, estático)',
-    targets: [
-      'apps/mobile',
-      'src/App.tsx',
-      'src/shells/MobileAppShell.tsx',
-      'src/shells/SharedScreenLayers.tsx',
-      'src/overlays/MobileOverlays.tsx',
-      'src/overlays/OverlaysContent.tsx',
-    ],
-    excludeTests: true,
-    forbiddenSpecifiers: [
-      'src/desktop',
-      '../desktop',
-      'apps/desktop',
-      'desktop-tokens',
-      'desktopApp',
-      'KnowledgeGraphScreen',
-      'ProjectsScreen',
-      'InboxScreen',
-    ],
-  },
-  {
-    name: 'desktop → mobile (proibido, estático)',
-    targets: [
-      'apps/desktop',
-      'src/desktop',
-      'src/shells/DesktopAppShell.tsx',
-      'src/overlays/DesktopOverlays.tsx',
-      'src/overlays/OverlaysContent.tsx',
-    ],
-    excludeTests: true,
-    forbiddenSpecifiers: [
-      'src/components/views/',
-      'BottomNav',
-      'EdgeSwipeBack',
-      'SlideScreen',
-      'useMobileApp',
-      'MobileAppShell',
-      'src/App.tsx',
-      'apps/mobile',
-    ],
-  },
-  {
-    // spec 06 (B6/B7): a camada compartilhada src/lib não pode puxar o estado
-    // visual de sessão desktop (dono em apps/desktop) nem o provider desktop.
-    // Testes em src/lib/__tests__ são isentos (importam providers cruzados p/ validar).
-    name: 'src/lib não deve importar apps/desktop estaticamente',
-    targets: ['src/lib'],
-    excludeTests: true,
-    forbiddenSpecifiers: ['apps/desktop', 'desktopSessionState', 'DesktopAppProvider', 'useDesktopSession'],
-  },
-  {
     name: 'packages/domain toca em UI/plataforma',
     targets: ['packages/domain'],
     forbiddenContent: ['from "react"', "from 'react'", '@capacitor/', '__TAURI__', 'window.__TAURI'],
@@ -170,36 +115,28 @@ const checks = [
     ],
   },
   {
-    // spec 07 Phase 5 (T6c): independência dos motores de navegação por casca.
-    // Os arquivos de motor (`apps/mobile/src/mobileNavigation.ts` e
-    // `apps/desktop/src/desktopNavigation.ts`) re-exportam só do engine puro
-    // (`src/context/navigationEngine`) e NUNCA puxam o estado/UI da outra casca.
-    // (O grosso de B3/B4 já é coberto pelas regras 1/3/4 acima — aqui garantimos
-    //  que o mobile não puxa sessão/runtime desktop e vice-versa, mesmo via alias.)
-    name: 'independência dos motores mobile/desktop (spec 07 T6c)',
+    // spec 07 Phase 5 (T6c): independência do motor de navegação da casca mobile.
+    // O arquivo de motor (`apps/mobile/src/mobileNavigation.ts`) re-exporta só do
+    // engine puro (`src/context/navigationEngine`) e nunca puxa estado/UI de
+    // outra casca/provedor (mesmo via alias).
+    name: 'independência do motor de navegação mobile (spec 07 T6c)',
     targets: [
       'apps/mobile/src/mobileNavigation.ts',
-      'apps/desktop/src/desktopNavigation.ts',
       'src/context/navigationEngine.ts',
     ],
     forbiddenSpecifiers: [
-      'desktopSessionState',
-      'apps/desktop',
-      'apps/mobile',
-      'DesktopAppProvider',
       'MobileAppProvider',
     ],
   },
   {
-    name: 'shared UI não deve branchar por plataforma (isDesktop/isMobile/Capacitor/TAURI)',
+    name: 'shared UI não deve branchar por plataforma (isMobile/Capacitor)',
     targets: [
       'src/components',
       'src/shells/SharedScreenLayers.tsx',
       'src/overlays/MobileOverlays.tsx',
-      'src/overlays/DesktopOverlays.tsx',
       'src/overlays/OverlaysContent.tsx',
     ],
-    forbiddenContent: ['isDesktop', 'isMobile', 'Capacitor.isNativePlatform', '__TAURI__', 'window.__TAURI__'],
+    forbiddenContent: ['isMobile', 'Capacitor.isNativePlatform'],
   },
 ];
 

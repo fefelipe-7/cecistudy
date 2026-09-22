@@ -36,6 +36,8 @@ export type SubTabBiblioteca = 'materiais' | 'autores' | 'conceitos' | 'abordage
 export type NavScreen =
   | { kind: 'tab'; tab: NavTab }
   | { kind: 'course'; courseId: string }
+  /** Detalhe full-screen de uma aula (`#/faculdade/:courseId/aula/:classNoteId`), empilhado sobre o curso. */
+  | { kind: 'classNote'; classNoteId: string; courseId: string }
   | { kind: 'notes' }
   | { kind: 'temple' }
   /** Seção interna do templo (`#/biblioteca/templo/<slug>`), empilhada sobre o templo. */

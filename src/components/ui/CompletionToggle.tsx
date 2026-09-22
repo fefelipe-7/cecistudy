@@ -34,8 +34,8 @@ export const CompletionToggle: React.FC<CompletionToggleProps> = ({
         'shrink-0 rounded-full border-2 flex items-center justify-center tap-interactive cursor-pointer transition active:scale-90',
         dims,
         checked
-          ? 'bg-green-500 border-green-500 text-white shadow-sm'
-          : 'bg-surface-default border-ceci-border-strong text-transparent hover:border-green-400',
+          ? 'bg-status-success border-status-success text-status-success-on shadow-sm'
+          : 'bg-surface-default border-ceci-border-strong text-transparent hover:border-status-success',
         className
       )}
     >

@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, useSpring, useTransform } from 'framer-motion';
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCanvasSetup } from '@/lib/useCanvasSetup';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import {
   clamp,
   smoothstep,
+  hexToRgba,
   formatShortDate,
   buildDemoGrowthRanges,
   formatCount,
@@ -15,6 +16,13 @@ import {
 } from '@/lib/ditherChart';
 
 const DEMO_RANGES = buildDemoGrowthRanges();
+
+/** Fração do topo reservada para respiro da curva (a mesma usada no canvas). */
+const PLOT_HEADROOM = 0.16;
+/** Frações do valor máximo onde ficam as linhas de grade/rótulos. */
+const TICK_FRACTIONS = [1, 0.66, 0.33, 0];
+/** Posição vertical (%) de uma fração do máximo dentro da área de plot. */
+const tickTopPct = (fraction: number) => (1 - (1 - PLOT_HEADROOM) * fraction) * 100;
 
 export interface DitherGrowthChartProps {
   theme?: ChartTheme;
@@ -70,6 +78,8 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
 
   const dotColor = accentColor ?? (theme === 'dark' ? '#FFFFFF' : '#D85F79');
   const gridColor = theme === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(64, 56, 58, 0.04)';
+  const gridLineColor = theme === 'dark' ? 'rgba(255, 255, 255, 0.09)' : 'rgba(64, 56, 58, 0.08)';
+  const areaFill = hexToRgba(dotColor, theme === 'dark' ? 0.16 : 0.12);
 
   const computedTrend = useMemo(() => {
     if (data.length < 2) return null;
@@ -163,6 +173,28 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
       const isActive = pointerActiveRef.current;
       const t2 = timeRef.current;
 
+      const headroom = PLOT_HEADROOM * h;
+      const plotH = h - headroom;
+
+      // Área sólida de baixa opacidade: dá forma à curva antes da textura dither.
+      ctx.beginPath();
+      for (let x = 0; x <= w; x += 1) {
+        const t = x / w;
+        const exactIdx = t * (curData.length - 1);
+        const a0 = Math.floor(exactIdx);
+        const a1 = Math.min(a0 + 1, curData.length - 1);
+        const aFrac = exactIdx - a0;
+        const aVal = curData[a0] + (curData[a1] - curData[a0]) * aFrac;
+        const ay = h - plotH * (aVal / curMax);
+        if (x === 0) ctx.moveTo(x, ay);
+        else ctx.lineTo(x, ay);
+      }
+      ctx.lineTo(w, h);
+      ctx.lineTo(0, h);
+      ctx.closePath();
+      ctx.fillStyle = areaFill;
+      ctx.fill();
+
       for (let x = 0; x < w; x += cell) {
         const t = x / w;
         const exactIdx = t * (curData.length - 1);
@@ -171,8 +203,6 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
         const frac = exactIdx - i0;
         const val = curData[i0] + (curData[i1] - curData[i0]) * frac;
 
-        const headroom = 0.16 * h;
-        const plotH = h - headroom;
         const curveY = h - plotH * (val / curMax);
 
         for (let y = h; y >= 0; y -= cell) {
@@ -204,6 +234,13 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
         }
       }
 
+      // Linhas de grade horizontais alinhadas aos rótulos do eixo y (por cima da textura).
+      ctx.fillStyle = gridLineColor;
+      TICK_FRACTIONS.forEach((f) => {
+        const gy = (tickTopPct(f) / 100) * h;
+        ctx.fillRect(0, gy, w, 1);
+      });
+
       ctx.restore();
       requestRef.current = requestAnimationFrame(draw);
     };
@@ -212,7 +249,7 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
     return () => {
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
     };
-  }, [theme, reducedMotion, dotColor, gridColor]);
+  }, [theme, reducedMotion, dotColor, gridColor, gridLineColor, areaFill]);
 
   const handlePointer = (e: React.MouseEvent | React.PointerEvent) => {
     const wrapper = wrapperRef.current;
@@ -234,8 +271,7 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
     targetX.set(actualT * w);
 
     const val = data[idx];
-    const headroom = 0.16 * h;
-    const plotH = h - headroom;
+    const plotH = h - PLOT_HEADROOM * h;
     const curveY = h - plotH * (val / maxVal);
     targetY.set(curveY);
   };
@@ -271,9 +307,7 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
     <div
       className={cn(
         'relative w-full rounded-2xl p-5 border shadow-sm transition-colors',
-        theme === 'dark'
-          ? 'bg-neutral-900 border-neutral-700 text-white'
-          : 'bg-surface-default border-ceci-border-default text-ceci-primary',
+        'bg-surface-default border-ceci-border-default text-ceci-primary',
         className
       )}
     >
@@ -283,9 +317,7 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
           <div
             className={cn(
               'p-2.5 rounded-2xl',
-              theme === 'dark'
-                ? 'bg-white/10 text-white'
-                : 'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand'
+              'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand'
             )}
           >
             {icon}
@@ -295,21 +327,24 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
             <div className="flex items-baseline gap-2">
               <AnimatedNumber
                 value={total}
-                className={cn('font-display text-2xl font-bold tracking-tight', theme === 'dark' ? 'text-white' : 'text-ceci-primary')}
+                className={cn('font-display text-2xl font-bold tracking-tight', 'text-ceci-primary')}
                 format={(n) => `${valuePrefix}${formatCount(n)}`}
               />
               {finalTrend !== undefined && (
                 <span
                   className={cn(
-                    'text-xs font-semibold flex items-center gap-0.5',
-                    trendUp ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'
+                    'text-[11px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-0.5',
+                    trendUp
+                      ? 'text-status-success-strong bg-status-success-surface border-status-success-border'
+                      : 'text-status-danger-strong bg-status-danger-surface border-status-danger-border'
                   )}
                 >
-                  <TrendingUp className="w-3.5 h-3.5" /> {finalTrend}
+                  {trendUp ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                  {finalTrend}
                 </span>
               )}
             </div>
-            <p className={cn('text-xs', theme === 'dark' ? 'text-neutral-400' : 'text-ceci-secondary')}>{subtitle}</p>
+            <p className="text-xs text-ceci-secondary">{subtitle}</p>
           </div>
         </div>
 
@@ -318,7 +353,7 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
           <div
             className={cn(
               'flex items-center p-1 rounded-full border text-xs font-medium',
-              theme === 'dark' ? 'bg-neutral-800 border-neutral-700' : 'bg-surface-subtle border-ceci-border-default'
+              'bg-surface-subtle border-ceci-border-default'
             )}
           >
             {(ranges ?? DEMO_RANGES).map((r, idx) => (
@@ -328,10 +363,8 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
                 className={cn(
                   'px-3 py-1 rounded-full transition cursor-pointer',
                   rangeIndex === idx
-                    ? 'bg-ceci-primary text-white shadow-xs'
-                    : theme === 'dark'
-                      ? 'text-neutral-400 hover:text-white'
-                      : 'text-ceci-secondary hover:text-ceci-primary'
+                    ? 'bg-ceci-primary text-ceci-on-primary shadow-xs'
+                    : 'text-ceci-secondary hover:text-ceci-primary'
                 )}
               >
                 {r.label}
@@ -350,9 +383,9 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
               key={i}
               className={cn(
                 'absolute right-0 text-[10px] font-mono',
-                theme === 'dark' ? 'text-neutral-500' : 'text-ceci-muted'
+                'text-ceci-muted'
               )}
-              style={{ top: `${(i / 3) * 82 + 8}%`, transform: 'translateY(-50%)' }}
+              style={{ top: `${tickTopPct(TICK_FRACTIONS[i])}%`, transform: 'translateY(-50%)' }}
             >
               {formatCount(tick)}
             </span>
@@ -365,17 +398,11 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
             ref={wrapperRef}
             className={cn(
               'relative h-[180px] touch-none cursor-crosshair overflow-hidden rounded-xl',
-              theme === 'dark' ? 'bg-neutral-800' : 'bg-surface-muted'
+              'bg-surface-muted'
             )}
             onPointerMove={handlePointer}
             onPointerLeave={handlePointerLeave}
           >
-            <div
-              className={cn(
-                'absolute inset-0 border-t border-b border-dashed pointer-events-none',
-                theme === 'dark' ? 'border-white/10' : 'border-ceci-border-default'
-              )}
-            />
             <canvas ref={canvasRef} className="w-full h-full block" />
 
             {scrubIndex !== null && (
@@ -383,27 +410,25 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
                 <motion.div
                   className={cn(
                     'absolute top-0 bottom-0 w-px pointer-events-none z-10',
-                    theme === 'dark' ? 'bg-white/70' : 'bg-ceci-brand'
+                    'bg-ceci-brand'
                   )}
                   style={{ left: xPos }}
                 />
                 <motion.div
                   className={cn(
                     'absolute w-3 h-3 -ml-[6px] -mt-[6px] rounded-full border-2 shadow-lg pointer-events-none z-20',
-                    theme === 'dark' ? 'bg-white border-neutral-800' : 'bg-ceci-brand border-white'
+                    'bg-ceci-brand border-surface-default'
                   )}
                   style={{ left: xPos, top: yPos }}
                 />
                 <motion.div
                   className={cn(
                     'absolute -translate-x-1/2 -translate-y-full mb-3 px-2.5 py-1 rounded-lg text-xs font-semibold shadow-floating border pointer-events-none z-30',
-                    theme === 'dark'
-                      ? 'bg-neutral-900 text-white border-white/20'
-                      : 'bg-ceci-primary text-white border-ceci-primary'
+                    'bg-ceci-primary text-ceci-on-primary border-ceci-primary'
                   )}
                   style={{ left: xPos, top: yPos }}
                 >
-                  <div className={cn('text-[10px] uppercase', theme === 'dark' ? 'text-neutral-400' : 'text-ceci-muted')}>
+                  <div className="text-[10px] uppercase text-ceci-muted">
                     {dates[scrubIndex]}
                   </div>
                   <div>

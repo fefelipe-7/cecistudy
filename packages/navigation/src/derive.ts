@@ -60,6 +60,8 @@ export interface DerivedNav {
   currentQuizResultPool: StudyQuestion[] | null;
   focusedCourseId: string | null;
   focusedStudyScreen: StudyScreen | null;
+  /** Sessão de foco imersiva em tela (chrome preto + orientação landscape). */
+  isFocusImmersiveOpen: boolean;
 }
 
 /**
@@ -223,6 +225,7 @@ export function deriveScreen(
     currentQuizResultPool: resolvedPool,
     focusedCourseId: currentScreen.kind === 'course' ? currentScreen.courseId : null,
     focusedStudyScreen: currentScreen.kind === 'study' ? currentScreen.screen : null,
+    isFocusImmersiveOpen: currentScreen.kind === 'study' && currentScreen.screen === 'focus',
   };
 }
 

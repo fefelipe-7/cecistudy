@@ -26,7 +26,7 @@ export const Field: React.FC<{
 
 /** Input "chunky": fundo sólido suave, cantos grandes, bastante respiro interno. */
 const inputClass =
-  'w-full bg-surface-input border border-transparent rounded-2xl px-4 py-4 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 transition-shadow';
+  'w-full bg-surface-input border border-transparent rounded-2xl px-4 py-4 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 focus:border-ceci-brand transition-shadow';
 
 export const TextInput: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = (props) => (
   <input {...props} className={cn(inputClass, props.className)} />
@@ -95,7 +95,7 @@ export const DateField: React.FC<{
           <button
             type="button"
             onClick={() => onChange('')}
-            className={`${chipBase} bg-surface-default border-ceci-border-default text-red-700 hover:bg-surface-rose`}
+            className={`${chipBase} bg-surface-default border-ceci-border-default text-status-danger-strong hover:bg-surface-rose`}
           >
             sem data
           </button>

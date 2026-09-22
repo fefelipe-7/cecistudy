@@ -10,9 +10,9 @@ import type { WeekDayStatus } from './streak';
 
 /** Week cell styles for streak calendars (HomeView + EstudosView). */
 export const WEEK_CELL_STYLE: Record<WeekDayStatus, string> = {
-  done: 'bg-rose-500 text-white border-rose-500',
+  done: 'bg-ceci-brand-strong text-ceci-on-brand border-ceci-brand-strong',
   today: 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand ring-2 ring-rose-300/50',
-  upcoming: 'bg-white text-ceci-muted border-ceci-border-default',
+  upcoming: 'bg-surface-default text-ceci-tertiary border-ceci-border-default',
   weekend: 'bg-surface-muted text-ceci-faded border-ceci-border-subtle',
 };
 
@@ -193,12 +193,4 @@ export const BADGE = {
   completed: 'concluído',
   awaiting: 'aguardando',
   journeyReflection: 'reflexão de jornada:',
-} as const;
-
-// ---------------------------------------------------------------------------
-// Wizard confirmation toast (used in 4+ wizards)
-// ---------------------------------------------------------------------------
-
-export const WIZARD_TOAST = {
-  courseRequired: TOAST.courseRegistered,
 } as const;

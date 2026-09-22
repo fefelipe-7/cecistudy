@@ -7,7 +7,7 @@ export type TagChipVariant = 'rose' | 'blue' | 'amber' | 'neutral';
 const VARIANT_CLASSES: Record<TagChipVariant, string> = {
   rose: 'bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong',
   blue: 'bg-surface-blue border border-ceci-border-academic text-ceci-academic-strong',
-  amber: 'bg-amber-bg border border-amber-border text-amber-text',
+  amber: 'bg-status-warning-surface border border-status-warning-border text-status-warning-strong',
   neutral: 'bg-surface-muted border border-ceci-border-default text-ceci-secondary',
 };
 

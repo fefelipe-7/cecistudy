@@ -87,9 +87,9 @@ pub struct CatalogDb {
 }
 
 impl CatalogDb {
-  /// Abre o catálogo em modo `SQLITE_OPEN_READ_ONLY`. Falha se o arquivo não
-  /// existir — o catálogo é um asset de release, nunca criado aqui.
-  pub fn open_read_only(path: impl AsRef<Path>) -> Result<Self> {
+/// Abre o catálogo em modo `SQLITE_OPEN_READ_ONLY`. Falha se o arquivo não
+    /// existir — o catálogo é um asset de release, nunca criado aqui.
+    pub fn open_read_only(path: impl AsRef<Path>) -> Result<Self> {
     let conn = Connection::open_with_flags(
       path.as_ref(),
       OpenFlags::SQLITE_OPEN_READ_ONLY | OpenFlags::SQLITE_OPEN_NO_MUTEX,

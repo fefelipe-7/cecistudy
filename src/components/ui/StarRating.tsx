@@ -43,7 +43,7 @@ export const StarRating: React.FC<StarRatingProps> = ({
             className={cn(
               starClass,
               n <= value
-                ? 'text-yellow-500 fill-yellow-400'
+                ? 'text-status-warning-strong fill-status-warning-strong'
                 : 'text-ceci-border-strong'
             )}
           />

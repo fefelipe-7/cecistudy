@@ -6,7 +6,7 @@
  * sem depender do valor agregado do app (que muda a cada alteração de qualquer
  * domínio) nem do `SharedAppValue` agregado.
  *
- * Os providers são montados por cada casca (MobileAppProvider/DesktopAppProvider),
+ * Os providers são montados pela casca (`MobileAppProvider`),
  * que têm acesso a `shared.dataActions.<grupo>` e aos helpers estáveis.
  */
 import { createContext, useContext } from 'react';

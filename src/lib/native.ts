@@ -2,6 +2,7 @@ import { StatusBar, Style } from '@capacitor/status-bar';
 import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { isNativePlatform } from './storage';
+import { releaseFocusOrientation } from './focusOrientation';
 
 /**
  * Configuração única do shell nativo (Capacitor).
@@ -21,4 +22,8 @@ export function setupNativeShell(): void {
   requestAnimationFrame(() => {
     void SplashScreen.hide();
   });
+
+  // Sempre destrava a orientação no boot (defensivo: nunca herdar landscape
+  // de uma sessão de foco que terminou/crashou — EST-002 AC6).
+  void releaseFocusOrientation();
 }

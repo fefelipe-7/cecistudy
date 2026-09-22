@@ -101,7 +101,7 @@ export const TechniquesScreen: React.FC = () => {
               {selected.nome}
             </h1>
             <span className="shrink-0 mt-0.5">
-              <span className="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-surface-mint-soft text-success-deep border border-ceci-border-mint whitespace-nowrap">
+              <span className="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-status-success-surface text-status-success-strong border border-status-success-border whitespace-nowrap">
                 {categories.find((c) => c.id === selected.dominioId)?.nome ?? selected.dominioId}
               </span>
             </span>
@@ -130,8 +130,8 @@ export const TechniquesScreen: React.FC = () => {
           })}
 
           {related.length > 0 && (
-            <div className="bg-surface-mint-soft border border-ceci-border-mint rounded-xl p-4">
-              <h2 className="text-xs uppercase tracking-wider font-bold text-success-deep mb-2">
+            <div className="bg-status-success-surface border border-status-success-border rounded-xl p-4">
+              <h2 className="text-xs uppercase tracking-wider font-bold text-status-success-strong mb-2">
                 técnicas relacionadas
               </h2>
               <div className="flex flex-wrap gap-1.5">
@@ -195,9 +195,9 @@ export const TechniquesScreen: React.FC = () => {
                       <button
                         key={tech.id}
                         onClick={() => setSelected(tech)}
-                        className="w-full text-left px-4 py-3 hover:bg-surface-mint-soft transition-colors cursor-pointer group"
+                        className="w-full text-left px-4 py-3 hover:bg-status-success-surface transition-colors cursor-pointer group"
                       >
-                        <h3 className="text-sm font-semibold text-ceci-primary group-hover:text-success-deep transition-colors truncate">
+                        <h3 className="text-sm font-semibold text-ceci-primary group-hover:text-status-success-strong transition-colors truncate">
                           {tech.nome}
                         </h3>
                         {tech.emUmaFrase && (

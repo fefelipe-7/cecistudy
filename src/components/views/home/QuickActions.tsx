@@ -20,11 +20,11 @@ const QuickActions: React.FC<QuickActionsProps> = ({ dueCardsCount, onFocus, onR
       <motion.button
         whileTap={{ scale: 0.97 }}
         onClick={onFocus}
-        className="bg-ceci-primary hover:bg-ceci-ink text-white rounded-2xl p-5 text-left tap-interactive cursor-pointer space-y-2 shadow-sm min-h-[110px]"
+        className="bg-ceci-primary hover:bg-ceci-ink text-ceci-on-primary rounded-2xl p-5 text-left tap-interactive cursor-pointer space-y-2 shadow-sm min-h-[110px]"
       >
-        <Brain className="w-6 h-6 text-rose-200" />
+        <Brain className="w-6 h-6 text-ceci-brand-soft" />
         <p className="text-base font-bold font-display">bora focar?</p>
-        <p className="text-[11px] text-white/70">sessão de estudo com timer</p>
+        <p className="text-[11px] text-ceci-on-primary/70">sessão de estudo com timer</p>
       </motion.button>
 
       <motion.button

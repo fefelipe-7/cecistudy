@@ -3,7 +3,7 @@ import type { LooseNote } from '../../types';
 export const CATEGORY_BADGE: Record<LooseNote['category'], string> = {
   'reflexão': 'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand',
   'estudo': 'bg-surface-blue text-ceci-academic-strong border border-ceci-border-academic',
-  'ideia': 'bg-amber-bg text-amber-text border border-amber-border',
+  'ideia': 'bg-status-warning-surface text-status-warning-strong border border-status-warning-border',
   'lembrete': 'bg-surface-muted text-ceci-secondary border border-ceci-border-default',
 };
 

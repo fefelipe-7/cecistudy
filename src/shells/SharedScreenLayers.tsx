@@ -15,6 +15,7 @@ const loadStreakView = () => import('../components/views/StreakView').then((m) =
 const loadSyncScreen = () => import('../components/sync/SyncScreen').then((m) => ({ default: m.SyncScreen }));
 const loadComposeNoteView = () => import('../components/views/ComposeNoteView').then((m) => ({ default: m.ComposeNoteView }));
 const loadClassNoteDetailWizard = () => import('../components/views/ClassNoteDetailWizard').then((m) => ({ default: m.ClassNoteDetailWizard }));
+const loadClassNoteDetailScreen = () => import('../components/courses/ClassNoteDetailScreen').then((m) => ({ default: m.ClassNoteDetailScreen }));
 const loadNoteDetailWizard = () => import('../components/views/NoteDetailWizard').then((m) => ({ default: m.NoteDetailWizard }));
 const loadNoteTransformWizard = () => import('../components/views/NoteTransformWizard').then((m) => ({ default: m.NoteTransformWizard }));
 const loadWizardRouter = () => import('../components/wizards/WizardRouter').then((m) => ({ default: m.WizardRouter }));
@@ -36,10 +37,6 @@ const loadStudyHistoricoScreen = () => import('../components/estudos/StudyHistor
 const loadInternshipDiaryView = () => import('../components/views/InternshipDiaryView').then((m) => ({ default: m.InternshipDiaryView }));
 const loadTccView = () => import('../components/views/TccView').then((m) => ({ default: m.TccView }));
 
-// Telas dedicadas desktop (grafo de conhecimento, projetos, inbox) NÃO são carregadas
-// aqui: a camada compartilhada não conhece o desktop. O `DesktopScreenLayers` (apps/desktop)
-// importa e resolve essas telas a partir do `DesktopSessionState`.
-
 const HomeView = memo(lazy(loadHomeView));
 const FaculdadeView = memo(lazy(loadFaculdadeView));
 const EstudosView = memo(lazy(loadEstudosView));
@@ -49,6 +46,7 @@ const StreakView = lazy(loadStreakView);
 const SyncScreen = lazy(loadSyncScreen);
 const ComposeNoteView = lazy(loadComposeNoteView);
 const ClassNoteDetailWizard = lazy(loadClassNoteDetailWizard);
+const ClassNoteDetailScreen = lazy(loadClassNoteDetailScreen);
 const NoteDetailWizard = lazy(loadNoteDetailWizard);
 const NoteTransformWizard = lazy(loadNoteTransformWizard);
 const WizardRouter = lazy(loadWizardRouter);
@@ -84,6 +82,7 @@ const SCREEN_CHUNK_LOADERS = [
   loadSyncScreen,
   loadComposeNoteView,
   loadClassNoteDetailWizard,
+  loadClassNoteDetailScreen,
   loadNoteDetailWizard,
   loadNoteTransformWizard,
   loadWizardRouter,
@@ -122,14 +121,10 @@ export function preloadScreenChunks(): void {
 
 /**
  * Camada de slide: telas de base (tabs) + auxiliares de 1º nível
- * (curso, notas, templo, streak, quiz, study…). Compartilhada entre as cascas.
- * A composição master-detail do desktop (desktopHome/desktopFaculdade) é injetada
- * pela casca via props — a pilha no AppContext continua sendo a fonte da verdade.
+ * (curso, notas, templo, streak, quiz, study…). A pilha no AppContext é a
+ * fonte da verdade.
  */
-export const SlideContent: React.FC<{
-  desktopFaculdade?: React.ReactNode;
-  desktopHome?: React.ReactNode;
-}> = ({ desktopFaculdade, desktopHome }) => {
+export const SlideContent: React.FC = () => {
   const app = useMobileApp();
   const activeTab = app.activeTab;
 
@@ -239,12 +234,12 @@ export const SlideContent: React.FC<{
       ) : (
         <>
           <Suspense fallback={<ViewFallback />}>
-            {activeTab === 'home' && (desktopHome ?? <HomeView />)}
+            {activeTab === 'home' && <HomeView />}
             {activeTab === 'faculdade' &&
               (app.isInternshipDiaryOpen ? (
                 <InternshipDiaryView />
-              ) : desktopFaculdade ? (
-                desktopFaculdade
+              ) : app.isClassNoteDetailOpen ? (
+                <ClassNoteDetailScreen />
               ) : (
                 <FaculdadeView course={app.focusedCourse} />
               ))}
@@ -286,8 +281,7 @@ export const SlideContent: React.FC<{
 
 /**
  * Camada overlay (fade+scale): fluxos profundos da pilha
- * (compose, wizards, detalhes de nota). A shell decide a moldura:
- * fullscreen no mobile, janela centrada no desktop.
+ * (compose, wizards, detalhes de nota).
  */
 export const OverlayContent: React.FC = () => {
   const app = useMobileApp();

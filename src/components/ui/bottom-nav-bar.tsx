@@ -5,6 +5,7 @@ import React from "react";
 import { motion } from "framer-motion";
 
 import { cn } from "@/lib/utils";
+import { iOS_SPRING, IOS_EASE } from "@/lib/motion";
 
 export type NavItem = {
   id?: string;
@@ -33,7 +34,7 @@ export function BottomNavBar({
     <motion.nav
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
+      transition={{ duration: 0.18, ease: IOS_EASE }}
       role="navigation"
       aria-label="bottom navigation"
       className={cn(
@@ -52,20 +53,20 @@ export function BottomNavBar({
               whileTap={{ scale: 0.94 }}
               className={cn(
                 "flex items-center gap-0 px-3 py-2 rounded-full transition-colors duration-200 relative h-10 min-w-[44px] min-h-[44px] max-h-[44px] cursor-pointer",
-                isActive ? "text-ceci-brand-strong gap-2" : "bg-transparent text-ceci-tertiary hover:bg-white/40",
+                isActive ? "text-ceci-brand-strong gap-2" : "bg-transparent text-ceci-tertiary hover:bg-[color:var(--color-glass-hairline)]",
                 "focus:outline-none focus-visible:ring-2 focus-visible:ring-ceci-brand focus-visible:ring-offset-2",
               )}
               onClick={() => handleSelect(idx)}
               aria-label={item.label}
               type="button"
             >
-              {isActive && (
-                <motion.span
-                  layoutId="bottomnav-active-pill"
-                  className="absolute inset-0 rounded-full liquid-glass-pill border"
-                  transition={{ type: "spring", stiffness: 400, damping: 34 }}
-                />
-              )}
+{isActive && (
+                  <motion.span
+                    layoutId="bottomnav-active-pill"
+                    className="absolute inset-0 rounded-full liquid-glass-pill border"
+                    transition={iOS_SPRING}
+                  />
+                )}
 
               <Icon
                 size={20}
@@ -84,11 +85,7 @@ export function BottomNavBar({
                   opacity: isActive ? 1 : 0,
                   marginLeft: isActive ? "6px" : "0px",
                 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 380,
-                  damping: 30,
-                }}
+                transition={iOS_SPRING}
                 className="relative z-10 overflow-hidden flex items-center whitespace-nowrap"
               >
                 <span

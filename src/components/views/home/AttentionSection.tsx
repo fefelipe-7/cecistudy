@@ -41,7 +41,7 @@ const AttentionSection: React.FC<AttentionSectionProps> = ({ items, remainingCou
   return (
     <section className="space-y-3 px-0.5">
       <SectionTitle
-        icon={<Sparkles className="w-4 h-4 text-rose-500" />}
+        icon={<Sparkles className="w-4 h-4 text-ceci-brand-strong" />}
         action={
           remainingCount > 0 ? (
             <button
@@ -92,13 +92,13 @@ const AttentionSection: React.FC<AttentionSectionProps> = ({ items, remainingCou
           value={newTaskTitle}
           onChange={(e) => setNewTaskTitle(e.target.value)}
           placeholder="adicionar uma tarefa para hoje..."
-          className="flex-1 text-sm px-4 py-3 rounded-full border border-ceci-border-default bg-surface-default focus:outline-none focus:border-rose-500 text-ceci-primary placeholder-ceci-faded shadow-2xs"
+          className="flex-1 text-sm px-4 py-3 rounded-full border border-ceci-border-default bg-surface-default focus:outline-none focus:border-ceci-brand text-ceci-primary placeholder-ceci-faded shadow-2xs"
         />
         <motion.button
           whileTap={{ scale: 0.95 }}
           type="submit"
           aria-label="adicionar tarefa"
-          className="bg-rose-500 hover:bg-ceci-brand text-white px-4 py-3 rounded-full text-sm font-semibold tap-interactive flex items-center gap-1 shrink-0 cursor-pointer"
+          className="bg-ceci-brand hover:bg-ceci-brand text-ceci-on-brand px-4 py-3 rounded-full text-sm font-semibold tap-interactive flex items-center gap-1 shrink-0 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>adicionar</span>

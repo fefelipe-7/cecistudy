@@ -16,6 +16,18 @@ const QUESTION: StudyQuestion = {
   dificuldade: 'basica',
 };
 
+const NO_EXPLANATION: StudyQuestion = {
+  id: 'q3',
+  question: 'Qual a capital do Brasil?',
+  options: ['ri', 'sp', 'brasília', 'bh'],
+  answer: 'brasília',
+  gabarito: 'C',
+  area: 'geral',
+  tema: 'geral',
+  escolaOuAbordagem: 'geral',
+  dificuldade: 'basica',
+};
+
 const SECOND_QUESTION: StudyQuestion = {
   id: 'q2',
   question: '2 + 2 = ?',
@@ -51,6 +63,21 @@ function buildState(overrides?: Partial<QuizPlayState>): QuizPlayState {
   };
 }
 
+function renderPlayer(overrides?: Partial<QuizPlayState>) {
+  const onAnswer = vi.fn();
+  const onAdvance = vi.fn();
+  const onFinish = vi.fn();
+  render(
+    <QuizPlayer
+      state={buildState(overrides)}
+      onAnswer={onAnswer}
+      onAdvance={onAdvance}
+      onFinish={onFinish}
+    />
+  );
+  return { onAnswer, onAdvance, onFinish };
+}
+
 describe('QuizPlayer', () => {
   beforeEach(() => {
     vi.useFakeTimers();
@@ -61,18 +88,7 @@ describe('QuizPlayer', () => {
   });
 
   it('marca resposta incorreta em vermelho e libera continuação', async () => {
-    const onAnswer = vi.fn();
-    const onAdvance = vi.fn();
-    const onFinish = vi.fn();
-
-    render(
-      <QuizPlayer
-        state={buildState()}
-        onAnswer={onAnswer}
-        onAdvance={onAdvance}
-        onFinish={onFinish}
-      />
-    );
+    const { onAnswer, onAdvance } = renderPlayer();
 
     const wrongButton = screen.getByText('vermelho').closest('button')!;
     expect(wrongButton).not.toBeDisabled();
@@ -84,7 +100,7 @@ describe('QuizPlayer', () => {
     expect(answerArg.correct).toBe(false);
     expect(answerArg.userAnswer).toBe('A');
 
-    expect(wrongButton).toHaveClass('bg-red-50');
+    expect(wrongButton).toHaveClass('bg-status-danger-surface');
 
     await act(async () => {
       vi.advanceTimersByTime(350);
@@ -98,18 +114,7 @@ describe('QuizPlayer', () => {
   });
 
   it('avança para a próxima questão após resposta correta', async () => {
-    const onAnswer = vi.fn();
-    const onAdvance = vi.fn();
-    const onFinish = vi.fn();
-
-    render(
-      <QuizPlayer
-        state={buildState()}
-        onAnswer={onAnswer}
-        onAdvance={onAdvance}
-        onFinish={onFinish}
-      />
-    );
+    const { onAnswer, onAdvance } = renderPlayer();
 
     fireEvent.click(screen.getByText('azul').closest('button')!);
 
@@ -128,27 +133,54 @@ describe('QuizPlayer', () => {
     expect(onAdvance).toHaveBeenCalled();
   });
 
-  it('chama onFinish no avanço da última questão', async () => {
-    const onAnswer = vi.fn();
-    const onAdvance = vi.fn();
-    const onFinish = vi.fn();
+  it('exibe uma única barra de progresso', () => {
+    renderPlayer();
+    expect(screen.getAllByTestId('quiz-progress')).toHaveLength(1);
+  });
 
-    render(
-      <QuizPlayer
-        state={buildState({ currentIdx: 1 })}
-        onAnswer={onAnswer}
-        onAdvance={onAdvance}
-        onFinish={onFinish}
-      />
-    );
+  it('desabilita as opções após selecionar (sem segunda resposta no duplo toque)', () => {
+    const { onAnswer } = renderPlayer();
 
-    expect(screen.getByText('2 + 2 = ?')).toBeInTheDocument();
+    const button = screen.getByText('azul').closest('button')!;
+    fireEvent.click(button);
+    fireEvent.click(button);
+
+    expect(onAnswer).toHaveBeenCalledTimes(1);
+    expect(button).toBeDisabled();
+  });
+
+  it('mostra fallback quando a questão não tem explicação', async () => {
+    const { onAnswer } = renderPlayer({ pool: [NO_EXPLANATION], currentIdx: 0, answers: [] });
+
+    fireEvent.click(screen.getByText('brasília').closest('button')!);
+    expect(onAnswer).toHaveBeenCalledWith(expect.objectContaining({ correct: true }));
+
+    await act(async () => {
+      vi.advanceTimersByTime(350);
+    });
+
+    expect(screen.getByText('sem explicação disponível')).toBeInTheDocument();
+  });
+
+  it('formata o timer da questão em segundos com 1 casa decimal', async () => {
+    vi.setSystemTime(100_000);
+    renderPlayer({ questionStartTime: 100_000 });
+
+    expect(screen.getByText('0.0s')).toBeInTheDocument();
+
+    await act(async () => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    expect(screen.getByText('1.0s')).toBeInTheDocument();
+  });
+
+  it('chama onFinish com payload exato na última questão', async () => {
+    const t = 123_456;
+    vi.setSystemTime(t);
+    const { onFinish } = renderPlayer({ currentIdx: 1, startTime: t, questionStartTime: t });
 
     fireEvent.click(screen.getByText('4').closest('button')!);
-
-    expect(onAnswer).toHaveBeenCalledWith(
-      expect.objectContaining({ correct: true })
-    );
 
     await act(async () => {
       vi.advanceTimersByTime(350);
@@ -156,6 +188,6 @@ describe('QuizPlayer', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /continuar/i }));
 
-    expect(onFinish).toHaveBeenCalled();
+    expect(onFinish).toHaveBeenCalledWith([], CONFIG, t, 0, 2);
   });
 });

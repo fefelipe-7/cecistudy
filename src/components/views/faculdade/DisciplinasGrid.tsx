@@ -27,7 +27,7 @@ const DisciplinasGrid: React.FC<DisciplinasGridProps> = ({
       <h2 className="font-display text-base font-bold text-ceci-primary">grade de disciplinas</h2>
       <button
         onClick={onNewCourse}
-        className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand hover:bg-rose-100 transition-colors cursor-pointer"
+        className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand hover:bg-surface-rose transition-colors cursor-pointer"
       >
         <Plus className="w-3.5 h-3.5" /> nova matéria
       </button>

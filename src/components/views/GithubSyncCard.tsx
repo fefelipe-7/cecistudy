@@ -19,7 +19,7 @@ function StatLine({ label, stat }: { label: string; stat: MergeStatsSide }) {
 function StatusBadge({ status, errorMessage }: { status: string; errorMessage: string | null }) {
   if (status === 'error') {
     return (
-      <span className="inline-flex items-center gap-1.5 text-xs text-red-600">
+      <span className="inline-flex items-center gap-1.5 text-xs text-status-danger-strong">
         <AlertCircle className="w-3.5 h-3.5" /> {errorMessage ?? 'algo deu errado'}
       </span>
     );
@@ -101,7 +101,7 @@ export function GithubSyncCard() {
             />
             <button
               onClick={connect}
-              className="w-full flex items-center justify-center gap-2 bg-ceci-brand text-white px-4 py-3 rounded-2xl text-xs font-semibold cursor-pointer active:scale-95 transition-transform"
+              className="w-full flex items-center justify-center gap-2 bg-ceci-brand text-ceci-on-brand px-4 py-3 rounded-2xl text-xs font-semibold cursor-pointer active:scale-95 transition-transform"
             >
               <Cloud className="w-4 h-4" /> conectar e sincronizar
             </button>
@@ -117,7 +117,7 @@ export function GithubSyncCard() {
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={syncNow}
-                className="flex items-center justify-center gap-2 bg-ceci-academic-strong text-white px-4 py-3 rounded-2xl text-xs font-semibold cursor-pointer active:scale-95 transition-transform"
+                className="flex items-center justify-center gap-2 bg-ceci-academic-strong text-ceci-on-academic px-4 py-3 rounded-2xl text-xs font-semibold cursor-pointer active:scale-95 transition-transform"
               >
                 <RefreshCw className="w-4 h-4" /> sincronizar agora
               </button>
@@ -153,7 +153,7 @@ export function GithubSyncCard() {
             </button>
             <button
               onClick={applySyncPreview}
-              className="flex-1 py-3 rounded-2xl text-sm font-semibold text-white bg-ceci-brand cursor-pointer active:scale-95 transition-transform"
+              className="flex-1 py-3 rounded-2xl text-sm font-semibold text-ceci-on-brand bg-ceci-brand cursor-pointer active:scale-95 transition-transform"
             >
               mesclar
             </button>

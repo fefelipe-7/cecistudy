@@ -64,6 +64,16 @@ describe('parseRoute', () => {
     expect(parseRoute('#/faculdade/c3')).toEqual({ tab: 'faculdade', focusedCourseId: 'c3' });
   });
 
+  it('reconhece o detalhe de uma aula em /faculdade/:id/aula/:classNoteId', () => {
+    expect(parseRoute('#/faculdade/c3/aula/cl-1')).toEqual({
+      tab: 'faculdade',
+      focusedCourseId: 'c3',
+      classNoteId: 'cl-1',
+    });
+    const stack = routeToStack(parseRoute('#/faculdade/c3/aula/cl-1'));
+    expect(stackToHash(stack)).toBe('#/faculdade/c3/aula/cl-1');
+  });
+
   it('distingue sub-tab de courseId em /faculdade (legadas aulas/avaliacoes degradam)', () => {
     expect(parseRoute('#/faculdade/aulas')).toEqual({ tab: 'faculdade' });
     expect(parseRoute('#/faculdade/calendario')).toEqual({ tab: 'faculdade', subTab: 'calendario' });
@@ -270,6 +280,16 @@ describe('routeToStack', () => {
     ]);
   });
 
+  it('monta pilha de detalhe de aula sobre o curso', () => {
+    expect(
+      routeToStack({ tab: 'faculdade', focusedCourseId: 'c3', classNoteId: 'cl-1' })
+    ).toEqual([
+      { kind: 'tab', tab: 'faculdade' },
+      { kind: 'course', courseId: 'c3' },
+      { kind: 'classNote', classNoteId: 'cl-1', courseId: 'c3' },
+    ]);
+  });
+
   it('monta pilha de telas auxiliares', () => {
     expect(routeToStack({ notes: true })).toEqual([
       { kind: 'tab', tab: 'biblioteca' },
@@ -392,6 +412,7 @@ describe('stackToHash', () => {
 
   it('serializa telas auxiliares ignorando sub-tab', () => {
     expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c3' }], 'calendario')).toBe('#/faculdade/c3');
+    expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c3' }, { kind: 'classNote', classNoteId: 'cl-1', courseId: 'c3' }])).toBe('#/faculdade/c3/aula/cl-1');
     expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'streak' }])).toBe('#/streak');
     expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'streak' }])).toBe('#/perfil/streak');
     expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'internshipDiary' }])).toBe('#/faculdade/estagio/diario');
@@ -442,7 +463,7 @@ describe('stackToHash', () => {
 
 describe('round-trip hash ↔ rota', () => {
   it('reconstrói a rota a partir do hash serializado (abas + sub-tabs)', () => {
-    const cases = ['#/home', '#/faculdade', '#/faculdade/c3', '#/faculdade/calendario', '#/estudos/foco', '#/estudos/revisar', '#/estudos/leituras', '#/estudos/historico', '#/biblioteca/conceitos', '#/biblioteca/notas', '#/biblioteca/notas/note-1', '#/biblioteca/notas/note-1/transformar', '#/biblioteca/templo', '#/biblioteca/templo/conceitos', '#/biblioteca/templo/autores', '#/biblioteca/templo/tecnicas', '#/biblioteca/familias', '#/biblioteca/familias/fam-01', '#/biblioteca/abordagens/psic-04-01', '#/streak', '#/perfil/streak', '#/faculdade/estagio', '#/estudos/tcc', '#/perfil/stickers', '#/nota', '#/nota/detalhes', '#/biblioteca/nota', '#/faculdade/c3/nota', '#/biblioteca/nota/detalhes', '#/faculdade/c3/nota/detalhes', '#/novo/estagio', '#/novo/prova-atividade', '#/biblioteca/novo/leitura', '#/faculdade/c3/novo/prova', '#/novo/materia', '#/faculdade/novo/materia', '#/estudos/quiz'];
+    const cases = ['#/home', '#/faculdade', '#/faculdade/c3', '#/faculdade/c3/aula/cl-1', '#/faculdade/calendario', '#/estudos/foco', '#/estudos/revisar', '#/estudos/leituras', '#/estudos/historico', '#/biblioteca/conceitos', '#/biblioteca/notas', '#/biblioteca/notas/note-1', '#/biblioteca/notas/note-1/transformar', '#/biblioteca/templo', '#/biblioteca/templo/conceitos', '#/biblioteca/templo/autores', '#/biblioteca/templo/tecnicas', '#/biblioteca/familias', '#/biblioteca/familias/fam-01', '#/biblioteca/abordagens/psic-04-01', '#/streak', '#/perfil/streak', '#/faculdade/estagio', '#/estudos/tcc', '#/perfil/stickers', '#/nota', '#/nota/detalhes', '#/biblioteca/nota', '#/faculdade/c3/nota', '#/biblioteca/nota/detalhes', '#/faculdade/c3/nota/detalhes', '#/novo/estagio', '#/novo/prova-atividade', '#/biblioteca/novo/leitura', '#/faculdade/c3/novo/prova', '#/novo/materia', '#/faculdade/novo/materia', '#/estudos/quiz'];
     for (const h of cases) {
       const route = parseRoute(h);
       const stack = routeToStack(route);

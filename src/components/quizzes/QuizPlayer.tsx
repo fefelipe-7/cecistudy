@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, Trophy, CheckCircle2, X, Clock } from 'lucide-react';
+import { CheckCircle2, X, Clock } from 'lucide-react';
 import { QuizExplanationOverlay } from './QuizExplanationOverlay';
 import { cn } from '../../lib/utils';
+import { IOS_EASE, IOS_EASE_OUT } from '../../lib/motion';
 import type { StudyQuestion, QuizConfig, QuizAnswer, QuizPlayState } from '../../types';
 
 interface QuizPlayerProps {
@@ -26,6 +28,9 @@ export const QuizPlayer: React.FC<QuizPlayerProps> = ({
   const [showExplanation, setShowExplanation] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [questionTimeMs, setQuestionTimeMs] = useState(0);
+  // Guard idempotente de resposta (fecha a janela de duplo-toque antes do re-render do pai)
+  const answeredRef = useRef(false);
+  const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Timer da questão atual
   useEffect(() => {
@@ -40,17 +45,31 @@ export const QuizPlayer: React.FC<QuizPlayerProps> = ({
     setShowExplanation(false);
     setSelectedOption(null);
     setQuestionTimeMs(0);
+    answeredRef.current = false;
+    if (revealTimerRef.current) {
+      clearTimeout(revealTimerRef.current);
+      revealTimerRef.current = null;
+    }
   }, [currentIdx]);
+
+  // Limpeza no unmount (timers não podem disparar em instância desmontada)
+  useEffect(() => {
+    return () => {
+      if (revealTimerRef.current) clearTimeout(revealTimerRef.current);
+    };
+  }, []);
 
   const opts = current?.options ?? [];
   const correctLetter = current?.gabarito ?? 'A';
-  const correctText = opts[correctLetter.charCodeAt(0) - 65] ?? current?.answer ?? '';
 
   const handleOptionClick = useCallback((letter: string) => {
-    if (selectedOption) return;
+    // Guarda em ref (estável): `selectedOption`/`shownExplanation` em state
+    // criam closures stale no useCallback e descartam cliques da 2ª questão em diante.
+    if (answeredRef.current) return;
     const isCorrect = letter === correctLetter;
     const timeMs = Date.now() - questionStartTime;
 
+    answeredRef.current = true;
     setSelectedOption(letter);
     onAnswer({
       questionId: current.id,
@@ -61,7 +80,7 @@ export const QuizPlayer: React.FC<QuizPlayerProps> = ({
     });
 
     // Mostra explicação após seleção
-    setTimeout(() => setShowExplanation(true), 300);
+    revealTimerRef.current = setTimeout(() => setShowExplanation(true), 300);
   }, [current, correctLetter, onAnswer, questionStartTime]);
 
 const handleNext = useCallback(() => {
@@ -83,28 +102,29 @@ const handleNext = useCallback(() => {
   if (!current) return null;
 
   return (
-    <div className="min-h-[70vh] flex flex-col pb-44">
+    <div className="flex flex-col">
       {/* Corpo - área da questão/explicação */}
-      <div className="flex-1 pt-4 overflow-y-auto">
+      <div className="pt-4">
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5">
-          {/* Barra de progresso linear */}
-          <div className="mb-4 h-1.5 rounded-full bg-ceci-border-subtle overflow-hidden">
+          {/* Barra de progresso linear — scaleX (transform-only, nunca reflows o layout) */}
+          <div data-testid="quiz-progress" className="mb-4 h-1.5 rounded-full bg-ceci-border-subtle overflow-hidden">
             <motion.div
               className="h-full rounded-full bg-ceci-brand-strong"
+              style={{ transformOrigin: 'left' }}
               initial={false}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+              animate={{ scaleX: progress / 100 }}
+              transition={{ duration: 0.35, ease: IOS_EASE }}
             />
           </div>
-          <AnimatePresence mode="wait" custom={showExplanation ? 1 : -1}>
+          <AnimatePresence custom={showExplanation ? 1 : -1}>
             {/* Tela da Pergunta */}
             <motion.div
               key="question"
               custom={showExplanation ? 1 : -1}
               variants={{
                 initial: (dir: number) => ({ x: dir * 40, opacity: 0 }),
-                animate: { x: 0, opacity: 1, transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] } },
-                exit: (dir: number) => ({ x: -dir * 40, opacity: 0, transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] } }),
+                animate: { x: 0, opacity: 1, transition: { duration: 0.3, ease: IOS_EASE_OUT } },
+                exit: (dir: number) => ({ x: -dir * 40, opacity: 0, transition: { duration: 0.2, ease: IOS_EASE } }),
               }}
             >
               <div className="rounded-xl p-5 bg-surface-default border border-ceci-border-default shadow-sm space-y-4">
@@ -139,8 +159,8 @@ const handleNext = useCallback(() => {
                           'w-full text-left p-4 rounded-xl border-2 transition text-sm',
                           isSelected
                             ? isCorrect
-                              ? 'bg-green-50 border-green-300 text-green-800'
-                              : 'bg-red-50 border-red-300 text-red-800'
+                              ? 'bg-status-success-surface border-status-success-border text-status-success-strong'
+                              : 'bg-status-danger-surface border-status-danger-border text-status-danger-strong'
                             : 'bg-surface-default border-ceci-border-default hover:bg-surface-rose hover:border-ceci-border-brand active:scale-[0.99]'
                         )}
                       >
@@ -149,18 +169,18 @@ const handleNext = useCallback(() => {
                             'w-8 h-8 rounded-full border flex items-center justify-center font-bold flex-shrink-0',
                             isSelected
                               ? isCorrect
-                                ? 'bg-green-400 border-green-400 text-white'
-                                : 'bg-red-400 border-red-400 text-white'
+                                ? 'bg-status-success border-status-success text-status-success-on'
+                                : 'bg-status-danger border-status-danger text-status-danger-on'
                               : 'border-ceci-border-default text-ceci-secondary bg-surface-default'
                           )}>
                             {letter}
                           </span>
                           <span className="flex-1">{opt}</span>
                           {isSelected && isCorrect && (
-                            <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-500" />
+                            <CheckCircle2 className="w-5 h-5 text-status-success fill-status-success" />
                           )}
                           {isSelected && !isCorrect && (
-                            <X className="w-5 h-5 text-red-500" />
+                            <X className="w-5 h-5 text-status-danger-strong" />
                           )}
                         </div>
                       </button>
@@ -168,62 +188,21 @@ const handleNext = useCallback(() => {
                   })}
                 </div>
               </div>
-
-              {/* Barra de progresso visual */}
-              <div className="mt-4 h-1.5 rounded-full bg-ceci-border-subtle overflow-hidden">
-                <motion.div
-                  className="h-full rounded-full bg-ceci-brand-strong"
-                  initial={false}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
-                />
-              </div>
             </motion.div>
-          </AnimatePresence>
-
-          {/* Tela da Explicação (overlay exibido após responder) */}
-          <AnimatePresence>
-            {showExplanation && (
-              <motion.div
-                key="explanation"
-                variants={{
-                  initial: { opacity: 0, scale: 0.95, y: 20 },
-                  animate: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] } },
-                  exit: { opacity: 0, scale: 0.95, y: -20, transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] } },
-                }}
-              >
-                <QuizExplanationOverlay
-                  explanation={current.explanation ?? 'sem explicação disponível'}
-                  isCorrect={selectedOption === correctLetter}
-                  onClose={handleNext}
-                />
-              </motion.div>
-            )}
           </AnimatePresence>
         </div>
       </div>
 
-      {/* Footer sticky - botão próxima (quando não há explicação) */}
-      {!showExplanation && selectedOption && (
-        <div className="fixed bottom-0 inset-x-0 z-10 bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(var(--shadow-rgb),0.06)]">
-          <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
-            <button
-              onClick={handleNext}
-              className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-sm font-semibold text-white bg-ceci-brand hover:bg-ceci-brand-strong cursor-pointer active:scale-[0.98]"
-            >
-              {currentIdx + 1 < pool.length ? (
-                <>
-                  <ChevronRight className="w-4 h-4" /> próxima
-                </>
-              ) : (
-                <>
-                  <Trophy className="w-4 h-4" /> ver resultado
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Tela da Explicação — portal direto no body (escapa de overflow/transform de ancestrais) */}
+      {showExplanation &&
+        createPortal(
+          <QuizExplanationOverlay
+            explanation={current.explanation ?? 'sem explicação disponível'}
+            isCorrect={selectedOption === correctLetter}
+            onClose={handleNext}
+          />,
+          document.body,
+        )}
     </div>
   );
 };

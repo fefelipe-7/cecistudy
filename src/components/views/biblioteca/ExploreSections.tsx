@@ -3,7 +3,7 @@
 // colapsáveis do acervo (repertório, psicoterapias, mistas, testes, autores,
 // conceitos, abordagens, multidisciplinar, artigos) + empty state + modais.
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Search,
   SlidersHorizontal,
@@ -62,6 +62,29 @@ export const ExploreSections: React.FC<ExploreSectionsProps> = ({
     availableTags, catalogBooks, psychotherapyCollections,
   } = filter;
 
+  // Busca com debounce: o input reage na hora, mas os filtros só recomputam
+  // 150ms depois que a usuária para de digitar (evita o engasgo a cada tecla).
+  const [query, setQuery] = useState(searchTerm);
+  const searchTermRef = useRef(searchTerm);
+
+  // Mudança externa de searchTerm (filtro modal, badge ×, "esquecer filtros") → espelha no input.
+  useEffect(() => {
+    if (searchTerm !== searchTermRef.current) {
+      searchTermRef.current = searchTerm;
+      setQuery(searchTerm);
+    }
+  }, [searchTerm]);
+
+  // Digitação nova → agenda a aplicação do termo.
+  useEffect(() => {
+    if (query === searchTermRef.current) return;
+    const t = window.setTimeout(() => {
+      setSearchTerm(query);
+      searchTermRef.current = query;
+    }, 150);
+    return () => window.clearTimeout(t);
+  }, [query, setSearchTerm]);
+
   return (
     <section className="space-y-4">
       <h2 className="font-display font-bold text-sm text-ceci-tertiary uppercase tracking-wider px-1 pt-2 border-t border-ceci-border-default">
@@ -75,14 +98,14 @@ export const ExploreSections: React.FC<ExploreSectionsProps> = ({
             <Search className="w-4 h-4 text-ceci-tertiary absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
               placeholder="pesquisar por obra, autor, Beck, Freud, TCC..."
-              className="w-full bg-surface-default border border-ceci-border-default rounded-2xl pl-10 pr-8 py-3 text-xs text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 shadow-2xs"
+              className="w-full bg-surface-default border border-ceci-border-default rounded-2xl pl-10 pr-8 py-3 text-xs text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-ceci-brand shadow-2xs"
             />
-            {searchTerm && (
+            {query && (
               <button
-                onClick={() => setSearchTerm('')}
+                onClick={() => setQuery('')}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ceci-tertiary hover:text-ceci-primary cursor-pointer"
               >
                 ✕
@@ -94,7 +117,7 @@ export const ExploreSections: React.FC<ExploreSectionsProps> = ({
             onClick={() => setIsFilterModalOpen(true)}
             className={`px-3.5 py-3 rounded-2xl border flex items-center gap-2 tap-interactive cursor-pointer shadow-2xs text-xs font-bold ${
               hasActiveFilters
-                ? 'bg-ceci-primary text-white border-ceci-primary'
+                ? 'bg-ceci-primary text-ceci-on-primary border-ceci-primary'
                 : 'bg-surface-default text-ceci-secondary border-ceci-border-default hover:bg-surface-muted'
             }`}
             title="abrir filtros"
@@ -102,7 +125,7 @@ export const ExploreSections: React.FC<ExploreSectionsProps> = ({
             <SlidersHorizontal className="w-4 h-4" />
             <span>filtros</span>
             {hasActiveFilters && (
-              <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-ceci-brand animate-pulse" />
             )}
           </button>
         </div>
@@ -115,7 +138,7 @@ export const ExploreSections: React.FC<ExploreSectionsProps> = ({
             {activeCategory !== 'todos' && (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand rounded-full text-[11px] font-semibold">
                 categoria: {activeCategory}
-                <button onClick={() => setActiveCategory('todos')} className="hover:text-black">
+                <button onClick={() => setActiveCategory('todos')} className="hover:text-ceci-primary">
                   <X className="w-3 h-3" />
                 </button>
               </span>
@@ -124,7 +147,7 @@ export const ExploreSections: React.FC<ExploreSectionsProps> = ({
             {activeStatus !== 'todos' && (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-surface-blue text-ceci-academic-strong border border-ceci-border-academic rounded-full text-[11px] font-semibold">
                 status: {activeStatus}
-                <button onClick={() => setActiveStatus('todos')} className="hover:text-black">
+                <button onClick={() => setActiveStatus('todos')} className="hover:text-ceci-primary">
                   <X className="w-3 h-3" />
                 </button>
               </span>
@@ -144,7 +167,7 @@ export const ExploreSections: React.FC<ExploreSectionsProps> = ({
             {searchTerm && (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-surface-muted text-ceci-primary border border-ceci-border-default rounded-full text-[11px] font-semibold">
                 "{searchTerm}"
-                <button onClick={() => setSearchTerm('')} className="hover:text-black">
+                <button onClick={() => setSearchTerm('')} className="hover:text-ceci-primary">
                   <X className="w-3 h-3" />
                 </button>
               </span>

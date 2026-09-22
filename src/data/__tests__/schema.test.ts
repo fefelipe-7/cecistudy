@@ -23,8 +23,8 @@ describe('schema — migração 11 → 12 (escopo de workspace)', () => {
     tcc: { title: '', advisor: '', field: '', problemStatement: '', objectives: [], status: 'em_andamento', chapters: [], references: [] },
   };
 
-  it('SCHEMA_VERSION é 13', () => {
-    expect(SCHEMA_VERSION).toBe(13);
+  it('SCHEMA_VERSION é 14', () => {
+    expect(SCHEMA_VERSION).toBe(14);
   });
 
   it('adiciona workspaceId default a todas as entidades sincronizáveis', () => {
@@ -70,5 +70,27 @@ describe('schema — migração 12 → 13 (rename internshipLogsLegacy → inter
     const next = migrateDatabase(12, both as Record<string, unknown>) as Record<string, any>;
     expect(next.internshipLogs).toEqual([{ id: 'ilog-9' }]);
     expect(next.internshipLogsLegacy).toBeUndefined();
+  });
+});
+
+describe('schema — migração 13 → 14 (repertório da disciplina, SPEC-001)', () => {
+  it('faz backfill dos arrays de repertório em courses antigos', () => {
+    const legacy = { courses: [{ id: 'c1', name: 'x', professor: 'p', semester: '1', schedule: [], color: '#fff', icon: 'Brain' }] };
+    const next = migrateDatabase(13, legacy as Record<string, unknown>) as Record<string, any>;
+    expect(next.courses[0].conceptIds).toEqual([]);
+    expect(next.courses[0].authorIds).toEqual([]);
+    expect(next.courses[0].bibliographyIds).toEqual([]);
+  });
+
+  it('preserva vínculos já presentes (idempotente)', () => {
+    const legacy = {
+      courses: [
+        { id: 'c1', name: 'x', professor: 'p', semester: '1', schedule: [], color: '#fff', icon: 'Brain', conceptIds: ['con-1'], authorIds: ['aut-1'], bibliographyIds: ['cat-1'] },
+      ],
+    };
+    const next = migrateDatabase(13, legacy as Record<string, unknown>) as Record<string, any>;
+    expect(next.courses[0].conceptIds).toEqual(['con-1']);
+    expect(next.courses[0].authorIds).toEqual(['aut-1']);
+    expect(next.courses[0].bibliographyIds).toEqual(['cat-1']);
   });
 });

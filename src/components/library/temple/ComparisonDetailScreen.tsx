@@ -396,7 +396,7 @@ export const ComparisonDetailScreen: React.FC<{
 
       {comparison.criticasELimitacoes?.length ? (
         <TempleSectionCard title="críticas e limitações" accent="academic">
-          <ul className="list-disc pl-5 space-y-2 text-sm text-ceci-primary leading-relaxed marker:text-gold">
+          <ul className="list-disc pl-5 space-y-2 text-sm text-ceci-primary leading-relaxed marker:text-status-warning-strong">
             {comparison.criticasELimitacoes.map((item) => <li key={item}>{item}</li>)}
           </ul>
         </TempleSectionCard>
@@ -432,7 +432,7 @@ export const ComparisonDetailScreen: React.FC<{
                 {comparison.paraPensar.map((question) => <li key={question}>{question}</li>)}
               </ul>
             ) : (
-              <button onClick={() => setShowReflection(true)} className="inline-flex items-center gap-2 rounded-full bg-ceci-brand-strong text-white px-4 py-2 text-xs font-semibold cursor-pointer hover:opacity-90 transition-opacity">
+              <button onClick={() => setShowReflection(true)} className="inline-flex items-center gap-2 rounded-full bg-ceci-brand-strong text-ceci-on-brand px-4 py-2 text-xs font-semibold cursor-pointer hover:opacity-90 transition-opacity">
                 <MessageCircleQuestion className="w-3.5 h-3.5" /> refletir
               </button>
             )}
@@ -480,8 +480,8 @@ export const ComparisonDetailScreen: React.FC<{
       </TempleSectionCard>
 
       {comparison.observacaoEditorial && (
-        <div className="flex items-start gap-2 rounded-2xl bg-surface-gold border border-ceci-border-gold p-3.5 text-xs text-ceci-primary leading-relaxed">
-          <ExternalLink className="w-4 h-4 text-gold shrink-0 mt-0.5" />
+        <div className="flex items-start gap-2 rounded-2xl bg-status-warning-surface border border-status-warning-border p-3.5 text-xs text-ceci-primary leading-relaxed">
+          <ExternalLink className="w-4 h-4 text-status-warning-strong shrink-0 mt-0.5" />
           <span><strong className="font-semibold">nota editorial:</strong> {comparison.observacaoEditorial}</span>
         </div>
       )}

@@ -82,7 +82,7 @@ const CalendarMonth: React.FC<CalendarMonthProps> = ({
           {!isCurrentMonth && (
             <button
               onClick={goToday}
-              className="px-3 py-1.5 rounded-full text-[11px] font-semibold text-ceci-brand-strong bg-surface-rose border border-ceci-border-brand hover:bg-rose-100 transition-colors cursor-pointer"
+              className="px-3 py-1.5 rounded-full text-[11px] font-semibold text-ceci-brand-strong bg-surface-rose border border-ceci-border-brand hover:bg-surface-rose transition-colors cursor-pointer"
             >
               hoje
             </button>
@@ -117,11 +117,11 @@ const CalendarMonth: React.FC<CalendarMonthProps> = ({
               aria-label={`dia ${day}${hasEvent ? ', tem eventos' : ''}${dayClassCount > 0 ? ', tem aula' : ''}`}
               className={`p-2 rounded-xl flex flex-col items-center justify-center min-h-[40px] font-medium transition-colors cursor-pointer ${
                 isToday
-                  ? 'bg-rose-500 text-white shadow-2xs font-bold'
+                  ? 'bg-ceci-brand-strong text-ceci-on-brand shadow-2xs font-bold'
                   : isSelected
                     ? 'bg-surface-blue text-ceci-academic-strong font-bold border border-ceci-border-academic'
                     : hasEvent
-                      ? 'bg-surface-rose text-ceci-brand-strong font-bold border border-ceci-border-brand hover:bg-rose-100'
+                      ? 'bg-surface-rose text-ceci-brand-strong font-bold border border-ceci-border-brand hover:bg-surface-rose'
                       : dayClassCount > 0
                         ? 'bg-surface-blue text-ceci-academic-strong border border-ceci-border-academic hover:bg-surface-subtle'
                         : 'bg-surface-muted text-ceci-primary hover:bg-surface-subtle'

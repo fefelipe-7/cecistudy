@@ -16,7 +16,7 @@
 | 3 | Famílias | **Dois modelos coexistem**: 10 famílias editoriais (`fam-01..10`, biblioteca/famílias screen) × famílias taxonômicas do pacote (quiz/templo). Não unificar |
 | 4 | Autores | Dedup **automático conservador agora**; refino editorial manual depois via `content/editorial/authors.json` |
 | 5 | Corte de autores | **Todos os nomes válidos pós-dedup** (sem corte mínimo por citações) |
-| 6 | Técnicas | Fonte oficial = `content/techniques/` (**135 técnicas, 10 categorias**, já no repo) |
+| 6 | Técnicas | Fonte oficial = `content/techniques/` (**136 técnicas, 10 categorias**, já no repo) |
 | 7 | Comparações | **ADIADO** — cartão permanece toast "em breve ♡" nesta fase |
 | 8 | Conceitos | Os 225 conceitos de `content/concepts/` viram fonte oficial; relações vazias **auto-preenchidas** por matching de texto (marcar `relationStatus: 'auto'`) |
 | 9 | Abordagens | **Registro canônico + aliases** unindo os 3 sistemas de ids |
@@ -60,8 +60,8 @@ Shape da questão (campos-chave): `id, stem, format ('multiple_choice'|'true_fal
   Processos Psicodinâmicos e Inconscientes (25) · Processos de Psicoterapia e Mudança (22) ·
   Existência Significado e Construção da Experiência (24).
   Ids: `concept-01-fundamentos-psicologicos-<slug>`; domains: `domain-01-fundamentos-psicologicos`.
-- **`content/techniques/`** — 135 técnicas + 10 categorias (`index.json`:
-  `posicoesNominais:142, tecnicasCanonicas:135`; ids `tec-*`). Categorias
+- **`content/techniques/`** — 136 técnicas + 10 categorias (`index.json`:
+  `posicoesNominais:142, tecnicasCanonicas:136`; ids `tec-*`). Categorias
   (`category.json`, id `domain-cognitivas` etc., campo `ordemExibicao`): cognitivas ·
   comportamentais · emocionais-experienciais · exposicao-aprendizagem ·
   humanistas-existenciais · mindfulness-aceitacao-regulacao · motivacionais-solucao ·

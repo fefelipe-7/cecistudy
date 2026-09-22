@@ -238,7 +238,7 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
       <div className="flex items-center justify-between pt-1 px-1">
         <div>
           <span className="text-xs text-ceci-secondary font-medium lowercase tracking-wide flex items-center gap-1">
-            <Sparkles className="w-3.5 h-3.5 text-rose-500" /> biblioteca & repertório
+            <Sparkles className="w-3.5 h-3.5 text-ceci-brand-strong" /> biblioteca & repertório
           </span>
           <h1 className="font-display text-2xl sm:text-3xl text-ceci-primary font-bold mt-0.5 tracking-tight">
             minhas coleções ♡

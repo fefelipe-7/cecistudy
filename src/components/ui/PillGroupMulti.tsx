@@ -21,9 +21,9 @@ interface PillGroupMultiProps<T extends string> {
 }
 
 const VARIANT_CLASSES: Record<NonNullable<PillGroupMultiProps<string>['variant']>, string> = {
-  primary: 'bg-ceci-primary text-white border-ceci-primary',
-  academic: 'bg-ceci-academic text-white border-ceci-academic',
-  brand: 'bg-ceci-brand-strong text-white border-ceci-brand-strong',
+  primary: 'bg-ceci-primary text-ceci-on-primary border-ceci-primary',
+  academic: 'bg-ceci-academic text-ceci-on-academic border-ceci-academic',
+  brand: 'bg-ceci-brand-strong text-ceci-on-brand border-ceci-brand-strong',
   rose: 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand shadow-2xs',
 };
 
@@ -111,7 +111,7 @@ export const PillGroupMulti = <T extends string>({
           <button
             type="button"
             onClick={() => onChange([])}
-            className="text-[11px] font-semibold text-ceci-tertiary hover:text-red-700 transition-colors cursor-pointer"
+            className="text-[11px] font-semibold text-ceci-tertiary hover:text-status-danger-strong transition-colors cursor-pointer"
           >
             limpar tudo
           </button>
@@ -148,7 +148,7 @@ export const PillGroupMulti = <T extends string>({
           onChange={(e) => setTerm(e.target.value)}
           placeholder={`buscar em ${options.length} opções...`}
           aria-label={label ? `buscar em ${label}` : 'buscar opções'}
-          className="w-full bg-surface-input rounded-xl pl-9 pr-3 py-2.5 text-xs text-ceci-primary placeholder-ceci-faded focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+          className="w-full bg-surface-input rounded-xl pl-9 pr-3 py-2.5 text-xs text-ceci-primary placeholder-ceci-faded focus:outline-none focus:ring-2 focus:ring-ceci-brand/30"
         />
       </div>
 

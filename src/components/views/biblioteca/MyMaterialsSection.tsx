@@ -23,10 +23,10 @@ const MiniBookCard: React.FC<{
       style={{ backgroundColor: book.coverColor }}
     >
       <div className="absolute left-0 top-0 bottom-0 w-2 bg-black/10 border-r border-black/10" />
-      <p className="pl-1.5 font-display font-bold text-[10px] text-ceci-primary line-clamp-3 leading-tight my-auto">
+      <p className="pl-1.5 font-display font-bold text-[10px] text-cover-ink line-clamp-3 leading-tight my-auto">
         {book.title}
       </p>
-      <p className="pl-1.5 text-[8px] font-semibold text-ceci-primary/80 line-clamp-1">{book.author}</p>
+      <p className="pl-1.5 text-[8px] font-semibold text-cover-ink/80 line-clamp-1">{book.author}</p>
     </div>
     {progressPct !== undefined && (
       <div className="h-1.5 rounded-full bg-surface-muted overflow-hidden">
@@ -65,7 +65,7 @@ export const MyMaterialsSection: React.FC<MyMaterialsSectionProps> = ({
       className="w-full text-left bg-surface-default rounded-xl p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs tap-interactive hover:shadow-xs active:scale-[0.99] cursor-pointer group flex items-center justify-between"
     >
       <div className="flex items-center gap-3 min-w-0 pr-2">
-        <div className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong group-hover:bg-ceci-brand-strong group-hover:text-white transition-colors shrink-0">
+        <div className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong group-hover:bg-ceci-brand-strong group-hover:text-ceci-on-brand transition-colors shrink-0">
           <FileText className="w-5 h-5" />
         </div>
         <div className="min-w-0">

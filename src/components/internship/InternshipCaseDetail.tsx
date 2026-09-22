@@ -67,20 +67,20 @@ export const InternshipCaseDetail: React.FC<Props> = ({ caseData, isOpen, onClos
                 <p className="text-sm text-ceci-secondary mb-2">{log.activity}</p>
                 <div className="flex flex-wrap gap-2 text-[10px]">
                   {log.reflections?.trim() ? (
-                    <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-green-50 border border-green-200 text-green-700">
+                    <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-status-success-surface border border-status-success-border text-status-success-strong">
                       <FileText className="w-3 h-3" /> reflexão ok
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-yellow-50 border border-yellow-200 text-yellow-700">
+                    <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-status-warning-surface border border-status-warning-border text-status-warning-strong">
                       <AlertCircle className="w-3 h-3" /> sem reflexão
                     </span>
                   )}
                   {log.supervisionLogId ? (
-                    <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700">
+                    <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-surface-blue border border-ceci-border-academic text-ceci-academic-strong">
                       <Brain className="w-3 h-3" /> supervisionada
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-red-50 border border-red-200 text-red-700">
+                    <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-status-danger-surface border border-status-danger-border text-status-danger-strong">
                       <Brain className="w-3 h-3" /> sem supervisão
                     </span>
                   )}

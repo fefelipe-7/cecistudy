@@ -1,22 +1,17 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { ClipboardList, CheckCircle2, Sparkles, CalendarPlus2 } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import type { Task, Exam, ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
-import { TOAST } from '../../lib/copy';
 import { createTaskCalendarEvent, createExamCalendarEvent } from '../../lib/calendar';
+import { useWizardForm } from '../../lib/useWizardForm';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import { Toggle } from '../ui/Toggle';
-import {
-  DateField,
-  DateInput,
-  Field,
-  ReviewCard,
-  TextInput,
-} from './wizardFields';
+import { DateField, Field, ReviewCard, TextInput } from './wizardFields';
 import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
-import { Picker } from '../ui/Picker';
 import { TagField } from '../ui/TagField';
+import { CourseSelect } from './CourseSelect';
+import { PRIORITIES, TASK_CATEGORIES } from './note/constants';
 
 interface TaskExamWizardProps {
   /** Quando definido, pula a escolha entre tarefa e prova (vindo do picker). */
@@ -25,21 +20,18 @@ interface TaskExamWizardProps {
   editing?: ManagedItem | null;
 }
 
-const TASK_CATEGORIES: { value: Task['category']; label: string; emoji?: string }[] = [
-  { value: 'leitura', label: 'leitura', emoji: '📚' },
-  { value: 'trabalho', label: 'trabalho', emoji: '📝' },
-  { value: 'revisao', label: 'revisão', emoji: '🧠' },
-  { value: 'estagio', label: 'estágio', emoji: '🩺' },
-  { value: 'outro', label: 'outro', emoji: '✨' },
-];
-
-const PRIORITIES: { value: Task['priority']; label: string; emoji?: string }[] = [
-  { value: 'baixa', label: 'baixa', emoji: '🌱' },
-  { value: 'media', label: 'média', emoji: '⚖️' },
-  { value: 'alta', label: 'alta', emoji: '🔥' },
-];
-
-const today = () => new Date().toISOString().split('T')[0];
+interface TaskExamValues {
+  courseId: string;
+  taskTitle: string;
+  taskCategory: Task['category'];
+  taskDueDate: string;
+  taskPriority: Task['priority'];
+  addToAgenda: boolean;
+  examTitle: string;
+  examDate: string;
+  examWeight: string;
+  examTopics: string[];
+}
 
 export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing }) => {
   const {
@@ -52,7 +44,6 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
     handleUpdateTask,
     handleUpdateExam,
     closeWizard,
-    openEditCourse,
     showToast,
   } = useMobileApp();
   const editingTask = editing?.kind === 'task' ? tasks.find((t) => t.id === editing.id) : undefined;
@@ -60,31 +51,35 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
   const initialKind: 'task' | 'exam' | null =
     editing?.kind === 'task' ? 'task' : editing?.kind === 'exam' ? 'exam' : preset ?? null;
   const [kind, setKind] = useState<'task' | 'exam' | null>(initialKind);
-  const [step, setStep] = useState(0);
-  const [courseId, setCourseId] = useState(
-    editingTask?.disciplineId ?? editingExam?.courseId ?? (wizardCourseId || courses[0]?.id || '')
-  );
-
-  // tarefa
-  const [taskTitle, setTaskTitle] = useState(editingTask?.title ?? '');
-  const [taskCategory, setTaskCategory] = useState<Task['category']>(editingTask?.category ?? 'leitura');
-  const [taskDueDate, setTaskDueDate] = useState(editingTask?.dueDate ?? '');
-  const [taskPriority, setTaskPriority] = useState<Task['priority']>(editingTask?.priority ?? 'media');
-  const [addToAgenda, setAddToAgenda] = useState(false);
-
-  // prova
-  const [examTitle, setExamTitle] = useState(editingExam?.title ?? '');
-  const [examDate, setExamDate] = useState(editingExam?.date ?? '');
-  const [examWeight, setExamWeight] = useState(editingExam?.weight ?? '1,0');
-  const [examTopics, setExamTopics] = useState<string[]>(editingExam?.topics ?? []);
+  const { values, patch, step, setStep } = useWizardForm<TaskExamValues>({
+    initial: {
+      courseId: editingTask?.disciplineId ?? editingExam?.courseId ?? (wizardCourseId || courses[0]?.id || ''),
+      taskTitle: editingTask?.title ?? '',
+      taskCategory: editingTask?.category ?? 'leitura',
+      taskDueDate: editingTask?.dueDate ?? '',
+      taskPriority: editingTask?.priority ?? 'media',
+      addToAgenda: false,
+      examTitle: editingExam?.title ?? '',
+      examDate: editingExam?.date ?? '',
+      examWeight: editingExam?.weight ?? '1,0',
+      examTopics: editingExam?.topics ?? [],
+    },
+    editing: !!editing,
+  });
+  const {
+    courseId,
+    taskTitle,
+    taskCategory,
+    taskDueDate,
+    taskPriority,
+    addToAgenda,
+    examTitle,
+    examDate,
+    examWeight,
+    examTopics,
+  } = values;
 
   const courseName = courses.find((c) => c.id === courseId)?.name ?? '';
-
-  /** Criação contextual de matéria (§4.1): abre o cadastro e avisa que ela aparece aqui ao voltar. */
-  const createCourseInline = () => {
-    showToast(TOAST.courseRegistered);
-    openEditCourse();
-  };
 
   /** Toggle de agenda agora vive na revisão (§5.3): opção posterior, não etapa para todos. */
   const agendaRow = (
@@ -95,7 +90,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       </div>
       <Toggle
         checked={addToAgenda}
-        onChange={() => setAddToAgenda((prev) => !prev)}
+        onChange={() => patch({ addToAgenda: !addToAgenda })}
         label="adicionar ao Google Agenda"
       />
     </div>
@@ -158,7 +153,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
         <div className="space-y-2">
           <TextInput
             value={taskTitle}
-            onChange={(e) => setTaskTitle(e.target.value)}
+            onChange={(e) => patch({ taskTitle: e.target.value })}
             placeholder="ex: ler capítulo 4 de psicopatologia"
             autoFocus
           />
@@ -176,13 +171,13 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
             label="categoria"
             options={TASK_CATEGORIES}
             value={taskCategory}
-            onChange={(v) => setTaskCategory(v)}
+            onChange={(v) => patch({ taskCategory: v })}
           />
           <ChoiceCardGrid
             label="prioridade"
             options={PRIORITIES}
             value={taskPriority}
-            onChange={(v) => setTaskPriority(v)}
+            onChange={(v) => patch({ taskPriority: v })}
           />
         </div>
       ),
@@ -194,19 +189,11 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       subtitle: 'a disciplina conecta a tarefa ao cantinho; sem prazo também é um estado válido ♡',
       content: (
         <div className="space-y-4">
-          <Picker
-            label="disciplina"
-            value={courseId}
-            onChange={setCourseId}
-            options={courses.map((c) => ({ value: c.id, label: c.name }))}
-            emptyMessage="ainda não há disciplinas cadastradas."
-            createLabel="criar matéria agora"
-            onCreate={createCourseInline}
-          />
+          <CourseSelect value={courseId} onChange={(v) => patch({ courseId: v })} />
           <DateField
             label="data limite (prazo)"
             value={taskDueDate}
-            onChange={setTaskDueDate}
+            onChange={(v) => patch({ taskDueDate: v })}
             placeholder="sem prazo é um estado válido ♡"
           />
         </div>
@@ -245,13 +232,13 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
           <Field label="título da prova" hint="como essa avaliação aparece no seu plano — ex: prova teórica ii">
             <TextInput
               value={examTitle}
-              onChange={(e) => setExamTitle(e.target.value)}
+              onChange={(e) => patch({ examTitle: e.target.value })}
               placeholder="ex: prova teórica ii — transtornos de ansiedade"
               autoFocus
             />
           </Field>
           <Field label="data da prova" hint="se ainda não souber, pode confirmar depois — sem data também vale ♡">
-            <DateInput value={examDate} onChange={(e) => setExamDate(e.target.value)} />
+            <DateField value={examDate} onChange={(v) => patch({ examDate: v })} placeholder="sem data também vale ♡" />
           </Field>
         </div>
       ),
@@ -263,19 +250,11 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       subtitle: 'a disciplina conecta a prova ao cantinho; o peso mostra quanto ela vale na nota final.',
       content: (
         <div className="space-y-4">
-          <Picker
-            label="disciplina"
-            value={courseId}
-            onChange={setCourseId}
-            options={courses.map((c) => ({ value: c.id, label: c.name }))}
-            emptyMessage="ainda não há disciplinas cadastradas."
-            createLabel="criar matéria agora"
-            onCreate={createCourseInline}
-          />
+          <CourseSelect value={courseId} onChange={(v) => patch({ courseId: v })} />
           <Field label="peso" hint="ex: 40% da nota, 1,0 ou 10 pontos — como fizer mais sentido.">
             <TextInput
               value={examWeight}
-              onChange={(e) => setExamWeight(e.target.value)}
+              onChange={(e) => patch({ examWeight: e.target.value })}
               placeholder="ex: 40% da nota"
             />
           </Field>
@@ -290,7 +269,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       content: (
         <TagField
           tags={examTopics}
-          onChange={setExamTopics}
+          onChange={(v) => patch({ examTopics: v })}
           placeholder="ex: pensamentos automáticos"
           emptyMessage="não precisa preencher tudo, pode deixar vazio ♡"
         />
@@ -319,7 +298,6 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
   ];
 
   const steps = kind === null ? [choiceStep] : kind === 'task' ? taskSteps : examSteps;
-  const stepsForEdit = editing ? steps.filter((s) => s.id !== 'agenda') : steps;
 
   const canNext =
     kind === null
@@ -386,15 +364,15 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
     } else {
       handleAddExam({
         id: 'e-' + Date.now(),
-        courseId: courseId || 'c1',
+        courseId,
         title: examTitle.trim(),
-        date: examDate || today(),
+        date: examDate,
         weight: examWeight.trim() || '1,0',
         topics: examTopics,
         completed: false,
       });
-      if (addToAgenda) {
-        const ok = await createExamCalendarEvent(examTitle.trim(), courseName, examDate || today());
+      if (addToAgenda && examDate) {
+        const ok = await createExamCalendarEvent(examTitle.trim(), courseName, examDate);
         if (ok) {
           showToast('prova salva e marcada na sua agenda ♡');
         } else {
@@ -412,7 +390,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
 
   return (
     <WizardScaffold
-      steps={stepsForEdit}
+      steps={steps}
       step={step}
       onStepChange={setStep}
       canNext={canNext}

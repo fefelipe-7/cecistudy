@@ -13,10 +13,10 @@ import '@fontsource/dm-serif-display/400.css';
 import '@fontsource/dm-serif-display/400-italic.css';
 import '@fontsource/jetbrains-mono/400.css';
 import App from './App.tsx';
-import { initPlatformFlags } from './lib/platform';
+import { initTheme } from './lib/themes';
 import './index.css';
 
-initPlatformFlags();
+initTheme();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

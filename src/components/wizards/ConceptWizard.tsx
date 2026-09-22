@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Sparkles } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import type { ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
+import { useWizardForm } from '../../lib/useWizardForm';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import {
   FieldHint,
@@ -16,6 +17,15 @@ import { Picker } from '../ui/Picker';
 import { TagField } from '../ui/TagField';
 import { useAcervoTheory } from './useAcervoTheory';
 
+interface ConceptValues {
+  name: string;
+  definition: string;
+  approachId: string;
+  authorIds: string[];
+  courseIds: string[];
+  tags: string[];
+}
+
 export const ConceptWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
   const { approaches, authors, courses, concepts, wizardCourseId, handleAddConcept, handleUpdateConcept, closeWizard, showToast } = useMobileApp();
   const { authorOptions, resolveIds } = useAcervoTheory();
@@ -23,15 +33,18 @@ export const ConceptWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
     ? concepts.find((c) => c.id === editing.id)
     : undefined;
 
-  const [step, setStep] = useState(0);
-  const [name, setName] = useState(editingConcept?.name ?? '');
-  const [definition, setDefinition] = useState(editingConcept?.definition ?? '');
-  const [approachId, setApproachId] = useState(editingConcept?.approachId ?? '');
-  const [authorIds, setAuthorIds] = useState<string[]>(editingConcept?.authorIds ?? []);
-  const [courseIds, setCourseIds] = useState<string[]>(
-    editingConcept?.courseIds.length ? editingConcept.courseIds : wizardCourseId ? [wizardCourseId] : []
-  );
-  const [tags, setTags] = useState<string[]>(editingConcept?.tags ?? []);
+  const { values, patch, step, setStep } = useWizardForm<ConceptValues>({
+    initial: {
+      name: editingConcept?.name ?? '',
+      definition: editingConcept?.definition ?? '',
+      approachId: editingConcept?.approachId ?? '',
+      authorIds: editingConcept?.authorIds ?? [],
+      courseIds: editingConcept?.courseIds.length ? editingConcept.courseIds : wizardCourseId ? [wizardCourseId] : [],
+      tags: editingConcept?.tags ?? [],
+    },
+    editing: !!editingConcept,
+  });
+  const { name, definition, approachId, authorIds, courseIds, tags } = values;
 
   const approachName = approaches.find((a) => a.id === approachId)?.shortName ?? 'sem abordagem';
   const authorsNames = authors.filter((x) => authorIds.includes(x.id)).map((x) => x.name).join(' · ');
@@ -47,7 +60,7 @@ export const ConceptWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
         <div className="space-y-4">
           <TextInput
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => patch({ name: e.target.value })}
             placeholder="nome do conceito — ex: tríade cognitiva"
             autoFocus
           />
@@ -56,7 +69,7 @@ export const ConceptWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
             <TextArea
               rows={4}
               value={definition}
-              onChange={(e) => setDefinition(e.target.value)}
+              onChange={(e) => patch({ definition: e.target.value })}
               placeholder="o que é esse conceito?"
             />
             <FieldHint>uma definição simples já ajuda: depois dá para aprofundar.</FieldHint>
@@ -74,7 +87,7 @@ export const ConceptWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
           <Picker
             label="abordagem (opcional)"
             value={approachId}
-            onChange={setApproachId}
+            onChange={(v) => patch({ approachId: v })}
             options={approaches.map((x) => ({ value: x.id, label: x.shortName || x.name }))}
             placeholder="sem abordagem"
             emptyMessage="ainda não há abordagens registradas."
@@ -84,18 +97,18 @@ export const ConceptWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
             variant="rose"
             options={authorOptions}
             value={authorIds}
-            onChange={(v) => setAuthorIds(resolveIds(v))}
+            onChange={(v) => patch({ authorIds: resolveIds(v) })}
           />
           <PillGroupMulti
             label="disciplinas"
             variant="rose"
             options={courses.map((x) => ({ value: x.id, label: x.name }))}
             value={courseIds}
-            onChange={setCourseIds}
+            onChange={(v) => patch({ courseIds: v })}
           />
           <TagField
             tags={tags}
-            onChange={setTags}
+            onChange={(v) => patch({ tags: v })}
             placeholder="tags do conceito (ex: ansiedade)"
             emptyMessage="não precisa preencher tudo, pode deixar vazio ♡"
           />
@@ -148,7 +161,7 @@ export const ConceptWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
     <WizardScaffold
       title={editing ? 'editar conceito' : 'novo conceito'}
       icon={<Sparkles className="w-3.5 h-3.5" />}
-      iconClass="bg-amber-bg border-amber-border text-amber-text"
+      iconClass="bg-status-warning-surface border-status-warning-border text-status-warning-strong"
       steps={steps}
       step={step}
       onStepChange={setStep}

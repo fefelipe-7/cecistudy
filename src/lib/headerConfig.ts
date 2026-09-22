@@ -4,12 +4,14 @@ import {
   GitCompare,
   HeartHandshake,
   Lightbulb,
+  Pencil,
   Settings2,
   StickyNote,
   User,
   Wrench,
 } from 'lucide-react';
 import type {
+  ClassNote,
   Course,
   CourseIconName,
   DynamicHeaderConfig,
@@ -66,6 +68,7 @@ export interface HeaderConfigActions {
   openEditTcc: () => void;
   toggleBookmarkCourse: (id: string) => void;
   setIsCreatingLooseNote: (value: boolean) => void;
+  editManagedItem: (kind: 'class' | 'task' | 'exam', id: string) => void;
 }
 
 export interface HeaderConfigInput extends HeaderConfigActions {
@@ -73,6 +76,7 @@ export interface HeaderConfigInput extends HeaderConfigActions {
   focusedFamily: PsicoterapiaFamily | null;
   focusedApproach: PsychologyApproach | null;
   focusedCourse: Course | undefined;
+  focusedClassNote: ClassNote | undefined;
   bookmarkedCourseIds: string[];
   tccTitle: string;
   questionsCount: number;
@@ -113,6 +117,8 @@ export function buildHeaderConfig(input: HeaderConfigInput): DynamicHeaderConfig
     openEditTcc,
     toggleBookmarkCourse,
     setIsCreatingLooseNote,
+    editManagedItem,
+    focusedClassNote,
   } = input;
 
   let headerConfig: DynamicHeaderConfig | null = null;
@@ -283,6 +289,24 @@ export function buildHeaderConfig(input: HeaderConfigInput): DynamicHeaderConfig
       icon: 'Trophy',
       color: '#B94862',
       onBack,
+    };
+  } else if (currentScreen.kind === 'classNote' && focusedClassNote) {
+    const note = focusedClassNote;
+    const title = note.number ? `aula ${note.number} • ${note.title}` : note.title;
+    headerConfig = {
+      type: 'detail',
+      title,
+      subtitle: `${focusedCourse?.name ?? 'anotação de aula'} • ${note.date}`,
+      icon: 'FileText',
+      color: focusedCourse?.color ?? '#D85F79',
+      onBack,
+      actions: [
+        {
+          label: 'editar aula',
+          Icon: Pencil,
+          onClick: () => editManagedItem('class', note.id),
+        },
+      ],
     };
   } else if (currentScreen.kind === 'course' && focusedCourse) {
     const isBookmarked = bookmarkedCourseIds.includes(focusedCourse.id);

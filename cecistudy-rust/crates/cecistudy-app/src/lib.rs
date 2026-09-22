@@ -38,12 +38,12 @@ impl App {
     self.db.verify()
   }
 
-  /// Abre o catálogo estático (templo) em modo somente-leitura.
-  pub fn open_catalog(
-    path: impl AsRef<Path>,
-  ) -> std::result::Result<cecistudy_content::CatalogDb, Error> {
-    cecistudy_content::CatalogDb::open_read_only(path)
-  }
+/// Abre o catálogo estático (templo) em modo somente-leitura.
+    pub fn open_catalog(
+        path: impl AsRef<Path>,
+    ) -> std::result::Result<cecistudy_content::CatalogDb, Error> {
+        cecistudy_content::CatalogDb::open_read_only(path)
+    }
 
   /// Capacidades por entidade/plataforma (delegação para `domain`).
   pub fn capability_for(

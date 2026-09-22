@@ -305,7 +305,7 @@ export const SyncScreen: React.FC = () => {
             <button
               onClick={() => void handleScan()}
               disabled={isScanning}
-              className="w-full flex items-center justify-center gap-2 bg-surface-blue border border-ceci-border-academic text-ceci-academic-strong px-4 py-3 rounded-2xl text-sm font-semibold tap-interactive cursor-pointer hover:bg-ceci-academic-strong hover:text-white transition-colors disabled:opacity-60"
+              className="w-full flex items-center justify-center gap-2 bg-surface-blue border border-ceci-border-academic text-ceci-academic-strong px-4 py-3 rounded-2xl text-sm font-semibold tap-interactive cursor-pointer hover:bg-ceci-academic-strong hover:text-ceci-on-academic transition-colors disabled:opacity-60"
             >
               {isScanning ? <Loader2 className="w-4 h-4 animate-spin" /> : <ScanLine className="w-4 h-4" />}
               {isScanning ? 'abrindo a câmera…' : 'escanear QR code'}
@@ -337,7 +337,7 @@ export const SyncScreen: React.FC = () => {
 
             <button
               onClick={beginJoinWithTimeout}
-              className="w-full py-3 rounded-2xl text-sm font-semibold text-white bg-ceci-brand-strong hover:bg-ceci-primary cursor-pointer active:scale-95 transition"
+              className="w-full py-3 rounded-2xl text-sm font-semibold text-ceci-on-brand bg-ceci-brand-strong hover:bg-ceci-primary cursor-pointer active:scale-95 transition"
             >
               conectar
             </button>
@@ -370,7 +370,7 @@ export const SyncScreen: React.FC = () => {
             )}
             <button
               disabled={phase === 'applying'}
-              className="w-full py-3 rounded-2xl text-sm font-semibold text-white bg-ceci-brand-strong hover:bg-ceci-primary cursor-pointer active:scale-95 transition disabled:opacity-60"
+              className="w-full py-3 rounded-2xl text-sm font-semibold text-ceci-on-brand bg-ceci-brand-strong hover:bg-ceci-primary cursor-pointer active:scale-95 transition disabled:opacity-60"
             >
               {phase === 'applying' ? 'juntando…' : 'juntar os cantinhos'}
             </button>
@@ -379,7 +379,7 @@ export const SyncScreen: React.FC = () => {
 
         {phase === 'done' && (
           <StepCard className="flex flex-col items-center text-center py-8">
-            <CheckCircle2 className="w-9 h-9 text-green-700 mb-3" />
+            <CheckCircle2 className="w-9 h-9 text-status-success-strong mb-3" />
             <h2 className="font-display font-bold text-base text-ceci-primary mb-1">
               prontinho, seus dois cantinhos estão iguais ♡
             </h2>
@@ -425,7 +425,7 @@ export const SyncScreen: React.FC = () => {
                 onClick={() => {
                   setPhase(role === 'host' ? 'host' : 'join');
                 }}
-                className="flex-1 py-3 rounded-2xl text-sm font-semibold text-white bg-ceci-brand-strong hover:bg-ceci-primary cursor-pointer active:scale-95 transition-transform"
+                className="flex-1 py-3 rounded-2xl text-sm font-semibold text-ceci-on-brand bg-ceci-brand-strong hover:bg-ceci-primary cursor-pointer active:scale-95 transition-transform"
               >
                 tentar de novo
               </button>

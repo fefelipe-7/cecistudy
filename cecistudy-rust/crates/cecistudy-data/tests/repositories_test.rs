@@ -11,9 +11,9 @@ use std::path::Path;
 
 use cecistudy_common::canonicalize;
 use cecistudy_data::{
-  USER_COLLECTION_KEYS, UserDb, is_user_collection_key, load_all_collections, load_collection,
-  save_collection,
+  USER_COLLECTION_KEYS, UserDb, is_user_collection_key,
 };
+use cecistudy_data::repositories::{load_all_collections, load_collection, save_collection};
 use serde_json::Value;
 
 const GOLDEN: &str = "../../contracts/golden/collections";

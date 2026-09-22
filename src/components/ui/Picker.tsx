@@ -86,7 +86,7 @@ export const Picker: React.FC<PickerProps> = ({
               <button
                 type="button"
                 onClick={onCreate}
-                className="mt-1.5 inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-ceci-brand-strong text-white text-[11px] font-bold active:scale-95 transition-transform cursor-pointer"
+                className="mt-1.5 inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-ceci-brand-strong text-ceci-on-brand text-[11px] font-bold active:scale-95 transition-transform cursor-pointer"
               >
                 <Plus className="w-3 h-3" />
                 {createLabel}
@@ -102,7 +102,7 @@ export const Picker: React.FC<PickerProps> = ({
             aria-haspopup="listbox"
             aria-expanded={open}
             className={cn(
-              'w-full bg-surface-input border border-transparent rounded-2xl px-4 py-4 text-sm flex items-center justify-between gap-2 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 cursor-pointer transition-colors',
+              'w-full bg-surface-input border border-transparent rounded-2xl px-4 py-4 text-sm flex items-center justify-between gap-2 focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 focus:border-ceci-brand cursor-pointer transition-colors',
               buttonClassName
             )}
           >
@@ -139,7 +139,7 @@ export const Picker: React.FC<PickerProps> = ({
                       onChange={(e) => setTerm(e.target.value)}
                       placeholder="buscar por nome..."
                       aria-label={`buscar em ${sheetTitle ?? label ?? 'opções'}`}
-                      className="w-full bg-surface-input rounded-2xl pl-10 pr-8 py-3 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+                      className="w-full bg-surface-input rounded-2xl pl-10 pr-8 py-3 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:ring-2 focus:ring-ceci-brand/30"
                     />
                     {term && (
                       <button

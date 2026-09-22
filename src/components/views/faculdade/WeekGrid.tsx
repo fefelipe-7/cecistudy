@@ -46,7 +46,7 @@ const WeekGrid: React.FC<WeekGridProps> = ({ courses, now, onOpenCourse }) => {
                 aria-pressed={isSel}
                 className={`p-2 rounded-2xl flex flex-col items-center justify-center gap-0.5 min-h-[56px] border transition-colors cursor-pointer ${
                   isSel
-                    ? 'bg-ceci-primary text-white border-transparent shadow-sm'
+                    ? 'bg-ceci-primary text-ceci-on-primary border-transparent shadow-sm'
                     : isTodayDow
                       ? 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand'
                       : 'bg-surface-default text-ceci-secondary border-ceci-border-default hover:bg-surface-subtle'
@@ -55,7 +55,7 @@ const WeekGrid: React.FC<WeekGridProps> = ({ courses, now, onOpenCourse }) => {
                 <span className="text-[10px] font-semibold uppercase tracking-wide">
                   {WEEKDAY_LABELS[dow]}
                 </span>
-                <span className={`text-xs font-bold tabular-nums ${isSel ? 'text-white' : ''}`}>
+                <span className="text-xs font-bold tabular-nums">
                   {d.getDate()}
                 </span>
                 <span className="flex items-center gap-0.5 h-1" aria-hidden="true">

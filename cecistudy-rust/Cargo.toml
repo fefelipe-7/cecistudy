@@ -9,6 +9,7 @@ members = [
   "crates/cecistudy-sync",
   "crates/cecistudy-content",
   "crates/cecistudy-app",
+  "crates/cecistudy-ffi",
 ]
 
 [workspace.package]

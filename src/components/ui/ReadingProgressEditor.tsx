@@ -72,8 +72,8 @@ export const ReadingProgressEditor: React.FC<ReadingProgressEditorProps> = ({
             inputMode="numeric"
             aria-label="digite a nova página lida"
             className={cn(
-              'w-20 text-center bg-surface-input border rounded-2xl py-2.5 font-display font-bold text-xl text-ceci-primary tabular-nums focus:outline-none focus:ring-2 focus:ring-rose-500/30 transition-shadow',
-              invalid ? 'border-red-400' : 'border-ceci-border-default'
+              'w-20 text-center bg-surface-input border rounded-2xl py-2.5 font-display font-bold text-xl text-ceci-primary tabular-nums focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 transition-shadow',
+              invalid ? 'border-status-danger' : 'border-ceci-border-default'
             )}
           />
 
@@ -103,7 +103,7 @@ export const ReadingProgressEditor: React.FC<ReadingProgressEditorProps> = ({
         </div>
 
         {invalid && (
-          <p className="text-[11px] text-red-700 text-center">
+          <p className="text-[11px] text-status-danger-strong text-center">
             {totalPages !== undefined && parseInt(draft, 10) > totalPages
               ? `essa obra tem ${totalPages} páginas ♡`
               : 'a página não pode ser menor do que você já leu'}
@@ -125,7 +125,7 @@ export const ReadingProgressEditor: React.FC<ReadingProgressEditorProps> = ({
           type="button"
           onClick={() => parsed !== null && onSave(parsed)}
           disabled={!valid}
-          className="w-full min-h-[48px] rounded-2xl bg-ceci-brand-strong text-white text-sm font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98] transition-transform cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
+          className="w-full min-h-[48px] rounded-2xl bg-ceci-brand-strong text-ceci-on-brand text-sm font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98] transition-transform cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
         >
           <Check className="w-4 h-4" />
           guardar progresso

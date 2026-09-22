@@ -23,7 +23,6 @@ import { useMobileNavigation } from './mobileNavigation';
  * navegação mobile (`useMobileNavigation`). O sandbox mobile fornece os três
  * contextos (AppBase/DataClient/Mobile) para que `useMobileApp()` e o
  * fallback dos contextos compartilhados apontem para a mesma superfície.
- * Não depende do app desktop.
  *
  * Além da superfície agregada, fornece os bundles por domínio (PERF-001 A.3):
  * ações + helpers estáveis de cada domínio em contextos próprios, para que as

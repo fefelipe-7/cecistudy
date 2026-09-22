@@ -48,7 +48,7 @@ interface BlockLabelProps {
 
 const BlockLabel: React.FC<BlockLabelProps> = ({ index, title, hint }) => (
   <div className="flex items-center gap-2.5">
-    <span className="w-8 h-8 rounded-xl bg-ceci-primary text-white flex items-center justify-center font-display font-bold text-sm shrink-0">
+    <span className="w-8 h-8 rounded-xl bg-ceci-primary text-ceci-on-primary flex items-center justify-center font-display font-bold text-sm shrink-0">
       {index}
     </span>
     <div className="min-w-0">

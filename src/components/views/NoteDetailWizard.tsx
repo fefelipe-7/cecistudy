@@ -12,7 +12,7 @@ import {
 } from '../wizards/wizardFields';
 import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
 import { PillGroupMulti } from '../ui/PillGroupMulti';
-import { Picker } from '../ui/Picker';
+import { CourseSelect } from '../wizards/CourseSelect';
 import { useAcervoTheory } from '../wizards/useAcervoTheory';
 
 const CATEGORY_OPTIONS: { value: LooseNote['category']; label: string; emoji?: string }[] = [
@@ -87,7 +87,7 @@ export const NoteDetailWizard: React.FC = () => {
         <p className="text-xs text-ceci-secondary">essa nota não foi encontrada.</p>
         <button
           onClick={closeNoteDetail}
-          className="px-4 py-2 bg-ceci-primary text-white rounded-full text-xs font-bold cursor-pointer"
+          className="px-4 py-2 bg-ceci-primary text-ceci-on-primary rounded-full text-xs font-bold cursor-pointer"
         >
           voltar
         </button>
@@ -134,13 +134,12 @@ export const NoteDetailWizard: React.FC = () => {
       subtitle: 'vínculos são opcionais — conectam a nota a matérias, conceitos, autores e materiais ♡',
       content: (
         <div className="space-y-5">
-          <Picker
-            label="matéria relacionada"
+          <CourseSelect
             value={courseId}
             onChange={setCourseId}
-            options={courses.map((c) => ({ value: c.id, label: c.name }))}
+            label="matéria relacionada"
+            optional
             placeholder="nenhuma matéria por enquanto"
-            emptyMessage="ainda não há matérias cadastradas."
           />
 
           <div className="space-y-2">

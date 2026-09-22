@@ -29,15 +29,25 @@ cecistudy-rust/            ← workspace Cargo (resolver 2)
 │   ├── cecistudy-app/     casos de uso (única superfície p/ FFI)
 │   ├── cecistudy-ffi/     bridge flutter_rust_bridge  🔲 planejado (não existe)
 │   └── cecistudy-integrations/ Google Calendar (OAuth installed-app) 🔲 planejado (não existe)
-├── docs/                  architecture, domain-port-guide, sync, canonical-json
-├── crates/*/tests/        golden_parity_test.rs, migration_runner_test.rs (em cada crate)
+├── docs/                  canonical-json-v1.md ✅ (architecture, domain-port-guide, sync AINDA não existem)
+├── crates/*/tests/        golden_parity_test.rs (common), migration_parity_test.rs (data),
+│                         repositories_test.rs, backup_roundtrip_test.rs (via cargo)
 └── Cargo.toml
 ```
 
-> **Status (2026-09-11):** workspace + `common/domain/data/content/sync/app` implementados
-> (Fase 1, 20/23). `cecistudy-ffi` e `cecistudy-integrations` ainda **não existem** — são os
-> próximos passos (ver `desktop/spec/01-task-breakdown-flutter-rust.md`). `cecistudy-common` foi
-> absorvido por `cecistudy-domain`/`cecistudy-data` (ids/timestamps/erros em `domain/src`).
+> **Status (2026-09-12):** workspace + `common/domain/data/content/sync/app` implementados
+> (Fase 1, **21/23**). `cecistudy-ffi` e `cecistudy-integrations` ainda **não existem** — são os
+> próximos passos (ver `spec/01-task-breakdown-flutter-rust.md`). `cecistudy-common`
+> **continua a existir** como crate-base (ids/timestamps/erros/canonicalize) — NÃO foi absorvido;
+> módulos de domínio `calendar/knowledge/marketing/projects/internship` **portados** (R2, spec-first);
+> `cecistudy-data` migrado a **entidades tipadas** (R1 — forma via `schema.sql`) com fronteira tipada
+> de load/save, embora ainda exponha `data_json` (remoção na superfície = **R4**; content renome =
+> **R3**). Gate atual: `cargo clippy -D warnings` ✓ · `cargo fmt --check` ✓ ·
+> **162 testes** ✓.
+>
+> ⚠️ **Diretriz 2026-09-12:** o desktop novo **NÃO usa nada do React/JS como base** — implementar
+> domain/data **spec-first** a partir de `contracts/` (schema.sql + golden + backup-v2-spec). Os pacotes
+> TS (`packages/*`) são só **oráculo de paridade** via golden files; não copiar estrutura do TS.
 
 ## Regras
 - **crates NUNCA importam Flutter/React.** FFI (bridge) só em `cecistudy-ffi`/`cecistudy-app`.

@@ -20,6 +20,8 @@ import { TEMPLE_SECTION_SLUGS, type TempleSection } from './temple';
 export interface Route {
   tab?: NavTab;
   focusedCourseId?: string | null;
+  /** Detalhe full-screen de uma aula (`#/faculdade/:courseId/aula/:classNoteId`). */
+  classNoteId?: string;
   notes?: boolean;
   temple?: boolean;
   /** Seção interna do templo (ex.: `#/biblioteca/templo/conceitos`). */
@@ -202,6 +204,10 @@ export function parseRoute(hash: string): Route {
   if (seg === 'faculdade') {
     // Diário de estágio: `#/faculdade/estagio/diario`
     if (h[1] === 'estagio' && h[2] === 'diario') return { tab: 'faculdade', internshipDiary: true };
+    // Detalhe de aula: `#/faculdade/:courseId/aula/:classNoteId`
+    if (h[2] === 'aula' && h[3]) {
+      return { tab: 'faculdade', focusedCourseId: h[1], classNoteId: h[3] };
+    }
     // Sub-tabs legadas (aulas/avaliacoes fundidas no detalhe da disciplina)
     if (h[1] && LEGACY_SUB_TABS_FACULDADE.includes(h[1])) return { tab: 'faculdade' };
     const s = subtab('faculdade');
@@ -344,7 +350,15 @@ export function routeToStack(route: Route): NavScreen[] {
     return [{ kind: 'tab', tab: 'estudos' }, { kind: 'study', screen: route.studyScreen }];
   }
   if (route.tab === 'faculdade' && route.focusedCourseId) {
-    return [{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: route.focusedCourseId }];
+    const courseScreen: NavScreen = { kind: 'course', courseId: route.focusedCourseId };
+    if (route.classNoteId) {
+      return [
+        { kind: 'tab', tab: 'faculdade' },
+        courseScreen,
+        { kind: 'classNote', classNoteId: route.classNoteId, courseId: route.focusedCourseId },
+      ];
+    }
+    return [{ kind: 'tab', tab: 'faculdade' }, courseScreen];
   }
   return [{ kind: 'tab', tab: route.tab ?? 'home' }];
 }
@@ -396,6 +410,7 @@ export function stackToHash(stack: NavScreen[], subTab?: string): string {
     return `#/biblioteca/templo/comparacoes/${top.slug}`;
   }
   if (top.kind === 'course') return `#/faculdade/${top.courseId}`;
+  if (top.kind === 'classNote') return `#/faculdade/${top.courseId}/aula/${top.classNoteId}`;
   if (top.kind === 'approach') {
     return `#/biblioteca/abordagens/${top.approachId}`;
   }

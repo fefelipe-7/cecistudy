@@ -105,7 +105,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
             value={noteSearchTerm}
             onChange={(e) => setNoteSearchTerm(e.target.value)}
             placeholder="pesquisar em suas notas..."
-            className="w-full bg-surface-default border border-ceci-border-default rounded-2xl pl-10 pr-8 py-2.5 text-xs text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 shadow-2xs"
+            className="w-full bg-surface-default border border-ceci-border-default rounded-2xl pl-10 pr-8 py-2.5 text-xs text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-ceci-brand shadow-2xs"
           />
           {noteSearchTerm && (
             <button
@@ -155,7 +155,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
               value={newNoteTitle}
               onChange={(e) => setNewNoteTitle(e.target.value)}
               placeholder="título da nota (ex: reflexão sobre acolhimento)"
-              className="w-full bg-surface-default border border-ceci-border-default rounded-xl px-3 py-2 text-xs font-semibold text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500"
+              className="w-full bg-surface-default border border-ceci-border-default rounded-xl px-3 py-2 text-xs font-semibold text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-ceci-brand"
             />
 
             <div className="flex items-center gap-2 pt-1">
@@ -173,7 +173,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
               onChange={(e) => setNewNoteContent(e.target.value)}
               placeholder="escreva o conteúdo da sua nota aqui..."
               rows={4}
-              className="w-full bg-surface-default border border-ceci-border-default rounded-xl p-3 text-xs text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-rose-500 resize-none"
+              className="w-full bg-surface-default border border-ceci-border-default rounded-xl p-3 text-xs text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-ceci-brand resize-none"
             />
           </div>
 
@@ -204,7 +204,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
                   setIsCreatingNote(false);
                 }
               }}
-              className="px-4 py-1.5 text-xs font-bold bg-ceci-brand-strong text-white rounded-xl hover:bg-ceci-brand-hover cursor-pointer shadow-2xs"
+              className="px-4 py-1.5 text-xs font-bold bg-ceci-brand-strong text-ceci-on-brand rounded-xl hover:bg-ceci-brand-hover cursor-pointer shadow-2xs"
             >
               guardar nota
             </button>
@@ -257,7 +257,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
                     {cons.map((name) => (
                       <span
                         key={name}
-                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-bg border border-amber-border text-[10px] font-semibold text-amber-text"
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-status-warning-surface border border-status-warning-border text-[10px] font-semibold text-status-warning-strong"
                       >
                         <Sparkles className="w-3 h-3" />
                         {name}
@@ -316,8 +316,8 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
                   >
                     {copiedNoteId === note.id ? (
                       <>
-                        <Check className="w-3.5 h-3.5 text-success-deep" />
-                        <span className="text-success-deep font-bold">copiado!</span>
+                        <Check className="w-3.5 h-3.5 text-status-success-strong" />
+                        <span className="text-status-success-strong font-bold">copiado!</span>
                       </>
                     ) : (
                       <>

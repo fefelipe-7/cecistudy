@@ -45,8 +45,7 @@ public class NativeNavigationPlugin: CAPPlugin, CAPBridgedPlugin {
     
     @objc func handleEdgePan(_ gesture: UIScreenEdgePanGestureRecognizer) {
         guard let webView = self.bridge?.webView,
-              isEnabled,
-              canGoBack else { return }
+              isEnabled else { return }
         
         let translation = gesture.translation(in: webView)
         let velocity = gesture.velocity(in: webView)
@@ -128,8 +127,10 @@ public class NativeNavigationPlugin: CAPPlugin, CAPBridgedPlugin {
             return
         }
         canGoBack = value
-        // Disable gesture if cannot go back
-        edgePanGesture?.isEnabled = canGoBack && isEnabled
+        // Gesture stays enabled at root: allow double-back-to-exit flow.
+        // If value is false we still keep the recognizer alive, but JS may
+        // ignore the gesture if it wants to. Here we keep it active.
+        edgePanGesture?.isEnabled = isEnabled
         call.resolve()
     }
     

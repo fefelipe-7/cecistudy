@@ -6,6 +6,8 @@ import { SchedulePicker } from '../ui/SchedulePicker';
 import { formatCourseSchedule } from '../../lib/schedule';
 import { COURSE_ICON_OPTIONS } from '../../lib/courseOptions';
 import { COURSE_ICON_COMPONENTS } from '../ui/CourseIcon';
+import { CatalogMultiSelect } from '../ui/CatalogMultiSelect';
+import { useCourseRepertorio } from '../wizards/useCourseRepertorio';
 
 interface EditCourseModalProps {
   isOpen: boolean;
@@ -15,7 +17,7 @@ interface EditCourseModalProps {
 }
 
 const inputClass =
-  'w-full bg-surface-default border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500';
+  'w-full bg-surface-default border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 focus:border-ceci-brand';
 const labelClass = 'block text-xs font-medium text-ceci-secondary mb-1';
 
 export const EditCourseModal: React.FC<EditCourseModalProps> = ({
@@ -38,6 +40,11 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
   const [officeHours, setOfficeHours] = useState('');
   const [attended, setAttended] = useState('0');
   const [attendanceTotal, setAttendanceTotal] = useState('0');
+  const [conceptIds, setConceptIds] = useState<string[]>([]);
+  const [authorIds, setAuthorIds] = useState<string[]>([]);
+  const [bibliographyIds, setBibliographyIds] = useState<string[]>([]);
+  const [sheetOpen, setSheetOpen] = useState<'conceitos' | 'autores' | 'bibliografia' | null>(null);
+  const { conceptOptions, authorOptions, bibliographyOptions, resolveIds } = useCourseRepertorio();
 
   useEffect(() => {
     if (isOpen && course) {
@@ -55,6 +62,9 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
       setOfficeHours(course.officeHours || '');
       setAttended(String(course.attendance?.attended ?? 0));
       setAttendanceTotal(String(course.attendance?.total ?? 0));
+      setConceptIds(course.conceptIds ?? []);
+      setAuthorIds(course.authorIds ?? []);
+      setBibliographyIds(course.bibliographyIds ?? []);
     }
   }, [isOpen, course]);
 
@@ -78,6 +88,9 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
       category,
       officeHours: officeHours.trim() || undefined,
       attendance: att > 0 ? { attended: Math.max(0, Math.min(att, parseInt(attended) || 0)), total: att } : undefined,
+      conceptIds,
+      authorIds,
+      bibliographyIds,
     });
     onClose();
   };
@@ -205,6 +218,54 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
             />
           </div>
 
+          <div className="border-t border-ceci-border-subtle pt-4">
+            <label className={labelClass}>repertório</label>
+            <div className="space-y-2">
+              <CatalogMultiSelect
+                open={sheetOpen === 'conceitos'}
+                onClose={() => setSheetOpen(null)}
+                title="conceitos-chave"
+                options={conceptOptions}
+                value={conceptIds}
+                onChange={(v) => setConceptIds(resolveIds(v))}
+                emptyMessage="ainda não tem conceito parecido por aqui ♡"
+              />
+              <CatalogMultiSelect
+                open={sheetOpen === 'autores'}
+                onClose={() => setSheetOpen(null)}
+                title="autores fundamentais"
+                options={authorOptions}
+                value={authorIds}
+                onChange={(v) => setAuthorIds(resolveIds(v))}
+                emptyMessage="ainda não tem autor parecido por aqui ♡"
+              />
+              <CatalogMultiSelect
+                open={sheetOpen === 'bibliografia'}
+                onClose={() => setSheetOpen(null)}
+                title="leituras & bibliografia"
+                options={bibliographyOptions}
+                value={bibliographyIds}
+                onChange={(v) => setBibliographyIds(v)}
+                emptyMessage="ainda não tem leitura parecida por aqui ♡"
+              />
+              <button type="button" onClick={() => setSheetOpen('conceitos')} className="w-full bg-surface-input rounded-xl px-3.5 py-3 text-sm text-left text-ceci-primary border border-ceci-border-default hover:border-ceci-border-brand focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 cursor-pointer transition-colors">
+                {conceptIds.length
+                  ? `${conceptIds.length} conceito${conceptIds.length === 1 ? '' : 's'} vinculado${conceptIds.length === 1 ? '' : 's'}`
+                  : 'escolher conceitos-chave...'}
+              </button>
+              <button type="button" onClick={() => setSheetOpen('autores')} className="w-full bg-surface-input rounded-xl px-3.5 py-3 text-sm text-left text-ceci-primary border border-ceci-border-default hover:border-ceci-border-brand focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 cursor-pointer transition-colors">
+                {authorIds.length
+                  ? `${authorIds.length} autor${authorIds.length === 1 ? '' : 'es'} vinculado${authorIds.length === 1 ? '' : 's'}`
+                  : 'escolher autores fundamentais...'}
+              </button>
+              <button type="button" onClick={() => setSheetOpen('bibliografia')} className="w-full bg-surface-input rounded-xl px-3.5 py-3 text-sm text-left text-ceci-primary border border-ceci-border-default hover:border-ceci-border-brand focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 cursor-pointer transition-colors">
+                {bibliographyIds.length
+                  ? `${bibliographyIds.length} leitura${bibliographyIds.length === 1 ? '' : 's'} vinculada${bibliographyIds.length === 1 ? '' : 's'}`
+                  : 'escolher leituras e bibliografia...'}
+              </button>
+            </div>
+          </div>
+
           <div className="flex items-center justify-end gap-2 pt-3 border-t border-ceci-border-subtle">
             <button
               type="button"
@@ -215,7 +276,7 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
             </button>
             <button
               type="submit"
-              className="bg-rose-500 hover:bg-ceci-brand-strong text-white px-5 py-2.5 rounded-[14px] text-xs font-medium shadow-2xs transition-transform active:scale-95 min-h-[48px] cursor-pointer"
+              className="bg-ceci-brand hover:bg-ceci-brand-strong text-ceci-on-brand px-5 py-2.5 rounded-[14px] text-xs font-medium shadow-2xs transition-transform active:scale-95 min-h-[48px] cursor-pointer"
             >
               guardar alterações
             </button>

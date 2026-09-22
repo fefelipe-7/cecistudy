@@ -22,9 +22,9 @@ interface PillGroupProps<T extends string> {
 }
 
 const VARIANT_CLASSES: Record<NonNullable<PillGroupProps<string>['variant']>, string> = {
-  primary: 'bg-ceci-primary text-white border-ceci-primary',
-  academic: 'bg-ceci-academic text-white border-ceci-academic',
-  brand: 'bg-ceci-brand-strong text-white border-ceci-brand-strong',
+  primary: 'bg-ceci-primary text-ceci-on-primary border-ceci-primary',
+  academic: 'bg-ceci-academic text-ceci-on-academic border-ceci-academic',
+  brand: 'bg-ceci-brand-strong text-ceci-on-brand border-ceci-brand-strong',
   rose: 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand shadow-2xs',
 };
 

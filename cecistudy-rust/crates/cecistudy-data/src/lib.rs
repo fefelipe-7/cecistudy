@@ -13,8 +13,11 @@
 //!   import validado.
 //! - [`repositories`] — CRUD por coleção na base da usuária (porta do
 //!   normalize.ts).
+//! - [`collections`] — fronteira tipada dos repositórios (R1b): mapeia cada
+//!   coleção para a entidade de `cecistudy_domain::entity` (load/save tipados).
 
 pub mod backup;
+pub mod collections;
 pub mod connection;
 pub mod migrations;
 pub mod payload;
@@ -22,9 +25,12 @@ pub mod repositories;
 pub mod schema;
 
 pub use backup::{BackupV2, build_backup, parse_backup};
+pub use collections::Collection;
 pub use connection::{CatalogDb, UserDb};
 pub use migrations::{SCHEMA_VERSION, apply_step, migrate};
-pub use payload::{import_backup, validate_payload};
+pub use payload::{
+  TypedPayload, import_backup, import_backup_typed, typed_payload, validate_payload,
+};
 pub use repositories::{
   USER_COLLECTION_KEYS, is_user_collection_key, load_all_collections, load_collection,
   save_collection,

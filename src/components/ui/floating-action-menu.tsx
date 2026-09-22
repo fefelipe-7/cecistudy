@@ -36,15 +36,9 @@ const FloatingActionMenu = ({
       >
         <motion.div
           animate={{ rotate: isOpen ? 45 : 0 }}
-          transition={{
-            duration: 0.3,
-            ease: "easeInOut",
-            type: "spring",
-            stiffness: 300,
-            damping: 20,
-          }}
+          transition={{ duration: 0.22, ease: IOS_EASE }}
         >
-          <Plus className="w-6 h-6 text-white" />
+          <Plus className="w-6 h-6 text-ceci-on-brand" />
         </motion.div>
       </Button>
 
@@ -76,7 +70,7 @@ const FloatingActionMenu = ({
                       setIsOpen(false);
                     }}
                     size="sm"
-                    className="flex items-center gap-2 bg-ceci-brand-strong hover:bg-ceci-brand-hover text-white shadow-brand-soft border border-ceci-border-brand/30 rounded-xl cursor-pointer whitespace-nowrap font-medium text-xs"
+                    className="flex items-center gap-2 bg-ceci-brand-strong hover:bg-ceci-brand-hover text-ceci-on-brand shadow-brand-soft border border-ceci-border-brand/30 rounded-xl cursor-pointer whitespace-nowrap font-medium text-xs"
                   >
                     {option.Icon}
                     <span>{option.label}</span>

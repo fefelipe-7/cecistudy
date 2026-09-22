@@ -74,7 +74,7 @@ Dono de todo o estado global (`usePersistentState`) + navegação + modais. Orqu
 | `TempleScreen.tsx` | Hub do templo de conhecimento (famílias/conceitos/autores/técnicas/comparações) — conceitos, autores e técnicas navegam via `openTempleSection` | ✅ |
 | `temple/ConceptsScreen.tsx` | 225 conceitos por 12 domínios (busca + acordeão + detalhe com seções; corpo em lazy chunk) | ✅ |
 | `temple/AuthorsScreen.tsx` | ~700 autores curados (mais citados / A–Z, busca, ficha inline) | ✅ |
-| `temple/TechniquesScreen.tsx` | 135 técnicas clínicas em 10 categorias (detalhe com campos editoriais e relacionadas) | ✅ |
+| `temple/TechniquesScreen.tsx` | 136 técnicas clínicas em 10 categorias (detalhe com campos editoriais e relacionadas) | ✅ |
 | `PerfilView.tsx` | Página única inline: resumo da jornada (métricas reais), timeline, streak, estágio, TCC, stickers, personalização | ✅ |
 
 ---

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, ChevronRight, Loader2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Mascote } from '../ui/Mascote';
+import { FixedBottomBar } from '../ui/FixedBottomBar';
 import { buildQuizGroups } from '../../data/quizGroups';
 import type { QuestionGroup } from '../../types';
 
@@ -126,7 +127,7 @@ export const QuizGroupSelector: React.FC<QuizGroupSelectorProps> = ({
       </div>
 
       {/* Rodapé fixo */}
-      <div className="fixed bottom-0 inset-x-0 z-10 bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(var(--shadow-rgb),0.06)]">
+      <FixedBottomBar>
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
           <button
             onClick={onClose}
@@ -135,7 +136,7 @@ export const QuizGroupSelector: React.FC<QuizGroupSelectorProps> = ({
             cancelar
           </button>
         </div>
-      </div>
+      </FixedBottomBar>
     </div>
   );
 };

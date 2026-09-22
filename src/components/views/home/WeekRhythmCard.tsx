@@ -29,7 +29,7 @@ const WeekRhythmCard: React.FC<WeekRhythmCardProps> = ({
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Activity className="w-4 h-4 text-rose-500" />
+          <Activity className="w-4 h-4 text-ceci-brand-strong" />
           <h2 className="text-xs font-bold text-ceci-primary font-display uppercase tracking-wider">
             seu ritmo
           </h2>
@@ -59,7 +59,7 @@ const WeekRhythmCard: React.FC<WeekRhythmCardProps> = ({
       </div>
 
       <p className="text-xs text-ceci-secondary flex items-center gap-1.5 border-t border-ceci-border-subtle pt-3.5 -mb-0.5">
-        <Flame className={`w-4 h-4 shrink-0 ${streakActive ? 'fill-rose-500 text-rose-500' : 'text-ceci-muted'}`} />
+        <Flame className={`w-4 h-4 shrink-0 ${streakActive ? 'fill-ceci-brand text-ceci-brand-strong' : 'text-ceci-muted'}`} />
         <span>
           sequência de{' '}
           <AnimatedNumber value={streakCurrent} />{' '}

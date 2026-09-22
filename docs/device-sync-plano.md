@@ -20,7 +20,7 @@
 ## 2. Arquitetura
 
 ```
-CELULAR (Capacitor)                    PC (desktop Tauri / web)
+CELULAR (Capacitor)                    PC (web / desktop novo Flutter+Rust)
   AppContext                            AppContext (mesmo bundle)
      │ getSyncPayloadJson()                │ getSyncPayloadJson()
      ▼                                     ▼

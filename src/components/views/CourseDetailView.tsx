@@ -104,7 +104,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
           layoutId="course-hero"
           className="rounded-[26px] border border-ceci-border-subtle shadow-sm p-4 relative overflow-hidden"
           style={{
-            background: `linear-gradient(135deg, #FFFFFF 0%, ${courseColor}1A 100%)`,
+            background: `linear-gradient(135deg, var(--color-surface-default) 0%, ${courseColor}1A 100%)`,
             borderLeftWidth: 4,
             borderLeftColor: courseColor,
           }}
@@ -112,7 +112,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
           <div className="relative flex items-start gap-3.5">
             <motion.span
               layoutId="course-icon-bg"
-              className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-xs border border-white/70"
+              className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-xs border border-ceci-border-default"
               style={{ backgroundColor: `${courseColor}26` }}
             >
               <CourseIcon icon={course.icon} className="w-6 h-6" />

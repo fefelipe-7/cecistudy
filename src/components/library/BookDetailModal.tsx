@@ -49,29 +49,29 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
       <div
         className="relative shrink-0 pt-7"
         style={{
-          backgroundColor: book.coverColor,
-          backgroundImage: 'linear-gradient(to bottom, rgba(255,255,255,0.28), rgba(0,0,0,0.08))',
+          backgroundColor: `color-mix(in srgb, ${book.coverColor} 65%, var(--color-cover-base))`,
+          backgroundImage: 'linear-gradient(to bottom, rgba(255,255,255,0.18), rgba(0,0,0,0.06))',
         }}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-ceci-primary flex items-center justify-center cursor-pointer shadow-2xs tap-interactive"
+          className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-surface-default/85 hover:bg-surface-default text-ceci-primary flex items-center justify-center cursor-pointer shadow-2xs tap-interactive"
           aria-label="fechar livro"
         >
           <X className="w-4 h-4" />
         </button>
 
-        {/* Capa sobrepondo a fronteira com o corpo */}
+         {/* Capa sobrepondo a fronteira com o corpo */}
         <div className="relative flex justify-center">
-          <div className="relative z-10 w-28 h-40 -mb-16 rounded-r-xl rounded-l-md p-3 bg-white/95 shadow-lg border border-black/10 flex flex-col justify-between text-left -rotate-2 transition-transform duration-300">
-            <div className="absolute left-0 top-0 bottom-0 w-2.5 bg-black/10 rounded-l-md border-r border-black/5" />
-            <span className="pl-1.5 text-[8px] font-bold uppercase tracking-wider text-ceci-tertiary">
+          <div className="relative z-10 w-28 h-40 -mb-16 rounded-r-xl rounded-l-md p-3 bg-cover-base/95 shadow-lg border border-black/5 flex flex-col justify-between text-left -rotate-2 transition-transform duration-300">
+            <div className="absolute left-0 top-0 bottom-0 w-2.5 bg-black/10 rounded-l-md border-r border-black/10" />
+            <span className="pl-1.5 text-[8px] font-bold uppercase tracking-wider text-cover-ink/70">
               {book.badge || 'livro'}
             </span>
-            <p className="pl-1.5 font-display font-bold text-xs leading-tight text-ceci-primary line-clamp-4">
+            <p className="pl-1.5 font-display font-bold text-xs leading-tight text-cover-ink line-clamp-4">
               {book.title}
             </p>
-            <p className="pl-1.5 text-[9px] text-ceci-secondary line-clamp-1">
+            <p className="pl-1.5 text-[9px] text-cover-ink/80 line-clamp-1">
               {book.author}
             </p>
           </div>
@@ -171,7 +171,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
           <div className="flex items-start gap-3 rounded-2xl bg-surface-rose p-4">
             <Mascote expression="library-shelf" className="w-10 h-10 shrink-0" decorative />
             <div className="min-w-0">
-              <p className="font-serif-academic italic text-sm text-beige-700 leading-relaxed">
+              <p className="font-serif-academic italic text-sm text-ceci-tertiary leading-relaxed">
                 "{book.quote}"
               </p>
               <p className="text-[10px] text-ceci-tertiary mt-1.5 lowercase">
@@ -195,7 +195,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
 
         <button
           onClick={onClose}
-          className="flex-1 bg-ceci-primary hover:bg-ceci-primary-hover text-white py-2.5 rounded-2xl text-xs font-semibold flex items-center justify-center gap-2 shadow-2xs transition-transform active:scale-98 cursor-pointer min-h-[44px]"
+          className="flex-1 bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary py-2.5 rounded-2xl text-xs font-semibold flex items-center justify-center gap-2 shadow-2xs transition-transform active:scale-98 cursor-pointer min-h-[44px]"
         >
           voltar para a biblioteca
         </button>

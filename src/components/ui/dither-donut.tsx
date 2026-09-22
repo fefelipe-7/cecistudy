@@ -9,32 +9,17 @@ import {
   hexToRgba,
   drawRoundedWedge,
   CHART_PASTELS,
-  buildDemoDonutPeriods,
   formatCount,
+  buildDemoDonutPeriods,
   type ChartTheme,
-  type DonutPeriod,
-  type DonutSegment,
 } from '@/lib/ditherChart';
+import {
+  type DonutData,
+  type ChartSeries,
+  type ChartConfig,
+} from '@/lib/charts/dataTypes';
 
-const DEMO_PERIODS = buildDemoDonutPeriods();
-
-export interface DitherDonutChartProps {
-  theme?: ChartTheme;
-  compact?: boolean;
-  className?: string;
-  /** Segmentos (fatias) do donut. Se `periods` for passado, ele manda. */
-  data?: DonutSegment[];
-  /** Períodos com seletor (ex.: semana / mês). */
-  periods?: DonutPeriod[];
-  title?: string;
-  subtitle?: string;
-  icon?: React.ReactNode;
-  /** Rótulo central (padrão: soma). */
-  totalLabel?: string;
-  formatValue?: (n: number) => string;
-}
-
-/** Donut dithered com hover em fatia e lista interativa — canvas + framer-motion. */
+/** Donut dithered com rótulos dentro das fatias, percentages em destaque e separação visual — canvas + framer-motion. */
 export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
   theme = 'light',
   compact = false,
@@ -48,24 +33,33 @@ export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
   formatValue = formatCount,
 }) => {
   const [periodIndex, setPeriodIndex] = useState(0);
-  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const { canvasRef, rect, isVisible, reducedMotion } = useCanvasSetup();
 
   const usingPeriods = periods !== undefined || dataProp === undefined;
-  const activePeriod = (periods ?? DEMO_PERIODS)[periodIndex];
+  const activePeriod = (periods ?? buildDemoDonutPeriods())[periodIndex];
 
-  const segments: DonutSegment[] = useMemo(() => {
+  const segments: ChartSeries[] = useMemo(() => {
     const base = dataProp ?? activePeriod.data;
     return base.map((s, i) => ({
-      ...s,
+      label: s.label,
+      value: s.value,
       color: s.color ?? CHART_PASTELS[i % CHART_PASTELS.length],
     }));
   }, [dataProp, activePeriod]);
 
   const { shares, total } = useMemo(() => {
     const sum = segments.reduce((acc, s) => acc + s.value, 0) || 1;
-    return { shares: segments.map((s) => s.value / sum), total: segments.reduce((acc, s) => acc + s.value, 0) };
+    return {
+      shares: segments.map((s) => s.value / sum),
+      total: segments.reduce((acc, s) => acc + s.value, 0),
+    };
   }, [segments]);
+
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  const hoverRef = useRef(hoverIndex);
+  useEffect(() => {
+    hoverRef.current = hoverIndex;
+  }, [hoverIndex]);
 
   const timeRef = useRef(0);
   const requestRef = useRef<number | undefined>(undefined);
@@ -73,11 +67,6 @@ export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
   const fromSharesRef = useRef<number[]>([]);
   const targetSharesRef = useRef<number[]>([]);
   const dispSharesRef = useRef<number[]>([]);
-
-  const hoverRef = useRef(hoverIndex);
-  useEffect(() => {
-    hoverRef.current = hoverIndex;
-  }, [hoverIndex]);
 
   useEffect(() => {
     if (dispSharesRef.current.length === 0) {
@@ -133,8 +122,9 @@ export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
         dispSharesRef.current[i] = fromSharesRef.current[i] + (targetSharesRef.current[i] - fromSharesRef.current[i]) * e;
       }
 
-      let startAngle = -Math.PI / 2;
+      const center = 100;
       const gap = 0.07;
+      let startAngle = -Math.PI / 2;
       const currentHover = hoverRef.current;
 
       for (let i = 0; i < dispSharesRef.current.length; i++) {
@@ -144,7 +134,6 @@ export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
         const sweep = share * Math.PI * 2;
         const aStart = startAngle + gap / 2;
         let aEnd = startAngle + sweep - gap / 2;
-
         if (aEnd < aStart) aEnd = aStart;
 
         ctx.save();
@@ -157,7 +146,7 @@ export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
         }
 
         ctx.beginPath();
-        drawRoundedWedge(ctx, 100, 100, 55, 86, aStart, aEnd, 6);
+        drawRoundedWedge(ctx, center, center, 55, 86, aStart, aEnd, 6);
         ctx.clip();
 
         ctx.globalAlpha = isHovered ? 1.0 : isAnyHovered ? 0.3 * 0.72 : 0.72;
@@ -170,12 +159,13 @@ export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
           ctx.shadowOffsetY = 0;
         }
 
+        // TEXTURA DITHERED DENTRO DA FATIA
         const cell = 4.6;
         const t2 = timeRef.current;
         for (let x = 14; x <= 186; x += cell) {
           for (let y = 14; y <= 186; y += cell) {
-            const dx = x - 100;
-            const dy = y - 100;
+            const dx = x - center;
+            const dy = y - center;
             const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist < 55 - cell || dist > 86 + cell) continue;
 
@@ -198,7 +188,28 @@ export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
           }
         }
 
-        ctx.restore();
+        // RÓTULO COM PORCENTAGEM DENTRO DA FATIA
+        const midAngle = (aStart + aEnd) / 2;
+        const labelRadius = 68;
+        const labelX = center + labelRadius * Math.cos(midAngle);
+        const labelY = center + labelRadius * Math.sin(midAngle);
+
+        const pct = Math.round(shares[i] * 100);
+
+        if (share > 0.02) {
+          ctx.save();
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.font = 'bold 11px system-ui, sans-serif';
+          ctx.fillStyle = 'white';
+          ctx.shadowColor = 'rgba(0,0,0,0.6)';
+          ctx.shadowBlur = 3;
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 1;
+          ctx.fillText(`${pct}%`, labelX, labelY);
+          ctx.restore();
+        }
+
         startAngle += sweep;
       }
 
@@ -226,28 +237,23 @@ export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
     <div
       className={cn(
         'relative w-full rounded-2xl p-5 border shadow-sm transition-colors',
-        theme === 'dark'
-          ? 'bg-neutral-900 border-neutral-700 text-white'
-          : 'bg-surface-default border-ceci-border-default text-ceci-primary',
+        'bg-surface-default border-ceci-border-default text-ceci-primary',
         className
       )}
     >
-      {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <div
             className={cn(
               'p-2 rounded-xl',
-              theme === 'dark'
-                ? 'bg-white/10 text-white'
-                : 'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand'
+              'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand'
             )}
           >
             {icon}
           </div>
           <div>
             <h4 className="text-sm font-bold">{title}</h4>
-            <p className={cn('text-[11px]', theme === 'dark' ? 'text-neutral-400' : 'text-ceci-secondary')}>{subtitle}</p>
+            <p className="text-[11px] text-ceci-secondary">{subtitle}</p>
           </div>
         </div>
 
@@ -255,10 +261,10 @@ export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
           <div
             className={cn(
               'flex items-center p-1 rounded-full border text-xs font-medium',
-              theme === 'dark' ? 'bg-neutral-800 border-neutral-700' : 'bg-surface-subtle border-ceci-border-default'
+              'bg-surface-subtle border-ceci-border-default'
             )}
           >
-            {(periods ?? DEMO_PERIODS).map((p, idx) => (
+            {(periods ?? buildDemoDonutPeriods()).map((p, idx) => (
               <button
                 key={p.label}
                 onClick={() => {
@@ -268,10 +274,8 @@ export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
                 className={cn(
                   'px-2.5 py-1 rounded-full transition cursor-pointer',
                   periodIndex === idx
-                    ? 'bg-ceci-primary text-white'
-                    : theme === 'dark'
-                      ? 'text-neutral-400 hover:text-white'
-                      : 'text-ceci-secondary hover:text-ceci-primary'
+                    ? 'bg-ceci-primary text-ceci-on-primary'
+                    : 'text-ceci-secondary hover:text-ceci-primary'
                 )}
               >
                 {p.label}
@@ -281,23 +285,21 @@ export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
         )}
       </div>
 
-      {/* Centro: donut + total */}
       <div className="flex flex-col sm:flex-row items-center gap-6">
         <div className="relative w-[180px] h-[180px] shrink-0">
           <canvas ref={canvasRef} className="w-full h-full block" />
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
             <AnimatedNumber
               value={total}
-              className={cn('font-display text-2xl font-bold tracking-tight', theme === 'dark' ? 'text-white' : 'text-ceci-primary')}
+              className={cn('font-display text-2xl font-bold tracking-tight', 'text-ceci-primary')}
               format={formatValue}
             />
-            <span className={cn('text-[10px] mt-0.5', theme === 'dark' ? 'text-neutral-400' : 'text-ceci-secondary')}>
+            <span className="text-[10px] mt-0.5 text-ceci-secondary">
               {totalLabel}
             </span>
           </div>
         </div>
 
-        {/* Lista de segmentos */}
         <div className="flex-1 w-full space-y-2">
           {segments.map((seg, idx) => {
             const pct = Math.round(shares[idx] * 100);
@@ -311,9 +313,7 @@ export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
                 className={cn(
                   'flex items-center justify-between p-2 rounded-xl transition cursor-pointer border',
                   isHovered
-                    ? theme === 'dark'
-                      ? 'bg-white/10 border-white/20'
-                      : 'bg-surface-subtle border-ceci-border-default'
+                    ? 'bg-surface-subtle border-ceci-border-default'
                     : 'border-transparent'
                 )}
               >
@@ -325,18 +325,14 @@ export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
                   <span className="text-xs font-medium truncate">{seg.label}</span>
                 </div>
                 <div className="flex items-center gap-3 text-xs shrink-0">
-                  <AnimatedNumber
-                    value={seg.value}
-                    className={cn('font-semibold tabular-nums', theme === 'dark' ? 'text-neutral-300' : 'text-ceci-primary')}
-                    format={formatValue}
-                  />
+                  <span className="text-[10px] font-medium text-ceci-primary">{pct}%</span>
                   <span
                     className={cn(
                       'text-[10px] w-8 text-right font-mono',
-                      theme === 'dark' ? 'text-neutral-500' : 'text-ceci-muted'
+                      'text-ceci-muted'
                     )}
                   >
-                    {pct}%
+                    {formatValue(seg.value)}
                   </span>
                 </div>
               </div>
@@ -347,3 +343,16 @@ export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
     </div>
   );
 };
+
+export interface DitherDonutChartProps {
+  theme?: ChartTheme;
+  compact?: boolean;
+  className?: string;
+  data?: ChartSeries[];
+  periods?: any[];
+  title?: string;
+  subtitle?: string;
+  icon?: React.ReactNode;
+  totalLabel?: string;
+  formatValue?: (n: number) => string;
+}

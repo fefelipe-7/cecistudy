@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useEffect, useRef } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { App as CapacitorApp } from '@capacitor/app';
-import { AnimatePresence, motion, useMotionValue } from 'framer-motion';
+import { AnimatePresence, motion, useMotionValue, useTransform } from 'framer-motion';
 import { useMobileApp } from '@/context/mobileApp';
 import { useNavValue } from '@/context/shellNavContexts';
 import { setupNativeShell } from '../lib/native';
@@ -15,6 +15,13 @@ import { OnboardingScreen } from '../components/views/OnboardingScreen';
 
 import { SlideScreen } from './SlideScreen';
 import { SlideContent, OverlayContent } from './SharedScreenLayers';
+import { focusController } from '../lib/focusController';
+import {
+  BackExitState,
+  EXIT_BACK_TOAST,
+  initialBackExitState,
+  resolveBackExit,
+} from '../lib/exitBack';
 
 const HeaderNavMemo = memo(HeaderNav);
 const BottomNavMemo = memo(BottomNav);
@@ -28,19 +35,65 @@ export const MobileAppShell: React.FC = () => {
   // Campos de navegação via NavValueContext (identidade estável entre mudanças de
   // dados) — o BottomNavMemo só re-renderiza quando a NAVEGAÇÃO muda de fato.
   const nav = useNavValue();
+  const { activeTab, handleNavigate, openCompose, openWizard, openTaskExamWizard } = nav;
 
   useEffect(() => {
     setupNativeShell();
   }, []);
 
-  // Inicializa plugin de swipe-back nativo (iOS)
+  // Guarda central do back: enquanto a sessão de foco imersiva estiver RODANDO,
+  // volta NÃO navega — emite para a view abrir a confirmação de saída (EST-002).
+  // Vale para Android (backButton), gesto iOS (swipeBackCompleted) e borda web.
+  const handleBackWithFocusGuard = useCallback(() => {
+    if (focusController.isActive() && focusController.isRunning()) {
+      focusController.emitBackRequested();
+      return true;
+    }
+    return app.handleSystemBack();
+  }, [app]);
+
+  // "Voltar duas vezes para sair": na raiz (sem nada para fechar) o 1º back
+  // mostra um toast de aviso; o 2º dentro da janela fecha o app (Android).
+  const backExitRef = useRef<BackExitState>(initialBackExitState());
+  const handleBackAtRoot = useCallback(() => {
+    const { state, action } = resolveBackExit(backExitRef.current, Date.now());
+    backExitRef.current = state;
+    if (action !== 'exit') {
+      app.showToast(EXIT_BACK_TOAST);
+      return;
+    }
+    // iOS não sair por API (App.exitApp é Android-only); só toca o aviso.
+    if (Capacitor.getPlatform() === 'android') {
+      void CapacitorApp.exitApp();
+    }
+  }, [app]);
+
+  // Cadeia de volta única: foco imersivo → pop/modal → raiz (toast → sair).
+  const performBack = useCallback((): boolean => {
+    const handled = handleBackWithFocusGuard();
+    if (handled) {
+      // Qualquer back real (pop de tela/modal) reinicia a contagem do "sair".
+      backExitRef.current = initialBackExitState();
+    } else {
+      handleBackAtRoot();
+    }
+    return handled;
+  }, [handleBackWithFocusGuard, handleBackAtRoot]);
+
+  const focusBackRef = useRef(performBack);
+  focusBackRef.current = performBack;
+
+  // Navegar para outro lugar (tab ou push) reinicia a contagem do "sair".
+  useEffect(() => {
+    backExitRef.current = initialBackExitState();
+  }, [app.canGoBack, activeTab]);
+
+  // Inicializa plugin de swipe-back nativo (iOS) — sempre habilitado
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
-    // Habilita o plugin
     nativeNavigation.enable();
-    // Escuta evento de conclusão do gesto para navegar logicamente
     const handleSwipeBackCompleted = () => {
-      app.handleSystemBack();
+      focusBackRef.current();
     };
     window.addEventListener('swipeBackCompleted', handleSwipeBackCompleted);
     return () => {
@@ -49,26 +102,26 @@ export const MobileAppShell: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Mantém o estado de canGoBack sincronizado com o nativo
+  // Informa ao plugin se existem telas para voltar (apenas informativo).
+  // O gesto permanece ativo na raiz para o double-back-to-exit.
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
     nativeNavigation.setCanGoBack(app.canGoBack);
   }, [app.canGoBack]);
 
-  // Gesto de "voltar pela borda" (iOS): transform da camada de slide acompanha o dedo
+  // Gesto de "voltar pela borda": o `swipeX` é aplicado na própria camada de
+  // slide (abaixo), então a tela de cima acompanha o dedo — no web e no nativo.
   const swipeX = useMotionValue(0);
+  // Sombra de borda revelada sob a tela de cima durante o drag — reforça a
+  // elevação enquanto a tela desliza p/ a direita.
+  const shadowAlpha = useTransform(swipeX, [0, 120], [0, 0.14]);
 
-  // Android back button: fecha modais → pop de telas → sai do app na raiz
-  const appRef = useRef(app);
-  appRef.current = app;
+  // Android back button: foco imersivo → pop de modais/telas → na raiz,
+  // 1º back mostra toast de aviso e o 2º (na janela) fecha o app.
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
     const handler = CapacitorApp.addListener('backButton', () => {
-      const a = appRef.current;
-      const handled = a.handleSystemBack();
-      if (!handled) {
-        void CapacitorApp.exitApp();
-      }
+      focusBackRef.current();
     });
     return () => {
       void handler.then((h) => h.remove());
@@ -80,7 +133,6 @@ export const MobileAppShell: React.FC = () => {
     profile,
     headerConfig,
   } = app;
-  const { activeTab, handleNavigate, openCompose, openWizard, openTaskExamWizard } = nav;
 
   const onNavigateToPerfil = useCallback(() => handleNavigate('perfil'), [handleNavigate]);
 
@@ -97,19 +149,24 @@ export const MobileAppShell: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen text-ceci-primary flex flex-col font-sans antialiased selection:bg-rose-100 selection:text-ceci-brand-strong">
+    <div className="min-h-screen text-ceci-primary flex flex-col font-sans antialiased selection:bg-surface-rose selection:text-ceci-brand-strong">
 
-      {/* Gesto de "voltar pela borda" (iOS): desliza a camada de slide e volta um nível.
-          No desktop o gesto não existe — a shell própria cuida da navegação. */}
-      {!Capacitor.isNativePlatform() && (
-        <EdgeSwipeBack swipeX={swipeX} onBack={app.handleSystemBack} canGoBack={app.canGoBack} />
+      {/* Gesto de "voltar pela borda" (iOS): desliza a camada de slide e volta um nível. */}
+      {Capacitor.isNativePlatform() ? (
+        null // iOS gesto nativo sempre ativo; slide controlado pelo plugin.
+      ) : (
+        <EdgeSwipeBack
+          swipeX={swipeX}
+          onBack={performBack}
+          canGoBack={app.canGoBack}
+        />
       )}
 
       {/* Top Header — entra/sai com fade nos fluxos auxiliares (compose/wizards)
           em vez de desmontar seco; o sticky é preservado pois o motion está no
-          próprio elemento header. */}
+          próprio elemento header. Some também na sessão de foco imersiva. */}
       <AnimatePresence initial={false}>
-        {!isAuxFlow && (
+        {!isAuxFlow && !app.isFocusImmersiveOpen && (
           <HeaderNavMemo
             key="header"
             profile={profile}
@@ -123,16 +180,29 @@ export const MobileAppShell: React.FC = () => {
 
       {/* Main Screen Content (Mobile First App Frame Container) */}
       <main
-        className={`flex-1 max-w-md sm:max-w-xl lg:max-w-3xl xl:max-w-4xl w-full mx-auto px-3.5 py-4 sm:px-5 lg:px-8 relative transition-[padding] duration-[220ms] ease-out ${
-          app.hasTabBase
+        className={`flex-1 max-w-md sm:max-w-xl lg:max-w-3xl xl:max-w-4xl w-full mx-auto px-3.5 py-4 sm:px-5 lg:px-8 relative ${
+          app.isBottomNavVisible
             ? 'pb-[calc(5rem+env(safe-area-inset-bottom,0px))] lg:pb-10'
             : 'pb-6'
         }`}
       >
+        {/* === Camada 0 (só web): sombra de elevação durante o gesto de voltar ===
+            O swipeX é aplicado na camada 1, então a tela de cima segue o dedo;
+            esta sombra na borda reforça a elevação da área revelada. */}
+        {!Capacitor.isNativePlatform() && (
+          <motion.div
+            aria-hidden
+            style={{ opacity: shadowAlpha }}
+            className="pointer-events-none fixed inset-y-0 left-0 z-[5] w-4 bg-gradient-to-r from-ceci-primary/15 to-transparent"
+          />
+        )}
         {/* === Camada 1: slide horizontal (base + auxiliares de 1º nível) ===
             A tela que sai congela onde está (SlideScreen vira fixed) e esvanece
             por baixo — o reset de scroll do handler não a arrasta mais. */}
-        <motion.div style={{ x: swipeX }}>
+        <motion.div
+          style={{ x: swipeX }}
+          className="relative z-10"
+        >
           <AnimatePresence initial={false} custom={app.navDirection}>
             <SlideScreen key={app.slideKey} direction={app.navDirection}>
               <SlideContent />
@@ -183,7 +253,7 @@ export const MobileAppShell: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Modais/toasts globais (compartilhados com a shell desktop) */}
+      {/* Modais/toasts globais */}
 
 
     </div>

@@ -275,7 +275,7 @@ const db: ManagedDB = useMemo(
       <Modal open onClose={reset} position="bottom" className="max-w-md">
         <div className="rounded-t-3xl sm:rounded-3xl bg-surface-default px-5 pt-2 pb-6 shadow-floating">
           <div className="flex items-center gap-3 mt-1 mb-4">
-            <span className="w-10 h-10 rounded-2xl bg-surface-rose text-red-700 flex items-center justify-center">
+            <span className="w-10 h-10 rounded-2xl bg-surface-rose text-status-danger-strong flex items-center justify-center">
               <Trash2 className="w-5 h-5" />
             </span>
             <div className="min-w-0">
@@ -309,7 +309,7 @@ const db: ManagedDB = useMemo(
             </button>
             <button
               onClick={() => deleteManagedItem(itemContext.kind, itemContext.id)}
-              className="flex-1 py-3.5 rounded-2xl bg-red-700 text-white text-sm font-semibold active:scale-[0.98] transition cursor-pointer"
+              className="flex-1 py-3.5 rounded-2xl bg-status-danger text-status-danger-on text-sm font-semibold active:scale-[0.98] transition cursor-pointer"
             >
               sim, excluir ♡
             </button>
@@ -334,7 +334,7 @@ const db: ManagedDB = useMemo(
           isRecommended
             ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
             : action.tone === 'danger'
-              ? 'border-ceci-border-default bg-surface-default text-red-700'
+              ? 'border-ceci-border-default bg-surface-default text-status-danger-strong'
               : 'border-ceci-border-default bg-surface-default text-ceci-primary'
         )}
       >
@@ -344,7 +344,7 @@ const db: ManagedDB = useMemo(
             isRecommended
               ? 'bg-surface-default text-ceci-brand-strong border border-ceci-border-brand'
               : action.tone === 'danger'
-                ? 'bg-surface-rose text-red-700'
+                ? 'bg-surface-rose text-status-danger-strong'
                 : 'bg-surface-blue text-ceci-academic-strong'
           )}
         >
@@ -402,7 +402,7 @@ const db: ManagedDB = useMemo(
           <div className="mt-4 pt-4 border-t border-ceci-border-subtle">
             <button
               onClick={() => setPhase('confirm-delete')}
-              className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-red-700 active:scale-[0.98] transition cursor-pointer hover:bg-surface-rose"
+              className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-status-danger-strong active:scale-[0.98] transition cursor-pointer hover:bg-surface-rose"
             >
               <Trash2 className="w-4 h-4 shrink-0" />
               excluir {kindLabel}

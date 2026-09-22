@@ -1,8 +1,10 @@
 # Análise Arquitetural — desktop Flutter + Rust
 
-> Análise do `plano-desktop-flutter-rust.md` contra o estado atual do código.
+> Análise do `cecistudy-rust/plano-desktop-flutter-rust.md` contra o estado atual do código.
 > Objetivo: dar base de decisão para um plano de implementação real.
 > Geração: 2026-09-09 · Skill: greenfield-architecture-planner · Estado do código verificado no workspace.
+> **Nota (2026-09):** a análise abaixo documenta o estado da época (Tauri/React legado ainda presente);
+> o legado foi removido desde então — o plano e a implementação seguem em `cecistudy-rust/`.
 
 ---
 
@@ -22,7 +24,7 @@ O plano abandona Tauri+React no desktop em favor de **Flutter (apresentação) +
 
 | Input | O que é |
 |---|---|
-| `plano-desktop-flutter-rust.md` | Spec alvo (181 linhas) — escopo, fronteiras, crates, fases 0–7, riscos, decisões em aberto |
+| `cecistudy-rust/plano-desktop-flutter-rust.md` | Spec alvo (181 linhas) — escopo, fronteiras, crates, fases 0–7, riscos, decisões em aberto |
 | `packages/domain/src/core/domain/*` | calendar, capabilities, knowledge, marketing, projects, workspace, common, ids + `__tests__/invariants.test.ts` |
 | `packages/domain/src/core/ports/*` | repositories, integrations, sync, blobs |
 | `packages/data/src/*` | schema (v13, 12 migrações), backupSchema (Zod), exportImport (BackupV2), persistentData, dataClient |

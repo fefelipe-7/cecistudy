@@ -107,8 +107,8 @@ export const CourseCreateMenu: React.FC<CourseCreateMenuProps> = ({
         transition={{ duration: 0.25, ease: 'easeInOut' }}
         className={
           variant === 'floating'
-            ? 'w-12 h-12 rounded-full bg-ceci-brand-strong text-white shadow-brand flex items-center justify-center tap-interactive active:scale-95 cursor-pointer border border-ceci-border-brand/40'
-            : 'flex items-center gap-1.5 pl-2.5 pr-3 py-1.5 rounded-full bg-ceci-brand-strong text-white shadow-xs cursor-pointer active:scale-95'
+            ? 'w-12 h-12 rounded-full bg-ceci-brand-strong text-ceci-on-brand shadow-brand flex items-center justify-center tap-interactive active:scale-95 cursor-pointer border border-ceci-border-brand/40'
+            : 'flex items-center gap-1.5 pl-2.5 pr-3 py-1.5 rounded-full bg-ceci-brand-strong text-ceci-on-brand shadow-xs cursor-pointer active:scale-95'
         }
       >
         <Plus className={variant === 'floating' ? 'w-5 h-5' : 'w-3.5 h-3.5'} />

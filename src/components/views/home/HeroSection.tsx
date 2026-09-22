@@ -20,7 +20,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
     <div className="flex items-start justify-between gap-3">
       <div className="min-w-0">
         <div className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-ceci-brand animate-pulse" />
           <p className="text-xs font-medium text-ceci-secondary lowercase">{formattedDate}</p>
         </div>
         <h1 className="font-serif-academic text-3xl sm:text-4xl text-ceci-primary mt-1 tracking-tight">

@@ -20,7 +20,7 @@
 
 > Sem dependências mortas: `@google/genai`, `express`, `dotenv` e `@types/express` foram
 > removidos (backend Gemini/AI Studio descartado). `package.json` usa `"name": "cecistudy"`.
-> Builds nativos: pipelines independentes — `.github/workflows/release.yml` (mobile: APK + IPA + OTA/Pages) e `.github/workflows/release-desktop.yml` (Tauri: msi/dmg/AppImage/deb). Gate de PR em `.github/workflows/ci.yml` (lint + test + boundary).
+> Builds nativos: `.github/workflows/release.yml` (mobile: APK + IPA + OTA/Pages). Gate de PR em `.github/workflows/ci.yml` (lint + test + boundary).
 
 ## 2. Hierarquia de componentes
 
@@ -197,6 +197,13 @@ O cecistudy é **dois produtos em uma base de código**:
 - `android/` e `ios/` são **commitados** (projetos gerados por `cap add`), exceto
   artefatos de build (`android/app/build/`, `ios/App/App/public/`, `*.jks`).
 
+#### Limitação do tema × chrome estático (TEM-001 C.3)
+O splash (`BootSplash:111`) e o `backgroundColor` do `capacitor.config.ts` são **estáticos
+de marca** — não mudam com o tema (é o logo carregando, antes do JS). O tema é aplicado em
+**runtime**: `meta[name=theme-color]` (web/PWA) e status bar nativa (`src/lib/themeChrome.ts`,
+estilo+cor conforme tema) sem rebuild; trocar o splash/background por tema exigiria build
+nativo (novo IPA/APK).
+
 ### OTA self-hosted (web bundle)
 Atualizações **over-the-air** do bundle web sem novo `.ipa`/`.apk`:
 - **Publicação:** o pipeline único `.github/workflows/release.yml` (push na main,
@@ -231,7 +238,7 @@ npm run cap:assets     → regenera ícones/splash a partir de assets/*.svg
 - Notificação Android usa `ic_stat_cecistudy.png` (drawable).
 
 ### Builds (CI)
-`.github/workflows/release.yml` (mobile) + `.github/workflows/release-desktop.yml` (desktop) — pipelines independentes de release (push na main, tag `v*` ou dispatch manual):
+`.github/workflows/release.yml` (mobile) — pipeline único de release (push na main, tag `v*` ou dispatch manual):
 - **prepare:** lint + testes + build web → zip do bundle OTA (sha256) + `dist/`.
 - **Android:** ubuntu + JDK 21 + Android SDK → `assembleRelease` assinado (keystore via
   secrets `ANDROID_KEYSTORE*`) ou `assembleDebug` sem keystore → APK no release.
@@ -244,53 +251,35 @@ npm run cap:assets     → regenera ícones/splash a partir de assets/*.svg
 > Os builds nativos rodam no CI; para gerar APK/IPA **instaláveis** (assinados) é preciso
 > configurar keystore (Android) e signing/provisioning (iOS) — ver `backlog.md`.
 
-## 6.1 Desktop Tauri — **legado** (migrando para Flutter+Rust)
+## 6.1 Desktop Tauri — **legado removido** (migrando para Flutter+Rust)
 
-> ⚠️ **Este é o desktop legado.** O novo desktop é **Flutter (UI) + Rust (domínio/dados/sync)**
-> — ver seção 6.2 abaixo. O shell Tauri continua vivo até a migração completar,
-> mas **não recebe features novas**.
-
-Terceira casca sobre o **mesmo bundle web** (`dist/` da raiz):
-
-- **Estrutura:** `desktop/src-tauri` (Rust: `main.rs`/`lib.rs` + plugins
-  `notification`, `updater`, `process`) · `desktop/package.json` com a CLI do Tauri
-  isolada (scripts `dev`/`build` só ali). Nenhuma dependência Tauri entra na raiz.
-- **Config:** `tauri.conf.json` com `frontendDist: "../../dist"`,
-  `devUrl: http://localhost:3000` (HMR usa o dev server da raiz),
-  `withGlobalTauri: true`, janela 1180×780 (min 420×720), identifier `ceci.study.desktop`.
-- **Detecção:** `isDesktop` em `src/lib/platform.ts` (`window.__TAURI_INTERNALS__`);
-  ponte de recursos via `window.__TAURI__` (`src/lib/desktop.ts`: notificações,
-  updater, relaunch) — sem pacotes npm novos.
-- **Lembrete diário:** no desktop é **timer JS** (`src/lib/notifications.ts`) —
-  dispara no horário de `reminderSettings` com o app aberto; no nativo continua o
-  plugin Capacitor.
-- **Auto-update:** tauri-plugin-updater apontando para
-  `releases/latest/download/latest.json`; chaves minisign em `desktop/keyring/`
-  (pública commitada no config; privada fora do git → secret
-  `TAURI_SIGNING_PRIVATE_KEY`). Manifest montado por
-  `.github/scripts/desktop-update-manifest.mjs`. UI: branch desktop do card
-  "atualização do app" no Perfil.
-- **CI:** gate de PR em `.github/workflows/ci.yml` (lint+test+boundary); `.github/workflows/release-desktop.yml` builda o app desktop (matrix windows/macos/ubuntu) e anexa
-  `.msi`/`.dmg`/`.AppImage`/`.deb` ao mesmo Release.
-- **Layout ≥ lg:** sidebar fixa à esquerda (`src/components/DesktopSidebar.tsx`)
-  substitui BottomNav/FAB; container alarga (`lg:max-w-3xl xl:max-w-4xl`). Abaixo
-  de `lg:` tudo idêntico ao mobile/web.
+> ⚠️ **O desktop legado (Tauri 2, React) foi **removido** (2026-09).** `desktop/`, `apps/desktop/`
+> e `src/desktop/` **não existem mais**; scripts `dev:desktop`, `.github/workflows/release-desktop.yml`,
+> `.github/scripts/desktop-update-manifest.mjs` e `src/lib/platform.ts` foram removidos. O desktop
+> novo é **Flutter (UI) + Rust (domínio/dados/sync)** — ver seção 6.2.
+> Arquivos de planejamento do legado foram arquivados em `docs/archive/desktop-files/`,
+> `docs/archive/desktop-context/` e `docs/archive/specs/`.
 
 ## 6.2 Desktop novo (Flutter + Rust)
 
-> **Status (2026-09-11): núcleo Rust em Fase 1 (20/23)** — workspace em `cecistudy-rust/`
+> **Status (2026-09-12): núcleo Rust em Fase 1 (21/23)** — workspace em `cecistudy-rust/`
 > com crates `common/domain/data/content/sync/app` e gate verde
-> (`cargo clippy -D warnings` + `cargo fmt --check` + 116 testes). UI Flutter ainda não iniciada.
+> (`cargo clippy -D warnings` + `cargo fmt --check` + **162 testes**). UI Flutter ainda não iniciada.
+> Módulos de domínio `calendar/knowledge/marketing/projects/internship` **portados** (R2, spec-first);
+> faltam a paridade full, a remoção do `data_json` exposto (R4) e `cecistudy-ffi`
+> (ver `cecistudy-rust/spec/01-task-breakdown-flutter-rust.md`).
 
-- **Plano:** `plano-desktop-flutter-rust.md` (spec macro) → `desktop/spec/01-task-breakdown-flutter-rust.md`
-  (fonte de verdade de status, com reconciliação de numeramento) → `desktop/spec/PLANO-CONSOLIDADO-FLUTTER-RUST.md`
+- **Plano:** `cecistudy-rust/plano-desktop-flutter-rust.md` (spec macro) →
+  `cecistudy-rust/spec/01-task-breakdown-flutter-rust.md`
+  (fonte de verdade de status, com reconciliação de numeramento) →
+  `cecistudy-rust/spec/PLANO-CONSOLIDADO-FLUTTER-RUST.md`
   (consulta de planejamento). Regras do workspace em `cecistudy-rust/AGENTS.md`.
 - **Contrato cross-língua:** `cecistudy-rust/contracts/` (schema.sql canônico, backup-v2-spec,
   golden files canonical JSON v1, verify-schema.mjs).
 - **Gate:** o workspace Rust tem gate próprio via `cargo` (`clippy -D warnings` + `fmt --check` +
   `cargo test`); não passa pelo `eslint`/`tsc` da raiz.
-- **Próximos passos:** portar módulos de domínio que faltam (`calendar/knowledge/marketing/
-  projects/internship`) → `cecistudy-ffi` (flutter_rust_bridge) → Fases 2+ (UI Flutter).
+- **Próximos passos:** paridade full (1.22) → remover o `data_json` exposto no `cecistudy-data` (R4) →
+  `cecistudy-ffi` (bridge flutter_rust_bridge) → Fases 2+ (UI Flutter).
 
 ## 7. Pontos de atenção arquitetural (resumo)
 

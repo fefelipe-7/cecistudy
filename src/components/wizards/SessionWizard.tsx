@@ -1,25 +1,34 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Timer } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import type { ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
+import { useWizardForm } from '../../lib/useWizardForm';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import { FieldHint, FieldLabel, ReviewCard, TextInput } from './wizardFields';
-import { Picker } from '../ui/Picker';
+import { CourseSelect } from './CourseSelect';
+import { today } from './note/constants';
 
-const today = () => new Date().toISOString().split('T')[0];
+interface SessionValues {
+  topic: string;
+  minutes: string;
+  courseId: string;
+}
 
 export const SessionWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
   const { courses, sessions, wizardCourseId, handleAddSession, handleUpdateSession, closeWizard, showToast } = useMobileApp();
   const editingSession = editing?.kind === 'session'
     ? sessions.find((s) => s.id === editing.id)
     : undefined;
-  const [step, setStep] = useState(0);
-  const [topic, setTopic] = useState(editingSession?.topic ?? '');
-  const [minutes, setMinutes] = useState(String(editingSession?.durationMinutes ?? '25'));
-  const [courseId, setCourseId] = useState(
-    editingSession?.courseId ?? (wizardCourseId || courses[0]?.id || '')
-  );
+  const { values, patch, step, setStep } = useWizardForm<SessionValues>({
+    initial: {
+      topic: editingSession?.topic ?? '',
+      minutes: String(editingSession?.durationMinutes ?? '25'),
+      courseId: editingSession?.courseId ?? (wizardCourseId || courses[0]?.id || ''),
+    },
+    editing: !!editingSession,
+  });
+  const { topic, minutes, courseId } = values;
 
   const courseName = courses.find((c) => c.id === courseId)?.name ?? '';
 
@@ -32,7 +41,7 @@ export const SessionWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       content: (
         <TextInput
           value={topic}
-          onChange={(e) => setTopic(e.target.value)}
+          onChange={(e) => patch({ topic: e.target.value })}
           placeholder="ex: revisar semiologia dos transtornos do humor"
           autoFocus
         />
@@ -49,7 +58,7 @@ export const SessionWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
           <TextInput
             type="number"
             value={minutes}
-            onChange={(e) => setMinutes(e.target.value)}
+            onChange={(e) => patch({ minutes: e.target.value })}
             placeholder="ex: 25"
           />
           <FieldHint>25 minutos é um bom começo — você ajusta sempre que quiser.</FieldHint>
@@ -62,11 +71,11 @@ export const SessionWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       headline: 'quer conectar a uma disciplina?',
       subtitle: 'opcional — ajuda a separar o foco por matéria no seu histórico ♡',
       content: (
-        <Picker
+        <CourseSelect
           value={courseId}
-          onChange={setCourseId}
-          options={courses.map((c) => ({ value: c.id, label: c.name }))}
-          emptyMessage="ainda não há disciplinas cadastradas."
+          onChange={(v) => patch({ courseId: v })}
+          label="disciplina (opcional)"
+          optional
         />
       ),
     },

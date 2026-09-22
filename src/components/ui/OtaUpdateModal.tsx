@@ -39,7 +39,7 @@ export const OtaUpdateModal: React.FC = () => {
       <div className="space-y-2 pt-1">
         <button
           onClick={() => void applyNow()}
-          className="w-full bg-ceci-primary hover:bg-ceci-primary-hover text-white py-2.5 rounded-2xl text-xs font-bold cursor-pointer transition-colors"
+          className="w-full bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary py-2.5 rounded-2xl text-xs font-bold cursor-pointer transition-colors"
         >
           aplicar agora
         </button>

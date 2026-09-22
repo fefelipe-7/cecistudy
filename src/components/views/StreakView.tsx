@@ -4,6 +4,7 @@ import { Flame, Trophy, CalendarDays, CheckCircle2 } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import { AnimatedNumber } from '../ui/AnimatedNumber';
 import { Mascote } from '../ui/Mascote';
+import { iOS_SPRING } from '../../lib/motion';
 import { addDays, getRecentWeeks, toDateKey } from '../../lib/streak';
 
 const fmtShort = (key: string): string => {
@@ -37,7 +38,7 @@ export const StreakView: React.FC = () => {
           className="flex items-center justify-center"
         >
           <span className="w-16 h-16 rounded-full bg-surface-default border border-ceci-border-brand flex items-center justify-center shadow-sm">
-            <Flame className={`w-9 h-9 ${streakStats.alive ? 'fill-rose-500 text-rose-500' : 'text-ceci-muted'}`} />
+            <Flame className={`w-9 h-9 ${streakStats.alive ? 'fill-ceci-brand text-ceci-brand-strong' : 'text-ceci-muted'}`} />
           </span>
         </motion.div>
 
@@ -77,7 +78,7 @@ export const StreakView: React.FC = () => {
         {todayPending && (
           <button
             onClick={() => handleNavigate('estudos', 'sessoes')}
-            className="w-full bg-ceci-primary hover:bg-ceci-primary-hover text-white py-2.5 rounded-2xl text-xs font-bold cursor-pointer transition-colors"
+            className="w-full bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary py-2.5 rounded-2xl text-xs font-bold cursor-pointer transition-colors"
           >
             bora estudar?
           </button>
@@ -121,23 +122,23 @@ export const StreakView: React.FC = () => {
             <motion.div
               key={item.dateKey}
               whileTap={{ scale: 0.95 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+              transition={iOS_SPRING}
               className={`p-2 rounded-[18px] border text-center flex flex-col items-center justify-between ${
                 item.status === 'done'
                   ? 'bg-surface-rose border-ceci-border-brand text-ceci-primary'
                   : item.status === 'today'
-                    ? 'bg-white border-rose-500 shadow-2xs'
+                    ? 'bg-surface-default border-ceci-brand shadow-2xs'
                     : 'bg-surface-muted border-ceci-border-subtle text-ceci-secondary'
               }`}
             >
               <span className="text-[10px] font-medium lowercase text-ceci-secondary">{item.label}</span>
               <div className="my-1">
                 {item.status === 'done' ? (
-                  <span className="w-6 h-6 rounded-full bg-rose-500 text-white font-bold text-[10px] flex items-center justify-center shadow-2xs">
+                  <span className="w-6 h-6 rounded-full bg-ceci-brand-strong text-ceci-on-brand font-bold text-[10px] flex items-center justify-center shadow-2xs">
                     ✓
                   </span>
                 ) : item.status === 'today' ? (
-                  <span className="w-6 h-6 rounded-full bg-rose-500 text-white font-bold text-[10px] flex items-center justify-center">
+                  <span className="w-6 h-6 rounded-full bg-ceci-brand-strong text-ceci-on-brand font-bold text-[10px] flex items-center justify-center">
                     ✨
                   </span>
                 ) : (
@@ -169,7 +170,7 @@ export const StreakView: React.FC = () => {
                     title={d.active ? `${d.label} ativo` : d.label}
                     className={`flex-1 h-7 rounded-lg ${
                       d.active
-                        ? 'bg-rose-500 shadow-2xs'
+                        ? 'bg-ceci-brand shadow-2xs'
                         : 'bg-surface-muted border border-ceci-border-subtle'
                     }`}
                   />

@@ -24,7 +24,7 @@ export const StudyStatsWidget: React.FC = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-surface-rose flex items-center justify-center">
-            <Flame className={`w-4 h-4 ${streakStats.alive ? 'fill-rose-500 text-rose-500' : 'text-ceci-muted'}`} />
+            <Flame className={`w-4 h-4 ${streakStats.alive ? 'fill-ceci-brand text-ceci-brand-strong' : 'text-ceci-muted'}`} />
           </div>
           <div>
             <h4 className="font-display font-bold text-sm text-ceci-primary">
@@ -75,18 +75,18 @@ export const StudyStatsWidget: React.FC = () => {
               item.status === 'done'
                 ? 'bg-surface-rose border-ceci-border-brand'
                 : item.status === 'today'
-                  ? 'bg-white border-rose-500 shadow-2xs'
+                  ? 'bg-surface-default border-ceci-brand shadow-2xs'
                   : 'bg-surface-muted border-ceci-border-subtle'
             }`}
           >
             <span className="text-[9px] font-medium lowercase text-ceci-secondary">{item.label}</span>
             <div className="my-1">
               {item.status === 'done' ? (
-                <span className="w-5 h-5 rounded-full bg-rose-500 text-white font-bold text-[9px] flex items-center justify-center shadow-2xs">
+                <span className="w-5 h-5 rounded-full bg-ceci-brand-strong text-ceci-on-brand font-bold text-[9px] flex items-center justify-center shadow-2xs">
                   ✓
                 </span>
               ) : item.status === 'today' ? (
-                <span className="w-5 h-5 rounded-full bg-rose-500 text-white font-bold text-[9px] flex items-center justify-center">
+                <span className="w-5 h-5 rounded-full bg-ceci-brand-strong text-ceci-on-brand font-bold text-[9px] flex items-center justify-center">
                   ✨
                 </span>
               ) : (

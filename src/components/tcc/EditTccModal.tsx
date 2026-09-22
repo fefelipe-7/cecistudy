@@ -12,7 +12,7 @@ interface EditTccModalProps {
 }
 
 const inputClass =
-  'w-full bg-surface-default border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500';
+  'w-full bg-surface-default border border-ceci-border-default rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 focus:border-ceci-brand';
 const labelClass = 'block text-xs font-medium text-ceci-secondary mb-1';
 
 const STATUS_OPTIONS: { value: TccData['status']; label: string }[] = [
@@ -144,7 +144,7 @@ export const EditTccModal: React.FC<EditTccModalProps> = ({ isOpen, tcc, onClose
                   <button
                     type="button"
                     onClick={() => setObjectives(objectives.filter((_, i) => i !== idx))}
-                    className="w-9 h-9 rounded-xl border border-ceci-border-default text-ceci-tertiary hover:text-red-700 hover:border-red-400 flex items-center justify-center shrink-0 cursor-pointer transition-colors"
+                    className="w-9 h-9 rounded-xl border border-ceci-border-default text-ceci-tertiary hover:text-status-danger-strong hover:border-status-danger flex items-center justify-center shrink-0 cursor-pointer transition-colors"
                     aria-label="remover objetivo"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -178,7 +178,7 @@ export const EditTccModal: React.FC<EditTccModalProps> = ({ isOpen, tcc, onClose
                     <button
                       type="button"
                       onClick={() => setChapters(chapters.filter((_, i) => i !== idx))}
-                      className="w-9 h-9 rounded-xl border border-ceci-border-default text-ceci-tertiary hover:text-red-700 hover:border-red-400 flex items-center justify-center shrink-0 cursor-pointer transition-colors"
+                      className="w-9 h-9 rounded-xl border border-ceci-border-default text-ceci-tertiary hover:text-status-danger-strong hover:border-status-danger flex items-center justify-center shrink-0 cursor-pointer transition-colors"
                       aria-label="remover capítulo"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -190,7 +190,7 @@ export const EditTccModal: React.FC<EditTccModalProps> = ({ isOpen, tcc, onClose
                         type="checkbox"
                         checked={ch.completed}
                         onChange={(e) => setChapters(updateAt(chapters, idx, { ...ch, completed: e.target.checked }))}
-                        className="accent-rose-500 w-4 h-4"
+                        className="accent-ceci-brand w-4 h-4"
                       />
                       capítulo pronto
                     </label>
@@ -198,7 +198,7 @@ export const EditTccModal: React.FC<EditTccModalProps> = ({ isOpen, tcc, onClose
                       type="date"
                       value={ch.dueDate ?? ''}
                       onChange={(e) => setChapters(updateAt(chapters, idx, { ...ch, dueDate: e.target.value || undefined }))}
-                      className="flex-1 bg-surface-default border border-ceci-border-default rounded-xl px-3 py-1.5 text-xs text-ceci-secondary focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500"
+                      className="flex-1 bg-surface-default border border-ceci-border-default rounded-xl px-3 py-1.5 text-xs text-ceci-secondary focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 focus:border-ceci-brand"
                     />
                   </div>
                 </div>
@@ -229,7 +229,7 @@ export const EditTccModal: React.FC<EditTccModalProps> = ({ isOpen, tcc, onClose
                   <button
                     type="button"
                     onClick={() => setReferences(references.filter((_, i) => i !== idx))}
-                    className="w-9 h-9 rounded-xl border border-ceci-border-default text-ceci-tertiary hover:text-red-700 hover:border-red-400 flex items-center justify-center shrink-0 cursor-pointer transition-colors"
+                    className="w-9 h-9 rounded-xl border border-ceci-border-default text-ceci-tertiary hover:text-status-danger-strong hover:border-status-danger flex items-center justify-center shrink-0 cursor-pointer transition-colors"
                     aria-label="remover referência"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -256,7 +256,7 @@ export const EditTccModal: React.FC<EditTccModalProps> = ({ isOpen, tcc, onClose
             </button>
             <button
               type="submit"
-              className="bg-rose-500 hover:bg-ceci-brand-strong text-white px-5 py-2.5 rounded-[14px] text-xs font-medium shadow-2xs transition-transform active:scale-95 min-h-[48px] cursor-pointer"
+              className="bg-ceci-brand hover:bg-ceci-brand-strong text-ceci-on-brand px-5 py-2.5 rounded-[14px] text-xs font-medium shadow-2xs transition-transform active:scale-95 min-h-[48px] cursor-pointer"
             >
               guardar tcc ♡
             </button>

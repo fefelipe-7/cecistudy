@@ -43,6 +43,17 @@ export interface Course {
   officeHours?: string;
   /** Frequência registrada (ex.: presenças totais). */
   attendance?: { attended: number; total: number };
+  /**
+   * Vínculos explícitos de repertório (SPEC-001): conceitos-chave, autores
+   * fundamentais e bibliografia recomendada da disciplina. Opcionais — o
+   * caminho legado (concept.courseIds, reading.courseId, autores transitivos)
+   * continua valendo na renderização (união). Prefixos: `con-`/`aut-`
+   * (banco pessoal), `r-`/`m-` (leituras/materiais pessoais) e
+   * `cat-`/`inter-`/`art-` (catálogo estático).
+   */
+  conceptIds?: string[];
+  authorIds?: string[];
+  bibliographyIds?: string[];
 }
 
 export interface ClassNote {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { NavScreen } from '../../types';
+import type { ClassNote, NavScreen } from '../../types';
 import { buildHeaderConfig, type HeaderConfigInput } from '../headerConfig';
 
 const baseInput: HeaderConfigInput = {
@@ -7,6 +7,7 @@ const baseInput: HeaderConfigInput = {
   focusedFamily: null,
   focusedApproach: null,
   focusedCourse: undefined,
+  focusedClassNote: undefined,
   bookmarkedCourseIds: [],
   tccTitle: '',
   questionsCount: 10,
@@ -21,6 +22,7 @@ const baseInput: HeaderConfigInput = {
   openEditTcc: () => undefined,
   toggleBookmarkCourse: () => undefined,
   setIsCreatingLooseNote: () => undefined,
+  editManagedItem: () => undefined,
 };
 
 describe('buildHeaderConfig', () => {
@@ -68,5 +70,23 @@ describe('buildHeaderConfig', () => {
     });
     expect(cfg?.isBookmarked).toBe(true);
     expect(cfg?.actions?.length).toBe(3);
+  });
+
+  it('aula expõe header detail com título, curso e ação de editar', () => {
+    const cfg = buildHeaderConfig({
+      ...baseInput,
+      currentScreen: { kind: 'classNote', classNoteId: 'cl-1', courseId: 'c1' } as NavScreen,
+      focusedClassNote: {
+        id: 'cl-1', courseId: 'c1', title: 'psicanálise em clips', number: 3,
+        date: '2026-09-21', summary: 'resumo breve',
+      } as ClassNote,
+      focusedCourse: {
+        id: 'c1', name: 'teorias clínicas', code: 'PSI-200', professor: 'Prof. Ana',
+        semester: '6º Semestre', schedule: [], icon: 'Brain', color: '#D85F79',
+      } as HeaderConfigInput['focusedCourse'],
+    });
+    expect(cfg?.title).toBe('aula 3 • psicanálise em clips');
+    expect(cfg?.subtitle).toContain('teorias clínicas');
+    expect(cfg?.actions?.[0]?.label).toBe('editar aula');
   });
 });

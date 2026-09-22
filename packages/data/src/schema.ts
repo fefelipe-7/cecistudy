@@ -7,7 +7,7 @@ import { parseLegacySchedule } from '@/lib/schedule';
  * incremente esta versão e registre a migração correspondente em `MIGRATIONS`.
  * O export/import carrega a versão junto; o app recusa/avisa dados de versão desconhecida.
  */
-export const SCHEMA_VERSION = 13;
+export const SCHEMA_VERSION = 14;
 
 /** Versão de schema da base da usuária (antigo scaffold SQLite, hoje mantida por compatibilidade de import). */
 export const USER_SCHEMA_VERSION = 1;
@@ -159,6 +159,19 @@ export const MIGRATIONS: Record<number, Migration> = {
     }
     delete next.internshipLogsLegacy;
     return next;
+  },
+  // 13 → 14: vínculos explícitos de repertório da disciplina (SPEC-001).
+  // `Course` ganha `conceptIds`/`authorIds`/`bibliographyIds` (opcionais).
+  // Backups antigos sem os campos recebem `[]` (default vazio).
+  14: (data) => {
+    const courses = (data.courses ?? []) as Record<string, unknown>[];
+    const normalized = courses.map((c) => ({
+      ...c,
+      conceptIds: (c.conceptIds as string[] | undefined) ?? [],
+      authorIds: (c.authorIds as string[] | undefined) ?? [],
+      bibliographyIds: (c.bibliographyIds as string[] | undefined) ?? [],
+    }));
+    return { ...data, courses: normalized };
   },
 };
 

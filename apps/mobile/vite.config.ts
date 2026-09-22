@@ -7,8 +7,7 @@ import { defineConfig } from 'vite';
  * Build próprio do cliente mobile (Fase 5 da separação interface).
  *
  * Reusa o código compartilhado em `src/` via alias `@` → raiz `src`, e os
- * pacotes canônicos em `packages/*`. A casca desktop e seu diretório não são
- * importados por este workspace (verificado por `.github/scripts/check-boundaries.mjs`).
+ * pacotes canônicos em `packages/*` (verificado por `.github/scripts/check-boundaries.mjs`).
  *
  * `root` é este diretório (`apps/mobile`): o entrypoint é `index.html` aqui,
  * e o bundle sai em `apps/mobile/dist`. O build da raiz (`npm run build`) segue

@@ -67,6 +67,9 @@ import {
 } from '../lib/sync/engine';
 import type { SyncManifest } from '../lib/sync/provider';
 import { getUserDb, clearUserData } from '../lib/db/userDb';
+import type { ThemeId } from '../lib/themes';
+import { DEFAULT_THEME_ID, applyTheme, getThemeById } from '../lib/themes';
+import { applyThemeColorChrome } from '../lib/themeChrome';
 
 export interface ReminderSettings {
   enabled: boolean;
@@ -164,6 +167,8 @@ export interface DataClientAppSlice {
   setGcalEnabledState: React.Dispatch<React.SetStateAction<boolean>>;
   gcalMap: Record<string, string>;
   setGcalMap: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  themePref: ThemeId;
+  setThemePref: React.Dispatch<React.SetStateAction<ThemeId>>;
   onboarding: import('../types').OnboardingState;
   setOnboarding: React.Dispatch<React.SetStateAction<import('../types').OnboardingState>>;
   workspaces: Workspace[];
@@ -295,6 +300,8 @@ questions: StudyQuestion[];
     setGcalEnabledState: React.Dispatch<React.SetStateAction<boolean>>;
     gcalMap: Record<string, string>;
     setGcalMap: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+    themePref: ThemeId;
+    setThemePref: React.Dispatch<React.SetStateAction<ThemeId>>;
     onboarding: import('../types').OnboardingState;
     setOnboarding: React.Dispatch<React.SetStateAction<import('../types').OnboardingState>>;
     workspaces: Workspace[];
@@ -453,11 +460,25 @@ export function useDataClient(): DataClientValue {
   const [gcalEnabled, setGcalEnabledState] = usePersistentState<boolean>('gcalEnabled', false);
   const [gcalMap, setGcalMap] = usePersistentState<Record<string, string>>('gcalMap', {});
 
+  // Sistema de temas (TEM-001) — preferência persistida. O boot anti-flash
+  // (initTheme em main.tsx) já aplica web; este efeito cobre a hidratação
+  // assíncrona nativa e as trocas feitas pelo picker (com transição suave,
+  // exceto no primeiro apply pós-montagem para não piscar o tema default).
+  const [themePref, setThemePref] = usePersistentState<ThemeId>('themePref', DEFAULT_THEME_ID);
+  const skipThemeTransitionRef = useRef(true);
+  useEffect(() => {
+    const theme = getThemeById(themePref);
+    applyTheme(theme, { transition: !skipThemeTransitionRef.current });
+    applyThemeColorChrome(theme);
+    skipThemeTransitionRef.current = false;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [themePref]);
+
   // Onboarding (primeiro acesso)
   const [onboarding, setOnboarding] = usePersistentState<import('../types').OnboardingState>('onboarding', emptyOnboarding);
   // Fase 3 — registry local de workspaces. O padrão é o Workspace Acadêmico.
-  // (o estado de sessão desktop — incluindo activeWorkspaceId — vive no
-  // DesktopSessionProvider em apps/desktop; aqui só guardamos o registry.)
+  // (o estado de sessão — incluindo activeWorkspaceId — ficava no
+  // DesktopSessionProvider em apps/desktop, legado removido 2026-09; aqui só o registry.)
   const [workspaces, setWorkspaces] = usePersistentState<Workspace[]>('workspaces', [
     {
       id: DEFAULT_WORKSPACE_ID,
@@ -914,6 +935,8 @@ export function useDataClient(): DataClientValue {
       setGcalEnabledState,
       gcalMap,
       setGcalMap,
+      themePref,
+      setThemePref,
       onboarding,
       setOnboarding,
       workspaces,
@@ -963,6 +986,7 @@ export function useDataClient(): DataClientValue {
       stickers, setStickers, setStickersRaw,
       reminderSettings, setReminderSettings,
       gcalEnabled, setGcalEnabledState, gcalMap, setGcalMap,
+      themePref, setThemePref,
       onboarding, setOnboarding,
       workspaces, setWorkspaces,
       relations, setRelations,
@@ -1049,6 +1073,8 @@ questions,
       setGcalEnabledState,
       gcalMap,
       setGcalMap,
+      themePref,
+      setThemePref,
       onboarding,
       setOnboarding,
       workspaces,

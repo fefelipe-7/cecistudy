@@ -8,7 +8,13 @@ import { UserProfile, DynamicHeaderConfig } from '../types';
 import { CourseIcon } from './ui/CourseIcon';
 import { HeaderActionMenu } from './ui/HeaderActionMenu';
 import { BookmarkToggle } from './ui/BookmarkToggle';
-import { headerSwapVariants } from '../lib/motion';
+import {
+  headerSwapVariants,
+  getTransition,
+  IOS_EASE_OUT,
+  PUSH_DURATION,
+  PUSH_EXIT_DURATION,
+} from '../lib/motion';
 
 interface HeaderNavProps {
   profile: UserProfile;
@@ -49,9 +55,17 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   return (
     <motion.header
       initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0, transition: { duration: 0.2, ease: 'easeOut' } }}
-      exit={{ opacity: 0, y: -10, transition: { duration: 0.15, ease: 'easeIn' } }}
-      className={`sticky top-0 z-40 liquid-glass-nav border-b border-b-[color-mix(in_srgb,white_50%,transparent)] px-3.5 sm:px-4 transition-[padding,box-shadow,background-color,border-color] duration-300 ease-in-out ${
+      animate={{
+        opacity: 1,
+        y: 0,
+        transition: getTransition({ duration: PUSH_DURATION, ease: IOS_EASE_OUT }),
+      }}
+      exit={{
+        opacity: 0,
+        y: -10,
+        transition: getTransition({ duration: PUSH_EXIT_DURATION, ease: 'easeIn' }),
+      }}
+      className={`sticky top-0 z-40 liquid-glass-nav border-b border-b-[color:var(--color-glass-hairline)] px-3.5 sm:px-4 transition-[padding,box-shadow,background-color,border-color] duration-300 ease-in-out ${
         scrolled
           ? 'pt-[calc(0.5rem+env(safe-area-inset-top,0px))] pb-2 shadow-sm'
           : 'pt-[calc(0.75rem+env(safe-area-inset-top,0px))] sm:pt-[calc(0.875rem+env(safe-area-inset-top,0px))] pb-3 sm:pb-3.5'
@@ -89,7 +103,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
 
               {headerConfig.icon && (
                 <div
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 border border-white/80 shadow-2xs"
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 border border-[color:var(--color-glass-pill-border)] shadow-2xs"
                   style={{ backgroundColor: `${headerConfig.color || '#B94862'}20` }}
                 >
                   {headerConfig.icon && <CourseIcon icon={headerConfig.icon} />}
@@ -217,7 +231,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             {/* Center Search Trigger */}
             <button
               onClick={onOpenSearch}
-              className={`flex-1 max-w-sm hidden md:flex items-center gap-2 bg-white/60 backdrop-blur-sm text-ceci-secondary px-3.5 rounded-full border border-white/70 shadow-2xs transition-colors duration-300 cursor-pointer ${
+              className={`flex-1 max-w-sm hidden md:flex items-center gap-2 bg-[color:var(--color-glass-pill-start)] backdrop-blur-sm text-ceci-secondary px-3.5 rounded-full border border-[color:var(--color-glass-pill-border)] shadow-2xs transition-colors duration-300 cursor-pointer ${
                 scrolled ? 'py-1 text-[11px] min-h-[32px]' : 'py-2 text-xs min-h-[40px]'
               }`}
             >

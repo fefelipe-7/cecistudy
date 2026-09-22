@@ -1,42 +1,79 @@
-import React from 'react';
-import { BookOpen, Sparkles, UserCheck } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { BookOpen, Plus, Sparkles, UserCheck } from 'lucide-react';
 import { Mascote } from '../../ui/Mascote';
 import { TagList } from '../../ui/TagList';
 import { ManageSurface } from '../../ui/ManageSurface';
+import { CatalogMultiSelect } from '../../ui/CatalogMultiSelect';
 import { useMobileApp } from '@/context/mobileApp';
-import { Course } from '../../../types';
+import { useCourseRepertorio } from '../../wizards/useCourseRepertorio';
+import { resolveCourseRepertorio, type RepertorioBibliographyItem } from '../../../lib/courseRepertorio';
+import type { Course } from '../../../types';
 
 interface CourseRepertorioContentProps {
   course: Course;
 }
 
-/** Conteúdo da tab "repertório & conteúdo" — compartilhado entre mobile e desktop. */
-export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = ({ course }) => {
-  const { concepts, authors, readings, materials, classes } = useMobileApp();
+type SheetKind = 'conceitos' | 'autores' | 'bibliografia' | null;
 
-  const courseConcepts = concepts.filter((c) => c.courseIds && c.courseIds.includes(course.id));
-  const relatedAuthorIds = new Set<string>();
-  courseConcepts.forEach((c) => c.authorIds?.forEach((a) => relatedAuthorIds.add(a)));
-  classes
-    .filter((cl) => cl.courseId === course.id)
-    .forEach((cl) => cl.authorIds?.forEach((a) => relatedAuthorIds.add(a)));
-  const courseAuthors = authors.filter((a) => relatedAuthorIds.has(a.id));
-  const courseReadings = readings.filter((r) => r.courseId === course.id);
-  const courseMaterials = materials.filter((m) => m.courseId === course.id);
+/** Lista de bibliografia: badge de origem por tipo de item. */
+function bibliographyBadge(item: RepertorioBibliographyItem): { label: string; tone: 'success' | 'academic' } {
+  switch (item.kind) {
+    case 'reading':
+      return { label: 'minha leitura', tone: 'success' };
+    case 'material':
+      return { label: 'material', tone: 'academic' };
+    case 'cat-book':
+    case 'inter-book':
+      return { label: 'livro (catálogo)', tone: 'academic' };
+    case 'article':
+      return { label: 'artigo (catálogo)', tone: 'academic' };
+  }
+}
+
+/** Conteúdo da tab "repertório & conteúdo" — união dos vínculos explícitos com o caminho legado. */
+export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = ({ course }) => {
+  const { classes, concepts, authors, readings, materials, handleUpdateCourse } = useMobileApp();
+  const { conceptOptions, authorOptions, bibliographyOptions, catalog, resolveIds } = useCourseRepertorio();
+  const [sheet, setSheet] = useState<SheetKind>(null);
+
+  const resolved = useMemo(
+    () => resolveCourseRepertorio(course, { classes, concepts, authors, readings, materials, catalog }),
+    [course, classes, concepts, authors, readings, materials, catalog]
+  );
+
+  const patchLinks = (patch: Partial<Pick<Course, 'conceptIds' | 'authorIds' | 'bibliographyIds'>>) => {
+    handleUpdateCourse({
+      ...course,
+      conceptIds: course.conceptIds ?? [],
+      authorIds: course.authorIds ?? [],
+      bibliographyIds: course.bibliographyIds ?? [],
+      ...patch,
+    });
+  };
 
   return (
     <div className="space-y-6">
       {/* Conceitos-chave */}
       <div className="space-y-3">
-        <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-ceci-brand-strong" />
-          <span>conceitos-chave da disciplina</span>
-          <span className="text-[11px] font-semibold text-ceci-tertiary">{courseConcepts.length}</span>
-        </h3>
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-ceci-brand-strong" />
+            <span>conceitos-chave da disciplina</span>
+            <span className="text-[11px] font-semibold text-ceci-tertiary">{resolved.concepts.length}</span>
+          </h3>
+          <button
+            type="button"
+            onClick={() => setSheet('conceitos')}
+            aria-label="adicionar conceitos-chave"
+            className="w-9 h-9 rounded-2xl border border-ceci-border-brand bg-surface-rose text-ceci-brand-strong flex items-center justify-center tap-interactive cursor-pointer active:scale-95 transition-transform"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
+        </div>
 
-        {courseConcepts.length > 0 ? (
+        {resolved.concepts.length > 0 ? (
           <div className="space-y-2">
-            {courseConcepts.map((concept) => (
+            {resolved.concepts.map((concept) => (
               <ManageSurface
                 key={concept.id}
                 kind="concept"
@@ -66,22 +103,32 @@ export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = (
 
       {/* Autores */}
       <div className="space-y-3 pt-1">
-        <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
-          <UserCheck className="w-4 h-4 text-ceci-academic-strong" />
-          <span>autores fundamentais</span>
-          <span className="text-[11px] font-semibold text-ceci-tertiary">{courseAuthors.length}</span>
-        </h3>
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
+            <UserCheck className="w-4 h-4 text-ceci-academic-strong" />
+            <span>autores fundamentais</span>
+            <span className="text-[11px] font-semibold text-ceci-tertiary">{resolved.authors.length}</span>
+          </h3>
+          <button
+            type="button"
+            onClick={() => setSheet('autores')}
+            aria-label="adicionar autores fundamentais"
+            className="w-9 h-9 rounded-2xl border border-ceci-border-academic bg-surface-blue text-ceci-academic-strong flex items-center justify-center tap-interactive cursor-pointer active:scale-95 transition-transform"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
+        </div>
 
-        {courseAuthors.length > 0 ? (
+        {resolved.authors.length > 0 ? (
           <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
-            {courseAuthors.map((author) => (
+            {resolved.authors.map((author) => (
               <ManageSurface
                 key={author.id}
                 kind="author"
                 id={author.id}
                 className="py-3 flex items-start gap-3"
               >
-                <div className="w-9 h-9 rounded-full bg-blue-200 text-ceci-academic-strong font-display font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-9 h-9 rounded-full bg-surface-blue text-ceci-academic-strong font-display font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
                   {author.name.charAt(0)}
                 </div>
                 <div className="space-y-0.5 min-w-0">
@@ -104,48 +151,75 @@ export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = (
 
       {/* Leituras & bibliografia */}
       <div className="space-y-3 pt-1">
-        <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
-          <BookOpen className="w-4 h-4 text-beige-700" />
-          <span>leituras & bibliografia recomendada</span>
-        </h3>
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
+            <BookOpen className="w-4 h-4 text-ceci-tertiary" />
+            <span>leituras & bibliografia recomendada</span>
+            <span className="text-[11px] font-semibold text-ceci-tertiary">{resolved.bibliography.length}</span>
+          </h3>
+          <button
+            type="button"
+            onClick={() => setSheet('bibliografia')}
+            aria-label="adicionar leituras e bibliografia"
+            className="w-9 h-9 rounded-2xl border border-ceci-border-default bg-surface-default text-ceci-secondary flex items-center justify-center tap-interactive cursor-pointer active:scale-95 transition-transform"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
+        </div>
 
-        {courseReadings.length > 0 || courseMaterials.length > 0 ? (
+        {resolved.bibliography.length > 0 ? (
           <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
-            {courseReadings.map((reading) => (
-              <ManageSurface
-                key={reading.id}
-                kind="reading"
-                id={reading.id}
-                className="py-2.5 flex items-center justify-between text-xs"
-              >
-                <div className="space-y-0.5 min-w-0 pr-2">
-                  <h5 className="font-bold text-ceci-primary">{reading.title}</h5>
-                  <p className="text-[11px] text-ceci-tertiary">por {reading.author}</p>
-                </div>
-                <span className="text-[10px] font-semibold text-success-deep bg-surface-mint-soft px-2.5 py-1 rounded-full border border-ceci-border-academic shrink-0">
-                  {reading.readPages || 0} / {reading.totalPages ?? '—'} pág
-                </span>
-              </ManageSurface>
-            ))}
+            {resolved.bibliography.map((item) => {
+              const key = item.kind === 'reading' || item.kind === 'material' ? item.ref.id : item.kind;
+              const badge = bibliographyBadge(item);
 
-            {courseMaterials.map((mat) => (
-              <ManageSurface
-                key={mat.id}
-                kind="material"
-                id={mat.id}
-                className="py-2.5 flex items-center justify-between text-xs"
-              >
-                <div className="space-y-0.5 min-w-0 pr-2">
-                  <h5 className="font-semibold text-ceci-primary">{mat.title}</h5>
-                  <p className="text-[10px] text-ceci-tertiary uppercase">
-                    {mat.type} • {mat.author}
-                  </p>
+              if (item.kind === 'reading') {
+                return (
+                  <ManageSurface key={key} kind="reading" id={item.ref.id} className="py-2.5 text-xs">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="space-y-0.5 min-w-0 pr-2">
+                        <h5 className="font-bold text-ceci-primary">{item.ref.title}</h5>
+                        <p className="text-[11px] text-ceci-tertiary">por {item.ref.author}</p>
+                      </div>
+                      <span className="text-[10px] font-semibold text-status-success-strong bg-status-success-surface px-2.5 py-1 rounded-full border border-ceci-border-academic shrink-0">
+                        {badge.label}
+                      </span>
+                    </div>
+                  </ManageSurface>
+                );
+              }
+
+              if (item.kind === 'material') {
+                return (
+                  <ManageSurface key={key} kind="material" id={item.ref.id} className="py-2.5 text-xs">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="space-y-0.5 min-w-0 pr-2">
+                        <h5 className="font-semibold text-ceci-primary">{item.ref.title}</h5>
+                        <p className="text-[10px] text-ceci-tertiary uppercase">
+                          {item.ref.type} • {item.ref.author}
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-bold text-ceci-academic-strong bg-surface-blue px-2 py-0.5 rounded border border-ceci-border-academic shrink-0">
+                        {badge.label}
+                      </span>
+                    </div>
+                  </ManageSurface>
+                );
+              }
+
+              // ---- obras do catálogo (vínculo estático) ----
+              return (
+                <div key={key} className="py-2.5 flex items-center justify-between text-xs">
+                  <div className="space-y-0.5 min-w-0 pr-2">
+                    <h5 className="font-bold text-ceci-primary">{item.title}</h5>
+                    <p className="text-[11px] text-ceci-tertiary">por {item.author}</p>
+                  </div>
+                  <span className="text-[10px] font-bold text-ceci-academic-strong bg-surface-blue px-2 py-1 rounded-full border border-ceci-border-academic shrink-0">
+                    {badge.label}
+                  </span>
                 </div>
-                <span className="text-[10px] font-bold text-ceci-academic-strong bg-surface-blue px-2 py-0.5 rounded border border-ceci-border-academic shrink-0">
-                  PDF
-                </span>
-              </ManageSurface>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <p className="text-xs text-ceci-tertiary py-2 flex items-center gap-1.5">
@@ -154,6 +228,35 @@ export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = (
           </p>
         )}
       </div>
+
+      {/* sheets */}
+      <CatalogMultiSelect
+        open={sheet === 'conceitos'}
+        onClose={() => setSheet(null)}
+        title="conceitos-chave"
+        options={conceptOptions}
+        value={course.conceptIds ?? []}
+        onChange={(v) => patchLinks({ conceptIds: resolveIds(v) })}
+        emptyMessage="ainda não tem conceito parecido por aqui ♡"
+      />
+      <CatalogMultiSelect
+        open={sheet === 'autores'}
+        onClose={() => setSheet(null)}
+        title="autores fundamentais"
+        options={authorOptions}
+        value={course.authorIds ?? []}
+        onChange={(v) => patchLinks({ authorIds: resolveIds(v) })}
+        emptyMessage="ainda não tem autor parecido por aqui ♡"
+      />
+      <CatalogMultiSelect
+        open={sheet === 'bibliografia'}
+        onClose={() => setSheet(null)}
+        title="leituras & bibliografia"
+        options={bibliographyOptions}
+        value={course.bibliographyIds ?? []}
+        onChange={(v) => patchLinks({ bibliographyIds: v })}
+        emptyMessage="ainda não tem leitura parecida por aqui ♡"
+      />
     </div>
   );
 };

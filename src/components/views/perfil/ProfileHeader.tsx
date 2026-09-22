@@ -32,7 +32,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           onClick={onPickPhoto}
           aria-label="trocar foto de perfil"
           title="trocar foto"
-          className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-ceci-primary hover:bg-ceci-primary-hover text-white flex items-center justify-center shadow-xs border-2 border-white tap-interactive cursor-pointer active:scale-95"
+          className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary flex items-center justify-center shadow-xs border-2 border-surface-default tap-interactive cursor-pointer active:scale-95"
         >
           <Camera className="w-3.5 h-3.5" />
         </button>
@@ -41,7 +41,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             onClick={onRemovePhoto}
             aria-label="remover foto de perfil"
             title="remover foto"
-            className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-surface-default border border-ceci-border-default text-ceci-secondary hover:text-red-700 hover:border-red-400 flex items-center justify-center shadow-xs tap-interactive cursor-pointer active:scale-95"
+            className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-surface-default border border-ceci-border-default text-ceci-secondary hover:text-status-danger-strong hover:border-status-danger flex items-center justify-center shadow-xs tap-interactive cursor-pointer active:scale-95"
           >
             <Trash2 className="w-3 h-3" />
           </button>
@@ -50,7 +50,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
       <div className="min-w-0">
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-ceci-primary truncate">
-          meu espaço • {profile.name} <span className="text-rose-500 font-normal">♡</span>
+          meu espaço • {profile.name} <span className="text-ceci-brand-strong font-normal">♡</span>
         </h1>
         <p className="text-xs text-ceci-secondary mt-0.5">
           {profile.targetCareer} • {profile.university}

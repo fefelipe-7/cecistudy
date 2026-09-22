@@ -62,7 +62,7 @@ const ComparisonCard: React.FC<{
     onClick={onOpen}
     className={`w-full text-left rounded-xl p-4 border shadow-2xs transition cursor-pointer group hover:-translate-y-0.5 hover:shadow-sm ${
       featured
-        ? 'bg-surface-gold border-ceci-border-gold'
+        ? 'bg-status-warning-surface border-status-warning-border'
         : 'bg-surface-default border-ceci-border-default hover:border-ceci-border-brand'
     }`}
   >
@@ -187,8 +187,8 @@ export const ComparisonsScreen: React.FC<{ onOpen: (slug: string) => void }> = (
               aria-pressed={kindFilter === filter.id}
               className={`shrink-0 px-3 py-1.5 rounded-full border text-[11px] font-semibold whitespace-nowrap transition-colors cursor-pointer ${
                 kindFilter === filter.id
-                  ? 'bg-surface-gold border-ceci-border-gold text-gold'
-                  : 'bg-surface-default border-ceci-border-default text-ceci-secondary hover:bg-surface-gold'
+                  ? 'bg-status-warning-surface border-status-warning-border text-status-warning-strong'
+                  : 'bg-surface-default border-ceci-border-default text-ceci-secondary hover:bg-status-warning-surface'
               }`}
             >
               {filter.label}
@@ -205,7 +205,7 @@ export const ComparisonsScreen: React.FC<{ onOpen: (slug: string) => void }> = (
           {featured && (
             <section className="space-y-3">
               <div className="flex items-center gap-2 px-1">
-                <Sparkles className="w-4 h-4 text-gold" />
+                <Sparkles className="w-4 h-4 text-status-warning-strong" />
                 <h2 className="text-sm uppercase tracking-wider font-bold text-ceci-primary">em destaque</h2>
               </div>
               <ComparisonCard comparison={featured} featured onOpen={() => onOpen(featured.slug)} />

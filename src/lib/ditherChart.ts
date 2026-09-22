@@ -28,6 +28,20 @@ export const hexToRgba = (hex: string, alpha: number) => {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
 
+/** Interpola dois hex (#rrggbb) — t=0 retorna `hexA`, t=1 retorna `hexB`. */
+export const mixHex = (hexA: string, hexB: string, t: number) => {
+  const toNums = (hex: string) => [
+    parseInt(hex.slice(1, 3), 16),
+    parseInt(hex.slice(3, 5), 16),
+    parseInt(hex.slice(5, 7), 16),
+  ];
+  const [ar, ag, ab] = toNums(hexA);
+  const [br, bg, bb] = toNums(hexB);
+  const ch = (a: number, b: number) =>
+    Math.round(a + (b - a) * Math.min(1, Math.max(0, t)));
+  return `#${[ch(ar, br), ch(ag, bg), ch(ab, bb)].map((v) => v.toString(16).padStart(2, '0')).join('')}`;
+};
+
 /** Desenha uma "fatia" de donut com cantos arredondados (wedge). */
 export const drawRoundedWedge = (
   ctx: CanvasRenderingContext2D,

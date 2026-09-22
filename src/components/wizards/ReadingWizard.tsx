@@ -19,8 +19,8 @@ import {
   TextInput,
 } from './wizardFields';
 import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
-import { Picker } from '../ui/Picker';
 import { AuthorSuggestInput } from '../ui/AuthorSuggestInput';
+import { CourseSelect } from './CourseSelect';
 
 const TYPES: { value: ReadingType; label: string; emoji?: string }[] = [
   { value: 'livro', label: 'livro', emoji: '📖' },
@@ -45,7 +45,6 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
     handleUpdateReading,
     handleAddAuthor,
     closeWizard,
-    openEditCourse,
     showToast,
   } = useMobileApp();
   const editingReading = editing?.kind === 'reading'
@@ -150,11 +149,6 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
     setAuthor((prev) => prev || match.author);
     hapticSuccess();
     showToast('dados do acervo preenchidos ♡');
-  };
-
-  const createCourseInline = () => {
-    showToast(TOAST.courseRegistered);
-    openEditCourse();
   };
 
   const courseName = courses.find((c) => c.id === courseId)?.name ?? '';
@@ -265,14 +259,11 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       subtitle: 'a disciplina é opcional; o status mostra onde essa leitura está na sua jornada.',
       content: (
         <div className="space-y-5">
-          <Picker
-            label="disciplina (opcional)"
+          <CourseSelect
             value={courseId}
             onChange={setCourseId}
-            options={courses.map((c) => ({ value: c.id, label: c.name }))}
-            emptyMessage="ainda não há disciplinas cadastradas."
-            createLabel="criar matéria agora"
-            onCreate={createCourseInline}
+            label="disciplina (opcional)"
+            optional
           />
           <ChoiceCardGrid
             label="status"

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import {
   Compass,
   HeartHandshake,
@@ -9,12 +9,11 @@ import {
 import { useMobileApp } from '@/context/mobileApp';
 import type { InternshipLogType, ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
-import { useWizardDraft } from '../../lib/useWizardDraft';
+import { useWizardForm } from '../../lib/useWizardForm';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import { FieldLabel, ReviewCard, TextArea, TextInput, DateInput } from './wizardFields';
 import { TagField } from '../ui/TagField';
-
-const today = () => new Date().toISOString().split('T')[0];
+import { today } from './note/constants';
 
 const KINDS: {
   value: InternshipLogType;
@@ -39,7 +38,7 @@ const KIND_META: Record<InternshipLogType, { title: string; icon: React.ReactNod
 
 /** Rascunho do registro essencial. */
 interface InternshipDraft {
-  kind?: InternshipLogType;
+  kind?: InternshipLogType | null;
   activity?: string;
   hours?: string;
   date?: string;
@@ -78,39 +77,71 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
     ? internshipLogs.find((l) => l.id === editing.id)
     : undefined;
 
-  const draft = useWizardDraft<InternshipDraft>('internship');
-  const savedDraft = editingLog ? null : draft.load();
-
-  const [kind, setKind] = useState<InternshipLogType | null>(editingLog?.type ?? savedDraft?.kind ?? null);
-  const [step, setStep] = useState(0);
-
-  // comuns
-  const [activity, setActivity] = useState(editingLog?.activity ?? savedDraft?.activity ?? '');
-  const [hours, setHours] = useState(editingLog ? String(editingLog.hours) : savedDraft?.hours ?? '');
-  const [date, setDate] = useState(editingLog?.date ?? savedDraft?.date ?? '');
-  const [reflections, setReflections] = useState(editingLog?.reflections ?? savedDraft?.reflections ?? '');
-
-  // atendimento clínico
-  const [patient, setPatient] = useState(editingLog?.patient ?? savedDraft?.patient ?? '');
-  const [sessionNumber, setSessionNumber] = useState(editingLog?.sessionNumber ? String(editingLog.sessionNumber) : savedDraft?.sessionNumber ?? '');
-  const [patientAge, setPatientAge] = useState(editingLog?.patientAge ?? savedDraft?.patientAge ?? '');
-  const [theme, setTheme] = useState(editingLog?.theme ?? savedDraft?.theme ?? '');
-  const [approach, setApproach] = useState(editingLog?.approach ?? savedDraft?.approach ?? '');
-  const [interventionNotes, setInterventionNotes] = useState(editingLog?.interventionNotes ?? savedDraft?.interventionNotes ?? '');
-  const [observations, setObservations] = useState(editingLog?.observations ?? savedDraft?.observations ?? '');
-
-  // supervisão / intervisão
-  const [supervisor, setSupervisor] = useState(editingLog?.supervisor ?? savedDraft?.supervisor ?? '');
-  const [topics, setTopics] = useState<string[]>(editingLog?.topics ?? savedDraft?.topics ?? []);
-  const [orientations, setOrientations] = useState(editingLog?.orientations ?? savedDraft?.orientations ?? '');
-  const [doubts, setDoubts] = useState(editingLog?.doubts ?? savedDraft?.doubts ?? '');
-  const [nextSteps, setNextSteps] = useState<string[]>(editingLog?.nextSteps ?? savedDraft?.nextSteps ?? []);
-  const [discussedLogIds, setDiscussedLogIds] = useState<string[]>(editingLog?.discussedLogIds ?? savedDraft?.discussedLogIds ?? []);
-  const [beforeNotes, setBeforeNotes] = useState(editingLog?.beforeNotes ?? savedDraft?.beforeNotes ?? '');
-  const [afterNotes, setAfterNotes] = useState(editingLog?.afterNotes ?? savedDraft?.afterNotes ?? '');
-  const [confidence, setConfidence] = useState(editingLog?.selfAssessment?.confidence ?? savedDraft?.selfAssessment?.confidence ?? '');
-  const [limits, setLimits] = useState(editingLog?.selfAssessment?.limits ?? savedDraft?.selfAssessment?.limits ?? '');
-  const [themes, setThemes] = useState(editingLog?.selfAssessment?.themes ?? savedDraft?.selfAssessment?.themes ?? '');
+  const { values, patch, step, setStep, clearDraft, isDirty } = useWizardForm<InternshipDraft>({
+    draftKey: 'internship',
+    initial: {
+      kind: editingLog?.type ?? null,
+      // comuns
+      activity: editingLog?.activity ?? '',
+      hours: editingLog ? String(editingLog.hours) : '',
+      date: editingLog?.date ?? '',
+      reflections: editingLog?.reflections ?? '',
+      // atendimento clínico
+      patient: editingLog?.patient ?? '',
+      sessionNumber: editingLog?.sessionNumber ? String(editingLog.sessionNumber) : '',
+      patientAge: editingLog?.patientAge ?? '',
+      theme: editingLog?.theme ?? '',
+      approach: editingLog?.approach ?? '',
+      interventionNotes: editingLog?.interventionNotes ?? '',
+      observations: editingLog?.observations ?? '',
+      // supervisão / intervisão
+      supervisor: editingLog?.supervisor ?? '',
+      topics: editingLog?.topics ?? [],
+      orientations: editingLog?.orientations ?? '',
+      doubts: editingLog?.doubts ?? '',
+      nextSteps: editingLog?.nextSteps ?? [],
+      discussedLogIds: editingLog?.discussedLogIds ?? [],
+      beforeNotes: editingLog?.beforeNotes ?? '',
+      afterNotes: editingLog?.afterNotes ?? '',
+      selfAssessment: editingLog?.selfAssessment
+        ? {
+            confidence: editingLog.selfAssessment.confidence,
+            limits: editingLog.selfAssessment.limits,
+            themes: editingLog.selfAssessment.themes,
+          }
+        : undefined,
+    },
+    editing: !!editingLog,
+    isDirty: (v) =>
+      !editingLog && (v.activity?.trim().length > 0 || v.reflections?.trim().length > 0),
+  });
+  const {
+    kind,
+    activity,
+    hours,
+    date,
+    reflections,
+    patient,
+    sessionNumber,
+    patientAge,
+    theme,
+    approach,
+    interventionNotes,
+    observations,
+    supervisor,
+    topics,
+    orientations,
+    doubts,
+    nextSteps,
+    discussedLogIds,
+    beforeNotes,
+    afterNotes,
+    selfAssessment,
+  } = values;
+  const confidence = selfAssessment?.confidence ?? '';
+  const limits = selfAssessment?.limits ?? '';
+  const themes = selfAssessment?.themes ?? '';
+  const setKind = (k: InternshipLogType | null) => patch({ kind: k });
 
   // atendimentos clínicos disponíveis para discussão
   const attendanceLogs = useMemo(() => {
@@ -127,62 +158,8 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
       });
   }, [internshipLogs]);
 
-  // persiste rascunho
-  useEffect(() => {
-    if (editingLog) return;
-    draft.save({
-      kind: kind ?? undefined,
-      activity,
-      hours,
-      date,
-      reflections,
-      discussedLogIds,
-      beforeNotes,
-      afterNotes,
-      selfAssessment: (confidence || limits || themes) ? { confidence, limits, themes } : undefined,
-      nextSteps,
-      supervisor,
-      topics,
-      orientations,
-      doubts,
-      patient,
-      sessionNumber,
-      patientAge,
-      theme,
-      approach,
-      interventionNotes,
-      observations,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    kind,
-    activity,
-    hours,
-    date,
-    reflections,
-    discussedLogIds,
-    beforeNotes,
-    afterNotes,
-    confidence,
-    limits,
-    themes,
-    nextSteps,
-    supervisor,
-    topics,
-    orientations,
-    doubts,
-    patient,
-    sessionNumber,
-    patientAge,
-    theme,
-    approach,
-    interventionNotes,
-    observations,
-    editingLog,
-  ]);
-
   const finish = () => {
-    draft.clear();
+    clearDraft();
     closeWizard();
   };
 
@@ -233,13 +210,13 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
               type="number"
               inputMode="decimal"
               value={hours}
-              onChange={(e) => setHours(e.target.value)}
+              onChange={(e) => patch({ hours: e.target.value })}
               placeholder="ex: 4"
             />
           </div>
           <div>
             <FieldLabel>data</FieldLabel>
-            <DateInput value={date} onChange={(e) => setDate(e.target.value)} />
+            <DateInput value={date} onChange={(e) => patch({ date: e.target.value })} />
           </div>
         </div>
       </div>
@@ -257,7 +234,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
         <TextArea
           rows={5}
           value={reflections}
-          onChange={(e) => setReflections(e.target.value)}
+          onChange={(e) => patch({ reflections: e.target.value })}
           placeholder="como foi pra você? o que aprendeu?"
         />
       </div>
@@ -269,7 +246,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
       <TextArea
         rows={5}
         value={activity}
-        onChange={(e) => setActivity(e.target.value)}
+        onChange={(e) => patch({ activity: e.target.value })}
         placeholder="ex: acolhimento na triagem da clínica escola"
         autoFocus
       />
@@ -296,7 +273,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
     essentialStep(
       <TextInput
         value={activity}
-        onChange={(e) => setActivity(e.target.value)}
+        onChange={(e) => patch({ activity: e.target.value })}
         placeholder="ex: sessão de escuta com paciente em acompanhamento"
         autoFocus
       />
@@ -314,30 +291,30 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
               <TextInput
                 type="number"
                 value={sessionNumber}
-                onChange={(e) => setSessionNumber(e.target.value)}
+                onChange={(e) => patch({ sessionNumber: e.target.value })}
                 placeholder="ex: 3"
               />
             </div>
             <div className="col-span-2">
               <FieldLabel>idade</FieldLabel>
-              <TextInput value={patientAge} onChange={(e) => setPatientAge(e.target.value)} placeholder="ex: 28 anos" />
+              <TextInput value={patientAge} onChange={(e) => patch({ patientAge: e.target.value })} placeholder="ex: 28 anos" />
             </div>
           </div>
           <div>
             <FieldLabel>paciente (só iniciais, sem nome completo)</FieldLabel>
-            <TextInput value={patient} onChange={(e) => setPatient(e.target.value)} placeholder="ex: M. S." />
+            <TextInput value={patient} onChange={(e) => patch({ patient: e.target.value })} placeholder="ex: M. S." />
           </div>
           <div>
             <FieldLabel>tema / queixa central</FieldLabel>
-            <TextArea rows={4} value={theme} onChange={(e) => setTheme(e.target.value)} placeholder="o que trouxe hoje..." />
+            <TextArea rows={4} value={theme} onChange={(e) => patch({ theme: e.target.value })} placeholder="o que trouxe hoje..." />
           </div>
           <div>
             <FieldLabel>abordagem teórica (opcional)</FieldLabel>
-            <TextInput value={approach} onChange={(e) => setApproach(e.target.value)} placeholder="ex: TCC, psicanálise..." />
+            <TextInput value={approach} onChange={(e) => patch({ approach: e.target.value })} placeholder="ex: TCC, psicanálise..." />
           </div>
           <div>
             <FieldLabel>intervenções / técnicas</FieldLabel>
-            <TextArea rows={4} value={interventionNotes} onChange={(e) => setInterventionNotes(e.target.value)} placeholder="ex: escuta ativa, perguntas abertas..." />
+            <TextArea rows={4} value={interventionNotes} onChange={(e) => patch({ interventionNotes: e.target.value })} placeholder="ex: escuta ativa, perguntas abertas..." />
           </div>
         </div>
       ),
@@ -348,7 +325,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
         <TextArea
           rows={4}
           value={observations}
-          onChange={(e) => setObservations(e.target.value)}
+          onChange={(e) => patch({ observations: e.target.value })}
           placeholder="como foi o vínculo, o estado emocional, algo que chamou atenção..."
         />
       </div>
@@ -381,7 +358,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
     essentialStep(
       <TextInput
         value={activity}
-        onChange={(e) => setActivity(e.target.value)}
+        onChange={(e) => patch({ activity: e.target.value })}
         placeholder="ex: supervisão sobre caso de ansiedade"
         autoFocus
       />
@@ -395,21 +372,21 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
         <div className="space-y-4">
           <div>
             <FieldLabel>{kind === 'intervisao' ? 'grupo de intervisão' : 'supervisora'}</FieldLabel>
-            <TextInput value={supervisor} onChange={(e) => setSupervisor(e.target.value)} placeholder="ex: supervisora do estágio básico" />
+            <TextInput value={supervisor} onChange={(e) => patch({ supervisor: e.target.value })} placeholder="ex: supervisora do estágio básico" />
           </div>
           <TagField
             tags={topics}
-            onChange={setTopics}
+            onChange={(v) => patch({ topics: v })}
             placeholder="ex: caso de ansiedade"
             emptyMessage="toque em + para adicionar os temas"
           />
           <div>
             <FieldLabel>orientações recebidas</FieldLabel>
-            <TextArea rows={4} value={orientations} onChange={(e) => setOrientations(e.target.value)} placeholder="o que foi orientado..." />
+            <TextArea rows={4} value={orientations} onChange={(e) => patch({ orientations: e.target.value })} placeholder="o que foi orientado..." />
           </div>
           <div>
             <FieldLabel>dúvidas para investigar</FieldLabel>
-            <TextArea rows={3} value={doubts} onChange={(e) => setDoubts(e.target.value)} placeholder="perguntas que ficaram no ar..." />
+            <TextArea rows={3} value={doubts} onChange={(e) => patch({ doubts: e.target.value })} placeholder="perguntas que ficaram no ar..." />
           </div>
         </div>
       ),
@@ -429,9 +406,9 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
                   checked={discussedLogIds.includes(log.id)}
                   onChange={(e) => {
                     if (e.target.checked) {
-                      setDiscussedLogIds([...discussedLogIds, log.id]);
+                      patch({ discussedLogIds: [...discussedLogIds, log.id] });
                     } else {
-                      setDiscussedLogIds(discussedLogIds.filter((id) => id !== log.id));
+                      patch({ discussedLogIds: discussedLogIds.filter((id) => id !== log.id) });
                     }
                   }}
                   className="h-4 w-4 flex-shrink-0 text-ceci-primary"
@@ -467,14 +444,14 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
         <TextArea
           rows={3}
           value={beforeNotes}
-          onChange={(e) => setBeforeNotes(e.target.value)}
+          onChange={(e) => patch({ beforeNotes: e.target.value })}
           placeholder="suas hipóteses e perguntas que levou..."
         />
         <FieldLabel>o que ficou combinado</FieldLabel>
         <TextArea
           rows={3}
           value={afterNotes}
-          onChange={(e) => setAfterNotes(e.target.value)}
+          onChange={(e) => patch({ afterNotes: e.target.value })}
           placeholder="as orientações e decisões da supervisão..."
         />
         <FieldLabel>autoavaliação</FieldLabel>
@@ -484,7 +461,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
             <TextArea
               rows={2}
               value={confidence}
-              onChange={(e) => setConfidence(e.target.value)}
+              onChange={(e) => patch({ selfAssessment: { confidence: e.target.value, limits, themes } })}
               placeholder="o que já consigo fazer bem..."
             />
           </div>
@@ -493,7 +470,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
             <TextArea
               rows={2}
               value={limits}
-              onChange={(e) => setLimits(e.target.value)}
+              onChange={(e) => patch({ selfAssessment: { confidence, limits: e.target.value, themes } })}
               placeholder="o que ainda é difícil ou incerto..."
             />
           </div>
@@ -502,7 +479,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
             <TextArea
               rows={2}
               value={themes}
-              onChange={(e) => setThemes(e.target.value)}
+              onChange={(e) => patch({ selfAssessment: { confidence, limits, themes: e.target.value } })}
               placeholder="assuntos que quer revisar ou estudar mais..."
             />
           </div>
@@ -518,7 +495,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
           <FieldLabel>próximos passos</FieldLabel>
           <TagField
             tags={nextSteps}
-            onChange={setNextSteps}
+            onChange={(v) => patch({ nextSteps: v })}
             placeholder="ex: revisar capítulo de TCC, tentar nova técnica..."
             emptyMessage="toque em + para adicionar"
           />
@@ -653,8 +630,6 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
       : kind === 'atendimento_clinico'
       ? 'listening-hello'
       : 'field-prepare';
-
-  const isDirty = !editingLog && (activity.trim().length > 0 || reflections.trim().length > 0);
 
   return (
     <WizardScaffold

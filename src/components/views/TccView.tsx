@@ -39,7 +39,7 @@ export const TccView: React.FC = () => {
         </div>
         <button
           onClick={openEditTcc}
-          className="flex items-center gap-1.5 bg-rose-500 hover:bg-ceci-brand-strong text-white px-3.5 py-2 rounded-xl text-xs font-medium shadow-2xs transition-transform active:scale-95 cursor-pointer shrink-0"
+          className="flex items-center gap-1.5 bg-ceci-brand hover:bg-ceci-brand-strong text-ceci-on-brand px-3.5 py-2 rounded-xl text-xs font-medium shadow-2xs transition-transform active:scale-95 cursor-pointer shrink-0"
         >
           <PencilLine className="w-3.5 h-3.5" />
           {hasTcc ? 'editar tcc' : 'criar tcc'}
@@ -58,7 +58,7 @@ export const TccView: React.FC = () => {
           </p>
           <button
             onClick={openEditTcc}
-            className="mt-2 inline-flex items-center gap-1.5 bg-ceci-primary hover:bg-ceci-primary-hover text-white px-5 py-2.5 rounded-2xl text-xs font-bold transition-colors cursor-pointer"
+            className="mt-2 inline-flex items-center gap-1.5 bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary px-5 py-2.5 rounded-2xl text-xs font-bold transition-colors cursor-pointer"
           >
             <PencilLine className="w-4 h-4" />
             bora começar?

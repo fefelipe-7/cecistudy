@@ -30,11 +30,27 @@ export interface StickerState {
   authors: unknown[];
   materials: unknown[];
   courses: unknown[];
-  questions: unknown[];
   techniques: unknown[];
+  quizSessions: { answers: { questionId: string; correct: boolean }[] }[];
   streakTotal: number;
   streakLongest: number;
   looseNotes: unknown[];
+}
+
+/** IDs de questões respondidas (únicos) em todas as sessões de quiz. */
+function answeredQuestionIds(quizSessions: StickerState['quizSessions']): Set<string> {
+  return new Set(quizSessions.flatMap((s) => s.answers.map((a) => a.questionId)));
+}
+
+/** IDs de questões acertadas (únicos) em todas as sessões de quiz. */
+function correctlyAnsweredQuestionIds(quizSessions: StickerState['quizSessions']): Set<string> {
+  const ids = new Set<string>();
+  for (const s of quizSessions) {
+    for (const a of s.answers) {
+      if (a.correct) ids.add(a.questionId);
+    }
+  }
+  return ids;
 }
 
 /** Verifica se uma condição está satisfeita no snapshot atual. */
@@ -70,18 +86,135 @@ export function isConditionMet(condition: StickerCondition, state: StickerState)
       return state.tasks.filter((t) => t.completed).length >= condition.min;
     case 'saved-books':
       return state.savedBookIds.length >= condition.min;
+
+    // ---- corrigidas (bug de precedência / hardcode) ----
     case 'streak-week':
-      return state.streakTotal >= 5 && condition.min ? state.streakTotal >= condition.min : state.streakTotal >= 5;
+      return state.streakTotal >= condition.min;
     case 'streak-month':
-      return state.streakTotal >= 15 && condition.min ? state.streakTotal >= condition.min : state.streakTotal >= 15;
+      return state.streakTotal >= condition.min;
     case 'flashcard-streak':
       return state.flashcards.filter((f) => (f.timesReviewed ?? 0) > 0).length >= 14;
-    case 'questions-mastered':
-      return state.questions.filter((q) => (q as { correct?: boolean }).correct).length >= 50;
     case 'techniques-explored':
-      return state.techniques.length >= 5;
+      return state.techniques.length >= condition.min;
+
+    // ---- questionário — fonte real (quizSessions, IDs únicos) ----
+    case 'questions-created':
+      return answeredQuestionIds(state.quizSessions).size >= condition.min;
+    case 'questions-mastered':
+      return correctlyAnsweredQuestionIds(state.quizSessions).size >= condition.min;
+
+    // ---- as 21 que faltavam ----
+    case 'exams-added':
+      return state.exams.length >= condition.min;
+    case 'exams-done':
+      return state.exams.filter((e) => e.completed).length >= condition.min;
+    case 'concepts-known':
+      return state.concepts.length >= condition.min;
+    case 'authors-known':
+      return state.authors.length >= condition.min;
+    case 'materials-added':
+      return state.materials.length >= condition.min;
+    case 'courses':
+      return state.courses.length >= condition.min;
+    case 'flashcards-count':
+      return state.flashcards.length >= condition.min;
+    case 'techniques-used':
+      return state.techniques.length >= condition.min;
+    case 'study-minutes':
+      return state.sessions.reduce((acc, s) => acc + (s.durationMinutes ?? 0), 0) >= condition.min;
+    case 'streak-total':
+      return state.streakTotal >= condition.min;
+    case 'reading-count':
+      return state.readings.length >= condition.min;
+    case 'reading-in-progress':
+      return state.readings.filter((r) => r.status === 'lendo').length >= condition.min;
+    case 'loose-notes':
+      return state.looseNotes.length >= condition.min;
+    case 'internship-hours':
+      return state.internshipLogs.reduce((acc, l) => acc + (l.hours ?? 0), 0) >= condition.min;
+    case 'internship-logs':
+      return state.internshipLogs.length >= condition.min;
+    case 'tcc-created':
+      return state.tcc.title.trim().length > 0;
+    case 'tcc-chapters-done':
+      return state.tcc.chapters.filter((c) => c.completed).length >= condition.min;
+    case 'penultimate-semester':
+      return state.profile.semester >= state.profile.totalSemesters - 1;
+    case 'streak-longest':
+      return state.streakLongest >= condition.min;
+    case 'graduation':
+      return state.profile.semester >= state.profile.totalSemesters;
+
     default:
       return false;
+  }
+}
+
+/**
+ * Valor numérico atual de uma condição (para a barra de progresso da UI).
+ * Condições booleanas (sem `min`) retornam 0 — a UI não desenha barra para elas.
+ */
+export function currentValueFor(condition: StickerCondition, state: StickerState): number {
+  switch (condition.type) {
+    case 'flashcards-reviewed':
+      return state.flashcards.reduce((acc, f) => acc + (f.timesReviewed ?? 0), 0);
+    case 'sessions':
+      return state.sessions.length;
+    case 'class-notes':
+      return state.classes.length;
+    case 'pages-read':
+      return state.readings.reduce((acc, r) => acc + (r.readPages ?? 0), 0);
+    case 'tasks-done':
+      return state.tasks.filter((t) => t.completed).length;
+    case 'saved-books':
+      return state.savedBookIds.length;
+    case 'streak':
+      return state.currentStreak;
+    case 'streak-week':
+    case 'streak-month':
+    case 'streak-total':
+      return state.streakTotal;
+    case 'streak-longest':
+      return state.streakLongest;
+    case 'concepts-with-authors':
+      return state.concepts.filter((c) => c.authorIds.length > 0).length;
+    case 'exams-added':
+      return state.exams.length;
+    case 'exams-done':
+      return state.exams.filter((e) => e.completed).length;
+    case 'concepts-known':
+      return state.concepts.length;
+    case 'authors-known':
+      return state.authors.length;
+    case 'materials-added':
+      return state.materials.length;
+    case 'courses':
+      return state.courses.length;
+    case 'flashcards-count':
+      return state.flashcards.length;
+    case 'techniques-used':
+    case 'techniques-explored':
+      return state.techniques.length;
+    case 'study-minutes':
+      return state.sessions.reduce((acc, s) => acc + (s.durationMinutes ?? 0), 0);
+    case 'reading-count':
+      return state.readings.length;
+    case 'reading-in-progress':
+      return state.readings.filter((r) => r.status === 'lendo').length;
+    case 'loose-notes':
+      return state.looseNotes.length;
+    case 'internship-hours':
+      return state.internshipLogs.reduce((acc, l) => acc + (l.hours ?? 0), 0);
+    case 'internship-logs':
+      return state.internshipLogs.length;
+    case 'tcc-chapters-done':
+      return state.tcc.chapters.filter((c) => c.completed).length;
+    case 'questions-created':
+      return answeredQuestionIds(state.quizSessions).size;
+    case 'questions-mastered':
+      return correctlyAnsweredQuestionIds(state.quizSessions).size;
+    default:
+      return 0;
   }
 }
 

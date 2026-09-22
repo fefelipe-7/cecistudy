@@ -40,7 +40,7 @@ export const StudyLeiturasScreen: React.FC = () => {
             <p className="text-[10px] text-ceci-secondary leading-tight">páginas lidas</p>
           </div>
           <div className="px-1">
-            <p className="font-display font-bold text-lg text-green-700">{doneCount}</p>
+            <p className="font-display font-bold text-lg text-status-success-strong">{doneCount}</p>
             <p className="text-[10px] text-ceci-secondary leading-tight">concluídos</p>
           </div>
         </div>
@@ -88,7 +88,7 @@ export const StudyLeiturasScreen: React.FC = () => {
                   <span
                     className={`text-[10px] font-semibold px-2.5 py-1 rounded-full border shrink-0 ${
                       isDone
-                        ? 'bg-green-50 text-green-700 border-green-200'
+                        ? 'bg-status-success-surface text-status-success-strong border-status-success-border'
                         : r.status === 'lendo'
                           ? 'bg-surface-blue text-ceci-academic-strong border-ceci-border-academic'
                           : 'bg-surface-muted text-ceci-tertiary border-ceci-border-default'
@@ -115,7 +115,7 @@ export const StudyLeiturasScreen: React.FC = () => {
 
                 <button
                   onClick={() => setReaderModalReading(r)}
-                  className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-2xl text-xs font-semibold text-white bg-ceci-primary hover:bg-ceci-primary-hover cursor-pointer"
+                  className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-2xl text-xs font-semibold text-ceci-on-primary bg-ceci-primary hover:bg-ceci-primary-hover cursor-pointer"
                 >
                   <BookOpen className="w-4 h-4" />
                   {isDone ? 'reler leitura' : r.status === 'lendo' ? 'continuar leitura' : 'iniciar leitura'}

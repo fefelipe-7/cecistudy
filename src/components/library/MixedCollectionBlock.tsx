@@ -36,13 +36,13 @@ interface MixedCollectionBlockProps {
 }
 
 /** Bloco de categoria mista: shelf com capas de livros + artigos em folha de papel. */
-export const MixedCollectionBlock: React.FC<MixedCollectionBlockProps> = ({
+export const MixedCollectionBlock: React.FC<MixedCollectionBlockProps> = React.memo(function MixedCollectionBlock({
   collection,
   savedBookIds,
   readProgress,
   onSelectBook,
   onSelectArticle,
-}) => {
+}) {
   const Icon = ICON_MAP[collection.icon] ?? Globe;
   const total = collection.books.length + collection.articles.length;
 
@@ -75,7 +75,7 @@ export const MixedCollectionBlock: React.FC<MixedCollectionBlockProps> = ({
       </div>
 
       {/* Grade mista expandida: livros + artigos */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-3 gap-y-4">
+      <div className="grid grid-cols-3 gap-x-3 gap-y-4 overflow-y-auto">
         {collection.books.map((book) => {
           const isSaved = savedBookIds.has(book.id);
           const readPages = readProgress?.[book.id];
@@ -96,35 +96,35 @@ export const MixedCollectionBlock: React.FC<MixedCollectionBlockProps> = ({
               {/* Capa grande */}
               <div
                 className="w-full h-[150px] sm:h-[165px] rounded-2xl p-3 flex flex-col justify-between relative overflow-hidden shadow-xs border border-black/5 card-lift"
-                style={{ backgroundColor: book.coverColor }}
+                style={{ backgroundColor: `color-mix(in srgb, ${book.coverColor} 70%, var(--color-cover-base))` }}
               >
                 {/* Lombada */}
                 <div className="absolute left-0 top-0 bottom-0 w-2.5 bg-black/10 border-r border-black/10" />
 
                 <div className="pl-1.5 flex items-center justify-between">
-                  <span className="text-[8px] font-extrabold uppercase tracking-wider bg-white/90 text-ceci-primary px-1.5 py-0.5 rounded shadow-2xs line-clamp-1 max-w-[80px]">
+                  <span className="text-[8px] font-extrabold uppercase tracking-wider bg-cover-base/90 text-cover-ink px-1.5 py-0.5 rounded shadow-2xs line-clamp-1 max-w-[80px]">
                     {book.badge || 'Livro'}
                   </span>
                   {isSaved && (
-                    <Bookmark className="w-3.5 h-3.5 fill-ceci-primary text-ceci-primary" />
+                    <Bookmark className="w-3.5 h-3.5 fill-cover-ink text-cover-ink" />
                   )}
                 </div>
 
                 <div className="pl-1.5 my-auto">
-                  <p className="font-display font-bold text-xs sm:text-[13px] leading-tight text-ceci-primary line-clamp-4">
+                  <p className="font-display font-bold text-xs sm:text-[13px] leading-tight text-cover-ink line-clamp-4">
                     {book.title}
                   </p>
                 </div>
 
                 <div className="pl-1.5">
-                  <p className="text-[9px] font-semibold text-ceci-primary/80 line-clamp-1">
+                  <p className="text-[9px] font-semibold text-cover-ink/80 line-clamp-1">
                     {book.author}
                   </p>
 
                   {isReading && book.totalPages && readPages && (
                     <div className="mt-1 w-full bg-black/10 h-1 rounded-full overflow-hidden">
                       <div
-                        className="bg-ceci-primary h-full rounded-full"
+                        className="bg-cover-ink h-full rounded-full"
                         style={{ width: `${progressPercent}%` }}
                       />
                     </div>
@@ -156,4 +156,4 @@ export const MixedCollectionBlock: React.FC<MixedCollectionBlockProps> = ({
       </div>
     </div>
   );
-};
+});

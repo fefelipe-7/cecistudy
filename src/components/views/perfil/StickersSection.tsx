@@ -1,16 +1,18 @@
 // Perfil — bloco "stickers & conquistas" (MOD-001 / B.6).
 // Extraído de `PerfilView.tsx`.
 import React from 'react';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Sparkles } from 'lucide-react';
 import type { Sticker } from '../../../types';
 
 interface StickersSectionProps {
   stickers: Sticker[];
   unlocked: number;
   onOpen: () => void;
+  level: number;
+  title: string;
 }
 
-const StickersSection: React.FC<StickersSectionProps> = ({ stickers, unlocked, onOpen }) => (
+const StickersSection: React.FC<StickersSectionProps> = ({ stickers, unlocked, onOpen, level, title }) => (
   <div id="perfil-stickers" className="scroll-mt-4 rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm space-y-3">
     <div className="flex items-center justify-between gap-2">
       <div>
@@ -28,6 +30,14 @@ const StickersSection: React.FC<StickersSectionProps> = ({ stickers, unlocked, o
         ver conquistas
         <ChevronRight className="w-4 h-4" />
       </button>
+    </div>
+
+    <div className="flex items-center gap-2 flex-wrap">
+      <span className="inline-flex items-center gap-1.5 bg-ceci-brand-strong px-3.5 py-2 rounded-2xl text-ceci-on-brand">
+        <Sparkles className="w-4 h-4" />
+        <span className="text-xs font-bold">nível {level}</span>
+      </span>
+      <span className="text-[11px] text-ceci-secondary">{title}</span>
     </div>
 
     <div className="flex items-center gap-2 flex-wrap pt-1">

@@ -15,7 +15,7 @@ interface ArticleDetailModalProps {
 }
 
 const chip =
-  'text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-white/90 text-ceci-primary shadow-2xs';
+  'text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-cover-base/90 text-cover-ink shadow-2xs';
 
 export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({
   article,
@@ -42,13 +42,13 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({
       <div
         className="relative shrink-0 pt-6"
         style={{
-          backgroundColor: familia?.color ?? '#F3EEE8',
-          backgroundImage: 'linear-gradient(to bottom, rgba(255,255,255,0.28), rgba(0,0,0,0.06))',
+          backgroundColor: `color-mix(in srgb, ${familia?.color ?? '#F3EEE8'} 65%, var(--color-cover-base))`,
+          backgroundImage: 'linear-gradient(to bottom, rgba(255,255,255,0.18), rgba(0,0,0,0.06))',
         }}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-ceci-primary flex items-center justify-center cursor-pointer shadow-2xs tap-interactive"
+          className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-surface-default/85 hover:bg-surface-default text-ceci-primary flex items-center justify-center cursor-pointer shadow-2xs tap-interactive"
           aria-label="fechar artigo"
         >
           <X className="w-4 h-4" />
@@ -66,10 +66,10 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({
           </span>
         </div>
 
-        {/* Medalhão do artigo sobrepondo a fronteira */}
+         {/* Medalhão do artigo sobrepondo a fronteira */}
         <div className="relative flex justify-center mt-3">
           <div
-            className="relative z-10 w-14 h-14 -mb-7 rounded-2xl bg-white/95 shadow-lg border border-black/10 flex items-center justify-center rotate-2 transition-transform duration-300"
+            className="relative z-10 w-14 h-14 -mb-7 rounded-2xl bg-cover-base/95 shadow-lg border border-black/5 flex items-center justify-center rotate-2 transition-transform duration-300"
             style={{ color: familia?.accent ?? '#6D6366' }}
           >
             <FileText className="w-6 h-6" />
@@ -124,7 +124,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({
                 href={article.linkDireto}
                 target="_blank"
                 rel="external noopener noreferrer"
-                className="flex-1 bg-ceci-primary hover:bg-ceci-primary-hover text-white py-2.5 rounded-2xl text-xs font-semibold flex items-center justify-center gap-2 shadow-2xs transition-transform active:scale-98 cursor-pointer min-h-[44px]"
+                className="flex-1 bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary py-2.5 rounded-2xl text-xs font-semibold flex items-center justify-center gap-2 shadow-2xs transition-transform active:scale-98 cursor-pointer min-h-[44px]"
               >
                 <ExternalLink className="w-4 h-4" />
                 <span>abrir artigo ↗</span>

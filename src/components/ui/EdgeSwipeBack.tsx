@@ -9,6 +9,7 @@ import {
   shouldIgnoreTarget,
   supportsEdgeSwipe,
 } from '@/lib/swipe';
+import { setNavMotionContext } from '@/lib/motion';
 
 export type EdgeSwipeBackProps = {
   /** Valor de transform `x` da camada de slide (o gesto anima ele). */
@@ -48,6 +49,8 @@ export function EdgeSwipeBack({ swipeX, onBack, canGoBack }: EdgeSwipeBackProps)
 
     const onPointerDown = (e: PointerEvent) => {
       if (e.pointerType === 'mouse') return;
+      // Só o web/PWA usa este fallback: no nativo o gesto é tratado pelo plugin
+      // Swift e o componente nem é renderizado (guard no MobileAppShell).
       if (!stateRef.current.canGoBack) return;
       if (!supportsEdgeSwipe(window.innerWidth)) return;
       if (e.clientX > EDGE_WIDTH) return;
@@ -75,10 +78,18 @@ export function EdgeSwipeBack({ swipeX, onBack, canGoBack }: EdgeSwipeBackProps)
       if (!engaged) return;
       engaged = false;
       const commit = shouldCommit(dragX);
-      // Commit contínuo: navega e devolve o restinho do gesto ao 0 com spring
-      // EM SINCRONIA com a transição de pop — o movimento nunca "salta" para 0.
-      // No cancelamento o spring apenas retorna a tela ao lugar.
-      if (commit) stateRef.current.onBack();
+      if (commit) {
+        // Contexto do pop iniciado pelo gesto: a variante de exit parte do ponto
+        // em que o dedo soltou (gestureX) e desliza a tela p/ a direita até sair.
+        // O transform do wrapper zera no mesmo frame — o exit assume a posição do
+        // dedo, sem salto de continuidade.
+        setNavMotionContext(-1, dragX);
+        swipeX.set(0);
+        const handled = stateRef.current.onBack();
+        if (!handled) setNavMotionContext(0, 0);
+        return;
+      }
+      // Cancelado: spring devolve a tela ao lugar.
       animate(swipeX, 0, { type: 'spring', stiffness: 500, damping: 42 });
     };
 

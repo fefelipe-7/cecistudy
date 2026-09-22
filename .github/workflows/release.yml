@@ -8,11 +8,9 @@ name: release mobile (apk + ipa + ota)
 #   2. builda o APK Android (release assinado quando há keystore, senão debug);
 #   3. builda o IPA iOS (release assinado quando há certificado; senão unsigned de
 #      dispositivo — pronto para sideload com o seu apple id, ex. Sideloadly/AltStore);
-#   4. builda o app desktop (Tauri 2) para windows/macos/linux e anexa os
-#      instaladores ao mesmo Release (+ latest.json do updater quando assinado);
-#   5. cria um GitHub Release `v<versão>` com os artefatos de cada dispositivo
-#      (cecistudy-<versão>-android.apk / -ios.ipa / .zip do bundle web / instaladores desktop);
-#   6. publica o OTA no GitHub Pages com a MESMA versão do release — ou seja,
+#   4. cria um GitHub Release `v<versão>` com os artefatos de cada dispositivo
+#      (cecistudy-<versão>-android.apk / -ios.ipa / .zip do bundle web);
+#   5. publica o OTA no GitHub Pages com a MESMA versão do release — ou seja,
 #      todo release vira também uma atualização over-the-air do app.
 #
 # Versão:
@@ -359,9 +357,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          DESKTOP_ASSETS=$(find final -maxdepth 1 \( -name '*.exe' -o -name '*.msi' -o -name '*.dmg' \
-            -o -name '*.app.tar.gz' -o -name '*.AppImage' -o -name '*.deb' -o -name '*.rpm' \
-            -o -name '*.sig' \) -printf '%p ' 2>/dev/null || true)
           NOTES=$(cat <<EOF
           ## cecistudy v$VERSION
           bundle web e apps nativos (android/iOS) gerados pelo pipeline de release mobile.
@@ -380,7 +375,7 @@ jobs:
             gh release upload "$TAG" \
               final/cecistudy-$VERSION-android.apk \
               final/cecistudy-$VERSION-ios.ipa \
-              final/cecistudy-$VERSION.zip $DESKTOP_ASSETS --clobber || true
+              final/cecistudy-$VERSION.zip --clobber || true
           else
             # shellcheck disable=SC2086
             gh release create "$TAG" \
@@ -388,7 +383,7 @@ jobs:
               --notes "$NOTES" \
               final/cecistudy-$VERSION-android.apk \
               final/cecistudy-$VERSION-ios.ipa \
-              final/cecistudy-$VERSION.zip $DESKTOP_ASSETS
+              final/cecistudy-$VERSION.zip
           fi
 
       - name: publish ota (version.json + bundles)

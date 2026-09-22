@@ -2,7 +2,7 @@
 // Extraídas de `ExploreSections.tsx`: repertório, psicoterapias, mistas,
 // testes, autores, conceitos, abordagens, multidisciplinar e artigos.
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   TrendingUp,
   Bookmark,
@@ -40,12 +40,20 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
   openApproach,
 }) => {
   const {
-    activeCategory, isOpen, toggleSection,
+    activeCategory, isOpen, toggleSection, hasActiveFilters,
     filteredTrendingBooks, filteredCatalogCollections, filteredMixedCollections,
     filteredArticleGroups, totalFilteredArticles, testCollections, authorCollections,
     conceptCollections, approachCollections, multidisciplinaryCollections,
     catalogBooks, psychotherapyCollections,
   } = filter;
+
+  // Handlers estáveis: sem eles, os blocos memoizados re-renderizam a cada render do pai.
+  const handleSelectBook = useCallback((book: CollectionBook) => onSelectBook(book), [onSelectBook]);
+  const handleSelectArticle = useCallback(
+    (article: Article) => onSelectArticle(article),
+    [onSelectArticle]
+  );
+
   return (
     <>      {/* EXPLORAR: REPERTÔRIO & LEITURAS RECOMENDADAS */}
       {filteredTrendingBooks.length > 0 && (
@@ -60,6 +68,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
           }
           open={isOpen('repertorio')}
           onToggle={() => toggleSection('repertorio')}
+          defer={!hasActiveFilters}
         >
           <p className="text-xs text-ceci-secondary leading-relaxed">
             obras de finanças comportamentais, design de experiência, literatura e decisão para enriquecer sua visão clínica.
@@ -87,22 +96,22 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
                     <div className="absolute left-0 top-0 bottom-0 w-2.5 bg-black/10 border-r border-black/10" />
 
                     <div className="pl-1.5 flex items-center justify-between">
-                      <span className="text-[8px] font-extrabold uppercase bg-white/90 text-ceci-primary px-1.5 py-0.5 rounded shadow-2xs line-clamp-1">
+                      <span className="text-[8px] font-extrabold uppercase bg-cover-base/90 text-cover-ink px-1.5 py-0.5 rounded shadow-2xs line-clamp-1">
                         {book.badge || 'livro'}
                       </span>
                       {isSaved && (
-                        <Bookmark className="w-3.5 h-3.5 fill-ceci-primary text-ceci-primary" />
+                        <Bookmark className="w-3.5 h-3.5 fill-cover-ink text-cover-ink" />
                       )}
                     </div>
 
                     <div className="pl-1.5 my-auto">
-                      <p className="font-display font-bold text-[11px] sm:text-[12px] text-ceci-primary line-clamp-3 leading-tight">
+                      <p className="font-display font-bold text-[11px] sm:text-[12px] text-cover-ink line-clamp-3 leading-tight">
                         {book.title}
                       </p>
                     </div>
 
                     <div className="pl-1.5">
-                      <p className="text-[9px] font-semibold text-ceci-primary/80 line-clamp-1">
+                      <p className="text-[9px] font-semibold text-cover-ink/80 line-clamp-1">
                         {book.author}
                       </p>
                     </div>
@@ -137,6 +146,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
           }
           open={isOpen('psicoterapias')}
           onToggle={() => toggleSection('psicoterapias')}
+          defer={!hasActiveFilters}
         >
           <p className="text-xs text-ceci-secondary leading-relaxed">
             as grandes obras de cada abordagem terapêutica — da psicanálise à terapia pragmática, com resumo e trecho memorável para navegar o repertório.
@@ -149,7 +159,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
                 collection={col}
                 savedBookIds={savedBookIds}
                 readProgress={readingProgress}
-                onSelectBook={(book) => onSelectBook(book)}
+                onSelectBook={handleSelectBook}
               />
             ))}
           </div>
@@ -169,6 +179,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
           }
           open={isOpen('mistas')}
           onToggle={() => toggleSection('mistas')}
+          defer={!hasActiveFilters}
         >
           <p className="text-xs text-ceci-secondary leading-relaxed">
             trilhas temáticas que cruzam obras e artigos de diferentes abordagens — toque para abrir e registrar suas páginas lidas.
@@ -181,8 +192,8 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
                 collection={col}
                 savedBookIds={savedBookIds}
                 readProgress={readingProgress}
-                onSelectBook={(book) => onSelectBook(book)}
-                onSelectArticle={(article) => onSelectArticle(article)}
+                onSelectBook={handleSelectBook}
+                onSelectArticle={handleSelectArticle}
               />
             ))}
           </div>
@@ -193,7 +204,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
       {(activeCategory === 'todos' || activeCategory === 'testes') && testCollections.length > 0 && (
         <ExploreSection
           id="testes"
-          icon={<BrainCircuit className="w-4 h-4 text-success-deep" />}
+          icon={<BrainCircuit className="w-4 h-4 text-status-success-strong" />}
           title="testes, escalas & avaliação clínica"
           badge={
             <span className="text-[11px] text-ceci-tertiary">
@@ -202,6 +213,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
           }
           open={isOpen('testes')}
           onToggle={() => toggleSection('testes')}
+          defer={!hasActiveFilters}
         >
           <div className="space-y-6">
             {testCollections.map((col) => (
@@ -209,7 +221,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
                 key={col.id}
                 collection={col}
                 savedBookIds={savedBookIds}
-                onSelectBook={(book) => onSelectBook(book)}
+                onSelectBook={handleSelectBook}
                 readProgress={readingProgress}
               />
             ))}
@@ -230,6 +242,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
           }
           open={isOpen('autores')}
           onToggle={() => toggleSection('autores')}
+          defer={!hasActiveFilters}
         >
           <div className="space-y-6">
             {authorCollections.map((col) => (
@@ -237,7 +250,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
                 key={col.id}
                 collection={col}
                 savedBookIds={savedBookIds}
-                onSelectBook={(book) => onSelectBook(book)}
+                onSelectBook={handleSelectBook}
                 readProgress={readingProgress}
               />
             ))}
@@ -258,6 +271,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
           }
           open={isOpen('conceitos')}
           onToggle={() => toggleSection('conceitos')}
+          defer={!hasActiveFilters}
         >
           <div className="space-y-6">
             {conceptCollections.map((col) => (
@@ -265,7 +279,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
                 key={col.id}
                 collection={col}
                 savedBookIds={savedBookIds}
-                onSelectBook={(book) => onSelectBook(book)}
+                onSelectBook={handleSelectBook}
                 readProgress={readingProgress}
               />
             ))}
@@ -277,7 +291,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
       {(activeCategory === 'todos' || activeCategory === 'abordagens') && approachCollections.length > 0 && (
         <ExploreSection
           id="abordagens"
-          icon={<Bookmark className="w-4 h-4 text-beige-700" />}
+          icon={<Bookmark className="w-4 h-4 text-ceci-tertiary" />}
           title="abordagens & correntes da psicologia"
           badge={
             <span className="text-[11px] text-ceci-tertiary">
@@ -286,6 +300,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
           }
           open={isOpen('abordagens')}
           onToggle={() => toggleSection('abordagens')}
+          defer={!hasActiveFilters}
         >
           <div className="space-y-6">
             {approachCollections.map((col) => (
@@ -309,15 +324,16 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
       {(activeCategory === 'todos' || activeCategory === 'multidisciplinar') && multidisciplinaryCollections.length > 0 && (
         <ExploreSection
           id="multidisciplinar"
-          icon={<Compass className="w-4 h-4 text-gold" />}
+          icon={<Compass className="w-4 h-4 text-status-warning-strong" />}
           title="bagagem complementar & visão expandida"
           badge={
-            <span className="text-[10px] font-bold text-success-deep bg-surface-mint-soft px-2.5 py-0.5 rounded-full border border-ceci-border-academic">
+            <span className="text-[10px] font-bold text-status-success-strong bg-status-success-surface px-2.5 py-0.5 rounded-full border border-ceci-border-academic">
               100 obras · 10 áreas
             </span>
           }
           open={isOpen('multidisciplinar')}
           onToggle={() => toggleSection('multidisciplinar')}
+          defer={!hasActiveFilters}
         >
           <p className="text-xs text-ceci-secondary leading-relaxed">
             filosofia, literatura, sociologia, história, neurociência e mais — o repertório que enriquece seu olhar clínico.
@@ -329,7 +345,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
                 key={col.id}
                 collection={col}
                 savedBookIds={savedBookIds}
-                onSelectBook={(book) => onSelectBook(book)}
+                onSelectBook={handleSelectBook}
                 readProgress={readingProgress}
               />
             ))}
@@ -350,6 +366,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
           }
           open={isOpen('artigos')}
           onToggle={() => toggleSection('artigos')}
+          defer={!hasActiveFilters}
         >
           <p className="text-xs text-ceci-secondary leading-relaxed">
             referências reais com DOI — toque para ler o resumo e abrir o artigo onde ele está disponível.

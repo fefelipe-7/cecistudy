@@ -40,6 +40,7 @@ export const emptyProfile: UserProfile = {
   targetCareer: '',
   dailyQuote: '',
   stickersCollected: 0,
+  categoryXp: { faculdade: 0, estudo: 0, leituras: 0, jornada: 0 },
   photoUrl: '',
 };
 

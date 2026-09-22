@@ -18,16 +18,14 @@ import { BootSplash } from '@/components/ui/BootSplash';
 import { MobileAppShell } from '@/shells/MobileAppShell';
 import { MobileOverlays } from '@/overlays/MobileOverlays';
 import { MobileAppProvider } from '../MobileAppProvider';
-import { initPlatformFlags } from '@/lib/platform';
 import { preloadScreenChunks } from '@/shells/SharedScreenLayers';
 import '@/index.css';
 
-initPlatformFlags();
 preloadScreenChunks();
 
 /**
  * Entrypoint próprio do cliente mobile (Fase 5).
- * Renderiza `MobileAppShell` direto — sem o branch `isDesktop` do `src/App.tsx`.
+ * Renderiza `MobileAppShell` direto — sem casca desktop.
  * O estado/navegação vêm do `MobileAppProvider` (casca mobile, spec 07).
  */
 createRoot(document.getElementById('root')!).render(

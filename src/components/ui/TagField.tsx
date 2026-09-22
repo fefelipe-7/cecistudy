@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import { TagList } from './TagList';
 
 const inputClass =
-  'w-full bg-surface-input border border-transparent rounded-2xl px-4 py-4 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 transition-shadow';
+  'w-full bg-surface-input border border-transparent rounded-2xl px-4 py-4 text-sm text-ceci-primary placeholder-ceci-faded focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 focus:border-ceci-brand transition-shadow';
 
 interface TagFieldProps {
   label?: string;
@@ -62,7 +62,7 @@ export const TagField: React.FC<TagFieldProps> = ({
         <button
           type="button"
           onClick={add}
-          className="w-14 h-14 rounded-2xl bg-ceci-primary hover:bg-ceci-primary-hover text-white flex items-center justify-center shrink-0 shadow-2xs transition-transform active:scale-95 cursor-pointer"
+          className="w-14 h-14 rounded-2xl bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary flex items-center justify-center shrink-0 shadow-2xs transition-transform active:scale-95 cursor-pointer"
           aria-label="adicionar"
         >
           <Plus className="w-5 h-5 stroke-[2.5]" />
