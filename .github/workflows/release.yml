@@ -155,7 +155,18 @@ jobs:
           java-version: '21'
 
       - name: setup android sdk
-        uses: android-actions/setup-android@v3
+        # setup-android@v3 quebra na imagem atual (6/7 licenças recusadas — Android XR).
+        # Usa o SDK pré-instalado e aceita as licenças sem interação; o gradle
+        # baixa automaticamente plataforma/build-tools 36 quando faltarem.
+        run: |
+          SDK=/usr/local/lib/android/sdk
+          echo "ANDROID_HOME=$SDK" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK" >> "$GITHUB_ENV"
+          SDKM="$SDK/cmdline-tools/latest/bin/sdkmanager"
+          [ -x "$SDKM" ] || SDKM="$SDK/cmdline-tools/16.0/bin/sdkmanager"
+          yes | "$SDKM" --licenses >/dev/null 2>&1 || true
+          yes | "$SDKM" "platforms;android-36" "build-tools;36.0.0" "platform-tools" >/dev/null 2>&1 || true
+          echo "→ sdk pronto (compileSdk 36)" >> "$GITHUB_STEP_SUMMARY"
 
       - name: install deps
         run: npm ci
