@@ -36,7 +36,7 @@ export interface DynamicHeaderConfig {
   code?: string;
   badge?: string;
   badgeColor?: string;
-  icon?: CourseIconName;
+  icon?: CourseIconName | string;
   color?: string;
   onBack?: () => void;
   isBookmarked?: boolean;

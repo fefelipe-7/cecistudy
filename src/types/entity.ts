@@ -40,7 +40,7 @@ export interface AttendanceRecord {
 
 /** Frequência de uma disciplina (substitui o par {attended,total}). */
 export interface CourseAttendance {
-  /** Total de aulas previstas/manual (ajustável; 0 = não configurado). */
+  /** Total de aulas previstas/manual (ajustável; 0 = não configurado). Derivado das horas no wizard/editar. */
   total: number;
   /** Percentual mínimo de presença da disciplina (default 75). */
   minPct: number;
@@ -48,6 +48,10 @@ export interface CourseAttendance {
   baseAttended?: number;
   /** Histórico de participação por aula (mais recente primeiro). */
   records: AttendanceRecord[];
+  /** Carga horária total em horas (SPEC-004) — fonte da verdade na UI; `total` é derivado. */
+  totalHours?: number;
+  /** Horas já feitas antes dos registros (SPEC-004) — `baseAttended` é derivado. */
+  baseHoursDone?: number;
 }
 
 export interface Course {
@@ -61,9 +65,9 @@ export interface Course {
   /** Horários estruturados da disciplina (dias da semana + início/término). */
   schedule: CourseScheduleSlot[];
   room?: string;
-  category?: 'obrigatoria' | 'complementar';
+  category?: 'obrigatoria' | 'complementar' | 'optativa' | 'estagio' | 'tcc' | 'extra';
   color: string; // hex code or style class
-  icon: string; // Lucide icon name
+  icon: string; // nome Lucide (ex.: 'Brain') OU emoji (SPEC-004)
   /** Média mínima para aprovação (0-10, ex.: 7). Fallback de exibição: 7. */
   minGrade?: number;
   description?: string;

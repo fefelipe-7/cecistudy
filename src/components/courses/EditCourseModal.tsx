@@ -3,11 +3,29 @@ import { Course, CourseScheduleSlot } from '../../types';
 import { Modal } from '../ui/Modal';
 import { ColorSwatchPicker } from '../ui/ColorSwatchPicker';
 import { SchedulePicker } from '../ui/SchedulePicker';
+import { CourseIconPicker } from '../ui/CourseIconPicker';
+import { EmailSlider } from '../ui/EmailSlider';
 import { formatCourseSchedule } from '../../lib/schedule';
-import { COURSE_ICON_OPTIONS } from '../../lib/courseOptions';
-import { COURSE_ICON_COMPONENTS } from '../ui/CourseIcon';
+import { buildAttendanceFromHours, hoursFromClasses, hoursPerClassFromSchedule } from '../../lib/attendance';
 import { CatalogMultiSelect } from '../ui/CatalogMultiSelect';
 import { useCourseRepertorio } from '../wizards/useCourseRepertorio';
+
+const CATEGORIES: Array<Course['category']> = [
+  'obrigatoria',
+  'complementar',
+  'optativa',
+  'estagio',
+  'tcc',
+  'extra',
+];
+const CATEGORY_LABELS: Record<Course['category'], string> = {
+  obrigatoria: 'obrigatória',
+  complementar: 'complementar',
+  optativa: 'optativa',
+  estagio: 'estágio',
+  tcc: 'tcc',
+  extra: 'extra',
+};
 
 interface EditCourseModalProps {
   isOpen: boolean;
@@ -36,10 +54,10 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
   const [icon, setIcon] = useState('Brain');
   const [minGrade, setMinGrade] = useState('7');
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState<'obrigatoria' | 'complementar'>('obrigatoria');
+  const [category, setCategory] = useState<Course['category']>('obrigatoria');
   const [officeHours, setOfficeHours] = useState('');
-  const [baseAttended, setBaseAttended] = useState('0');
-  const [attendanceTotal, setAttendanceTotal] = useState('0');
+  const [attHours, setAttHours] = useState('');
+  const [attHoursDone, setAttHoursDone] = useState('');
   const [attendanceMinPct, setAttendanceMinPct] = useState('75');
   const [conceptIds, setConceptIds] = useState<string[]>([]);
   const [authorIds, setAuthorIds] = useState<string[]>([]);
@@ -59,11 +77,23 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
       setIcon(course.icon);
       setMinGrade(String(course.minGrade ?? 7));
       setDescription(course.description || '');
-      setCategory(course.category === 'complementar' ? 'complementar' : 'obrigatoria');
+      setCategory(course.category ?? 'obrigatoria');
       setOfficeHours(course.officeHours || '');
-      setBaseAttended(String(course.attendance?.baseAttended ?? 0));
-      setAttendanceTotal(String(course.attendance?.total ?? 0));
-      setAttendanceMinPct(String(course.attendance?.minPct ?? 75));
+      const emptySchedule: CourseScheduleSlot[] = [];
+      const rawSchedule = Array.isArray(course.schedule) ? course.schedule : emptySchedule;
+      const att = course.attendance;
+      const hpc = hoursPerClassFromSchedule(att?.totalHours ? rawSchedule : emptySchedule);
+      if (att?.totalHours && att.totalHours > 0) {
+        setAttHours(String(att.totalHours));
+        setAttHoursDone(String(att.baseHoursDone ?? 0));
+      } else if (att && att.total > 0) {
+        setAttHours(String(Math.round(att.total * hpc)));
+        setAttHoursDone(String(Math.round(hoursFromClasses(att.baseAttended ?? 0, rawSchedule))));
+      } else {
+        setAttHours('');
+        setAttHoursDone('');
+      }
+      setAttendanceMinPct(String(att?.minPct ?? 75));
       setConceptIds(course.conceptIds ?? []);
       setAuthorIds(course.authorIds ?? []);
       setBibliographyIds(course.bibliographyIds ?? []);
@@ -74,15 +104,22 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
     e.preventDefault();
     if (!course) return;
     if (!name.trim()) return;
-    const att = parseInt(attendanceTotal) || 0;
+    const totalHours = parseFloat(String(attHours).replace(',', '.')) || 0;
+    const hoursDone = parseFloat(String(attHoursDone).replace(',', '.')) || 0;
     const minPct = Math.max(0, Math.min(100, parseInt(attendanceMinPct) || 75));
+    const built = buildAttendanceFromHours({
+      totalHours: totalHours > 0 ? totalHours : undefined,
+      hoursDone: hoursDone > 0 ? hoursDone : undefined,
+      minPct,
+      schedule: Array.isArray(schedule) ? schedule : [],
+    });
     onSave({
       ...course,
       name: name.trim(),
       code: code.trim(),
       professor: professor.trim(),
       semester: semester.trim(),
-      schedule: schedule,
+      schedule: Array.isArray(schedule) ? schedule : [],
       room: room.trim(),
       color,
       icon,
@@ -90,15 +127,9 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
       description: description.trim(),
       category,
       officeHours: officeHours.trim() || undefined,
-      attendance:
-        att > 0
-          ? {
-              total: att,
-              minPct,
-              baseAttended: Math.max(0, Math.min(att, parseInt(baseAttended) || 0)),
-              records: course.attendance?.records ?? [],
-            }
-          : undefined,
+      attendance: built
+        ? { ...built, records: course.attendance?.records ?? [] }
+        : undefined,
       conceptIds,
       authorIds,
       bibliographyIds,
@@ -145,9 +176,12 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
             </div>
             <div>
               <label className={labelClass}>categoria</label>
-              <select value={category} onChange={(e) => setCategory(e.target.value as 'obrigatoria' | 'complementar')} className={inputClass}>
-                <option value="obrigatoria">obrigatória</option>
-                <option value="complementar">complementar</option>
+              <select value={category ?? ''} onChange={(e) => setCategory(e.target.value as Course['category'])} className={inputClass}>
+                {CATEGORIES.map((c) => (
+                  <option key={c} value={c}>
+                    {CATEGORY_LABELS[c]}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="col-span-2">
@@ -177,18 +211,47 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
               <input type="text" value={officeHours} onChange={(e) => setOfficeHours(e.target.value)} className={inputClass} placeholder="ex: quartas, 14h - 15h30, sala dos professores" />
             </div>
 
-            <div>
-              <label className={labelClass}>total de aulas</label>
-              <input type="number" min={0} value={attendanceTotal} onChange={(e) => setAttendanceTotal(e.target.value)} className={inputClass} placeholder="0 = não registrar" />
-            </div>
-            <div>
-              <label className={labelClass}>mínimo de presença (%)</label>
-              <input type="number" min={0} max={100} value={attendanceMinPct} onChange={(e) => setAttendanceMinPct(e.target.value)} className={inputClass} placeholder="75" />
-            </div>
-            <div className="col-span-2">
-              <label className={labelClass}>presenças anteriores</label>
-              <input type="number" min={0} value={baseAttended} onChange={(e) => setBaseAttended(e.target.value)} className={inputClass} placeholder="0" />
-              <p className="mt-1 text-[11px] text-ceci-tertiary">presenças que você quer contar direto, sem registrar aula por aula</p>
+            <div className="col-span-2 space-y-4">
+              <div>
+                <label className={labelClass}>carga horária total (h)</label>
+                <input
+                  type="number"
+                  min={1}
+                  max={360}
+                  value={attHours}
+                  onChange={(e) => setAttHours(e.target.value)}
+                  className={inputClass}
+                  placeholder="ex: 66"
+                />
+                {attHours && Number(attHours) > 0 && (
+                  <p className="mt-1 text-[11px] text-ceci-tertiary">
+                    ≈ {Math.max(1, Math.round(Number(attHours) / hoursPerClassFromSchedule(Array.isArray(schedule) ? schedule : [])))} aulas de {hoursPerClassFromSchedule(Array.isArray(schedule) ? schedule : [])}h
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className={labelClass}>horas já feitas (h)</label>
+                <input
+                  type="number"
+                  min={0}
+                  max={Math.max(Number(attHours) || 1, 1)}
+                  value={attHoursDone}
+                  onChange={(e) =>
+                    setAttHoursDone(
+                      String(Math.min(Math.max(0, Number(e.target.value) || 0), Math.max(Number(attHours) || 1, 1)))
+                    )
+                  }
+                  className={inputClass}
+                  placeholder="0"
+                />
+              </div>
+              <div>
+                <label className={labelClass}>mínimo de presença (%)</label>
+                <input type="number" min={0} max={100} value={attendanceMinPct} onChange={(e) => setAttendanceMinPct(e.target.value)} className={inputClass} placeholder="75" />
+                <p className="mt-1 text-[11px] text-ceci-tertiary">
+                  deixe a carga horária vazia para não registrar frequência em horas.
+                </p>
+              </div>
             </div>
           </div>
 
@@ -199,28 +262,7 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
 
           <div>
             <label className={labelClass}>ícone da matéria</label>
-            <div className="flex items-center gap-2 flex-wrap">
-              {COURSE_ICON_OPTIONS.map(({ value: iconName, label }) => {
-                const Icon = COURSE_ICON_COMPONENTS[iconName];
-                if (!Icon) return null;
-                return (
-                  <button
-                    key={iconName}
-                    type="button"
-                    onClick={() => setIcon(iconName)}
-                    className={`w-10 h-10 rounded-xl border flex items-center justify-center tap-interactive cursor-pointer active:scale-95 ${
-                      icon === iconName
-                        ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
-                        : 'bg-surface-default border-ceci-border-default text-ceci-secondary hover:bg-surface-muted'
-                    }`}
-                    aria-label={`ícone ${label}`}
-                    title={label}
-                  >
-                    <Icon className="w-4 h-4" />
-                  </button>
-                );
-              })}
-            </div>
+            <CourseIconPicker value={icon} onChange={setIcon} />
           </div>
 
           <div>

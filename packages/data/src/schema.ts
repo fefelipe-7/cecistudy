@@ -1,5 +1,5 @@
 import { parseLegacySchedule } from '@/lib/schedule';
-import { migrateLegacyAttendance } from '@/lib/attendance';
+import { hoursFromClasses, migrateLegacyAttendance } from '@/lib/attendance';
 
 /**
  * Versão do esquema de dados persistido.
@@ -8,7 +8,7 @@ import { migrateLegacyAttendance } from '@/lib/attendance';
  * incremente esta versão e registre a migração correspondente em `MIGRATIONS`.
  * O export/import carrega a versão junto; o app recusa/avisa dados de versão desconhecida.
  */
-export const SCHEMA_VERSION = 16;
+export const SCHEMA_VERSION = 17;
 
 /** Versão de schema da base da usuária (antigo scaffold SQLite, hoje mantida por compatibilidade de import). */
 export const USER_SCHEMA_VERSION = 1;
@@ -227,6 +227,30 @@ export const MIGRATIONS: Record<number, Migration> = {
       decks,
       flashcards: migrated,
     };
+  },
+  // 16 → 17: frequência em horas (SPEC-004). `CourseAttendance` ganha
+  // `totalHours`/`baseHoursDone` (opcionais). Backfill para disciplinas com
+  // `attendance` que já têm `total`: converte aulas em horas pela duração média
+  // dos slots (idempotente — não sobrescreve horas já presentes).
+  17: (data) => {
+    const courses = (data.courses ?? []) as Record<string, unknown>[];
+    const normalized = courses.map((c) => {
+      const att = c.attendance;
+      if (!att || typeof att !== 'object' || typeof (att as { total?: unknown }).total !== 'number') {
+        return c;
+      }
+      const a = att as { total: number; baseAttended?: number; totalHours?: number; baseHoursDone?: number };
+      const schedule = Array.isArray(c.schedule)
+        ? (c.schedule as { day: number; start: string; end?: string }[])
+        : undefined;
+      const next = {
+        ...a,
+        totalHours: a.totalHours ?? hoursFromClasses(a.total, schedule),
+        baseHoursDone: a.baseHoursDone ?? hoursFromClasses(a.baseAttended ?? 0, schedule),
+      };
+      return { ...c, attendance: next };
+    });
+    return { ...data, courses: normalized };
   },
 };
 

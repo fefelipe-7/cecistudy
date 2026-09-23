@@ -4,6 +4,7 @@ import { ProgressBar } from '../../ui/ProgressBar';
 import { Mascote } from '../../ui/Mascote';
 import {
   attendanceStats,
+  hoursPerClassFromSchedule,
   sortAttendanceRecords,
   AttendanceMarginStatus,
 } from '../../../lib/attendance';
@@ -125,8 +126,8 @@ export const CourseAttendanceCard: React.FC<CourseAttendanceCardProps> = ({
           <UserCheck className="w-3.5 h-3.5 text-ceci-muted" /> frequência
         </span>
         <p className="text-xs text-ceci-secondary leading-relaxed">
-          que tal definir o total de aulas da matéria? aí você acompanha a margem de faltas
-          com carinho ♡
+          que tal definir a carga horária da matéria em horas? aí você acompanha as aulas e a
+          margem de faltas com carinho ♡
         </p>
         {hasClassToday && (
           <div className="grid grid-cols-3 gap-2 pt-1">
@@ -148,7 +149,7 @@ export const CourseAttendanceCard: React.FC<CourseAttendanceCardProps> = ({
           className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-ceci-border-strong text-xs font-bold text-ceci-secondary bg-surface-muted cursor-pointer active:scale-[0.98] transition-transform"
         >
           <Settings2 className="w-3.5 h-3.5" />
-          definir total de aulas
+          definir carga horária (horas)
         </button>
       </section>
     );
@@ -157,6 +158,11 @@ export const CourseAttendanceCard: React.FC<CourseAttendanceCardProps> = ({
   const { attended, absences, cancelled, pct, total, minPct, margin, maxAbsences, status } = stats;
   const last = lastRecord(course.attendance!.records);
   const copy = STATUS_COPY[status];
+  const att = course.attendance!;
+  const hoursDone = att.baseHoursDone ?? 0;
+  const hoursLine = att.totalHours
+    ? `${hoursDone}h feitas de ${att.totalHours}h · ${att.totalHours}h = ${total} aulas de ${hoursPerClassFromSchedule(Array.isArray(course.schedule) ? course.schedule : [])}h`
+    : null;
 
   const marginLine =
     margin > 0
@@ -192,6 +198,7 @@ export const CourseAttendanceCard: React.FC<CourseAttendanceCardProps> = ({
         <p className="text-ceci-tertiary">
           {attended} de {total} aulas registradas · presenças valem {minPct}% de mínimo
         </p>
+        {hoursLine && <p className="text-ceci-tertiary">{hoursLine}</p>}
         {last && (
           <p className="text-ceci-tertiary">
             última marcação: {formatShortDate(last.date)} · {RECORD_LABEL[last.status]}
@@ -230,7 +237,7 @@ export const CourseAttendanceCard: React.FC<CourseAttendanceCardProps> = ({
           className="text-[11px] font-semibold text-ceci-tertiary hover:text-ceci-primary transition-colors cursor-pointer flex items-center gap-1"
         >
           <Settings2 className="w-3.5 h-3.5" />
-          <span>ajustar contagens</span>
+          <span>ajustar carga & contagens</span>
         </button>
         {onGoToHistory && (
           <button

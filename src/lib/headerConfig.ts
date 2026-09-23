@@ -345,7 +345,7 @@ export function buildHeaderConfig(input: HeaderConfigInput): DynamicHeaderConfig
       title: focusedCourse.name,
       subtitle: `${focusedCourse.code || 'sem código'} • ${focusedCourse.professor}`,
       code: focusedCourse.code || 'sem código',
-      icon: focusedCourse.icon as CourseIconName,
+      icon: focusedCourse.icon,
       color: focusedCourse.color,
       onBack,
       isBookmarked,

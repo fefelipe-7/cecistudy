@@ -8,10 +8,24 @@ import { FieldHint, FieldLabel, ReviewCard, TextInput } from './wizardFields';
 import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
 import { ColorSwatchPicker } from '../ui/ColorSwatchPicker';
 import { SchedulePicker } from '../ui/SchedulePicker';
+import { CourseIconPicker } from '../ui/CourseIconPicker';
+import { EmailSlider } from '../ui/EmailSlider';
 import { formatCourseSchedule } from '../../lib/schedule';
-import { COURSE_ICON_OPTIONS } from '../../lib/courseOptions';
+import {
+  buildAttendanceFromHours,
+  classesFromHours,
+  hoursPerClassFromSchedule,
+} from '../../lib/attendance';
 import { CatalogMultiSelect } from '../ui/CatalogMultiSelect';
 import { useCourseRepertorio } from './useCourseRepertorio';
+
+const CATEGORY_OPTIONS: Array<{ value: string; label: string; emoji: string }> = [
+  { value: 'obrigatoria', label: 'obrigatória', emoji: '📘' },
+  { value: 'optativa', label: 'optativa', emoji: '📗' },
+  { value: 'estagio', label: 'estágio', emoji: '🧩' },
+  { value: 'tcc', label: 'tcc', emoji: '📝' },
+  { value: 'extra', label: 'extra', emoji: '🎨' },
+];
 
 interface CourseValues {
   name: string;
@@ -26,6 +40,12 @@ interface CourseValues {
   conceptIds: string[];
   authorIds: string[];
   bibliographyIds: string[];
+  category?: Course['category'];
+  minGrade?: number;
+  officeHours?: string;
+  totalHours?: number;
+  hoursDone?: number;
+  minPct?: number;
 }
 
 export const CourseWizard: React.FC = () => {
@@ -44,11 +64,21 @@ export const CourseWizard: React.FC = () => {
       conceptIds: [],
       authorIds: [],
       bibliographyIds: [],
+      category: undefined,
+      minGrade: undefined,
+      officeHours: undefined,
+      totalHours: undefined,
+      hoursDone: undefined,
+      minPct: 75,
     },
   });
   const { name, code, professor, semester, schedule, room, description, color, icon } = values;
   const [sheetOpen, setSheetOpen] = useState<'conceitos' | 'autores' | 'bibliografia' | null>(null);
   const { conceptOptions, authorOptions, bibliographyOptions, resolveIds } = useCourseRepertorio();
+
+  const classPreview = values.totalHours
+    ? `≈ ${classesFromHours(values.totalHours, schedule)} aulas de ${hoursPerClassFromSchedule(schedule)}h`
+    : null;
 
   const steps: WizardStep[] = useMemo(() => [
     {
@@ -92,6 +122,76 @@ export const CourseWizard: React.FC = () => {
       ),
     },
     {
+      id: 'curso-frequencia',
+      title: 'frequência & requisitos',
+      headline: 'define a carga horária e os requisitos da matéria.',
+      subtitle: 'em horas mesmo — eu converto para aulas pelo seu horário. tudo opcional ♡',
+      content: (
+        <div className="space-y-5">
+          <EmailSlider
+            label="carga horária total (h)"
+            value={values.totalHours}
+            onChange={(v) => patch({ totalHours: v })}
+            min={1}
+            max={360}
+            step={1}
+          />
+          <EmailSlider
+            label="horas já feitas (h)"
+            value={values.hoursDone}
+            onChange={(v) => patch({ hoursDone: v === undefined ? undefined : Math.min(v, values.totalHours ?? v) })}
+            min={0}
+            max={Math.max(values.totalHours ?? 1, 1)}
+            step={1}
+          />
+          <div className="rounded-2xl bg-surface-rose border border-ceci-border-brand px-4 py-3 text-xs text-ceci-brand-strong font-semibold">
+            {classPreview ? (
+              <span aria-live="polite">{classPreview} com o seu horário</span>
+            ) : (
+              <span>
+                informe a carga horária e eu mostro quantas aulas dá com seu horário ✨
+                {schedule.length === 0 && ' (sem horário, considerei aulas de 2h)'}
+              </span>
+            )}
+          </div>
+          <div>
+            <FieldLabel>frequência mínima (%)</FieldLabel>
+            <EmailSlider
+              value={values.minPct}
+              onChange={(v) => patch({ minPct: v })}
+              min={0}
+              max={100}
+              step={5}
+            />
+            <FieldHint>define quantas aulas você precisa estar presente — o padrão é 75%.</FieldHint>
+          </div>
+          <ChoiceCardGrid<string>
+            label="categoria"
+            options={CATEGORY_OPTIONS}
+            value={values.category ?? ''}
+            onChange={(v) => patch({ category: (v || undefined) as Course['category'] })}
+          />
+          <div>
+            <FieldLabel>média mínima (0–10)</FieldLabel>
+            <EmailSlider
+              value={values.minGrade}
+              onChange={(v) => patch({ minGrade: v })}
+              min={0}
+              max={10}
+              step={0.5}
+            />
+            <FieldHint>para passar — se não lembrar agora, deixe vazio ♡</FieldHint>
+          </div>
+          <TextInput
+            value={values.officeHours ?? ''}
+            onChange={(e) => patch({ officeHours: e.target.value || undefined })}
+            placeholder="atendimento: ex, quartas 14h–16h, sala 203"
+          />
+          <FieldHint>horário de atendimento/monitoria do professor — opcional.</FieldHint>
+        </div>
+      ),
+    },
+    {
       id: 'curso-estilo',
       title: 'visual',
       headline: 'dê uma cara ao seu cantinho de estudos.',
@@ -102,12 +202,7 @@ export const CourseWizard: React.FC = () => {
             <FieldLabel>cor</FieldLabel>
             <ColorSwatchPicker value={color} onChange={(v) => patch({ color: v })} />
           </div>
-          <ChoiceCardGrid
-            label="ícone"
-            options={COURSE_ICON_OPTIONS}
-            value={icon}
-            onChange={(v) => patch({ icon: v })}
-          />
+          <CourseIconPicker value={icon} onChange={(v) => patch({ icon: v })} />
         </div>
       ),
     },
@@ -191,6 +286,23 @@ export const CourseWizard: React.FC = () => {
             { label: 'sala', value: room.trim() || 'a definir' },
             { label: 'semestre', value: semester.trim() || 'a definir' },
             {
+              label: 'frequência',
+              value: values.totalHours
+                ? `${values.totalHours}h no total${values.hoursDone ? ` • ${values.hoursDone}h já feitas` : ''} • ${classPreview ?? ''} • mínimo ${values.minPct ?? 75}%`
+                : 'a definir',
+            },
+            {
+              label: 'requisitos',
+              value: [
+                values.category && CATEGORY_OPTIONS.find((o) => o.value === values.category)?.label,
+                values.minGrade !== undefined && values.minGrade > 0 ? `média mínima ${values.minGrade}` : null,
+                values.officeHours?.trim() ? `atendimento: ${values.officeHours.trim()}` : null,
+              ]
+                .filter(Boolean)
+                .join(' • ') || 'sem requisitos',
+            },
+            { label: 'visual', value: `${icon} • cor ${color}` },
+            {
               label: 'repertório',
               value: `${values.conceptIds.length} conceito${values.conceptIds.length === 1 ? '' : 's'} • ${values.authorIds.length} autor${values.authorIds.length === 1 ? '' : 'es'} • ${values.bibliographyIds.length} leitura${values.bibliographyIds.length === 1 ? '' : 's'}`,
             },
@@ -198,7 +310,7 @@ export const CourseWizard: React.FC = () => {
         />
       ),
     },
-  ], [code, color, conceptOptions, authorOptions, bibliographyOptions, description, icon, name, professor, room, schedule, semester, sheetOpen, values.authorIds, values.bibliographyIds, values.conceptIds]);
+  ], [code, color, conceptOptions, authorOptions, bibliographyOptions, description, icon, name, professor, room, schedule, semester, sheetOpen, values.authorIds, values.bibliographyIds, values.conceptIds, values.category, values.minGrade, values.officeHours, values.totalHours, values.hoursDone, values.minPct, classPreview]);
 
   const canNext = name.trim().length > 0;
 
@@ -212,9 +324,18 @@ export const CourseWizard: React.FC = () => {
       semester: semester.trim() || 'semestre livre',
       schedule: schedule.length ? schedule : [],
       room: room.trim() || undefined,
+      category: values.category,
+      minGrade: values.minGrade || undefined,
+      officeHours: values.officeHours?.trim() || undefined,
       color,
       icon,
       description: description.trim() || undefined,
+      attendance: buildAttendanceFromHours({
+        totalHours: values.totalHours,
+        hoursDone: values.hoursDone,
+        minPct: values.minPct ?? 75,
+        schedule,
+      }),
       conceptIds: values.conceptIds,
       authorIds: values.authorIds,
       bibliographyIds: values.bibliographyIds,

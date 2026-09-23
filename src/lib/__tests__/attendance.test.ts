@@ -2,8 +2,12 @@ import { describe, it, expect } from 'vitest';
 import {
   applyAttendanceAction,
   attendanceStats,
+  buildAttendanceFromHours,
+  classesFromHours,
   DEFAULT_CLASS_HOURS,
   DEFAULT_MIN_ATTENDANCE_PCT,
+  hoursFromClasses,
+  hoursPerClassFromSchedule,
   migrateLegacyAttendance,
   recordHoursForCourse,
   removeAttendanceRecord,
@@ -226,5 +230,119 @@ describe('migrateLegacyAttendance', () => {
   it('ignora quando não há total', () => {
     expect(migrateLegacyAttendance({ attended: 3 })).toBeUndefined();
     expect(migrateLegacyAttendance(undefined)).toBeUndefined();
+  });
+});
+
+describe('frequência em horas (SPEC-004)', () => {
+  describe('hoursPerClassFromSchedule', () => {
+    it('média da duração dos slots com término', () => {
+      expect(
+        hoursPerClassFromSchedule([
+          { day: 1, start: '19:00', end: '21:00' }, // 2h
+          { day: 3, start: '19:00', end: '20:30' }, // 1,5h
+        ])
+      ).toBeCloseTo(1.75);
+    });
+
+    it('slot sem término conta como 2h', () => {
+      expect(hoursPerClassFromSchedule([{ day: 1, start: '19:00' }])).toBe(DEFAULT_CLASS_HOURS);
+    });
+
+    it('horário vazio (ou indefinido) cai no default', () => {
+      expect(hoursPerClassFromSchedule([])).toBe(DEFAULT_CLASS_HOURS);
+      expect(hoursPerClassFromSchedule(undefined)).toBe(DEFAULT_CLASS_HOURS);
+    });
+
+    it('rejeita schedule legado em string (migração crua)', () => {
+      expect(
+        hoursPerClassFromSchedule('seg 19:00-21:00' as unknown as { day: number; start: string; end?: string }[])
+      ).toBe(DEFAULT_CLASS_HOURS);
+    });
+  });
+
+  describe('classesFromHours', () => {
+    it('66h em aulas de 2h → 33 aulas', () => {
+      expect(classesFromHours(66, [{ day: 1, start: '19:00', end: '21:00' }])).toBe(33);
+    });
+
+    it('sem horário definido usa 2h (66h → 33 aulas)', () => {
+      expect(classesFromHours(66, [])).toBe(33);
+      expect(classesFromHours(66, undefined)).toBe(33);
+    });
+
+    it('arredonda e nunca retorna 0 para carga > 0', () => {
+      expect(classesFromHours(0.4, [])).toBe(1); // 0,4/2 = 0,2 → round 0 → mínimo 1
+      expect(classesFromHours(0, [])).toBe(0); // sem carga → 0
+      expect(classesFromHours(-5, [])).toBe(0);
+    });
+
+    it('duração média irregular (38 aulas p/ 66h × média 1,75h)', () => {
+      const schedule = [
+        { day: 1, start: '19:00', end: '21:00' },
+        { day: 3, start: '19:00', end: '20:30' },
+      ];
+      expect(classesFromHours(66, schedule)).toBe(38); // round(66/1,75)=round(37,71)=38
+    });
+  });
+
+  describe('hoursFromClasses', () => {
+    it('reverso: 33 aulas × 2h → 66h', () => {
+      expect(hoursFromClasses(33, [])).toBe(66);
+    });
+
+    it('uma casa decimal e 0 para aulas ≤ 0', () => {
+      expect(hoursFromClasses(3, [{ day: 1, start: '19:00', end: '20:30' }])).toBe(4.5);
+      expect(hoursFromClasses(0, [])).toBe(0);
+    });
+  });
+
+  describe('buildAttendanceFromHours', () => {
+    it('sem carga horária retorna undefined', () => {
+      expect(buildAttendanceFromHours({})).toBeUndefined();
+      expect(buildAttendanceFromHours({ totalHours: 0 })).toBeUndefined();
+      expect(buildAttendanceFromHours({ totalHours: -10 })).toBeUndefined();
+    });
+
+    it('constrói attendance com horas e aulas derivadas', () => {
+      const attendance = buildAttendanceFromHours({
+        totalHours: 66,
+        hoursDone: 33,
+        minPct: 75,
+        schedule: [{ day: 1, start: '19:00', end: '21:00' }],
+      })!;
+      expect(attendance.total).toBe(33);
+      expect(attendance.baseAttended).toBe(17); // round(33/2) = round(16,5) = 17
+      expect(attendance.totalHours).toBe(66);
+      expect(attendance.baseHoursDone).toBe(33);
+      expect(attendance.minPct).toBe(75);
+      expect(attendance.records).toEqual([]);
+    });
+
+    it('clamp: horas feitas não podem ultrapassar o total de aulas', () => {
+      const attendance = buildAttendanceFromHours({
+        totalHours: 10,
+        hoursDone: 100,
+        schedule: [{ day: 1, start: '19:00', end: '21:00' }],
+      })!;
+      expect(attendance.total).toBe(5);
+      expect(attendance.baseAttended).toBe(5); // 100/2 = 50, clamp → 5
+    });
+
+    it('default de minPct quando omitido; hoursDone vazio não gera baseHoursDone', () => {
+      const attendance = buildAttendanceFromHours({ totalHours: 40 })!;
+      expect(attendance.minPct).toBe(DEFAULT_MIN_ATTENDANCE_PCT);
+      expect(attendance.baseHoursDone).toBeUndefined();
+      expect(attendance.baseAttended).toBe(0);
+    });
+  });
+
+  it('withAttendance preserva totalHours/baseHoursDone nos registros', () => {
+    const c = baseCourse({
+      attendance: { total: 33, minPct: 75, records: [], totalHours: 66, baseHoursDone: 16 },
+    });
+    const updated = applyAttendanceAction(c, { status: 'presente' }, '2026-09-14');
+    expect(updated.attendance!.totalHours).toBe(66);
+    expect(updated.attendance!.baseHoursDone).toBe(16);
+    expect(updated.attendance!.records).toHaveLength(1);
   });
 });

@@ -260,3 +260,53 @@
 
 **Open questions da spec (deferidas):** full FSRS-5 vs simplificado (mantendo simplificado); remoção de `review.ts`;
 UI de gestão de decks (picker opcional); validar flip 3D + teclado em device iOS/Android (fallback = modo simples).
+
+---
+
+## SPEC-004 — CourseWizard: horas, campos, ícone emoji e cores (spec `docs/specs/SPEC-004-*.md`)
+
+> **Status:** implementada (2026-09-23). Gate verde: `npm run lint` + `npm run test` (834) +
+> boundary + build.
+
+- [x] **T1 — Modelo, helpers e schema (boundary).**
+      `src/types/entity.ts`: `CourseAttendance` + `totalHours?`/`baseHoursDone?` (opcionais);
+      `src/lib/attendance.ts`: `hoursPerClassFromSchedule` (média das durações dos slots, default 2h),
+      `classesFromHours` (≈ round(total/hpc), mínimo 1), `hoursFromClasses` (reverso), `buildAttendanceFromHours`;
+      `packages/data/src/schema.ts`: `SCHEMA_VERSION` 16→17 + `MIGRATIONS[17]` (backfill `totalHours`/`baseHoursDone`
+      de aulas existentes × duração média, idempotente); `schema.test.ts` (versão 17 + caso 16→17);
+      testes dos helpers em `attendance.test.ts`.
+
+- [x] **T2 — Opções.**
+      `src/lib/courseOptions.ts` + teste novo `courseOptions.test.ts`:
+      `COURSE_COLORS` 7→18 (variações 400/500/600/700 espelhando as escalas `@theme`; 7 antigas preservadas),
+      `COURSE_ICON_OPTIONS` completo (16, incluindo `Lightbulb`/`User`/`Wrench`) e novo `COURSE_EMOJIS` (~42).
+
+- [x] **T3 — Renderização do ícone.**
+      `src/components/ui/CourseIcon.tsx`: branch emoji (não-chave do mapa → `<span>` na cor da disciplina,
+      fallback GraduationCap para vazio); `src/types/navigation.ts`: `DynamicHeaderConfig.icon?` → `CourseIconName | string`;
+      `src/lib/headerConfig.ts:348`: `icon: focusedCourse.icon` (sem cast); teste do `CourseIcon` (emoji + lucide + vazio).
+
+- [x] **T4 — Picker + slider.**
+      `src/components/ui/CourseIconPicker.tsx` (grade emoji 6×7 + grade Lucide 16, `aria-label`, um só selecionado)
+      + `src/components/ui/EmailSlider.tsx` (slider estilizado + input numérico sincronizados, steps 1h/0,5h)
+      + testes (`CourseIconPicker.test.tsx`).
+
+- [x] **T5 — Wizard.**
+      `src/components/wizards/CourseWizard.tsx`: novo passo `curso-frequencia` (carga horária total h,
+      horas já feitas h, previsão reativa "≈ N aulas de Xh", média mínima 0–10, categoria pills,
+      atendimento texto, botão pular); `curso-estilo` usa `CourseIconPicker` + 18 cores;
+      passo `revisar` com frequência/requisitos/emoji; save via `buildAttendanceFromHours` + novos campos.
+
+- [x] **T6 — Editar & frequência.**
+      `src/components/courses/EditCourseModal.tsx`: inputs de frequência em horas (legado sem `totalHours`
+      pré-preenche `total × duração média` só no modal), `CourseIconPicker` + 18 cores, salvar deriva
+      `total`/`baseAttended` preservando `records`; `src/components/courses/CourseAttendanceCard.tsx`: copy
+      "definir carga horária em horas".
+
+- [x] **T7 — Gate final.**
+      `npm run lint` + `npm run test` + `node .github/scripts/check-boundaries.mjs` + `npm run build`;
+      spec → "implementada"; atualiza este todo com checkmarks e gate por task.
+
+> **Nota de paralelismo (2026-09-23):** outro agente implementa em paralelo (FLASH/spec própria); no gate,
+> as falhas pré-existentes de teste não apareceram — 834 testes verdes (o unhandled error de
+> `canvas-confetti` no jsdom é ambiental e pré-existente).

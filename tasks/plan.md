@@ -218,3 +218,36 @@ Refatoração completa do aplicativo cecistudy em três eixos paralelos:
 **Riscos / follow-ups abertos (da spec):** full FSRS-5 vs simplificado (manter simplificado); remoção de `review.ts`
 deferred; gestão de decks (picker opcional) fora do escopo; default do toggle 3D com memória via `composePrefs`;
 foco/teclado em textarea dentro de CSS-3D em WebViews iOS/Android — validar em device, fallback = modo simples.
+
+---
+
+## Fase SPEC-004 — CourseWizard: frequência em horas, campos, ícone emoji e cores (spec `docs/specs/SPEC-004-*.md`) 🔨
+
+> **Status:** em andamento (2026-09-23). 7 tasks (detalhe em `tasks/todo.md`); gate por task
+> (`npm run lint` + `npm run test`) + boundary (muda `packages/data`). Outro agente implementa em paralelo —
+> falhas de teste pré-existentes de drift (schema.test/goldenFixtures/QuizFlowHarness) são baseline, não desta fase.
+
+**Decisões-chave (resumo da spec)**
+
+| Item | Decisão | Arquivos |
+|---|---|---|
+| Frequência em horas | wizard/editar pedem `carga horária total (h)` + `horas já feitas (h)`; aulas (`total`/`baseAttended`) derivadas de `hoursPerClassFromSchedule` (média das durações dos slots, default 2h); `CardAttendance` ganha `totalHours?`/`baseHoursDone?` | `src/lib/attendance.ts`, `src/types/entity.ts` |
+| Migração | `SCHEMA_VERSION` 16→17 (`MIGRATIONS[17]` backfill `totalHours = total × duração média`, idempotente); golden files íntegros (campos opcionais, `goldenSample` não muda); drift Rust (13) alargado p/ follow-up | `packages/data/src/schema.ts` |
+| Campos novos | wizard coleta `category` (pills obrigatoria/optativa/estagio/tcc/extra), `minGrade` (0–10 opcional) e `officeHours` (texto opcional) — já existem na `Course`, antes só no editar | `src/components/wizards/CourseWizard.tsx` |
+| Ícone emoji | emoji **salvo** em `Course.icon` (string), renderizado como `<span>` na cor da disciplina; `DynamicHeaderConfig.icon` → `\| string`; `CourseIconName` (16 Lucide) intacto, `packages/navigation` não muda | `CourseIcon.tsx`, `types/navigation.ts`, `headerConfig.ts` |
+| Paleta | `COURSE_COLORS` 7→18 (variações `@theme` 400/500/600/700 de rose/blue/green/yellow/red/beige); 7 antigas preservadas | `src/lib/courseOptions.ts` |
+| UI nova | `CourseIconPicker` (grade emoji + Lucide) e `EmailSlider` (slider + input numérico) reutilizados no wizard e editar | `src/components/ui/` |
+
+**Tasks (detalhe em `tasks/todo.md`)**
+
+- T1: modelo (`entity.ts`) + helpers de horas (`attendance.ts`) + schema 17/migração + testes (boundary).
+- T2: opções (`courseOptions.ts` — 18 cores, 16 ícones, `COURSE_EMOJIS`) + teste.
+- T3: renderização do ícone (`CourseIcon` emoji-branch + `navigation.ts` + `headerConfig.ts`) + teste.
+- T4: `CourseIconPicker` + `EmailSlider` + testes.
+- T5: `CourseWizard` (passo `curso-frequencia`, visual com picker, revisar, save).
+- T6: `EditCourseModal` (horas + picker + cores) + `CourseAttendanceCard` (copy).
+- T7: gate final + spec → implementada + todo com checkmarks.
+
+**Riscos / follow-ups abertos (da spec):** duração de aulas irregulares (média subestima turmas com blocos
+irregulares — futuro "duração manual"); `total`/`baseAttended` permanecem o contrato da frequência (registros/
+margem), registros NÃO migrados para horas; drift Rust `SCHEMA_VERSION` (13→17) alinhado em follow-up dedicado.

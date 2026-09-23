@@ -23,8 +23,8 @@ describe('schema — migração 11 → 12 (escopo de workspace)', () => {
     tcc: { title: '', advisor: '', field: '', problemStatement: '', objectives: [], status: 'em_andamento', chapters: [], references: [] },
   };
 
-  it('SCHEMA_VERSION é 16', () => {
-    expect(SCHEMA_VERSION).toBe(16);
+  it('SCHEMA_VERSION é 17', () => {
+    expect(SCHEMA_VERSION).toBe(17);
   });
 
   it('adiciona workspaceId default a todas as entidades sincronizáveis', () => {
@@ -103,7 +103,15 @@ describe('schema — migração 14 → 15 (frequência detalhada, spec-frequenci
       ],
     };
     const next = migrateDatabase(14, legacy as Record<string, unknown>) as Record<string, any>;
-    expect(next.courses[0].attendance).toEqual({ total: 12, minPct: 75, baseAttended: 8, records: [] });
+    // + horas backfilladas pela migração 17 (schedule vazio → 2h/aula).
+    expect(next.courses[0].attendance).toEqual({
+      total: 12,
+      minPct: 75,
+      baseAttended: 8,
+      records: [],
+      totalHours: 24,
+      baseHoursDone: 16,
+    });
   });
 
   it('ignora frequência sem total (não vira rastreador ativo)', () => {
@@ -116,13 +124,103 @@ describe('schema — migração 14 → 15 (frequência detalhada, spec-frequenci
     expect(next.courses[0].attendance).toBeUndefined();
   });
 
-  it('preserva o shape novo intocado (idempotente)', () => {
+  it('preserva o shape novo intocado (idempotente) — horas são backfilladas pela 17', () => {
     const legacy = {
       courses: [
         { id: 'c1', name: 'x', professor: 'p', semester: '1', schedule: [], color: '#fff', icon: 'Brain', attendance: { total: 12, minPct: 75, baseAttended: 8, records: [{ id: 'ar-1', date: '2026-09-01', status: 'presente' }] } },
       ],
     };
     const next = migrateDatabase(14, legacy as Record<string, unknown>) as Record<string, any>;
-    expect(next.courses[0].attendance).toEqual(legacy.courses[0].attendance);
+    expect(next.courses[0].attendance).toEqual({
+      total: 12,
+      minPct: 75,
+      baseAttended: 8,
+      records: [{ id: 'ar-1', date: '2026-09-01', status: 'presente' }],
+      totalHours: 24,
+      baseHoursDone: 16,
+    });
+  });
+});
+
+describe('schema — migração 16 → 17 (frequência em horas, SPEC-004)', () => {
+  it('faz backfill de totalHours/baseHoursDone a partir das aulas × duração média', () => {
+    const legacy = {
+      courses: [
+        {
+          id: 'c1', name: 'x', professor: 'p', semester: '1', icon: 'Brain',
+          schedule: [{ day: 1, start: '19:00', end: '21:00' }], // 2h
+          attendance: { total: 33, minPct: 75, baseAttended: 8, records: [] },
+        },
+      ],
+    };
+    const next = migrateDatabase(16, legacy as Record<string, unknown>) as Record<string, any>;
+    expect(next.courses[0].attendance).toEqual({
+      total: 33,
+      minPct: 75,
+      baseAttended: 8,
+      records: [],
+      totalHours: 66, // 33 × 2h
+      baseHoursDone: 16, // 8 × 2h
+    });
+  });
+
+  it('usa a duração média dos slots (mais de um slot)', () => {
+    const legacy = {
+      courses: [
+        {
+          id: 'c1', name: 'x', professor: 'p', semester: '1', icon: 'Brain',
+          schedule: [
+            { day: 1, start: '19:00', end: '21:00' }, // 2h
+            { day: 3, start: '19:00', end: '20:30' }, // 1,5h → média 1,75h
+          ],
+          attendance: { total: 20, minPct: 75, baseAttended: 0, records: [] },
+        },
+      ],
+    };
+    const next = migrateDatabase(16, legacy as Record<string, unknown>) as Record<string, any>;
+    expect(next.courses[0].attendance.total).toBe(20);
+    expect(next.courses[0].attendance.totalHours).toBe(35); // 20 × 1,75 = 35
+    expect(next.courses[0].attendance.baseHoursDone).toBe(0);
+  });
+
+  it('não sobrescreve horas já presentes (idempotente)', () => {
+    const legacy = {
+      courses: [
+        {
+          id: 'c1', name: 'x', professor: 'p', semester: '1', icon: 'Brain',
+          schedule: [{ day: 1, start: '19:00', end: '21:00' }],
+          attendance: { total: 33, minPct: 75, baseAttended: 8, records: [], totalHours: 66, baseHoursDone: 16 },
+        },
+      ],
+    };
+    const next = migrateDatabase(16, legacy as Record<string, unknown>) as Record<string, any>;
+    expect(next.courses[0].attendance.totalHours).toBe(66);
+    expect(next.courses[0].attendance.baseHoursDone).toBe(16);
+  });
+
+  it('morre em silêncio para curso sem attendance', () => {
+    const legacy = {
+      courses: [
+        { id: 'c1', name: 'x', professor: 'p', semester: '1', schedule: [], color: '#fff', icon: 'Brain' },
+      ],
+    };
+    const next = migrateDatabase(16, legacy as Record<string, unknown>) as Record<string, any>;
+    expect(next.courses[0].attendance).toBeUndefined();
+    expect(next.courses[0].id).toBe('c1');
+  });
+
+  it('ignora attendance sem total numérico', () => {
+    const legacy = {
+      courses: [
+        {
+          id: 'c1', name: 'x', professor: 'p', semester: '1', icon: 'Brain',
+          schedule: [],
+          attendance: { minPct: 75, records: [] },
+        },
+      ],
+    };
+    const next = migrateDatabase(16, legacy as Record<string, unknown>) as Record<string, any>;
+    expect(next.courses[0].attendance.totalHours).toBeUndefined();
+    expect(next.courses[0].attendance.baseHoursDone).toBeUndefined();
   });
 });

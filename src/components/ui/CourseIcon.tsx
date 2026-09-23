@@ -19,6 +19,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import type { CourseIconName } from '../../types';
+import { isEmojiIcon } from '../../lib/courseOptions';
 
 const COURSE_ICON_MAP: Record<CourseIconName, LucideIcon> = {
   Brain,
@@ -90,6 +91,16 @@ export const CourseIcon: React.FC<CourseIconProps> = ({
   icon,
   className = 'w-4 h-4',
 }) => {
+  if (icon && isEmojiIcon(icon)) {
+    return (
+      <span
+        aria-hidden="true"
+        className={`inline-flex items-center justify-center leading-none ${className}`}
+      >
+        {icon}
+      </span>
+    );
+  }
   const Icon = COURSE_ICON_MAP[icon as CourseIconName] ?? GraduationCap;
   const color = COURSE_ICON_COLOR[icon as CourseIconName] ?? COURSE_ICON_COLOR.GraduationCap;
   return <Icon className={`${color} ${className}`} />;

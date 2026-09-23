@@ -15,6 +15,7 @@ import type {
   AttendanceStatus,
   Course,
   CourseAttendance,
+  CourseScheduleSlot,
 } from '../types';
 
 export const DEFAULT_MIN_ATTENDANCE_PCT = 75;
@@ -66,6 +67,8 @@ function withAttendance(course: Course, records: AttendanceRecord[]): Course {
       minPct: base.minPct,
       baseAttended: base.baseAttended,
       records,
+      totalHours: course.attendance?.totalHours,
+      baseHoursDone: course.attendance?.baseHoursDone,
     },
   };
 }
@@ -79,6 +82,69 @@ export function recordHoursForCourse(course: Course, date: string): number | und
   const [eh, em] = slot.end.split(':').map(Number);
   const minutes = eh * 60 + em - (sh * 60 + sm);
   return minutes > 0 ? round2(minutes / 60) : DEFAULT_CLASS_HOURS;
+}
+
+// ---------------------------------------------------------------------------
+// Frequência em horas (SPEC-004): a UI pede carga horária; as aulas são derivadas.
+// ---------------------------------------------------------------------------
+
+/** Duração (h) de um slot; só conta quando `end` existe, senão default. */
+function slotHours(start: string, end?: string): number {
+  if (!end) return DEFAULT_CLASS_HOURS;
+  const [sh, sm] = start.split(':').map(Number);
+  const [eh, em] = end.split(':').map(Number);
+  const minutes = eh * 60 + em - (sh * 60 + sm);
+  return minutes > 0 ? minutes / 60 : DEFAULT_CLASS_HOURS;
+}
+
+/**
+ * Duração média das aulas a partir dos slots do horário. Slot sem término conta
+ * como `DEFAULT_CLASS_HOURS`; horário vazio também. Resultado em horas (float).
+ */
+export function hoursPerClassFromSchedule(schedule?: CourseScheduleSlot[]): number {
+  const slots = Array.isArray(schedule) ? schedule : [];
+  if (!slots.length) return DEFAULT_CLASS_HOURS;
+  const total = slots.reduce(
+    (acc, s) => acc + slotHours(String(s.start), s.end ? String(s.end) : undefined),
+    0
+  );
+  return total > 0 ? round2(total / slots.length) : DEFAULT_CLASS_HOURS;
+}
+
+/**
+ * Aulas derivadas da carga horária: `round(totalHours / duração média)`,
+ * mínimo 1 quando `totalHours > 0` (nunca "0 aulas" para matéria com carga).
+ */
+export function classesFromHours(totalHours: number, schedule?: CourseScheduleSlot[]): number {
+  if (!totalHours || totalHours <= 0) return 0;
+  const hpc = hoursPerClassFromSchedule(schedule);
+  return Math.max(1, Math.round(totalHours / hpc));
+}
+
+/** Reverso (migração/editar legado): horas ≈ aulas × duração média, 1 casa decimal. */
+export function hoursFromClasses(totalClasses: number, schedule?: CourseScheduleSlot[]): number {
+  if (!totalClasses || totalClasses <= 0) return 0;
+  return Math.round(totalClasses * hoursPerClassFromSchedule(schedule) * 10) / 10;
+}
+
+/** Constrói o `attendance` completo a partir de horas — ou `undefined` se sem carga. */
+export function buildAttendanceFromHours(opts: {
+  totalHours?: number;
+  hoursDone?: number;
+  minPct?: number;
+  schedule?: CourseScheduleSlot[];
+}): CourseAttendance | undefined {
+  if (!opts.totalHours || opts.totalHours <= 0) return undefined;
+  const total = classesFromHours(opts.totalHours, opts.schedule);
+  const done = opts.hoursDone && opts.hoursDone > 0 ? opts.hoursDone : 0;
+  return {
+    total,
+    minPct: opts.minPct ?? DEFAULT_MIN_ATTENDANCE_PCT,
+    baseAttended: Math.min(classesFromHours(done, opts.schedule), total),
+    records: [],
+    totalHours: Math.round(opts.totalHours * 10) / 10,
+    baseHoursDone: done > 0 ? Math.round(done * 10) / 10 : undefined,
+  };
 }
 
 export function attendanceStats(attendance?: CourseAttendance): AttendanceStats | null {
