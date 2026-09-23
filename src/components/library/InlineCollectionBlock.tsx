@@ -14,12 +14,12 @@ interface InlineCollectionBlockProps {
  * Bloco de coleção com apresentação expandida: grade de capas grandes
  * (título/autor abaixo da capa) em vez de prateleira horizontal compacta.
  */
-export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = React.memo(function InlineCollectionBlock({
+export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = ({
   collection,
   savedBookIds,
   readProgress,
   onSelectBook,
-}) {
+}) => {
   return (
     <div className="space-y-3">
       {/* Title with left raspberry accent border directly on page canvas */}
@@ -110,4 +110,4 @@ export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = React
       </div>
     </div>
   );
-});
+};

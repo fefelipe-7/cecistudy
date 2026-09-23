@@ -32,7 +32,7 @@ function bibliographyBadge(item: RepertorioBibliographyItem): { label: string; t
 
 /** Conteúdo da tab "repertório & conteúdo" — união dos vínculos explícitos com o caminho legado. */
 export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = ({ course }) => {
-  const { classes, concepts, authors, readings, materials, handleUpdateCourse } = useMobileApp();
+  const { classes, concepts, authors, readings, materials, handleUpdateCourse, openRepertorioItem } = useMobileApp();
   const { conceptOptions, authorOptions, bibliographyOptions, catalog, resolveIds } = useCourseRepertorio();
   const [sheet, setSheet] = useState<SheetKind>(null);
 
@@ -78,6 +78,7 @@ export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = (
                 key={concept.id}
                 kind="concept"
                 id={concept.id}
+                onTap={() => openRepertorioItem(concept.id, course.id)}
                 className="rounded-2xl bg-surface-default border border-ceci-border-default p-3.5 pl-4 space-y-1 relative overflow-hidden"
               >
                 <span
@@ -126,6 +127,7 @@ export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = (
                 key={author.id}
                 kind="author"
                 id={author.id}
+                onTap={() => openRepertorioItem(author.id, course.id)}
                 className="py-3 flex items-start gap-3"
               >
                 <div className="w-9 h-9 rounded-full bg-surface-blue text-ceci-academic-strong font-display font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
@@ -175,7 +177,7 @@ export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = (
 
               if (item.kind === 'reading') {
                 return (
-                  <ManageSurface key={key} kind="reading" id={item.ref.id} className="py-2.5 text-xs">
+                  <ManageSurface key={key} kind="reading" id={item.ref.id} onTap={() => openRepertorioItem(item.ref.id, course.id)} className="py-2.5 text-xs">
                     <div className="flex items-center justify-between gap-2">
                       <div className="space-y-0.5 min-w-0 pr-2">
                         <h5 className="font-bold text-ceci-primary">{item.ref.title}</h5>
@@ -191,7 +193,7 @@ export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = (
 
               if (item.kind === 'material') {
                 return (
-                  <ManageSurface key={key} kind="material" id={item.ref.id} className="py-2.5 text-xs">
+                  <ManageSurface key={key} kind="material" id={item.ref.id} onTap={() => openRepertorioItem(item.ref.id, course.id)} className="py-2.5 text-xs">
                     <div className="flex items-center justify-between gap-2">
                       <div className="space-y-0.5 min-w-0 pr-2">
                         <h5 className="font-semibold text-ceci-primary">{item.ref.title}</h5>
@@ -209,7 +211,13 @@ export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = (
 
               // ---- obras do catálogo (vínculo estático) ----
               return (
-                <div key={key} className="py-2.5 flex items-center justify-between text-xs">
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => openRepertorioItem(item.id, course.id)}
+                  aria-label={`abrir ficha de ${item.title}`}
+                  className="w-full text-left py-2.5 flex items-center justify-between text-xs group cursor-pointer active:bg-surface-muted rounded-xl transition-colors"
+                >
                   <div className="space-y-0.5 min-w-0 pr-2">
                     <h5 className="font-bold text-ceci-primary">{item.title}</h5>
                     <p className="text-[11px] text-ceci-tertiary">por {item.author}</p>
@@ -217,7 +225,7 @@ export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = (
                   <span className="text-[10px] font-bold text-ceci-academic-strong bg-surface-blue px-2 py-1 rounded-full border border-ceci-border-academic shrink-0">
                     {badge.label}
                   </span>
-                </div>
+                </button>
               );
             })}
           </div>

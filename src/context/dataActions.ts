@@ -16,12 +16,22 @@ import type {
   Technique,
   QuizSession,
   LooseNote,
+  AttendanceRecord,
+  AttendanceStatus,
 } from '../types';
 import type { AuthorDraft, ConceptDraft } from '../lib/acervoBridge';
 import { hapticTap, hapticSuccess } from '../lib/haptics';
 import { celebrate } from '../lib/celebrate';
 import { shouldCelebrateTasks } from '../lib/taskLogic';
+import { schedule } from '../lib/fsrs';
 import { normalizeText } from '../lib/readingMatching';
+import { toDateKey } from '../lib/streak';
+import {
+  applyAttendanceAction,
+  removeAttendanceRecord as removeRecord,
+  updateAttendanceRecord as patchRecord,
+  upsertPresenceForClassNote,
+} from '../lib/attendance';
 
 /**
  * Ações de dados (CRUD + toggles) extraídas do AppContext — Fase B.2 (MOD-001).
@@ -81,11 +91,14 @@ export interface DataActions {
   handleAddReading: (reading: ReadingItem) => void;
   handleUpdateReadingPages: (readingId: string, newPages: number) => void;
   handleAddFlashcard: (card: Flashcard) => void;
-  handleReviewFlashcard: (id: string, correct: boolean) => void;
+  handleReviewFlashcard: (id: string, quality: 0 | 1 | 2 | 3) => void;
   handleAddInternshipLog: (log: InternshipLog) => void;
   handleAddExam: (exam: Exam) => void;
   handleAddCourse: (course: Course) => void;
   handleAddAuthor: (author: PsychologyAuthor) => void;
+  markAttendance: (courseId: string, status: AttendanceStatus) => void;
+  updateAttendanceRecord: (courseId: string, recordId: string, patch: Partial<Pick<AttendanceRecord, 'status' | 'noteId' | 'hours'>>) => void;
+  removeAttendanceRecord: (courseId: string, recordId: string) => void;
   adoptAcervoConcept: (draft: ConceptDraft) => string;
   handleAddSession: (session: StudySession) => void;
   adoptAcervoAuthor: (draft: AuthorDraft) => string;
@@ -117,6 +130,7 @@ export interface DataActionGroups {
     | 'handleAddClassNote' | 'handleUpdateClassNote'
     | 'handleAddExam' | 'handleUpdateExam' | 'handleAddCourse' | 'handleUpdateCourse'
     | 'handleAddMaterial' | 'handleUpdateMaterial'
+    | 'markAttendance' | 'updateAttendanceRecord' | 'removeAttendanceRecord'
   >;
   study: Pick<
     DataActions,
@@ -205,12 +219,44 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
 
   const handleAddClassNote = useCallback((note: ClassNote) => {
     setClasses((prev) => [{ ...note, workspaceId: currentWorkspaceId }, ...prev]);
+    // frequência detalhada (spec-frequencia.md): anotou a aula = esteve presente.
+    if (note.date) {
+      setCourses((prev) =>
+        prev.map((c) =>
+          c.id === note.courseId
+            ? upsertPresenceForClassNote(c, { id: note.id, date: note.date })
+            : c
+        )
+      );
+    }
     registerActivity();
-  }, [currentWorkspaceId, setClasses, registerActivity]);
+  }, [currentWorkspaceId, setClasses, setCourses, registerActivity]);
 
   const handleUpdateClassNote = useCallback((note: ClassNote) => {
     setClasses((prev) => prev.map((c) => (c.id === note.id ? note : c)));
   }, [setClasses]);
+
+  // Frequência detalhada (spec-frequencia.md): registra a participação de hoje
+  // na disciplina (menu 2×2 da Home; presente/falta contam como atividade do dia).
+  const markAttendance = useCallback((courseId: string, status: AttendanceStatus) => {
+    const today = toDateKey(new Date());
+    setCourses((prev) =>
+      prev.map((c) => (c.id === courseId ? applyAttendanceAction(c, { status }, today) : c))
+    );
+    if (status === 'presente' || status === 'falta') registerActivity();
+  }, [setCourses, registerActivity]);
+
+  const updateAttendanceRecord = useCallback((courseId: string, recordId: string, patch: Partial<Pick<AttendanceRecord, 'status' | 'noteId' | 'hours'>>) => {
+    setCourses((prev) =>
+      prev.map((c) => (c.id === courseId ? patchRecord(c, recordId, patch) : c))
+    );
+  }, [setCourses]);
+
+  const removeAttendanceRecord = useCallback((courseId: string, recordId: string) => {
+    setCourses((prev) =>
+      prev.map((c) => (c.id === courseId ? removeRecord(c, recordId) : c))
+    );
+  }, [setCourses]);
 
   const addLooseNote = useCallback((note: LooseNote) => {
     setLooseNotes((prev) => [{ ...note, workspaceId: currentWorkspaceId }, ...prev]);
@@ -265,22 +311,19 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
     setFlashcards((prev) => [{ ...card, workspaceId: currentWorkspaceId }, ...prev]);
   }, [currentWorkspaceId, setFlashcards]);
 
-  const handleReviewFlashcard = useCallback((id: string, correct: boolean) => {
+  const handleReviewFlashcard = useCallback((id: string, quality: 0 | 1 | 2 | 3) => {
     hapticTap();
-    const today = new Date().toISOString().split('T')[0];
     registerActivity();
     setFlashcards((prev) =>
       prev.map((c) => {
         if (c.id !== id) return c;
-        const reviewed = (c.timesReviewed || 0) + 1;
-        const easeFactor = correct
-          ? Math.min(3, (c.easeFactor || 1.5) + 0.2)
-          : Math.max(1, (c.easeFactor || 1.5) - 0.15);
+        // FSRS é o scheduler único: `schedule` define due/lastReviewed/state/estabilidade.
+        // `timesReviewed` mantém a semântica atual (spec §Modelo de dados): +1 apenas p/ quality >= 2
+        // (alimenta stickers e a métrica do Perfil sem mudança de comportamento).
+        const updated = schedule(c, quality);
         return {
-          ...c,
-          timesReviewed: reviewed,
-          lastReviewed: today,
-          easeFactor: Math.round(easeFactor * 100) / 100
+          ...updated,
+          timesReviewed: (c.timesReviewed ?? 0) + (quality >= 2 ? 1 : 0),
         };
       })
     );
@@ -405,6 +448,9 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
       handleUpdateCourse,
       handleAddMaterial,
       handleUpdateMaterial,
+      markAttendance,
+      updateAttendanceRecord,
+      removeAttendanceRecord,
     }),
     [
       handleToggleTask,
@@ -419,6 +465,9 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
       handleUpdateCourse,
       handleAddMaterial,
       handleUpdateMaterial,
+      markAttendance,
+      updateAttendanceRecord,
+      removeAttendanceRecord,
     ]
   );
 

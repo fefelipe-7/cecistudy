@@ -38,8 +38,9 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState<'obrigatoria' | 'complementar'>('obrigatoria');
   const [officeHours, setOfficeHours] = useState('');
-  const [attended, setAttended] = useState('0');
+  const [baseAttended, setBaseAttended] = useState('0');
   const [attendanceTotal, setAttendanceTotal] = useState('0');
+  const [attendanceMinPct, setAttendanceMinPct] = useState('75');
   const [conceptIds, setConceptIds] = useState<string[]>([]);
   const [authorIds, setAuthorIds] = useState<string[]>([]);
   const [bibliographyIds, setBibliographyIds] = useState<string[]>([]);
@@ -60,8 +61,9 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
       setDescription(course.description || '');
       setCategory(course.category === 'complementar' ? 'complementar' : 'obrigatoria');
       setOfficeHours(course.officeHours || '');
-      setAttended(String(course.attendance?.attended ?? 0));
+      setBaseAttended(String(course.attendance?.baseAttended ?? 0));
       setAttendanceTotal(String(course.attendance?.total ?? 0));
+      setAttendanceMinPct(String(course.attendance?.minPct ?? 75));
       setConceptIds(course.conceptIds ?? []);
       setAuthorIds(course.authorIds ?? []);
       setBibliographyIds(course.bibliographyIds ?? []);
@@ -73,6 +75,7 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
     if (!course) return;
     if (!name.trim()) return;
     const att = parseInt(attendanceTotal) || 0;
+    const minPct = Math.max(0, Math.min(100, parseInt(attendanceMinPct) || 75));
     onSave({
       ...course,
       name: name.trim(),
@@ -87,7 +90,15 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
       description: description.trim(),
       category,
       officeHours: officeHours.trim() || undefined,
-      attendance: att > 0 ? { attended: Math.max(0, Math.min(att, parseInt(attended) || 0)), total: att } : undefined,
+      attendance:
+        att > 0
+          ? {
+              total: att,
+              minPct,
+              baseAttended: Math.max(0, Math.min(att, parseInt(baseAttended) || 0)),
+              records: course.attendance?.records ?? [],
+            }
+          : undefined,
       conceptIds,
       authorIds,
       bibliographyIds,
@@ -167,12 +178,17 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
             </div>
 
             <div>
-              <label className={labelClass}>aulas assistidas</label>
-              <input type="number" min={0} value={attended} onChange={(e) => setAttended(e.target.value)} className={inputClass} />
-            </div>
-            <div>
               <label className={labelClass}>total de aulas</label>
               <input type="number" min={0} value={attendanceTotal} onChange={(e) => setAttendanceTotal(e.target.value)} className={inputClass} placeholder="0 = não registrar" />
+            </div>
+            <div>
+              <label className={labelClass}>mínimo de presença (%)</label>
+              <input type="number" min={0} max={100} value={attendanceMinPct} onChange={(e) => setAttendanceMinPct(e.target.value)} className={inputClass} placeholder="75" />
+            </div>
+            <div className="col-span-2">
+              <label className={labelClass}>presenças anteriores</label>
+              <input type="number" min={0} value={baseAttended} onChange={(e) => setBaseAttended(e.target.value)} className={inputClass} placeholder="0" />
+              <p className="mt-1 text-[11px] text-ceci-tertiary">presenças que você quer contar direto, sem registrar aula por aula</p>
             </div>
           </div>
 

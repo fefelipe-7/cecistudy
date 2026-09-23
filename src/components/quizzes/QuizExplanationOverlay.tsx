@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '../../lib/utils';
-import { IOS_EASE_OUT } from '../../lib/motion';
 
 interface QuizExplanationOverlayProps {
   /** Texto da explicação */
@@ -21,7 +20,7 @@ export const QuizExplanationOverlay: React.FC<QuizExplanationOverlayProps> = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, ease: IOS_EASE_OUT }}
+      transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
       className={cn(
         'fixed inset-0 z-50 flex items-center justify-center p-4',
         'bg-black/30 backdrop-blur-sm'
@@ -30,7 +29,7 @@ export const QuizExplanationOverlay: React.FC<QuizExplanationOverlayProps> = ({
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.25, ease: IOS_EASE_OUT }}
+          transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
           className="w-full max-w-md bg-surface-default rounded-2xl shadow-floating p-6"
         >
           <div className="flex items-center gap-3 mb-4">

@@ -46,9 +46,9 @@ export interface CourseRepertorioEntities {
 export type RepertorioBibliographyItem =
   | { kind: 'reading'; ref: ReadingItem }
   | { kind: 'material'; ref: MaterialItem }
-  | { kind: 'cat-book'; title: string; author: string }
-  | { kind: 'inter-book'; title: string; author: string }
-  | { kind: 'article'; title: string; author: string };
+  | { kind: 'cat-book'; id: string; title: string; author: string }
+  | { kind: 'inter-book'; id: string; title: string; author: string }
+  | { kind: 'article'; id: string; title: string; author: string };
 
 export interface CourseRepertorioResolved {
   concepts: PsychologyConcept[];
@@ -154,17 +154,17 @@ export function resolveCourseRepertorio(
     }
     const catBook = catBookMap.get(id);
     if (catBook) {
-      push(id, { kind: 'cat-book', title: catBook.title, author: catBook.author });
+      push(id, { kind: 'cat-book', id: catBook.id, title: catBook.title, author: catBook.author });
       continue;
     }
     const inter = interMap.get(id);
     if (inter) {
-      push(id, { kind: 'inter-book', title: inter.title, author: inter.author });
+      push(id, { kind: 'inter-book', id: inter.id, title: inter.title, author: inter.author });
       continue;
     }
     const article = articleMap.get(id);
     if (article) {
-      push(id, { kind: 'article', title: article.title, author: article.author });
+      push(id, { kind: 'article', id: article.id, title: article.title, author: article.author });
       continue;
     }
   }

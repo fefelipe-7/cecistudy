@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { iOS_SPRING } from '@/lib/motion';
 
 interface ProgressBarProps {
   value: number;
@@ -24,11 +23,10 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
       aria-valuemax={100}
     >
       <motion.div
-        className={cn('h-full w-full rounded-full bg-ceci-brand', barClassName)}
-        style={{ originX: 0 }}
+        className={cn('h-full rounded-full bg-ceci-brand', barClassName)}
         initial={false}
-        animate={{ scaleX: clamped / 100 }}
-        transition={iOS_SPRING}
+        animate={{ width: `${clamped}%` }}
+        transition={{ type: 'spring', stiffness: 120, damping: 22 }}
       />
     </div>
   );

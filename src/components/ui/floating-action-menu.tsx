@@ -36,7 +36,13 @@ const FloatingActionMenu = ({
       >
         <motion.div
           animate={{ rotate: isOpen ? 45 : 0 }}
-          transition={{ duration: 0.22, ease: IOS_EASE }}
+          transition={{
+            duration: 0.3,
+            ease: "easeInOut",
+            type: "spring",
+            stiffness: 300,
+            damping: 20,
+          }}
         >
           <Plus className="w-6 h-6 text-ceci-on-brand" />
         </motion.div>

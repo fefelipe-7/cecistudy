@@ -308,6 +308,31 @@ export function buildHeaderConfig(input: HeaderConfigInput): DynamicHeaderConfig
         },
       ],
     };
+  } else if (currentScreen.kind === 'repertorioItem') {
+    const REPERTORIO_ITEM_META: Record<
+      string,
+      { title: string; icon: CourseIconName; color: string }
+    > = {
+      'con-': { title: 'conceito-chave', icon: 'Lightbulb', color: '#4A879F' },
+      'aut-': { title: 'autor fundamental', icon: 'User', color: '#756354' },
+      'r-': { title: 'leitura', icon: 'BookOpen', color: '#43805B' },
+      'm-': { title: 'material', icon: 'FileText', color: '#6D6366' },
+      'cat-': { title: 'livro do catálogo', icon: 'BookOpen', color: '#4A879F' },
+      'inter-': { title: 'livro complementar', icon: 'BookOpen', color: '#8C7338' },
+      'art-': { title: 'artigo do catálogo', icon: 'FileText', color: '#B94862' },
+    };
+    const prefix = Object.keys(REPERTORIO_ITEM_META).find((p) =>
+      currentScreen.itemId.startsWith(p)
+    );
+    const meta = prefix ? REPERTORIO_ITEM_META[prefix] : REPERTORIO_ITEM_META['r-'];
+    headerConfig = {
+      type: 'detail',
+      title: meta.title,
+      subtitle: `do repertório de ${focusedCourse?.name ?? 'sua disciplina'}`,
+      icon: meta.icon,
+      color: meta.color,
+      onBack,
+    };
   } else if (currentScreen.kind === 'course' && focusedCourse) {
     const isBookmarked = bookmarkedCourseIds.includes(focusedCourse.id);
     const courseActions: HeaderAction[] = [

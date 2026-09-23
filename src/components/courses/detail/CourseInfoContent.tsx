@@ -8,11 +8,10 @@ import {
   GraduationCap,
   MessageSquare,
   Timer,
-  UserCheck,
 } from 'lucide-react';
 import { Mascote } from '../../ui/Mascote';
-import { ProgressBar } from '../../ui/ProgressBar';
 import { AnimatedNumber } from '../../ui/AnimatedNumber';
+import { CourseAttendanceCard } from './CourseAttendanceCard';
 import CecinhoTip from '../../views/home/CecinhoTip';
 import { useMobileApp } from '@/context/mobileApp';
 import {
@@ -20,10 +19,13 @@ import {
   formatShortDate,
   getTodaySchedule,
 } from '../../../lib/schedule';
+import { attendanceStats } from '../../../lib/attendance';
 import { Course } from '../../../types';
 
 interface CourseInfoContentProps {
   course: Course;
+  /** Navega para a aba "aulas" (histórico completo) — spec-frequencia.md §7.2. */
+  onGoToHistory?: () => void;
 }
 
 const CARD = 'rounded-2xl paper-card p-4 space-y-3';
@@ -66,16 +68,10 @@ const MetricTile: React.FC<{
 );
 
 /** Conteúdo da tab "informações" — compartilhado entre mobile e desktop. */
-export const CourseInfoContent: React.FC<CourseInfoContentProps> = ({ course }) => {
+export const CourseInfoContent: React.FC<CourseInfoContentProps> = ({ course, onGoToHistory }) => {
   const { sessions, classes, exams, tasks, courses } = useMobileApp();
 
-  const attendance =
-    course.attendance && course.attendance.total > 0
-      ? {
-          pct: Math.round((course.attendance.attended / course.attendance.total) * 100),
-          absences: course.attendance.total - course.attendance.attended,
-        }
-      : null;
+  const attendance = attendanceStats(course.attendance);
 
   const courseClasses = classes.filter((c) => c.courseId === course.id);
   const pendingExams = exams
@@ -113,7 +109,7 @@ export const CourseInfoContent: React.FC<CourseInfoContentProps> = ({ course }) 
         return `bora revisar? "${next.title}" chega em ${days} dias.`;
       return `tem "${next.title}" marcada para ${formatShortDate(next.date)} — sem pressa, mas sem esquecer ♡`;
     }
-    if (attendance && attendance.pct < 75)
+    if (attendance && attendance.status !== 'ok')
       return `sua frequência está em ${attendance.pct}% — respira, mas toma cuidado com as faltas ♡`;
     if (pendingTasks.length > 0)
       return `tem ${pendingTasks.length} ${pendingTasks.length === 1 ? 'tarefa' : 'tarefas'} aberta${pendingTasks.length === 1 ? '' : 's'} por aqui — bora tirar do papel?`;
@@ -129,21 +125,6 @@ export const CourseInfoContent: React.FC<CourseInfoContentProps> = ({ course }) 
     courseSessions.length,
     focusMinutes,
   ]);
-
-  const frequencyColor = attendance
-    ? attendance.pct >= 75
-      ? 'var(--color-status-success-strong)'
-      : attendance.pct >= 50
-        ? 'var(--color-status-warning-strong)'
-        : 'var(--color-status-danger-strong)'
-    : undefined;
-  const frequencyBar = attendance
-    ? attendance.pct >= 75
-      ? 'bg-status-success'
-      : attendance.pct >= 50
-        ? 'bg-status-warning'
-        : 'bg-status-danger'
-    : '';
 
   return (
     <div className="space-y-4">
@@ -188,27 +169,8 @@ export const CourseInfoContent: React.FC<CourseInfoContentProps> = ({ course }) 
         </section>
       )}
 
-      {/* Frequência — barra de progresso com cor semântica */}
-      {attendance && (
-        <section className={CARD}>
-          <div className="flex items-center justify-between gap-3">
-            <span className={`${ROW_LABEL} flex items-center gap-1.5`}>
-              <UserCheck className="w-3.5 h-3.5 text-ceci-muted" /> frequência
-            </span>
-            <span className="text-xs font-bold" style={{ color: frequencyColor }}>
-              {attendance.pct}% · {attendance.absences}{' '}
-              {attendance.absences === 1 ? 'ausência' : 'ausências'}
-            </span>
-          </div>
-          <ProgressBar value={attendance.pct} className="mt-2.5" barClassName={frequencyBar} />
-          {attendance.pct < 75 && (
-            <p className="text-[11px] text-ceci-secondary mt-2.5 leading-relaxed">
-              <Mascote expression="boundaries-care" className="w-5 h-5 inline-block -mt-1 mr-1" decorative />
-              sua frequência está em {attendance.pct}% — respira, mas toma cuidado com as faltas.
-            </p>
-          )}
-        </section>
-      )}
+      {/* Frequência — margem de faltas com carinho */}
+      <CourseAttendanceCard course={course} onGoToHistory={onGoToHistory} />
 
       {/* Ementa / Descrição */}
       <section className={CARD}>

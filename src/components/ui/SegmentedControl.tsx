@@ -1,7 +1,6 @@
 import React, { useId } from 'react';
 import { motion } from 'framer-motion';
 import { cn, NoInfer } from '@/lib/utils';
-import { iOS_SPRING } from '@/lib/motion';
 
 export interface SegmentedOption<T extends string> {
   value: T;
@@ -65,7 +64,7 @@ export const SegmentedControl = <T extends string>({
                   'absolute inset-0 rounded-full',
                   active ? o.activeClassName ?? VARIANT_CLASSES[variant] : ''
                 )}
-                transition={iOS_SPRING}
+                transition={{ type: 'spring', stiffness: 380, damping: 32 }}
               />
             )}
             <span className="relative z-10">{o.label}</span>

@@ -5,7 +5,6 @@ import React from "react";
 import { motion } from "framer-motion";
 
 import { cn } from "@/lib/utils";
-import { iOS_SPRING, IOS_EASE } from "@/lib/motion";
 
 export type NavItem = {
   id?: string;
@@ -34,7 +33,7 @@ export function BottomNavBar({
     <motion.nav
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.18, ease: IOS_EASE }}
+      transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
       role="navigation"
       aria-label="bottom navigation"
       className={cn(
@@ -60,13 +59,13 @@ export function BottomNavBar({
               aria-label={item.label}
               type="button"
             >
-{isActive && (
-                  <motion.span
-                    layoutId="bottomnav-active-pill"
-                    className="absolute inset-0 rounded-full liquid-glass-pill border"
-                    transition={iOS_SPRING}
-                  />
-                )}
+              {isActive && (
+                <motion.span
+                  layoutId="bottomnav-active-pill"
+                  className="absolute inset-0 rounded-full liquid-glass-pill border"
+                  transition={{ type: "spring", stiffness: 400, damping: 34 }}
+                />
+              )}
 
               <Icon
                 size={20}
@@ -85,7 +84,11 @@ export function BottomNavBar({
                   opacity: isActive ? 1 : 0,
                   marginLeft: isActive ? "6px" : "0px",
                 }}
-                transition={iOS_SPRING}
+                transition={{
+                  type: "spring",
+                  stiffness: 380,
+                  damping: 30,
+                }}
                 className="relative z-10 overflow-hidden flex items-center whitespace-nowrap"
               >
                 <span

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { type Transition, type Variants } from 'framer-motion';
 
 /** Transições padrão "iOS-like" do cecistudy. */
@@ -19,11 +20,11 @@ export const iOS_SPRING: Transition = {
 /** Fade simples e rápido para overlays de modal. */
 export const OVERLAY_FADE: Transition = { duration: 0.18, ease: 'easeOut' };
 
-/** Duração da entrada no push/pop (fade + slide curto) — ritmo leve. */
-export const PUSH_DURATION = 0.2;
+/** Duração da entrada no push/pop (fade + slide direcional). */
+export const PUSH_DURATION = 0.24;
 
 /** Duração da saída no push/pop (concorrente e sobreposta à entrada). */
-export const PUSH_EXIT_DURATION = 0.16;
+export const PUSH_EXIT_DURATION = 0.18;
 
 /** Duração da troca de tab (fade puro, sem movimento). */
 export const TAB_DURATION = 0.15;
@@ -33,17 +34,31 @@ export const prefersReducedMotion = (): boolean =>
   (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false);
 
 /**
+ * Hook reativo de `prefers-reduced-motion`. Usado pelos componentes de animação
+ * 3D (flip/tilt/voo) para degradar para efectos simples quando o usuário pedir.
+ * No jsdom (sem `matchMedia`) devolve `false`; componentes podem receber o valor
+ * por prop nos testes.
+ */
+export const usePrefersReducedMotion = (): boolean => {
+  const [reduce, setReduce] = useState(() => prefersReducedMotion());
+  useEffect(() => {
+    const mql =
+      typeof window !== 'undefined' ? window.matchMedia?.('(prefers-reduced-motion: reduce)') : null;
+    if (!mql || typeof mql.addEventListener !== 'function') return;
+    const onChange = () => setReduce(mql.matches);
+    mql.addEventListener('change', onChange);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+  return reduce;
+};
+
+/**
  * Returns a transition object that respects the user's reduced‑motion preference.
  * If reduced motion is requested, returns a fast fade-only transition (duration 0.08).
  * Otherwise, returns the provided transition.
  */
 export const getTransition = (normalTransition: Transition): Transition =>
   prefersReducedMotion() ? { duration: 0.08 } : normalTransition;
-
-/** True quando a interface está em layout mobile (below lg). */
-const isMobileLayout = (): boolean =>
-  typeof window !== 'undefined' &&
-  (window.matchMedia?.('(min-width: 1024px)').matches ?? false) === false;
 
 /**
  * Contexto de navegação lido pelas variantes no MOMENTO em que rodam.
@@ -71,10 +86,11 @@ const consumeNavMotionContext = () => {
  * Variants de transição de telas (pilha push/pop + troca de tab).
  * Cada variante resolve pelo `custom` (direction): 1 = push · -1 = pop · 0 = troca de tab.
  *
- * **Simples e leve:** no push a tela nova entra com fade + um slide curto da
- * direita (48px); no pop o topo desliza um pouco para a direita saindo. Nada de
- * parallax, escala ou springs — só transform + opacity, ~0.2s cada. direction=0
- * (troca de tab) é **fade puro**.
+ * **Slide direcional (quase-nativo):** no push a tela nova entra deslizando da
+ * direita (parallax curto, sem full-screen) enquanto a antiga é coberta com um
+ * leve deslocamento p/ a esquerda; no pop a tela do topo desliza p/ a direita
+ * (continuando o gesto de borda, se houve) e a tela anterior é revelada vindo
+ * da esquerda. direction=0 (troca de tab) é **fade puro**.
  *
  * `prefers-reduced-motion` degrada tudo para um fade simples, sem deslocamento.
  */
@@ -82,64 +98,60 @@ export const screenVariants: Variants = {
   initial: (direction: number) => {
     if (prefersReducedMotion() || direction === 0) return { opacity: 0 };
     // push: entra da direita · pop: a tela anterior é revelada vinda da esquerda
-    return direction === 1 ? { opacity: 0, x: 48 } : { opacity: 0, x: -48 };
+    return direction === 1
+      ? { opacity: 0, x: '18%', scale: 0.99 }
+      : { opacity: 0.82, x: '-14%', scale: 1 };
   },
   animate: (direction: number) => ({
     opacity: 1,
     x: 0,
+    scale: 1,
     transition:
       direction === 0
         ? { duration: TAB_DURATION, ease: 'easeOut' }
-        : { duration: PUSH_DURATION, ease: 'easeOut' },
+        : { duration: PUSH_DURATION, ease: IOS_EASE_OUT },
   }),
   exit: () => {
     const { direction, gestureX } = consumeNavMotionContext();
     if (prefersReducedMotion())
-      return { opacity: 0, transition: { duration: 0.1, ease: 'easeIn' } };
+      return { opacity: 0, transition: { duration: 0.12, ease: 'easeIn' } };
     if (direction === 0) {
       // troca de tab: fade curtíssimo no lugar
-      return { opacity: 0, transition: { duration: 0.12, ease: 'easeIn' } };
+      return { opacity: 0, transition: { duration: 0.1, ease: 'easeIn' } };
     }
     if (direction === 1) {
-      // sendo coberta por um push: só esvanece (sem parallax)
-      return { opacity: 0, transition: { duration: 0.16, ease: 'easeIn' } };
+      // sendo coberta por um push: parallax sutil p/ a esquerda + leve dim
+      return {
+        opacity: 0.9,
+        x: '-5%',
+        scale: 0.995,
+        transition: { duration: PUSH_EXIT_DURATION, ease: 'easeIn' },
+      };
     }
-    // pop: desliza um trecho para a direita saindo — parte do ponto do dedo
-    // (gestureX) quando o gesto de borda comitou, sem salto de continuidade.
+    // pop: a tela do topo desliza p/ a direita — partindo do ponto do gesto de
+    // borda (gestureX) quando ele comitou, sem salto de continuidade.
+    const endX = Math.max(gestureX + 90, window.innerWidth * 0.26);
     return {
-      x: [gestureX, gestureX + 90],
+      x: [gestureX, endX],
       opacity: [1, 0],
-      transition: { duration: 0.18, ease: 'easeIn' },
+      transition: { duration: PUSH_EXIT_DURATION, ease: IOS_EASE },
     };
   },
 };
 
-/**
- * Variants de telas-overlay profundas (compose, wizard, detalhes de nota).
- *
- * Simples: **fade + um discreto deslize para cima** no mobile (sem a sheet de
- * tela cheia) e centro com fade + scale no desktop (≥ lg).
- * `prefers-reduced-motion` degrada para fade puro.
- */
+/** Variants de fade + scale curtos para telas auxiliares (wizard, compose, etc.). */
 export const overlayVariants: Variants = {
   initial: () => {
     if (prefersReducedMotion()) return { opacity: 0 };
-    if (!isMobileLayout()) return { opacity: 0, scale: 0.985, y: 6 };
-    return { opacity: 0, y: 24 };
+    return { opacity: 0, scale: 0.985, y: 6 };
   },
   animate: () => {
-    if (prefersReducedMotion())
-      return { opacity: 1, transition: { duration: 0.18, ease: 'easeOut' } };
-    if (!isMobileLayout())
-      return { opacity: 1, scale: 1, y: 0, transition: { duration: 0.18, ease: IOS_EASE_OUT } };
-    return { opacity: 1, y: 0, transition: { duration: 0.2, ease: 'easeOut' } };
+    if (prefersReducedMotion()) return { opacity: 1, transition: { duration: 0.18, ease: 'easeOut' } };
+    return { opacity: 1, scale: 1, y: 0, transition: { duration: 0.18, ease: IOS_EASE_OUT } };
   },
   exit: () => {
-    if (prefersReducedMotion())
-      return { opacity: 0, transition: { duration: 0.12, ease: 'easeIn' } };
-    if (!isMobileLayout())
-      return { opacity: 0, scale: 0.99, y: 4, transition: { duration: 0.14, ease: 'easeIn' } };
-    return { opacity: 0, y: 24, transition: { duration: 0.15, ease: 'easeIn' } };
+    if (prefersReducedMotion()) return { opacity: 0, transition: { duration: 0.14, ease: 'easeIn' } };
+    return { opacity: 0, scale: 0.99, y: 4, transition: { duration: 0.14, ease: 'easeIn' } };
   },
 };
 

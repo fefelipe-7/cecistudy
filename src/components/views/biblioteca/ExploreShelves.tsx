@@ -2,7 +2,7 @@
 // Extraídas de `ExploreSections.tsx`: repertório, psicoterapias, mistas,
 // testes, autores, conceitos, abordagens, multidisciplinar e artigos.
 
-import React, { useCallback } from 'react';
+import React from 'react';
 import {
   TrendingUp,
   Bookmark,
@@ -40,20 +40,12 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
   openApproach,
 }) => {
   const {
-    activeCategory, isOpen, toggleSection, hasActiveFilters,
+    activeCategory, isOpen, toggleSection,
     filteredTrendingBooks, filteredCatalogCollections, filteredMixedCollections,
     filteredArticleGroups, totalFilteredArticles, testCollections, authorCollections,
     conceptCollections, approachCollections, multidisciplinaryCollections,
     catalogBooks, psychotherapyCollections,
   } = filter;
-
-  // Handlers estáveis: sem eles, os blocos memoizados re-renderizam a cada render do pai.
-  const handleSelectBook = useCallback((book: CollectionBook) => onSelectBook(book), [onSelectBook]);
-  const handleSelectArticle = useCallback(
-    (article: Article) => onSelectArticle(article),
-    [onSelectArticle]
-  );
-
   return (
     <>      {/* EXPLORAR: REPERTÔRIO & LEITURAS RECOMENDADAS */}
       {filteredTrendingBooks.length > 0 && (
@@ -68,7 +60,6 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
           }
           open={isOpen('repertorio')}
           onToggle={() => toggleSection('repertorio')}
-          defer={!hasActiveFilters}
         >
           <p className="text-xs text-ceci-secondary leading-relaxed">
             obras de finanças comportamentais, design de experiência, literatura e decisão para enriquecer sua visão clínica.
@@ -146,7 +137,6 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
           }
           open={isOpen('psicoterapias')}
           onToggle={() => toggleSection('psicoterapias')}
-          defer={!hasActiveFilters}
         >
           <p className="text-xs text-ceci-secondary leading-relaxed">
             as grandes obras de cada abordagem terapêutica — da psicanálise à terapia pragmática, com resumo e trecho memorável para navegar o repertório.
@@ -159,7 +149,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
                 collection={col}
                 savedBookIds={savedBookIds}
                 readProgress={readingProgress}
-                onSelectBook={handleSelectBook}
+                onSelectBook={(book) => onSelectBook(book)}
               />
             ))}
           </div>
@@ -179,7 +169,6 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
           }
           open={isOpen('mistas')}
           onToggle={() => toggleSection('mistas')}
-          defer={!hasActiveFilters}
         >
           <p className="text-xs text-ceci-secondary leading-relaxed">
             trilhas temáticas que cruzam obras e artigos de diferentes abordagens — toque para abrir e registrar suas páginas lidas.
@@ -192,8 +181,8 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
                 collection={col}
                 savedBookIds={savedBookIds}
                 readProgress={readingProgress}
-                onSelectBook={handleSelectBook}
-                onSelectArticle={handleSelectArticle}
+                onSelectBook={(book) => onSelectBook(book)}
+                onSelectArticle={(article) => onSelectArticle(article)}
               />
             ))}
           </div>
@@ -213,7 +202,6 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
           }
           open={isOpen('testes')}
           onToggle={() => toggleSection('testes')}
-          defer={!hasActiveFilters}
         >
           <div className="space-y-6">
             {testCollections.map((col) => (
@@ -221,7 +209,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
                 key={col.id}
                 collection={col}
                 savedBookIds={savedBookIds}
-                onSelectBook={handleSelectBook}
+                onSelectBook={(book) => onSelectBook(book)}
                 readProgress={readingProgress}
               />
             ))}
@@ -242,7 +230,6 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
           }
           open={isOpen('autores')}
           onToggle={() => toggleSection('autores')}
-          defer={!hasActiveFilters}
         >
           <div className="space-y-6">
             {authorCollections.map((col) => (
@@ -250,7 +237,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
                 key={col.id}
                 collection={col}
                 savedBookIds={savedBookIds}
-                onSelectBook={handleSelectBook}
+                onSelectBook={(book) => onSelectBook(book)}
                 readProgress={readingProgress}
               />
             ))}
@@ -271,7 +258,6 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
           }
           open={isOpen('conceitos')}
           onToggle={() => toggleSection('conceitos')}
-          defer={!hasActiveFilters}
         >
           <div className="space-y-6">
             {conceptCollections.map((col) => (
@@ -279,7 +265,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
                 key={col.id}
                 collection={col}
                 savedBookIds={savedBookIds}
-                onSelectBook={handleSelectBook}
+                onSelectBook={(book) => onSelectBook(book)}
                 readProgress={readingProgress}
               />
             ))}
@@ -300,7 +286,6 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
           }
           open={isOpen('abordagens')}
           onToggle={() => toggleSection('abordagens')}
-          defer={!hasActiveFilters}
         >
           <div className="space-y-6">
             {approachCollections.map((col) => (
@@ -333,7 +318,6 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
           }
           open={isOpen('multidisciplinar')}
           onToggle={() => toggleSection('multidisciplinar')}
-          defer={!hasActiveFilters}
         >
           <p className="text-xs text-ceci-secondary leading-relaxed">
             filosofia, literatura, sociologia, história, neurociência e mais — o repertório que enriquece seu olhar clínico.
@@ -345,7 +329,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
                 key={col.id}
                 collection={col}
                 savedBookIds={savedBookIds}
-                onSelectBook={handleSelectBook}
+                onSelectBook={(book) => onSelectBook(book)}
                 readProgress={readingProgress}
               />
             ))}
@@ -366,7 +350,6 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
           }
           open={isOpen('artigos')}
           onToggle={() => toggleSection('artigos')}
-          defer={!hasActiveFilters}
         >
           <p className="text-xs text-ceci-secondary leading-relaxed">
             referências reais com DOI — toque para ler o resumo e abrir o artigo onde ele está disponível.

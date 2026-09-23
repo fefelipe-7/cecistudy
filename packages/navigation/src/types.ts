@@ -38,6 +38,8 @@ export type NavScreen =
   | { kind: 'course'; courseId: string }
   /** Detalhe full-screen de uma aula (`#/faculdade/:courseId/aula/:classNoteId`), empilhado sobre o curso. */
   | { kind: 'classNote'; classNoteId: string; courseId: string }
+  /** Ficha de um item do repertório da disciplina (`#/faculdade/:courseId/repertorio/:itemId`), empilhada sobre o curso. */
+  | { kind: 'repertorioItem'; courseId: string; itemId: string }
   | { kind: 'notes' }
   | { kind: 'temple' }
   /** Seção interna do templo (`#/biblioteca/templo/<slug>`), empilhada sobre o templo. */

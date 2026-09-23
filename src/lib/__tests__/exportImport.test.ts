@@ -51,6 +51,7 @@ function makeSnapshot(overrides: Partial<PersistedStateSnapshot> = {}): Persiste
     approaches: [],
     readings: [],
     flashcards: [],
+    decks: [],
     materials: [],
     internshipLogs: [],
     tcc: {

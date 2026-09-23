@@ -8,13 +8,7 @@ import { UserProfile, DynamicHeaderConfig } from '../types';
 import { CourseIcon } from './ui/CourseIcon';
 import { HeaderActionMenu } from './ui/HeaderActionMenu';
 import { BookmarkToggle } from './ui/BookmarkToggle';
-import {
-  headerSwapVariants,
-  getTransition,
-  IOS_EASE_OUT,
-  PUSH_DURATION,
-  PUSH_EXIT_DURATION,
-} from '../lib/motion';
+import { headerSwapVariants } from '../lib/motion';
 
 interface HeaderNavProps {
   profile: UserProfile;
@@ -55,16 +49,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   return (
     <motion.header
       initial={{ opacity: 0, y: -10 }}
-      animate={{
-        opacity: 1,
-        y: 0,
-        transition: getTransition({ duration: PUSH_DURATION, ease: IOS_EASE_OUT }),
-      }}
-      exit={{
-        opacity: 0,
-        y: -10,
-        transition: getTransition({ duration: PUSH_EXIT_DURATION, ease: 'easeIn' }),
-      }}
+      animate={{ opacity: 1, y: 0, transition: { duration: 0.2, ease: 'easeOut' } }}
+      exit={{ opacity: 0, y: -10, transition: { duration: 0.15, ease: 'easeIn' } }}
       className={`sticky top-0 z-40 liquid-glass-nav border-b border-b-[color:var(--color-glass-hairline)] px-3.5 sm:px-4 transition-[padding,box-shadow,background-color,border-color] duration-300 ease-in-out ${
         scrolled
           ? 'pt-[calc(0.5rem+env(safe-area-inset-top,0px))] pb-2 shadow-sm'

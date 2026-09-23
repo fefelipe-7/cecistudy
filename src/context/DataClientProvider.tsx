@@ -11,6 +11,7 @@ import {
    PsychologyApproach,
    ReadingItem,
    Flashcard,
+   FlashcardDeck,
    MaterialItem,
    InternshipLog,
    TccData,
@@ -22,7 +23,7 @@ import {
    LooseNote,
    StreakData,
    SyncIndex,
- } from '../types';
+  } from '../types';
 import type {
   Workspace,
   Relation,
@@ -268,6 +269,9 @@ export interface DataClientValue {
   flashcards: Flashcard[];
   setFlashcards: React.Dispatch<React.SetStateAction<Flashcard[]>>;
   setFlashcardsRaw: React.Dispatch<React.SetStateAction<Flashcard[]>>;
+  decks: FlashcardDeck[];
+  setDecks: React.Dispatch<React.SetStateAction<FlashcardDeck[]>>;
+  setDecksRaw: React.Dispatch<React.SetStateAction<FlashcardDeck[]>>;
   materials: MaterialItem[];
   setMaterials: React.Dispatch<React.SetStateAction<MaterialItem[]>>;
   setMaterialsRaw: React.Dispatch<React.SetStateAction<MaterialItem[]>>;
@@ -424,6 +428,7 @@ export function useDataClient(): DataClientValue {
 
   const { value: readings, set: setReadings, setRaw: setReadingsRaw } = useStampedState<ReadingItem[]>('readings', [], syncIndex, setSyncIndex);
   const { value: flashcards, set: setFlashcards, setRaw: setFlashcardsRaw } = useStampedState<Flashcard[]>('flashcards', [], syncIndex, setSyncIndex);
+  const { value: decks, set: setDecks, setRaw: setDecksRaw } = useStampedState<FlashcardDeck[]>('decks', [], syncIndex, setSyncIndex);
   const { value: materials, set: setMaterials, setRaw: setMaterialsRaw } = useStampedState<MaterialItem[]>('materials', [], syncIndex, setSyncIndex);
   const { value: internshipLogs, set: setInternshipLogs, setRaw: setInternshipLogsRaw } = useStampedState<InternshipLog[]>('internship', [], syncIndex, setSyncIndex);
   const { value: tcc, set: setTcc, setRaw: setTccRaw } = useStampedState<TccData>('tcc', emptyTcc, syncIndex, setSyncIndex);
@@ -642,7 +647,7 @@ export function useDataClient(): DataClientValue {
   const exportData = async () => {
     const payload = await buildBackupPayload(snapshotFromState({
       profile, courses, classes, tasks, exams, authors, concepts, approaches,
-      readings, flashcards, materials, internshipLogs, tcc, stickers, sessions,
+      readings, flashcards, decks, materials, internshipLogs, tcc, stickers, sessions,
       streakData, reminder: reminderSettings, looseNotes, savedBookIds,
       bookmarkedCourseIds, readingProgress, questions, techniques, quizSessions,
       onboarding, syncIndex,
@@ -667,14 +672,14 @@ export function useDataClient(): DataClientValue {
   const getSyncPayloadJson = useCallback(async () => {
     const payload = await buildBackupPayload(snapshotFromState({
       profile, courses, classes, tasks, exams, authors, concepts, approaches,
-      readings, flashcards, materials, internshipLogs, tcc, stickers, sessions,
+      readings, flashcards, decks, materials, internshipLogs, tcc, stickers, sessions,
       streakData, reminder: reminderSettings, looseNotes, savedBookIds,
       bookmarkedCourseIds, readingProgress, questions, techniques, quizSessions,
       onboarding, syncIndex,
     }));
     return JSON.stringify(payload);
   }, [profile, courses, classes, tasks, exams, authors, concepts, approaches,
-    readings, flashcards, materials, internshipLogs, tcc, stickers, sessions,
+    readings, flashcards, decks, materials, internshipLogs, tcc, stickers, sessions,
     streakData, reminderSettings, looseNotes, savedBookIds,
     bookmarkedCourseIds, readingProgress, questions, techniques, quizSessions, onboarding, syncIndex]);
 
@@ -1035,13 +1040,16 @@ export function useDataClient(): DataClientValue {
     setConceptsRaw,
     approaches,
     setApproaches,
-    readings,
-setReadings,
-     setReadingsRaw,
-     flashcards,
-     setFlashcards,
-     setFlashcardsRaw,
-     materials,
+     readings,
+ setReadings,
+      setReadingsRaw,
+      flashcards,
+      setFlashcards,
+      setFlashcardsRaw,
+      decks,
+      setDecks,
+      setDecksRaw,
+      materials,
      setMaterials,
      setMaterialsRaw,
      internshipLogs,

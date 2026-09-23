@@ -4,7 +4,6 @@ import { CheckCircle2, X, RotateCcw, Target, BarChart2, Clock, Brain } from 'luc
 import { Mascote } from '../ui/Mascote';
 import { FixedBottomBar } from '../ui/FixedBottomBar';
 import { cn } from '../../lib/utils';
-import { IOS_EASE_OUT } from '../../lib/motion';
 import type { StudyQuestion, QuizConfig, QuizAnswer } from '../../types';
 
 interface QuizResultScreenProps {
@@ -56,11 +55,10 @@ function BarStat({ label, count, total, colorClass, barClass }: {
       </div>
       <div className="h-2 rounded-full bg-ceci-border-subtle overflow-hidden">
         <motion.div
-          className={`h-full w-full rounded-full ${barClass}`}
-          style={{ originX: 0 }}
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: pct / 100 }}
-          transition={{ duration: 0.5, delay: 0.1, ease: IOS_EASE_OUT }}
+          className={`h-full rounded-full ${barClass}`}
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.5, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
         />
       </div>
     </div>

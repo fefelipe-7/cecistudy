@@ -4,7 +4,6 @@ import { Flame, Trophy, CalendarDays, CheckCircle2 } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import { AnimatedNumber } from '../ui/AnimatedNumber';
 import { Mascote } from '../ui/Mascote';
-import { iOS_SPRING } from '../../lib/motion';
 import { addDays, getRecentWeeks, toDateKey } from '../../lib/streak';
 
 const fmtShort = (key: string): string => {
@@ -122,7 +121,7 @@ export const StreakView: React.FC = () => {
             <motion.div
               key={item.dateKey}
               whileTap={{ scale: 0.95 }}
-              transition={iOS_SPRING}
+              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
               className={`p-2 rounded-[18px] border text-center flex flex-col items-center justify-between ${
                 item.status === 'done'
                   ? 'bg-surface-rose border-ceci-border-brand text-ceci-primary'

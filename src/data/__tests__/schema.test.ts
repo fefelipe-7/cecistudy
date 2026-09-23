@@ -23,8 +23,8 @@ describe('schema — migração 11 → 12 (escopo de workspace)', () => {
     tcc: { title: '', advisor: '', field: '', problemStatement: '', objectives: [], status: 'em_andamento', chapters: [], references: [] },
   };
 
-  it('SCHEMA_VERSION é 14', () => {
-    expect(SCHEMA_VERSION).toBe(14);
+  it('SCHEMA_VERSION é 16', () => {
+    expect(SCHEMA_VERSION).toBe(16);
   });
 
   it('adiciona workspaceId default a todas as entidades sincronizáveis', () => {
@@ -92,5 +92,37 @@ describe('schema — migração 13 → 14 (repertório da disciplina, SPEC-001)'
     expect(next.courses[0].conceptIds).toEqual(['con-1']);
     expect(next.courses[0].authorIds).toEqual(['aut-1']);
     expect(next.courses[0].bibliographyIds).toEqual(['cat-1']);
+  });
+});
+
+describe('schema — migração 14 → 15 (frequência detalhada, spec-frequencia)', () => {
+  it('converte o par legado {attended,total} para CourseAttendance', () => {
+    const legacy = {
+      courses: [
+        { id: 'c1', name: 'x', professor: 'p', semester: '1', schedule: [], color: '#fff', icon: 'Brain', attendance: { attended: 8, total: 12 } },
+      ],
+    };
+    const next = migrateDatabase(14, legacy as Record<string, unknown>) as Record<string, any>;
+    expect(next.courses[0].attendance).toEqual({ total: 12, minPct: 75, baseAttended: 8, records: [] });
+  });
+
+  it('ignora frequência sem total (não vira rastreador ativo)', () => {
+    const legacy = {
+      courses: [
+        { id: 'c1', name: 'x', professor: 'p', semester: '1', schedule: [], color: '#fff', icon: 'Brain', attendance: { attended: 3 } },
+      ],
+    };
+    const next = migrateDatabase(14, legacy as Record<string, unknown>) as Record<string, any>;
+    expect(next.courses[0].attendance).toBeUndefined();
+  });
+
+  it('preserva o shape novo intocado (idempotente)', () => {
+    const legacy = {
+      courses: [
+        { id: 'c1', name: 'x', professor: 'p', semester: '1', schedule: [], color: '#fff', icon: 'Brain', attendance: { total: 12, minPct: 75, baseAttended: 8, records: [{ id: 'ar-1', date: '2026-09-01', status: 'presente' }] } },
+      ],
+    };
+    const next = migrateDatabase(14, legacy as Record<string, unknown>) as Record<string, any>;
+    expect(next.courses[0].attendance).toEqual(legacy.courses[0].attendance);
   });
 });

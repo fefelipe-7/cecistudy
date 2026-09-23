@@ -23,6 +23,7 @@ import type {
   PsychologyApproach,
   ReadingItem,
   Flashcard,
+  FlashcardDeck,
   MaterialItem,
   InternshipLog,
   TccData,
@@ -45,6 +46,8 @@ import type {
   ManagedItemKind,
   TempleSection,
   QuestionGroup,
+  AttendanceRecord,
+  AttendanceStatus,
 } from '../types';
 import type { StreakStats, WeekDayCell } from '../lib/streak';
 import type { DataClient } from '../lib/dataClient';
@@ -80,6 +83,7 @@ export interface AppContextValue {
   approaches: PsychologyApproach[];
   readings: ReadingItem[];
   flashcards: Flashcard[];
+  decks: FlashcardDeck[];
   materials: MaterialItem[];
   internshipLogs: InternshipLog[];
   tcc: TccData;
@@ -151,6 +155,12 @@ export interface AppContextValue {
   focusedClassNote: ClassNote | undefined;
   openClassNoteDetail: (classNoteId: string) => void;
   closeClassNoteDetail: () => void;
+  /** Ficha de um item do repertório da disciplina, empilhada sobre o curso. */
+  isRepertorioItemOpen: boolean;
+  focusedRepertorioItemId: string | null;
+  focusedRepertorioItemCourseId: string | null;
+  openRepertorioItem: (itemId: string, courseId: string) => void;
+  closeRepertorioItem: () => void;
   isBottomNavVisible: boolean;
   /** Se existe algo para voltar (cadeia do back do Android / gesto de borda). */
   canGoBack: boolean;
@@ -380,11 +390,15 @@ export interface AppContextValue {
   handleAddReading: (reading: ReadingItem) => void;
   handleUpdateReadingPages: (readingId: string, newPages: number) => void;
   handleAddFlashcard: (card: Flashcard) => void;
-  handleReviewFlashcard: (id: string, correct: boolean) => void;
+  handleReviewFlashcard: (id: string, quality: 0 | 1 | 2 | 3) => void;
   handleAddInternshipLog: (log: InternshipLog) => void;
   handleAddExam: (exam: Exam) => void;
   handleAddCourse: (course: Course) => void;
   handleAddAuthor: (author: PsychologyAuthor) => void;
+  /** Frequência detalhada (spec-frequencia.md): marca a aula de hoje na disciplina. */
+  markAttendance: (courseId: string, status: AttendanceStatus) => void;
+  updateAttendanceRecord: (courseId: string, recordId: string, patch: Partial<Pick<AttendanceRecord, 'status' | 'noteId' | 'hours'>>) => void;
+  removeAttendanceRecord: (courseId: string, recordId: string) => void;
   /** Adota um autor do acervo (idempotente por nome): devolve o id real a usar. */
   adoptAcervoAuthor: (draft: AuthorDraft) => string;
   handleAddSession: (session: StudySession) => void;

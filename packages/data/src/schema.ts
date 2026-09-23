@@ -1,4 +1,5 @@
 import { parseLegacySchedule } from '@/lib/schedule';
+import { migrateLegacyAttendance } from '@/lib/attendance';
 
 /**
  * Versão do esquema de dados persistido.
@@ -7,7 +8,7 @@ import { parseLegacySchedule } from '@/lib/schedule';
  * incremente esta versão e registre a migração correspondente em `MIGRATIONS`.
  * O export/import carrega a versão junto; o app recusa/avisa dados de versão desconhecida.
  */
-export const SCHEMA_VERSION = 14;
+export const SCHEMA_VERSION = 16;
 
 /** Versão de schema da base da usuária (antigo scaffold SQLite, hoje mantida por compatibilidade de import). */
 export const USER_SCHEMA_VERSION = 1;
@@ -172,6 +173,60 @@ export const MIGRATIONS: Record<number, Migration> = {
       bibliographyIds: (c.bibliographyIds as string[] | undefined) ?? [],
     }));
     return { ...data, courses: normalized };
+  },
+  // 14 → 15: frequência detalhada (spec-frequencia.md). `Course.attendance`
+  // deixa de ser o par `{attended,total}` e vira `CourseAttendance`
+  // (`{ total, minPct, baseAttended, records[] }`). O contador legado
+  // `attended` vira `baseAttended`; a coleção `records` começa vazia.
+  15: (data) => {
+    const courses = (data.courses ?? []) as Record<string, unknown>[];
+    const normalized = courses.map((c) => {
+      const att = c.attendance;
+      if (
+        att &&
+        typeof att === 'object' &&
+        ('attended' in att || !('records' in att))
+      ) {
+        const next = { ...c };
+        next.attendance = migrateLegacyAttendance(att as { attended?: number; total?: number });
+        return next;
+      }
+      return c;
+    });
+    return { ...data, courses: normalized };
+  },
+  // 15 → 16: FSRS para flashcards + decks. Adiciona coleção `decks` e campos FSRS
+  // em `flashcards`. Backups antigos recebem defaults e migração de campos legados.
+  16: (data) => {
+    const decks = (data.decks as any[]) ?? [];
+    const flashcards = (data.flashcards ?? []) as Record<string, unknown>[];
+    const migrated = flashcards.map((f) => {
+      const timesReviewed = (f.timesReviewed as number) ?? 0;
+      const easeFactor = (f.easeFactor as number) ?? 2.5;
+      const lastReviewed = f.lastReviewed as string | undefined;
+      const stability = Math.max(0.1, (easeFactor - 1) * 1.5);
+      const difficulty = Math.max(0.01, Math.min(10, (2.5 - easeFactor) * -2 + 5));
+      const state = timesReviewed > 0 ? 'review' : 'new';
+      const due = lastReviewed
+        ? lastReviewed
+        : new Date().toISOString().slice(0,10);
+      return {
+        ...f,
+        deckId: undefined,
+        stability,
+        difficulty,
+        retrievability: 1,
+        lapses: 0,
+        reviews: timesReviewed,
+        state,
+        due,
+      };
+    });
+    return {
+      ...data,
+      decks,
+      flashcards: migrated,
+    };
   },
 };
 

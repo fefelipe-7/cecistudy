@@ -3,7 +3,7 @@
 // colapsáveis do acervo (repertório, psicoterapias, mistas, testes, autores,
 // conceitos, abordagens, multidisciplinar, artigos) + empty state + modais.
 
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import {
   Search,
   SlidersHorizontal,
@@ -62,29 +62,6 @@ export const ExploreSections: React.FC<ExploreSectionsProps> = ({
     availableTags, catalogBooks, psychotherapyCollections,
   } = filter;
 
-  // Busca com debounce: o input reage na hora, mas os filtros só recomputam
-  // 150ms depois que a usuária para de digitar (evita o engasgo a cada tecla).
-  const [query, setQuery] = useState(searchTerm);
-  const searchTermRef = useRef(searchTerm);
-
-  // Mudança externa de searchTerm (filtro modal, badge ×, "esquecer filtros") → espelha no input.
-  useEffect(() => {
-    if (searchTerm !== searchTermRef.current) {
-      searchTermRef.current = searchTerm;
-      setQuery(searchTerm);
-    }
-  }, [searchTerm]);
-
-  // Digitação nova → agenda a aplicação do termo.
-  useEffect(() => {
-    if (query === searchTermRef.current) return;
-    const t = window.setTimeout(() => {
-      setSearchTerm(query);
-      searchTermRef.current = query;
-    }, 150);
-    return () => window.clearTimeout(t);
-  }, [query, setSearchTerm]);
-
   return (
     <section className="space-y-4">
       <h2 className="font-display font-bold text-sm text-ceci-tertiary uppercase tracking-wider px-1 pt-2 border-t border-ceci-border-default">
@@ -98,14 +75,14 @@ export const ExploreSections: React.FC<ExploreSectionsProps> = ({
             <Search className="w-4 h-4 text-ceci-tertiary absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="pesquisar por obra, autor, Beck, Freud, TCC..."
               className="w-full bg-surface-default border border-ceci-border-default rounded-2xl pl-10 pr-8 py-3 text-xs text-ceci-primary placeholder-ceci-faded focus:outline-none focus:border-ceci-brand shadow-2xs"
             />
-            {query && (
+            {searchTerm && (
               <button
-                onClick={() => setQuery('')}
+                onClick={() => setSearchTerm('')}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ceci-tertiary hover:text-ceci-primary cursor-pointer"
               >
                 ✕

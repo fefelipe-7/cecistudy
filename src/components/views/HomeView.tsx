@@ -4,7 +4,7 @@ import { useNavValue, useStudyActions } from '@/context/shellNavContexts';
 import { getGreeting, getDailyGoalMessage, ATTENTION_LIMIT } from '../../lib/homeMeta';
 import { pickTip } from '../../lib/tips';
 import { getTodaySchedule } from '../../lib/schedule';
-import { isDueToday } from '../../lib/review';
+import { isCardDue } from '../../lib/fsrs';
 import HeroSection from './home/HeroSection';
 import TodayClasses from './home/TodayClasses';
 import AttentionSection from './home/AttentionSection';
@@ -42,7 +42,7 @@ export const HomeView: React.FC = () => {
 
   // Flashcards vencidos (revisão pendente)
   const dueCardsCount = useMemo(
-    () => flashcards.filter(isDueToday).length,
+    () => flashcards.filter((c) => isCardDue(c)).length,
     [flashcards]
   );
 

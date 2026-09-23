@@ -82,7 +82,7 @@ describe('resolveCourseRepertorio', () => {
     expect(res.concepts.map((c) => c.id)).toEqual(['con-1', 'con-2']);
     expect(res.authors.map((a) => a.id)).toEqual(['aut-1', 'aut-2']);
     expect(res.bibliography).toHaveLength(2); // cat-1 + r-2 (legado)
-    expect(res.bibliography[0]).toEqual({ kind: 'cat-book', title: 'Manual de DSM', author: 'APA' });
+    expect(res.bibliography[0]).toEqual({ kind: 'cat-book', id: 'cat-1', title: 'Manual de DSM', author: 'APA' });
   });
 
   it('bibliografia resolve todos os prefixos do catálogo', () => {
@@ -102,11 +102,11 @@ describe('resolveCourseRepertorio', () => {
       'reading',
     ]);
     const cat = res.bibliography[0];
-    expect(cat).toEqual({ kind: 'cat-book', title: 'Manual de DSM', author: 'APA' });
+    expect(cat).toEqual({ kind: 'cat-book', id: 'cat-1', title: 'Manual de DSM', author: 'APA' });
     const inter = res.bibliography[1];
-    expect(inter).toEqual({ kind: 'inter-book', title: 'Filosofia da Mente', author: 'Chalmers' });
+    expect(inter).toEqual({ kind: 'inter-book', id: 'inter-1', title: 'Filosofia da Mente', author: 'Chalmers' });
     const art = res.bibliography[2];
-    expect(art).toEqual({ kind: 'article', title: 'Evidências da TCC', author: 'Beck' });
+    expect(art).toEqual({ kind: 'article', id: 'art-1', title: 'Evidências da TCC', author: 'Beck' });
   });
 
   it('id de vínculo órfão é ignorado (sem entidade no banco)', () => {

@@ -20,6 +20,7 @@ import type {
   Task,
 } from '../../../types';
 import { buildClassNoteFromNote, noteFirstLine } from '../../../lib/noteLogic';
+import { initCard } from '../../../lib/fsrs';
 import { today, truncate } from './constants';
 import ClassForm from './ClassForm';
 import TaskForm from './TaskForm';
@@ -329,14 +330,14 @@ export const FIELDS_FOR: Record<NoteTargetType, TargetFieldConfig> = {
     ],
     valid: (v) => v.question.trim().length > 0,
     save: ({ v, note, actions }) => {
-      actions.addFlashcard({
-        id: 'f-' + Date.now(),
-        conceptId: v.conceptId || undefined,
-        courseId: v.courseId || undefined,
-        question: v.question.trim(),
-        answer: v.answer.trim() || v.content,
-        timesReviewed: 0,
-      });
+      actions.addFlashcard(
+        initCard({
+          conceptId: v.conceptId || undefined,
+          courseId: v.courseId || undefined,
+          question: v.question.trim(),
+          answer: v.answer.trim() || v.content,
+        })
+      );
       return {};
     },
   },

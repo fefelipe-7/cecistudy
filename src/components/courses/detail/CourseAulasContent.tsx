@@ -1,12 +1,23 @@
-import React, { useState } from 'react';
-import { AlertCircle, CheckCircle2, ChevronDown, FileText, Plus } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import {
+  AlertCircle,
+  CalendarX2,
+  Check,
+  CheckCircle2,
+  ChevronDown,
+  FileText,
+  Plus,
+  X,
+} from 'lucide-react';
 import { Mascote } from '../../ui/Mascote';
 import { CompletionToggle } from '../../ui/CompletionToggle';
 import { ManageSurface } from '../../ui/ManageSurface';
 import { ClassNoteListItem } from '../ClassNoteListItem';
+import RecordEditSheet from '../RecordEditSheet';
 import { useMobileApp } from '@/context/mobileApp';
 import { formatShortDate } from '../../../lib/schedule';
-import { Course, Exam } from '../../../types';
+import { sortAttendanceRecords } from '../../../lib/attendance';
+import type { AttendanceRecord, AttendanceStatus, ClassNote, Course, Exam } from '../../../types';
 
 interface CourseAulasContentProps {
   course: Course;
@@ -39,6 +50,53 @@ function examPillClass(exam: Exam): string {
     : 'text-ceci-brand-strong bg-surface-rose px-2 py-0.5 rounded-full border border-ceci-border-brand';
 }
 
+/** Chip de status da frequência (spec-frequencia.md §7.3). */
+const STATUS_CHIP: Record<
+  AttendanceStatus,
+  { label: string; icon: React.ReactNode; className: string }
+> = {
+  presente: {
+    label: 'presente',
+    icon: <Check className="w-3 h-3" />,
+    className:
+      'bg-status-success-surface text-status-success-strong border-status-success-border',
+  },
+  falta: {
+    label: 'falta',
+    icon: <X className="w-3 h-3" />,
+    className: 'bg-status-danger-surface text-status-danger-strong border-status-danger-border',
+  },
+  cancelada: {
+    label: 'cancelada',
+    icon: <CalendarX2 className="w-3 h-3" />,
+    className: 'bg-status-warning-surface text-status-warning-strong border-status-warning-border',
+  },
+};
+
+type HistoryRow =
+  | { kind: 'record'; record: AttendanceRecord; note?: ClassNote }
+  | { kind: 'note'; note: ClassNote };
+
+/** Linhas unificadas do histórico por data desc (record com nota vira a própria nota). */
+function buildHistoryRows(records: AttendanceRecord[], classes: ClassNote[]): HistoryRow[] {
+  const notesById = new Map(classes.map((c) => [c.id, c]));
+  const rows: HistoryRow[] = [];
+  for (const record of records) {
+    const note = record.noteId ? notesById.get(record.noteId) : undefined;
+    rows.push({ kind: 'record', record, note });
+  }
+  for (const note of classes) {
+    const linked = records.some((r) => r.noteId === note.id);
+    if (!linked) rows.push({ kind: 'note', note });
+  }
+  rows.sort((a, b) =>
+    (a.kind === 'record' ? a.record.date : a.note.date).localeCompare(
+      b.kind === 'record' ? b.record.date : b.note.date
+    )
+  );
+  return rows;
+}
+
 /**
  * Conteúdo da tab "aulas & avaliações": provas (próximas vs. concluídas),
  * diário de aulas em timeline e tarefas sempre visíveis com empty state.
@@ -47,6 +105,7 @@ function examPillClass(exam: Exam): string {
 export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }) => {
   const [showDoneExams, setShowDoneExams] = useState(false);
   const [showDoneTasks, setShowDoneTasks] = useState(false);
+  const [editFor, setEditFor] = useState<AttendanceRecord | null>(null);
   const {
     classes,
     exams,
@@ -56,6 +115,7 @@ export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }
     openWizard,
     openCompose,
     openClassNoteDetail,
+    markAttendance,
   } = useMobileApp();
 
   const courseClasses = classes
@@ -69,6 +129,10 @@ export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }
     .filter((e) => e.completed)
     .sort((a, b) => b.date.localeCompare(a.date));
   const courseTasks = tasks.filter((t) => t.disciplineId === course.id);
+  const historyRows = useMemo(
+    () => buildHistoryRows(sortAttendanceRecords(course.attendance?.records ?? []), courseClasses),
+    [course.attendance?.records, courseClasses]
+  );
 
   return (
     <div className="space-y-6">
@@ -190,12 +254,12 @@ export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }
         )}
       </div>
 
-      {/* Diário de aulas — timeline cronológica (mais recente primeiro) */}
+      {/* Histórico de aulas — presenças + anotações por data (spec §7.3) */}
       <div className="space-y-3 pt-1">
         <div className="flex items-center justify-between">
           <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
             <FileText className="w-4 h-4 text-ceci-academic-strong" />
-            <span>diário de aulas</span>
+            <span>histórico de aulas</span>
           </h3>
           <button
             onClick={() => openCompose(course.id)}
@@ -206,29 +270,93 @@ export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }
           </button>
         </div>
 
-        {courseClasses.length > 0 ? (
+        {historyRows.length > 0 ? (
           <ol className="relative space-y-0 border-l border-ceci-border-default ml-1.5">
-            {courseClasses.map((cl) => (
-              <li key={cl.id} className="relative pl-4 pb-1 last:pb-0">
+            {historyRows.map((row) => {
+              const rowDate = row.kind === 'record' ? row.record.date : row.note.date;
+              if (row.kind === 'record') {
+                const chip = STATUS_CHIP[row.record.status];
+                const note = row.note;
+                return (
+                  <li key={`r-${row.record.id}`} className="relative pl-4 pb-1 last:pb-0">
+                    <span
+                      aria-hidden
+                      className="absolute -left-[5px] top-3 w-2.5 h-2.5 rounded-full bg-surface-default border-2 shrink-0"
+                      style={{ borderColor: course.color }}
+                    />
+                    <div className="py-3.5 space-y-1.5 cursor-pointer group hover:bg-surface-muted/50 px-1 rounded-lg transition-colors">
+                      <button
+                        onClick={() => setEditFor(row.record)}
+                        aria-label={`editar registro de ${formatShortDate(rowDate)}`}
+                        className="w-full flex items-center justify-between text-xs cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ceci-brand focus-visible:ring-offset-1 rounded"
+                      >
+                        <span
+                          className={`flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] font-bold ${chip.className}`}
+                        >
+                          {chip.icon}
+                          <span>{chip.label}</span>
+                          {row.record.status === 'presente' && row.record.hours ? (
+                            <span>· {row.record.hours}h</span>
+                          ) : null}
+                        </span>
+                        <span className="text-[11px] text-ceci-tertiary font-medium">
+                          {formatShortDate(rowDate)}
+                        </span>
+                      </button>
+                      {note ? (
+                        <button
+                          onClick={() => openClassNoteDetail(note.id)}
+                          aria-label={`ver anotação: ${note.title}`}
+                          className="w-full text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ceci-brand focus-visible:ring-offset-1 rounded"
+                        >
+                          <h4 className="font-display font-bold text-sm text-ceci-primary group-hover:text-ceci-brand-strong transition-colors leading-tight">
+                            {note.title}
+                          </h4>
+                          <p className="text-xs text-ceci-secondary line-clamp-2 leading-relaxed">
+                            {note.summary}
+                          </p>
+                        </button>
+                      ) : (
+                        <h4 className="font-display font-bold text-sm text-ceci-primary leading-tight">
+                          aula do dia {formatShortDate(rowDate)}
+                        </h4>
+                      )}
+                    </div>
+                  </li>
+                );
+              }
+              return (
+                <li key={`n-${row.note.id}`} className="relative pl-4 pb-1 last:pb-0">
                   <span
                     aria-hidden
                     className="absolute -left-[5px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-surface-default border-2 shrink-0"
                     style={{ borderColor: course.color }}
                   />
-                <ClassNoteListItem note={cl} onClick={() => openClassNoteDetail(cl.id)} />
-              </li>
-            ))}
+                  <ClassNoteListItem note={row.note} onClick={() => openClassNoteDetail(row.note.id)} />
+                </li>
+              );
+            })}
           </ol>
         ) : (
           <div className="py-6 text-center space-y-2">
             <Mascote expression="empty-invite" className="w-14 h-14 mx-auto" decorative />
-            <p className="text-xs font-semibold text-ceci-primary">ainda não tem aula anotada</p>
-            <button
-              onClick={() => openCompose(course.id)}
-              className="px-3.5 py-1.5 bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong rounded-full text-xs font-bold cursor-pointer"
-            >
-              anotar primeira aula
-            </button>
+            <p className="text-xs font-semibold text-ceci-primary">ainda não tem aula registrada</p>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <button
+                onClick={() => openCompose(course.id)}
+                className="px-3.5 py-1.5 bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong rounded-full text-xs font-bold cursor-pointer"
+              >
+                anotar primeira aula
+              </button>
+              {course.attendance?.total ? (
+                <button
+                  onClick={() => markAttendance(course.id, 'presente')}
+                  className="px-3.5 py-1.5 bg-status-success-surface border border-status-success-border text-status-success-strong rounded-full text-xs font-bold cursor-pointer"
+                >
+                  registrar presença de hoje
+                </button>
+              ) : null}
+            </div>
           </div>
         )}
       </div>
@@ -311,6 +439,13 @@ export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }
           </p>
         )}
       </div>
+
+      <RecordEditSheet
+        open={editFor !== null}
+        course={course}
+        record={editFor}
+        onClose={() => setEditFor(null)}
+      />
     </div>
   );
 };

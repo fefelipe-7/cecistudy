@@ -6,6 +6,7 @@ import type { Course, ClassNote, Exam } from '../../../types';
 import { ManageSurface } from '../../ui/ManageSurface';
 import { CourseIcon } from '../../ui/CourseIcon';
 import { formatCourseSchedule, formatShortDate } from '../../../lib/schedule';
+import { attendanceStats } from '../../../lib/attendance';
 
 interface DisciplinasGridProps {
   courses: Course[];
@@ -37,6 +38,12 @@ const DisciplinasGrid: React.FC<DisciplinasGridProps> = ({
       {courses.map((c) => {
         const courseClassCount = classes.filter((cl) => cl.courseId === c.id).length;
         const nextExam = exams.find((e) => e.courseId === c.id && !e.completed);
+        const freqStats = attendanceStats(c.attendance);
+        const freqWarning = freqStats && freqStats.status !== 'ok';
+        const freqPillClass =
+          freqStats?.status === 'estourou'
+            ? 'bg-status-danger-surface text-status-danger-strong border-status-danger-border'
+            : 'bg-status-warning-surface text-status-warning-strong border-status-warning-border';
 
         return (
           <ManageSurface
@@ -91,6 +98,13 @@ const DisciplinasGrid: React.FC<DisciplinasGridProps> = ({
                     <span className="text-ceci-muted">sem provas pendentes</span>
                   )}
                   <span className="text-ceci-muted">· {courseClassCount} aulas</span>
+                  {freqWarning && (
+                    <span
+                      className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${freqPillClass}`}
+                    >
+                      freq {freqStats?.pct}%
+                    </span>
+                  )}
                 </p>
               </div>
               <span className="text-[11px] font-semibold text-ceci-brand-strong flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform shrink-0">

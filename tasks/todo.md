@@ -176,3 +176,87 @@
 4. **Desktop React visual:** **cancelado e removido** (2026-09) — sem legado no repositório.
 5. **Library base psicoterapias:** completar família 05 → expandir 06–10 → revisão transversal
    (sequência em `library/cecistudy_base_psicoterapias/notas/sequencia_proximos_lotes.md`).
+
+---
+
+## Fase FREQ — Frequência de participação nas aulas (spec `.context/spec-frequencia.md`) ✅
+
+> **Status: implementada (2026-09-22).** Gate: `npm run lint` + `npm run test` (81 files / 751 testes) +
+> `npm run build` + `check-boundaries.mjs` verdes.
+
+- [x] **FREQ 1 — Núcleo puro:** `src/types/entity.ts` (AttendanceStatus/AttendanceRecord/CourseAttendance,
+      `Course.attendance` enriquecido) + `src/lib/attendance.ts` (attendanceStats, applyAttendanceAction,
+      updateAttendanceRecord, removeAttendanceRecord, upsertPresenceForClassNote, recordHoursForCourse,
+      migrateLegacyAttendance, `DEFAULT_MIN_ATTENDANCE_PCT`/`DEFAULT_CLASS_HOURS`) + 21 testes
+      (`src/lib/__tests__/attendance.test.ts`).
+- [x] **FREQ 2 — Migração:** `SCHEMA_VERSION` 14→15 + `MIGRATIONS[15]` (converte `{attended,total}` →
+      `{total, minPct:75, baseAttended, records:[]}`); golden files regenerados (ts↔Rust); schema.test cobre 14→15.
+- [x] **FREQ 3 — Ações:** `src/context/dataActions.ts` — `markAttendance`/`updateAttendanceRecord`/
+      `removeAttendanceRecord` + auto-upsert de presença em `addClassNote`; expostos em `AppContextValue`/`useMobileApp`.
+- [x] **FREQ 4 — Editar matéria:** `EditCourseModal.tsx` (total de aulas, mínimo %, baseAttended; preserva records).
+- [x] **FREQ 5 — Card de frequência:** `src/components/courses/detail/CourseAttendanceCard.tsx` (setup/quatro
+      status/margem) + `CourseInfoContent.tsx` conectado (removido `75` hardcoded).
+- [x] **FREQ 6 — Home "hoje na facul":** toque no card abre `ClassActionsSheet` 2×2 (fui / anotar coisinha /
+      cancelou / deixei de ir) + badge "registrada hoje"; annotate combina `markAttendance('presente')` +
+      `openCompose(course.id)`.
+- [x] **FREQ 7 — Histórico unificado:** `CourseAulasContent.tsx` — "histórico de aulas" por data (presenças +
+      notas, nota vinculada vira a linha da presença) + `RecordEditSheet.tsx` (mudar status / apagar registro) +
+      atalho "registrar presença de hoje" no empty state.
+- [x] **FREQ 8 — Alerta na grade:** `DisciplinasGrid.tsx` — pill "freq X%" quando `atencao`/`limite`/`estourou`.
+
+**Follow-ups (não executados):**
+- Long-press em record → `ManageSurface` dedicado (hoje usa a mesma sheet; `ManagedItemKind` não cobre records).
+  Estendê-lo depois se virar padrão.
+- `RecordEditSheet` exibe mas não edita `hours` (v1 só muda status/apaga).
+- Quick actions do card (fui/falta/cancelada) só aparecem quando há aula hoje (evita registrar presença em dia livre) — ok por design.
+- Alinhamento futuro do gate cargo do Rust (`cecistudy-rust/contracts/golden/`) com os golden files novos.
+
+---
+
+## Fase FLASH — Flashcards à la Anki + revisão 3D (spec `docs/specs/SPEC-003-flashcards-revisao-anki-3d.md`) 🔨
+
+> **Status:** em andamento (2026-09-23). Gate por task: `npm run lint` + `npm run test` + `npm run build`.
+
+- [x] **FLASH 1 — Unificar scheduler FSRS:**
+      `src/lib/fsrs.ts` ganha `isCardDue(card, now?)` (FSRS-first com fallback legado p/ cards sem `state`/`due`),
+      `nextDueLabel(card)` (intervalo/dias p/ UI) e `cardCounts(cards)` (`novas/learning/review/relearning`);
+      `handleReviewFlashcard` (`dataActions.ts`) passa a usar o `schedule` do FSRS (gravar `lastReviewed` real e
+      `timesReviewed` sincronizado) — sai `lastReviewed: c.lastReviewed ?? undefined`; `fieldsFor.tsx` flashcard usa
+      `initCard`; `isDueToday` trocado por `isCardDue` em `HomeView`/`EstudosView`/`StudyRevisarScreen` e a 4ª cópia
+      inlined em `navigationEngine.ts` eliminada; testes em `src/lib/__tests__/fsrs.test.ts`.
+      > Gate: lint ✓ · testes de fsrs/review/stickers/headerConfig ✓ (58) · build ✓. 7 falhas pré-existentes não
+      > relacionadas (`schema.test.ts` espera SCHEMA_VERSION 15 mas migrations vão até 16; goldenFixtures;
+      > QuizFlowHarness timeout 5s).
+
+- [x] **FLASH 2 — Building blocks 3D:**
+      `src/components/flashcards/Card3D.tsx` (flip spring 260/26, CSS-3D puro, `backface-visibility:hidden`,
+      `translateZ(0)`, reduced-motion = crossfade) + `RatingBar.tsx` (4 botões Anki com intervalo impresso,
+      `aria-label` com o próximo prazo, alvos ≥52px); hook `usePrefersReducedMotion` em `src/lib/motion.ts`;
+      testes `src/lib/__tests__/cards3d.test.tsx` (8 verdes). Gate: lint ✓ + teste ✓.
+
+- [x] **FLASH 3 — Revisão estilo Anki:**
+      `src/components/flashcards/ReviewSession.tsx` — fila `isCardDue`, flip, swipe **só após revelar**
+      (→Good(2), ←Again(0)), undo/erase (snapshot → `handleUpdateFlashcard`), tri-count `novas · aprendendo · revisar`,
+      `aria-live`, intervalo previsto via `ratingIntervals`/`shortInterval` (fsrs.ts); `StudyRevisarScreen.tsx`
+      virou wrapper fino (contexto + empty state); `celebrate('flashcards-done')` no fim da fila.
+      Testes: `reviewMeta.test.ts` + `reviewSession.test.tsx` (19 verdes no TASK). Gate: lint ✓ + teste ✓ + build ✓.
+
+- [x] **FLASH 4 — Criação com voo para baú/envelope:**
+      `CardCreation3D.tsx` (textarea na frente → flip → textarea no verso → "virar o card ♡"; Enter vira,
+      shift+enter nova linha; face não-interativa ao tap p/ não roubar caret do CSS-3D) +
+      `CardBaúEnvelope.tsx` (tampa `rotateX`, mini-card `layoutId`, commit síncrono, voo decorativo ≤650ms
+      via overlay no save); `FlashcardWizard` com 3 steps (card→contexto colapsável→revisar), toggle
+      "3D ♡ / simples" com memória `usePersistentState('flashcardPrefs')`, edição abre em modo simples,
+      preview 3D não-interativo no simples. Testes `cardsCreation3d.test.tsx` (5 verdes).
+      Gate: lint ✓ + teste ✓ + build ✓ + boundary ✓.
+
+- [x] **FLASH 5 — Polimento & integração:**
+      contadores por aba já em `isCardDue` (Home/Estudos/navigationEngine/headerConfig — FLASH 1); gesture
+      guard do card (`touch-pan-y` + drag="x" no palco, sem conflito com edge-swipe-back); reduced-motion
+      full (`MotionConfig reducedMotion="user"` já global + `usePrefersReducedMotion`/crossfade no Card3D);
+      QA manual de teclado/flip em WebView **deferido** (Open Question 5). Gate completo: 790 testes (784 ✓,
+      6 = falhas PRÉ-EXISTENTES de drift: `schema.test` "SCHEMA_VERSION é 15" e `goldenFixtures` — fora do
+      escopo FLASH); lint ✓ + build ✓ + boundary ✓. Máquina sem repo git para commit.
+
+**Open questions da spec (deferidas):** full FSRS-5 vs simplificado (mantendo simplificado); remoção de `review.ts`;
+UI de gestão de decks (picker opcional); validar flip 3D + teclado em device iOS/Android (fallback = modo simples).

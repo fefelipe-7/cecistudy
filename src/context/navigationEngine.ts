@@ -38,6 +38,7 @@ import {
   stackAfterNewQuizFromResult,
 } from '../lib/quizStack';
 import { buildHeaderConfig } from '../lib/headerConfig';
+import { isCardDue } from '../lib/fsrs';
 import { deleteManagedItem as applyDelete, MANAGED_KIND_REMOVED, ManagedDB } from '../lib/entityOps';
 import type { DataClientValue } from './DataClientProvider';
 import type { SharedAppValue } from './sharedAppValue';
@@ -109,6 +110,12 @@ export interface NavigationValue {
   focusedClassNote: ClassNote | undefined;
   openClassNoteDetail: (classNoteId: string) => void;
   closeClassNoteDetail: () => void;
+  /** Ficha de um item do repertório da disciplina, empilhada sobre o curso (`#/faculdade/:courseId/repertorio/:itemId`). */
+  isRepertorioItemOpen: boolean;
+  focusedRepertorioItemId: string | null;
+  focusedRepertorioItemCourseId: string | null;
+  openRepertorioItem: (itemId: string, courseId: string) => void;
+  closeRepertorioItem: () => void;
   isBottomNavVisible: boolean;
   /** Se existe algo para voltar (cadeia do back do Android / gesto de borda). */
   canGoBack: boolean;
@@ -448,30 +455,27 @@ export function useNavigationEngine(
       ? currentScreen.courseId
       : currentScreen.kind === 'classNote'
         ? currentScreen.courseId
-        : null;
+        : currentScreen.kind === 'repertorioItem'
+          ? currentScreen.courseId
+          : null;
   const focusedCourse = focusedCourseId ? courses.find((c) => c.id === focusedCourseId) : undefined;
   const isClassNoteDetailOpen = currentScreen.kind === 'classNote';
   const focusedClassNoteId = currentScreen.kind === 'classNote' ? currentScreen.classNoteId : null;
   const focusedClassNote = focusedClassNoteId
     ? classes.find((n) => n.id === focusedClassNoteId)
     : undefined;
+  const isRepertorioItemOpen = currentScreen.kind === 'repertorioItem';
+  const focusedRepertorioItemId = currentScreen.kind === 'repertorioItem' ? currentScreen.itemId : null;
+  const focusedRepertorioItemCourseId =
+    currentScreen.kind === 'repertorioItem' ? currentScreen.courseId : null;
   const focusedStudyScreen: StudyScreen | null =
     currentScreen.kind === 'study' ? currentScreen.screen : null;
   /** Sessão de foco imersiva em tela (chrome preto + orientação landscape). */
   const isFocusImmersiveOpen =
     focusedStudyScreen !== null && focusedStudyScreen === 'focus';
 
-  // Flashcards vencidos (dias desde a última revisão >= intervalo da repetição espaçada)
-  const dueCardsCount = useMemo(() => {
-    const REVIEW_INTERVALS = [1, 3, 7, 14, 30];
-    const intervalFor = (timesReviewed = 0) =>
-      REVIEW_INTERVALS[Math.min(timesReviewed, REVIEW_INTERVALS.length - 1)];
-    const toISODate = (d: Date) => d.toISOString().split('T')[0];
-    const daysSince = (iso: string) => Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
-    return flashcards.filter(
-      (c) => !c.lastReviewed || daysSince(c.lastReviewed) >= intervalFor(c.timesReviewed)
-    ).length;
-  }, [flashcards]);
+  // Flashcards vencidos (scheduler FSRS — fonte única em `src/lib/fsrs.ts`)
+  const dueCardsCount = useMemo(() => flashcards.filter((c) => isCardDue(c)).length, [flashcards]);
   const screenKey =
     currentScreen.kind === 'tab'
       ? `tab-${currentScreen.tab}`
@@ -479,8 +483,10 @@ export function useNavigationEngine(
         ? `course-${currentScreen.courseId}`
         : currentScreen.kind === 'classNote'
           ? `classNote-${currentScreen.classNoteId}`
-          : currentScreen.kind === 'notes'
-            ? 'notes'
+          : currentScreen.kind === 'repertorioItem'
+            ? `repertorioItem-${currentScreen.itemId}`
+            : currentScreen.kind === 'notes'
+              ? 'notes'
             : currentScreen.kind === 'temple'
             ? 'temple'
             : currentScreen.kind === 'comparison'
@@ -527,8 +533,10 @@ export function useNavigationEngine(
         ? `course-${currentScreen.courseId}`
         : currentScreen.kind === 'classNote'
           ? `course-${currentScreen.courseId}`
-          : currentScreen.kind === 'notes'
-            ? 'notes'
+          : currentScreen.kind === 'repertorioItem'
+            ? `course-${currentScreen.courseId}`
+            : currentScreen.kind === 'notes'
+              ? 'notes'
             : currentScreen.kind === 'noteDetail' || currentScreen.kind === 'noteTransform'
             ? 'notes'
             : currentScreen.kind === 'temple'
@@ -801,6 +809,31 @@ export function useNavigationEngine(
   );
 
   const closeClassNoteDetail = useCallback(() => goBack(), [goBack]);
+
+  /** Abre a ficha de um item do repertório, empilhada sobre o curso da matéria. */
+  const openRepertorioItem = useCallback(
+    (itemId: string, courseId: string) => {
+      const top = navigationStack[navigationStack.length - 1];
+      if (top.kind === 'repertorioItem' && top.itemId === itemId) return;
+      const courseBelow = navigationStack.find(
+        (s): s is Extract<NavScreen, { kind: 'course' }> => s.kind === 'course'
+      );
+      const courseIdx = courseBelow ? navigationStack.indexOf(courseBelow) : -1;
+      // Base sobre o curso da matéria (substitui qualquer detalhe acima dele) — nunca
+      // empilha uma ficha sobre outra.
+      const base: NavScreen[] =
+        courseBelow && courseBelow.courseId === courseId
+          ? navigationStack.slice(0, courseIdx + 1)
+          : [{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId }];
+      const next: NavScreen[] = [...base, { kind: 'repertorioItem', courseId, itemId }];
+      setStack(next);
+      syncHash(next);
+      scrollToTop();
+    },
+    [navigationStack, setStack, syncHash]
+  );
+
+  const closeRepertorioItem = useCallback(() => goBack(), [goBack]);
 
   const openNotesScreen = useCallback(() => {
     const top = navigationStack[navigationStack.length - 1];
@@ -1520,6 +1553,11 @@ export function useNavigationEngine(
     focusedClassNote,
     openClassNoteDetail,
     closeClassNoteDetail,
+    isRepertorioItemOpen,
+    focusedRepertorioItemId,
+    focusedRepertorioItemCourseId,
+    openRepertorioItem,
+    closeRepertorioItem,
     isBottomNavVisible,
     canGoBack,
     isNotesScreenOpen,
@@ -1645,7 +1683,7 @@ export function useNavigationEngine(
       closeClassNoteDetail, closeEditCourse, closeEditTcc, closeFamilies, closeFamily, closeInternshipDiary,
       closeManageItem, closeNoteDetail, closeNoteTransform, closeNotesScreen, closeQuickAdd,
       closeQuizCategory, closeQuizDetail, closeQuizLoading, closeQuizPlay, closeQuizResult,
-      closeSearch, closeStickersScreen, closeStreak, closeStudy, closeSyncScreen, closeTccScreen,
+      closeRepertorioItem, closeSearch, closeStickersScreen, closeStreak, closeStudy, closeSyncScreen, closeTccScreen,
       closeTemple, closeTempleSection, closeWizard, composeCourseId, currentQuizGroup,
       currentQuizLoadingConfig, currentQuizPlayState, currentQuizResultAnswers,
       currentQuizResultConfig, currentQuizResultCorrectCount, currentQuizResultPool,
@@ -1653,19 +1691,20 @@ export function useNavigationEngine(
       deleteManagedItem, detailNoteId, editCourseId, editManagedItem, ensureQuestionsLoaded,
       focusedApproach, focusedApproachId, focusedClassNote, focusedClassNoteId,
       focusedComparisonSlug, focusedCourse, focusedCourseId,
-      focusedFamily, focusedFamilyId, focusedNote, focusedNoteId, focusedStudyScreen,
+      focusedFamily, focusedFamilyId, focusedNote, focusedNoteId, focusedRepertorioItemCourseId,
+      focusedRepertorioItemId, focusedStudyScreen,
       focusedTempleSection, handleNavigate, handleSystemBack, headerConfig,
       isBottomNavVisible, isClassNoteDetailOpen, isComposeDetailsOpen, isComposeScreenOpen, isCreatingLooseNote,
       isDetailPromptOpen, isEditCourseOpen, isEditTccOpen, isFamiliesScreenOpen,
       isInternshipDiaryOpen, isNoteDetailOpen, isNoteTransformOpen, isNotesScreenOpen,
       isQuickAddOpen, isQuizCategoryOpen, isQuizGroupDetailOpen, isQuizLoadingOpen,
-      isQuizPlayOpen, isQuizResultOpen, isSearchOpen, isStickersScreenOpen, isStreakScreenOpen,
+      isQuizPlayOpen, isQuizResultOpen, isRepertorioItemOpen, isSearchOpen, isStickersScreenOpen, isStreakScreenOpen,
       isSyncScreenOpen, isTccScreenOpen, isTempleScreenOpen, isWizardOpen, managedItem,
       navDirection, navigationStack, newQuizFromResult, openApproach, openComparison, openCompose,
       openComposeDetails, openCourseDetail, openDetailPrompt, openEditCourse, openEditTcc,
       openClassNoteDetail, openFamilies, openFamily, openInternshipDiary, openManageItem, openNoteDetail,
       openNoteTransform, openNotesScreen, openQuickAdd, openQuizCategory, openQuizGroupDetail,
-      openQuizLoading, openQuizPlay, openQuizResult, openSearch, openStickersScreen, openStreak,
+      openQuizLoading, openQuizPlay, openQuizResult, openRepertorioItem, openSearch, openStickersScreen, openStreak,
       openStudy, openSyncScreen, openTaskExamWizard, openTccScreen, openTemple, openTempleSection,
       openWizard, overlayKey, screenKey, setActiveTab, setFocusedCourseId, setIsCreatingLooseNote,
       setStack, setSubTabBiblioteca, setSubTabFaculdade, setTargetId, slideKey,

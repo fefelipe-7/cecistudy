@@ -75,7 +75,7 @@ export function sampleSnapshot(): PersistedStateSnapshot {
         color: '#4A879F',
         icon: 'Mic',
         description: 'técnicas de entrevista psicológica',
-        attendance: { attended: 8, total: 12 },
+        attendance: { total: 12, minPct: 75, baseAttended: 8, records: [] },
       },
     ],
     classes: [
@@ -198,11 +198,19 @@ export function sampleSnapshot(): PersistedStateSnapshot {
         conceptId: 'con-1',
         question: 'o que é transferência?',
         answer: 'deslocamento de sentimentos do passado para o analista',
+        due: '2026-09-09',
+        stability: 2.25,
+        difficulty: 5,
+        retrievability: 1,
+        lapses: 0,
+        reviews: 4,
+        state: 'review',
         lastReviewed: '2026-09-09',
         easeFactor: 2.5,
         timesReviewed: 4,
       },
     ],
+    decks: [],
     materials: [
       {
         id: 'm1',

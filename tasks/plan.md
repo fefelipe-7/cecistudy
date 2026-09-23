@@ -167,3 +167,54 @@ Refatoração completa do aplicativo cecistudy em três eixos paralelos:
 - `ScreenLayers.tsx` — substituir ou mover? → Substituir por animações diretas nos `AppShell`s.
 - `isDesktop` — manter ou remover completamente? → **Removido** (2026-09) com o legado desktop; `src/lib/platform.ts` deletado.
 - Ordem de execução: MOD-001 → HAR-001 → SEP-001 (modularização facilita separação).
+
+---
+
+## Plano FREQ — Frequência de participação nas aulas (spec `.context/spec-frequencia.md`) ✅
+
+> **Status: implementado (2026-09-22), gate verde (lint + 751 testes + build + boundaries).**
+> Resumo completo e follow-ups em `tasks/todo.md` → "Fase FREQ".
+
+| Item | Decisão | Arquivos |
+|---|---|---|
+| Dado | `Course.attendance` vira `CourseAttendance` (`records[]` + `baseAttended`); sem coleção nova (viaja no `data_json`/sync) | `src/types/entity.ts` |
+| Núcleo puro | stats/margem/ações testadas por unidade (21 testes) | `src/lib/attendance.ts` + test |
+| Migração | `SCHEMA_VERSION` 15; `{attended,total}` → nova shape; golden regen | `packages/data/src/schema.ts`, `cecistudy-rust/contracts/golden/` |
+| Ações | `markAttendance`/`updateAttendanceRecord`/`removeAttendanceRecord` + auto-upsert no `addClassNote` | `src/context/dataActions.ts`, `AppContext.tsx` |
+| Home | sheet 2×2 + badge "registrada hoje" | `TodayClasses.tsx`, `ClassActionsSheet.tsx` |
+| Detalhe (info) | card de frequência por status + margem | `CourseAttendanceCard.tsx`, `CourseInfoContent.tsx` |
+| Detalhe (aulas) | histórico unificado por data + `RecordEditSheet` | `CourseAulasContent.tsx`, `RecordEditSheet.tsx` |
+| Grade | pill "freq X%" em atencao/limite/estourou | `DisciplinasGrid.tsx` |
+
+**Follow-ups:** long-press de record via `ManageSurface` (ManagedItemKind não cobre records); editar `hours` no
+`RecordEditSheet`; fidelidade do card de info aos botões rápidos §7.2; alinhar gate cargo do Rust aos golden files.
+
+---
+
+## Fase FLASH — Flashcards à la Anki + revisão 3D (spec `docs/specs/SPEC-003-flashcards-revisao-anki-3d.md`) 🔨
+
+> **Status:** em andamento (2026-09-23). Plano de implementação na seção "Plano de implementação" da spec —
+> 5 tasks; gate por task (`npm run lint` + `npm run test` + `npm run build`) + commit por slice.
+
+**Decisões-chave (resumo da spec)**
+
+| Item | Decisão | Arquivos |
+|---|---|---|
+| Scheduler | FSRS como fonte única de verdade (2026-09-17); `review.ts` vira fallback; sem bump de `SCHEMA_VERSION` (campos já existem desde migração 16) | `src/lib/fsrs.ts`, `src/lib/review.ts` |
+| Bug legado | `handleReviewFlashcard` congela `lastReviewed` (`c.lastReviewed ?? undefined`) — sched FSRS nunca "adoece"; também `timesReviewed` só conta quality≥2 | `src/context/dataActions.ts` |
+| Contadores | `isCardDue`/`nextDueLabel`/`cardCounts` puros (FSRS-first, fallback legado); 4ª cópia inlined em `navigationEngine.ts` eliminada | `fsrs.ts`, `HomeView`, `EstudosView`, `StudyRevisarScreen`, `navigationEngine.ts` |
+| Revisão | loop Anki `esqueci/custei/lembrei/fácil` (quality 0..3, intervalo impresso), swipe **só após revelar** (→Good, ←Again), undo, tri-count `novas · aprendendo · revisar` por `state`, `aria-live`, `celebrate` no fim da fila | `src/components/flashcards/` (novo) |
+| 3D | framer-motion + CSS-3D puro (perspective, `preserve-3d`, `backface-visibility:hidden`, `translateZ(0)`), **sem three.js**; stack atrás em 2D; reduced-motion global | `Card3D.tsx`, `CardCreation3D.tsx` |
+| Criação | card-como-form (frente → flip → verso) + confirmação com **voo para baú/envelope temático** (`layoutId`, commit síncrono, decoração ≤300ms); edição abre em "modo simples"; toggle 3D ♡ / simples | `CardCreation3D.tsx`, `CardBaúEnvelope.tsx`, `FlashcardWizard.tsx` |
+
+**Tasks (detalhe em `tasks/todo.md`)**
+
+- TASK-1: unificar scheduler FSRS (`isCardDue`/`nextDueLabel`/`cardCounts`) + corrigir `handleReviewFlashcard` + `fieldsFor` com `initCard` + trocar `isDueToday` nos 4 consumidores.
+- TASK-2: `src/components/flashcards/Card3D.tsx` + `RatingBar.tsx` (building blocks 3D + testes).
+- TASK-3: `ReviewSession.tsx` (loop Anki: flip, swipe, erase/undo, tri-count) + refatorar `StudyRevisarScreen.tsx`.
+- TASK-4: `CardCreation3D.tsx` + `CardBaúEnvelope.tsx` + `FlashcardWizard.tsx` com toggle 3D.
+- TASK-5: polimento & integração (contadores por aba, gesture guard vs edge-swipe-back, reduced-motion full, QA).
+
+**Riscos / follow-ups abertos (da spec):** full FSRS-5 vs simplificado (manter simplificado); remoção de `review.ts`
+deferred; gestão de decks (picker opcional) fora do escopo; default do toggle 3D com memória via `composePrefs`;
+foco/teclado em textarea dentro de CSS-3D em WebViews iOS/Android — validar em device, fallback = modo simples.

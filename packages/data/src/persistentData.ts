@@ -24,6 +24,7 @@ import type {
   PsychologyApproach,
   ReadingItem,
   Flashcard,
+  FlashcardDeck,
   MaterialItem,
   InternshipLog,
   TccData,
@@ -59,6 +60,7 @@ export interface PersistedStateSnapshot {
   approaches: PsychologyApproach[];
   readings: ReadingItem[];
   flashcards: Flashcard[];
+  decks: FlashcardDeck[];
   materials: MaterialItem[];
   internshipLogs: InternshipLog[];
   tcc: TccData;
@@ -90,6 +92,7 @@ export function readDatabaseFromState(state: PersistedStateSnapshot): PersistedD
     approaches: state.approaches,
     readings: state.readings,
     flashcards: state.flashcards,
+    decks: state.decks,
     materials: state.materials,
     internshipLogs: state.internshipLogs,
     tcc: state.tcc,

@@ -109,11 +109,11 @@ export const MobileAppShell: React.FC = () => {
     nativeNavigation.setCanGoBack(app.canGoBack);
   }, [app.canGoBack]);
 
-  // Gesto de "voltar pela borda": o `swipeX` é aplicado na própria camada de
-  // slide (abaixo), então a tela de cima acompanha o dedo — no web e no nativo.
+  // Gesto de "voltar pela borda" (iOS): transform da camada de slide acompanha o dedo
   const swipeX = useMotionValue(0);
-  // Sombra de borda revelada sob a tela de cima durante o drag — reforça a
-  // elevação enquanto a tela desliza p/ a direita.
+  // Peek do gesto: a "tela anterior" (fundo parallax) revelada sob a tela
+  // de cima enquanto ela desliza p/ a direita; sombra de borda no limite do slide.
+  const peekX = useTransform(swipeX, (v) => -v * 0.16);
   const shadowAlpha = useTransform(swipeX, [0, 120], [0, 0.14]);
 
   // Android back button: foco imersivo → pop de modais/telas → na raiz,
@@ -180,27 +180,37 @@ export const MobileAppShell: React.FC = () => {
 
       {/* Main Screen Content (Mobile First App Frame Container) */}
       <main
-        className={`flex-1 max-w-md sm:max-w-xl lg:max-w-3xl xl:max-w-4xl w-full mx-auto px-3.5 py-4 sm:px-5 lg:px-8 relative ${
+        className={`flex-1 max-w-md sm:max-w-xl lg:max-w-3xl xl:max-w-4xl w-full mx-auto px-3.5 py-4 sm:px-5 lg:px-8 relative transition-[padding] duration-[220ms] ease-out ${
           app.isBottomNavVisible
             ? 'pb-[calc(5rem+env(safe-area-inset-bottom,0px))] lg:pb-10'
             : 'pb-6'
         }`}
       >
-        {/* === Camada 0 (só web): sombra de elevação durante o gesto de voltar ===
-            O swipeX é aplicado na camada 1, então a tela de cima segue o dedo;
-            esta sombra na borda reforça a elevação da área revelada. */}
+        {/* === Camada 0 (só web): peek do gesto de borda ===
+            Durante o drag, a tela de cima desliza p/ a direita e este fundo
+            parallax (canvas) é revelado por baixo —
+            dá a sensação de "a tela anterior acompanha o dedo" sem remontar a
+            view; no commit o pop direcional revela a anterior de verdade.
+            A sombra de borda no limite do slide reforça a elevação. */}
         {!Capacitor.isNativePlatform() && (
-          <motion.div
-            aria-hidden
-            style={{ opacity: shadowAlpha }}
-            className="pointer-events-none fixed inset-y-0 left-0 z-[5] w-4 bg-gradient-to-r from-ceci-primary/15 to-transparent"
-          />
+          <>
+            <motion.div
+              aria-hidden
+              style={{ x: peekX }}
+              className="pointer-events-none fixed inset-0 z-0 bg-canvas lg:pl-60"
+            />
+            <motion.div
+              aria-hidden
+              style={{ opacity: shadowAlpha }}
+              className="pointer-events-none fixed inset-y-0 left-0 z-0 w-4 bg-gradient-to-r from-ceci-primary/15 to-transparent lg:left-60"
+            />
+          </>
         )}
         {/* === Camada 1: slide horizontal (base + auxiliares de 1º nível) ===
             A tela que sai congela onde está (SlideScreen vira fixed) e esvanece
             por baixo — o reset de scroll do handler não a arrasta mais. */}
         <motion.div
-          style={{ x: swipeX }}
+          style={{ x: Capacitor.isNativePlatform() ? swipeX : 0 }}
           className="relative z-10"
         >
           <AnimatePresence initial={false} custom={app.navDirection}>

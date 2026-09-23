@@ -22,6 +22,34 @@ export interface CourseScheduleSlot {
   end?: string;
 }
 
+/** Status de participação de uma aula registrada. */
+export type AttendanceStatus = 'presente' | 'falta' | 'cancelada';
+
+/** Registro de presença/falta/cancelamento de uma aula (frequência detalhada). */
+export interface AttendanceRecord {
+  id: string;
+  /** Data da aula no formato YYYY-MM-DD (fuso local). */
+  date: string;
+  status: AttendanceStatus;
+  /** Id da anotação de aula criada/vinculada (só em "presente"). */
+  noteId?: string;
+  /** Carga horária da aula em horas (derivada do slot ou editável). */
+  hours?: number;
+  updatedAt?: string;
+}
+
+/** Frequência de uma disciplina (substitui o par {attended,total}). */
+export interface CourseAttendance {
+  /** Total de aulas previstas/manual (ajustável; 0 = não configurado). */
+  total: number;
+  /** Percentual mínimo de presença da disciplina (default 75). */
+  minPct: number;
+  /** Presenças registradas antes dos registros detalhados (migração/manual). */
+  baseAttended?: number;
+  /** Histórico de participação por aula (mais recente primeiro). */
+  records: AttendanceRecord[];
+}
+
 export interface Course {
   id: string;
   /** Escopo de workspace (Fase 3). Default = ws-academico. */
@@ -41,8 +69,8 @@ export interface Course {
   description?: string;
   /** Atendimento & monitoria (ex.: "quartas, 14h - 15h30, sala dos professores"). */
   officeHours?: string;
-  /** Frequência registrada (ex.: presenças totais). */
-  attendance?: { attended: number; total: number };
+  /** Frequência da disciplina (total configurável + registros por aula). */
+  attendance?: CourseAttendance;
   /**
    * Vínculos explícitos de repertório (SPEC-001): conceitos-chave, autores
    * fundamentais e bibliografia recomendada da disciplina. Opcionais — o
@@ -127,14 +155,35 @@ export interface ReadingItem {
   chapters?: ReadingChapter[];
 }
 
+export interface FlashcardDeck {
+  id: string;
+  name: string;
+  description?: string;
+  color?: string;
+  workspaceId?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Flashcard {
   id: string;
   /** Escopo de workspace (Fase 3). Default = ws-academico. */
   workspaceId?: string;
+  deckId?: string;
   conceptId?: string;
   courseId?: string;
   question: string;
   answer: string;
+  /** FSRS scheduling */
+  due?: string;
+  stability?: number;
+  difficulty?: number;
+  retrievability?: number;
+  lapses?: number;
+  reviews?: number;
+  lastInterval?: number;
+  state?: 'new' | 'learning' | 'review' | 'relearning';
+  /** Legado — mantidos por migração */
   lastReviewed?: string;
   easeFactor?: number;
   timesReviewed?: number;

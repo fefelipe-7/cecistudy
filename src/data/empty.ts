@@ -17,6 +17,7 @@ import {
   PsychologyApproach,
   ReadingItem,
   Flashcard,
+  FlashcardDeck,
   MaterialItem,
   InternshipLog,
   TccData,
@@ -72,6 +73,7 @@ export interface EmptyDatabase {
   approaches: PsychologyApproach[];
   readings: ReadingItem[];
   flashcards: Flashcard[];
+  decks: FlashcardDeck[];
   materials: MaterialItem[];
   internshipLogs: InternshipLog[];
   tcc: TccData;
@@ -87,8 +89,8 @@ export interface EmptyDatabase {
    onboarding: OnboardingState;
    quizSessions: QuizSession[];
    readingProgress: Record<string, number>;
-   /** Carimbos de alteração p/ sincronização entre dispositivos (Fase Sync). */
-   syncIndex: SyncIndex;
+  /** Carimbos de alteração p/ sincronização entre dispositivos (Fase Sync). */
+  syncIndex: SyncIndex;
 }
 
 export function emptyDatabase(): EmptyDatabase {
@@ -103,6 +105,7 @@ export function emptyDatabase(): EmptyDatabase {
     approaches: [],
     readings: [],
     flashcards: [],
+    decks: [],
     materials: [],
     internshipLogs: [],
     tcc: emptyTcc,

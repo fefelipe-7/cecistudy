@@ -5,7 +5,6 @@ import { Mascote } from '../ui/Mascote';
 import { PillGroup } from '../ui/PillGroup';
 import { FixedBottomBar } from '../ui/FixedBottomBar';
 import { cn } from '../../lib/utils';
-import { IOS_EASE_OUT } from '../../lib/motion';
 import { filterQuestionPool } from '../../lib/quizLogic';
 import type { QuizConfig, StudyQuestion } from '../../types';
 
@@ -96,7 +95,7 @@ function FilterSection({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: IOS_EASE_OUT }}
+            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
             className="border-t border-ceci-border-default p-3 space-y-2 max-h-48 overflow-y-auto"
           >
             {options.map((opt) => {

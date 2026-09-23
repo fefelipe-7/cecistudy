@@ -1,189 +1,59 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
-import { motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion';
-import { Plus, X, CheckCircle2, RefreshCcw } from 'lucide-react';
+﻿import { useMemo } from 'react';
+import { Plus } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import { Mascote } from '../ui/Mascote';
-import { useLongPress } from '../../lib/useLongPress';
-import { celebrate } from '../../lib/celebrate';
-import { hapticSuccess } from '../../lib/haptics';
-import { isDueToday, intervalFor } from '../../lib/review';
-import type { Flashcard } from '../../types';
+import { isCardDue } from '../../lib/fsrs';
+import { ReviewSession } from '../flashcards/ReviewSession';
 
-/** Tela dedicada de revisão de flashcards (fila da sessão). */
+/**
+ * Tela dedicada de revisão de flashcards. Wrapper fino: liga o contexto
+ * (`handleReviewFlashcard`, `handleUpdateFlashcard`, wizard e gestão) ao
+ * `ReviewSession` (que implementa o loop Anki / 3D / undo).
+ */
 export const StudyRevisarScreen: React.FC = () => {
-  const { flashcards, profile, handleReviewFlashcard, openWizard, openManageItem } = useMobileApp();
+  const { flashcards, profile, handleReviewFlashcard, handleUpdateFlashcard, openWizard, openManageItem } =
+    useMobileApp();
 
-  const [reviewQueue, setReviewQueue] = useState<Flashcard[]>([]);
-  const [queueIndex, setQueueIndex] = useState(0);
-  const [isFlipped, setIsFlipped] = useState(false);
-  const [reviewedCount, setReviewedCount] = useState(0);
-  const dragX = useMotionValue(0);
-  const cardRotate = useTransform(dragX, [-140, 140], [-6, 6]);
-
-  const dueCards = useMemo(() => flashcards.filter(isDueToday), [flashcards]);
-  const activeCard = reviewQueue[queueIndex];
-
-  // Monta a fila ao entrar na tela
-  useEffect(() => {
-    setReviewQueue(dueCards);
-    setQueueIndex(0);
-    setIsFlipped(false);
-    setReviewedCount(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Mantém a fila coerente com o estado: remove cartões excluídos durante a sessão.
-  useEffect(() => {
-    setReviewQueue((q) => {
-      const ids = new Set(flashcards.map((c) => c.id));
-      const kept = q.filter((c) => ids.has(c.id));
-      return kept.length === q.length ? q : kept;
-    });
-  }, [flashcards]);
-
-  // Próxima rodada: menor intervalo entre os cartões recém-revisados (estado já atualizado).
-  const nextRoundInDays = useMemo(() => {
-    const reviewedIds = new Set(reviewQueue.map((c) => c.id));
-    const reviewed = flashcards.filter((c) => reviewedIds.has(c.id) && c.lastReviewed);
-    if (reviewed.length === 0) return null;
-    return Math.min(...reviewed.map((c) => intervalFor(c.timesReviewed)));
-  }, [flashcards, reviewQueue]);
-
-  const handleReview = (correct: boolean) => {
-    if (!activeCard) return;
-    handleReviewFlashcard(activeCard.id, correct);
-    setIsFlipped(false);
-    dragX.set(0);
-    setReviewedCount((c) => c + 1);
-    const finished = queueIndex + 1 >= reviewQueue.length;
-    setQueueIndex((i) => i + 1);
-    if (finished) {
-      celebrate('flashcards-done');
-      hapticSuccess();
-    }
-  };
-
-  const handleCardDragEnd = (_e: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    if (!isFlipped) return;
-    if (info.offset.x < -80 || info.velocity.x < -500) handleReview(true);
-    else if (info.offset.x > 80 || info.velocity.x > 500) handleReview(false);
-  };
-
-  const buildReviewQueue = (cards: Flashcard[]) => {
-    setReviewQueue(cards);
-    setQueueIndex(0);
-    setIsFlipped(false);
-    dragX.set(0);
-    setReviewedCount(0);
-  };
-
-  const cardHandlers = useLongPress({
-    onLongPress: () => {
-      if (!activeCard) return;
-      openManageItem('flashcard', activeCard.id);
-    },
-    onClick: () => setIsFlipped((f) => !f),
-  });
+  const dueCards = useMemo(() => flashcards.filter((c) => isCardDue(c)), [flashcards]);
 
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-4">
-      <div className="rounded-2xl p-6 bg-surface-default border border-ceci-border-default shadow-sm text-center space-y-4">
-        {reviewQueue.length === 0 && reviewedCount === 0 ? (
-          <div className="py-6 space-y-3">
-            <Mascote expression="done-calm" className="w-14 h-14 mx-auto" decorative />
-            <div>
-              <h3 className="font-display font-bold text-base text-ceci-primary">tudo em dia por aqui!</h3>
-              <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
-                nenhum flashcard precisa de revisão agora. pode dar uma volta ou revisar todos de novo.
-              </p>
-            </div>
-            {flashcards.length > 0 && (
-              <button
-                onClick={() => buildReviewQueue(flashcards)}
-                className="mx-auto flex items-center gap-1.5 bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary px-5 py-2.5 rounded-full text-xs font-semibold shadow-xs cursor-pointer"
-              >
-                <RefreshCcw className="w-3.5 h-3.5" /> revisar todos ({flashcards.length})
-              </button>
-            )}
+      {flashcards.length === 0 ? (
+        <div className="rounded-2xl p-6 bg-surface-default border border-ceci-border-default shadow-sm text-center space-y-4">
+          <Mascote expression="review-card" className="w-14 h-14 mx-auto" decorative />
+          <div>
+            <h3 className="font-display font-bold text-base text-ceci-primary">ainda não tem flashcard</h3>
+            <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
+              bora criar o primeiro pra revisar no seu ritmo ♡
+            </p>
           </div>
-        ) : queueIndex >= reviewQueue.length ? (
-          <div className="py-6 space-y-3">
-            <Mascote expression="celebrate-small" className="w-14 h-14 mx-auto" decorative />
-            <div>
-              <h3 className="font-display font-bold text-base text-ceci-primary">revisão concluída{profile.name.trim() ? `, parabéns ${profile.name.trim()}` : ', parabéns'}! ♡</h3>
-              <p className="text-xs text-ceci-secondary mt-1.5">
-                você revisou {reviewedCount} {reviewedCount === 1 ? 'cartão' : 'cartões'} hoje.
-                {nextRoundInDays !== null &&
-                  ` a próxima rodada volta em ${nextRoundInDays} ${nextRoundInDays === 1 ? 'dia' : 'dias'} ♡`}
-              </p>
-            </div>
-            <button
-              onClick={() => buildReviewQueue([])}
-              className="mx-auto bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary px-5 py-2.5 rounded-full text-xs font-semibold shadow-xs cursor-pointer"
-            >
-              fechar revisão
-            </button>
-          </div>
-        ) : activeCard ? (
-          <>
-            <span className="text-xs text-ceci-tertiary">
-              card {queueIndex + 1} de {reviewQueue.length}
-            </span>
-
-            <motion.div
-              key={activeCard.id}
-              drag="x"
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.6}
-              onDragEnd={handleCardDragEnd}
-              style={{ x: dragX, rotate: cardRotate }}
-              whileTap={{ scale: 0.99 }}
-              {...cardHandlers}
-              className="min-h-[180px] p-6 rounded-2xl bg-surface-rose border border-ceci-border-brand flex flex-col items-center justify-center cursor-pointer touch-pan-y"
-            >
-              <span className="text-xs font-semibold text-ceci-brand-strong mb-2 select-none">
-                {isFlipped ? 'resposta ✨' : 'pergunta ❓'}
-              </span>
-              <p className="font-display font-bold text-base text-ceci-primary select-none">
-                {isFlipped ? activeCard.answer : activeCard.question}
-              </p>
-            </motion.div>
-
-            {isFlipped ? (
-              <div className="grid grid-cols-2 gap-3 pt-2">
-                <button
-                  onClick={() => handleReview(false)}
-                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-status-danger-strong bg-status-danger-surface border border-status-danger-border cursor-pointer"
-                >
-                  <X className="w-4 h-4" /> errei
-                </button>
-                <button
-                  onClick={() => handleReview(true)}
-                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-status-success-on bg-status-success hover:bg-status-success-strong cursor-pointer"
-                >
-                  <CheckCircle2 className="w-4 h-4" /> acertei
-                </button>
-              </div>
-            ) : (
-              <p className="text-[10px] text-ceci-tertiary lowercase pt-1">toque no card para ver a resposta ♡</p>
-            )}
-          </>
-        ) : null}
-      </div>
-
-      {reviewQueue.length > 0 && queueIndex < reviewQueue.length && (
-        <div className="flex items-center justify-between px-1 text-xs text-ceci-muted">
-          <span>{queueIndex + 1} de {reviewQueue.length}</span>
-          <span>revisados: {reviewedCount}</span>
+          <button
+            onClick={() => openWizard('flashcard')}
+            className="mx-auto flex items-center gap-1.5 bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary px-5 py-2.5 rounded-full text-xs font-semibold shadow-xs cursor-pointer"
+          >
+            <Plus className="w-4 h-4" /> criar flashcard
+          </button>
         </div>
+      ) : (
+        <>
+          <ReviewSession
+            allCards={flashcards}
+            dueCards={dueCards}
+            profileName={profile?.name ?? ''}
+            onGrade={handleReviewFlashcard}
+            onRestore={handleUpdateFlashcard}
+            onManage={(id) => openManageItem('flashcard', id)}
+          />
+          <button
+            onClick={() => openWizard('flashcard')}
+            className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-ceci-brand-strong bg-surface-rose border border-ceci-border-brand cursor-pointer"
+          >
+            <Plus className="w-4 h-4" /> novo flashcard
+          </button>
+        </>
       )}
-
-      <button
-        onClick={() => openWizard('flashcard')}
-        className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold text-ceci-brand-strong bg-surface-rose border border-ceci-border-brand cursor-pointer"
-      >
-        <Plus className="w-4 h-4" /> novo flashcard
-      </button>
     </div>
   );
 };
+
+export default StudyRevisarScreen;

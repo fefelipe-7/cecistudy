@@ -199,7 +199,9 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
             role="tabpanel"
             aria-label={`aba ${activeTab}`}
           >
-            {activeTab === 'info' && <CourseInfoContent course={course} />}
+            {activeTab === 'info' && (
+              <CourseInfoContent course={course} onGoToHistory={() => goToTab('aulas')} />
+            )}
             {activeTab === 'aulas' && <CourseAulasContent course={course} />}
             {activeTab === 'repertorio' && <CourseRepertorioContent course={course} />}
           </motion.div>

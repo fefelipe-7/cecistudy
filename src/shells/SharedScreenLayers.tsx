@@ -16,6 +16,7 @@ const loadSyncScreen = () => import('../components/sync/SyncScreen').then((m) =>
 const loadComposeNoteView = () => import('../components/views/ComposeNoteView').then((m) => ({ default: m.ComposeNoteView }));
 const loadClassNoteDetailWizard = () => import('../components/views/ClassNoteDetailWizard').then((m) => ({ default: m.ClassNoteDetailWizard }));
 const loadClassNoteDetailScreen = () => import('../components/courses/ClassNoteDetailScreen').then((m) => ({ default: m.ClassNoteDetailScreen }));
+const loadRepertorioItemDetailScreen = () => import('../components/courses/RepertorioItemDetailScreen').then((m) => ({ default: m.RepertorioItemDetailScreen }));
 const loadNoteDetailWizard = () => import('../components/views/NoteDetailWizard').then((m) => ({ default: m.NoteDetailWizard }));
 const loadNoteTransformWizard = () => import('../components/views/NoteTransformWizard').then((m) => ({ default: m.NoteTransformWizard }));
 const loadWizardRouter = () => import('../components/wizards/WizardRouter').then((m) => ({ default: m.WizardRouter }));
@@ -47,6 +48,7 @@ const SyncScreen = lazy(loadSyncScreen);
 const ComposeNoteView = lazy(loadComposeNoteView);
 const ClassNoteDetailWizard = lazy(loadClassNoteDetailWizard);
 const ClassNoteDetailScreen = lazy(loadClassNoteDetailScreen);
+const RepertorioItemDetailScreen = lazy(loadRepertorioItemDetailScreen);
 const NoteDetailWizard = lazy(loadNoteDetailWizard);
 const NoteTransformWizard = lazy(loadNoteTransformWizard);
 const WizardRouter = lazy(loadWizardRouter);
@@ -83,6 +85,7 @@ const SCREEN_CHUNK_LOADERS = [
   loadComposeNoteView,
   loadClassNoteDetailWizard,
   loadClassNoteDetailScreen,
+  loadRepertorioItemDetailScreen,
   loadNoteDetailWizard,
   loadNoteTransformWizard,
   loadWizardRouter,
@@ -240,6 +243,8 @@ export const SlideContent: React.FC = () => {
                 <InternshipDiaryView />
               ) : app.isClassNoteDetailOpen ? (
                 <ClassNoteDetailScreen />
+              ) : app.isRepertorioItemOpen ? (
+                <RepertorioItemDetailScreen />
               ) : (
                 <FaculdadeView course={app.focusedCourse} />
               ))}

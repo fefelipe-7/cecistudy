@@ -98,5 +98,5 @@ describe('QuizPlayer (regressão: fluxo de sessão 20 questões)', () => {
     }
 
     expect(screen.getByTestId('finished').textContent).toBe('yes');
-  }, 20000);
+  });
 });

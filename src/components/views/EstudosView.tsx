@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { useDataClientApp, useDataClientCourses, useDataClientStudy } from '@/context/DataClientProvider';
 import { useNavValue, useStudyActions } from '@/context/shellNavContexts';
-import { isDueToday, intervalFor } from '../../lib/review';
+import { isCardDue, nextDueLabel } from '../../lib/fsrs';
 import { toDateKey } from '../../lib/streak';
 import { pickTip } from '../../lib/tips';
 import { WEEK_CELL_STYLE } from '../../lib/copy';
@@ -29,7 +29,7 @@ export const EstudosView: React.FC = () => {
   const { openStudy, openQuizCategory, openTccScreen, openWizard } = useNavValue();
 
   // ---- dados reais derivados do estado ----
-  const dueCards = useMemo(() => flashcards.filter(isDueToday), [flashcards]);
+  const dueCards = useMemo(() => flashcards.filter((c) => isCardDue(c)), [flashcards]);
   const nextDueCard = dueCards[0];
   const nextDueCourse = courses.find((c) => c.id === nextDueCard?.courseId);
 
@@ -149,7 +149,7 @@ export const EstudosView: React.FC = () => {
             </div>
             <p className="text-[11px] text-ceci-secondary truncate">
               {nextDueCard
-                ? `${nextDueCourse?.name ?? 'geral'} · volta em ${intervalFor(nextDueCard.timesReviewed)}d`
+                ? `${nextDueCourse?.name ?? 'geral'} · ${nextDueLabel(nextDueCard)}`
                 : dueCards.length === 0 && flashcards.length > 0
                   ? 'cartões em dia ♡'
                   : 'crie seu primeiro cartão'}

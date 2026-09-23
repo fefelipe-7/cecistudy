@@ -22,6 +22,8 @@ export interface Route {
   focusedCourseId?: string | null;
   /** Detalhe full-screen de uma aula (`#/faculdade/:courseId/aula/:classNoteId`). */
   classNoteId?: string;
+  /** Ficha de um item do repertório da disciplina (`#/faculdade/:courseId/repertorio/:itemId`). */
+  repertorioItemId?: string;
   notes?: boolean;
   temple?: boolean;
   /** Seção interna do templo (ex.: `#/biblioteca/templo/conceitos`). */
@@ -208,6 +210,10 @@ export function parseRoute(hash: string): Route {
     if (h[2] === 'aula' && h[3]) {
       return { tab: 'faculdade', focusedCourseId: h[1], classNoteId: h[3] };
     }
+    // Ficha de item do repertório: `#/faculdade/:courseId/repertorio/:itemId`
+    if (h[2] === 'repertorio' && h[3]) {
+      return { tab: 'faculdade', focusedCourseId: h[1], repertorioItemId: h[3] };
+    }
     // Sub-tabs legadas (aulas/avaliacoes fundidas no detalhe da disciplina)
     if (h[1] && LEGACY_SUB_TABS_FACULDADE.includes(h[1])) return { tab: 'faculdade' };
     const s = subtab('faculdade');
@@ -358,6 +364,13 @@ export function routeToStack(route: Route): NavScreen[] {
         { kind: 'classNote', classNoteId: route.classNoteId, courseId: route.focusedCourseId },
       ];
     }
+    if (route.repertorioItemId) {
+      return [
+        { kind: 'tab', tab: 'faculdade' },
+        courseScreen,
+        { kind: 'repertorioItem', courseId: route.focusedCourseId, itemId: route.repertorioItemId },
+      ];
+    }
     return [{ kind: 'tab', tab: 'faculdade' }, courseScreen];
   }
   return [{ kind: 'tab', tab: route.tab ?? 'home' }];
@@ -411,6 +424,9 @@ export function stackToHash(stack: NavScreen[], subTab?: string): string {
   }
   if (top.kind === 'course') return `#/faculdade/${top.courseId}`;
   if (top.kind === 'classNote') return `#/faculdade/${top.courseId}/aula/${top.classNoteId}`;
+  if (top.kind === 'repertorioItem') {
+    return `#/faculdade/${top.courseId}/repertorio/${top.itemId}`;
+  }
   if (top.kind === 'approach') {
     return `#/biblioteca/abordagens/${top.approachId}`;
   }
