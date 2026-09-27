@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion';
-import { RefreshCcw, Undo2 } from 'lucide-react';
+import { RefreshCcw, SlidersHorizontal, Undo2 } from 'lucide-react';
 import { celebrate } from '../../lib/celebrate';
 import { hapticSuccess } from '../../lib/haptics';
 import { cardCounts, daysUntilDue, isCardDue, ratingIntervals, type FSRSQuality } from '../../lib/fsrs';
 import type { Flashcard } from '../../types';
-import { Card3D } from '../flashcards/Card3D';
+import { Paper3DCard } from '../flashcards/Paper3DCard';
 import { RatingBar, type RatingOption } from '../flashcards/RatingBar';
 
 export interface ReviewSessionProps {
@@ -49,9 +48,6 @@ export const ReviewSession: React.FC<ReviewSessionProps> = ({
   const [undoStack, setUndoStack] = useState<Flashcard[]>([]);
   const [announced, setAnnounced] = useState('');
   const busyRef = useRef(false);
-
-  const dragX = useMotionValue(0);
-  const cardRotate = useTransform(dragX, [-140, 140], [-6, 6]);
 
   // Monta a fila na primeira entrada / quando o deck muda de origem.
   useEffect(() => {
@@ -125,7 +121,6 @@ export const ReviewSession: React.FC<ReviewSessionProps> = ({
     const finished = queueIndex + 1 >= reviewQueue.length;
     setQueueIndex((i) => i + 1);
     setIsFlipped(false);
-    dragX.set(0);
     if (finished) {
       celebrate('flashcards-done');
       hapticSuccess();
@@ -141,13 +136,6 @@ export const ReviewSession: React.FC<ReviewSessionProps> = ({
     setQueueIndex((i) => Math.max(0, i - 1));
     setReviewedCount((c) => (isFinished ? c : Math.max(0, c - 1)));
     setIsFlipped(false);
-    dragX.set(0);
-  };
-
-  const handleCardDragEnd = (_e: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    if (!isFlipped) return;
-    if (info.offset.x < -80 || info.velocity.x < -500) grade(0);
-    else if (info.offset.x > 80 || info.velocity.x > 500) grade(2);
   };
 
   // ---- Estados vazios/fim ----
@@ -230,6 +218,15 @@ export const ReviewSession: React.FC<ReviewSessionProps> = ({
             ))}
           </span>
         )}
+        {onManage && (
+          <button
+            onClick={() => onManage(activeCard.id)}
+            aria-label="gerenciar cartão"
+            className="flex items-center gap-1 text-ceci-tertiary hover:text-ceci-primary cursor-pointer touch-target"
+          >
+            <SlidersHorizontal className="w-3.5 h-3.5" />
+          </button>
+        )}
       </div>
 
       {/* palco 3D (swipe só liberado após revelar) */}
@@ -251,37 +248,25 @@ export const ReviewSession: React.FC<ReviewSessionProps> = ({
           );
         })}
 
-        <motion.div
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0.6}
-          onDragEnd={handleCardDragEnd}
-          style={{ x: dragX, rotate: cardRotate }}
-          whileTap={{ scale: 0.99 }}
-          className="touch-pan-y"
-        >
-          <Card3D
-            key={activeCard.id}
-            flipped={isFlipped}
-            onFlipChange={setIsFlipped}
-            onLongPress={() => onManage(activeCard.id)}
-            ariaLabel={`cartão de estudo ${queueIndex + 1} de ${reviewQueue.length}`}
-            frontClassName="flex flex-col items-center justify-center gap-2 p-6 text-center"
-            backClassName="flex flex-col items-center justify-center gap-2 p-6 text-center"
-            front={
-              <>
-                <span className="text-[10px] font-semibold text-ceci-muted uppercase tracking-wider select-none">pergunta ❓</span>
-                <p className="font-display font-bold text-base text-ceci-primary select-none break-words">{activeCard.question}</p>
-              </>
-            }
-            back={
-              <>
-                <span className="text-[10px] font-semibold text-ceci-brand-strong uppercase tracking-wider select-none">resposta ✨</span>
-                <p className="text-sm text-ceci-primary select-none break-words leading-relaxed">{activeCard.answer}</p>
-              </>
-            }
-          />
-        </motion.div>
+        <Paper3DCard
+          key={activeCard.id}
+          flipped={isFlipped}
+          ariaLabel={`cartão de estudo ${queueIndex + 1} de ${reviewQueue.length}`}
+          frontClassName="flex flex-col items-center justify-center gap-2 text-center"
+          backClassName="flex flex-col items-center justify-center gap-2 text-center"
+          front={
+            <>
+              <span className="text-[10px] font-semibold text-ceci-muted uppercase tracking-wider select-none">pergunta ❓</span>
+              <p className="font-display font-bold text-base text-ceci-primary select-none break-words">{activeCard.question}</p>
+            </>
+          }
+          back={
+            <>
+              <span className="text-[10px] font-semibold text-ceci-brand-strong uppercase tracking-wider select-none">resposta ✨</span>
+              <p className="text-sm text-ceci-primary select-none break-words leading-relaxed">{activeCard.answer}</p>
+            </>
+          }
+        />
       </div>
 
       {/* feedback de veredito (aria-live) */}
