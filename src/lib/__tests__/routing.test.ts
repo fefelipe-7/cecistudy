@@ -479,7 +479,7 @@ describe('stackToHash', () => {
 
 describe('round-trip hash ↔ rota', () => {
   it('reconstrói a rota a partir do hash serializado (abas + sub-tabs)', () => {
-    const cases = ['#/home', '#/faculdade', '#/faculdade/c3', '#/faculdade/c3/aula/cl-1', '#/faculdade/c3/repertorio/cat-9', '#/faculdade/calendario', '#/estudos/foco', '#/estudos/revisar', '#/estudos/leituras', '#/estudos/historico', '#/biblioteca/conceitos', '#/biblioteca/notas', '#/biblioteca/notas/note-1', '#/biblioteca/notas/note-1/transformar', '#/biblioteca/templo', '#/biblioteca/templo/conceitos', '#/biblioteca/templo/autores', '#/biblioteca/templo/tecnicas', '#/biblioteca/familias', '#/biblioteca/familias/fam-01', '#/biblioteca/abordagens/psic-04-01', '#/streak', '#/perfil/streak', '#/faculdade/estagio', '#/estudos/tcc', '#/perfil/stickers', '#/nota', '#/nota/detalhes', '#/biblioteca/nota', '#/faculdade/c3/nota', '#/biblioteca/nota/detalhes', '#/faculdade/c3/nota/detalhes', '#/novo/estagio', '#/novo/prova-atividade', '#/biblioteca/novo/leitura', '#/faculdade/c3/novo/prova', '#/novo/materia', '#/faculdade/novo/materia', '#/estudos/quiz'];
+    const cases = ['#/home', '#/faculdade', '#/faculdade/c3', '#/faculdade/c3/aula/cl-1', '#/faculdade/c3/repertorio/cat-9', '#/faculdade/calendario', '#/estudos/foco', '#/estudos/revisar', '#/estudos/leituras', '#/estudos/historico', '#/biblioteca/conceitos', '#/biblioteca/notas', '#/biblioteca/notas/note-1', '#/biblioteca/notas/note-1/transformar', '#/biblioteca/templo', '#/biblioteca/templo/conceitos', '#/biblioteca/templo/autores', '#/biblioteca/templo/tecnicas', '#/biblioteca/familias', '#/biblioteca/familias/fam-01', '#/biblioteca/abordagens/psic-04-01', '#/streak', '#/perfil/streak', '#/faculdade/estagio', '#/estudos/tcc', '#/perfil/stickers', '#/nota', '#/nota/detalhes', '#/biblioteca/nota', '#/faculdade/c3/nota', '#/biblioteca/nota/detalhes', '#/faculdade/c3/nota/detalhes', '#/novo/estagio', '#/novo/prova-atividade', '#/biblioteca/novo/leitura', '#/faculdade/c3/novo/prova', '#/novo/materia', '#/faculdade/novo/materia', '#/estudos/quiz', '#/perfil/semestre', '#/perfil/semestre/historico', '#/perfil/semestre/historico/trm-3'];
     for (const h of cases) {
       const route = parseRoute(h);
       const stack = routeToStack(route);
@@ -494,5 +494,51 @@ describe('round-trip hash ↔ rota', () => {
     const h = stackToHash(stack, route.subTab);
     expect(h).toBe('#/biblioteca/conceitos');
     expect(parseRoute(h).subTab).toBe('conceitos');
+  });
+});
+describe('rota do período letivo (SPEC-005)', () => {
+  it('o wizard de semestre mora no perfil, não em /novo', () => {
+    expect(parseRoute('#/perfil/semestre')).toEqual({ tab: 'perfil', wizard: 'semester' });
+  });
+
+  it('histórico sem período aberto degrada para a lista', () => {
+    expect(parseRoute('#/perfil/semestre/historico')).toEqual({
+      tab: 'perfil',
+      termHistory: true,
+      termId: undefined,
+    });
+  });
+
+  it('histórico com período aberto carrega o termId', () => {
+    expect(parseRoute('#/perfil/semestre/historico/trm-3')).toEqual({
+      tab: 'perfil',
+      termHistory: true,
+      termId: 'trm-3',
+    });
+  });
+
+  it('a pilha do histórico é [perfil, wizard, histórico] — o wizard é o passo 1', () => {
+    expect(routeToStack({ termHistory: true, termId: 'trm-3' })).toEqual([
+      { kind: 'tab', tab: 'perfil' },
+      { kind: 'wizard', type: 'semester' },
+      { kind: 'termHistory', termId: 'trm-3' },
+    ]);
+  });
+
+  it('o wizard de semestre serializa para #/perfil/semestre (nunca #/novo/semestre)', () => {
+    expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'wizard', type: 'semester' }])).toBe(
+      '#/perfil/semestre',
+    );
+  });
+
+  it('o histórico serializa com e sem período', () => {
+    const base: NavScreen[] = [
+      { kind: 'tab', tab: 'perfil' },
+      { kind: 'wizard', type: 'semester' },
+    ];
+    expect(stackToHash([...base, { kind: 'termHistory' }])).toBe('#/perfil/semestre/historico');
+    expect(stackToHash([...base, { kind: 'termHistory', termId: 'trm-3' }])).toBe(
+      '#/perfil/semestre/historico/trm-3',
+    );
   });
 });

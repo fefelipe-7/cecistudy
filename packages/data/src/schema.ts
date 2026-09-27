@@ -1,5 +1,6 @@
 import { parseLegacySchedule } from '@/lib/schedule';
 import { hoursFromClasses, migrateLegacyAttendance } from '@/lib/attendance';
+import type { AcademicTerm } from '@/types';
 
 /**
  * Versão do esquema de dados persistido.
@@ -8,7 +9,7 @@ import { hoursFromClasses, migrateLegacyAttendance } from '@/lib/attendance';
  * incremente esta versão e registre a migração correspondente em `MIGRATIONS`.
  * O export/import carrega a versão junto; o app recusa/avisa dados de versão desconhecida.
  */
-export const SCHEMA_VERSION = 17;
+export const SCHEMA_VERSION = 18;
 
 /** Versão de schema da base da usuária (antigo scaffold SQLite, hoje mantida por compatibilidade de import). */
 export const USER_SCHEMA_VERSION = 1;
@@ -19,11 +20,130 @@ export const SCHEMA_VERSION_KEY = 'schemaVersion';
 /** Workspace padrão (Fase 3): todo dado antigo sem `workspaceId` pertence a ele. */
 export const DEFAULT_WORKSPACE_ID = 'ws-academico';
 
+/**
+ * Id do período ativo criado pela migração 17 → 18 (SPEC-005).
+ *
+ * Fixo (e não `makeId`) porque precisa ser **determinístico**: a mesma entrada
+ * tem sempre que produzir a mesma saída, senão o golden de migração e o
+ * re-import de um backup antigo divergem. O boot (`ensureActiveTerm`) usa este
+ * mesmo id, o que faz dele um no-op para quem já veio migrado.
+ */
+export const BOOTSTRAP_TERM_ID = 'trm-active';
+
 /** Payload de backup/importação (export/import completo do banco local). */
 export interface AppDatabase {
   version: number;
   exportedAt: string;
   data: Record<string, unknown>;
+}
+
+/** `startedAt` do período criado na migração 18 quando o payload não tem data alguma. */
+const FALLBACK_TERM_START = '2026-01-01';
+
+/**
+ * Clamp de `ordinal` (1..max) espelhando `packages/domain`. É replicado (e não
+ * importado) de propósito: `schema.ts` é o primeiro elo da cadeia de migração e
+ * não pode depender de o código do app já estar carregado — uma migração tem que
+ * rodar mesmo quando a entity nova nem existe mais.
+ */
+function clampTermOrdinal(ordinal: number, max: number): number {
+  if (!Number.isFinite(ordinal)) return 1;
+  return Math.max(1, Math.min(max, Math.trunc(ordinal)));
+}
+
+/** Campos de data ISO varridos para descobrir a data de início do curso. */
+const TERM_DATE_SOURCES: readonly (readonly [string, string])[] = [
+  ['courses', 'startDate'],
+  ['classes', 'date'],
+  ['attendance', 'date'],
+  ['exams', 'date'],
+  ['sessions', 'date'],
+  ['internshipLogs', 'date'],
+  ['tasks', 'dueDate'],
+];
+
+/** `YYYY-MM-DD` (ou ISO completo) → só a data; `undefined` se não for data. */
+function toIsoDay(value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined;
+  const match = /^(\d{4}-\d{2}-\d{2})/.exec(value);
+  return match ? match[1] : undefined;
+}
+
+/**
+ * Menor data ISO presente no payload, ou `undefined`.
+ * String-comparação é suficiente: `YYYY-MM-DD` ordena lexicograficamente igual
+ * ao cronológico, e evita `Date` (e o fuso) no meio de uma migração.
+ */
+function earliestIsoDate(data: Record<string, unknown>): string | undefined {
+  let earliest: string | undefined;
+  for (const [collection, field] of TERM_DATE_SOURCES) {
+    const rows = data[collection];
+    if (!Array.isArray(rows)) continue;
+    for (const row of rows) {
+      const day = toIsoDay((row as Record<string, unknown> | null)?.[field]);
+      if (!day) continue;
+      if (earliest === undefined || day < earliest) earliest = day;
+    }
+  }
+  return earliest;
+}
+
+/** `profile.semester` → ordinal, tolerando o formato string dos backups antigos. */
+function semesterOrdinal(raw: unknown): number {
+  const parsed =
+    typeof raw === 'number'
+      ? raw
+      : typeof raw === 'string'
+        ? Number.parseInt(raw.replace(/[^\d-]/g, ''), 10)
+        : Number.NaN;
+  return clampTermOrdinal(Number.isFinite(parsed) ? parsed : 1, 12);
+}
+
+/**
+ * Período ativo de bootstrap (SPEC-005) — a **fonte única** do termo inicial.
+ *
+ * Usado em dois lugares que precisam concordar byte a byte:
+ * - `MIGRATIONS[18]`, ao importar um backup antigo;
+ * - `ensureActiveTerm` no boot, para quem já tinha o app sem período.
+ *
+ * Se os dois divergissem, o mesmo banco nasceria com `termId` diferente
+ * dependendo do caminho de entrada — e o LWW por registro do sync passaria a
+ * conviver com dois períodos ativos.
+ */
+export function createBootstrapTerm(
+  profile: Record<string, unknown> | undefined,
+  data: Record<string, unknown>,
+): AcademicTerm {
+  const ordinal = semesterOrdinal(profile?.semester);
+  const startedAt = earliestIsoDate(data) ?? FALLBACK_TERM_START;
+  return {
+    id: BOOTSTRAP_TERM_ID,
+    label: `${ordinal}º semestre`,
+    ordinal,
+    status: 'ativo',
+    startedAt,
+    statusTransitionAt: `${startedAt}T00:00:00.000Z`,
+    createdAt: `${startedAt}T00:00:00.000Z`,
+    updatedAt: `${startedAt}T00:00:00.000Z`,
+  };
+}
+
+/**
+ * Garante que o estado tenha um período ativo (idempotente).
+ *
+ * Usado no boot do app: devolve `null` quando já existe um período ativo — o
+ * caso comum depois da migração — e o termo novo só quando não há nenhum. Chamar
+ * isso de novo depois de `closeTerm` **não** recria o período: quem fecha quer
+ * ficar sem período ativo até decidir o próximo.
+ */
+export function ensureActiveTerm(
+  terms: readonly AcademicTerm[],
+  profile: Record<string, unknown> | undefined,
+  data: Record<string, unknown> = {},
+): AcademicTerm[] | null {
+  if (terms.some((t) => t.status === 'ativo')) return null;
+  if (terms.some((t) => t.id === BOOTSTRAP_TERM_ID)) return null;
+  return [...terms, createBootstrapTerm(profile, data)];
 }
 
 /**
@@ -251,6 +371,48 @@ export const MIGRATIONS: Record<number, Migration> = {
       return { ...c, attendance: next };
     });
     return { ...data, courses: normalized };
+  },
+  // 17 → 18: período letivo (SPEC-005). Cria a coleção `academicTerms` e liga
+  // cada disciplina a um período. `profile.semester` vira o `ordinal` do período
+  // ativo, e `Course.semester` (que era um rótulo livre tipo "6º Semestre", sem
+  // poder de filtro) é substituído por `termId` + `status`.
+  //
+  // Duas garantias, ambas testadas em `src/data/__tests__/schema.test.ts`:
+  // - **determinística**: `startedAt` é a menor data ISO do payload, senão a
+  //   constante `FALLBACK_TERM_START`. Nunca `Date.now()` — uma migração não
+  //   pode depender do relógio, senão re-importar o mesmo backup duas vezes dá
+  //   payloads diferentes e o diff de sync enche de ruído.
+  // - **idempotente**: re-aplicar não duplica o período nem sobrescreve
+  //   `termId`/`status` que já existem.
+  18: (data) => {
+    const profile = { ...(data.profile as Record<string, unknown> ?? {}) };
+
+    // `profile.semester` vira o `ordinal` do período ativo (tolera o formato
+    // string dos backups antigos — ver `createBootstrapTerm`).
+    profile.semester = semesterOrdinal(profile.semester);
+    if (typeof profile.totalSemesters !== 'number' || !Number.isFinite(profile.totalSemesters)) {
+      profile.totalSemesters = 8;
+    }
+
+    const existing = Array.isArray(data.academicTerms)
+      ? (data.academicTerms as AcademicTerm[])
+      : [];
+    // Só cria quando ainda não há período ativo **e** o id bootstrap está livre
+    // (duas condições distintas: respeitar um período vindo de outro dispositivo
+    // e nunca duplicar o id, que quebraria o LWW por registro do sync).
+    const academicTerms =
+      existing.some((t) => t.status === 'ativo') || existing.some((t) => t.id === BOOTSTRAP_TERM_ID)
+        ? existing
+        : [...existing, createBootstrapTerm(profile, data)];
+
+    const courses = (data.courses ?? []) as Record<string, unknown>[];
+    const normalized = courses.map((c) => ({
+      ...c,
+      termId: c.termId ?? BOOTSTRAP_TERM_ID,
+      status: c.status ?? 'ativo',
+    }));
+
+    return { ...data, profile, academicTerms, courses: normalized };
   },
 };
 

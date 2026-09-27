@@ -163,7 +163,9 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
           body: `${co.professor} ${co.description ?? ''}`,
           tags: co.code ? [co.code] : [],
           type: 'course',
-          badge: 'disciplina',
+          // Arquivar tira da grade, nunca da busca (SPEC-005 §D5): a disciplina
+          // continua pesquisável, só que marcada como de outro período.
+          badge: (co.status ?? 'ativo') === 'arquivado' ? 'disciplina arquivada' : 'disciplina',
         },
         subtitle: `prof.ª ${co.professor} • ${co.semester}`,
         go: () => onNavigate('faculdade', 'disciplinas', co.id),

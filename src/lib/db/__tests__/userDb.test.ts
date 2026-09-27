@@ -54,7 +54,7 @@ describe('migrações da base da usuária', () => {
     const rows = await d.query("SELECT name FROM sqlite_master WHERE type='table'");
     const tables = rows.map((r) => String(r.name));
     for (const t of ['profile', 'course', 'course_schedule', 'task', 'assessment',
-      'study_session', 'flashcard', 'quiz_session', 'quiz_answer', 'reading',
+      'study_session', 'flashcard', 'deck', 'quiz_session', 'quiz_answer', 'reading',
       'reading_progress', 'author', 'concept', 'material', 'technique', 'note',
       'internship', 'supervision_notebook', 'thesis_project', 'achievement',
       'saved_catalog_item', 'streak', 'activity_event', 'legacy_import_map']) {
@@ -195,6 +195,22 @@ describe('round-trip das coleções', () => {
     }];
     await saveCollection(d, 'looseNotes', notes);
     expect(await loadCollection(d, 'looseNotes')).toEqual(notes);
+  });
+
+  it('decks: round-trip preserva o baralho (colunas + data_json)', async () => {
+    const decks = [
+      {
+        id: 'd1',
+        workspaceId: 'ws-academico',
+        name: 'transferência e contratransferência',
+        description: 'revisão da aula de psicanálise',
+        color: '#E97891',
+        createdAt: '2026-08-18',
+        updatedAt: '2026-09-09',
+      },
+    ];
+    await saveCollection(d, 'decks', decks);
+    expect(await loadCollection(d, 'decks')).toEqual(decks);
   });
 
   it('loadAllCollections devolve tudo que foi gravado', async () => {

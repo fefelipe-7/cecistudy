@@ -7,6 +7,9 @@ import { useDataClientApp, useDataClientCourses } from '@/context/DataClientProv
 import { useNavValue } from '@/context/shellNavContexts';
 import { getTodaySchedule, upcomingEvents } from '../../lib/schedule';
 import type { CalendarEvent } from '../../lib/schedule';
+import { useTermScope, semestersLeft } from '../../lib/termScope';
+import { shouldOfferRollover } from '../../core/domain';
+import TermRolloverCta from './faculdade/TermRolloverCta';
 import HeroSection from './faculdade/HeroSection';
 import WeekGrid from './faculdade/WeekGrid';
 import DisciplinasGrid from './faculdade/DisciplinasGrid';
@@ -20,8 +23,11 @@ interface FaculdadeViewProps {
 }
 
 export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
-  const { profile, internshipLogs } = useDataClientApp();
+  const { profile, internshipLogs, academicTerms } = useDataClientApp();
   const { courses, classes, exams, tasks } = useDataClientCourses();
+  // Recorte do período (SPEC-005): a tela do "agora" só enxerga o semestre ativo.
+  // `all` preserva a lista completa para o calendário e a busca.
+  const { term, active, grade, archived, activeIds } = useTermScope(courses, academicTerms);
   const {
     subTabFaculdade: subTab,
     setSubTabFaculdade: setSubTab,
@@ -50,12 +56,13 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
   }
 
   // ---- dados reais derivados do estado ----
-  const pendingExams = exams.filter((e) => !e.completed);
-  const pendingTasks = tasks.filter((t) => !t.completed);
+  // Provas/tarefas herdam o período pelo `courseId` da disciplina (§D3).
+  const pendingExams = exams.filter((e) => !e.completed && (!e.courseId || activeIds.has(e.courseId)));
+  const pendingTasks = tasks.filter((t) => !t.completed && (!t.disciplineId || activeIds.has(t.disciplineId)));
 
   const internshipTotalHours = allInternshipRecords.reduce((acc, r) => acc + r.hours, 0);
 
-  const todaySchedule = getTodaySchedule(courses, now);
+  const todaySchedule = getTodaySchedule(grade, now);
 
   // Próximos eventos da semana acadêmica (derivados de provas/tarefas/estágio)
   const weekEvents = upcomingEvents(
@@ -71,21 +78,34 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
     return null;
   };
 
+  const rolloverDue =
+    Boolean(term) &&
+    shouldOfferRollover(term!, new Date().toISOString().slice(0, 10), profile.totalSemesters);
+
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-6 pb-1">
 
       {/* 1. HERO — semestre + resumo real */}
       <HeroSection
-        semester={profile.semester}
-        coursesCount={courses.length}
+        semester={term?.ordinal ?? profile.semester}
+        coursesCount={active.length}
         pendingExamsCount={pendingExams.length}
         pendingTasksCount={pendingTasks.length}
         hasClassesToday={todaySchedule.length > 0}
         onOpenCalendar={() => setSubTab('calendario')}
       />
 
+      {/* Virada de semestre (SPEC-005) — só quando faz sentido. */}
+      <TermRolloverCta
+        term={term}
+        totalSemesters={profile.totalSemesters}
+        archivedCount={archived.length}
+        due={rolloverDue}
+        onOpenWizard={() => openWizard('semester')}
+      />
+
       {/* 2. MINHA SEMANA — grade real da semana (seg → dom) */}
-      <WeekGrid courses={courses} now={now} onOpenCourse={openCourseDetail} />
+      <WeekGrid courses={grade} now={now} onOpenCourse={openCourseDetail} />
 
       {/* Desktop (≥ lg): grade 12 colunas — esquerda: sub-tabs · direita: semana */}
       <div className="lg:grid lg:grid-cols-12 lg:gap-6 lg:items-start">
@@ -107,7 +127,7 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
           {/* SUBTAB: DISCIPLINAS */}
           {subTab === 'disciplinas' && (
             <DisciplinasGrid
-              courses={courses}
+              courses={grade}
               classes={classes}
               exams={exams}
               onNewCourse={() => openWizard('course')}
@@ -144,7 +164,7 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
         <div className="lg:col-span-5 space-y-6">
           <WeekEventsList
             weekEvents={weekEvents}
-            courses={courses}
+            courses={grade}
             eventDestination={eventDestination}
           />
         </div>

@@ -33,6 +33,11 @@ function makeSnapshot(overrides: Partial<PersistedStateSnapshot> = {}): Persiste
         schedule: [{ day: 1, start: '09:00' }],
         color: '#FFD3DD',
         icon: 'Brain',
+        // SPEC-005: o import materializa `termId`/`status` via Zod (normalizar
+        // um backup antigo é o comportamento desejado), então o snapshot
+        // "estado equivalente" já os traz.
+        termId: 'trm-1',
+        status: 'ativo',
       },
     ],
     classes: [
@@ -103,6 +108,18 @@ function makeSnapshot(overrides: Partial<PersistedStateSnapshot> = {}): Persiste
       },
     ],
     onboarding: { completed: true, completedAt: '2026-08-01' },
+    academicTerms: [
+      {
+        id: 'trm-1',
+        label: '6º semestre',
+        ordinal: 6,
+        status: 'ativo' as const,
+        startedAt: '2026-08-01',
+        statusTransitionAt: '2026-08-01T00:00:00.000Z',
+        createdAt: '2026-08-01T00:00:00.000Z',
+        updatedAt: '2026-08-01T00:00:00.000Z',
+      },
+    ],
     syncIndex: { stamps: {}, records: {}, tombstones: {} },
     ...overrides,
   };
@@ -184,6 +201,9 @@ describe('contrato do banco persistido (backup v2)', () => {
     expect(restored!.techniques).toEqual(snapshot.techniques);
     expect(restored!.onboarding).toEqual(snapshot.onboarding);
     expect(restored!.courses).toEqual(snapshot.courses);
+    // SPEC-005: o período letivo entra no backup e volta íntegro, com o
+    // resumo congelado preservado quando existir.
+    expect(restored!.academicTerms).toEqual(snapshot.academicTerms);
     expect(restored!.savedBookIds).toEqual(['bk-1']);
     expect(restored!.readingProgress).toEqual({ 'bk-1': 30 });
     // Bancos estáticos não são exportados → voltam vazios (re-semeados lazy).

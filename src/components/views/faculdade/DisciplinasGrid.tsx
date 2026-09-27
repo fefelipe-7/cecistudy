@@ -34,6 +34,23 @@ const DisciplinasGrid: React.FC<DisciplinasGridProps> = ({
       </button>
     </div>
 
+    {courses.length === 0 ? (
+      <div className="rounded-2xl border border-dashed border-ceci-border-default bg-surface-muted px-4 py-8 text-center space-y-2">
+        <p className="text-sm font-semibold text-ceci-primary">
+          nenhuma disciplina neste semestre ainda
+        </p>
+        <p className="text-xs text-ceci-secondary">
+          dá pra começar por aqui — cria a primeira matéria e ela entra na grade do período.
+        </p>
+        <button
+          type="button"
+          onClick={onNewCourse}
+          className="inline-flex items-center gap-1.5 rounded-full bg-ceci-brand-strong px-4 py-2 text-xs font-semibold text-white hover:bg-ceci-brand transition-colors"
+        >
+          <Plus className="w-3.5 h-3.5" /> criar a primeira matéria
+        </button>
+      </div>
+    ) : (
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
       {courses.map((c) => {
         const courseClassCount = classes.filter((cl) => cl.courseId === c.id).length;
@@ -115,6 +132,7 @@ const DisciplinasGrid: React.FC<DisciplinasGridProps> = ({
         );
       })}
     </div>
+    )}
   </div>
 );
 

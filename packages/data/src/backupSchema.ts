@@ -43,6 +43,11 @@ const courseSchema = passthrough({
   schedule: z.array(courseScheduleSlotSchema),
   color: z.string(),
   icon: z.string(),
+  // SPEC-005: `termId` nullish (disciplina avulsa/fora de período é o escape
+  // hatch anti-órfão, e um backup antigo simplesmente não tem a chave).
+  // `status` com default para tolerar backup v17 (sem o campo) sem reprovar.
+  termId: z.string().nullish(),
+  status: z.enum(['ativo', 'arquivado']).default('ativo'),
 });
 
 const classNoteSchema = passthrough({
@@ -204,6 +209,45 @@ const onboardingSchema = passthrough({
   completed: z.boolean(),
 });
 
+/** Nota de uma disciplina no período (frozen no fechamento). Espelha `TermGrade`. */
+const termGradeSchema = passthrough({
+  courseId: z.string(),
+  label: z.string(),
+  grade: z.number().optional(),
+});
+
+/** Métricas congeladas no encerramento do período (SPEC-005). */
+const termSummarySchema = passthrough({
+  closedAt: z.string(),
+  courses: z.number(),
+  archivedCourses: z.number(),
+  carriedCourses: z.number(),
+  classNotes: z.number(),
+  tasksCompleted: z.number(),
+  tasksCarriedOver: z.number(),
+  readingsCompleted: z.number(),
+  pagesRead: z.number(),
+  focusMinutes: z.number(),
+  loggedHours: z.number(),
+  bestStreak: z.number(),
+  grades: z.array(termGradeSchema),
+  highlights: stringArray,
+});
+
+/** Período letivo (SPEC-005). `summary` só existe depois de `encerrado`. */
+const academicTermSchema = passthrough({
+  id: z.string(),
+  label: z.string(),
+  ordinal: z.number().int().min(1).max(12),
+  status: z.enum(['planejado', 'ativo', 'encerrado']),
+  startedAt: z.string(),
+  endedAt: z.string().optional(),
+  statusTransitionAt: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  summary: termSummarySchema.optional(),
+});
+
 /** Índice de sincronização (carimbos/tombstones) — opcional; backups antigos não o trazem. */
 const syncIndexSchema = passthrough({
   stamps: z.record(z.string(), z.number()).optional(),
@@ -276,6 +320,7 @@ export const backupDataSchema = z
     readingProgress: z.record(z.string(), z.number()),
     techniques: z.array(techniqueSchema),
     quizSessions: z.array(quizSessionSchema),
+    academicTerms: z.array(academicTermSchema),
     onboarding: onboardingSchema,
     syncIndex: syncIndexSchema.optional(),
   })

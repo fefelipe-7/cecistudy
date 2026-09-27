@@ -12,6 +12,7 @@ import { AuthorWizard } from './AuthorWizard';
 import { ConceptWizard } from './ConceptWizard';
 import { MaterialWizard } from './MaterialWizard';
 import { CourseWizard } from './CourseWizard';
+import { SemesterWizard } from './SemesterWizard';
 
 export const WIZARD_REGISTRY: Record<WizardFlow, (editing: ManagedItem | null) => ReactNode> = {
   task: (editing) => <TaskExamWizard preset="task" editing={editing} />,
@@ -25,4 +26,6 @@ export const WIZARD_REGISTRY: Record<WizardFlow, (editing: ManagedItem | null) =
   author: (editing) => <AuthorWizard editing={editing} />,
   concept: (editing) => <ConceptWizard editing={editing} />,
   material: (editing) => <MaterialWizard editing={editing} />,
+  // SPEC-005: virada de semestre. Não aceita edição (não é um cadastro).
+  semester: () => <SemesterWizard />,
 };

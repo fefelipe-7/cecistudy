@@ -20,6 +20,8 @@ const loadRepertorioItemDetailScreen = () => import('../components/courses/Reper
 const loadNoteDetailWizard = () => import('../components/views/NoteDetailWizard').then((m) => ({ default: m.NoteDetailWizard }));
 const loadNoteTransformWizard = () => import('../components/views/NoteTransformWizard').then((m) => ({ default: m.NoteTransformWizard }));
 const loadWizardRouter = () => import('../components/wizards/WizardRouter').then((m) => ({ default: m.WizardRouter }));
+// SPEC-005: histórico de períodos — lazy como as demais telas de fluxo profundo.
+const loadTermHistoryScreen = () => import('../components/terms/TermHistoryScreen').then((m) => ({ default: m.TermHistoryScreen }));
 
 // Quiz components (lazy loaded)
 const loadQuizCategorySelector = () => import('../components/quizzes/QuizGroupSelector').then((m) => ({ default: m.QuizGroupSelector }));
@@ -52,6 +54,7 @@ const RepertorioItemDetailScreen = lazy(loadRepertorioItemDetailScreen);
 const NoteDetailWizard = lazy(loadNoteDetailWizard);
 const NoteTransformWizard = lazy(loadNoteTransformWizard);
 const WizardRouter = lazy(loadWizardRouter);
+const TermHistoryScreen = lazy(loadTermHistoryScreen);
 
 // Quiz components (lazy loaded)
 const QuizGroupSelector = lazy(loadQuizCategorySelector);
@@ -89,6 +92,7 @@ const SCREEN_CHUNK_LOADERS = [
   loadNoteDetailWizard,
   loadNoteTransformWizard,
   loadWizardRouter,
+  loadTermHistoryScreen,
   loadQuizCategorySelector,
   loadQuizGroupDetail,
   loadQuizLoadingScreen,
@@ -233,6 +237,10 @@ export const SlideContent: React.FC = () => {
               app.newQuizFromResult();
             }}
           />
+        </Suspense>
+      ) : app.isTermHistoryOpen ? (
+        <Suspense fallback={<ViewFallback />}>
+          <TermHistoryScreen />
         </Suspense>
       ) : (
         <>

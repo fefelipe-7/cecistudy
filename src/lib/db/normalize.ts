@@ -1,47 +1,29 @@
 /**
  * Normalização entre as coleções do estado do app e o banco SQLite da usuária.
  *
- * - `USER_COLLECTION_KEYS` = as 22 coleções de domínio que vão para o SQLite.
+ * - `USER_COLLECTION_KEYS` = as 23 coleções de domínio que vão para o SQLite.
  *   (`reminder`/`onboarding` ficam em Preferences; `approaches`/`questions` são
  *   catálogos estáticos — no nativo vêm do banco do catálogo, não daqui.)
+ *   A lista vem do registry canônico `lib/collections.ts` (fonte única), não
+ *   desta lista — aqui só reexportamos para os importadores existentes.
  * - `saveCollection` apaga e regrava a coleção numa transação (modelo "save por
  *   coleção": entidades completas em `data_json`, colunas escalares + join tables
  *   para consulta).
  * - `loadCollection` reconstrói a coleção a partir de `data_json`.
  */
 import type { SqlDriver, SqlValue } from './driver.ts';
+import {
+  COLLECTIONS,
+  USER_COLLECTION_KEYS,
+  getCollection,
+  type UserCollectionKey,
+} from '../collections.ts';
 
-/** Coleções persistidas na base da usuária (ordem estável p/ import legado). */
-export const USER_COLLECTION_KEYS = [
-  'profile',
-  'courses',
-  'classes',
-  'tasks',
-  'exams',
-  'authors',
-  'concepts',
-  'readings',
-  'flashcards',
-  'materials',
-  'techniques',
-  'internshipLogs',
-  'supervision',
-  'tcc',
-  'stickers',
-  'sessions',
-  'streakData',
-  'looseNotes',
-  'savedBookIds',
-  'bookmarkedCourseIds',
-  'readingProgress',
-  'quizSessions',
-] as const;
-
-export type UserCollectionKey = (typeof USER_COLLECTION_KEYS)[number];
-
-export function isUserCollectionKey(key: string): key is UserCollectionKey {
-  return (USER_COLLECTION_KEYS as readonly string[]).includes(key);
-}
+export {
+  USER_COLLECTION_KEYS,
+  isUserCollectionKey,
+  type UserCollectionKey,
+} from '../collections.ts';
 
 // ---- helpers ----
 
@@ -496,6 +478,23 @@ export async function saveCollection(
             ])
         );
         break;
+      case 'decks':
+        await driver.run('DELETE FROM deck');
+        await insertRows(
+          driver,
+          'INSERT INTO deck (id, name, color, workspace_id, created_at, updated_at, data_json) VALUES (?, ?, ?, ?, ?, ?, ?)',
+          () =>
+            asArray(value).map((d) => [
+              String(d.id),
+              str(d.name),
+              str(d.color),
+              str(d.workspaceId),
+              str(d.createdAt),
+              str(d.updatedAt),
+              json(d),
+            ])
+        );
+        break;
       case 'materials':
         await driver.run('DELETE FROM material');
         await insertRows(
@@ -576,6 +575,33 @@ export async function saveCollection(
         break;
       case 'quizSessions':
         return saveQuizSessions(driver, value);
+      case 'academicTerms':
+        await driver.run('DELETE FROM academic_term');
+        await insertRows(
+          driver,
+          'INSERT INTO academic_term (id, label, ordinal, status, started_at, ended_at, updated_at, data_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+          () =>
+            asArray(value).map((t) => [
+              String(t.id),
+              str(t.label),
+              num(t.ordinal),
+              str(t.status),
+              str(t.startedAt),
+              str(t.endedAt),
+              str(t.updatedAt),
+              json(t),
+            ])
+        );
+        break;
+      default: {
+        // Rede de segurança: uma coleção nova no registry sem caso aqui
+        // **não** falharia — o `switch` sairia calado e a coleção simplesmente
+        // nunca seria gravada no SQLite (perda de dado silenciosa no mobile,
+        // que é justamente onde o `localStorage` não mascara o problema).
+        // O narrowing para `never` faz o TS apontar o novo `CollectionKey` aqui.
+        const unhandled: never = key;
+        throw new Error(`saveCollection: coleção "${String(unhandled)}" sem caso de escrita`);
+      }
     }
   });
 }
@@ -627,7 +653,10 @@ export async function loadCollection<T = unknown>(
       return out as T;
     }
     default: {
-      const table = TABLE_BY_KEY[key];
+      // Toda coleção `kind: 'array'` tem tabela no registry; as demais têm
+      // caso explícito acima. `data_json` é a fonte (colunas são projeção p/ query).
+      const table = getCollection(key)?.table;
+      if (!table) return undefined as T;
       const rows = await driver.query(`SELECT data_json FROM ${table}`);
       return rows.map((r) => JSON.parse(String(r.data_json))) as T;
     }
@@ -644,22 +673,3 @@ export async function loadAllCollections(
   }
   return out;
 }
-
-const TABLE_BY_KEY: Record<Exclude<UserCollectionKey, 'profile' | 'streakData' | 'tcc' | 'savedBookIds' | 'bookmarkedCourseIds' | 'readingProgress'>, string> = {
-  courses: 'course',
-  classes: 'class_note',
-  tasks: 'task',
-  exams: 'assessment',
-  authors: 'author',
-  concepts: 'concept',
-  readings: 'reading',
-  flashcards: 'flashcard',
-  materials: 'material',
-  techniques: 'technique',
-  internshipLogs: 'internship',
-  supervision: 'supervision_notebook',
-  stickers: 'achievement',
-  sessions: 'study_session',
-  looseNotes: 'note',
-  quizSessions: 'quiz_session',
-};

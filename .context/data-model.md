@@ -151,9 +151,49 @@ do usuário; na web vêm de facades lazy, no nativo do `.db` embutido):
   (versão atual do `.db`: ver `content/catalog-version.json`).
 - Contrato completo: `.context/docs/plano-templo-catalogo.md`.
 
-## 8. Boas práticas ao mexer em dados
+## 8. Período letivo (`AcademicTerm`) — SPEC-005
+
+> A unidade de "semestre" deixou de ser um número no perfil e virou uma entidade.
+> Fonte: [`docs/specs/SPEC-005-periodo-letivo-e-progressao-de-semestre.md`](../docs/specs/SPEC-005-periodo-letivo-e-progressao-de-semestre.md).
+
+| Entidade | Campos-chave | Relações |
+|---|---|---|
+| `AcademicTerm` | `id` (`trm*`), `ordinal`, `label`, `status` (`ativo`\|`encerrado`\|`planejado`), `startedAt`, `closedAt`, `summary?`, `statusTransitionAt` | pai de `Course` (via `termId`) |
+
+- **`academicTerms` é a fonte de verdade** do "qual semestre eu estou". `profile.semester`
+  virou **legado/fallback** (só entra quando não há período ativo). Na UI, sempre
+  `useActiveTerm(terms)?.ordinal` — nunca `profile.semester` direto.
+- **Escopo por herança:** só `Course` tem `termId`/`status`. Aulas, tarefas, provas,
+  leituras, sessões e flashcards herdam o período pelo `courseId` de uma disciplina
+  que está no período ativo (tarefa usa `disciplineId`).
+- `Course.termId == null` é o **escape hatch anti-órfão** (disciplina avulsa, template,
+  import antigo): ela não entra na grade do período, mas continua pesquisável.
+- `Course.status` (`ativo`\|`arquivado`) é independente do período: arquivar tira da
+  grade, **nunca apaga** (§D5 da spec).
+- **Regras de transição** (`packages/domain/src/core/domain/term.ts`): status só
+  avança; `closeTerm`/`openTerm` são idempotentes; `reopenTerm` é a única volta
+  `encerrado`→`ativo` e **preserva** o `summary` congelado; no máximo um período
+  `ativo` (`enforceSingleActiveTerm`).
+- Período encerrado **congela** o `summary` (contagens + minutos de foco + streak +
+  ConceptIds mais citados). Depois disso o número não muda mais — é o registro do
+  semestre como ele foi.
+- **Bootstrap:** `MIGRATIONS[18]` cria o `BOOTSTRAP_TERM_ID` (ou adota um período
+  existente); `ensureActiveTerm()` no boot nunca recria um período já fechado.
+- **Persistência:** chave `academicTerms`; no nativo, tabela `academic_term`
+  (`IF NOT EXISTS`, sem novo `USER_SCHEMA_VERSION`); o `termId` da disciplina viaja
+  dentro do `data_json` da `course` (a `course_term` desnormalizada é passo 2 do Rust).
+- **Sincronização:** LWW por registro (o array não é ping-pong de sync).
+- **Undo:** `planTermRollover()` é puro e devolve o diff; `undoTermRollover()` desfaz
+  a virada inteira. Nada é apagado.
+
+Recorte nas views: `src/lib/termScope.ts` (`useTermScope`, `activeCourses`,
+`isArchived`, `degreeProgress`, `semestersLeft`, `clampOrdinal`).
+
+## 9. Boas práticas ao mexer em dados
 
 - Ao adicionar entidade nova, criar interface em `types.ts` + valor vazio em `empty.ts`
   + estado persistido em `AppContext.tsx` (se for global).
+- Ao mexer em `academicTerms`: `SCHEMA_VERSION` **18**; o recorte é sempre por
+  `termScope`, nunca filtrando `profile.semester` na mão.
 - Respeitar os prefixos de id e as chaves de relação existentes.
 - Não duplicar dados entre `ReadingItem` e `CollectionBook` sem documentar a intenção.

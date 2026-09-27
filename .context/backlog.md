@@ -520,3 +520,59 @@ re-run do workflow num commit antigo; `available` guarda as últimas 5 versões.
 - Ajustar `NoteTransformWizard` para também usar `undefined` em `examDate`/`sessionDate`/`internshipDate` (padronizar "sem data" em todas as transformações).
 - Revisar permissões do onboarding (F9) — tornar switches informativos sem affordance de toggle na web.
 - Documentar estratégia de busca da Biblioteca (F10).
+
+---
+
+## Fase 22 — Período letivo como entidade (`AcademicTerm`) — SPEC-005 (mobile, parcial)
+
+> **Status: `[~]` implementada no mobile.** A virada de semestre virou uma entidade de
+> verdade: `academicTerms` é a fonte de verdade do "qual semestre eu estou", a virada é um
+> wizard de 4 passos com undo no domínio, e as views recortam por período.
+> Spec: [`docs/specs/SPEC-005-periodo-letivo-e-progressao-de-semestre.md`](../docs/specs/SPEC-005-periodo-letivo-e-progressao-de-semestre.md) ·
+> tasks: [`tasks/todo-periodo-letivo.md`](../tasks/todo-periodo-letivo.md).
+> Gate: `npm run lint` + `npm run test` (95 arquivos / **945 testes**) + boundaries + `npm run build`.
+
+**O que foi feito**
+- **Domínio** (`packages/domain/src/core/domain/term.ts`): `AcademicTerm` com `status`
+  que só avança, `closeTerm`/`openTerm` idempotentes, `reopenTerm` como única volta
+  `encerrado`→`ativo` (preservando o `summary` congelado), no máximo um `ativo`, e
+  `shouldOfferRollover` (nudge só no fim do semestre). 24 testes.
+- **Aplicação** (`packages/application/src/term/rollover.ts`): `planTermRollover` é **puro**
+  e devolve o diff; `undoTermRollover` desfaz a virada inteira. Nada é apagado. 20 testes.
+- **Persistência** (`SCHEMA_VERSION` 6 → **18**): `MIGRATIONS[18]` cria o período de
+  bootstrap de forma determinística e idempotente; Zod + `collections` + `persistentData`
+  + sync (LWW por registro — o array não vira ping-pong); nativo na tabela `academic_term`.
+- **Mobile:** `useTermScope` recorta as views; wizard `semester` de 4 passos
+  (carta de fechamento → o que continua → o que adia → revisão); histórico de períodos em
+  `#/perfil/semestre/historico`; badge do header e CTAs de virada lendo o período ativo.
+
+**Correções que vieram junto (não eram o plano)**
+- 🔴 `restoreCourse` religava o `status` mas **mantinha o `termId` do período antigo** — a
+  disciplina voltava "ativa" para um semestre já fechado e sumia da grade. Agora migra para
+  o período ativo.
+- 🔴 As escolhas do passo 3 do wizard (adiar pendências) eram **só UI**: não entravam em
+  `planTermRollover`, então marcar "adiar" não mudava nada. Ligado em `pendingDecisions`.
+- 🐛 `paper3dCard.test.tsx` era flaky sob carga: o `waitFor` interno tinha teto de 15s
+  **maior** que o teto do teste (5s default), então nunca podia ser alcançado.
+- O `TermHistoryScreen` **não** desenha back próprio: `goBack` não existe no contexto
+  (o back vive no `headerConfig.onBack`, como nas demais telas empilhadas).
+
+**Pendências (abertas, não bloqueiam o merge)**
+- 🔴 **Desfazer pós-virada na UI** — `undoTermRollover` existe no domínio e na action, mas
+  o wizard fecha depois de gravar, então nada alcança o undo. Precisa de um estado de
+  "última virada" na action (toast `semestre virado ♡ · desfazer` + `celebrate('term-closed')`).
+- 🟡 `saveMinimal` ("adiar só as pendências ♡", gravar sem fechar o semestre) — exige
+  `openTerm` sem `closeTerm`, outra transição do domínio.
+- 🟡 Acessibilidade do wizard: `role="radiogroup"` no passo 2, `role="status"` nos
+  contadores, foco no `headline` ao trocar de passo.
+- 🟡 Banner "esta disciplina foi de outro período ♡" no `CourseDetailView`.
+- 🟡 `HomeView` ainda não é recortada por período (o "hoje" é derivado de prazo, não de grade).
+- 🟡 `profile.semester` ainda é lido em `stickers.ts` e `OnboardingScreen` (o resto da UI já
+  vai pelo período ativo). `profileMeta`/`CourseWizard` mantêm o campo como fallback.
+- 🟡 `schema.sql` canônico + `verify-schema` (4.2) — **adiado para a fase Rust**: a tabela
+  `course_term` desnormalizada é passo 2 do Rust; hoje o `termId` viaja no `data_json`
+  da `course` (evita um segundo lugar para o dado divergir).
+
+**Fora de escopo (Fase 10):** o desktop novo (Flutter + Rust) **não** foi tocado — nenhum
+crate implementado. Os goldens TS foram regenerados com aprovação explícita da usuária
+(o gate mobile é o que consome esses arquivos).

@@ -28,6 +28,7 @@ import { isNativePlatform } from '../../lib/storage';
 
 import { pickProfilePhoto } from '../../lib/photo';
 import { formatStudyTime } from '../../lib/profileMeta';
+import { degreeProgress, semestersLeft, useActiveTerm } from '../../lib/termScope';
 import {
   applyNow,
   checkForUpdates,
@@ -145,6 +146,9 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
     themePref,
     setThemePref,
   } = useDataClientApp();
+  // Períodos letivos (SPEC-005) — vêm do data client, não do contexto de nav.
+  const { academicTerms } = useDataClientApp();
+  const activeTerm = useActiveTerm(academicTerms);
   const appIsDark = isDarkTheme(themePref);
   const { courses, classes, tasks, exams } = useDataClientCourses();
   const { readings, flashcards, sessions } = useDataClientStudy();
@@ -154,6 +158,8 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
     openInternshipDiary,
     openTccScreen,
     openStickersScreen,
+    openWizard,
+    openTermHistory,
     openSyncScreen,
   } = useNavValue();
 
@@ -196,7 +202,11 @@ const profileTotalXp = totalXp(profile);
   };
 
   // ---- métricas reais derivadas do estado ----
-  const percentDegree = Math.round((profile.semester / profile.totalSemesters) * 100);
+  // Progresso vem do **período ativo** (SPEC-005 §D4); `profile.semester` é só
+  // o fallback para quem ainda não abriu o primeiro semestre.
+  const currentOrdinal = activeTerm?.ordinal ?? profile.semester;
+  const percentDegree = degreeProgress(currentOrdinal, profile.totalSemesters);
+  const leftSemesters = semestersLeft(currentOrdinal, profile.totalSemesters);
   const studyMinutes = sessions.reduce((acc, s) => acc + s.durationMinutes, 0);
   const pagesRead = readings.reduce((acc, r) => acc + (r.readPages || 0), 0);
   const flashcardsReviewed = flashcards.reduce((acc, f) => acc + (f.timesReviewed || 0), 0);
@@ -309,10 +319,11 @@ const profileTotalXp = totalXp(profile);
       <ProfileHeader
         profile={profile}
         percentDegree={percentDegree}
+        currentOrdinal={currentOrdinal}
         onPickPhoto={handlePickPhoto}
         onRemovePhoto={handleRemovePhoto}
       />
-      <JourneySummary tiles={tiles} semestersLeft={profile.totalSemesters - profile.semester} />
+      <JourneySummary tiles={tiles} semestersLeft={leftSemesters} />
       <DitherFunnelChart
         theme={appIsDark ? 'dark' : 'light'}
         stages={journeyStages}
@@ -324,7 +335,13 @@ const profileTotalXp = totalXp(profile);
 
       <StudyStatsWidget />
 
-      <JourneyTimeline profile={profile} percentDegree={percentDegree} />
+      <JourneyTimeline
+        profile={profile}
+        percentDegree={percentDegree}
+        academicTerms={academicTerms}
+        onOpenSemesterWizard={() => openWizard('semester')}
+        onOpenTermHistory={() => openTermHistory()}
+      />
 
       <StickersSection stickers={stickers} unlocked={stickersUnlocked} onOpen={openStickersScreen} level={profileLevel} title={profileTitle} />
 

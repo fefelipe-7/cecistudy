@@ -7,6 +7,7 @@ import type { SharedAppValue } from './sharedAppValue';
 import type { StickerState } from '../lib/stickers';
 import type { ThemeId } from '../lib/themes';
 import type { DataActions, DataActionGroups } from './dataActions';
+import type { TermRolloverPlan } from '../lib/termRollover';
 import type { NavigationValue } from './navigationEngine';
 import type {
   NavTab,
@@ -39,6 +40,7 @@ import type {
   QuizConfig,
   QuizAnswer,
   QuizSession,
+  AcademicTerm,
   QuizPlayState,
   LooseNote,
   StudyScreen,
@@ -96,6 +98,8 @@ export interface AppContextValue {
   /** Cliente de dados canônico (repositórios + backup/restore + sync adapter). */
   dataClient: DataClient;
   quizSessions: QuizSession[];
+  /** Períodos letivos (SPEC-005) — coleção de verdade do "qual semestre eu estou". */
+  academicTerms: AcademicTerm[];
   savedBookIds: string[];
   toggleSaveBook: (bookId: string) => void;
   readingProgress: Record<string, number>;
@@ -258,6 +262,10 @@ export interface AppContextValue {
   isStickersScreenOpen: boolean;
   openStickersScreen: () => void;
   closeStickersScreen: () => void;
+  /** Histórico de períodos letivos (SPEC-005) — índice do wizard de semestre. */
+  isTermHistoryOpen: boolean;
+  focusedTermId: string | undefined;
+  openTermHistory: (termId?: string) => void;
   /** Sincronização entre dispositivos (pareamento P2P). */
   isSyncScreenOpen: boolean;
   openSyncScreen: () => void;
@@ -420,6 +428,12 @@ export interface AppContextValue {
   handleUpdateMaterial: (material: MaterialItem) => void;
   handleSaveQuizSession: (session: QuizSession) => void;
 
+  // Virada de semestre (SPEC-005)
+  applyTermRollover: (plan: TermRolloverPlan) => void;
+  undoTermRollover: (plan: TermRolloverPlan, originalTermIds: Record<string, string | null>) => void;
+  archiveCourse: (courseId: string) => void;
+  restoreCourse: (courseId: string) => void;
+
   // Quiz helpers (extraídos da pilha de navegação)
   currentQuizPlayState: QuizPlayState | null;
   currentQuizResultAnswers: QuizAnswer[] | null;
@@ -441,11 +455,12 @@ export interface AppContextValue {
 export function pickDomainActions(
   actions: DataActions & DataActionGroups,
 ): DataActions {
-  const { courses: _courses, study: _study, knowledge: _knowledge, app: _app, ...handlers } = actions;
+  const { courses: _courses, study: _study, knowledge: _knowledge, app: _app, term: _term, ...handlers } = actions;
   void _courses;
   void _study;
   void _knowledge;
   void _app;
+  void _term;
   return handlers;
 }
 

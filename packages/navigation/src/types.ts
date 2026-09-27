@@ -55,6 +55,9 @@ export type NavScreen =
   | { kind: 'noteDetail'; noteId: string }
   | { kind: 'noteTransform'; noteId: string }
   | { kind: 'wizard'; type: WizardFlow }
+  /** Histórico de períodos letivos (SPEC-005), empilhado sobre o perfil.
+   *  `termId` presente = detalhe de um período encerrado. */
+  | { kind: 'termHistory'; termId?: string }
   | { kind: 'approach'; approachId: string }
   | { kind: 'families' }
   | { kind: 'family'; familyId: string }
@@ -89,7 +92,10 @@ export type WizardFlow =
   | 'session'
   | 'author'
   | 'concept'
-  | 'material';
+  | 'material'
+  /** Virada de semestre (SPEC-005). Não é "criar registro": é uma transição
+   *  de estado com revisão e desfazer, então mora em `#/perfil/semestre`. */
+  | 'semester';
 
 /**
  * Entidades do usuário que podem ser editadas/excluídas pelo menu universal

@@ -30,6 +30,7 @@ export type EntityPrefix =
   | 'cvr' // channel variant
   | 'pub' // publication
   | 'mts' // metric snapshot
+  | 'trm' // academic term (período letivo, SPEC-005)
   | 'sin'; // strategic insight
 
 let counter = 0;

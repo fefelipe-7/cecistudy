@@ -1,6 +1,19 @@
 import '@testing-library/jest-dom/vitest';
-import { afterEach } from 'vitest';
+import { afterEach, vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
+
+/**
+ * `canvas-confetti` (celebrações) não funciona no jsdom: `getContext('2d')`
+ * devolve `null` e o loop de `requestAnimationFrame` estoura em
+ * `clearRect` DEPOIS do teste terminar — o vitest contabiliza como
+ * "unhandled error" e o processo sai com código 1 mesmo com 100% dos testes
+ * passando. Nenhum teste afirma comportamento de confete, então deixamos o
+ * módulo inerte (`celebrate` continua sendo exercitada, só sem o efeito).
+ * O mock cobre o `import()` dinâmico feito em `src/lib/celebrate.ts`.
+ */
+vi.mock('canvas-confetti', () => ({
+  default: Object.assign(vi.fn(), { create: vi.fn(() => vi.fn()) }),
+}));
 
 /**
  * Node 26 expõe um global `localStorage` experimental (undefined) que ofusca o do jsdom,

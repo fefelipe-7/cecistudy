@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { canonicalize } from '../canonicalJson';
-import { MIGRATIONS, migrateDatabase } from '../../../packages/data/src/schema';
+import { MIGRATIONS, SCHEMA_VERSION, migrateDatabase } from '../../../packages/data/src/schema';
 
 /**
  * Fixtures de migração (F1.13) — paridade TS ↔ Rust.
@@ -42,9 +42,19 @@ function legacyPayloadV1(): Record<string, unknown> {
         semester: '3',
         schedule: 'Segundas e quartas, 08:00 - 09:30',
         progress: 66,
+        // Par legado `{attended,total}`: exercita as migrações 15 (novo shape
+        // de frequência) e 17 (frequência em horas derivada dos slots).
+        attendance: { attended: 6, total: 8 },
       },
       { id: 'c2', name: 'neuropsicologia', schedule: 'seg 9h', progressOverride: 50 },
-      { id: 'c3', name: 'psicanálise', schedule: 'terça e quinta 10h' },
+      {
+        id: 'c3',
+        name: 'psicanálise',
+        schedule: 'terça e quinta 10h',
+        // Attendance já no shape novo (v15) e já com horas (v17): os dois
+        // passos devem ser idempotentes e não sobrescrever o que existe.
+        attendance: { total: 4, minPct: 80, baseAttended: 1, records: [], totalHours: 9.5, baseHoursDone: 2 },
+      },
       { id: 'c4', name: 'sem horário', schedule: 'quando der' },
       {
         id: 'c5',
@@ -72,7 +82,12 @@ function legacyPayloadV1(): Record<string, unknown> {
     concepts: [{ id: 'con-1', name: 'transferência', definition: '...' }],
     approaches: [],
     readings: [],
-    flashcards: [{ id: 'f1', conceptId: 'con-1', question: 'q?', answer: 'a!' }],
+    flashcards: [
+      // `lastReviewed` é intencional: a migração 16 (FSRS) deriva `due` dele.
+      // Sem ele o `due` cairia em `new Date()` (não-determinístico) e o golden
+      // mudaria todo dia — o ramo "sem lastReviewed" é coberto por teste unitário.
+      { id: 'f1', conceptId: 'con-1', question: 'q?', answer: 'a!', lastReviewed: '2026-01-10' },
+    ],
     materials: [],
     internshipLogsLegacy: [{ id: 'ilog-1', date: '2026-02-10', hours: 4, activity: 'triagem' }],
     tcc: { title: 'psicanálise e clínica', status: 'rascunho' },
@@ -88,10 +103,11 @@ beforeAll(() => {
   if (!WRITE) return;
   mkdirSync(OUT, { recursive: true });
   // Cadeia CUMULATIVA: v{n} é o estado após aplicar as migrações 2..n
-  // (o Rust repete esse mesmo replay arquivo-a-arquivo).
+  // (o Rust repete esse mesmo replay arquivo-a-arquivo). O limite vem de
+  // `SCHEMA_VERSION` para não divergir de novo quando o schema subir.
   let state = legacyPayloadV1();
   writeFileSync(join(OUT, 'legacy_payload.v1.json'), canonicalize(state) + '\n');
-  for (let step = 2; step <= 13; step++) {
+  for (let step = 2; step <= SCHEMA_VERSION; step++) {
     const migrateOne = MIGRATIONS[step];
     if (!migrateOne) continue;
     state = migrateOne(structuredClone(state));
@@ -113,9 +129,9 @@ describe('fixtures de migração (F1.13)', () => {
     expect(canonicalize(legacyPayloadV1())).toBe(readFixture('legacy_payload.v1.json'));
   });
 
-  it('cada passo 2→13 bate com o arquivo (cadeia cumulativa)', () => {
+  it('cada passo 2→SCHEMA_VERSION bate com o arquivo (cadeia cumulativa)', () => {
     let state = structuredClone(legacyPayloadV1());
-    for (let step = 2; step <= 13; step++) {
+    for (let step = 2; step <= SCHEMA_VERSION; step++) {
       const migrateOne = MIGRATIONS[step];
       if (!migrateOne) continue;
       state = migrateOne(structuredClone(state));
@@ -123,6 +139,21 @@ describe('fixtures de migração (F1.13)', () => {
         readFixture(`legacy_payload.v${step}.json`)
       );
     }
+  });
+
+  it('ramo não-determinístico da migração 16: due sem lastReviewed = hoje', () => {
+    // O golden NÃO pode cobrir este ramo (mudaria todo dia). Aqui só asserimos
+    // a forma e a paridade com `new Date()` do próprio dia.
+    const step = MIGRATIONS[16];
+    const today = new Date().toISOString().slice(0, 10);
+    const out = step({
+      flashcards: [{ id: 'f-nr', timesReviewed: 0, easeFactor: 2.5 }],
+    });
+    const f = (out.flashcards as Record<string, unknown>[])[0];
+    expect(f.due).toBe(today);
+    expect(f.state).toBe('new');
+    expect(f.deckId).toBeUndefined();
+    expect(f.decks).toBeUndefined();
   });
 
   it('versões desconhecidas são recusadas', () => {

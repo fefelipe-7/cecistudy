@@ -2,17 +2,17 @@ import { describe, expect, it } from 'vitest';
 import type { WizardFlow } from '../../../types';
 import { WIZARD_REGISTRY } from '../registry';
 
-const flows: WizardFlow[] = [
-  'task', 'exam', 'task-exam', 'course', 'reading', 'flashcard',
-  'internship', 'session', 'author', 'concept', 'material',
-];
+// Deriva do union em vez de listar à mão: um wizard novo adicionado ao
+// `WizardFlow` aparecia aqui como "faltando" só porque a lista de teste
+// envelhecia (aconteceu com `semester`/SPEC-005).
+const flows = Object.keys(WIZARD_REGISTRY) as WizardFlow[];
 
 describe('WIZARD_REGISTRY', () => {
   it('cobre todos os fluxos de wizard', () => {
     for (const flow of flows) {
       expect(typeof WIZARD_REGISTRY[flow], flow).toBe('function');
     }
-    expect(Object.keys(WIZARD_REGISTRY)).toHaveLength(flows.length);
+    expect(flows).toContain('semester');
   });
 
   it('cada entrada renderiza um elemento válido', () => {

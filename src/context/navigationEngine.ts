@@ -240,6 +240,10 @@ export interface NavigationValue {
   openWizard: (type: WizardFlow, courseId?: string) => void;
   openTaskExamWizard: () => void;
   closeWizard: () => void;
+  /** Histórico de períodos letivos (SPEC-005). */
+  isTermHistoryOpen: boolean;
+  focusedTermId: string | undefined;
+  openTermHistory: (termId?: string) => void;
 
   // menu universal de editar/excluir (long-press / clique direito)
   managedItem: ManagedItem | null;
@@ -431,6 +435,10 @@ export function useNavigationEngine(
   const isWizardOpen = currentScreen.kind === 'wizard';
   const currentWizardType: WizardFlow | null =
     currentScreen.kind === 'wizard' ? currentScreen.type : null;
+  // Histórico de períodos (SPEC-005) — pilha própria, então back é genérico:
+  // `goBack` cai no passo 1 do wizard e depois no perfil.
+  const isTermHistoryOpen = currentScreen.kind === 'termHistory';
+  const focusedTermId = currentScreen.kind === 'termHistory' ? currentScreen.termId : undefined;
   const isQuizCategoryOpen = currentScreen.kind === 'quiz-category';
   const isQuizGroupDetailOpen = currentScreen.kind === 'quiz-group-detail';
   const currentQuizGroup = currentScreen.kind === 'quiz-group-detail' ? currentScreen.group : null;
@@ -1319,10 +1327,17 @@ export function useNavigationEngine(
       setWizardCourseId(courseId);
       setWizardEdit(null);
       const top = navigationStack[navigationStack.length - 1];
+      // SPEC-005: o wizard de semestre sempre nasce **sobre o perfil** — a rota
+      // é `#/perfil/semestre`, então a base precisa bater com a URL (deep-link
+      // e swipe-back usam a mesma pilha). Os outros wizards herdam a aba atual.
       const next: NavScreen[] =
-        top.kind === 'wizard' && top.type === type
-          ? navigationStack
-          : [...navigationStack, { kind: 'wizard', type }];
+        type === 'semester'
+          ? top.kind === 'wizard' && top.type === 'semester'
+            ? navigationStack
+            : [{ kind: 'tab', tab: 'perfil' }, { kind: 'wizard', type }]
+          : top.kind === 'wizard' && top.type === type
+            ? navigationStack
+            : [...navigationStack, { kind: 'wizard', type }];
       setStack(next);
       syncHash(next);
       scrollToTop();
@@ -1337,6 +1352,26 @@ export function useNavigationEngine(
     setWizardEdit(null);
     goBack();
   }, [goBack, setWizardCourseId]);
+
+  /**
+   * Abre o histórico de períodos. O wizard de semestre é o **passo 1** dele
+   * (índice dos períodos), então a pilha é sempre
+   * `[perfil, wizard semester, termHistory]` — o back volta para o wizard e
+   * depois para o perfil, sem caso especial.
+   */
+  const openTermHistory = useCallback(
+    (termId?: string) => {
+      const next: NavScreen[] = [
+        { kind: 'tab', tab: 'perfil' },
+        { kind: 'wizard', type: 'semester' },
+        { kind: 'termHistory', termId },
+      ];
+      setStack(next);
+      syncHash(next);
+      scrollToTop();
+    },
+    [setStack, syncHash]
+  );
 
   // ---- menu universal de editar/excluir (long-press / clique direito) ----
   const openManageItem = useCallback((kind: ManagedItemKind, id: string) => {
@@ -1619,6 +1654,9 @@ export function useNavigationEngine(
     isSyncScreenOpen,
     openSyncScreen,
     closeSyncScreen,
+    isTermHistoryOpen,
+    focusedTermId,
+    openTermHistory,
     isQuizCategoryOpen,
     openQuizCategory,
     closeQuizCategory,
@@ -1693,19 +1731,20 @@ export function useNavigationEngine(
       focusedComparisonSlug, focusedCourse, focusedCourseId,
       focusedFamily, focusedFamilyId, focusedNote, focusedNoteId, focusedRepertorioItemCourseId,
       focusedRepertorioItemId, focusedStudyScreen,
-      focusedTempleSection, handleNavigate, handleSystemBack, headerConfig,
+      focusedTempleSection, focusedTermId, handleNavigate, handleSystemBack, headerConfig,
       isBottomNavVisible, isClassNoteDetailOpen, isComposeDetailsOpen, isComposeScreenOpen, isCreatingLooseNote,
       isDetailPromptOpen, isEditCourseOpen, isEditTccOpen, isFamiliesScreenOpen,
       isInternshipDiaryOpen, isNoteDetailOpen, isNoteTransformOpen, isNotesScreenOpen,
       isQuickAddOpen, isQuizCategoryOpen, isQuizGroupDetailOpen, isQuizLoadingOpen,
       isQuizPlayOpen, isQuizResultOpen, isRepertorioItemOpen, isSearchOpen, isStickersScreenOpen, isStreakScreenOpen,
-      isSyncScreenOpen, isTccScreenOpen, isTempleScreenOpen, isWizardOpen, managedItem,
+      isSyncScreenOpen, isTccScreenOpen, isTempleScreenOpen, isTermHistoryOpen, isWizardOpen, managedItem,
       navDirection, navigationStack, newQuizFromResult, openApproach, openComparison, openCompose,
       openComposeDetails, openCourseDetail, openDetailPrompt, openEditCourse, openEditTcc,
       openClassNoteDetail, openFamilies, openFamily, openInternshipDiary, openManageItem, openNoteDetail,
       openNoteTransform, openNotesScreen, openQuickAdd, openQuizCategory, openQuizGroupDetail,
       openQuizLoading, openQuizPlay, openQuizResult, openRepertorioItem, openSearch, openStickersScreen, openStreak,
       openStudy, openSyncScreen, openTaskExamWizard, openTccScreen, openTemple, openTempleSection,
+      openTermHistory,
       openWizard, overlayKey, screenKey, setActiveTab, setFocusedCourseId, setIsCreatingLooseNote,
       setStack, setSubTabBiblioteca, setSubTabFaculdade, setTargetId, slideKey,
       subTabBiblioteca, subTabFaculdade, syncHash, targetId, updateQuizPlayState,

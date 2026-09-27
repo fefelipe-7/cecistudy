@@ -37,6 +37,7 @@ import type {
   QuizSession,
   LooseNote,
   SyncIndex,
+  AcademicTerm,
 } from '@/types';
 
 /** Tipo do banco persistido completo (fonte única de verdade). */
@@ -75,6 +76,7 @@ stickers: Sticker[];
   questions: StudyQuestion[];
   techniques: Technique[];
   quizSessions: QuizSession[];
+  academicTerms: AcademicTerm[];
   onboarding: OnboardingState;
   syncIndex: SyncIndex;
 }
@@ -107,6 +109,7 @@ export function readDatabaseFromState(state: PersistedStateSnapshot): PersistedD
     questions: state.questions,
     techniques: state.techniques,
     quizSessions: state.quizSessions,
+    academicTerms: state.academicTerms,
     onboarding: state.onboarding,
     syncIndex: state.syncIndex ?? emptyDatabase().syncIndex,
   };

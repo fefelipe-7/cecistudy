@@ -36,6 +36,7 @@ import type {
   QuizSession,
   LooseNote,
   SyncIndex,
+  AcademicTerm,
 } from '@/types';
 import {
   emptyDatabase,
@@ -73,7 +74,8 @@ export type ArrayCollectionKey =
   | 'sessions'
   | 'techniques'
   | 'quizSessions'
-  | 'looseNotes';
+  | 'looseNotes'
+  | 'academicTerms';
 
 type ElementOf<K extends keyof PersistedStateSnapshot> =
   PersistedStateSnapshot[K] extends Array<infer U> ? U : never;
@@ -135,6 +137,7 @@ export const repositories = {
   techniques: createRepository('techniques'),
   quizSessions: createRepository('quizSessions'),
   looseNotes: createRepository('looseNotes'),
+  academicTerms: createRepository('academicTerms'),
 } as const;
 
 /** Mapa de setters do contexto para aplicação de um banco persistido. */
@@ -154,6 +157,7 @@ export interface DataClientSetters {
   sessions: (v: StudySession[]) => void;
   techniques: (v: Technique[]) => void;
   quizSessions: (v: QuizSession[]) => void;
+  academicTerms: (v: AcademicTerm[]) => void;
   streakData: (v: StreakData) => void;
   reminder: (v: { enabled: boolean; time: string }) => void;
   looseNotes: (v: LooseNote[]) => void;
@@ -198,6 +202,7 @@ export function applyDatabaseToSetters(
   setters.sessions(db.sessions);
   setters.techniques(db.techniques);
   setters.quizSessions(db.quizSessions);
+  setters.academicTerms(db.academicTerms ?? []);
   setters.streakData(db.streakData);
   setters.reminder(db.reminder);
   setters.looseNotes(db.looseNotes as LooseNote[]);

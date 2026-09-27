@@ -9,6 +9,8 @@ import { CourseIcon } from './ui/CourseIcon';
 import { HeaderActionMenu } from './ui/HeaderActionMenu';
 import { BookmarkToggle } from './ui/BookmarkToggle';
 import { headerSwapVariants } from '../lib/motion';
+import { useDataClientApp } from '../context/DataClientProvider';
+import { useActiveTerm } from '../lib/termScope';
 
 interface HeaderNavProps {
   profile: UserProfile;
@@ -45,6 +47,11 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   const formattedDate = todayDateStr.toLowerCase();
 
   const isDetailMode = !!(headerConfig && (headerConfig.title || headerConfig.onBack));
+
+  // Badge do semestre: o **período ativo** manda (SPEC-005 §D4), não o contador
+  // legado do perfil. Lê direto do data client para não abrir mais um prop.
+  const { academicTerms } = useDataClientApp();
+  const activeTermOrdinal = useActiveTerm(academicTerms)?.ordinal;
 
   return (
     <motion.header
@@ -203,7 +210,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                       scrolled ? 'text-[9px] px-1.5 py-0.2' : 'text-[10px] px-2 py-0.5'
                     }`}
                   >
-                    {profile.semester}º sem
+                    {activeTermOrdinal ?? profile.semester}º sem
                   </span>
                 </div>
                 {!scrolled && (

@@ -98,5 +98,7 @@ describe('QuizPlayer (regressão: fluxo de sessão 20 questões)', () => {
     }
 
     expect(screen.getByTestId('finished').textContent).toBe('yes');
-  });
+    // 20 questões × 350ms de timer fake dentro de um provider real: passa folgado
+    // isolado, mas estourava o default de 5s quando a suíte roda em paralelo.
+  }, 20_000);
 });

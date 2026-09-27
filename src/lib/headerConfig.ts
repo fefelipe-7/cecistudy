@@ -165,6 +165,18 @@ export function buildHeaderConfig(input: HeaderConfigInput): DynamicHeaderConfig
       color: '#D85F79',
       onBack,
     };
+  } else if (currentScreen.kind === 'termHistory') {
+    // SPEC-005: histórico empilhado sobre o wizard de semestre. O back do
+    // header devolve ao passo 1 do wizard (não direto ao perfil) porque é
+    // literalmente o pop da pilha.
+    headerConfig = {
+      type: 'detail',
+      title: 'seus semestres',
+      subtitle: 'cada período com o resumo do momento em que fechou ♡',
+      icon: 'BookOpen',
+      color: '#D85F79',
+      onBack,
+    };
   } else if (currentScreen.kind === 'notes') {
     headerConfig = {
       type: 'detail',

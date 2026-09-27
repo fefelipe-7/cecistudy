@@ -16,7 +16,14 @@ export default defineConfig({
     environment: 'jsdom',
     globals: false,
     setupFiles: ['./vitest.setup.ts'],
-    include: ['src/**/*.test.{ts,tsx}', 'apps/**/*.test.{ts,tsx}'],
+    include: [
+      'src/**/*.test.{ts,tsx}',
+      'apps/**/*.test.{ts,tsx}',
+      // Os pacotes de domínio/aplicação são TypeScript puro e têm testes ao
+      // lado do código (SPEC-005: invariantes de `AcademicTerm`). Sem esta
+      // entrada eles existiam mas nunca rodavam no gate.
+      'packages/**/*.test.{ts,tsx}',
+    ],
     css: false,
   },
 });

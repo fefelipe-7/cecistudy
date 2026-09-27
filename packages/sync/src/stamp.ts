@@ -29,6 +29,8 @@ export const RECORD_COLLECTION_KEYS = [
   'quizSessions',
   'looseNotes',
   'questions',
+  // SPEC-005: array com LWW por registro (mesmo modelo de `courses`).
+  'academicTerms',
 ] as const;
 
 export type RecordCollectionKey = (typeof RECORD_COLLECTION_KEYS)[number];

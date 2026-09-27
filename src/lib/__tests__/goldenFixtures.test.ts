@@ -2,6 +2,7 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { canonicalize } from '../canonicalJson';
+import { COLLECTIONS, type CollectionSpec } from '../collections';
 import type { BackupV2 } from '../../../packages/data/src/exportImport';
 import {
   sampleSnapshot,
@@ -48,6 +49,27 @@ function writeIfEnabled(): void {
       );
     }
   }
+
+  // Registry de coleções (T0.3) — é o contrato que o Rust espelha em
+  // `cecistudy-data/src/repositories/registry.rs`. Sem este arquivo, as duas
+  // listas podem divergir em silêncio.
+  writeFileSync(join(GOLDEN_DIR, 'registry.json'), canonicalize(registryGolden()) + '\n');
+}
+
+/** Projeção canônica do registry (o `itemType` ausente é omitido, como no canonical JSON). */
+function registryGolden(): unknown[] {
+  return COLLECTIONS.map((entry) => {
+    // `COLLECTIONS` é `as const`, então a união não tem `itemType` em todas as
+    // entradas; alargar para `CollectionSpec` lê o campo opcional.
+    const c: CollectionSpec = entry;
+    return {
+      key: c.key,
+      kind: c.kind,
+      table: c.table,
+      itemType: c.itemType,
+      syncable: c.syncable,
+    };
+  });
 }
 
 beforeAll(writeIfEnabled);
@@ -59,6 +81,10 @@ function readGolden(rel: string): string {
 }
 
 describe('golden fixtures (F0.4)', () => {
+  it('registry de coleções bate com registry.json (paridade com o Rust)', () => {
+    expect(canonicalize(registryGolden())).toBe(readGolden('registry.json'));
+  });
+
   it('envelope vazio bate com full_backup.empty.json', () => {
     expect(canonicalize(goldenEnvelope(emptySnapshot()))).toBe(readGolden('full_backup.empty.json'));
   });

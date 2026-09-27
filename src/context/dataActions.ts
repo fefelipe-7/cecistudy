@@ -18,6 +18,7 @@ import type {
   LooseNote,
   AttendanceRecord,
   AttendanceStatus,
+  AcademicTerm,
 } from '../types';
 import type { AuthorDraft, ConceptDraft } from '../lib/acervoBridge';
 import { hapticTap, hapticSuccess } from '../lib/haptics';
@@ -26,6 +27,9 @@ import { shouldCelebrateTasks } from '../lib/taskLogic';
 import { schedule } from '../lib/fsrs';
 import { normalizeText } from '../lib/readingMatching';
 import { toDateKey } from '../lib/streak';
+import { resolveActiveTerm } from '../core/domain';
+import { undoTermRollover as undoRollover } from '../lib/termRollover';
+import type { TermRolloverPlan } from '../lib/termRollover';
 import {
   applyAttendanceAction,
   removeAttendanceRecord as removeRecord,
@@ -68,6 +72,9 @@ export interface DataActionsDeps {
   setTechniques: React.Dispatch<React.SetStateAction<Technique[]>>;
   setProfile: React.Dispatch<React.SetStateAction<UserProfile>>;
   setTcc: React.Dispatch<React.SetStateAction<TccData>>;
+  // Períodos letivos (SPEC-005)
+  academicTerms: AcademicTerm[];
+  setAcademicTerms: React.Dispatch<React.SetStateAction<AcademicTerm[]>>;
 
   // helpers de orquestração
   registerActivity: () => void;
@@ -116,6 +123,16 @@ export interface DataActions {
   handleUpdateAuthor: (author: PsychologyAuthor) => void;
   handleUpdateConcept: (concept: PsychologyConcept) => void;
   handleUpdateMaterial: (material: MaterialItem) => void;
+
+  // ---- Período letivo (SPEC-005) ----
+  /** Aplica o plano de virada calculado por `planTermRollover` (escreve por registro). */
+  applyTermRollover: (plan: TermRolloverPlan) => void;
+  /** Reverte a virada (reabre o período anterior e devolve as disciplinas). */
+  undoTermRollover: (plan: TermRolloverPlan, originalTermIds: Record<string, string | null>) => void;
+  /** Arquiva a disciplina (sai da grade, continua pesquisável — nunca apaga). */
+  archiveCourse: (courseId: string) => void;
+  /** Devolve uma disciplina arquivada à grade do período ativo. */
+  restoreCourse: (courseId: string) => void;
 }
 
 /**
@@ -149,6 +166,11 @@ export interface DataActionGroups {
     DataActions,
     'handleAddInternshipLog' | 'handleUpdateInternshipLog' | 'handleUpdateProfile' | 'handleUpdateTcc'
   >;
+  /** Período letivo isolado: mexer no semestre não invalida o resto da UI. */
+  term: Pick<
+    DataActions,
+    'applyTermRollover' | 'undoTermRollover' | 'archiveCourse' | 'restoreCourse'
+  >;
 }
 
 export function useDataActions(deps: DataActionsDeps): DataActions & DataActionGroups {
@@ -177,11 +199,18 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
     setTechniques,
     setProfile,
     setTcc,
+    academicTerms,
+    setAcademicTerms,
     registerActivity,
     showToast,
     gcalSyncTask,
     gcalSyncExam,
   } = deps;
+
+  // SPEC-005: o período ativo é DERIVADO (nunca um ponteiro persistido), então
+  // as ações do semestre resolvem o id na hora. `null` só no intervalo em que
+  // um período está fechado e o próximo ainda não foi aberto.
+  const activeTermId = resolveActiveTerm(academicTerms)?.id ?? null;
 
   const handleToggleTask = useCallback((taskId: string) => {
     hapticTap();
@@ -340,8 +369,15 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
   }, [currentWorkspaceId, setExams, gcalSyncExam]);
 
   const handleAddCourse = useCallback((course: Course) => {
-    setCourses((prev) => [{ ...course, workspaceId: currentWorkspaceId }, ...prev]);
-  }, [setCourses, currentWorkspaceId]);
+    // SPEC-005: disciplina nova nasce no período ativo (mesmo padrão do
+    // `workspaceId`) e visível. `termId` explícito no rascunho manda — é assim
+    // que o wizard de semestre cria a disciplina já no período certo.
+    const termId = course.termId ?? activeTermId;
+    setCourses((prev) => [
+      { ...course, workspaceId: currentWorkspaceId, termId, status: course.status ?? 'ativo' },
+      ...prev,
+    ]);
+  }, [setCourses, currentWorkspaceId, activeTermId]);
 
   const handleAddAuthor = useCallback((author: PsychologyAuthor) => {
     setAuthors((prev) => [{ ...author, workspaceId: currentWorkspaceId }, ...prev]);
@@ -429,6 +465,87 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
   const handleUpdateMaterial = useCallback((material: MaterialItem) => {
     setMaterials((prev) => prev.map((m) => (m.id === material.id ? material : m)));
   }, [setMaterials]);
+
+  // ---- Período letivo (SPEC-005) ----
+
+  /**
+   * Aplica o plano de virada.
+   *
+   * O plano vem **pronto** de `planTermRollover` (puro, testado, no package
+   * `application`) — aqui só há escrita. A disciplina é mesclada por `id` em
+   * vez de substituída: `plan.courses` é a projeção estreita
+   * (`TermScopedCourse`), e trocar a lista inteira perderia `schedule`,
+   * `attendance`, `repertório` e afins.
+   */
+  const applyTermRollover = useCallback((plan: TermRolloverPlan) => {
+    const byId = new Map(plan.courses.map((c) => [c.id, c]));
+    setCourses((prev) =>
+      prev.map((c) => {
+        const next = byId.get(c.id);
+        return next ? { ...c, termId: next.termId, status: next.status } : c;
+      })
+    );
+    setAcademicTerms(plan.terms);
+    hapticSuccess();
+  }, [setCourses, setAcademicTerms]);
+
+  /** Reverte a virada. Nada foi apagado, então é só devolver cada campo. */
+  const undoTermRollover = useCallback(
+    (plan: TermRolloverPlan, originalTermIds: Record<string, string | null>) => {
+      const now = new Date().toISOString();
+      const reverted = undoRollover({
+        terms: academicTerms,
+        courses: courses.map((c) => ({ id: c.id, termId: c.termId, status: c.status ?? 'ativo' })),
+        plan,
+        originalTermIds,
+        now,
+      });
+      const byId = new Map(reverted.courses.map((c) => [c.id, c]));
+      setCourses((prev) =>
+        prev.map((c) => {
+          const next = byId.get(c.id);
+          return next ? { ...c, termId: next.termId, status: next.status } : c;
+        })
+      );
+      setAcademicTerms(reverted.terms);
+    },
+    [academicTerms, courses, setCourses, setAcademicTerms]
+  );
+
+  /** Arquiva: sai da grade do período, some do plano de ação, continua pesquisável. */
+  const archiveCourse = useCallback((courseId: string) => {
+    setCourses((prev) => prev.map((c) => (c.id === courseId ? { ...c, status: 'arquivado' } : c)));
+    hapticTap();
+  }, [setCourses]);
+
+  /**
+   * Desarquiva de volta para a grade do período **ativo**.
+   *
+   * O `termId` também migra: uma disciplina arquivada durante a virada ficou
+   * apontando para o período antigo, então só religar o `status` a devolveria
+   * para um semestre que já fechou — e ela sumiria da grade mesmo "ativa".
+   * Sem período ativo, mantém o `termId` (não inventa um período).
+   */
+  const restoreCourse = useCallback((courseId: string) => {
+    setCourses((prev) =>
+      prev.map((c) =>
+        c.id === courseId
+          ? { ...c, status: 'ativo', termId: activeTermId ?? c.termId }
+          : c
+      )
+    );
+    hapticTap();
+  }, [setCourses, activeTermId]);
+
+  const groupTerm = useMemo(
+    () => ({
+      applyTermRollover,
+      undoTermRollover,
+      archiveCourse,
+      restoreCourse,
+    }),
+    [applyTermRollover, undoTermRollover, archiveCourse, restoreCourse]
+  );
 
   // Grupos por domínio (PERF-001 A.3): cada grupo memoizado nas próprias
   // dependências — a identidade só muda quando aquele domínio muda, permitindo
@@ -540,9 +657,11 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
     ...groupStudy,
     ...groupKnowledge,
     ...groupApp,
+    ...groupTerm,
     courses: groupCourses,
     study: groupStudy,
     knowledge: groupKnowledge,
     app: groupApp,
+    term: groupTerm,
   };
 }

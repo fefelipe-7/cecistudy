@@ -30,6 +30,7 @@ import {
   OnboardingState,
   QuizSession,
   SyncIndex,
+  AcademicTerm,
 } from '../types';
 import { emptySyncIndex } from '../lib/sync/stamp';
 
@@ -88,6 +89,10 @@ export interface EmptyDatabase {
    techniques: Technique[];
    onboarding: OnboardingState;
    quizSessions: QuizSession[];
+   /** Períodos letivos (SPEC-005). O seed é `[]`: o período ativo é garantido
+    *  no boot (`ensureActiveTerm`), não no seed — assim o golden `empty` segue
+    *  determinístico e não carrega um período fictício para o app de 1ª vez. */
+   academicTerms: AcademicTerm[];
    readingProgress: Record<string, number>;
   /** Carimbos de alteração p/ sincronização entre dispositivos (Fase Sync). */
   syncIndex: SyncIndex;
@@ -120,6 +125,7 @@ stickers: lockedStickerCatalog(),
     techniques: [],
     onboarding: emptyOnboarding,
     quizSessions: [],
+    academicTerms: [],
     readingProgress: {},
     syncIndex: emptySyncIndex(),
   };

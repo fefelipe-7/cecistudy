@@ -124,7 +124,7 @@ pelo avatar do header), `#/perfil/stickers`,
 > faculdade (`aulas`/`avaliacoes`) foram fundidas no detalhe da disciplina — só
 > `disciplinas` e `calendario` existem no topo.
 
-- `NavScreen` = `{kind:'tab', tab} | {kind:'course', courseId} | {kind:'notes'} | {kind:'temple'} | {kind:'compose'} | {kind:'composeDetails'}`
+- `NavScreen` = `{kind:'tab', tab} | {kind:'course', courseId} | {kind:'notes'} | {kind:'temple'} | {kind:'compose'} | {kind:'composeDetails'} | {kind:'wizard', type} | {kind:'termHistory', termId?}`
   (em `src/types.ts`). Base = tab; telas auxiliares são **empurradas** por cima.
   Curso → sobre faculdade · notas/templo → sobre biblioteca.
   Compose/composeDetails → **mantêm a base** (aba/curso de origem) — fechar retorna ao
@@ -132,11 +132,18 @@ pelo avatar do header), `#/perfil/stickers`,
 - **Derivados do topo da pilha** (`currentScreen`): `activeTab` (base da pilha),
   `focusedCourseId`/`focusedCourse` (course), `isNotesScreenOpen`
   (notes), `isComposeScreenOpen` (compose), `isComposeDetailsOpen` (composeDetails),
+  `isTermHistoryOpen`/`focusedTermId` (termHistory),
   `isBottomNavVisible` (quando o topo é tab — bottom nav some em telas auxiliares).
 - `parseRoute(hash)` → `routeToStack(route)` reconstroem a pilha a partir da URL;
   `stackToHash(stack, subTab)` serializa de volta. `hashchange` + `popstate` aplicam a rota.
   Rotas de compose têm base opcional (`baseTab`/`baseCourseId`): `#/nota` assume home,
   `#/faculdade/c3/nota/detalhes` empilha `[faculdade, course c3, composeDetails]`.
+- **Período letivo (SPEC-005):** `#/perfil/semestre` (wizard de virada),
+  `#/perfil/semestre/historico` e `#/perfil/semestre/historico/:termId`. O wizard é
+  `WizardFlow: 'semester'` e **não** usa o prefixo genérico `#/novo/*` (é um fluxo
+  de jornada, não de cadastro). O `termHistory` empilha **sobre** o wizard
+  (`[perfil, wizard semester, termHistory]`), então o back do header devolve ao
+  passo 1 do assistente — não direto ao perfil.
 - **Sub-tabs codificadas na URL** quando diferentes da padrão (ex.: `#/faculdade/aulas`,
   `#/biblioteca/conceitos`). `parseRoute` distingue sub-tab de `courseId` por lista conhecida;
   a sub-tab padrão (`DEFAULT_SUB_TAB`) não é serializada (URLs limpas).

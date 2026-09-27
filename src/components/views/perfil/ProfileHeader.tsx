@@ -8,6 +8,8 @@ import { ProgressBar } from '../../ui/ProgressBar';
 interface ProfileHeaderProps {
   profile: UserProfile;
   percentDegree: number;
+  /** `ordinal` do período ativo (SPEC-005) — evita o contador legado do perfil. */
+  currentOrdinal: number;
   onPickPhoto: () => void;
   onRemovePhoto: () => void;
 }
@@ -15,6 +17,7 @@ interface ProfileHeaderProps {
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   profile,
   percentDegree,
+  currentOrdinal,
   onPickPhoto,
   onRemovePhoto,
 }) => (
@@ -68,7 +71,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       </div>
       <ProgressBar value={percentDegree} />
       <p className="text-[11px] text-ceci-secondary">
-        {profile.semester}º de {profile.totalSemesters} semestres
+        {currentOrdinal}º de {profile.totalSemesters} semestres
       </p>
     </div>
 

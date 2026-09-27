@@ -44,6 +44,9 @@ export interface DerivedNav {
   isComposeDetailsOpen: boolean;
   isWizardOpen: boolean;
   currentWizardType: WizardFlow | null;
+  /** Histórico de períodos letivos (SPEC-005). */
+  isTermHistoryOpen: boolean;
+  focusedTermId: string | undefined;
   isQuizCategoryOpen: boolean;
   isQuizGroupDetailOpen: boolean;
   currentQuizGroup: QuestionGroup | null;
@@ -209,6 +212,10 @@ export function deriveScreen(
     isComposeDetailsOpen: currentScreen.kind === 'composeDetails',
     isWizardOpen: currentScreen.kind === 'wizard',
     currentWizardType: currentScreen.kind === 'wizard' ? currentScreen.type : null,
+    // Histórico de períodos (SPEC-005): pilha própria (o wizard é o passo 1),
+    // então precisa do próprio flag para o AppShell renderizar a lista.
+    isTermHistoryOpen: currentScreen.kind === 'termHistory',
+    focusedTermId: currentScreen.kind === 'termHistory' ? currentScreen.termId : undefined,
     isQuizCategoryOpen: currentScreen.kind === 'quiz-category',
     isQuizGroupDetailOpen: currentScreen.kind === 'quiz-group-detail',
     currentQuizGroup: currentScreen.kind === 'quiz-group-detail' ? currentScreen.group : null,

@@ -23,8 +23,8 @@ describe('schema — migração 11 → 12 (escopo de workspace)', () => {
     tcc: { title: '', advisor: '', field: '', problemStatement: '', objectives: [], status: 'em_andamento', chapters: [], references: [] },
   };
 
-  it('SCHEMA_VERSION é 17', () => {
-    expect(SCHEMA_VERSION).toBe(17);
+  it('SCHEMA_VERSION é 18', () => {
+    expect(SCHEMA_VERSION).toBe(18);
   });
 
   it('adiciona workspaceId default a todas as entidades sincronizáveis', () => {
@@ -222,5 +222,109 @@ describe('schema — migração 16 → 17 (frequência em horas, SPEC-004)', () 
     const next = migrateDatabase(16, legacy as Record<string, unknown>) as Record<string, any>;
     expect(next.courses[0].attendance.totalHours).toBeUndefined();
     expect(next.courses[0].attendance.baseHoursDone).toBeUndefined();
+  });
+});
+
+describe('schema — migração 17 → 18 (período letivo, SPEC-005)', () => {
+  const legacy = {
+    profile: { name: 'ceci', semester: 6, totalSemesters: 8 },
+    courses: [
+      { id: 'c1', name: 'Psicologia Social', professor: 'p', semester: '6º Semestre', schedule: [], color: '#fff', icon: 'Brain' },
+    ],
+    classes: [
+      { id: 'cl-1', courseId: 'c1', title: 'aula 1', date: '2026-03-05' },
+      { id: 'cl-2', courseId: 'c1', title: 'aula 2', date: '2026-02-11' },
+    ],
+    exams: [{ id: 'e1', courseId: 'c1', title: 'p1', date: '2026-06-20' }],
+  };
+
+  it('cria o período ativo com o ordinal vindo de profile.semester', () => {
+    const next = migrateDatabase(17, legacy as Record<string, unknown>) as Record<string, any>;
+    expect(next.academicTerms).toHaveLength(1);
+    expect(next.academicTerms[0]).toMatchObject({
+      id: 'trm-active',
+      ordinal: 6,
+      status: 'ativo',
+      label: '6º semestre',
+    });
+  });
+
+  it('startedAt é a menor data do payload (nunca Date.now)', () => {
+    const next = migrateDatabase(17, legacy as Record<string, unknown>) as Record<string, any>;
+    expect(next.academicTerms[0].startedAt).toBe('2026-02-11');
+  });
+
+  it('sem data nenhuma no payload cai na constante determinística', () => {
+    const empty = { profile: { name: 'ceci' } };
+    const next = migrateDatabase(17, empty as Record<string, unknown>) as Record<string, any>;
+    expect(next.academicTerms[0].startedAt).toBe('2026-01-01');
+  });
+
+  it('liga cada disciplina ao período e dá status ativo', () => {
+    const next = migrateDatabase(17, legacy as Record<string, unknown>) as Record<string, any>;
+    expect(next.courses[0].termId).toBe('trm-active');
+    expect(next.courses[0].status).toBe('ativo');
+  });
+
+  it('normaliza semester do perfil: string legada ("6º") vira ordinal numérico', () => {
+    const old = { profile: { name: 'ceci', semester: '6º Semestre' } };
+    const next = migrateDatabase(17, old as Record<string, unknown>) as Record<string, any>;
+    expect(next.profile.semester).toBe(6);
+    expect(next.academicTerms[0].ordinal).toBe(6);
+  });
+
+  it('ordena por string, não por Date: 2026-02-11 vence 2026-03-05', () => {
+    const next = migrateDatabase(17, legacy as Record<string, unknown>) as Record<string, any>;
+    expect(next.academicTerms[0].startedAt < '2026-03-05').toBe(true);
+  });
+
+  it('idempotente: re-aplicar não duplica o período nem sobrescreve o curso', () => {
+    const once = migrateDatabase(17, legacy as Record<string, unknown>) as Record<string, unknown>;
+    const twice = migrateDatabase(17, once as Record<string, unknown>) as Record<string, any>;
+    expect(twice.academicTerms).toHaveLength(1);
+    expect(twice.courses[0].termId).toBe('trm-active');
+    expect(twice.academicTerms[0].ordinal).toBe(6);
+  });
+
+  it('não sobrescreve termId/status já presentes', () => {
+    const already = {
+      ...legacy,
+      academicTerms: [
+        { id: 'trm-x', label: '5º semestre', ordinal: 5, status: 'ativo', startedAt: '2025-08-01' },
+      ],
+      courses: [{ ...legacy.courses[0], termId: 'trm-x', status: 'arquivado' }],
+    };
+    const next = migrateDatabase(17, already as Record<string, unknown>) as Record<string, any>;
+    expect(next.academicTerms).toHaveLength(1);
+    expect(next.academicTerms[0].id).toBe('trm-x');
+    expect(next.courses[0].termId).toBe('trm-x');
+    expect(next.courses[0].status).toBe('arquivado');
+  });
+
+  it('aceita payload com academicTerms já populado e sem termo ativo', () => {
+    const closed = {
+      ...legacy,
+      academicTerms: [
+        { id: 'trm-old', label: '5º semestre', ordinal: 5, status: 'encerrado', startedAt: '2025-08-01', endedAt: '2025-12-20' },
+      ],
+    };
+    const next = migrateDatabase(17, closed as Record<string, unknown>) as Record<string, any>;
+    expect(next.academicTerms).toHaveLength(2);
+    expect(next.academicTerms[1].id).toBe('trm-active');
+    expect(next.academicTerms[1].status).toBe('ativo');
+  });
+
+  it('totalSemesters ausente cai em 8', () => {
+    const next = migrateDatabase(17, { profile: { name: 'ceci' } } as Record<string, unknown>) as Record<string, any>;
+    expect(next.profile.totalSemesters).toBe(8);
+  });
+
+  it('ordinal fora da faixa é clampado em 1..12', () => {
+    const big = { profile: { name: 'ceci', semester: 99 } };
+    const next = migrateDatabase(17, big as Record<string, unknown>) as Record<string, any>;
+    expect(next.academicTerms[0].ordinal).toBe(12);
+    const neg = { profile: { name: 'ceci', semester: -3 } };
+    const next2 = migrateDatabase(17, neg as Record<string, unknown>) as Record<string, any>;
+    expect(next2.academicTerms[0].ordinal).toBe(1);
   });
 });

@@ -71,6 +71,10 @@ export interface Route {
   familyId?: string;
   /** Sincronização entre dispositivos (ex.: `#/perfil/sincronizar`). */
   sync?: boolean;
+  /** Histórico de períodos letivos (ex.: `#/perfil/semestre/historico`). */
+  termHistory?: boolean;
+  /** Período aberto no histórico (ex.: `#/perfil/semestre/historico/trm-3`). */
+  termId?: string;
 }
 
 /** Valores de sub-tab conhecidos por aba (usados para distinguir sub-tab de courseId na rota). */
@@ -122,6 +126,10 @@ const WIZARD_SLUGS: Record<string, WizardFlow> = {
   autor: 'author',
   conceito: 'concept',
   material: 'material',
+  // O wizard de semestre **não** é `#/novo/semestre`: ele tem rota própria
+  // (`#/perfil/semestre`) porque é uma transição de estado, não um cadastro.
+  // Mantido aqui só para a pilha não ter tratamento especial no wizard genérico.
+  semestre: 'semester',
 };
 const WIZARD_SLUG_TO_TYPE: Record<WizardFlow, string> = {
   task: 'tarefa',
@@ -135,6 +143,7 @@ const WIZARD_SLUG_TO_TYPE: Record<WizardFlow, string> = {
   author: 'autor',
   concept: 'conceito',
   material: 'material',
+  semester: 'semestre',
 };
 
 export function parseRoute(hash: string): Route {
@@ -275,6 +284,16 @@ export function parseRoute(hash: string): Route {
     }
     if (h[1] === 'sincronizar') return { tab: 'perfil', sync: true };
     if (h[1] === 'streak') return { tab: 'perfil', streak: true };
+    // Período letivo (SPEC-005): `#/perfil/semestre` (wizard) e
+    // `#/perfil/semestre/historico[/:termId]`. O histórico **encosta** no
+    // wizard (o índice é o passo 1 dele), então quem abrir o histórico a
+    // partir da URL cai direto na lista, não no wizard.
+    if (h[1] === 'semestre') {
+      if (h[2] === 'historico') {
+        return { tab: 'perfil', termHistory: true, termId: h[3] };
+      }
+      return { tab: 'perfil', wizard: 'semester' };
+    }
     return { tab: 'perfil' };
   }
 
@@ -310,6 +329,13 @@ export function routeToStack(route: Route): NavScreen[] {
   if (route.internshipDiary) return [{ kind: 'tab', tab: 'faculdade' }, { kind: 'internshipDiary' }];
   if (route.tcc) return [{ kind: 'tab', tab: 'estudos' }, { kind: 'tcc' }];
   if (route.stickers) return [{ kind: 'tab', tab: 'perfil' }, { kind: 'stickers' }];
+  if (route.termHistory) {
+    return [
+      { kind: 'tab', tab: 'perfil' },
+      { kind: 'wizard', type: 'semester' },
+      { kind: 'termHistory', termId: route.termId },
+    ];
+  }
   if (route.notes) return [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }];
   if (route.noteTransformId) {
     return [
@@ -397,6 +423,10 @@ export function stackToHash(stack: NavScreen[], subTab?: string): string {
     const base = stack[0];
     const course = stack[1]?.kind === 'course' ? stack[1] : undefined;
     const tab = base?.kind === 'tab' ? base.tab : 'home';
+    // SPEC-005: o wizard de semestre tem rota própria (`#/perfil/semestre`)
+    // em vez de `#/novo/semestre` — é transição de estado, não cadastro, e a
+    // URL precisa dizer onde ela vive.
+    if (top.type === 'semester') return '#/perfil/semestre';
     const suffix = WIZARD_SLUG_TO_TYPE[top.type];
     if (tab !== 'home') {
       const prefix = course ? `#/${tab}/${course.courseId}` : `#/${tab}`;
@@ -412,6 +442,11 @@ export function stackToHash(stack: NavScreen[], subTab?: string): string {
   if (top.kind === 'internshipDiary') return '#/faculdade/estagio/diario';
   if (top.kind === 'tcc') return '#/estudos/tcc';
   if (top.kind === 'stickers') return '#/perfil/stickers';
+  if (top.kind === 'termHistory') {
+    return top.termId
+      ? `#/perfil/semestre/historico/${top.termId}`
+      : '#/perfil/semestre/historico';
+  }
   if (top.kind === 'notes') return '#/biblioteca/notas';
   if (top.kind === 'noteDetail') return `#/biblioteca/notas/${top.noteId}`;
   if (top.kind === 'noteTransform') return `#/biblioteca/notas/${top.noteId}/transformar`;

@@ -54,6 +54,7 @@ describe('repositories (CRUD puro)', () => {
 describe('applyDatabaseToSetters', () => {
 const makeSetters = (): DataClientSetters => ({
       profile: vi.fn(),
+      academicTerms: vi.fn(),
       courses: vi.fn(),
       classes: vi.fn(),
       tasks: vi.fn(),

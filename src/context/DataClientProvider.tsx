@@ -21,9 +21,10 @@ import {
    StudyQuestion,
    QuizSession,
    LooseNote,
-   StreakData,
-   SyncIndex,
-  } from '../types';
+  StreakData,
+  SyncIndex,
+  AcademicTerm,
+ } from '../types';
 import type {
   Workspace,
   Relation,
@@ -40,7 +41,7 @@ import {
   emptyOnboarding,
   emptyDatabase,
 } from '../data/empty';
-import { DEFAULT_WORKSPACE_ID, SCHEMA_VERSION } from '../data/schema';
+import { DEFAULT_WORKSPACE_ID, SCHEMA_VERSION, ensureActiveTerm } from '../data/schema';
 import { useSqliteState } from '../lib/useSqliteState';
 import { useStampedState } from '../lib/useStampedState';
 import { usePersistentState } from '../lib/usePersistentState';
@@ -122,6 +123,10 @@ export interface DataClientStudySlice {
   quizSessions: QuizSession[];
   setQuizSessions: React.Dispatch<React.SetStateAction<QuizSession[]>>;
   setQuizSessionsRaw: React.Dispatch<React.SetStateAction<QuizSession[]>>;
+  /** Períodos letivos (SPEC-005) — LWW por registro, como `courses`. */
+  academicTerms: AcademicTerm[];
+  setAcademicTerms: React.Dispatch<React.SetStateAction<AcademicTerm[]>>;
+  setAcademicTermsRaw: React.Dispatch<React.SetStateAction<AcademicTerm[]>>;
   techniques: Technique[];
   setTechniques: React.Dispatch<React.SetStateAction<Technique[]>>;
   setTechniquesRaw: React.Dispatch<React.SetStateAction<Technique[]>>;
@@ -153,6 +158,11 @@ export interface DataClientAppSlice {
   profile: UserProfile;
   setProfile: React.Dispatch<React.SetStateAction<UserProfile>>;
   setProfileRaw: React.Dispatch<React.SetStateAction<UserProfile>>;
+  /** Períodos letivos (SPEC-005) — fica no slice `app` porque é dado de
+   *  jornada (perfil/perfil-síntese), não de disciplina. */
+  academicTerms: AcademicTerm[];
+  setAcademicTerms: React.Dispatch<React.SetStateAction<AcademicTerm[]>>;
+  setAcademicTermsRaw: React.Dispatch<React.SetStateAction<AcademicTerm[]>>;
   internshipLogs: InternshipLog[];
   setInternshipLogs: React.Dispatch<React.SetStateAction<InternshipLog[]>>;
   setInternshipLogsRaw: React.Dispatch<React.SetStateAction<InternshipLog[]>>;
@@ -293,6 +303,9 @@ setTechniquesRaw: React.Dispatch<React.SetStateAction<Technique[]>>;
    quizSessions: QuizSession[];
   setQuizSessions: React.Dispatch<React.SetStateAction<QuizSession[]>>;
   setQuizSessionsRaw: React.Dispatch<React.SetStateAction<QuizSession[]>>;
+  academicTerms: AcademicTerm[];
+  setAcademicTerms: React.Dispatch<React.SetStateAction<AcademicTerm[]>>;
+  setAcademicTermsRaw: React.Dispatch<React.SetStateAction<AcademicTerm[]>>;
 questions: StudyQuestion[];
     setQuestions: React.Dispatch<React.SetStateAction<StudyQuestion[]>>;
     streakData: StreakData;
@@ -436,6 +449,29 @@ export function useDataClient(): DataClientValue {
   const { value: sessions, set: setSessions, setRaw: setSessionsRaw } = useStampedState<StudySession[]>('sessions', [], syncIndex, setSyncIndex);
   const { value: techniques, set: setTechniques, setRaw: setTechniquesRaw } = useStampedState<Technique[]>('techniques', [], syncIndex, setSyncIndex);
    const { value: quizSessions, set: setQuizSessions, setRaw: setQuizSessionsRaw } = useStampedState<QuizSession[]>('quizSessions', [], syncIndex, setSyncIndex);
+  // Períodos letivos (SPEC-005). Coleção de verdade do "qual semestre eu
+  // estou" — `profile.semester` fica só como fallback de exibição. O seed é
+  // `[]`; o guaranteeing do período ativo é o efeito abaixo, para que os dois
+  // caminhos de entrada (import antigo e boot) produzam o mesmo termo.
+  const { value: academicTerms, set: setAcademicTerms, setRaw: setAcademicTermsRaw } = useStampedState<AcademicTerm[]>('academicTerms', [], syncIndex, setSyncIndex);
+
+  // Garante um período ativo no boot (SPEC-005 §D4). Idempotente por
+  // construction: `ensureActiveTerm` devolve `null` quando já existe um período
+  // ativo, então o efeito não reescreve nada no caminho comum (quem já migrou).
+  // Também protege o caso nativo, em que a hidratação chega depois do mount:
+  // o efeito re-roda quando `academicTerms` muda e só então escreve.
+  useEffect(() => {
+    const ensured = ensureActiveTerm(academicTerms, profile as unknown as Record<string, unknown>, {
+      courses,
+      classes,
+      exams,
+      sessions,
+      internshipLogs,
+      tasks,
+    });
+    if (ensured) setAcademicTerms(ensured);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [academicTerms, profile.semester]);
 
   // Questões (745): banco estático do catálogo — mesmo tratamento de abordagens.
   const [questions, setQuestions] = useState<StudyQuestion[]>([]);
@@ -599,6 +635,7 @@ export function useDataClient(): DataClientValue {
         sessions: setSessionsRaw,
         techniques: setTechniquesRaw,
         quizSessions: setQuizSessionsRaw,
+        academicTerms: setAcademicTermsRaw,
         streakData: setStreakDataRaw,
         reminder: setReminderSettings,
         looseNotes: setLooseNotesRaw,
@@ -650,7 +687,7 @@ export function useDataClient(): DataClientValue {
       readings, flashcards, decks, materials, internshipLogs, tcc, stickers, sessions,
       streakData, reminder: reminderSettings, looseNotes, savedBookIds,
       bookmarkedCourseIds, readingProgress, questions, techniques, quizSessions,
-      onboarding, syncIndex,
+      academicTerms, onboarding, syncIndex,
     }));
     await exportAppDatabase(payload);
   };
@@ -675,13 +712,14 @@ export function useDataClient(): DataClientValue {
       readings, flashcards, decks, materials, internshipLogs, tcc, stickers, sessions,
       streakData, reminder: reminderSettings, looseNotes, savedBookIds,
       bookmarkedCourseIds, readingProgress, questions, techniques, quizSessions,
-      onboarding, syncIndex,
+      academicTerms, onboarding, syncIndex,
     }));
     return JSON.stringify(payload);
   }, [profile, courses, classes, tasks, exams, authors, concepts, approaches,
     readings, flashcards, decks, materials, internshipLogs, tcc, stickers, sessions,
     streakData, reminderSettings, looseNotes, savedBookIds,
-    bookmarkedCourseIds, readingProgress, questions, techniques, quizSessions, onboarding, syncIndex]);
+    bookmarkedCourseIds, readingProgress, questions, techniques, quizSessions,
+    academicTerms, onboarding, syncIndex]);
 
   /** Aplica o banco mesclado pela sincronização (mesmo caminho do import). */
   const applySyncedDatabase = useCallback((db: ReturnType<typeof emptyDatabase>) => {
@@ -873,6 +911,9 @@ export function useDataClient(): DataClientValue {
       quizSessions,
       setQuizSessions,
       setQuizSessionsRaw,
+      academicTerms,
+      setAcademicTerms,
+      setAcademicTermsRaw,
       techniques,
       setTechniques,
       setTechniquesRaw,
@@ -885,6 +926,7 @@ export function useDataClient(): DataClientValue {
       flashcards, setFlashcards, setFlashcardsRaw,
       streakData, setStreakData, setStreakDataRaw,
       quizSessions, setQuizSessions, setQuizSessionsRaw,
+      academicTerms, setAcademicTerms, setAcademicTermsRaw,
       techniques, setTechniques, setTechniquesRaw,
       questions, setQuestions,
     ]
@@ -925,6 +967,9 @@ export function useDataClient(): DataClientValue {
       profile,
       setProfile,
       setProfileRaw,
+      academicTerms,
+      setAcademicTerms,
+      setAcademicTermsRaw,
       internshipLogs,
       setInternshipLogs,
       setInternshipLogsRaw,
@@ -986,6 +1031,7 @@ export function useDataClient(): DataClientValue {
     }),
     [
       profile, setProfile, setProfileRaw,
+      academicTerms, setAcademicTerms, setAcademicTermsRaw,
       internshipLogs, setInternshipLogs, setInternshipLogsRaw,
       tcc, setTcc, setTccRaw,
       stickers, setStickers, setStickersRaw,
@@ -1070,6 +1116,9 @@ export function useDataClient(): DataClientValue {
       quizSessions,
      setQuizSessions,
      setQuizSessionsRaw,
+     academicTerms,
+     setAcademicTerms,
+     setAcademicTermsRaw,
 questions,
       setQuestions,
       streakData,

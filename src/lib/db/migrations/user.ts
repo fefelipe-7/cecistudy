@@ -13,10 +13,29 @@
  */
 
 /** Versão de schema da base da usuária (espelha `data/schema.ts`). */
-export const USER_SCHEMA_VERSION = 1;
+export const USER_SCHEMA_VERSION = 2;
 
 /** Nome lógico do banco da usuária (sem extensão). */
 export const USER_DB_NAME = 'cecistudy_user';
+
+/**
+ * Tabela `deck` — baralhos de flashcards (chegou no payload com a migração 16,
+ * mas só ganhou tabela no passo 2 do schema da usuária). Vive separada porque
+ * é o passo de migração 2: instalações já na v1 não têm a tabela e precisam
+ * criá-la. `IF NOT EXISTS` → reaplicar em base nova é no-op.
+ */
+export const DECK_TABLES_SQL = `
+CREATE TABLE IF NOT EXISTS deck (
+  id TEXT PRIMARY KEY,
+  name TEXT,
+  color TEXT,
+  workspace_id TEXT,
+  created_at TEXT,
+  updated_at TEXT,
+  data_json TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_deck_workspace ON deck(workspace_id);
+`;
 
 /** DDL completo da base da usuária (idempotente — `IF NOT EXISTS` em tudo). */
 export const USER_TABLES_SQL = `
@@ -119,6 +138,7 @@ CREATE TABLE IF NOT EXISTS flashcard (
 );
 CREATE INDEX IF NOT EXISTS idx_flashcard_course ON flashcard(course_id);
 CREATE INDEX IF NOT EXISTS idx_flashcard_last_reviewed ON flashcard(last_reviewed);
+${DECK_TABLES_SQL}
 
 CREATE TABLE IF NOT EXISTS reading (
   id TEXT PRIMARY KEY,
@@ -310,6 +330,21 @@ CREATE TABLE IF NOT EXISTS activity_event (
   ref_id TEXT,
   PRIMARY KEY (event_type, event_date, ref_id)
 );
+
+-- Períodos letivos (SPEC-005). LWW por registro (o sync resolve pelo id);
+-- data_json é a fonte, as colunas são projeção p/ query (período ativo, ordem).
+CREATE TABLE IF NOT EXISTS academic_term (
+  id TEXT PRIMARY KEY,
+  label TEXT,
+  ordinal INTEGER,
+  status TEXT,
+  started_at TEXT,
+  ended_at TEXT,
+  updated_at TEXT,
+  data_json TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_academic_term_status ON academic_term(status);
+CREATE INDEX IF NOT EXISTS idx_academic_term_ordinal ON academic_term(ordinal);
 
 CREATE TABLE IF NOT EXISTS legacy_import_map (
   source_key TEXT PRIMARY KEY,

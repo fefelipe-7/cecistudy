@@ -1,5 +1,9 @@
 // Domínio: entidades acadêmicas e de biblioteca (MOD-001 / B.3).
 
+import type { CourseStatus } from '@/core/domain';
+
+export type { CourseStatus };
+
 export interface Task {
   id: string;
   /** Escopo de workspace (Fase 3). Default = ws-academico. */
@@ -61,7 +65,27 @@ export interface Course {
   name: string;
   code?: string;
   professor: string;
-  semester: string; // e.g. "6º Semestre"
+  /**
+   * @deprecated Rótulo textual do semestre (ex.: "6º Semestre"). **Não é mais
+   * lido** para nada que filtre ou agrupe (SPEC-005 §D4) — a fonte da verdade é
+   * `Course.termId` → `AcademicTerm.ordinal`. Fica no tipo e no `data_json`
+   * só por compat com golden files e com `payload.rs:248`, que valida
+   * `semester` como obrigatório. Lido apenas como fallback de exibição quando
+   * `termId` é nulo.
+   */
+  semester: string;
+  /**
+   * Período letivo ao qual a disciplina pertence (SPEC-005). `null`/ausente =
+   * fora de período (disciplina avulsa, template, import sem período) — é o
+   * escape hatch anti-órfão: disciplina sem `termId` nunca é tratada como
+   * órfã pela invariante de integridade.
+   */
+  termId?: string | null;
+  /**
+   * Situação da disciplina. Default `'ativo'`. `arquivado` = saiu da grade do
+   * período mas **continua pesquisável** — arquivar nunca apaga.
+   */
+  status?: CourseStatus;
   /** Horários estruturados da disciplina (dias da semana + início/término). */
   schedule: CourseScheduleSlot[];
   room?: string;

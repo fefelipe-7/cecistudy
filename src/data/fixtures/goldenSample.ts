@@ -12,6 +12,7 @@
  */
 import type { PersistedStateSnapshot } from '../../../packages/data/src/persistentData';
 import type { BackupV2 } from '../../../packages/data/src/exportImport';
+import { SCHEMA_VERSION } from '../../../packages/data/src/schema';
 import type { LooseNote } from '../../../src/types';
 import { emptyDatabase } from '../empty';
 
@@ -62,6 +63,9 @@ export function sampleSnapshot(): PersistedStateSnapshot {
         icon: 'Brain',
         minGrade: 7,
         description: 'estudo das principais teorias de personalidade',
+        // SPEC-005: as duas disciplinas do semestre ativo.
+        termId: 'trm-6',
+        status: 'ativo',
       },
       {
         id: 'c2',
@@ -75,7 +79,61 @@ export function sampleSnapshot(): PersistedStateSnapshot {
         color: '#4A879F',
         icon: 'Mic',
         description: 'técnicas de entrevista psicológica',
-        attendance: { total: 12, minPct: 75, baseAttended: 8, records: [] },
+        // Slot sem `end` conta como 2h (DEFAULT_CLASS_HOURS) → 12×2=24, 8×2=16.
+        // O snapshot é declarado na SCHEMA_VERSION atual, então já carrega as
+        // horas que a migração 17 derivaria.
+        attendance: {
+          total: 12,
+          minPct: 75,
+          baseAttended: 8,
+          records: [],
+          totalHours: 24,
+          baseHoursDone: 16,
+        },
+        termId: 'trm-6',
+        status: 'ativo',
+      },
+    ],
+    // SPEC-005: um período encerrado (com o resumo congelado no fechamento) e o
+    // ativo. O golden existe para travar as duas formas no contrato — é daqui
+    // que o lado Rust tira o formato da `summary`.
+    academicTerms: [
+      {
+        id: 'trm-5',
+        label: '5º semestre',
+        ordinal: 5,
+        status: 'encerrado',
+        startedAt: '2026-02-23',
+        endedAt: '2025-12-19',
+        statusTransitionAt: '2025-12-19T18:00:00.000Z',
+        createdAt: '2025-08-01T00:00:00.000Z',
+        updatedAt: '2025-12-19T18:00:00.000Z',
+        summary: {
+          closedAt: '2025-12-19',
+          courses: 6,
+          archivedCourses: 1,
+          carriedCourses: 5,
+          classNotes: 42,
+          tasksCompleted: 18,
+          tasksCarriedOver: 3,
+          readingsCompleted: 4,
+          pagesRead: 512,
+          focusMinutes: 1440,
+          loggedHours: 288,
+          bestStreak: 12,
+          grades: [{ courseId: 'c1', label: 'PSI601', grade: 8.5 }],
+          highlights: ['você fechou 42 anotações de aula ♡'],
+        },
+      },
+      {
+        id: 'trm-6',
+        label: '6º semestre',
+        ordinal: 6,
+        status: 'ativo',
+        startedAt: '2026-02-23',
+        statusTransitionAt: '2026-02-23T08:00:00.000Z',
+        createdAt: '2026-02-23T08:00:00.000Z',
+        updatedAt: '2026-09-08T00:00:00.000Z',
       },
     ],
     classes: [
@@ -195,6 +253,7 @@ export function sampleSnapshot(): PersistedStateSnapshot {
       {
         id: 'f1',
         workspaceId: 'ws-academico',
+        deckId: 'd1',
         conceptId: 'con-1',
         question: 'o que é transferência?',
         answer: 'deslocamento de sentimentos do passado para o analista',
@@ -210,7 +269,17 @@ export function sampleSnapshot(): PersistedStateSnapshot {
         timesReviewed: 4,
       },
     ],
-    decks: [],
+    decks: [
+      {
+        id: 'd1',
+        workspaceId: 'ws-academico',
+        name: 'transferência e contratransferência',
+        description: 'revisão da aula de psicanálise',
+        color: '#E97891',
+        createdAt: '2026-08-18',
+        updatedAt: '2026-09-09',
+      },
+    ],
     materials: [
       {
         id: 'm1',
@@ -390,7 +459,10 @@ export function goldenEnvelope(snapshot: PersistedStateSnapshot): BackupV2 {
     format: 'cecistudy-user-backup',
     formatVersion: 1,
     userSchemaVersion: 1,
-    schemaVersion: 13,
+    // Vem da constante real (nunca literal): um literal aqui ficava defasado
+    // silenciosamente quando o schema subia, e o golden parava de refletir o
+    // payload migrado — a paridade TS↔Rust quebrava sem aviso.
+    schemaVersion: SCHEMA_VERSION,
     catalogRelease: null,
     exportedAt: GOLDEN_EXPORTED_AT,
     payload: buildGoldenPayload(snapshot),

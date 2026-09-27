@@ -44,7 +44,8 @@ Guidance for OpenCode sessions in **cecistudy ♡** — personal, mobile-first, 
 ## Code Conventions
 - **Design tokens:** use semantic tokens from `src/index.css` `@theme` (`text-ceci-primary`, `bg-surface-rose`, `border-ceci-border-brand`); never raw hex in classNames (hex only as data values via `style={{}}`). See `.context/design-system.md`.
 - **Copy:** pt-BR, lowercase, warm ("guardar", "bora estudar?", "prontinho ♡"). Never refer to the user as "Ceci".
-- **Schema changes:** bump `SCHEMA_VERSION` only in `packages/data/src/schema` (re-exported at `src/data/schema.ts`) and add a `MIGRATIONS` entry — and ONLY when the persisted format in `packages/domain|data` changes. Navigation/UI changes (e.g. `NavScreen`) must never bump `SCHEMA_VERSION`. New persisted state needs a `usePersistentState` key + seed in `src/data/empty.ts`.
+- **Schema changes:** `SCHEMA_VERSION` is currently **18**. Bump it only in `packages/data/src/schema` (re-exported at `src/data/schema.ts`) and add a `MIGRATIONS` entry — and ONLY when the persisted format in `packages/domain|data` changes. Navigation/UI changes (e.g. `NavScreen`) must never bump `SCHEMA_VERSION`. New persisted state needs a `usePersistentState` key + seed in `src/data/empty.ts`.
+- **Academic term (SPEC-005):** `academicTerms` (`AcademicTerm`) is the **source of truth** for "which semester am I in". `profile.semester` is legacy/fallback — in the UI always read `useActiveTerm(terms)?.ordinal`, never `profile.semester` directly. Scope the views with `useTermScope`/`activeCourses` (inheritance by `courseId`; `Course.termId == null` is the anti-orphan escape hatch, not a term course). `Course.status` `arquivado` removes it from the grade, **never** deletes it. `MIGRATIONS[18]` creates the bootstrap term idempotently; the native `academic_term` table is `IF NOT EXISTS` (no `USER_SCHEMA_VERSION` bump) and the course `termId` still travels inside the course `data_json` (the denormalized `course_term` is a Rust-phase follow-up). Spec: `docs/specs/SPEC-005-periodo-letivo-e-progressao-de-semestre.md` · tasks: `tasks/todo-periodo-letivo.md` · status: `.context/backlog.md` Fase 22 (partial — the undo-after-rollover and `saveMinimal` UI are still open).
 - **Editing files (MANDATORY):** ALWAYS edit via the `edit` tool. **Never** bulk-rewrite source files with PowerShell `Get-Content`/`Set-Content` (or any encoding-naive write) — it silently corrupts UTF‑8/non‑ASCII and turns pt‑BR accents (á/ã/ç/ê/õ…) into the U+FFFD replacement char, which is lossy and unrecoverable. Mechanical renames across many files must be done with the `edit` tool per file, or a script that reads **and** writes explicitly as UTF‑8 — and must be verified with `npm run lint` + a check for the replacement character (`\x{FFFD}`). (Incidente 2026‑08: migração em lote via PowerShell corrompeu 9 arquivos de views; recuperados de backup e refeitos com o `edit` tool.)
 
 ## Persistence & Native
@@ -66,6 +67,9 @@ Guidance for OpenCode sessions in **cecistudy ♡** — personal, mobile-first, 
   breakdown): R1 data-tipado → R2 módulos de domínio (`calendar/knowledge/marketing/projects/internship`)
   → R3 content naming → R4 paridade full → R5 `cecistudy-ffi` (bridge flutter_rust_bridge) → R6 UI Flutter
   (greenfield). **Não tocar os crates Rust através do `eslint`/`tsc` da raiz — o gate Rust é o `cargo`.**
+- **SPEC-005 (Fase 22, mobile):** implementada **só** no React/TS. O workspace Rust **não** foi
+  tocado (nenhum crate); os goldens TS foram regerados com aprovação explícita da usuária, porque
+  `goldenFixtures`/`migrationFixtures` são o gate que o mobile consome.
 
 ## Gotchas & Environment Quirks
 - **Node:** `engines >=22` / `.nvmrc` = 22. If running on Node 26, jsdom's `localStorage` is shadowed by an experimental global; handled in `vitest.setup.ts`.
