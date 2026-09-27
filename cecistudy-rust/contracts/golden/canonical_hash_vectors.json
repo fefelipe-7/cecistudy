@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "description": "Vetores compartilhados TS<->Rust do Canonical JSON v1 + SHA-256 (T0.4). `canonical` e `sha256` sao expectations independentes: TS e Rust devem reproduzir os dois. Regerar/alterar so com revisao -- o hash e o que a Fase 1 assina no envelope.",
+  "vectors": [
+    {
+      "name": "vazio",
+      "input": {},
+      "canonical": "{}",
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "name": "ordem_chaves",
+      "input": {
+        "b": 1,
+        "a": 2,
+        "C": 3
+      },
+      "canonical": "{\"C\":3,\"a\":2,\"b\":1}",
+      "sha256": "27e01c26743085bff8e4a98d76dca93ebdb6c805f8136fae1216ee257d33f5c5"
+    },
+    {
+      "name": "ordem_aninhada",
+      "input": {
+        "z": {
+          "b": 1,
+          "a": 2
+        },
+        "a": [
+          3,
+          1,
+          2
+        ]
+      },
+      "canonical": "{\"a\":[3,1,2],\"z\":{\"a\":2,\"b\":1}}",
+      "sha256": "a28eab941e289c6808409de0d94dab79409dc7319d6312f86fdd5c110b032da2"
+    },
+    {
+      "name": "nfc",
+      "input": {
+        "nota": "café"
+      },
+      "canonical": "{\"nota\":\"café\"}",
+      "sha256": "9d8e18852f77768d4d29d05deb95d862bf7fdf3fa6e98e92db3b847c78158cca"
+    },
+    {
+      "name": "escape_controles",
+      "input": {
+        "t": "a\nb\t\"c\"\\d\u0001"
+      },
+      "canonical": "{\"t\":\"a\\nb\\t\\\"c\\\"\\\\d\\u0001\"}",
+      "sha256": "f33fa3810e292af051f0993c84a01235b6322d6b184fd02f72473b264cee8e5e"
+    },
+    {
+      "name": "astral",
+      "input": {
+        "emoji": "🌷",
+        "min": 25
+      },
+      "canonical": "{\"emoji\":\"🌷\",\"min\":25}",
+      "sha256": "5460bad049284bfdda7ab106dc4fbc617a5771813244ff9a1541d4edb43c48b7"
+    },
+    {
+      "name": "numeros",
+      "input": {
+        "i": 42,
+        "d": 1.5,
+        "e": 1e+21,
+        "z": 0,
+        "n": -1.5,
+        "f": 1.0
+      },
+      "canonical": "{\"d\":1.5,\"e\":1e+21,\"f\":1,\"i\":42,\"n\":-1.5,\"z\":0}",
+      "sha256": "2b89072e1fe41c1f3f848f0e7f29fd0d1e510590f591f58f6a5e7c471ea8dfc4"
+    },
+    {
+      "name": "payload_academico",
+      "input": {
+        "courses": [
+          {
+            "id": "c1",
+            "name": "Psicologia Social",
+            "color": "#E97891"
+          }
+        ],
+        "decks": [
+          {
+            "id": "d1",
+            "name": "Conceitos ♡",
+            "cards": []
+          }
+        ],
+        "note": "aula de segunda —死活"
+      },
+      "canonical": "{\"courses\":[{\"color\":\"#E97891\",\"id\":\"c1\",\"name\":\"Psicologia Social\"}],\"decks\":[{\"cards\":[],\"id\":\"d1\",\"name\":\"Conceitos ♡\"}],\"note\":\"aula de segunda —死活\"}",
+      "sha256": "fbb99d07d4ffd1ebe22e1e2e8f2ca71128db8392ac1b5329eb7f9e248380a305"
+    }
+  ],
+  "knownAnswers": [
+    {
+      "input": "abc",
+      "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+    },
+    {
+      "input": "",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}
