@@ -15,6 +15,7 @@ import {
   X,
 } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
+import { DEFAULT_TOTAL_SEMESTERS } from '@/data/schema';
 import { cn } from '../../lib/utils';
 import { PillGroup } from '../ui/PillGroup';
 import { ToggleRow } from '../ui/ToggleRow';
@@ -46,7 +47,7 @@ export const OnboardingScreen: React.FC = () => {
   const [step, setStep] = useState(0);
   const [name, setName] = useState('');
   const [semester, setSemester] = useState(1);
-  const [totalSemesters, setTotalSemesters] = useState(8);
+  const [totalSemesters, setTotalSemesters] = useState(DEFAULT_TOTAL_SEMESTERS);
   const [university, setUniversity] = useState('');
   const [targetCareer, setTargetCareer] = useState('');
   const [photoUrl, setPhotoUrl] = useState('');

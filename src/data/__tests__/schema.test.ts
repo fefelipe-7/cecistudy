@@ -23,8 +23,8 @@ describe('schema — migração 11 → 12 (escopo de workspace)', () => {
     tcc: { title: '', advisor: '', field: '', problemStatement: '', objectives: [], status: 'em_andamento', chapters: [], references: [] },
   };
 
-  it('SCHEMA_VERSION é 18', () => {
-    expect(SCHEMA_VERSION).toBe(18);
+  it('SCHEMA_VERSION é 19', () => {
+    expect(SCHEMA_VERSION).toBe(19);
   });
 
   it('adiciona workspaceId default a todas as entidades sincronizáveis', () => {
@@ -314,9 +314,11 @@ describe('schema — migração 17 → 18 (período letivo, SPEC-005)', () => {
     expect(next.academicTerms[1].status).toBe('ativo');
   });
 
-  it('totalSemesters ausente cai em 8', () => {
-    const next = migrateDatabase(17, { profile: { name: 'ceci' } } as Record<string, unknown>) as Record<string, any>;
-    expect(next.profile.totalSemesters).toBe(8);
+  it('totalSemesters ausente cai em 8 na [18] e a cadeia 17 → 19 entrega 10', () => {
+    // A [18] continua defaultando 8 (ela não deve conhecer a SPEC-006), mas quem
+    // migra de verdade encadeia até a [19], que conserta. O valor final é 10.
+    const via19 = migrateDatabase(17, { profile: { name: 'ceci' } } as Record<string, unknown>) as Record<string, any>;
+    expect(via19.profile.totalSemesters).toBe(10);
   });
 
   it('ordinal fora da faixa é clampado em 1..12', () => {
@@ -326,5 +328,61 @@ describe('schema — migração 17 → 18 (período letivo, SPEC-005)', () => {
     const neg = { profile: { name: 'ceci', semester: -3 } };
     const next2 = migrateDatabase(17, neg as Record<string, unknown>) as Record<string, any>;
     expect(next2.academicTerms[0].ordinal).toBe(1);
+  });
+});
+
+describe('schema — migração 18 → 19 (total de semestres do curso, SPEC-006)', () => {
+  // B7: `totalSemesters` era 8 e **Psi no Brasil tem 10**. Com 8, o `% do curso`
+  // estourava 100% no 8º, `semestersLeft` dava 0, o adesivo de "formada" unlockava
+  // cedo e o CTA "virar" disparava permanentemente do 8º em diante.
+  //
+  // O critério é **incondicional** de propósito: o app é de uso pessoal
+  // (`AGENTS.md` — "Público: a própria usuária, uso individual"), então o 8 não
+  // era escolha de ninguém, era o default errado. Uma regra conservadora ("só
+  // corrige quem já passou do 8º") NÃO corrigiria o caso dela — que está no 6º.
+  // E quem legitimamente tiver um curso de 8 reassina o total no Perfil, que é
+  // editável com clamp `1..12` (F6).
+
+  const withTotal = (totalSemesters: number, semester: number) =>
+    ({
+      profile: { name: 'ceci', semester, totalSemesters },
+      academicTerms: [
+        { id: 'trm-active', label: `${semester}º semestre`, ordinal: semester, status: 'ativo', startedAt: '2026-02-01' },
+      ],
+      courses: [],
+    }) as Record<string, unknown>;
+
+  it('corrige 8 → 10 mesmo estando no 6º (o caso real da usuária)', () => {
+    const next = migrateDatabase(18, withTotal(8, 6)) as Record<string, any>;
+    expect(next.profile.totalSemesters).toBe(10);
+  });
+
+  it('corrige 8 → 10 também quem já passou do 8º', () => {
+    const next = migrateDatabase(18, withTotal(8, 9)) as Record<string, any>;
+    expect(next.profile.totalSemesters).toBe(10);
+  });
+
+  it('NÃO toca quem já configurou outro total (10, 12, …)', () => {
+    expect((migrateDatabase(18, withTotal(12, 6)) as Record<string, any>).profile.totalSemesters).toBe(12);
+    expect((migrateDatabase(18, withTotal(10, 6)) as Record<string, any>).profile.totalSemesters).toBe(10);
+  });
+
+  it('preserva o resto do payload (período e disciplinas intocados)', () => {
+    const next = migrateDatabase(18, withTotal(8, 6)) as Record<string, any>;
+    expect(next.academicTerms).toHaveLength(1);
+    expect(next.academicTerms[0].ordinal).toBe(6);
+    expect(next.profile.semester).toBe(6);
+  });
+
+  it('idempotente: re-aplicar não muda nada (18→19→19 dá o mesmo)', () => {
+    const once = migrateDatabase(18, withTotal(8, 6)) as Record<string, unknown>;
+    const twice = migrateDatabase(19, once) as Record<string, any>;
+    expect(twice.profile.totalSemesters).toBe(10);
+    expect(twice.academicTerms).toHaveLength(1);
+  });
+
+  it('sem profile no payload, não quebra (morte silenciosa)', () => {
+    const next = migrateDatabase(18, { courses: [] } as Record<string, unknown>) as Record<string, any>;
+    expect(next).toBeTruthy();
   });
 });

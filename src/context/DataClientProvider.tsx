@@ -42,6 +42,15 @@ import {
   emptyDatabase,
 } from '../data/empty';
 import { DEFAULT_WORKSPACE_ID, SCHEMA_VERSION, ensureActiveTerm } from '../data/schema';
+import { enforceSingleActiveTerm, resolveActiveTerm } from '../core/domain';
+import type { ToastState } from '../components/ui/Toast';
+
+/** Opções do `showToast`: duração e ação opcional (ex.: "desfazer"). */
+export interface ToastOptions {
+  /** Duração em ms. Com ação, o padrão é 8s (janela de reversão do SPEC-006). */
+  durationMs?: number;
+  action?: ToastState['action'];
+}
 import { useSqliteState } from '../lib/useSqliteState';
 import { useStampedState } from '../lib/useStampedState';
 import { usePersistentState } from '../lib/usePersistentState';
@@ -194,8 +203,8 @@ export interface DataClientAppSlice {
   setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
   outputs: Output[];
   setOutputs: React.Dispatch<React.SetStateAction<Output[]>>;
-  toast: string | null;
-  showToast: (message: string) => void;
+  toast: ToastState | null;
+  showToast: (message: string, options?: ToastOptions) => void;
   deviceId: string;
   syncCheckpoint: SyncCheckpoint;
   setSyncCheckpoint: React.Dispatch<React.SetStateAction<SyncCheckpoint>>;
@@ -347,8 +356,8 @@ questions: StudyQuestion[];
     setLooseNotesRaw: React.Dispatch<React.SetStateAction<LooseNote[]>>;
 
     // ---------- Backup / onboarding / reset / sync (orquestração de banco) ----------
-    toast: string | null;
-    showToast: (message: string) => void;
+    toast: ToastState | null;
+    showToast: (message: string, options?: ToastOptions) => void;
     deviceId: string;
     syncCheckpoint: SyncCheckpoint;
     setSyncCheckpoint: React.Dispatch<React.SetStateAction<SyncCheckpoint>>;
@@ -455,13 +464,23 @@ export function useDataClient(): DataClientValue {
   // caminhos de entrada (import antigo e boot) produzam o mesmo termo.
   const { value: academicTerms, set: setAcademicTerms, setRaw: setAcademicTermsRaw } = useStampedState<AcademicTerm[]>('academicTerms', [], syncIndex, setSyncIndex);
 
-  // Garante um período ativo no boot (SPEC-005 §D4). Idempotente por
-  // construction: `ensureActiveTerm` devolve `null` quando já existe um período
-  // ativo, então o efeito não reescreve nada no caminho comum (quem já migrou).
-  // Também protege o caso nativo, em que a hidratação chega depois do mount:
+  // Garante um período ativo no boot (SPEC-005 §D4) e repara a integridade
+  // (SPEC-006 D6). `ensureActiveTerm` é idempotente por construção: devolve
+  // `null` quando já existe um período ativo, então o caminho comum não reescreve
+  // nada. Também protege o caso nativo, em que a hidratação chega depois do mount:
   // o efeito re-roda quando `academicTerms` muda e só então escreve.
+  //
+  // A ordem importa: primeiro a **degradação** (no máximo um ativo), depois a
+  // criação. Inverter criaria um termo novo no meio do conflito para depois
+  // descartar — e a `ensureActiveTerm` recusa criar com um `ativo` presente,
+  // então nesse estado ela não faria nada e o app ficaria com dois ativos para
+  // sempre.
   useEffect(() => {
-    const ensured = ensureActiveTerm(academicTerms, profile as unknown as Record<string, unknown>, {
+    // 1º passo: consolida múltiplos `ativo` (o mais recente vence) — a 3ª
+    // porta de escrita (`core/domain/term.ts`).
+    const consolidated = enforceSingleActiveTerm(academicTerms);
+    // 2º passo: cria o período bootstrap se ainda não houver um ativo.
+    const ensured = ensureActiveTerm(consolidated, profile as unknown as Record<string, unknown>, {
       courses,
       classes,
       exams,
@@ -469,7 +488,30 @@ export function useDataClient(): DataClientValue {
       internshipLogs,
       tasks,
     });
-    if (ensured) setAcademicTerms(ensured);
+    const next = ensured ?? consolidated;
+    // 3º passo: disciplina `ativa` apontando para um período que não é o ativo
+    // some da grade para sempre. Sem reparo, o bug B12 (virada que arquivou
+    // demais) deixava a usuária com uma disciplina que ela não conseguia mais
+    // acessar por nenhum caminho da UI. O escape hatch anti-órfão (`termId`
+    // ausente) é respeitado: disciplina avulsa continua avulsa.
+    if (ensured || consolidated !== academicTerms) {
+      const activeTermId = resolveActiveTerm(next)?.id ?? null;
+      if (activeTermId) {
+        const repaired = courses.some(
+          (c) => (c.status ?? 'ativo') === 'ativo' && c.termId != null && c.termId !== activeTermId
+        );
+        if (repaired) {
+          setCoursesRaw((prev) =>
+            prev.map((c) =>
+              (c.status ?? 'ativo') === 'ativo' && c.termId != null && c.termId !== activeTermId
+                ? { ...c, termId: activeTermId }
+                : c
+            )
+          );
+        }
+      }
+    }
+    if (next !== academicTerms) setAcademicTerms(next);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [academicTerms, profile.semester]);
 
@@ -564,15 +606,19 @@ export function useDataClient(): DataClientValue {
   // ---------- Feedback compartilhado (toast) ----------
   // O toast da camada de dados (backup/sync/onboarding) vive aqui — as cascas
   // renderizam o estado via os overlays por app; views continuam usando `showToast`.
-  const [toast, setToast] = useState<string | null>(null);
+  const [toast, setToast] = useState<ToastState | null>(null);
   const toastTimerRef = useRef<number | null>(null);
-  const showToast = useCallback((message: string) => {
-    setToast(message);
+  const showToast = useCallback((message: string, options?: ToastOptions) => {
+    setToast({ message, action: options?.action });
     if (toastTimerRef.current !== null) window.clearTimeout(toastTimerRef.current);
+    // 2,6s é o padrão historicamente curto (feedback simples). Ações — como o
+    // "desfazer" da virada — pedem a janela de 8s do SPEC-006: some antes e a
+    // usuária fica com a decisão tomada sem reversão possível.
+    const duration = options?.durationMs ?? (options?.action ? 8000 : 2600);
     toastTimerRef.current = window.setTimeout(() => {
       toastTimerRef.current = null;
       setToast(null);
-    }, 2600);
+    }, duration);
   }, []);
   // Limpa o timer do toast ao desmontar o provider.
   useEffect(() => {

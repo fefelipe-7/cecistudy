@@ -9,7 +9,7 @@ import type { AcademicTerm } from '@/types';
  * incremente esta versão e registre a migração correspondente em `MIGRATIONS`.
  * O export/import carrega a versão junto; o app recusa/avisa dados de versão desconhecida.
  */
-export const SCHEMA_VERSION = 18;
+export const SCHEMA_VERSION = 19;
 
 /** Versão de schema da base da usuária (antigo scaffold SQLite, hoje mantida por compatibilidade de import). */
 export const USER_SCHEMA_VERSION = 1;
@@ -19,6 +19,21 @@ export const SCHEMA_VERSION_KEY = 'schemaVersion';
 
 /** Workspace padrão (Fase 3): todo dado antigo sem `workspaceId` pertence a ele. */
 export const DEFAULT_WORKSPACE_ID = 'ws-academico';
+
+/**
+ * Total de semestres do curso — **10**,Psi no Brasil (SPEC-006 D9).
+ *
+ * Antes era 8, o que fazia o progresso da graduação estourar 100% dois semestres
+ * antes e o CTA de virada disparar para sempre. Editável no Perfil com clamp
+ * `1..12`, então o 10 é só o default certo, não um valor fixo.
+ */
+export const DEFAULT_TOTAL_SEMESTERS = 10;
+
+/**
+ * O default **errado** (8), que a migração 18 → 19 corrige. Exportado porque a
+ * migração e o teste precisam concordar sobre o valor que estão trocando.
+ */
+export const DEFAULT_TOTAL_SEMESTERS_LEGACY = 8;
 
 /**
  * Id do período ativo criado pela migração 17 → 18 (SPEC-005).
@@ -413,6 +428,27 @@ export const MIGRATIONS: Record<number, Migration> = {
     }));
 
     return { ...data, profile, academicTerms, courses: normalized };
+  },
+  // 18 → 19: total de semestres do curso (SPEC-006).
+  //
+  // O default anterior era `8`, e **Psi no Brasil tem 10**. O efeito era silencioso
+  // e aparecia em todo lugar: o `% do curso` batia 100% no 8º, `semestersLeft`
+  // devolvia 0, o adesivo de "formada" destravava no penúltimo semestre e o CTA
+  // "virar semestre" passava a responder `true` permanentemente do 8º em diante
+  // (porque `shouldOfferRollover` compara `ordinal >= total`).
+  //
+  // Só corrige o valor que era **default errado** (`8`); qualquer total já
+  // configurado — 10, 12, o que for — fica como está. E é incondicionais em
+  // relação ao `semester`: uma regra "só corrige quem já passou do 8º" não
+  // corrigiria o caso real, que é estar no 6º com o total errado. O Perfil deixa
+  // reassinar o total depois (clamp `1..12`), então o custo de errar aqui é
+  // baixo e o custo de não corrigir era um progresso de;formatura sempre furado.
+  19: (data) => {
+    const profile = { ...(data.profile as Record<string, unknown> ?? {}) };
+    if (profile.totalSemesters === DEFAULT_TOTAL_SEMESTERS_LEGACY) {
+      profile.totalSemesters = DEFAULT_TOTAL_SEMESTERS;
+    }
+    return { ...data, profile };
   },
 };
 

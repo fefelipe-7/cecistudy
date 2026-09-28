@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import type {
   UserProfile,
   Course,
@@ -27,7 +27,7 @@ import { shouldCelebrateTasks } from '../lib/taskLogic';
 import { schedule } from '../lib/fsrs';
 import { normalizeText } from '../lib/readingMatching';
 import { toDateKey } from '../lib/streak';
-import { resolveActiveTerm } from '../core/domain';
+import { enforceSingleActiveTerm, reopenTerm, resolveActiveTerm, retitleTerm } from '../core/domain';
 import { undoTermRollover as undoRollover } from '../lib/termRollover';
 import type { TermRolloverPlan } from '../lib/termRollover';
 import {
@@ -124,11 +124,31 @@ export interface DataActions {
   handleUpdateConcept: (concept: PsychologyConcept) => void;
   handleUpdateMaterial: (material: MaterialItem) => void;
 
-  // ---- Período letivo (SPEC-005) ----
+  // ---- Período letivo (SPEC-005 / SPEC-006) ----
   /** Aplica o plano de virada calculado por `planTermRollover` (escreve por registro). */
   applyTermRollover: (plan: TermRolloverPlan) => void;
-  /** Reverte a virada (reabre o período anterior e devolve as disciplinas). */
-  undoTermRollover: (plan: TermRolloverPlan, originalTermIds: Record<string, string | null>) => void;
+  /**
+   * Reverte a virada (reabre o período anterior e devolve as disciplinas).
+   * Não recebe `originalTermIds`: o próprio plano carrega o estado de origem.
+   */
+  undoTermRollover: (plan: TermRolloverPlan) => void;
+  /**
+   * Plano da **última** virada, ou `null` se não houve nenhuma (ou já foi
+   * desfeito). Vive em memória (nunca persistido): desfazer é para a decisão
+   * "não era isso mesmo?", não para o histórico.
+   */
+  lastRollover: TermRolloverPlan | null;
+  /** Desfaz a última virada. No-op quando não há nenhuma. */
+  undoLastRollover: () => void;
+  /** Testado: a janela de desfazer está aberta? */
+  canUndoRollover: boolean;
+  /**
+   * Corrige o número do período **ativo** (a "porta fácil" do Perfil, SPEC-006
+   * D6). Rejeita período encerrado — para isso existe `reopenTermById`.
+   */
+  correctTermOrdinal: (termId: string, ordinal: number) => void;
+  /** Reabre um período encerrado (o "re-roll" do histórico, SPEC-006 D7). */
+  reopenTermById: (termId: string) => void;
   /** Arquiva a disciplina (sai da grade, continua pesquisável — nunca apaga). */
   archiveCourse: (courseId: string) => void;
   /** Devolve uma disciplina arquivada à grade do período ativo. */
@@ -169,8 +189,17 @@ export interface DataActionGroups {
   /** Período letivo isolado: mexer no semestre não invalida o resto da UI. */
   term: Pick<
     DataActions,
-    'applyTermRollover' | 'undoTermRollover' | 'archiveCourse' | 'restoreCourse'
-  >;
+    | 'applyTermRollover'
+    | 'undoTermRollover'
+    | 'undoLastRollover'
+    | 'correctTermOrdinal'
+    | 'reopenTermById'
+    | 'archiveCourse'
+    | 'restoreCourse'
+  > & {
+    lastRollover: TermRolloverPlan | null;
+    canUndoRollover: boolean;
+  };
 }
 
 export function useDataActions(deps: DataActionsDeps): DataActions & DataActionGroups {
@@ -476,7 +505,20 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
    * vez de substituída: `plan.courses` é a projeção estreita
    * (`TermScopedCourse`), e trocar a lista inteira perderia `schedule`,
    * `attendance`, `repertório` e afins.
+   *
+   * `profile.semester` é reescrito a partir do ordinal do novo ativo. O campo é
+   * legado (a UI lê o período ativo), mas ele volta no backup/import e nos
+   * rótulos antigos — deixá-lo no valor anterior fazia a migração 18 → 19
+   * recriar um período com o semestre errado na importação seguinte.
    */
+  /**
+   * Plano da última virada, em memória. A SPEC-006 pede um "desfazer" com
+   * janela curta (o toast de 8s): é a protection contra a decisão impulsiva de
+   * fechar o semestre — e só o plano guardado sabe devolver cada disciplina ao
+   * período de origem.
+   */
+  const [lastRollover, setLastRollover] = useState<TermRolloverPlan | null>(null);
+
   const applyTermRollover = useCallback((plan: TermRolloverPlan) => {
     const byId = new Map(plan.courses.map((c) => [c.id, c]));
     setCourses((prev) =>
@@ -485,32 +527,117 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
         return next ? { ...c, termId: next.termId, status: next.status } : c;
       })
     );
-    setAcademicTerms(plan.terms);
+    // A virada é a 2ª das 3 portas de escrita (ver `core/domain/term.ts`) e
+    // sempre passa pela invariante de um ativo só.
+    const terms = enforceSingleActiveTerm(plan.terms);
+    setAcademicTerms(terms);
+    const active = resolveActiveTerm(terms);
+    if (active) {
+      setProfile((prev) => (prev.semester === active.ordinal ? prev : { ...prev, semester: active.ordinal }));
+    }
+    setLastRollover(plan);
     hapticSuccess();
-  }, [setCourses, setAcademicTerms]);
+    // fecha um capítulo da jornada — o burst mais raro do app, no mesmo espírito
+    // do "parabéns" das tarefas e do level up (SPEC-006 D8)
+    celebrate('term-closed');
+  }, [setCourses, setAcademicTerms, setProfile]);
 
   /** Reverte a virada. Nada foi apagado, então é só devolver cada campo. */
   const undoTermRollover = useCallback(
-    (plan: TermRolloverPlan, originalTermIds: Record<string, string | null>) => {
+    (plan: TermRolloverPlan) => {
       const now = new Date().toISOString();
       const reverted = undoRollover({
         terms: academicTerms,
-        courses: courses.map((c) => ({ id: c.id, termId: c.termId, status: c.status ?? 'ativo' })),
+        courses: courses.map((c) => ({ id: c.id, termId: c.termId, status: c.status })),
         plan,
-        originalTermIds,
         now,
       });
       const byId = new Map(reverted.courses.map((c) => [c.id, c]));
       setCourses((prev) =>
         prev.map((c) => {
           const next = byId.get(c.id);
-          return next ? { ...c, termId: next.termId, status: next.status } : c;
+          if (!next) return c;
+          // espelha a remoção de chave do undo: um `status` ausente precisa
+          // continuar ausente, senão o diff de sync vê uma alteração que não houve
+          const merged = { ...c, termId: next.termId };
+          if (next.status === undefined) delete merged.status;
+          else merged.status = next.status;
+          return merged;
         })
       );
-      setAcademicTerms(reverted.terms);
+      const terms = enforceSingleActiveTerm(reverted.terms);
+      setAcademicTerms(terms);
+      const active = resolveActiveTerm(terms);
+      if (active) {
+        setProfile((prev) => (prev.semester === active.ordinal ? prev : { ...prev, semester: active.ordinal }));
+      }
     },
-    [academicTerms, courses, setCourses, setAcademicTerms]
+    [academicTerms, courses, setCourses, setAcademicTerms, setProfile]
   );
+
+  /**
+   * Corrige o ordinal do período ativo — a "porta fácil" do Perfil (SPEC-006 D6).
+   *
+   * É a correção que substitui o input fantasma de `profile.semester`: antes a
+   * usuária editava um campo que nada lia, e o semester exibido continuava o
+   * mesmo. Aqui o número que ela digita é o número que o app usa.
+   */
+  const correctTermOrdinal = useCallback(
+    (termId: string, ordinal: number) => {
+      const now = new Date().toISOString();
+      const terms = enforceSingleActiveTerm(
+        retitleTerm(academicTerms, termId, ordinal, now, profile.totalSemesters)
+      );
+      if (terms === academicTerms) return; // no-op (encerrado, planejado ou mesmo ordinal)
+      setAcademicTerms(terms);
+      const active = resolveActiveTerm(terms);
+      if (active) {
+        setProfile((prev) => (prev.semester === active.ordinal ? prev : { ...prev, semester: active.ordinal }));
+      }
+      hapticTap();
+    },
+    [academicTerms, profile.totalSemesters, setAcademicTerms, setProfile]
+  );
+
+  /**
+   * Reabre um período encerrado (SPEC-006 D7). É a correção de "era o 6º, não o
+   * 5º" quando a virada já aconteceu. O transcript do encerramento é zerado
+   * pelo domínio — o período volta a ser um semestre em andamento.
+   */
+  const reopenTermById = useCallback(
+    (termId: string) => {
+      const now = new Date().toISOString();
+      const reopened = reopenTerm(academicTerms, termId, now);
+      if (reopened === academicTerms) return;
+      // reabrir torna este período o ativo, então os demais ativos precisam
+      // ceder (invariante de um ativo só)
+      const terms = enforceSingleActiveTerm(reopened);
+      setAcademicTerms(terms);
+      const active = resolveActiveTerm(terms);
+      if (active) {
+        setProfile((prev) => (prev.semester === active.ordinal ? prev : { ...prev, semester: active.ordinal }));
+      }
+      hapticSuccess();
+    },
+    [academicTerms, setAcademicTerms, setProfile]
+  );
+
+  /**
+   * Desfaz a última virada.
+   *
+   * Limpa a janela num único ponto (`setLastRollover(null)`) e **não** anuncia
+   * mais nada: o toast de 8s da virada já está no ar, e um segundo toast por
+   * cima roubaria a tela da confirmação. A virada desfeita não oferece
+   * "refazer" — ela é reversível só no instante seguinte (SPEC-006 D8).
+   */
+  const undoLastRollover = useCallback(() => {
+    if (!lastRollover) return;
+    const plan = lastRollover;
+    // limpa **antes** de escrever: se a escrita lançar, a janela fica fechada em
+    // vez de oferecer um "desfazer" que não desfaz nada
+    setLastRollover(null);
+    undoTermRollover(plan);
+  }, [lastRollover, undoTermRollover]);
 
   /** Arquiva: sai da grade do período, some do plano de ação, continua pesquisável. */
   const archiveCourse = useCallback((courseId: string) => {
@@ -541,10 +668,15 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
     () => ({
       applyTermRollover,
       undoTermRollover,
+      undoLastRollover,
+      lastRollover,
+      canUndoRollover: lastRollover !== null,
+      correctTermOrdinal,
+      reopenTermById,
       archiveCourse,
       restoreCourse,
     }),
-    [applyTermRollover, undoTermRollover, archiveCourse, restoreCourse]
+    [applyTermRollover, undoTermRollover, undoLastRollover, lastRollover, correctTermOrdinal, reopenTermById, archiveCourse, restoreCourse]
   );
 
   // Grupos por domínio (PERF-001 A.3): cada grupo memoizado nas próprias

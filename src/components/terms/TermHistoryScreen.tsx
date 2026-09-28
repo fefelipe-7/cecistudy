@@ -1,7 +1,8 @@
 import React from 'react';
 import { BookOpen, Sparkles } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
-import { sortedTerms, degreeProgress } from '@/lib/termScope';
+import { useTermActions } from '@/context/shellNavContexts';
+import { sortedTerms, degreeProgress, useActiveTerm } from '@/lib/termScope';
 import type { AcademicTerm } from '@/types';
 import { cn } from '@/lib/utils';
 
@@ -11,13 +12,25 @@ import { cn } from '@/lib/utils';
  * Fica **empilhado sobre** o wizard (passo 1), não sobre a aba: o back volta
  * para o wizard e depois para o perfil, sem caso especial na cadeia.
  *
- * O ponto central é que um semestre encerrado **nunca é editado**: o `summary`
- * foi congelado no fechamento e é histórico para sempre. Por isso os números
- * daqui não aceitam input.
+ * Um semestre encerrado tem o `summary` congelado e **nada é digitado** aqui —
+ * o registro é o registro. A única ação é **reabrir** (SPEC-006 D7), o escape
+ * para "era o 6º, não o 5º" quando a virada aconteceu com o número errado:
+ * reabrir devolve o período para `ativo` (e ele passa a ser o atual), limpando
+ * o transcript do encerramento, porque o semestre voltou a acontecer.
  */
 export const TermHistoryScreen: React.FC = () => {
   const { academicTerms, profile, focusedTermId, openTermHistory } = useMobileApp();
+  const { reopenTermById, showToast } = useTermActions();
   const terms = sortedTerms(academicTerms);
+  // SPEC-005 §D4: o progresso vem do **período ativo**, nunca de
+  // `profile.semester`. Ler o legado aqui fazia o histórico mentir sobre o
+  // curso sempre que o número do período e o campo divergissem.
+  const activeTerm = useActiveTerm(academicTerms);
+
+  const handleReopen = (term: AcademicTerm) => {
+    reopenTermById(term.id);
+    showToast(`${term.label} voltou a ser o seu semestre atual ♡`);
+  };
 
   if (terms.length === 0) {
     return (
@@ -32,8 +45,8 @@ export const TermHistoryScreen: React.FC = () => {
   return (
     <div className="px-4 pt-6 pb-10 space-y-4">
       <p className="text-xs text-ceci-secondary">
-        {degreeProgress(profile.semester, profile.totalSemesters)}% do curso · cada semestre
-        guardado com o resumo do momento em que ele fechou
+        {degreeProgress(activeTerm?.ordinal ?? profile.semester, profile.totalSemesters)}% do curso ·
+        cada semestre guardado com o resumo do momento em que ele fechou
       </p>
 
       <ol className="space-y-3">
@@ -44,6 +57,7 @@ export const TermHistoryScreen: React.FC = () => {
               totalSemesters={profile.totalSemesters}
               expanded={focusedTermId === term.id}
               onOpen={() => openTermHistory(term.id)}
+              onReopen={term.status === 'encerrado' ? () => handleReopen(term) : undefined}
             />
           </li>
         ))}
@@ -57,7 +71,9 @@ const TermCard: React.FC<{
   totalSemesters: number;
   expanded: boolean;
   onOpen: () => void;
-}> = ({ term, totalSemesters, expanded, onOpen }) => {
+  /** Só para períodos encerrados: reabrir torna este o semestre atual. */
+  onReopen?: () => void;
+}> = ({ term, totalSemesters, expanded, onOpen, onReopen }) => {
   const active = term.status === 'ativo';
   const s = term.summary;
 
@@ -116,7 +132,8 @@ const TermCard: React.FC<{
           <button
             type="button"
             onClick={onOpen}
-            className="mt-3 w-full rounded-full border border-ceci-border-default py-2 text-xs font-semibold text-ceci-secondary hover:bg-surface-muted"
+            aria-expanded={expanded}
+            className="mt-3 w-full rounded-full border border-ceci-border-default py-2 text-xs font-semibold text-ceci-secondary hover:bg-surface-muted cursor-pointer"
           >
             {expanded ? 'esconder o resumo' : 'ver o resumo inteiro'}
           </button>
@@ -137,6 +154,16 @@ const TermCard: React.FC<{
         <p className="mt-2 text-xs text-ceci-tertiary">
           {active ? 'o resumo aparece quando você virar o semestre ♡' : 'sem resumo registrado'}
         </p>
+      )}
+
+      {onReopen && (
+        <button
+          type="button"
+          onClick={onReopen}
+          className="mt-3 w-full rounded-full border border-ceci-border-default py-2 text-xs font-semibold text-ceci-secondary hover:bg-surface-muted cursor-pointer"
+        >
+          era este semestre mesmo — reabrir como atual
+        </button>
       )}
     </div>
   );

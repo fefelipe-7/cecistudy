@@ -6,6 +6,35 @@
 
 ---
 
+## ⚠️ Este plano foi auditado e **corrigido** pela SPEC-006
+
+> A implementação deste plano foi entregue e **não funciona**: o `ordinal` do período
+> ativo é escrito uma vez só e nunca mais, o input "semestre atual" do Perfil grava um
+> campo morto, o wizard promete um "desfazer" que não existe, o CTA de "primeiro
+> semestre" abre uma tela travada, e um curso de 10 semestres é tratado como 8.
+> **18 bugs confirmados** (8 vermelhos).
+>
+> A correção está em
+> [`docs/specs/SPEC-006-correcao-virada-de-semestre.md`](../docs/specs/SPEC-006-correcao-virada-de-semestre.md) ·
+> [`tasks/plan-periodo-letivo-correcao.md`](./plan-periodo-letivo-correcao.md) ·
+> [`tasks/todo-periodo-letivo-correcao.md`](./todo-periodo-letivo-correcao.md).
+>
+> Os itens `[ ]` deste arquivo **não são para executar aqui** — estão superado pelas
+> tasks da SPEC-006. Mapeamento:
+>
+> | item aberto aqui | bug | corrigido em |
+> |---|---|---|
+> | 5.1 `profile.semester` derivado | B1, B8 | SPEC-006 · D1 · task 4.3 + 6.1 |
+> | 5.2 `totalSemesters` editável + clamp | B7, B11 | SPEC-006 · D8 · task 2.1/2.3 + 3.2 |
+> | 7.3 desfazer + confete pós-virada | B4 | SPEC-006 · D5 · task 4.2 + 5.2 |
+> | 7.4 `TermHistoryScreen` (parcial) | B9 | SPEC-006 · task 6.1 |
+> | 7.5 a11y dos passos | B17 | SPEC-006 · D11 · task 6.6 |
+> | 5.3 copy dual-scope | — | permanece aberto (não é bug) |
+> | 5.4 backfill de perfil no import | — | coberto pela `MIGRATIONS[19]` (task 2.1) |
+> | 8.1 `schema:verify` no CI | — | permanece adiado para a fase Rust |
+
+---
+
 ## F1 — Domínio puro (fundação, sem contrato)
 
 - [x] **1.1** Entidade `AcademicTerm` + invariantes

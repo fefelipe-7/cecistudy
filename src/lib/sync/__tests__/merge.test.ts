@@ -134,4 +134,66 @@ describe('mergeSyncedDatabases', () => {
     expect(ab.merged).toEqual(ba.merged);
     expect(ab.merged.courses).toHaveLength(0);
   });
+
+  // SPEC-006 D6 — o LWW por registro mescla cada `AcademicTerm` pelo seu id, mas
+  // nada impedia dois períodos diferentes de ficarem `ativo` ao mesmo tempo. Era
+  // a origem do bug B2: a virada usava `terms.find(...)` (primeiro do array) e
+  // encerrava o período que a UI não estava mostrando.
+  describe('invariante de um período ativo (SPEC-006 D6)', () => {
+    const term = (id: string, statusTransitionAt: string) => ({
+      id,
+      label: `${id}º`,
+      ordinal: Number(id.slice(4)) || 1,
+      status: 'ativo' as const,
+      startedAt: '2026-02-01',
+      statusTransitionAt,
+      createdAt: statusTransitionAt,
+      updatedAt: statusTransitionAt,
+    });
+
+    it('dois ativos no merge → só o mais recente continua ativo', () => {
+      // local tem o 6º (antigo) ativo, o remoto criou o 7º
+      const local = makeDb((db) => {
+        db.academicTerms = [term('trm-1', '2026-02-01T00:00:00.000Z')] as never;
+      });
+      const remote = makeDb((db) => {
+        db.academicTerms = [term('trm-2', '2026-07-01T00:00:00.000Z')] as never;
+      });
+
+      const { merged } = mergeSyncedDatabases(local, remote);
+      const byId = new Map(merged.academicTerms.map((t) => [t.id, t]));
+      expect(byId.get('trm-2')?.status).toBe('ativo');
+      // o antigo degrada para `encerrado` (sem sumir: continua no histórico)
+      expect(byId.get('trm-1')?.status).toBe('encerrado');
+      expect(byId.get('trm-1')?.endedAt).toBe('2026-02-01T00:00:00.000Z');
+      expect(merged.academicTerms).toHaveLength(2);
+    });
+
+    it('é simétrico: os dois dispositivos chegam ao mesmo banco', () => {
+      const local = makeDb((db) => {
+        db.academicTerms = [term('trm-1', '2026-02-01T00:00:00.000Z')] as never;
+      });
+      const remote = makeDb((db) => {
+        db.academicTerms = [term('trm-2', '2026-07-01T00:00:00.000Z')] as never;
+      });
+      expect(mergeSyncedDatabases(local, remote).merged).toEqual(
+        mergeSyncedDatabases(remote, local).merged
+      );
+    });
+
+    it('com um só ativo, nada muda (o merge não invira período)', () => {
+      const local = makeDb((db) => {
+        db.academicTerms = [term('trm-1', '2026-02-01T00:00:00.000Z')] as never;
+      });
+      const remote = makeDb((db) => {
+        db.academicTerms = [
+          { ...term('trm-0', '2025-08-01T00:00:00.000Z'), status: 'encerrado' as const, endedAt: '2025-12-20' },
+        ] as never;
+      });
+      const { merged } = mergeSyncedDatabases(local, remote);
+      const byId = new Map(merged.academicTerms.map((t) => [t.id, t]));
+      expect(byId.get('trm-1')?.status).toBe('ativo');
+      expect(byId.get('trm-0')?.status).toBe('encerrado');
+    });
+  });
 });

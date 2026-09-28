@@ -37,10 +37,21 @@ export type AppBundle = DataActionGroups['app'] & {
   setGcalEnabled: (on: boolean) => Promise<boolean>;
 };
 
+/**
+ * Período letivo isolado (SPEC-006). Fica fora do `AppBundle` de propósito:
+ * corrigir o semestre reescreve `profile.semester` e `academicTerms`, e
+ * `AppActionsContext` é consumido pelo Perfil inteiro — incluir o termo ali
+ * re-renderizaria tela de lembrete, tema e foto a cada correção.
+ */
+export type TermBundle = DataActionGroups['term'] & {
+  showToast: (message: string) => void;
+};
+
 export const CoursesActionsContext = createContext<CoursesBundle | undefined>(undefined);
 export const StudyActionsContext = createContext<StudyBundle | undefined>(undefined);
 export const KnowledgeActionsContext = createContext<KnowledgeBundle | undefined>(undefined);
 export const AppActionsContext = createContext<AppBundle | undefined>(undefined);
+export const TermActionsContext = createContext<TermBundle | undefined>(undefined);
 export const NavValueContext = createContext<NavigationValue | undefined>(undefined);
 
 export function useCoursesActions(): CoursesBundle {
@@ -64,6 +75,12 @@ export function useKnowledgeActions(): KnowledgeBundle {
 export function useAppActions(): AppBundle {
   const ctx = useContext(AppActionsContext);
   if (!ctx) throw new Error('useAppActions must be used within a shell provider (AppActionsContext)');
+  return ctx;
+}
+
+export function useTermActions(): TermBundle {
+  const ctx = useContext(TermActionsContext);
+  if (!ctx) throw new Error('useTermActions must be used within a shell provider (TermActionsContext)');
   return ctx;
 }
 

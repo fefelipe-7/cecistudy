@@ -33,11 +33,14 @@ import {
   AcademicTerm,
 } from '../types';
 import { emptySyncIndex } from '../lib/sync/stamp';
+import { DEFAULT_TOTAL_SEMESTERS } from '../data/schema';
 
 export const emptyProfile: UserProfile = {
   name: '',
   semester: 1,
-  totalSemesters: 8,
+  // 10 semestres é o padrão de Psi no Brasil (SPEC-006 D9). Editável no Perfil
+  // com clamp `1..12`, então este é o default certo, não um valor fixo.
+  totalSemesters: DEFAULT_TOTAL_SEMESTERS,
   university: '',
   targetCareer: '',
   dailyQuote: '',

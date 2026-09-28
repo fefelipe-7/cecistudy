@@ -12,6 +12,8 @@ import {
   NavValueContext,
   StudyActionsContext,
   StudyBundle,
+  TermActionsContext,
+  TermBundle,
 } from '@/context/shellNavContexts';
 import { buildAppContextValue, type AppContextValue } from '@/context/AppContext';
 import { useMobileNavigation } from './mobileNavigation';
@@ -90,6 +92,14 @@ function MobileShellInner({ children }: { children: React.ReactNode }) {
     [shared.dataActions.app, data.showToast, shared.updateReminder, shared.setGcalEnabled]
   );
 
+  const termBundle: TermBundle = useMemo(
+    () => ({
+      ...shared.dataActions.term,
+      showToast: data.showToast,
+    }),
+    [shared.dataActions.term, data.showToast]
+  );
+
   return (
     <AppBaseContext.Provider value={value}>
       <DataClientContext.Provider value={value}>
@@ -98,9 +108,11 @@ function MobileShellInner({ children }: { children: React.ReactNode }) {
             <StudyActionsContext.Provider value={studyBundle}>
               <KnowledgeActionsContext.Provider value={knowledgeBundle}>
                 <AppActionsContext.Provider value={appBundle}>
-                  <NavValueContext.Provider value={nav}>
-                    {children}
-                  </NavValueContext.Provider>
+                  <TermActionsContext.Provider value={termBundle}>
+                    <NavValueContext.Provider value={nav}>
+                      {children}
+                    </NavValueContext.Provider>
+                  </TermActionsContext.Provider>
                 </AppActionsContext.Provider>
               </KnowledgeActionsContext.Provider>
             </StudyActionsContext.Provider>

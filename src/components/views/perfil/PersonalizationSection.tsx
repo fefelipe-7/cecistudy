@@ -16,8 +16,6 @@ interface PersonalizationSectionProps {
   gcalConfigured: boolean;
   name: string;
   onNameChange: (v: string) => void;
-  semester: number;
-  onSemesterChange: (v: number) => void;
   university: string;
   onUniversityChange: (v: string) => void;
   dailyQuote: string;
@@ -36,8 +34,6 @@ const PersonalizationSection: React.FC<PersonalizationSectionProps> = ({
   gcalConfigured,
   name,
   onNameChange,
-  semester,
-  onSemesterChange,
   university,
   onUniversityChange,
   dailyQuote,
@@ -119,26 +115,14 @@ const PersonalizationSection: React.FC<PersonalizationSectionProps> = ({
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="block text-xs font-medium text-ceci-secondary mb-1">semestre atual</label>
-          <input
-            type="number"
-            value={semester}
-            onChange={(e) => onSemesterChange(Number(e.target.value))}
-            className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-ceci-brand rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
-          />
-        </div>
-
-        <div>
-          <label className="block text-xs font-medium text-ceci-secondary mb-1">universidade</label>
-          <input
-            type="text"
-            value={university}
-            onChange={(e) => onUniversityChange(e.target.value)}
-            className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-ceci-brand rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
-          />
-        </div>
+      <div>
+        <label className="block text-xs font-medium text-ceci-secondary mb-1">universidade</label>
+        <input
+          type="text"
+          value={university}
+          onChange={(e) => onUniversityChange(e.target.value)}
+          className="w-full bg-surface-muted border border-ceci-border-default focus:outline-none focus:border-ceci-brand rounded-xl px-3.5 py-2 text-sm text-ceci-primary"
+        />
       </div>
 
       <div>

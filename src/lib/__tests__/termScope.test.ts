@@ -15,6 +15,7 @@ import {
   sortedTerms,
   MAX_TERM_ORDINAL,
 } from '../termScope';
+import * as termScope from '../termScope';
 
 function term(over: Partial<AcademicTerm> = {}): AcademicTerm {
   return {
@@ -58,6 +59,35 @@ describe('lib/termScope — período', () => {
 
   it('sortedTerms ordena do mais recente ao mais antigo', () => {
     expect(sortedTerms(TERMS).map((t) => t.id)).toEqual(['trm-1', 'trm-old']);
+  });
+
+  it('B16 (SPEC-006 D9): allActiveTerms expõe TODOS os ativos, não só um', () => {
+    // `resolveActiveTerm` devolve **um** período — o mais recente. Com dois
+    // `ativo` no banco (merge de dois dispositivos, import, ou o B2 já
+    // aplicados), o histórico e o desfazer mostravam um "6º semestre" enquanto
+    // o 7º também estava ativo: a usuária não conseguia enxergar nem corrigir
+    // a inconsistência. `allActiveTerms` é a superfície que o card de
+    // integridade e a ação de reabertura precisam.
+    //
+    // O acesso é por namespace + cast de propósito: o símbolo ainda não existe
+    // (chega na F1), e assim o `tsc` do gate continua verde enquanto este teste
+    // fica vermelho até a implementação.
+    const allActiveTerms = (termScope as unknown as {
+      allActiveTerms?: (terms: AcademicTerm[]) => AcademicTerm[];
+    }).allActiveTerms;
+
+    expect(typeof allActiveTerms).toBe('function');
+    const withTwo = [
+      term({ id: 'trm-a', ordinal: 6, statusTransitionAt: '2026-02-01T00:00:00.000Z' }),
+      term({ id: 'trm-b', ordinal: 7, statusTransitionAt: '2026-07-01T00:00:00.000Z' }),
+      term({ id: 'trm-c', ordinal: 8, status: 'encerrado', endedAt: '2026-12-20' }),
+    ];
+    // espelha o que a UI resolve: o ativo exibido é o mais recente
+    expect(allActiveTerms?.(withTwo).map((t) => t.id)).toEqual(['trm-b', 'trm-a']);
+    // e o termo com cardinalidade > 1 é o que dispara o aviso de integridade
+    expect(allActiveTerms?.(withTwo)).toHaveLength(2);
+    expect(allActiveTerms?.(TERMS)).toHaveLength(1);
+    expect(allActiveTerms?.([])).toHaveLength(0);
   });
 });
 

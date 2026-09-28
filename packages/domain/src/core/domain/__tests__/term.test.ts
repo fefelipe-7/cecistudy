@@ -7,9 +7,11 @@ import {
   closeTerm,
   openTerm,
   reopenTerm,
+  retitleTerm,
   enforceSingleActiveTerm,
   assertTermIntegrity,
   resolveActiveTerm,
+  resolveAllActiveTerms,
   resolveLatestClosedTerm,
   termsByRecency,
   shouldOfferRollover,
@@ -106,8 +108,32 @@ describe('core/domain — term: transições', () => {
     // e a única volta é o reopenTerm explícito
     const reopened = reopenTerm(closed, 'trm-1', '2026-07-02T00:00:00.000Z');
     expect(reopened[0].status).toBe('ativo');
-    // o resumo congelado é preservado (é o transcript, não se reescreve)
-    expect(reopened[0].summary).toEqual(SUMMARY);
+    // B10 (SPEC-006 D7): o transcript é snapshot de um período FECHADO. Reabrir
+    // precisa zerar `endedAt` e `summary` — senão o card do histórico mostra
+    // "32 aulas · 3h de foco" num semestre que está começando, e `endedAt` num
+    // `ativo` faz `shouldOfferRollover` responder `true` na hora.
+    expect(reopened[0].endedAt).toBeUndefined();
+    expect(reopened[0].summary).toBeUndefined();
+  });
+
+  it('reopenTerm zera endedAt e summary: o período reativo não carrega transcript', () => {
+    // B10 (SPEC-006 D7) — a inversão explícita do comportamento anterior, que
+    // preservava os dois e deixava o termo num estado inconsistente.
+    const closed = closeTerm([term()], 'trm-1', '2026-06-30', SUMMARY);
+    expect(closed[0].summary).toEqual(SUMMARY);
+
+    const reopened = reopenTerm(closed, 'trm-1', '2026-07-02T00:00:00.000Z');
+    expect(reopened[0].endedAt).toBeUndefined();
+    expect(reopened[0].summary).toBeUndefined();
+    expect('summary' in reopened[0]).toBe(false);
+    // e `shouldOfferRollover` para de responder `true` imediatamente
+    expect(shouldOfferRollover(reopened[0], '2026-07-03', 10)).toBe(false);
+  });
+
+  it('reopenTerm é idempotente (2ª chamada é no-op, mesma referência)', () => {
+    const closed = closeTerm([term()], 'trm-1', '2026-06-30', SUMMARY);
+    const once = reopenTerm(closed, 'trm-1', '2026-07-02T00:00:00.000Z');
+    expect(reopenTerm(once, 'trm-1', '2026-07-03T00:00:00.000Z')).toBe(once);
   });
 
   it('openTerm é idempotente', () => {
@@ -221,6 +247,90 @@ describe('core/domain — term: derivações', () => {
     ];
     expect(termsByRecency(terms).map((t) => t.id)).toEqual(['trm-3', 'trm-2', 'trm-1']);
     expect(terms.map((t) => t.id)).toEqual(['trm-1', 'trm-2', 'trm-3']);
+  });
+
+  it('B16 (SPEC-006 D9): resolveAllActiveTerms devolve TODOS os ativos, do mais novo ao mais velho', () => {
+    const terms = [
+      term({ id: 'trm-old', ordinal: 6, statusTransitionAt: '2026-02-01T00:00:00.000Z' }),
+      term({ id: 'trm-new', ordinal: 7, statusTransitionAt: '2026-07-01T00:00:00.000Z' }),
+      term({ id: 'trm-closed', ordinal: 5, status: 'encerrado', endedAt: '2025-12-20' }),
+    ];
+    // `resolveActiveTerm` esconde o conflito; este expõe
+    expect(resolveActiveTerm(terms)?.id).toBe('trm-new');
+    expect(resolveAllActiveTerms(terms).map((t) => t.id)).toEqual(['trm-new', 'trm-old']);
+    // o primeiro é sempre o ativo exibido → dá para usar all[0] como "o" período
+    expect(resolveAllActiveTerms(terms)[0]?.id).toBe(resolveActiveTerm(terms)?.id);
+    // length > 1 é o sinal de conflito
+    expect(resolveAllActiveTerms(terms)).toHaveLength(2);
+    expect(resolveAllActiveTerms([term()])).toHaveLength(1);
+    expect(resolveAllActiveTerms([])).toHaveLength(0);
+  });
+
+  it('resolveAllActiveTerms não muta a entrada', () => {
+    const terms = [
+      term({ id: 'trm-a', statusTransitionAt: '2026-01-01T00:00:00.000Z' }),
+      term({ id: 'trm-b', statusTransitionAt: '2026-06-01T00:00:00.000Z' }),
+    ];
+    const snapshot = JSON.stringify(terms);
+    resolveAllActiveTerms(terms);
+    expect(JSON.stringify(terms)).toBe(snapshot);
+  });
+});
+
+describe('core/domain — term: retitleTerm (corrigir o semestre ativo, SPEC-006 D6)', () => {
+  const NOW = '2026-09-28T00:00:00.000Z';
+
+  it('corrige ordinal e rederiva o label junto', () => {
+    const next = retitleTerm([term()], 'trm-1', 5, NOW);
+    expect(next[0].ordinal).toBe(5);
+    expect(next[0].label).toBe('5º semestre');
+    expect(next[0].updatedAt).toBe(NOW);
+    // statusTransitionAt NÃO muda: corrigir o número não é virar o semestre
+    expect(next[0].statusTransitionAt).toBe('2026-02-01T00:00:00.000Z');
+  });
+
+  it('respeita o teto do curso (o cap), não o global de 12', () => {
+    // curso de 10, usuária tentou 11
+    expect(retitleTerm([term({ ordinal: 10 })], 'trm-1', 11, NOW, 10)[0].ordinal).toBe(10);
+    // cap folgado também respeita
+    expect(retitleTerm([term({ ordinal: 10 })], 'trm-1', 11, NOW, 12)[0].ordinal).toBe(11);
+  });
+
+  it('clampa por baixo (ordinal 0 → 1, nunca 0 nem negativo)', () => {
+    expect(retitleTerm([term({ ordinal: 4 })], 'trm-1', 0, NOW)[0].ordinal).toBe(1);
+  });
+
+  it('conserta um label drifted sem mexer no ordinal', () => {
+    // ordinal 6 mas rótulo "5º semestre" (editado na mão / vindo de import)
+    const drifted = [term({ label: '5º semestre' })];
+    const next = retitleTerm(drifted, 'trm-1', null, NOW);
+    expect(next[0].ordinal).toBe(6);
+    expect(next[0].label).toBe('6º semestre');
+  });
+
+  it('NÃO edita um período encerrado (o registro congelado é imutável)', () => {
+    const closed = closeTerm([term()], 'trm-1', '2026-06-30', SUMMARY);
+    // reabrir é o caminho para corrigir um encerrado
+    expect(retitleTerm(closed, 'trm-1', 5, NOW)).toBe(closed);
+  });
+
+  it('NÃO edita um período planejado (não é o "meu semestre" ainda)', () => {
+    const planned = [term({ status: 'planejado' })];
+    expect(retitleTerm(planned, 'trm-1', 5, NOW)).toBe(planned);
+  });
+
+  it('idempotente: reditar o mesmo ordinal é no-op (mesma referência)', () => {
+    const once = retitleTerm([term()], 'trm-1', 7, NOW);
+    expect(retitleTerm(once, 'trm-1', 7, NOW)).toBe(once);
+  });
+
+  it('aceita string numérica (o input do Perfil chega como string)', () => {
+    expect(retitleTerm([term()], 'trm-1', '5', NOW)[0].ordinal).toBe(5);
+  });
+
+  it('termId inexistente é no-op', () => {
+    const terms = [term()];
+    expect(retitleTerm(terms, 'trm-9', 5, NOW)).toBe(terms);
   });
 });
 

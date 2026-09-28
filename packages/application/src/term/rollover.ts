@@ -13,7 +13,7 @@
  * determinística (necessário para os golden files e para o undo).
  */
 import type { AcademicTerm, TermScopedCourse, TermSummary, TermStatus } from '../../../../src/core/domain';
-import { clampTermOrdinal, termLabel } from '../../../../src/core/domain';
+import { clampTermOrdinal, termLabel, resolveActiveTerm, MAX_TERM_ORDINAL } from '../../../../src/core/domain';
 
 /** O que a usuária decidiu para cada disciplina no passo 2 do wizard. */
 export type TermCourseDecision = 'continuar' | 'arquivar' | 'depois';
@@ -202,6 +202,15 @@ export interface TermRolloverPlan {
   closedTermId: string;
   nextTermId: string;
   /**
+   * Estado de origem (`termId` + `status`) de cada disciplina que a virada toca.
+   * É o que torna o desfazer um **round-trip exato** sem o chamador precisar
+   * reconstruir nada — ver `planTermRollover`.
+   */
+  originalTermIds: Record<
+    string,
+    { termId: string | null; status: TermScopedCourse['status'] | undefined }
+  >;
+  /**
    * O que muda, para a tela de revisão (passo 4 do wizard) montar o texto.
    *
    * `carry`/`archive`/`undecided` são **ids de disciplina** (nomes de campo
@@ -241,6 +250,14 @@ export function planTermRollover(input: {
   newTermId: string;
   nextOrdinal?: number;
   nextLabel?: string;
+  /**
+   * Total de semestres do curso (SPEC-006 D8) — é o **teto** do `nextOrdinal`.
+   *
+   * Antes o clamp usava só o teto global (12), então num curso de 10 a 10ª
+   * virada criava um "11º semestre" que não existe. O cap efetivo é
+   * `min(totalSemesters, MAX_TERM_ORDINAL)`.
+   */
+  totalSemesters?: number;
   /** Data do fechamento (YYYY-MM-DD) e carimbo ISO das transições. */
   closedAt: string;
   now: string;
@@ -249,7 +266,14 @@ export function planTermRollover(input: {
   pendingDecisions?: TermPendingInput;
 }): TermRolloverPlan {
   const { terms, courses, decisions, closedAt, now } = input;
-  const activeTerm = terms.find((t) => t.status === 'ativo');
+  // B2 (SPEC-006 D4): `terms.find(status === 'ativo')` pegava o **primeiro do
+  // array**, e a ordem do array não é a ordem da recência (o sync ordena por id).
+  // Com dois ativos — merge de dois dispositivos, import, ou uma virada anterior
+  // já rodada com o bug — a virada encerrava o período que a tela NÃO estava
+  // mostrando, e as disciplinas migravam do semestre errado. `resolveActiveTerm`
+  // é a mesma função que a UI usa para escolher o ativo, então as duas nunca
+  // discordam.
+  const activeTerm = resolveActiveTerm(terms);
   if (!activeTerm) {
     throw new Error('planTermRollover: não há período ativo para encerrar');
   }
@@ -280,8 +304,14 @@ export function planTermRollover(input: {
       : t,
   );
 
-  // 2) o período novo: ativo, com o próximo `ordinal` (clamp no teto da jornada)
-  const nextOrdinal = clampTermOrdinal(input.nextOrdinal ?? activeTerm.ordinal + 1);
+  // 2) o período novo: ativo, com o próximo `ordinal`, **tetoado pelo curso**.
+  //    `statusTransitionAt: now` (e não `closedAt`) é o que faz este período
+  //    ganhar a disputa de recência contra qualquer outro ativo.
+  const totalCap = Math.min(
+    MAX_TERM_ORDINAL,
+    Math.max(1, Math.trunc(input.totalSemesters ?? 0) || MAX_TERM_ORDINAL),
+  );
+  const nextOrdinal = clampTermOrdinal(input.nextOrdinal ?? activeTerm.ordinal + 1, totalCap);
   nextTerms.push({
     id: input.newTermId,
     workspaceId: input.workspaceId ?? activeTerm.workspaceId,
@@ -309,6 +339,15 @@ export function planTermRollover(input: {
     summary,
     closedTermId: activeTerm.id,
     nextTermId: input.newTermId,
+    // O `termId`/status de origem de cada disciplina que a virada toca. Fica no
+    // plano (e não num argumento separado do desfazer) porque é o **único**
+    // momento em que a informação existe: depois da escrita, o estado anterior
+    // está perdido. Quem chamava `undoTermRollover` era obrigado a reconstruir
+    // esse mapa à mão, e qualquer reconstrução errada ali desfazia a virada para
+    // o período errado — silenciosamente.
+    originalTermIds: Object.fromEntries(
+      inTerm.map((c) => [c.id, { termId: c.termId ?? null, status: c.status }]),
+    ),
     diff: {
       carry: carriedIds,
       archive: archivedIds,
@@ -328,33 +367,61 @@ export function planTermRollover(input: {
  * Reverte a virada.
  *
  * Nada foi apagado na virada (§D5), então a reversão é trivial: reabre o
- * período anterior, devolve cada disciplina ao `termId` de origem, desarquiva o
- * que foi arquivado e remove o período novo.
+ * período anterior, devolve cada disciplina ao `termId`/status de origem,
+ * desarquiva o que foi arquivado e remove o período novo.
+ *
+ * A reabertura **limpa `endedAt`/`summary`** (SPEC-006 D7) pelo mesmo motivo de
+ * `reopenTerm`: um período `ativo` carregando o transcript de um encerramento é
+ * um estado que não existe — o card do histórico mentiria e
+ * `shouldOfferRollover` ofereceria virar de novo na hora. Depois do desfazer, a
+ * usuária está de volta **dentro** do semestre, como se a virada nunca tivesse
+ * acontecido.
+ *
+ * `originalTermIds` é opcional: quando ausente, usa o `plan.originalTermIds`. O
+ * argumento continua aceito para quem tem o mapa à mão, mas o plano é a fonte
+ * autoritativa (é ele que foi gravado junto com a virada).
  */
 export function undoTermRollover(input: {
   terms: AcademicTerm[];
   courses: TermScopedCourse[];
   plan: TermRolloverPlan;
-  /** `termId` de origem por disciplina (o mesmo plano de decisões, invertido). */
-  originalTermIds: Record<string, string | null | undefined>;
+  /** `termId` de origem por disciplina. Cai para `plan.originalTermIds`. */
+  originalTermIds?: Record<string, string | null | undefined>;
   now: string;
 }): { terms: AcademicTerm[]; courses: TermScopedCourse[] } {
-  const { terms, courses, plan, originalTermIds, now } = input;
+  const { terms, courses, plan, now } = input;
+  const legacyIds = input.originalTermIds;
 
   const nextTerms = terms
     .filter((t) => t.id !== plan.nextTermId)
-    .map((t) =>
-      t.id === plan.closedTermId
-        ? { ...t, status: 'ativo' as TermStatus, statusTransitionAt: now, updatedAt: now }
-        : t,
-    );
+    .map((t) => {
+      if (t.id !== plan.closedTermId) return t;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars -- remover as chaves é o ponto
+      const { endedAt: _endedAt, summary: _summary, ...rest } = t;
+      return {
+        ...rest,
+        status: 'ativo' as TermStatus,
+        statusTransitionAt: now,
+        updatedAt: now,
+      };
+    });
 
   const nextCourses = courses.map((c) => {
+    const original = plan.originalTermIds[c.id];
+    // `status` é restaurado **como estava**, inclusive a ausência da chave: o
+    // round-trip do desfazer tem que devolver o objeto idêntico, senão um
+    // `toEqual` de paridade (e o diff de sync) acusam mudança onde não houve.
+    const restoreStatus = (base: TermScopedCourse): TermScopedCourse => {
+      if (original?.status === undefined) delete base.status;
+      else base.status = original.status;
+      return base;
+    };
     if (plan.diff.carry.includes(c.id)) {
-      return { ...c, termId: originalTermIds[c.id] ?? plan.closedTermId };
+      const termId = original?.termId ?? legacyIds?.[c.id] ?? plan.closedTermId;
+      return restoreStatus({ ...c, termId });
     }
     if (plan.diff.archive.includes(c.id)) {
-      return { ...c, status: 'ativo' as const };
+      return restoreStatus({ ...c });
     }
     return c;
   });

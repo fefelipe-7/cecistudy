@@ -8,7 +8,8 @@ export type CelebrationKind =
   | 'session-done'
   | 'flashcards-done'
   | 'sticker-unlocked'
-  | 'level-up';
+  | 'level-up'
+  | 'term-closed';
 
 /** Paleta de confetes alinhada ao design system (rose/green/blue/yellow). */
 const CONFETTI_COLORS = [
@@ -96,6 +97,14 @@ export function celebrate(kind: CelebrationKind): void {
       break;
     case 'reading-done':
       void burstFromCenter(80, { spread: 70 });
+      break;
+    case 'term-closed':
+      // Virada de semestre é o momento mais raro do app (uma vez por semestre),
+      // então ganha o burst mais generoso: canhões em duas levas + centro, como
+      // um "pronto, próximo capítulo" — não uma tarefa que se conclui todo dia.
+      void burstFromCenter(170, { spread: 105, startVelocity: 46 });
+      void sideCannons(120, 140);
+      void sideCannons(90, 420);
       break;
   }
 }

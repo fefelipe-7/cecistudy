@@ -7,6 +7,7 @@ import {
   gradeCourses,
 } from '../rollover';
 import type { TermAttendanceInput, TermCourseDecisions, TermSummaryInput } from '../rollover';
+import { resolveActiveTerm } from '../../../../../src/core/domain';
 import type { AcademicTerm, TermScopedCourse } from '../../../../../src/core/domain';
 
 function term(over: Partial<AcademicTerm> = {}): AcademicTerm {
@@ -316,6 +317,64 @@ describe('application/term — planTermRollover', () => {
     expect(at(5)).toBe(6);
     expect(at(12)).toBe(12);
   });
+
+  it('B2 (SPEC-006 D4): encerra o período que a UI mostra, não o primeiro do array', () => {
+    // Dois períodos `ativo` são possíveis: `enforceSingleActiveTerm` não rodava em
+    // lugar nenhum. A UI resolve o ativo por `statusTransitionAt` mais recente
+    // (`resolveActiveTerm`), mas a virada usava `terms.find(...)` — o PRIMEIRO do
+    // array. E o primeiro do array é justamente o **antigo**: `academicTerms` é
+    // append, então o período mais novo vive num índice MAIOR. Com dois ativos
+    // (merge de dois dispositivos, ou import), `find` encerrava `trm-old` — o
+    // período que a tela não está mostrando.
+    const terms = [
+      term({ id: 'trm-old', ordinal: 6, statusTransitionAt: '2026-02-01T00:00:00.000Z' }),
+      term({ id: 'trm-new', ordinal: 7, statusTransitionAt: '2026-07-01T00:00:00.000Z' }),
+    ];
+    // sanidade: a UI (resolveActiveTerm) aponta para `trm-new`
+    expect(resolveActiveTerm(terms)?.id).toBe('trm-new');
+
+    const plan = planTermRollover({
+      terms,
+      courses: [course('c1', { termId: 'trm-new' })],
+      decisions: {},
+      summaryInput: INPUT,
+      newTermId: 'trm-next',
+      closedAt: '2026-06-30',
+      now: '2026-06-30T12:00:00.000Z',
+    });
+
+    const byId = new Map(plan.terms.map((t) => [t.id, t]));
+    // `trm-new` é o que a UI mostra (mais recente) → é o que fecha.
+    expect(byId.get('trm-new')?.status).toBe('encerrado');
+    // `trm-old` NÃO foi tocado pela virada.
+    expect(byId.get('trm-old')?.status).toBe('ativo');
+    // e a disciplina de `trm-new` migrou para o novo período.
+    expect(plan.courses.find((c) => c.id === 'c1')?.termId).toBe('trm-next');
+  });
+
+  it('B11 (SPEC-006 D8): o próximo ordinal respeita o teto do curso (não o teto global de 12)', () => {
+    // O clamp usava `clampTermOrdinal(x)` com o teto global (12), ignorando
+    // `totalSemesters` — num curso de 10, a 10ª virada criava "11º semestre".
+    const at = (totalSemesters: number, nextOrdinal: number) =>
+      planTermRollover({
+        terms: [term({ ordinal: 10 })],
+        courses: [],
+        decisions: {},
+        summaryInput: INPUT,
+        newTermId: 'trm-2',
+        totalSemesters,
+        nextOrdinal,
+        closedAt: '2026-06-30',
+        now: '2026-06-30T12:00:00.000Z',
+        // `totalSemesters` só existe a partir da SPEC-006; o cast mantém o
+        // `tsc` verde enquanto a assinatura ainda não foi ampliada.
+      } as Parameters<typeof planTermRollover>[0]).terms.find((t) => t.id === 'trm-2')?.ordinal;
+    expect(at(10, 11)).toBe(10);
+    expect(at(8, 9)).toBe(8);
+    expect(at(12, 13)).toBe(12);
+    // abaixo do teto, o valor pedido é respeitado
+    expect(at(10, 8)).toBe(8);
+  });
 });
 
 describe('application/term — undoTermRollover', () => {
@@ -344,8 +403,12 @@ describe('application/term — undoTermRollover', () => {
     expect(back.terms.map((t) => t.id)).toEqual(['trm-1']);
     expect(back.terms[0].status).toBe('ativo');
     expect(back.terms[0].statusTransitionAt).toBe('2026-07-01T00:00:00.000Z');
-    // o resumo congelado sobrevive ao undo (é o registro do que foi encerrado)
-    expect(back.terms[0].summary).toBeDefined();
+    // SPEC-006 D7: desfazer devolve a usuária para DENTRO do semestre. O
+    // transcript do encerramento some junto — um `ativo` exibindo "32 aulas" e
+    // um `endedAt` de meses atrás é o estado inconsistente do bug B10.
+    expect(back.terms[0].endedAt).toBeUndefined();
+    expect(back.terms[0].summary).toBeUndefined();
+    expect('summary' in back.terms[0]).toBe(false);
 
     const byId = new Map(back.courses.map((c) => [c.id, c]));
     expect(byId.get('c1')).toEqual({ id: 'c1', termId: 'trm-1', status: 'ativo' });
@@ -371,6 +434,65 @@ describe('application/term — undoTermRollover', () => {
       now: '2026-07-01T00:00:00.000Z',
     });
     expect(back.courses).toEqual(courses);
+  });
+
+  // SPEC-006: o desfazer tem de ser um round-trip EXATO sem que o chamador
+  // precise saber nada. Antes ele exigia um `originalTermIds` reconstruído à mão
+  // — informação que só existia no momento da virada, e que a UI não tinha.
+  it('o plano carrega o estado de origem, então o desfazer não precisa de argumento', () => {
+    const courses = [course('c1'), course('c2'), course('c3')];
+    const plan = planTermRollover({
+      terms: [term()],
+      courses,
+      decisions: { c2: 'arquivar' },
+      summaryInput: INPUT,
+      newTermId: 'trm-2',
+      closedAt: '2026-06-30',
+      now: '2026-06-30T12:00:00.000Z',
+    });
+    // o mapa cobre **todas** as disciplinas ativas do período, não só as
+    // tocadas: um superset é inofensivo (o undo só consulta as que estão em
+    // `diff.carry`/`diff.archive`) e garante que nenhuma decisão nova do
+    // desfazer fique sem informação de origem.
+    expect(Object.keys(plan.originalTermIds).sort()).toEqual(['c1', 'c2', 'c3']);
+    expect(plan.originalTermIds.c1).toEqual({ termId: 'trm-1', status: 'ativo' });
+
+    const back = undoTermRollover({ terms: plan.terms, courses: plan.courses, plan, now: '2026-07-01T00:00:00.000Z' });
+    expect(back.courses).toEqual(courses);
+  });
+
+  it('round-trip preserva a AUSÊNCIA da chave status (não normaliza para "ativo")', () => {
+    // Uma disciplina sem `status` explícito (dado antigo, import) tem de voltar
+    // sem a chave: o diff de sync acusaria uma "alteração" que não existiu.
+    const c1 = { id: 'c1', termId: 'trm-1' } as TermScopedCourse;
+    const plan = planTermRollover({
+      terms: [term()],
+      courses: [c1],
+      decisions: {},
+      summaryInput: INPUT,
+      newTermId: 'trm-2',
+      closedAt: '2026-06-30',
+      now: '2026-06-30T12:00:00.000Z',
+    });
+    const back = undoTermRollover({ terms: plan.terms, courses: plan.courses, plan, now: '2026-07-01T00:00:00.000Z' });
+    expect('status' in back.courses[0]).toBe(false);
+    expect(back.courses[0]).toEqual(c1);
+  });
+
+  it('round-trip devolve uma disciplina que já estava arquivada para arquivada', () => {
+    // "arquivar" durante a virada não pode despromover quem já era arquivado.
+    const c1 = course('c1', { status: 'arquivado' });
+    const plan = planTermRollover({
+      terms: [term()],
+      courses: [c1],
+      decisions: { c1: 'arquivar' },
+      summaryInput: INPUT,
+      newTermId: 'trm-2',
+      closedAt: '2026-06-30',
+      now: '2026-06-30T12:00:00.000Z',
+    });
+    const back = undoTermRollover({ terms: plan.terms, courses: plan.courses, plan, now: '2026-07-01T00:00:00.000Z' });
+    expect(back.courses[0]).toEqual(c1);
   });
 });
 

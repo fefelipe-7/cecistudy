@@ -16,14 +16,40 @@
  *
  * Funções puras: sem `Date.now()` dentro, sem React, sem storage, sem Capacitor.
  * `now`/`closedAt` sempre chegam por argumento.
+ *
+ * ---
+ *
+ * **As 3 portas de escrita** (SPEC-006 D5). Toda mutação de `AcademicTerm` no app
+ * tem que passar por exatamente uma delas — é o que mantém `statusTransitionAt`
+ * (o relógio que decide qual é o período ativo) com significado:
+ *
+ * 1. **Boot / import / primeiro uso** — `createAcademicTerm` cria o período de
+ *    bootstrap; `MIGRATIONS[18]` faz o backfill do `profile.semester` legado.
+ *    `Date.now()` é **proibido** aqui: a migração tem que ser determinística
+ *    (rodar duas vezes precisa dar o mesmo resultado).
+ * 2. **Virada de semestre** — `closeTerm` + `createAcademicTerm`, orquestrados
+ *    por `planTermRollover` (que já devolve o diff, antes de gravar). Sempre
+ *    acompanhada de `enforceSingleActiveTerm`.
+ * 3. **Correção pela usuária** — `retitleTerm` (arrumar o número do semestre
+ *    ativo, a "porta fácil" do Perfil) e `reopenTerm` (devolver um encerrado ao
+ *    ativo). É a única porta que muda o passado, então é a única que zera o
+ *    transcript: reabrir limpa `endedAt`/`summary` (§D7), senão o `ativo`
+ *    carregaria o resumo de um período que não terminou.
+ *
+ * Consequência prática: `statusTransitionAt` é o único campo que faz a "promoção"
+ * de um período para o ativo da tela, e por isso `resolveActiveTerm` **nunca**
+ * pode ser substituído por `terms.find(t => t.status === 'ativo')` — o `find`
+ * depende da ordem do array (que o sync embaralha). Era esse o bug B2.
  */
 import type { EntityId } from './common';
 import { makeId } from './ids';
 
 /**
  * Ciclo de vida do período letivo. Só **avança** — `encerrado` não volta a
- * `ativo` sem uma transição explícita (`reopenTerm`), porque o resumo de um
- * período encerrado é imutável (é o "transcript" do semestre).
+ * `ativo` sem uma transição explícita (`reopenTerm`). Enquanto está encerrado,
+ * o resumo é imutável (é o "transcript" do semestre); `reopenTerm` é a única
+ * exceção, e ela **apaga** o transcript em vez de preservá-lo num termo que
+ * voltou a ser `ativo` (SPEC-006 D7).
  */
 export type TermStatus = 'planejado' | 'ativo' | 'encerrado';
 
@@ -235,7 +261,19 @@ export function openTerm(
 /**
  * `encerrado` → `ativo`. A **única** transição que regride o status: é o
  * "re-roll" do Banner, o re-open do Canvas. Serve para corrigir um erro
- * ("era o 6º, não o 5º") sem reescrever o resumo congelado.
+ * ("era o 6º, não o 5º") sem apagar nada do que o período registrou.
+ *
+ * **Zera `endedAt` e `summary`** (SPEC-006 D7). O `summary` é o transcript de um
+ * período **encerrado** — congelar e depois reexibi-lo num termo reaberto produz
+ * dois bugs visíveis: o card do histórico mostra "32 aulas · 20h de foco" num
+ * semester que está começando, e `shouldOfferRollover` lê `endedAt` e responde
+ * `true` na hora, oferecendo uma virada que não faz sentido. Reabrir devolve o
+ * termo ao estado de "ainda não terminou"; o que ele tinha fica no histórico de
+ * quem o encerrou — nada é apagado do banco, apenas reclassificado.
+ *
+ * As chaves `endedAt`/`summary` são **removidas** (não deixadas como `undefined`):
+ * elas são a marca de "encerrado", e `toEqual`/serialização do backup não devem
+ * carregar lixo.
  */
 export function reopenTerm(
   terms: AcademicTerm[],
@@ -244,7 +282,45 @@ export function reopenTerm(
 ): AcademicTerm[] {
   return mapTerm(terms, termId, (term) => {
     if (term.status !== 'encerrado') return null;
-    return patchTerm(term, { status: 'ativo', statusTransitionAt: now }, now);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- a remoção é o ponto
+    const { endedAt: _endedAt, summary: _summary, ...rest } = term;
+    return { ...rest, status: 'ativo' as TermStatus, statusTransitionAt: now, updatedAt: now };
+  });
+}
+
+/**
+ * Corrige o rótulo/ordinal do período — a "porta de entrada fácil" do Perfil
+ * (SPEC-006 D6).
+ *
+ * Só o período **ativo** é editável: um encerrado é o registro congelado de como
+ * o semestre foi, e reescrever o ordinal dele bagunçaria a timeline inteira (o
+ * 6º viraria 5º e o histórico mentiria). Para corrigir um período já encerrado,
+ * reabra-o primeiro (`reopenTerm`) e ajuste aqui.
+ *
+ * O `label` é sempre rederivado do `ordinal` (`termLabel`) — assim não existe
+ * estado meio-corrigido com ordinal 6 e rótulo "5º semestre". O `ordinal` é
+ * clampado pelo `cap` (o teto do curso, via `clampTermOrdinal`), e `null`/`NaN`
+ * caem no ordinal atual em vez de zerar o progresso.
+ */
+export function retitleTerm(
+  terms: AcademicTerm[],
+  termId: EntityId,
+  ordinal: unknown,
+  now: string,
+  cap: number = MAX_TERM_ORDINAL,
+): AcademicTerm[] {
+  return mapTerm(terms, termId, (term) => {
+    if (term.status !== 'ativo') return null;
+    // Separa "entrada ausente" de "número fora de faixa": um input vazio não pode
+    // virar "1º semestre" (zeraria o progresso sem a usuária pedir), mas um `0`
+    // digitado é erro de dedo e deve clampar para 1 como qualquer fora-de-faixa.
+    const ausente =
+      ordinal === null || ordinal === undefined || ordinal === '' || Number.isNaN(Number(ordinal));
+    const next = ausente ? term.ordinal : clampTermOrdinal(ordinal, cap);
+    // ainda assim re-deriva o label, para consertar um rótulo drifted
+    const label = termLabel(next);
+    if (next === term.ordinal && label === term.label) return null;
+    return patchTerm(term, { ordinal: next, label }, now);
   });
 }
 
@@ -253,20 +329,34 @@ export function reopenTerm(
 /* -------------------------------------------------------------------------- */
 
 /**
+ * `a` é "mais novo" que `b`? Ordena por `statusTransitionAt` (o relógio que
+ * decide qual é o período ativo) e desempata por `id`.
+ *
+ * O desempate por `id` não é preciosismo: `resolveActiveTerm` e
+ * `enforceSingleActiveTerm` rodam em **dois dispositivos** com o mesmo conteúdo
+ * mas potencialmente em ordens de array diferentes (o sync ordena por id, mas o
+ * estado local não). Sem o desempate, dois períodos com o mesmo timestamp fariam
+ * cada dispositivo escolher um "ativo" diferente — e como um deles vira
+ * `encerrado` no merge, os dois bancos divergiriam para sempre.
+ */
+function newerTerm(a: AcademicTerm, b: AcademicTerm): boolean {
+  if (a.statusTransitionAt !== b.statusTransitionAt) return a.statusTransitionAt > b.statusTransitionAt;
+  return a.id > b.id;
+}
+
+/**
  * Invariante "no máximo um período ativo" (§D6).
  *
  * Se houver mais de um `ativo`, vence o de `statusTransitionAt` mais recente; os
  * outros **degradam para `encerrado` localmente** (com carimbo próprio — não é
  * tombstone, para que possam voltar a convergir num merge futuro). Roda no fim
- * de `mergeSyncedDatabases` e depois de toda virada.
+ * de `mergeSyncedDatabases`, depois de toda virada, e no boot.
  */
 export function enforceSingleActiveTerm(terms: AcademicTerm[]): AcademicTerm[] {
   const active = terms.filter((t) => t.status === 'ativo');
   if (active.length <= 1) return terms;
 
-  const winner = active.reduce((best, t) =>
-    t.statusTransitionAt > best.statusTransitionAt ? t : best,
-  );
+  const winner = active.reduce((best, t) => (newerTerm(t, best) ? t : best));
 
   return terms.map((term) =>
     term.status === 'ativo' && term.id !== winner.id
@@ -314,9 +404,7 @@ export function assertTermIntegrity(
 export function resolveActiveTerm(terms: AcademicTerm[]): AcademicTerm | null {
   const active = terms.filter((t) => t.status === 'ativo');
   if (active.length === 0) return null;
-  return active.reduce((best, t) =>
-    t.statusTransitionAt > best.statusTransitionAt ? t : best,
-  );
+  return active.reduce((best, t) => (newerTerm(t, best) ? t : best));
 }
 
 /** Período encerrado mais recente (para a timeline do Perfil). */
@@ -326,6 +414,22 @@ export function resolveLatestClosedTerm(terms: AcademicTerm[]): AcademicTerm | n
   return closed.reduce((best, t) =>
     (t.endedAt ?? t.statusTransitionAt) > (best.endedAt ?? best.statusTransitionAt) ? t : best,
   );
+}
+
+/**
+ * **Todos** os períodos ativos, do mais recente para o mais antigo.
+ *
+ * `resolveActiveTerm` responde "qual é o meu semestre" — uma resposta só, a que a
+ * UI mostra. Mas quando o banco tem **dois** ativos (merge de dois dispositivos,
+ * import, ou um bug de virada que já rodou), a usuária precisa *ver* a
+ * inconsistência para poder corrigir-la. Esta é a superfície do card de
+ * integridade e do "reabrir" (SPEC-006 D9).
+ *
+ * O primeiro elemento é sempre o que `resolveActiveTerm` devolve, então dá para
+ * usar `all[0]` como o ativo exibido e `all.length > 1` como o sinal de conflito.
+ */
+export function resolveAllActiveTerms(terms: AcademicTerm[]): AcademicTerm[] {
+  return terms.filter((t) => t.status === 'ativo').sort((a, b) => (newerTerm(a, b) ? -1 : 1));
 }
 
 /** Períodos ordenados do mais recente para o mais antigo (para a timeline). */

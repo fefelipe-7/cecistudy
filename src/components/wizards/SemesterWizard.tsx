@@ -47,6 +47,7 @@ export const SemesterWizard: React.FC = () => {
     closeWizard,
     showToast,
     applyTermRollover,
+    undoLastRollover,
     openTermHistory,
   } = useMobileApp();
 
@@ -179,7 +180,12 @@ export const SemesterWizard: React.FC = () => {
       },
     });
     applyTermRollover(finalPlan);
-    showToast(`prontinho, ${values.ordinal}º semestre aberto ♡`);
+    // SPEC-006 D8: a virada oferece desfazer por 8s. O toast é o lugar da
+    // decisão — Some em silêncio quando some (2600ms) seria perfeito para
+    // "guardado ♡" e revocável demais para fechar um semestre.
+    showToast(`semestre virado ♡ ${values.ordinal}º aberto`, {
+      action: { label: 'desfazer', onClick: undoLastRollover },
+    });
     closeWizard();
   };
 

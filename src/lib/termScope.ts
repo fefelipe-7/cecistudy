@@ -19,6 +19,7 @@ import type { AcademicTerm } from '@/types';
 import {
   clampTermOrdinal,
   resolveActiveTerm,
+  resolveAllActiveTerms,
   termsByRecency,
   MAX_TERM_ORDINAL,
 } from '@/core/domain';
@@ -32,6 +33,19 @@ export { clampTermOrdinal, MAX_TERM_ORDINAL };
 /** Período ativo derivado (sem estado persistido, §D4). */
 export function activeTermOf(terms: AcademicTerm[]): AcademicTerm | null {
   return resolveActiveTerm(terms);
+}
+
+/**
+ * Todos os períodos ativos, do mais novo ao mais velho (SPEC-006 D9).
+ *
+ * `activeTermOf` dá **um** período — o que a UI mostra. Este dá **todos**: com
+ * dois ativos no banco (merge de dois dispositivos, import, ou uma virada que
+ * já rodou com o bug do `find`), a usuária precisa enxergar o conflito para
+ * corrigir. `length > 1` é o sinal; `[0]` é o mesmo período que `activeTermOf`
+ * devolve.
+ */
+export function allActiveTerms(terms: AcademicTerm[]): AcademicTerm[] {
+  return resolveAllActiveTerms(terms);
 }
 
 /** Todos os períodos, do mais recente ao mais antigo (para a timeline). */
@@ -132,11 +146,20 @@ export function useActiveTerm(terms: AcademicTerm[]): AcademicTerm | null {
 }
 
 /**
+ * Todos os ativos memoizados (SPEC-006 D9) — o par de `useActiveTerm` para o
+ * card de integridade: `all.length > 1` avisa, `all[0]` é o período exibido.
+ */
+export function useAllActiveTerms(terms: AcademicTerm[]): AcademicTerm[] {
+  return useMemo(() => resolveAllActiveTerms(terms), [terms]);
+}
+
+/**
  * Recorte de período para as views: uma vez, memoizado, com o mesmo objeto de
  * período para usar em filtro e no rótulo.
  */
 export function useTermScope(courses: Course[], terms: AcademicTerm[]): {
   term: AcademicTerm | null;
+  allActive: AcademicTerm[];
   active: Course[];
   grade: Course[];
   archived: Course[];
@@ -146,6 +169,7 @@ export function useTermScope(courses: Course[], terms: AcademicTerm[]): {
     const { courses: active, term } = activeCourses(courses, terms);
     return {
       term,
+      allActive: resolveAllActiveTerms(terms),
       active,
       grade: gradeCourses(courses),
       archived: archivedCourses(courses),

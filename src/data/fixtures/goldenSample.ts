@@ -39,7 +39,10 @@ export function sampleSnapshot(): PersistedStateSnapshot {
       workspaceId: 'ws-academico',
       name: 'Maite',
       semester: 6,
-      totalSemesters: 8,
+      // 10 =Psi no Brasil, o default da SPEC-006 D9. O sample precisa refletir
+      // um payload v19 coerente: deixar 8 aqui descreveria um curso de 8
+      // semestres, que só existe se alguém configurou à mão.
+      totalSemesters: 10,
       university: 'USP',
       targetCareer: 'clínica psicanalítica',
       dailyQuote: 'com leveza e foco ♡',

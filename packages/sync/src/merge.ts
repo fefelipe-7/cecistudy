@@ -12,8 +12,9 @@
  * Os bancos estáticos (`approaches`/`questions`-catálogo) não participam:
  * são re-semeados sob demanda em cada dispositivo.
  */
-import type { SyncIndex } from '@/types';
+import type { SyncIndex, AcademicTerm } from '@/types';
 import { EmptyDatabase, emptyDatabase } from '@/data/empty';
+import { enforceSingleActiveTerm } from '@/core/domain';
 import {
   RECORD_COLLECTION_KEYS,
   SET_COLLECTION_KEYS,
@@ -161,11 +162,23 @@ export function mergeSyncedDatabases(
     ...(remoteDb.streakData?.activeDays ?? []),
   ]);
 
+  // Invariante de domínio que o LWW por registro **não** consegue garantir (SPEC-006 D6):
+  // cada `AcademicTerm` é mesclado por id, mas nada impede que dois períodos
+  // diferentes continuem `ativo` ao mesmo tempo. O pior sintoma era a virada
+  // encerrando o período errado (`terms.find` pegava o primeiro do array, não o
+  // mais recente) — bug B2. Aqui resolvemos com a mesma regra que a UI usa para
+  // escolher o ativo, e a ordenação por id do `mergeRecordCollection` garante que
+  // os dois dispositivos escolham exatamente o mesmo vencedor.
+  const academicTerms = enforceSingleActiveTerm(
+    (mergedRecords.academicTerms ?? []) as unknown as AcademicTerm[]
+  ) as unknown as Array<Record<string, unknown>>;
+
   const merged: SyncableDatabase = {
     ...base,
     ...mergedRecords,
     ...singles,
     ...sets,
+    academicTerms,
     streakData: { activeDays: Array.from(streakDays).sort() },
     // Bancos estáticos ficam de fora do merge (re-semeados sob demanda).
     approaches: localDb.approaches,

@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import { useDataClientApp, useDataClientCourses, useDataClientStudy } from '@/context/DataClientProvider';
-import { useAppActions, useNavValue } from '@/context/shellNavContexts';
+import { useAppActions, useNavValue, useTermActions } from '@/context/shellNavContexts';
 import { DitherFunnelChart } from '../ui/dither-funnel';
 import { formatCount } from '../../lib/ditherChart';
 import { isDarkTheme } from '../../lib/themes';
@@ -44,6 +44,7 @@ import JourneySummary from './perfil/JourneySummary';
 import JourneyTimeline from './perfil/JourneyTimeline';
 import StickersSection from './perfil/StickersSection';
 import PersonalizationSection from './perfil/PersonalizationSection';
+import JourneyTermCard from './perfil/JourneyTermCard';
 import DataSection from './perfil/DataSection';
 
 import { deriveCases } from '../../lib/internshipCases';
@@ -153,6 +154,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
   const { courses, classes, tasks, exams } = useDataClientCourses();
   const { readings, flashcards, sessions } = useDataClientStudy();
   const { handleUpdateProfile, showToast, updateReminder, setGcalEnabled } = useAppActions();
+  const { correctTermOrdinal } = useTermActions();
   const {
     handleNavigate,
     openInternshipDiary,
@@ -164,7 +166,6 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
   } = useNavValue();
 
   const [name, setName] = useState(profile.name);
-  const [semester, setSemester] = useState(profile.semester);
   const [university, setUniversity] = useState(profile.university);
 const [dailyQuote, setDailyQuote] = useState(profile.dailyQuote);
 
@@ -174,9 +175,12 @@ const profileTotalXp = totalXp(profile);
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
+    // `semester` não entra aqui (SPEC-006 D6): o campo é legado e quem manda é
+    // o `AcademicTerm` ativo, corrigido pelo `JourneyTermCard`. Reescrever o
+    // legado aqui fazia a migração 18 → 19 recriar o período com o número
+    // antigo na importação seguinte.
     handleUpdateProfile({
       name,
-      semester: Number(semester),
       university,
       dailyQuote,
       photoUrl: profile.photoUrl
@@ -343,6 +347,13 @@ const profileTotalXp = totalXp(profile);
         onOpenTermHistory={() => openTermHistory()}
       />
 
+      <JourneyTermCard
+        activeTerm={activeTerm}
+        totalSemesters={profile.totalSemesters}
+        onCorrectOrdinal={correctTermOrdinal}
+        onShowToast={showToast}
+      />
+
       <StickersSection stickers={stickers} unlocked={stickersUnlocked} onOpen={openStickersScreen} level={profileLevel} title={profileTitle} />
 
       <PersonalizationSection
@@ -354,8 +365,6 @@ const profileTotalXp = totalXp(profile);
         gcalConfigured={isGcalConfigured()}
         name={name}
         onNameChange={setName}
-        semester={semester}
-        onSemesterChange={setSemester}
         university={university}
         onUniversityChange={setUniversity}
         dailyQuote={dailyQuote}

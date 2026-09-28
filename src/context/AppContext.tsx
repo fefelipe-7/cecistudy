@@ -2,8 +2,10 @@ import React from 'react';
 import type {
   DataClientValue,
   ReminderSettings,
+  ToastOptions,
 } from './DataClientProvider';
 import type { SharedAppValue } from './sharedAppValue';
+import type { ToastState } from '../components/ui/Toast';
 import type { StickerState } from '../lib/stickers';
 import type { ThemeId } from '../lib/themes';
 import type { DataActions, DataActionGroups } from './dataActions';
@@ -333,8 +335,8 @@ export interface AppContextValue {
   isSearchOpen: boolean;
   openSearch: () => void;
   closeSearch: () => void;
-  toast: string | null;
-  showToast: (message: string) => void;
+  toast: ToastState | null;
+  showToast: (message: string, options?: ToastOptions) => void;
 
   // workspace (Fase 3) — registry compartilhado (mobile e desktop usam o mesmo
   // AppContext). O workspace ativo tagueia os registros de domínio; a casca
@@ -428,9 +430,20 @@ export interface AppContextValue {
   handleUpdateMaterial: (material: MaterialItem) => void;
   handleSaveQuizSession: (session: QuizSession) => void;
 
-  // Virada de semestre (SPEC-005)
+  // Período letivo (SPEC-005 / SPEC-006)
   applyTermRollover: (plan: TermRolloverPlan) => void;
-  undoTermRollover: (plan: TermRolloverPlan, originalTermIds: Record<string, string | null>) => void;
+  /** O plano carrega o estado de origem: o desfazer não precisa de argumento extra. */
+  undoTermRollover: (plan: TermRolloverPlan) => void;
+  /** Plano da última virada (em memória) — null se não houve ou já foi desfeito. */
+  lastRollover: TermRolloverPlan | null;
+  /** Desfaz a última virada. No-op quando não há nenhuma. */
+  undoLastRollover: () => void;
+  /** Há virada para desfazer? Usado pela UI para exibir a ação do toast. */
+  canUndoRollover: boolean;
+  /** Corrige o ordinal do período ativo (a "porta fácil" do Perfil). */
+  correctTermOrdinal: (termId: string, ordinal: number) => void;
+  /** Reabre um período encerrado (o "re-roll" do histórico). */
+  reopenTermById: (termId: string) => void;
   archiveCourse: (courseId: string) => void;
   restoreCourse: (courseId: string) => void;
 

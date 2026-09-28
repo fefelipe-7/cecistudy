@@ -174,7 +174,7 @@ export const OverlaysContent: React.FC<{ app: AppContextValue }> = ({ app }) => 
 
       <OtaUpdateModal />
 
-      <ToastMemo message={app.toast} />
+      <ToastMemo toast={app.toast} />
     </Suspense>
   );
 };
