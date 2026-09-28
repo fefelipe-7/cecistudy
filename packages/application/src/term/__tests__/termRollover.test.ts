@@ -344,12 +344,52 @@ describe('application/term — planTermRollover', () => {
     });
 
     const byId = new Map(plan.terms.map((t) => [t.id, t]));
-    // `trm-new` é o que a UI mostra (mais recente) → é o que fecha.
+    // `trm-new` é o que a UI mostra (mais recente) → é o que fecha, e é quem
+    // carrega o resumo congelado.
     expect(byId.get('trm-new')?.status).toBe('encerrado');
-    // `trm-old` NÃO foi tocado pela virada.
-    expect(byId.get('trm-old')?.status).toBe('ativo');
+    expect(byId.get('trm-new')?.summary).toBeDefined();
+    expect(plan.closedTermId).toBe('trm-new');
+    // `trm-old` é o perdedor da consolidação: a virada é a 2ª porta da
+    // invariante "no máximo um `ativo`" (SPEC-006 D4), então o plano **não** pode
+    // devolver os dois ativos. A asserção antiga ("`trm-old` não foi tocado")
+    // fixava o bug: o plano saía inválido e o passo 4 do wizard mostrava um
+    // estado que a virada não produzia.
+    expect(byId.get('trm-old')?.status).toBe('encerrado');
+    expect(byId.get('trm-old')?.summary).toBeUndefined();
+    // exatamente um ativo no plano: o novo período que acabou de abrir.
+    expect(plan.terms.filter((t) => t.status === 'ativo').map((t) => t.id)).toEqual(['trm-next']);
     // e a disciplina de `trm-new` migrou para o novo período.
     expect(plan.courses.find((c) => c.id === 'c1')?.termId).toBe('trm-next');
+  });
+
+  it('D4: o plano já nasce com no máximo um período ativo (invariante da 2ª porta)', () => {
+    // Três ativos é o pior caso de merge (três dispositivos, ou um import com
+    // histórico duplicado). O plano tem de degradar até um só, senão a
+    // escrita aplicar um estado que a UI nunca aceitaria.
+    const terms = [
+      term({ id: 'trm-a', ordinal: 4, statusTransitionAt: '2026-01-01T00:00:00.000Z' }),
+      term({ id: 'trm-b', ordinal: 5, statusTransitionAt: '2026-05-01T00:00:00.000Z' }),
+      term({ id: 'trm-c', ordinal: 6, statusTransitionAt: '2026-07-01T00:00:00.000Z' }),
+    ];
+    expect(terms.filter((t) => t.status === 'ativo')).toHaveLength(3);
+
+    const plan = planTermRollover({
+      terms,
+      courses: [course('c1', { termId: 'trm-c' })],
+      decisions: {},
+      summaryInput: INPUT,
+      newTermId: 'trm-next',
+      closedAt: '2026-06-30',
+      now: '2026-06-30T12:00:00.000Z',
+    });
+
+    // o mais recente (o que a UI mostra) é quem fecha, com resumo
+    expect(plan.closedTermId).toBe('trm-c');
+    // os perdedores cedem, sem resumo (não foram eles que fecharam)
+    const losers = plan.terms.filter((t) => t.id === 'trm-a' || t.id === 'trm-b');
+    expect(losers.every((t) => t.status === 'encerrado' && t.summary === undefined)).toBe(true);
+    // e sobra um ativo só
+    expect(plan.terms.filter((t) => t.status === 'ativo').map((t) => t.id)).toEqual(['trm-next']);
   });
 
   it('B11 (SPEC-006 D8): o próximo ordinal respeita o teto do curso (não o teto global de 12)', () => {

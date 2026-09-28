@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type {
   UserProfile,
   Course,
@@ -28,6 +28,7 @@ import { schedule } from '../lib/fsrs';
 import { normalizeText } from '../lib/readingMatching';
 import { toDateKey } from '../lib/streak';
 import { enforceSingleActiveTerm, reopenTerm, resolveActiveTerm, retitleTerm } from '../core/domain';
+import { remainingUndoWindowMs } from '../lib/termUndoWindow';
 import { undoTermRollover as undoRollover } from '../lib/termRollover';
 import type { TermRolloverPlan } from '../lib/termRollover';
 import {
@@ -512,12 +513,31 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
    * recriar um período com o semestre errado na importação seguinte.
    */
   /**
-   * Plano da última virada, em memória. A SPEC-006 pede um "desfazer" com
-   * janela curta (o toast de 8s): é a protection contra a decisão impulsiva de
-   * fechar o semestre — e só o plano guardado sabe devolver cada disciplina ao
-   * período de origem.
+   * Plano da última virada + o instante do commit, em memória. A SPEC-006 pede um
+   * "desfazer" com janela curta (o toast de 8s): é a proteção contra a decisão
+   * impulsiva de fechar o semestre — e só o plano guardado sabe devolver cada
+   * disciplina ao período de origem.
+   *
+   * `appliedAt` ancora a janela no **commit** (SPEC-006 D5) e é o que fecha a
+   * janela: sem expirar, `canUndoRollover` ficava verdadeiro para sempre depois
+   * que o toast sumia — um "desfazer" invisível, valendo sempre.
    */
-  const [lastRollover, setLastRollover] = useState<TermRolloverPlan | null>(null);
+  const [lastRollover, setLastRollover] = useState<{ plan: TermRolloverPlan; appliedAt: number } | null>(null);
+  const lastRolloverPlan = lastRollover?.plan ?? null;
+
+  // Um dono só do relógio da janela: ao passar de 8s o plano some, junto com a
+  // affordance. Limpar no cleanup também cobre a troca de plano (uma virada nova
+  // cancela o prazo da anterior) e o unmount (sem `setState` no zombie).
+  useEffect(() => {
+    if (!lastRollover) return;
+    const remaining = remainingUndoWindowMs(lastRollover.appliedAt);
+    if (remaining <= 0) {
+      setLastRollover(null);
+      return;
+    }
+    const timer = setTimeout(() => setLastRollover(null), remaining);
+    return () => clearTimeout(timer);
+  }, [lastRollover]);
 
   const applyTermRollover = useCallback((plan: TermRolloverPlan) => {
     const byId = new Map(plan.courses.map((c) => [c.id, c]));
@@ -535,7 +555,7 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
     if (active) {
       setProfile((prev) => (prev.semester === active.ordinal ? prev : { ...prev, semester: active.ordinal }));
     }
-    setLastRollover(plan);
+    setLastRollover({ plan, appliedAt: Date.now() });
     hapticSuccess();
     // fecha um capítulo da jornada — o burst mais raro do app, no mesmo espírito
     // do "parabéns" das tarefas e do level up (SPEC-006 D8)
@@ -632,7 +652,7 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
    */
   const undoLastRollover = useCallback(() => {
     if (!lastRollover) return;
-    const plan = lastRollover;
+    const { plan } = lastRollover;
     // limpa **antes** de escrever: se a escrita lançar, a janela fica fechada em
     // vez de oferecer um "desfazer" que não desfaz nada
     setLastRollover(null);
@@ -669,14 +689,16 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
       applyTermRollover,
       undoTermRollover,
       undoLastRollover,
-      lastRollover,
+      // a forma pública segue sendo o plano puro (é o que `AppContext` tipa);
+      // `appliedAt` é detalhe interno da janela
+      lastRollover: lastRolloverPlan,
       canUndoRollover: lastRollover !== null,
       correctTermOrdinal,
       reopenTermById,
       archiveCourse,
       restoreCourse,
     }),
-    [applyTermRollover, undoTermRollover, undoLastRollover, lastRollover, correctTermOrdinal, reopenTermById, archiveCourse, restoreCourse]
+    [applyTermRollover, undoTermRollover, undoLastRollover, lastRollover, lastRolloverPlan, correctTermOrdinal, reopenTermById, archiveCourse, restoreCourse]
   );
 
   // Grupos por domínio (PERF-001 A.3): cada grupo memoizado nas próprias

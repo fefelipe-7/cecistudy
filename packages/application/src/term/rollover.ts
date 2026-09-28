@@ -13,7 +13,7 @@
  * determinística (necessário para os golden files e para o undo).
  */
 import type { AcademicTerm, TermScopedCourse, TermSummary, TermStatus } from '../../../../src/core/domain';
-import { clampTermOrdinal, termLabel, resolveActiveTerm, MAX_TERM_ORDINAL } from '../../../../src/core/domain';
+import { clampTermOrdinal, enforceSingleActiveTerm, termLabel, resolveActiveTerm, MAX_TERM_ORDINAL } from '../../../../src/core/domain';
 
 /** O que a usuária decidiu para cada disciplina no passo 2 do wizard. */
 export type TermCourseDecision = 'continuar' | 'arquivar' | 'depois';
@@ -265,7 +265,17 @@ export function planTermRollover(input: {
   /** Decisões de pendência (passo 3 do wizard). Só entram no diff. */
   pendingDecisions?: TermPendingInput;
 }): TermRolloverPlan {
-  const { terms, courses, decisions, closedAt, now } = input;
+  const { courses, decisions, closedAt, now } = input;
+  // D4: a virada é a 2ª das 3 portas de escrita da invariante "no máximo um
+  // `ativo`" (a 1ª é o pós-merge, a 3ª a pós-correção). Consolida **antes** de
+  // mapear, para o plano devolvido já nascer válido: com dois `ativo` no
+  // snapshot (merge de dois dispositivos, import, ou uma virada antiga rodada
+  // com o bug B2) o plano fechava o período certo e devolvia o outro ainda
+  // `ativo` — o passo 4 do wizard mostrava um resumo que a virada não produz,
+  // e o undo fechava num estado que não era o de origem. `enforceSingleActiveTerm`
+  // devolve a **mesma referência** quando há um ativo só, então o caminho comum
+  // não aloca nada.
+  const terms = enforceSingleActiveTerm(input.terms);
   // B2 (SPEC-006 D4): `terms.find(status === 'ativo')` pegava o **primeiro do
   // array**, e a ordem do array não é a ordem da recência (o sync ordena por id).
   // Com dois ativos — merge de dois dispositivos, import, ou uma virada anterior

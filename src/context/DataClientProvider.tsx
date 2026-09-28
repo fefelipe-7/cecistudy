@@ -42,7 +42,8 @@ import {
   emptyDatabase,
 } from '../data/empty';
 import { DEFAULT_WORKSPACE_ID, SCHEMA_VERSION, ensureActiveTerm } from '../data/schema';
-import { enforceSingleActiveTerm, resolveActiveTerm } from '../core/domain';
+import { assertTermIntegrity, enforceSingleActiveTerm, resolveActiveTerm } from '../core/domain';
+import { ROLLOVER_UNDO_WINDOW_MS, TOAST_DEFAULT_MS } from '../lib/termUndoWindow';
 import type { ToastState } from '../components/ui/Toast';
 
 /** Opções do `showToast`: duração e ação opcional (ex.: "desfazer"). */
@@ -489,31 +490,35 @@ export function useDataClient(): DataClientValue {
       tasks,
     });
     const next = ensured ?? consolidated;
-    // 3º passo: disciplina `ativa` apontando para um período que não é o ativo
-    // some da grade para sempre. Sem reparo, o bug B12 (virada que arquivou
-    // demais) deixava a usuária com uma disciplina que ela não conseguia mais
-    // acessar por nenhum caminho da UI. O escape hatch anti-órfão (`termId`
-    // ausente) é respeitado: disciplina avulsa continua avulsa.
-    if (ensured || consolidated !== academicTerms) {
-      const activeTermId = resolveActiveTerm(next)?.id ?? null;
+    if (next !== academicTerms) setAcademicTerms(next);
+    // 3º passo: `assertTermIntegrity` sai do código morto (SPEC-006 D4) e roda
+    // **sempre**, não só quando os períodos mudaram. A órfã é uma propriedade das
+    // *disciplinas*, não dos períodos: uma disciplina pode ficar órfã com o
+    // snapshot de termos já perfeito (import antigo, desarquivada por outro
+    // caminho, merge de dois dispositivos) e, sem reparo, ela some da grade sem
+    // nenhum caminho de volta na UI.
+    //
+    // O escape hatch anti-órfão é respeitado: `termId` ausente = disciplina
+    // avulsa, e avulsa continua avulsa. E sem período ativo não há o que reatribuir
+    // — nesse caso só avisamos, para a órfã não virar sumiço silencioso.
+    const { orphans, activeTermId } = assertTermIntegrity(next, courses);
+    if (orphans.length > 0) {
       if (activeTermId) {
-        const repaired = courses.some(
-          (c) => (c.status ?? 'ativo') === 'ativo' && c.termId != null && c.termId !== activeTermId
+        console.warn(
+          `[terms] ${orphans.length} disciplina(s) órfã(s) reatribuída(s) ao período ativo ${activeTermId}`
         );
-        if (repaired) {
-          setCoursesRaw((prev) =>
-            prev.map((c) =>
-              (c.status ?? 'ativo') === 'ativo' && c.termId != null && c.termId !== activeTermId
-                ? { ...c, termId: activeTermId }
-                : c
-            )
-          );
-        }
+        const orphanIds = new Set(orphans.map((c) => c.id));
+        setCoursesRaw((prev) =>
+          prev.map((c) => (orphanIds.has(c.id) ? { ...c, termId: activeTermId } : c))
+        );
+      } else {
+        console.warn(
+          `[terms] ${orphans.length} disciplina(s) ativa(s) sem período ativo — mantido para o período ser aberto`
+        );
       }
     }
-    if (next !== academicTerms) setAcademicTerms(next);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [academicTerms, profile.semester]);
+  }, [academicTerms, courses, profile.semester]);
 
   // Questões (745): banco estático do catálogo — mesmo tratamento de abordagens.
   const [questions, setQuestions] = useState<StudyQuestion[]>([]);
@@ -613,8 +618,10 @@ export function useDataClient(): DataClientValue {
     if (toastTimerRef.current !== null) window.clearTimeout(toastTimerRef.current);
     // 2,6s é o padrão historicamente curto (feedback simples). Ações — como o
     // "desfazer" da virada — pedem a janela de 8s do SPEC-006: some antes e a
-    // usuária fica com a decisão tomada sem reversão possível.
-    const duration = options?.durationMs ?? (options?.action ? 8000 : 2600);
+    // usuária fica com a decisão tomada sem reversão possível. As duas metades
+    // (o toast e a expiração do plano) lêem a MESMA constante, senão uma sobrevive
+    // à outra.
+    const duration = options?.durationMs ?? (options?.action ? ROLLOVER_UNDO_WINDOW_MS : TOAST_DEFAULT_MS);
     toastTimerRef.current = window.setTimeout(() => {
       toastTimerRef.current = null;
       setToast(null);
