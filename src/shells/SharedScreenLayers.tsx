@@ -1,5 +1,7 @@
-import React, { Suspense, lazy, memo } from 'react';
+import React, { Suspense, lazy, memo, useEffect } from 'react';
 import { useMobileApp } from '@/context/mobileApp';
+import { isUnknownSlideKind } from '@/context/slideKeys';
+import type { NavScreen } from '@/types/navigation';
 import { ViewSkeleton } from '../components/ui/Skeleton';
 
 // C1: views carregadas sob demanda — cada uma vira chunk próprio; o boot fica
@@ -127,6 +129,27 @@ export function preloadScreenChunks(): void {
 }
 
 /**
+ * Avisa em dev quando o topo da pilha é um `NavScreen.kind` que **não tem tela**
+ * (`knowledge-graph`, `projects`, `inbox` — placeholders de desktop).
+ *
+ * Antes, esses kinds caíam silenciosamente na aba base: o app "funcionava" e
+ * nenhuma tela aparecia, sem nenhuma pista de por quê. Aqui a falha vira visível
+ * (SPEC-007 bug B4). Em produção é no-op: quem empilha um kind sem UI é bug de
+ * código, não algo que a usuária possa resolver.
+ */
+function useUnknownSlideKindWarning(kind: NavScreen['kind'] | undefined): void {
+  useEffect(() => {
+    if (!kind || !isUnknownSlideKind({ kind } as NavScreen)) return;
+    if (import.meta.env.DEV) {
+      console.warn(
+        `[cecistudy] NavScreen.kind "${kind}" não tem tela renderizada — a camada ` +
+          'de slide vai mostrar a aba base. Adicione o caso no SlideContent ou remova o kind.',
+      );
+    }
+  }, [kind]);
+}
+
+/**
  * Camada de slide: telas de base (tabs) + auxiliares de 1º nível
  * (curso, notas, templo, streak, quiz, study…). A pilha no AppContext é a
  * fonte da verdade.
@@ -134,6 +157,10 @@ export function preloadScreenChunks(): void {
 export const SlideContent: React.FC = () => {
   const app = useMobileApp();
   const activeTab = app.activeTab;
+
+  useUnknownSlideKindWarning(
+    app.navigationStack[app.navigationStack.length - 1]?.kind,
+  );
 
   return (
     <>

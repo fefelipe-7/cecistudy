@@ -9,7 +9,7 @@ import {
   shouldIgnoreTarget,
   supportsEdgeSwipe,
 } from '@/lib/swipe';
-import { setNavMotionContext } from '@/lib/motion';
+import { gesturePopIntent, prefersReducedMotion, setMotionIntent } from '@/lib/motion';
 
 export type EdgeSwipeBackProps = {
   /** Valor de transform `x` da camada de slide (o gesto anima ele). */
@@ -79,14 +79,17 @@ export function EdgeSwipeBack({ swipeX, onBack, canGoBack }: EdgeSwipeBackProps)
       engaged = false;
       const commit = shouldCommit(dragX);
       if (commit) {
-        // Contexto do pop iniciado pelo gesto: a variante de exit parte do ponto
-        // em que o dedo soltou (gestureX) e desliza a tela p/ a direita até sair.
-        // O transform do wrapper zera no mesmo frame — o exit assume a posição do
-        // dedo, sem salto de continuidade.
-        setNavMotionContext(-1, dragX);
+        // Intent do pop iniciado pelo gesto (SPEC-007 §5.4): a variante de exit
+        // parte do ponto em que o dedo soltou (`gestureX`) e continua deslizando
+        // a tela para a direita — sem salto de continuidade.
+        //
+        // O `setStack` que vem a seguir NÃO sobrescreve este intent: ele detecta
+        // `fromGesture` e preserva o offset. A versão anterior passava só a
+        // direção, zerando o `gestureX` aqui gravado (bug B2).
+        setMotionIntent(gesturePopIntent(dragX, prefersReducedMotion()));
         swipeX.set(0);
         const handled = stateRef.current.onBack();
-        if (!handled) setNavMotionContext(0, 0);
+        if (!handled) setMotionIntent(gesturePopIntent(0, prefersReducedMotion()));
         return;
       }
       // Cancelado: spring devolve a tela ao lugar.

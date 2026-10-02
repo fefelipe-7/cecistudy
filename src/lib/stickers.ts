@@ -16,6 +16,16 @@ import {
 /** Snapshot mínimo do estado do app necessário para avaliar as condições. */
 export interface StickerState {
   profile: { name: string; semester: number; totalSemesters: number };
+  /**
+   * "Em que semestre eu estou", resolvido pelo **período ativo** (SPEC-008 F4.8).
+   *
+   * As três condições de jornada (`degree-half`, `penultimate-semester`,
+   * `graduation`) liam `profile.semester`, que é legado: a usuária corrigia o
+   * número no cartão do Perfil e o sticker continuava travado no semester
+   * antigo. O chamador deriva este campo de `activeTerm?.ordinal ??
+   * profile.semester` — a mesma ordem de precedência do resto da UI.
+   */
+  termOrdinal: number;
   readings: { status?: string; readPages?: number; totalPages?: number }[];
   flashcards: { timesReviewed?: number }[];
   sessions: { durationMinutes?: number }[];
@@ -71,7 +81,7 @@ export function isConditionMet(condition: StickerCondition, state: StickerState)
     case 'streak':
       return state.currentStreak >= condition.min;
     case 'degree-half':
-      return state.profile.semester >= Math.ceil(state.profile.totalSemesters / 2);
+      return state.termOrdinal >= Math.ceil(state.profile.totalSemesters / 2);
     case 'concepts-with-authors':
       return state.concepts.filter((c) => c.authorIds.length > 0).length >= condition.min;
     case 'tcc-done':
@@ -139,11 +149,11 @@ export function isConditionMet(condition: StickerCondition, state: StickerState)
     case 'tcc-chapters-done':
       return state.tcc.chapters.filter((c) => c.completed).length >= condition.min;
     case 'penultimate-semester':
-      return state.profile.semester >= state.profile.totalSemesters - 1;
+      return state.termOrdinal >= state.profile.totalSemesters - 1;
     case 'streak-longest':
       return state.streakLongest >= condition.min;
     case 'graduation':
-      return state.profile.semester >= state.profile.totalSemesters;
+      return state.termOrdinal >= state.profile.totalSemesters;
 
     default:
       return false;

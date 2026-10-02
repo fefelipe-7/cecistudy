@@ -8,7 +8,7 @@ import { useNavValue } from '@/context/shellNavContexts';
 import { getTodaySchedule, upcomingEvents } from '../../lib/schedule';
 import type { CalendarEvent } from '../../lib/schedule';
 import { useTermScope, semestersLeft } from '../../lib/termScope';
-import { shouldOfferRollover } from '../../core/domain';
+import { canRollover, shouldNudgeRollover } from '../../core/domain';
 import TermRolloverCta from './faculdade/TermRolloverCta';
 import HeroSection from './faculdade/HeroSection';
 import WeekGrid from './faculdade/WeekGrid';
@@ -78,9 +78,14 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
     return null;
   };
 
-  const rolloverDue =
-    Boolean(term) &&
-    shouldOfferRollover(term!, new Date().toISOString().slice(0, 10), profile.totalSemesters);
+  // Existência e ênfase são perguntas separadas (SPEC-008 D1): com um período
+  // aberto sempre dá para virar; o `nudge` só destaca quando o semestre acaba.
+  const rolloverAvailable = canRollover(term);
+  const rolloverNudge = shouldNudgeRollover(
+    term,
+    new Date().toISOString().slice(0, 10),
+    profile.totalSemesters,
+  );
 
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-6 pb-1">
@@ -95,12 +100,13 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
         onOpenCalendar={() => setSubTab('calendario')}
       />
 
-      {/* Virada de semestre (SPEC-005) — só quando faz sentido. */}
+      {/* Virada de semestre (SPEC-005/008) — sempre à mão, destaca quando é hora. */}
       <TermRolloverCta
         term={term}
         totalSemesters={profile.totalSemesters}
         archivedCount={archived.length}
-        due={rolloverDue}
+        available={rolloverAvailable}
+        nudge={rolloverNudge}
         onOpenWizard={() => openWizard('semester')}
       />
 

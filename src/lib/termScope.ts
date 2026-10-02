@@ -68,7 +68,9 @@ export function coursesOfTerm(courses: Course[], termId: string | null | undefin
  *
  * `termId == null` (disciplina avulsa, template, import sem período) fica de fora
  * da grade do período — ela é o escape hatch anti-órfão, não uma disciplina do
- * semestre. Quem quiser incluir usa `gradeCourses`.
+ * semestre. Quem quiser o recorte por todos os períodos ativos usa
+ * `allActiveCourses`; quem quiser só o status, sem olhar período, filtra
+ * `(c.status ?? 'ativo') === 'ativo'` direto.
  */
 export function activeCourses(
   courses: Course[],
@@ -82,9 +84,24 @@ export function activeCourses(
   };
 }
 
-/** Só o que está ativo (independente do período) — a grade visível. */
-export function gradeCourses(courses: Course[]): Course[] {
-  return courses.filter((c) => (c.status ?? 'ativo') === 'ativo');
+/**
+ * Só o que está ativo **e** pertence a um período ativo (SPEC-008 F4.9).
+ *
+ * Antes era `gradeCourses(courses)` = "qualquer coisa com `status: 'ativo'`",
+ * sem olhar o período. Isso punha na grade disciplines que já estão em um
+ * período **encerrado** — o caso real é a matéria que ficou "pra depois" na
+ * virada: ela continua `ativo`, mas o semestre já fechou, e mesmo assim
+ * aparecia na grade de aulas de hoje.
+ *
+ * Regra: `status` ativo **e** `termId` na lista de períodos ativos. `termId ==
+ * null` (escape hatch anti-órfão) fica de fora, como em `activeCourses` — a
+ * grade de aulas é do período, não do banco inteiro.
+ */
+export function allActiveCourses(courses: Course[], terms: AcademicTerm[]): Course[] {
+  const activeIds = new Set(resolveAllActiveTerms(terms).map((t) => t.id));
+  return courses.filter(
+    (c) => (c.status ?? 'ativo') === 'ativo' && c.termId != null && activeIds.has(c.termId),
+  );
 }
 
 /** Disciplinas arquivadas (saiam da grade, continuam pesquisáveis). */
@@ -127,9 +144,17 @@ export function semestersLeft(ordinal: number, total: number): number {
   return Math.max(0, safeTotal - Math.max(0, Math.trunc(ordinal) || 0));
 }
 
-/** `ordinal` clampado em `1..min(MAX_TERM_ORDINAL, total)`. */
-export function clampOrdinal(ordinal: unknown, total: number): number {
-  return clampTermOrdinal(ordinal, Math.min(MAX_TERM_ORDINAL, Math.max(1, Math.trunc(total) || 1)));
+/**
+ * `ordinal` clampado em `1..MAX_TERM_ORDINAL`.
+ *
+ * Antes o teto era `min(MAX_TERM_ORDINAL, total)` (SPEC-005), o que prendia a
+ * usuária que está no 9º de um curso de 8 — e o total só ganhou editor na
+ * SPEC-008 (F3). Passar do total agora é **aviso** na UI, não clamp: o total é
+ * um palpite editável, e um teto que depende de outro campo esconde o erro em
+ * vez de mostrar (SPEC-008 D3). O `total` saiu do contrato.
+ */
+export function clampOrdinal(ordinal: unknown): number {
+  return clampTermOrdinal(ordinal);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -167,11 +192,15 @@ export function useTermScope(courses: Course[], terms: AcademicTerm[]): {
 } {
   return useMemo(() => {
     const { courses: active, term } = activeCourses(courses, terms);
+    const allActive = resolveAllActiveTerms(terms);
     return {
       term,
-      allActive: resolveAllActiveTerms(terms),
+      allActive,
       active,
-      grade: gradeCourses(courses),
+      // `grade` = o que a tela mostra como "aulas de hoje": disciplina ativa de
+      // **algum** período ativo. Com dois ativos em conflito (SPEC-006 D9), entra
+      // a união — a usuária precisa enxergar as duas para poder corrigir.
+      grade: allActiveCourses(courses, terms),
       archived: archivedCourses(courses),
       activeIds: new Set(active.map((c) => c.id)),
     };

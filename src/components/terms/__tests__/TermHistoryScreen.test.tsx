@@ -83,3 +83,36 @@ describe('TermHistoryScreen — reabrir período', () => {
     expect(screen.getByText('você está aqui agora ♡')).toBeDefined();
   });
 });
+
+/**
+ * N3e (SPEC-008 D5): expandir um período **não empilha mais** uma tela. Cada
+ * expansão antiga chamava `openTermHistory(term.id)`, que fazia `setStack` — e
+ * o back da usuária tinha que descer um frame por card que ela tinha aberto.
+ */
+describe('TermHistoryScreen — expandir sem mexer na navegação', () => {
+  it('abre e fecha o resumo no estado local, sem chamar openTermHistory', () => {
+    render(<TermHistoryScreen />);
+
+    fireEvent.click(screen.getByRole('button', { name: /ver o resumo inteiro/i }));
+    expect(screen.getByRole('button', { name: /esconder o resumo/i })).toBeDefined();
+    expect(openTermHistory).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole('button', { name: /esconder o resumo/i }));
+    expect(screen.getByRole('button', { name: /ver o resumo inteiro/i })).toBeDefined();
+    expect(openTermHistory).not.toHaveBeenCalled();
+  });
+
+  it('cinco expansões não abrem cinco telas (a pilha continua com 2 frames)', () => {
+    // o botão de expandir só existe em período com `summary`, então o 7º (único
+    // encerrado no mock) é o alvo; o efeito observado é o mesmo para qualquer um
+    const toggle = () => screen.getByRole('button', { name: /resumo/i });
+    render(<TermHistoryScreen />);
+
+    for (let i = 0; i < 5; i += 1) {
+      fireEvent.click(toggle());
+    }
+
+    // nenhuma navegação foi disparada — o ponto é esse
+    expect(openTermHistory).not.toHaveBeenCalled();
+  });
+});

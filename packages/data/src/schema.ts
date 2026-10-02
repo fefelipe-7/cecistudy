@@ -435,7 +435,7 @@ export const MIGRATIONS: Record<number, Migration> = {
   // e aparecia em todo lugar: o `% do curso` batia 100% no 8º, `semestersLeft`
   // devolvia 0, o adesivo de "formada" destravava no penúltimo semestre e o CTA
   // "virar semestre" passava a responder `true` permanentemente do 8º em diante
-  // (porque `shouldOfferRollover` compara `ordinal >= total`).
+  // (porque a elegibilidade da virada compara `ordinal >= total`).
   //
   // Só corrige o valor que era **default errado** (`8`); qualquer total já
   // configurado — 10, 12, o que for — fica como está. E é incondicionais em

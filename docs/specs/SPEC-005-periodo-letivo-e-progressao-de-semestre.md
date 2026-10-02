@@ -449,7 +449,7 @@ export const archivedCourses = (courses) => Course[]
 export const isArchived      = (course, terms) => boolean       // derivado, sem coluna
 export const degreeProgress  = (ordinal, total) => number       // clamp 0..100
 export const semestersLeft   = (ordinal, total) => number       // clamp ≥ 0
-export const clampOrdinal    = (n, total) => number            // clamp 1..min(12, total)
+export const clampOrdinal    = (n) => number                    // clamp 1..12 — revisto pela SPEC-008 D3
 ```
 
 Derivados **no consumo** (não em coluna), espelhando o padrão de
@@ -968,7 +968,8 @@ imports explícitos), com `describe` nomeado por comportamento.
   `null`; 1 → ele; 2 → o mais recente; tie → `ordinal` maior.
 - `degreeProgress`: `6/8 = 75`; `9/8` → `100` (clamp); `0/0` → `0` (não `NaN`).
 - `semestersLeft`: `8-6 = 2`; `6-8` → `0` (nunca negativo).
-- `clampOrdinal`: `0 → 1`; `99 → min(12, total)`; `NaN → 1`.
+- `clampOrdinal`: `0 → 1`; `99 → 12`; `NaN → 1`. **Revisto pela SPEC-008 D3:** o teto
+  passou a ser o global (12), não `min(12, total)` — o total do curso virou aviso na UI.
 - `isArchived`: por `course.status` **e** por período `encerrado`.
 
 ### `src/data/__tests__/schema.test.ts`

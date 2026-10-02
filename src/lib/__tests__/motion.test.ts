@@ -1,43 +1,91 @@
+/**
+ * Contrato do canal de direção das transições de tela (SPEC-007).
+ *
+ * Este arquivo **substituiu** as asserções sobre o shape de `screenVariants`
+ * (`'18%'`, `'-5%'`, `[0, ≥220]`): elas fixavam a implementação legada, que o
+ * Slice C substitui pela física por profundidade. O que importa agora é o
+ * **contrato** — o `NavIntent` viaja inteiro e chega intacto na hora do `exit`,
+ * apesar das props congeladas da instância que sai.
+ *
+ * Ver `motion/intent.test.ts`, `motion/variants.test.ts` e `motion/slideKeys.test.ts`
+ * para o restante do contrato.
+ */
+
 import { describe, expect, it } from 'vitest';
-import { screenVariants, setNavMotionContext } from '../motion';
+import {
+  consumeMotionIntent,
+  createScreenTargets,
+  createScreenVariants,
+  deriveIntent,
+  gesturePopIntent,
+  IDLE_INTENT,
+  peekMotionIntent,
+  prefersReducedMotion,
+  setMotionIntent,
+} from '../motion';
+import { FULL_PROFILE } from '../motion/profile';
 
-describe('screenVariants (motion de navegação)', () => {
-  it('consome a direção/gesto do contexto a cada exit — sem valor velho no próximo pop', () => {
-    // push: a tela coberta faz parallax p/ a esquerda
-    setNavMotionContext(1);
-    const pushExit = (screenVariants.exit as () => Record<string, unknown>)();
+const W = 400;
+/** A API de rótulos que o `SlideScreen` vai passar a usar no Slice C. */
+const variants = createScreenVariants(W, FULL_PROFILE);
 
-    // pop iniciado pelo gesto de borda: exit parte do ponto do dedo (px)
-    setNavMotionContext(-1, 120);
-    const popExit = (screenVariants.exit as () => Record<string, unknown>)();
-
-    // pop sem gesto depois: o contexto foi consumido e volta a 0
-    setNavMotionContext(-1);
-    const plainPopExit = (screenVariants.exit as () => Record<string, unknown>)();
-
-    // troca de tab: fade puro, sem deslocamento
-    setNavMotionContext(0);
-    const tabExit = (screenVariants.exit as () => Record<string, unknown>)();
-
-    expect(pushExit.x).toBe('-5%');
-    expect(pushExit.opacity).toBe(0.9);
-
-    const popX = popExit.x as number[];
-    expect(popX[0]).toBe(120);
-    expect(popX[1]).toBeGreaterThanOrEqual(210);
-
-    const plainX = plainPopExit.x as number[];
-    expect(plainX[0]).toBe(0);
-    expect(plainX[1]).toBeGreaterThanOrEqual(220);
-
-    expect(tabExit.x).toBeUndefined();
-    expect(tabExit.opacity).toBe(0);
+describe('canal de direção (o que a instância que SAI consegue ler)', () => {
+  it('a instância saindo tem props congeladas: o intent chega pelo canal, não por props', () => {
+    setMotionIntent(deriveIntent([{ kind: 'tab', tab: 'faculdade' }], [{ kind: 'tab', tab: 'home' }]));
+    // `exit` é chamado SEM argumento nenhum — é o canal que responde.
+    const out = (variants.exit as () => { opacity: number })();
+    expect(out.opacity).toBe(0);
   });
 
-  it('entrada direcional: push entra da direita, pop revela vindo da esquerda, tab é fade', () => {
-    const direct = (d: number) => (screenVariants.initial as (dir: number) => Record<string, unknown>)(d);
-    expect(direct(1).x).toBe('18%');
-    expect(direct(-1).x).toBe('-14%');
-    expect(direct(0).x).toBeUndefined();
+  it('consome uma vez: o próximo exit não herda o intent anterior', () => {
+    setMotionIntent(gesturePopIntent(150));
+    expect(consumeMotionIntent().gestureX).toBe(150);
+    expect(peekMotionIntent()).toEqual(IDLE_INTENT);
+  });
+});
+
+describe('REGRESSÃO B2 — o offset do gesto sobrevive até o exit', () => {
+  it('gesturePopIntent carrega kind/dir/gestureX/fromGesture coerentes', () => {
+    const i = gesturePopIntent(137, true);
+    expect(i.kind).toBe('pop');
+    expect(i.dir).toBe(-1);
+    expect(i.gestureX).toBe(137);
+    expect(i.fromGesture).toBe(true);
+    expect(i.reduced).toBe(true);
+  });
+
+  it('o exit parte do ponto onde o dedo soltou (não de 0)', () => {
+    setMotionIntent(gesturePopIntent(137));
+    const out = (variants.exit as () => { x: number[] })();
+    expect(out.x[0]).toBe(137);
+    expect(out.x[1]).toBeGreaterThan(137);
+  });
+
+  it('a causa do bug: um intent de gesto NÃO pode ser sobrescrito por um derivado', () => {
+    // É exatamente o que `setStack` fazia antes: chamar `setNavMotionContext(dir)`
+    // sem `gestureX` depois do gesto, zerando o offset que o dedo tinha gravado.
+    // A regra nova: só deriva quando não há intent de gesto pendente.
+    setMotionIntent(gesturePopIntent(137));
+    const derived = deriveIntent(
+      [{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c1' }],
+      [{ kind: 'tab', tab: 'faculdade' }],
+    );
+    if (!peekMotionIntent().fromGesture) setMotionIntent(derived);
+
+    expect(peekMotionIntent().gestureX).toBe(137);
+    expect(peekMotionIntent().fromGesture).toBe(true);
+  });
+
+  it('sem gesto, o pop sai de x=0 (a chave do exit é [0, …], não um offset inventado)', () => {
+    setMotionIntent(deriveIntent([{ kind: 'tab', tab: 'faculdade' }], []));
+    const out = createScreenTargets(W, FULL_PROFILE).exit(consumeMotionIntent());
+    expect(out.x).toBe(W);
+  });
+});
+
+describe('preferReducedMotion (fonte única do sinal do sistema)', () => {
+  it('é uma função pura de leitura, boolean em qualquer ambiente', () => {
+    // No jsdom sem matchMedia real, devolve `false` (perfis 3D Depends disso).
+    expect(typeof prefersReducedMotion()).toBe('boolean');
   });
 });

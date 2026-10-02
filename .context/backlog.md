@@ -523,14 +523,17 @@ re-run do workflow num commit antigo; `available` guarda as últimas 5 versões.
 
 ---
 
-## Fase 22 — Período letivo como entidade (`AcademicTerm`) — SPEC-005 (mobile, parcial)
+## Fase 22 — Período letivo como entidade (`AcademicTerm`) — SPEC-005 (mobile, implementada)
 
-> **Status: `[~]` implementada no mobile.** A virada de semestre virou uma entidade de
+> **Status: `[x]` implementada no mobile.** A virada de semestre virou uma entidade de
 > verdade: `academicTerms` é a fonte de verdade do "qual semestre eu estou", a virada é um
 > wizard de 4 passos com undo no domínio, e as views recortam por período.
 > Spec: [`docs/specs/SPEC-005-periodo-letivo-e-progressao-de-semestre.md`](../docs/specs/SPEC-005-periodo-letivo-e-progressao-de-semestre.md) ·
 > tasks: [`tasks/todo-periodo-letivo.md`](../tasks/todo-periodo-letivo.md).
-> Gate: `npm run lint` + `npm run test` (95 arquivos / **945 testes**) + boundaries + `npm run build`.
+> **Fase 22-bis (SPEC-006 + SPEC-008):** a virada era *praticamente inalcançável* (predicado
+> morto), o número do semestre tinha trava circular, o histórico era filho do wizard e o
+> wizard era beco sem saída sem período ativo. Tudo corrigido — ver §Corrigido abaixo.
+> Gate: `npm run lint` + `npm run test` (106 arquivos / **1112 testes**) + boundaries + `npm run build`.
 
 **O que foi feito**
 - **Domínio** (`packages/domain/src/core/domain/term.ts`): `AcademicTerm` com `status`
@@ -558,20 +561,45 @@ re-run do workflow num commit antigo; `available` guarda as últimas 5 versões.
   (o back vive no `headerConfig.onBack`, como nas demais telas empilhadas).
 
 **Pendências (abertas, não bloqueiam o merge)**
-- 🔴 **Desfazer pós-virada na UI** — `undoTermRollover` existe no domínio e na action, mas
-  o wizard fecha depois de gravar, então nada alcança o undo. Precisa de um estado de
-  "última virada" na action (toast `semestre virado ♡ · desfazer` + `celebrate('term-closed')`).
-- 🟡 `saveMinimal` ("adiar só as pendências ♡", gravar sem fechar o semestre) — exige
-  `openTerm` sem `closeTerm`, outra transição do domínio.
-- 🟡 Acessibilidade do wizard: `role="radiogroup"` no passo 2, `role="status"` nos
-  contadores, foco no `headline` ao trocar de passo.
-- 🟡 Banner "esta disciplina foi de outro período ♡" no `CourseDetailView`.
+- ✅ **Desfazer pós-virada na UI** — **resolvido na SPEC-008**: o wizard já mostra
+  `semestre virado ♡ <n>º aberto` com a ação `desfazer` (8s), gravada por
+  `undoLastRollover`. A `celebrate('term-closed')` segue **fora** (feedback duplo).
+- 🟡 `saveMinimal` ("adiar só as pendências ♡", gravar sem fechar o semestre) - exige
+  `openTerm` sem `closeTerm`, outra transição do domínio. **Segue aberto.**
+- ✅ Acessibilidade do wizard — **resolvida na SPEC-008**: `role="radiogroup"`/`radio` +
+  `aria-checked` com roving tabindex e setas no passo 2, `role="status"` nos contadores do
+  passo 3 e no recado do clamp, foco no `headline` a cada passo e `aria-current="step"`
+  (lista `sr-only`) no `WizardScaffold`.
+- 🟡 Banner "esta disciplina foi de outro período ♡" no `CourseDetailView`. **Segue aberto.**
 - 🟡 `HomeView` ainda não é recortada por período (o "hoje" é derivado de prazo, não de grade).
-- 🟡 `profile.semester` ainda é lido em `stickers.ts` e `OnboardingScreen` (o resto da UI já
-  vai pelo período ativo). `profileMeta`/`CourseWizard` mantêm o campo como fallback.
-- 🟡 `schema.sql` canônico + `verify-schema` (4.2) — **adiado para a fase Rust**: a tabela
+  **Segue aberto** (decisão de produto: o "hoje" é temporal, não a grade).
+- ✅ `profile.semester` ainda é lido em `stickers.ts` — **resolvido na SPEC-008**: as
+  condições de jornada (`degree-half`, `penultimate-semester`, `graduation`) leem agora
+  `StickerState.termOrdinal`, derivado do **período ativo**. `profileMeta` já recebia o
+  ordinal por argumento. `OnboardingScreen` ainda usa o campo (é o primeiro contato, antes
+  de existir período) — **mantido de propósito**.
+- 🟡 `schema.sql` canônico + `verify-schema` (4.2) - **adiado para a fase Rust**: a tabela
   `course_term` desnormalizada é passo 2 do Rust; hoje o `termId` viaja no `data_json`
   da `course` (evita um segundo lugar para o dado divergir).
+
+**Corrigido depois (SPEC-008, F0–F5 — suíte com 1112 testes):**
+- 🔴 A virada era **inalcançável**: `shouldOfferRollover` lia `term.endedAt`, que só existe
+  em período *encerrado*, mas o CTA é sobre o período *ativo` — o ramo era código morto.
+  Substituído por `canRollover` (disponibilidade) + `shouldNudgeRollover` (ênfase).
+- 🔴 **Trava circular** do número do semestre: `max` do input e `cap` do `retitleTerm`
+  apontavam para `totalSemesters`, que não tinha editor. Quebrada nos dois lados, com
+  stepper para o total e aviso quando o ordinal passa do curso.
+- 🔴 O histórico de períodos era empilhado como **filho** do wizard (sair dele abria a
+  virada). Agora é irmão: deep-link dá `[perfil, termHistory]`, e expandir um período é
+  estado local.
+- 🔴 Sem período ativo, o wizard era um **beco sem saída** (passo 0 travado, `handleSave`
+  retornando). Agora tem a abertura do 1º período em um passo só.
+- 🔴 `getTodaySchedule` recebia a **grade inteira**, incluindo matéria de semestre
+  encerrado. `grade` passou a ser a união dos períodos ativos (`allActiveCourses`).
+- 🔴 O baralho inteiro entrava como "pendência" da virada; agora só o que não foi revisado
+  no semestre que fecha.
+- 🟡 O input de "semestre atual" gravava em `profile.semester`, campo que a UI não lia.
+  Substituído pelo cartão de período com correção real (`JourneyTermCard`).
 
 **Fora de escopo (Fase 10):** o desktop novo (Flutter + Rust) **não** foi tocado — nenhum
 crate implementado. Os goldens TS foram regenerados com aprovação explícita da usuária

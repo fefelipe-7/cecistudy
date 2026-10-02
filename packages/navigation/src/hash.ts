@@ -285,9 +285,10 @@ export function parseRoute(hash: string): Route {
     if (h[1] === 'sincronizar') return { tab: 'perfil', sync: true };
     if (h[1] === 'streak') return { tab: 'perfil', streak: true };
     // Período letivo (SPEC-005): `#/perfil/semestre` (wizard) e
-    // `#/perfil/semestre/historico[/:termId]`. O histórico **encosta** no
-    // wizard (o índice é o passo 1 dele), então quem abrir o histórico a
-    // partir da URL cai direto na lista, não no wizard.
+    // `#/perfil/semestre/historico[/:termId]`. O histórico é **irmão** do wizard
+    // (SPEC-008 D5), não filho: o prefixo `/semestre` é o namespace do período,
+    // não uma tela-pai. Quem abrir o histórico a partir da URL cai na lista, sem
+    // passar pelo assistente.
     if (h[1] === 'semestre') {
       if (h[2] === 'historico') {
         return { tab: 'perfil', termHistory: true, termId: h[3] };
@@ -330,11 +331,12 @@ export function routeToStack(route: Route): NavScreen[] {
   if (route.tcc) return [{ kind: 'tab', tab: 'estudos' }, { kind: 'tcc' }];
   if (route.stickers) return [{ kind: 'tab', tab: 'perfil' }, { kind: 'stickers' }];
   if (route.termHistory) {
-    return [
-      { kind: 'tab', tab: 'perfil' },
-      { kind: 'wizard', type: 'semester' },
-      { kind: 'termHistory', termId: route.termId },
-    ];
+    // O histórico é **irmão** do wizard (SPEC-008 D5): a rota só sabe que a base
+    // é o Perfil, então a pilha tem 2 telas e o back volta pro Perfil. Quem
+    // chegou aqui pelo assistente mantém o wizard porque quem montou a pilha foi
+    // `openTermHistory`; no reload (esta função) volta ao Perfil, que é o
+    // destino honesto de um deep-link.
+    return [{ kind: 'tab', tab: 'perfil' }, { kind: 'termHistory', termId: route.termId }];
   }
   if (route.notes) return [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }];
   if (route.noteTransformId) {

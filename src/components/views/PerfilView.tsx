@@ -154,7 +154,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
   const { courses, classes, tasks, exams } = useDataClientCourses();
   const { readings, flashcards, sessions } = useDataClientStudy();
   const { handleUpdateProfile, showToast, updateReminder, setGcalEnabled } = useAppActions();
-  const { correctTermOrdinal } = useTermActions();
+  const { correctTermOrdinal, setTotalSemesters } = useTermActions();
   const {
     handleNavigate,
     openInternshipDiary,
@@ -327,6 +327,18 @@ const profileTotalXp = totalXp(profile);
         onPickPhoto={handlePickPhoto}
         onRemovePhoto={handleRemovePhoto}
       />
+      {/* O período vem **logo abaixo** do header (SPEC-008 F3.7): "em que
+          semestre eu estou" e "virar o semestre" são a primeira pergunta do
+          Perfil, não um cartão depois do funil e das estatísticas. */}
+      <JourneyTermCard
+        activeTerm={activeTerm}
+        totalSemesters={profile.totalSemesters}
+        onCorrectOrdinal={correctTermOrdinal}
+        onSetTotalSemesters={setTotalSemesters}
+        onOpenSemesterWizard={() => openWizard('semester')}
+        onShowToast={showToast}
+      />
+
       <JourneySummary tiles={tiles} semestersLeft={leftSemesters} />
       <DitherFunnelChart
         theme={appIsDark ? 'dark' : 'light'}
@@ -345,13 +357,6 @@ const profileTotalXp = totalXp(profile);
         academicTerms={academicTerms}
         onOpenSemesterWizard={() => openWizard('semester')}
         onOpenTermHistory={() => openTermHistory()}
-      />
-
-      <JourneyTermCard
-        activeTerm={activeTerm}
-        totalSemesters={profile.totalSemesters}
-        onCorrectOrdinal={correctTermOrdinal}
-        onShowToast={showToast}
       />
 
       <StickersSection stickers={stickers} unlocked={stickersUnlocked} onOpen={openStickersScreen} level={profileLevel} title={profileTitle} />

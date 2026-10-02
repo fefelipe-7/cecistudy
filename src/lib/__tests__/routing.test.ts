@@ -517,10 +517,12 @@ describe('rota do período letivo (SPEC-005)', () => {
     });
   });
 
-  it('a pilha do histórico é [perfil, wizard, histórico] — o wizard é o passo 1', () => {
+  it('a pilha do histórico é [perfil, histórico] — o histórico é IRMÃO do wizard (SPEC-008 N3)', () => {
+    // Antes a rota reconstruía [perfil, wizard, histórico], o que fazia o back
+    // cair no passo 1 do assistente em vez de voltar ao Perfil. A URL é a mesma;
+    // o que muda é a base da pilha.
     expect(routeToStack({ termHistory: true, termId: 'trm-3' })).toEqual([
       { kind: 'tab', tab: 'perfil' },
-      { kind: 'wizard', type: 'semester' },
       { kind: 'termHistory', termId: 'trm-3' },
     ]);
   });

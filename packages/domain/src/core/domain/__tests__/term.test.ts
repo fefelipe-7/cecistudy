@@ -14,7 +14,8 @@ import {
   resolveAllActiveTerms,
   resolveLatestClosedTerm,
   termsByRecency,
-  shouldOfferRollover,
+  canRollover,
+  shouldNudgeRollover,
 } from '../index';
 import type { AcademicTerm, TermScopedCourse } from '../index';
 
@@ -111,7 +112,7 @@ describe('core/domain — term: transições', () => {
     // B10 (SPEC-006 D7): o transcript é snapshot de um período FECHADO. Reabrir
     // precisa zerar `endedAt` e `summary` — senão o card do histórico mostra
     // "32 aulas · 3h de foco" num semestre que está começando, e `endedAt` num
-    // `ativo` faz `shouldOfferRollover` responder `true` na hora.
+    // `ativo` fazia `shouldOfferRollover` responder `true` na hora (SPEC-008 N1).
     expect(reopened[0].endedAt).toBeUndefined();
     expect(reopened[0].summary).toBeUndefined();
   });
@@ -126,8 +127,10 @@ describe('core/domain — term: transições', () => {
     expect(reopened[0].endedAt).toBeUndefined();
     expect(reopened[0].summary).toBeUndefined();
     expect('summary' in reopened[0]).toBe(false);
-    // e `shouldOfferRollover` para de responder `true` imediatamente
-    expect(shouldOfferRollover(reopened[0], '2026-07-03', 10)).toBe(false);
+    // `endedAt` deixou de ser gatilho de qualquer coisa (SPEC-008 N1): a elegibilidade
+    // vem de `status` e de `startedAt`. O encerrado não tem caminho; o reabreto tem.
+    expect(canRollover(closed[0])).toBe(false);
+    expect(canRollover(reopened[0])).toBe(true);
   });
 
   it('reopenTerm é idempotente (2ª chamada é no-op, mesma referência)', () => {
@@ -334,19 +337,59 @@ describe('core/domain — term: retitleTerm (corrigir o semestre ativo, SPEC-006
   });
 });
 
-describe('core/domain — term: elegibilidade da virada', () => {
-  it('oferece a virada quando o período já terminou', () => {
-    const t = term({ status: 'encerrado', endedAt: '2026-06-30' });
-    expect(shouldOfferRollover(t, '2026-07-05', 8)).toBe(true);
-    expect(shouldOfferRollover(t, '2026-06-01', 8)).toBe(false);
+describe('core/domain — term: elegibilidade da virada (SPEC-008 D1)', () => {
+  /**
+   * `canRollover` é **estrutural**: existe um período ativo que pode ser
+   * encerrado? Não depende de data nem de número — é a resposta honesta a
+   * "existe um caminho para virar o semestre?".
+   */
+  it('canRollover: só existe caminho com um período ativo', () => {
+    expect(canRollover(null)).toBe(false);
+    expect(canRollover(term({ status: 'ativo' }))).toBe(true);
+    // um período encerrado já foi virado; um planejado nem começou
+    expect(canRollover(term({ status: 'encerrado' }))).toBe(false);
+    expect(canRollover(term({ status: 'planejado' }))).toBe(false);
   });
 
-  it('oferece a virada quando o ordinal atingiu o total do curso', () => {
-    expect(shouldOfferRollover(term({ ordinal: 8 }), '2026-03-01', 8)).toBe(true);
-    expect(shouldOfferRollover(term({ ordinal: 6 }), '2026-03-01', 8)).toBe(false);
+  /**
+   * `shouldNudgeRollover` é **ênfase**, não existência. Decide se o app destaca
+   * o botão — nunca se ele existe.
+   *
+   * A versão anterior (`shouldOfferRollover`) decidia existência lendo
+   * `term.endedAt`, que só existe num período `encerrado`. O CTA é sobre o
+   * período **ativo**, que nunca tem `endedAt` — então o ramo era código morto
+   * e a virada só aparecia no último semestre da graduação (SPEC-008 N1).
+   */
+  it('não dá nudge no meio do semestre (o aviso espera o período chegar no fim)', () => {
+    // aberto em 2026-02-01, avaliado 1 mês depois: ainda não é hora de avisar
+    expect(shouldNudgeRollover(term({ startedAt: '2026-02-01' }), '2026-03-05', 10)).toBe(false);
   });
 
-  it('sem período ativo, não oferece (a usuária precisa começar um)', () => {
-    expect(shouldOfferRollover(null, '2026-07-05', 8)).toBe(false);
+  it('nudge depois de ROLLOVER_NUDGE_MONTHS transcorridos desde startedAt', () => {
+    const t = term({ startedAt: '2026-02-01', ordinal: 6 });
+    // 2026-02-01 → 2026-06-01 = 4 meses
+    expect(shouldNudgeRollover(t, '2026-06-01', 10)).toBe(true);
+    // um dia antes do quarto mês ainda não conta
+    expect(shouldNudgeRollover(t, '2026-05-31', 10)).toBe(false);
+  });
+
+  it('nudge quando o ordinal atingiu o total do curso (o último semestre)', () => {
+    expect(shouldNudgeRollover(term({ ordinal: 10 }), '2026-03-01', 10)).toBe(true);
+    expect(shouldNudgeRollover(term({ ordinal: 6 }), '2026-03-01', 10)).toBe(false);
+  });
+
+  it('o limiar de meses é configurável (semestral vs. outro calendário)', () => {
+    const t = term({ startedAt: '2026-02-01', ordinal: 6 });
+    expect(shouldNudgeRollover(t, '2026-04-01', 10, { nudgeAfterMonths: 2 })).toBe(true);
+    // e continua sendo só ênfase: o caminho existe antes disso
+    expect(canRollover(t)).toBe(true);
+  });
+
+  it('período que ainda não começou (today < startedAt) não gera nudge', () => {
+    expect(shouldNudgeRollover(term({ startedAt: '2026-08-01' }), '2026-03-01', 10)).toBe(false);
+  });
+
+  it('sem período, não há nudge nem caminho', () => {
+    expect(shouldNudgeRollover(null, '2026-07-05', 8)).toBe(false);
   });
 });

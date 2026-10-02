@@ -26,7 +26,15 @@ import { getCatalogQuestions } from '../lib/db/catalogDb';
 import { isNativePlatform } from '../lib/storage';
 import { hapticSuccess } from '../lib/haptics';
 import { scrollToTop } from '../lib/scroll';
-import { setNavMotionContext } from '../lib/motion';
+import {
+  deriveIntent,
+  IDLE_INTENT,
+  peekMotionIntent,
+  prefersReducedMotion,
+  setMotionIntent,
+  type NavIntent,
+} from '../lib/motion';
+import { overlayKeyOf, slideBaseKeyOf, slideLayerChanged, slideTopOf } from './slideKeys';
 import { parseRoute, routeToStack, stackToHash } from '../lib/routing';
 import {
   stackAfterOpenQuizCategory,
@@ -60,15 +68,6 @@ const MANAGED_KIND_TO_FLOW: Partial<Record<ManagedItemKind, WizardFlow>> = {
   author: 'author',
 };
 
-/** Kinds que vivem na camada overlay (fade+scale) — push/pop deles não muda a camada de slide. */
-const OVERLAY_KINDS = new Set<NavScreen['kind']>([
-  'compose',
-  'composeDetails',
-  'wizard',
-  'noteDetail',
-  'noteTransform',
-]);
-
 /**
  * Motor de navegação compartilhado (spec 07 §6.6): a pilha push/pop + telas
  * derivadas + modais + header dinâmico. Não depende da plataforma — a casca
@@ -82,6 +81,8 @@ export interface NavigationValue {
   /** Chave da camada overlay (fade+scale) — vazia quando não há overlay. */
   overlayKey: string;
   navDirection: 0 | 1 | -1;
+  /** Intenção de navegação completa (SPEC-007) — `navDirection` é só o `dir` dela. */
+  navIntent: NavIntent;
   navigationStack: NavScreen[];
   setStack: (next: NavScreen[]) => void;
   syncHash: (stack: NavScreen[]) => void;
@@ -321,6 +322,8 @@ export function useNavigationEngine(
     { kind: 'tab', tab: 'home' },
   ]);
   const [navDirection, setNavDirection] = useState<0 | 1 | -1>(0);
+  /** Intenção de navegação completa (SPEC-007). `navDirection` é só o `dir` dela. */
+  const [navIntent, setNavIntent] = useState<NavIntent>(IDLE_INTENT);
   const navigationStackRef = useRef<NavScreen[]>(navigationStack);
   // Cada atualização da pilha gera uma identidade nova para a camada de slide.
   // Isso evita colisão quando a usuária volta rapidamente a uma tela já visitada
@@ -329,24 +332,42 @@ export function useNavigationEngine(
   const [navigationRevision, setNavigationRevision] = useState(0);
 
   /**
-   * Atualiza a pilha e deriva a direção da transição (push=1 · pop=-1 · troca=0).
-   * A `navigationRevision` (que alimenta o `slideKey`) só bumpa quando a camada de
-   * slide muda de verdade — push/pop de OVERLAY_KINDS (compose/wizard/nota) não
+   * Atualiza a pilha e deriva a intenção de navegação (SPEC-007 §D1).
+   *
+   * A intenção viaja por `setMotionIntent` (canal de módulo) porque a instância
+   * que **sai** tem props congeladas do último render — a direção fresca e o
+   * offset do gesto não chegam por props.
+   *
+   * `setMotionIntent` é chamado **uma vez por navegação**. Se o gesto de borda
+   * já escreveu o intent neste tick, ele é preservado: a versão anterior
+   * (`setNavMotionContext(dir)` sem `gestureX`) **resetava para 0** o offset que
+   * o gesto tinha acabado de escrever, e o keyframe de saída partia sempre de 0
+   * em vez do ponto onde o dedo soltou (bug B2).
+   *
+   * A `navigationRevision` (que alimenta a `slideKey`) só bumpa quando a camada
+   * de slide muda de verdade — push/pop de OVERLAY_KINDS (compose/wizard/nota) não
    * remonta a tela de baixo, preservando o estado local (ex.: sub-tab ativa).
    */
   const setStack = useCallback((next: NavScreen[]) => {
     const prev = navigationStackRef.current;
-    const dir = next.length > prev.length ? 1 : next.length < prev.length ? -1 : 0;
-    const prevTop = prev[prev.length - 1];
-    const nextTop = next[next.length - 1];
-    const isOverlayChange =
-      OVERLAY_KINDS.has(prevTop.kind) || OVERLAY_KINDS.has(nextTop.kind);
-    // Direção fresca para as variantes de exit (lida no frame em que a tela sai).
-    setNavMotionContext(dir);
-    setNavDirection(dir);
+    const slideChanged = slideLayerChanged(prev, next);
+    const reduced = prefersReducedMotion();
+    const pendingGesture = peekMotionIntent().fromGesture;
+
+    const intent = pendingGesture
+      ? peekMotionIntent()
+      : deriveIntent(prev, next, { reduced });
+
+    setMotionIntent(intent);
+    // O `intent` também vai para o estado: a instância **presente** consegue ler
+    // por prop (o React re-renderiza ela), então `initial`/`animate` não
+    // dependem do canal. O canal fica só para o `exit`, cujas props estão
+    // congeladas.
+    setNavIntent(intent);
+    setNavDirection(intent.dir);
     setNavigationStack(next);
     navigationStackRef.current = next;
-    if (!isOverlayChange) {
+    if (slideChanged) {
       const revision = navigationRevisionRef.current + 1;
       navigationRevisionRef.current = revision;
       setNavigationRevision(revision);
@@ -529,75 +550,22 @@ export function useNavigationEngine(
 
   /**
    * Chave da camada de slide horizontal (pilha).
-   * Inclui a base (tab/curso) e os auxiliares de primeiro nível
-   * (notes, temple, streak) que aparecem com slide.
-   * Telas em camadas mais profundas (compose, composeDetails, wizard)
-   * usam uma camada separada de fade+scale — ficam fora desta key.
+   * Derivação pura em `slideKeys.ts` (SPEC-007 Slice B): a cadeia de ternários
+   * de 20 níveis escondia os kinds sem caso — `termHistory` caía no caso base e
+   * aparecia sem transição.
+   *
+   * Sai do **topo não-overlay** (`slideTopOf`), não do topo cru: a camada de
+   * slide fica embaixo da de overlay, então abrir um compose a partir do detalhe
+   * de uma disciplina não pode trocar a key de `course-c1` para `tab-faculdade`
+   * (senão remontava a tela de baixo e perdia a sub-tab ativa).
    */
-  const slideBaseKey =
-    currentScreen.kind === 'tab'
-      ? `tab-${currentScreen.tab}`
-      : currentScreen.kind === 'course'
-        ? `course-${currentScreen.courseId}`
-        : currentScreen.kind === 'classNote'
-          ? `course-${currentScreen.courseId}`
-          : currentScreen.kind === 'repertorioItem'
-            ? `course-${currentScreen.courseId}`
-            : currentScreen.kind === 'notes'
-              ? 'notes'
-            : currentScreen.kind === 'noteDetail' || currentScreen.kind === 'noteTransform'
-            ? 'notes'
-            : currentScreen.kind === 'temple'
-              ? 'temple'
-              : currentScreen.kind === 'templeSection'
-                ? `temple-${currentScreen.section}`
-                : currentScreen.kind === 'comparison'
-                  ? `comparison-${currentScreen.slug}`
-                  : currentScreen.kind === 'families'
-                    ? 'families'
-                    : currentScreen.kind === 'family'
-                      ? `family-${currentScreen.familyId}`
-                      : currentScreen.kind === 'approach'
-                        ? `approach-${currentScreen.approachId}`
-                        : currentScreen.kind === 'streak'
-                          ? 'streak'
-                          : currentScreen.kind === 'internshipDiary'
-                            ? 'internshipDiary'
-                            : currentScreen.kind === 'tcc'
-                              ? 'tcc'
-                              : currentScreen.kind === 'stickers'
-                                ? 'stickers'
-                                : currentScreen.kind === 'sync'
-                                  ? 'sync'
-                                  : currentScreen.kind === 'study'
-                                    ? `study-${currentScreen.screen}`
-                                    : currentScreen.kind === 'quiz-loading'
-                                      ? 'quiz-loading'
-                                      : navigationStack[0]?.kind === 'tab'
-                                        ? `tab-${navigationStack[0].tab}`
-                                        : navigationStack[0]?.kind === 'course'
-                                          ? `course-${navigationStack[0].courseId}`
-                                          : 'tab-home';
-  const slideKey = `${slideBaseKey}-${navigationRevision}`;
+  const slideKey = `${slideBaseKeyOf(slideTopOf(navigationStack), navigationStack[0])}-${navigationRevision}`;
 
   /**
-   * Chave da camada overlay (fade+scale).
-   * Só as telas em camadas profundas da pilha entram aqui
-   * (compose, composeDetails, wizard). Quando vazio, a camada
-   * overlay fica oculta.
+   * Chave da camada overlay (fade+scale). Só as telas em camadas profundas da
+   * pilha entram aqui. Quando vazia, a camada overlay fica oculta.
    */
-  const overlayKey =
-    currentScreen.kind === 'compose'
-      ? 'compose'
-      : currentScreen.kind === 'composeDetails'
-        ? 'composeDetails'
-        : currentScreen.kind === 'wizard'
-          ? `wizard-${currentScreen.type}`
-          : currentScreen.kind === 'noteDetail'
-            ? `noteDetail-${currentScreen.noteId}`
-            : currentScreen.kind === 'noteTransform'
-              ? `noteTransform-${currentScreen.noteId}`
-              : '';
+  const overlayKey = overlayKeyOf(currentScreen);
 
   /** Último hash gravado pelo próprio espelho (syncHash) — usado para ignorar o eco no applyRoute. */
   const lastSyncedHashRef = useRef<string | null>(null);
@@ -1354,23 +1322,27 @@ export function useNavigationEngine(
   }, [goBack, setWizardCourseId]);
 
   /**
-   * Abre o histórico de períodos. O wizard de semestre é o **passo 1** dele
-   * (índice dos períodos), então a pilha é sempre
-   * `[perfil, wizard semester, termHistory]` — o back volta para o wizard e
-   * depois para o perfil, sem caso especial.
+   * Abre o histórico de períodos empilhado sobre a base **atual** (SPEC-008 D5).
+   *
+   * O histórico é **irmão** do wizard, não filho: vindo do Perfil a pilha é
+   * `[perfil, termHistory]` e o back volta ao Perfil; vindo do passo 1 do
+   * assistente ele vira `[perfil, wizard, termHistory]` e o back devolve ao
+   * assistente. Antes a base era fixa e o back caía no wizard mesmo quando a
+   * usuária nunca tinha aberto o assistente. Chamar de novo (expandir um
+   * período) só troca o `termId` do topo.
    */
   const openTermHistory = useCallback(
     (termId?: string) => {
-      const next: NavScreen[] = [
-        { kind: 'tab', tab: 'perfil' },
-        { kind: 'wizard', type: 'semester' },
-        { kind: 'termHistory', termId },
-      ];
+      const onPerfil = navigationStack[0]?.kind === 'tab' && navigationStack[0].tab === 'perfil';
+      const base: NavScreen[] = onPerfil
+        ? navigationStack.filter((s) => s.kind !== 'termHistory')
+        : [{ kind: 'tab', tab: 'perfil' }];
+      const next: NavScreen[] = [...base, { kind: 'termHistory', termId }];
       setStack(next);
       syncHash(next);
       scrollToTop();
     },
-    [setStack, syncHash]
+    [navigationStack, setStack, syncHash],
   );
 
   // ---- menu universal de editar/excluir (long-press / clique direito) ----
@@ -1563,6 +1535,7 @@ export function useNavigationEngine(
     slideKey,
     overlayKey,
     navDirection,
+    navIntent,
     navigationStack,
     setStack,
     syncHash,

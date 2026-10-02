@@ -1,5 +1,25 @@
+/**
+ * Shim de compatibilidade — o sistema de movimento vive em `src/lib/motion/`.
+ *
+ * Ver `docs/specs/SPEC-007-sistema-unificado-de-transicoes-e-montagem-de-telas.md`.
+ *
+ * - **Novo código** importa de `./motion` (o diretório), nunca deste arquivo.
+ * - Os símbolos daqui abaixo que ainda NÃO migraram (`screenVariants`,
+ *   `overlayVariants`, `sheetVariants`, `fadeSlide`, `headerSwapVariants`,
+ *   `iOS_SPRING`, `IOS_EASE*`, `getTransition`) são **legado**: migram para
+ *   `src/lib/motion/` no Slice C (telas) e Slice D (chrome/modais).
+ * - `setNavMotionContext`/`consumeNavMotionContext` viram ponteiros para o
+ *   contrato `NavIntent` (Slice B remove de vez).
+ *
+ * Este arquivo não ganha símbolo novo — é só re-export + depreciação.
+ */
+
 import { useEffect, useState } from 'react';
 import { type Transition, type Variants } from 'framer-motion';
+import { EASE } from './motion/tokens';
+
+// Superfície pública única do sistema de movimento (SPEC-007).
+export * from './motion/index';
 
 /** Transições padrão "iOS-like" do cecistudy. */
 
@@ -65,17 +85,22 @@ export const getTransition = (normalTransition: Transition): Transition =>
  *
  * A instância que SAI de um AnimatePresence tem props congeladas do último
  * render — a direção fresca do pop/push e o offset inicial do gesto de borda
- * não chegam por props. Este contexto é setado de forma síncrona antes de cada
- * navegação (`setStack`/gesto) e CONSUMIDO uma única vez pela variante de exit
- * (devolve a 0 no ato da leitura — sem valor velho para o próximo pop).
+ * não chegam por props. O canal de `src/lib/motion/intent.ts` resolve isso
+ * carregando o `NavIntent` **inteiro** (o que também matou o bug B2, em que o
+ * `gestureX` era zerado por um segundo escritor).
+ *
+ * ⚠️ **Legado** — `screenVariants` e estes dois helpers só continuam aqui por
+ * causa de consumidores que ainda não migraram. O `SlideScreen` já usa
+ * `createScreenVariants` (Slice C). Não há mais duas verdades de movimento.
  */
 let motionCtx = { direction: 0, gestureX: 0 };
 
-/** Seta a direção (0/1/-1) e/ou o offset inicial (px) do gesto para o próximo pop. */
+/** @deprecated Use `setMotionIntent`/`gesturePopIntent` (`src/lib/motion/intent.ts`). */
 export const setNavMotionContext = (direction: number, gestureX = 0) => {
   motionCtx = { direction, gestureX };
 };
 
+/** @deprecated Use `consumeMotionIntent`. */
 const consumeNavMotionContext = () => {
   const ctx = motionCtx;
   motionCtx = { direction: 0, gestureX: 0 };
@@ -83,16 +108,10 @@ const consumeNavMotionContext = () => {
 };
 
 /**
- * Variants de transição de telas (pilha push/pop + troca de tab).
- * Cada variante resolve pelo `custom` (direction): 1 = push · -1 = pop · 0 = troca de tab.
+ * @deprecated Use `createScreenVariants(width, profile)` de `src/lib/motion/variants.ts`.
  *
- * **Slide direcional (quase-nativo):** no push a tela nova entra deslizando da
- * direita (parallax curto, sem full-screen) enquanto a antiga é coberta com um
- * leve deslocamento p/ a esquerda; no pop a tela do topo desliza p/ a direita
- * (continuando o gesto de borda, se houve) e a tela anterior é revelada vindo
- * da esquerda. direction=0 (troca de tab) é **fade puro**.
- *
- * `prefers-reduced-motion` degrada tudo para um fade simples, sem deslocamento.
+ * Variantes de transição de telas (pilha push/pop + troca de tab), legadas.
+ * Substituídas pela física de tela cheia com `NavIntent` (SPEC-007 Slice C).
  */
 export const screenVariants: Variants = {
   initial: (direction: number) => {
@@ -209,19 +228,18 @@ export const fadeSlide: Variants = {
 };
 
 /**
- * Troca concorrente dos modos do header (brand ↔ detail), sincronizada com a
- * transição das telas: **crossfade puro** (sem deslocamento), no mesmo ritmo
- * do `screenVariants`. O `custom` (direction) é aceito e ignorado — mantém a
- * API compatível com os consumidores.
+ * Troca de modo do header (brand ↔ detail).
+ *
+ * **Crossfade curto e propositalmente mais rápido que o slide da tela** (SPEC-007
+ * anti-padrão 11: header e tela não devem animar a mesma coisa). O slide da tela
+ * agora é de tela cheia (0.26s); se o header fizesse um crossfade do mesmo
+ * tamanho, os dois sinais se sobrepõem e vira um borrão. Com 0.1s, o header lê
+ * como "o conteúdo trocou" e o movimento fica sendo o da tela.
+ *
+ * O `custom` (direction) é aceito e ignorado — mantém a API compatível.
  */
 export const headerSwapVariants: Variants = {
   initial: { opacity: 0 },
-  animate: {
-    opacity: 1,
-    transition: { duration: PUSH_DURATION, ease: IOS_EASE_OUT },
-  },
-  exit: {
-    opacity: 0,
-    transition: { duration: PUSH_EXIT_DURATION, ease: 'easeIn' },
-  },
+  animate: { opacity: 1, transition: { duration: 0.1, ease: EASE.standard } },
+  exit: { opacity: 0, transition: { duration: 0.1, ease: EASE.exit } },
 };

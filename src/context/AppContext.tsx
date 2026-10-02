@@ -11,12 +11,12 @@ import type { ThemeId } from '../lib/themes';
 import type { DataActions, DataActionGroups } from './dataActions';
 import type { TermRolloverPlan } from '../lib/termRollover';
 import type { NavigationValue } from './navigationEngine';
+import type { NavIntent } from '../lib/motion';
 import type {
   NavTab,
   NavScreen,
   SubTabFaculdade,
-  SubTabBiblioteca,
-  UserProfile,
+  SubTabBiblioteca,  UserProfile,
   Course,
   ClassNote,
   Task,
@@ -134,6 +134,8 @@ export interface AppContextValue {
   /** Chave da camada overlay (fade+scale) — vazia quando não há overlay. */
   overlayKey: string;
   navDirection: 0 | 1 | -1;
+  /** Intenção de navegação completa (SPEC-007) — `navDirection` é só o `dir` dela. */
+  navIntent: NavIntent;
   navigationStack: NavScreen[];
   setStack: (next: NavScreen[]) => void;
   syncHash: (stack: NavScreen[]) => void;
@@ -442,6 +444,13 @@ export interface AppContextValue {
   canUndoRollover: boolean;
   /** Corrige o ordinal do período ativo (a "porta fácil" do Perfil). */
   correctTermOrdinal: (termId: string, ordinal: number) => void;
+  /** Ajusta o total de semestres do curso (`1..12`) — o stepper do Perfil. */
+  setTotalSemesters: (total: number) => void;
+  /**
+   * Abre o **primeiro** período quando não há nenhum ativo (SPEC-008 F4.2).
+   * No-op se já existir um ativo.
+   */
+  openFirstTerm: (ordinal: number) => void;
   /** Reabre um período encerrado (o "re-roll" do histórico). */
   reopenTermById: (termId: string) => void;
   archiveCourse: (courseId: string) => void;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BookOpen, Sparkles } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import { useTermActions } from '@/context/shellNavContexts';
@@ -7,10 +7,15 @@ import type { AcademicTerm } from '@/types';
 import { cn } from '@/lib/utils';
 
 /**
- * Histórico de períodos letivos (SPEC-005) — o índice do wizard de semestre.
+ * Histórico de períodos letivos (SPEC-005) — o índice dos semestres.
  *
- * Fica **empilhado sobre** o wizard (passo 1), não sobre a aba: o back volta
- * para o wizard e depois para o perfil, sem caso especial na cadeia.
+ * Fica empilhado sobre o **Perfil** (ou sobre o assistente, se foi de lá que a
+ * usuária veio) e é **irmão** do wizard, não filho (SPEC-008 D5). O `/semestre`
+ * na URL é o namespace do período, não uma tela-pai.
+ *
+ * Expandir um período é estado **local** desta tela: antes cada expansão
+ * empilhava a tela de novo, e cinco expansões deixavam uma pilha de cinco
+ * frames com o back refazendo o caminho inteiro.
  *
  * Um semestre encerrado tem o `summary` congelado e **nada é digitado** aqui —
  * o registro é o registro. A única ação é **reabrir** (SPEC-006 D7), o escape
@@ -19,13 +24,16 @@ import { cn } from '@/lib/utils';
  * o transcript do encerramento, porque o semestre voltou a acontecer.
  */
 export const TermHistoryScreen: React.FC = () => {
-  const { academicTerms, profile, focusedTermId, openTermHistory } = useMobileApp();
+  const { academicTerms, profile, focusedTermId } = useMobileApp();
   const { reopenTermById, showToast } = useTermActions();
   const terms = sortedTerms(academicTerms);
   // SPEC-005 §D4: o progresso vem do **período ativo**, nunca de
   // `profile.semester`. Ler o legado aqui fazia o histórico mentir sobre o
   // curso sempre que o número do período e o campo divergissem.
   const activeTerm = useActiveTerm(academicTerms);
+  // `focusedTermId` só abre o card certo no deep-link; a partir daí quem decide
+  // o que está aberto é a usuária, sem mexer na pilha (SPEC-008 D5).
+  const [expandedId, setExpandedId] = useState<string | undefined>(focusedTermId);
 
   const handleReopen = (term: AcademicTerm) => {
     reopenTermById(term.id);
@@ -55,8 +63,8 @@ export const TermHistoryScreen: React.FC = () => {
             <TermCard
               term={term}
               totalSemesters={profile.totalSemesters}
-              expanded={focusedTermId === term.id}
-              onOpen={() => openTermHistory(term.id)}
+              expanded={expandedId === term.id}
+              onOpen={() => setExpandedId(expandedId === term.id ? undefined : term.id)}
               onReopen={term.status === 'encerrado' ? () => handleReopen(term) : undefined}
             />
           </li>

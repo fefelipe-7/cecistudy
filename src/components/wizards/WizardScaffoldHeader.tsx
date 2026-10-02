@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
-import { IOS_EASE } from '../../lib/motion';
+import { BASE_D, EASE } from '../../lib/motion';
 import { cn } from '../../lib/utils';
 
 interface WizardScaffoldHeaderProps {
@@ -10,11 +10,17 @@ interface WizardScaffoldHeaderProps {
   icon: React.ReactNode;
   iconClass?: string;
   step: number;
+  /** Rótulos dos passos, para a lista acessível (`aria-current="step"`, SPEC-008 F4.7). */
+  stepTitles?: string[];
   stepsLength: number;
   showStepCount: boolean;
   isLast: boolean;
   onBack: () => void;
 }
+
+/** Lista de passos só para leitor de tela — o indicador visual é o "N de M". */
+const STEP_LIST_CLASS =
+  'sr-only absolute -m-px h-px w-px overflow-hidden whitespace-nowrap border-0 p-0 [clip:rect(0,0,0,0)]';
 
 /** Cabeçalho fixo do wizard: voltar, título + mascote-badge, etapa e progresso. */
 export const WizardScaffoldHeader: React.FC<WizardScaffoldHeaderProps> = ({
@@ -23,6 +29,7 @@ export const WizardScaffoldHeader: React.FC<WizardScaffoldHeaderProps> = ({
   icon,
   iconClass,
   step,
+  stepTitles,
   stepsLength,
   showStepCount,
   isLast,
@@ -72,8 +79,28 @@ export const WizardScaffoldHeader: React.FC<WizardScaffoldHeaderProps> = ({
         className="h-full rounded-full bg-ceci-brand-strong"
         initial={false}
         animate={{ width: `${((step + 1) / stepsLength) * 100}%` }}
-        transition={{ duration: 0.35, ease: IOS_EASE }}
+        // Tokens de movimento (SPEC-007 §D6): a barra é um indicador de **passo**
+        // de wizard, então `BASE_D.step` + `EASE.standard` — o literal
+        // `duration: 0.35` vivia aqui desde antes do gate e não tinha dono.
+        transition={{ duration: BASE_D.step, ease: EASE.standard }}
       />
     </div>
+
+    {/*
+      Lista de passos acessível (SPEC-008 F4.7). O contador "2 de 4" é um único
+      `span` com `aria-label`: ele diz *quantos*, não *qual*. Um leitor de tela
+      que chega no meio do passo 1 ouve "virar o semestre", a pergunta e o
+      conteúdo, e não sabe se é o primeiro de quatro ou o último. Esta `ol` dá a
+      estrutura completa com `aria-current="step"` no passo atual.
+    */}
+    {stepTitles && stepTitles.length > 1 && (
+      <ol className={STEP_LIST_CLASS}>
+        {stepTitles.map((t, i) => (
+          <li key={t} aria-current={i === step ? 'step' : undefined}>
+            {t}
+          </li>
+        ))}
+      </ol>
+    )}
   </div>
 );

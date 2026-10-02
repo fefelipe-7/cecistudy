@@ -10,7 +10,7 @@ import {
   type TermCourseDecision,
   type PendingCarry,
 } from '../../lib/termRollover';
-import { makeId } from '../../core/domain';
+import { clampTermOrdinal, makeId, MAX_TERM_ORDINAL } from '../../core/domain';
 
 const DECISIONS: Array<{ value: TermCourseDecision; label: string; hint: string }> = [
   { value: 'continuar', label: 'continua', hint: 'viaja pro próximo semestre' },
@@ -49,12 +49,33 @@ export const SemesterWizard: React.FC = () => {
     applyTermRollover,
     undoLastRollover,
     openTermHistory,
+    openFirstTerm,
   } = useMobileApp();
 
   const activeTerm = useActiveTerm(academicTerms);
   const history = sortedTerms(academicTerms).filter((t) => t.status === 'encerrado');
 
-  const { values, patch, step, setStep } = useWizardForm<{
+  /**
+   * Sem período ativo o wizard **não é uma virada** — é a abertura do primeiro
+   * período (SPEC-008 F4.2). Os passos 1–3 (o que continua, o que fica pra trás)
+   * não têm o que decidir, então a tela inteira colapsa para um passo só.
+   */
+  const isFirstTerm = !activeTerm;
+
+  /**
+   * O `ordinal` que o wizard abre com edição. Sem período ativo é o **1º** (é
+   * literalmente o primeiro); com período aberto é o próximo número.
+   *
+   * O rascunho persiste (`draftKey: 'semester'`): uma virada tem 4 passos e
+   * decisões caras (uma por disciplina). Sair no meio e voltar para achá-la
+   * zerada é o tipo de coisa que faz a usuária desistir. `clearDraft` roda no
+   * save, então um rascunho nunca sobrevive a uma virada gravada.
+   *
+   * `defaultOrdinal` é a referência do `isDirty` — se os dois divergirem, o
+   * wizard abre sujo e o "descartar?" aparece sem a usuária ter mexido em nada.
+   */
+  const defaultOrdinal = activeTerm ? activeTerm.ordinal + 1 : 1;
+  const { values, patch, step, setStep, clearDraft, isDirty } = useWizardForm<{
     ordinal: number;
     label: string;
     decisions: Record<string, TermCourseDecision>;
@@ -62,8 +83,13 @@ export const SemesterWizard: React.FC = () => {
     carryReadings: boolean;
     carryCards: boolean;
   }>({
+    draftKey: 'semester',
+    isDirty: (v) =>
+      v.ordinal !== defaultOrdinal ||
+      v.label.trim() !== '' ||
+      Object.keys(v.decisions).length > 0,
     initial: {
-      ordinal: (activeTerm?.ordinal ?? profile.semester ?? 1) + 1,
+      ordinal: clampTermOrdinal(defaultOrdinal),
       label: '',
       decisions: {},
       carryTasks: true,
@@ -103,23 +129,64 @@ export const SemesterWizard: React.FC = () => {
   const openReadings = readings.filter(
     (r) => r.status !== 'concluido' && (!r.courseId || travelling.has(r.courseId)),
   );
-  const openCards = flashcards.filter((f) => !f.courseId || travelling.has(f.courseId));
+  /**
+   * Flashcards **não revisados neste semestre** (SPEC-008 F4.6).
+   *
+   * Antes entrava o baralho inteiro — `flashcards` não tem filtro de status, só
+   * escopo — então uma matéria de três anos atrás, já respondida vezes, continuava
+   * aparecendo como "N flashcards no baralho" para adiar. `lastReviewed` é o
+   * único jeito de saber o que é velho; sem ele, conta como pendente.
+   */
+  const termStartedAt = activeTerm?.startedAt;
+  const openCards = flashcards.filter((f) => {
+    if (f.courseId && !travelling.has(f.courseId)) return false;
+    if (!termStartedAt) return true;
+    const last = f.lastReviewed?.slice(0, 10);
+    return !last || last < termStartedAt;
+  });
+
+  /**
+   * Recado do clamp, anunciado por `role="status"` (SPEC-008 F4.4): digitar `20`
+   * não pode falhar em silêncio nem com um número que ela não escolheu. O texto
+   * some quando o próximo digito já está dentro da faixa.
+   */
+  const [clampNote, setClampNote] = useState('');
+
+  const setOrdinal = (raw: number) => {
+    const requested = Math.trunc(Number(raw));
+    const next = clampTermOrdinal(Number.isFinite(requested) ? requested : 1);
+    setClampNote(
+      Number.isFinite(requested) && requested !== next
+        ? `deixei em ${next}º — o semestre vai de 1 a ${MAX_TERM_ORDINAL}`
+        : '',
+    );
+    patch({ ordinal: next });
+  };
+
+  /** Rótulo do período que vai ser criado (o wizard não depende do usuário lembrar). */
+  const nextLabel = values.label.trim() || `${values.ordinal}º semestre`;
 
   const carryOf = (on: boolean): PendingCarry => (on ? 'adiar' : 'deixar');
 
-  const canNext =
-    step === 0
-      ? Boolean(activeTerm)
+  const canNext = isFirstTerm
+    ? true // a abertura do 1º período não tem o que validar: um passo só
+    : step === 0
+      ? true // o ordinal do próximo é editável e já vem clampado
       : step === 1
         ? undecided.length === 0
         : true;
 
-  const blockedReason =
-    step === 0
-      ? 'seu semestre ativo ainda não foi aberto — dá pra olhar o histórico'
-      : step === 1 && undecided.length > 0
-        ? `faltam ${undecided.length} disciplina${undecided.length === 1 ? '' : 's'} pra decidir`
-        : '';
+  const blockedReason = !isFirstTerm && step === 1 && undecided.length > 0
+    ? `faltam ${undecided.length} disciplina${undecided.length === 1 ? '' : 's'} pra decidir`
+    : '';
+
+  /** Abrir o 1º período não é virada: grava e fecha, sem desfazer. */
+  const handleOpenFirstTerm = () => {
+    openFirstTerm(values.ordinal);
+    clearDraft();
+    showToast(`${nextLabel} aberto ♡`);
+    closeWizard();
+  };
 
   const handleSave = () => {
     if (!activeTerm) return;
@@ -136,7 +203,13 @@ export const SemesterWizard: React.FC = () => {
       decisions,
       newTermId: nextTermId,
       nextOrdinal: values.ordinal,
-      nextLabel: values.label.trim() || `${values.ordinal}º semestre`,
+      nextLabel,
+      // `totalSemesters` **não** é passado (SPEC-008 D3). Ele já foi o teto do
+      // `nextOrdinal` (SPEC-006 D8), e a remoção é deliberada: com o total
+      // errado, a usuária digita 9, este passo promete "9º semestre" e a
+      // gravação guardava 8 — sem nenhum rastro de onde o 8 veio. O limite é o
+      // teto global, e o número acima do curso vira aviso no passo 1, que tem
+      // link para corrigir o total.
       // `closedAt` é a data (YYYY-MM-DD) que vai no resumo congelado; `now` é o
       // carimbo ISO das transições.
       closedAt: new Date().toISOString().slice(0, 10),
@@ -180,6 +253,9 @@ export const SemesterWizard: React.FC = () => {
       },
     });
     applyTermRollover(finalPlan);
+    // O rascunho é de uma virada **não gravada**: depois de gravar ele só faria
+    // a próxima abertura do wizard vir suja, com as decisões do semestre passado.
+    clearDraft();
     // SPEC-006 D8: a virada oferece desfazer por 8s. O toast é o lugar da
     // decisão — Some em silêncio quando some (2600ms) seria perfeito para
     // "guardado ♡" e revocável demais para fechar um semestre.
@@ -189,7 +265,77 @@ export const SemesterWizard: React.FC = () => {
     closeWizard();
   };
 
-  const steps: WizardStep[] = useMemo(() => [
+  /**
+   * Campo do `ordinal`, compartilhado pelos dois caminhos (virada e 1º período).
+   *
+   * `max` é o teto **global** (`MAX_TERM_ORDINAL`), nunca `totalSemesters`:
+   * quem está no 9º de um curso de 8 precisa conseguir escrever 9 — o total se
+   * corrige no cartão do Perfil, e avisar é melhor do que travar (SPEC-008 D3).
+   */
+  const ordinalField = (
+    <div className="rounded-2xl bg-surface-muted border border-ceci-border-subtle px-4 py-3 space-y-2">
+      <FieldLabel>qual semestre entra?</FieldLabel>
+      <div className="flex items-center gap-3">
+        <input
+          type="number"
+          inputMode="numeric"
+          min={1}
+          max={MAX_TERM_ORDINAL}
+          value={values.ordinal}
+          onChange={(e) => setOrdinal(Number(e.target.value))}
+          aria-label="número do próximo semestre"
+          aria-describedby="semester-ordinal-hint"
+          className="w-24 rounded-xl border border-ceci-border-default bg-white px-3 py-2 text-lg font-display font-bold text-ceci-primary"
+        />
+        <span className="text-sm text-ceci-secondary">
+          {values.ordinal > profile.totalSemesters ? (
+            <span className="text-ceci-brand-strong">
+              além dos {profile.totalSemesters} do curso — dá pra ajustar o total no cartão do perfil ♡
+            </span>
+          ) : (
+            <>{`vai abrir ${nextLabel}`}</>
+          )}
+        </span>
+      </div>
+      <p id="semester-ordinal-hint" role="status" className="min-h-[1rem] text-[11px] text-ceci-tertiary">
+        {clampNote}
+      </p>
+    </div>
+  );
+
+  const steps: WizardStep[] = useMemo(() => {
+    // Sem período ativo: um passo só, com a abertura do 1º (F4.2).
+    if (isFirstTerm) {
+      return [
+        {
+          id: 'sem-first',
+          title: 'abrir meu 1º semestre',
+          headline: 'começamos pelo começo ♡',
+          subtitle: 'o app abre o seu primeiro período letivo — nada mais precisa ser decidido aqui.',
+          content: (
+            <div className="space-y-4">
+              {ordinalField}
+              <p className="text-sm text-ceci-secondary">
+                seus períodos anteriores, se existirem:
+              </p>
+              {history.length > 0 ? (
+                <ul className="space-y-1 text-xs text-ceci-secondary">
+                  {history.map((t) => (
+                    <li key={t.id}>
+                      {t.label}
+                      {t.summary ? ` · ${t.summary.courses} disciplinas · ${t.summary.focusMinutes}min de foco` : ''}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-ceci-tertiary">nenhum período guardado ainda — esse é o primeiro.</p>
+              )}
+            </div>
+          ),
+        },
+      ];
+    }
+    return [
     {
       id: 'sem-1',
       title: 'onde você está',
@@ -208,11 +354,8 @@ export const SemesterWizard: React.FC = () => {
                 { label: 'falta', value: `${semestersLeft(activeTerm.ordinal, profile.totalSemesters)} semestre(s)` },
               ]}
             />
-          ) : (
-            <p className="text-sm text-ceci-secondary">
-              nenhum período ativo no momento. você pode abrir o primeiro pelo histórico abaixo.
-            </p>
-          )}
+          ) : null}
+          {ordinalField}
           {history.length > 0 && (
             <div className="rounded-2xl bg-surface-muted border border-ceci-border-subtle px-4 py-3 space-y-2">
               <FieldLabel>seus períodos anteriores</FieldLabel>
@@ -246,22 +389,48 @@ export const SemesterWizard: React.FC = () => {
           {inTerm.map((c) => (
             <div key={c.id} className="rounded-2xl border border-ceci-border-default bg-white p-3">
               <p className="text-sm font-semibold text-ceci-primary">{c.name}</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {DECISIONS.map((d) => (
-                  <button
-                    key={d.value}
-                    type="button"
-                    onClick={() => patch({ decisions: { ...values.decisions, [c.id]: d.value } })}
-                    aria-pressed={decisionOf(c.id) === d.value}
-                    className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-all ${
-                      decisionOf(c.id) === d.value
-                        ? 'bg-ceci-primary text-white'
-                        : 'bg-surface-muted text-ceci-secondary border border-ceci-border-default'
-                    }`}
-                  >
-                    {d.label}
-                  </button>
-                ))}
+              {/*
+                `radiogroup` + `radio` (SPEC-008 F4.7): as três opções são
+                mutuamente exclusivas e **uma** é a resposta. Com `aria-pressed` em
+                botões soltos, o leitor de tela anuncia três "botões alternados
+                pressionados: 1 de 3" e não diz que é uma escolha única. O
+                `tabIndex` só na selecionada é o roving tabindex do padrão — Tab
+                entra no grupo uma vez, as setas circulam dentro.
+              */}
+              <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-label={`decisão para ${c.name}`}>
+                {DECISIONS.map((d, i) => {
+                  const selected = decisionOf(c.id) === d.value;
+                  return (
+                    <button
+                      key={d.value}
+                      type="button"
+                      role="radio"
+                      aria-checked={selected}
+                      tabIndex={selected ? 0 : -1}
+                      onClick={() => patch({ decisions: { ...values.decisions, [c.id]: d.value } })}
+                      onKeyDown={(e) => {
+                        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+                        e.preventDefault();
+                        const delta = e.key === 'ArrowRight' ? 1 : DECISIONS.length - 1;
+                        const nextDecision = DECISIONS[(i + delta) % DECISIONS.length];
+                        patch({ decisions: { ...values.decisions, [c.id]: nextDecision.value } });
+                        // o foco segue a seleção: sem isso, o teclado para no botão
+                        // que saiu do grupo.
+                        e.currentTarget.parentElement
+                          ?.querySelectorAll<HTMLButtonElement>('[role="radio"]')
+                          ?.item((i + delta) % DECISIONS.length)
+                          ?.focus();
+                      }}
+                      className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-all ${
+                        selected
+                          ? 'bg-ceci-primary text-white'
+                          : 'bg-surface-muted text-ceci-secondary border border-ceci-border-default'
+                      }`}
+                    >
+                      {d.label}
+                    </button>
+                  );
+                })}
               </div>
               <FieldHint>
                 {DECISIONS.find((d) => d.value === decisionOf(c.id))?.hint}
@@ -293,7 +462,10 @@ export const SemesterWizard: React.FC = () => {
               }`}
             >
               <span className="text-sm font-semibold text-ceci-primary">{row.label}</span>
-              <span className="text-xs text-ceci-secondary">
+              {/* `role="status"`: a contagem é o conteúdo do botão e muda quando a
+                  pendência é adiada ou não — o leitor precisa ouvir o número junto
+                  com o rótulo, não como um número solto (SPEC-008 F4.7). */}
+              <span role="status" className="text-xs text-ceci-secondary">
                 {row.count} {row.unit}
                 {row.count === 1 ? '' : 's'}
               </span>
@@ -337,12 +509,13 @@ export const SemesterWizard: React.FC = () => {
         </div>
       ),
     },
-  ], [activeTerm, archived.length, carried.length, history, inTerm, openCards.length, openReadings.length, openTasks.length, openTermHistory, undecided.length, values]);
+  ];
+  }, [activeTerm, archived.length, carried.length, clampNote, history, inTerm, isFirstTerm, nextLabel, openCards.length, openReadings.length, openTasks.length, openTermHistory, ordinalField, profile.totalSemesters, undecided.length, values]);
 
   return (
     <WizardScaffold
-      title="virar o semestre"
-      subtitle="um capítulo novo, com o anterior inteiro guardado"
+      title={isFirstTerm ? 'abrir meu 1º semestre' : 'virar o semestre'}
+      subtitle={isFirstTerm ? 'o começo da linha do tempo' : 'um capítulo novo, com o anterior inteiro guardado'}
       icon={<Sparkles className="w-3.5 h-3.5" />}
       iconClass="bg-surface-blue border-ceci-border-academic text-ceci-academic-strong"
       steps={steps}
@@ -350,8 +523,10 @@ export const SemesterWizard: React.FC = () => {
       onStepChange={setStep}
       canNext={canNext}
       blockedReason={blockedReason}
-      onSave={handleSave}
+      saveLabel={isFirstTerm ? 'abrir meu 1º semestre ♡' : 'virar o semestre ♡'}
+      onSave={isFirstTerm ? handleOpenFirstTerm : handleSave}
       onClose={closeWizard}
+      isDirty={isDirty}
     />
   );
 };

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, X, Clock } from 'lucide-react';
 import { QuizExplanationOverlay } from './QuizExplanationOverlay';
 import { cn } from '../../lib/utils';
-import { IOS_EASE, IOS_EASE_OUT } from '../../lib/motion';
+import { BASE_D, EASE, stepVariants } from '../../lib/motion';
 import type { StudyQuestion, QuizConfig, QuizAnswer, QuizPlayState } from '../../types';
 
 interface QuizPlayerProps {
@@ -113,7 +113,7 @@ const handleNext = useCallback(() => {
               style={{ transformOrigin: 'left' }}
               initial={false}
               animate={{ scaleX: progress / 100 }}
-              transition={{ duration: 0.35, ease: IOS_EASE }}
+              transition={{ duration: BASE_D.screenRest, ease: EASE.standard }}
             />
           </div>
           <AnimatePresence custom={showExplanation ? 1 : -1}>
@@ -121,11 +121,10 @@ const handleNext = useCallback(() => {
             <motion.div
               key="question"
               custom={showExplanation ? 1 : -1}
-              variants={{
-                initial: (dir: number) => ({ x: dir * 40, opacity: 0 }),
-                animate: { x: 0, opacity: 1, transition: { duration: 0.3, ease: IOS_EASE_OUT } },
-                exit: (dir: number) => ({ x: -dir * 40, opacity: 0, transition: { duration: 0.2, ease: IOS_EASE } }),
-              }}
+              variants={stepVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
             >
               <div className="rounded-xl p-5 bg-surface-default border border-ceci-border-default shadow-sm space-y-4">
                 {/* Timer da questão */}

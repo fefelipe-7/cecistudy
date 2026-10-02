@@ -1,6 +1,6 @@
 ﻿import React, { useState } from 'react';
-import { motion, AnimatePresence, useDragControls, type Variants } from 'framer-motion';
-import { getTransition, prefersReducedMotion } from '@/lib/motion';
+import { motion, AnimatePresence, useDragControls } from 'framer-motion';
+import { getTransition, prefersReducedMotion, stepVariants } from '@/lib/motion';
 import { CalendarClock, GraduationCap, MapPin } from 'lucide-react';
 import { CourseIcon } from '../ui/CourseIcon';
 import { UnderlineTabBar } from '../ui/UnderlineTabBar';
@@ -25,17 +25,14 @@ type DetailTab = 'info' | 'aulas' | 'repertorio';
 
 const TAB_ORDER: DetailTab[] = ['info', 'aulas', 'repertorio'];
 
-/** Slide direcional entre tabs (a direção segue o gesto/toque). */
-const tabVariants: Variants = {
-  enter: (dir: number) => ({ x: dir >= 0 ? 48 : -48, opacity: 0 }),
-  center: { x: 0, opacity: 1 },
-  exit: (dir: number) => ({ x: dir >= 0 ? -48 : 48, opacity: 0 }),
-};
-
 /**
  * Detalhe da disciplina (mobile): hero compacto com contexto (horário/sala),
  * botão de novo registro que expande menu e 3 sub-tabs navegáveis por toque
  * **ou arrasto contínuo** (o conteúdo acompanha o dedo com resistência elástica).
+ *
+ * A transição entre sub-tabs usa o preset `stepVariants` (SPEC-007) — a mesma
+ * física curta e local usada nos passos de wizard e nas questões do quiz, em vez
+ * das três tabelas locais que existiam (48px / 48px / 40px).
  */
 export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) => {
   const [activeTab, setActiveTab] = useState<DetailTab>('info');
@@ -100,8 +97,11 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-4 pb-24 relative">
       {/* Capinha da disciplina — canto afetuoso com a cor da matéria */}
       <div className="px-1 pt-1">
-        <motion.div
-          layoutId="course-hero"
+        {/* Sem `layoutId`: não há elemento de origem no grid da faculdade, então
+            a "magic motion" card → detalhe nunca rodava — só custava o registro
+            de projection node a cada render (SPEC-007 bug B3). Se a usuária
+            quiser shared-element de verdade, é um Slice próprio, com origem. */}
+        <div
           className="rounded-[26px] border border-ceci-border-subtle shadow-sm p-4 relative overflow-hidden"
           style={{
             background: `linear-gradient(135deg, var(--color-surface-default) 0%, ${courseColor}1A 100%)`,
@@ -110,20 +110,16 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
           }}
         >
           <div className="relative flex items-start gap-3.5">
-            <motion.span
-              layoutId="course-icon-bg"
+            <span
               className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-xs border border-ceci-border-default"
               style={{ backgroundColor: `${courseColor}26` }}
             >
               <CourseIcon icon={course.icon} className="w-6 h-6" />
-            </motion.span>
+            </span>
             <div className="min-w-0">
-              <motion.h2
-                layoutId="course-title"
-                className="font-display text-lg font-bold text-ceci-primary leading-snug tracking-tight"
-              >
+              <h2 className="font-display text-lg font-bold text-ceci-primary leading-snug tracking-tight">
                 {course.name}
-              </motion.h2>
+              </h2>
               <p className="text-[11px] font-medium text-ceci-secondary flex items-center flex-wrap gap-x-1.5 gap-y-0.5 mt-1">
                 <MapPin className="w-3 h-3 text-ceci-muted shrink-0" />
                 {contextBits.map((bit, i) => (
@@ -154,7 +150,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
             className="absolute bottom-0 left-5 right-5 h-[3px] rounded-full"
             style={{ background: courseColor }}
           />
-        </motion.div>
+        </div>
       </div>
 
       {/* Sub-tabs + conteúdo deslizável */}
@@ -183,13 +179,15 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
           <motion.div
             key={activeTab}
             custom={direction}
-            variants={tabVariants}
-            initial="enter"
-            animate="center"
+            variants={stepVariants}
+            initial="initial"
+            animate="animate"
             exit="exit"
-            transition={prefersReducedMotion()
-              ? { duration: 0.08 }
-              : { type: 'spring', stiffness: 380, damping: 36 }}
+            transition={
+              prefersReducedMotion()
+                ? { duration: 0.08 }
+                : { type: 'spring', stiffness: 380, damping: 36 }
+            }
             drag={prefersReducedMotion() ? false : 'x'}
             dragListener={false}
             dragControls={dragControls}

@@ -166,9 +166,9 @@ export function buildHeaderConfig(input: HeaderConfigInput): DynamicHeaderConfig
       onBack,
     };
   } else if (currentScreen.kind === 'termHistory') {
-    // SPEC-005: histórico empilhado sobre o wizard de semestre. O back do
-    // header devolve ao passo 1 do wizard (não direto ao perfil) porque é
-    // literalmente o pop da pilha.
+    // SPEC-008 D5: o histórico é irmão do wizard, então o back do header devolve
+    // ao Perfil — ou ao assistente, se foi de lá que a usuária veio. É o pop da
+    // pilha; não há caso especial aqui.
     headerConfig = {
       type: 'detail',
       title: 'seus semestres',

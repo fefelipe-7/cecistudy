@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Exam, Sticker, Task } from '../types';
-import type { Workspace } from '../core/domain';
+import { resolveActiveTerm, type Workspace } from '../core/domain';
 import { DEFAULT_WORKSPACE_ID } from '../data/schema';
 import type { DataClientValue, ReminderSettings } from './DataClientProvider';
 import { useDataActions, type DataActions, type DataActionGroups } from './dataActions';
@@ -158,6 +158,9 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
   useEffect(() => {
     const state = {
       profile,
+      // `termOrdinal` vem do **período ativo**, não de `profile.semester`
+      // (SPEC-008 F4.8): as conquistas de jornada acompanhavam o número legado.
+      termOrdinal: resolveActiveTerm(academicTerms)?.ordinal ?? profile.semester,
       readings,
       flashcards,
       sessions,

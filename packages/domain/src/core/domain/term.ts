@@ -266,10 +266,10 @@ export function openTerm(
  * **Zera `endedAt` e `summary`** (SPEC-006 D7). O `summary` é o transcript de um
  * período **encerrado** — congelar e depois reexibi-lo num termo reaberto produz
  * dois bugs visíveis: o card do histórico mostra "32 aulas · 20h de foco" num
- * semester que está começando, e `shouldOfferRollover` lê `endedAt` e responde
- * `true` na hora, oferecendo uma virada que não faz sentido. Reabrir devolve o
- * termo ao estado de "ainda não terminou"; o que ele tinha fica no histórico de
- * quem o encerrou — nada é apagado do banco, apenas reclassificado.
+ * semestre que está começando, e um `endedAt` num termo `ativo` é justamente o
+ * que fazia a elegibilidade da virada responder `true` na hora (SPEC-008 N1).
+ * Reabrir devolve o termo ao estado de "ainda não terminou"; o que ele tinha fica
+ * no histórico de quem o encerrou — nada é apagado do banco, apenas reclassificado.
  *
  * As chaves `endedAt`/`summary` são **removidas** (não deixadas como `undefined`):
  * elas são a marca de "encerrado", e `toEqual`/serialização do backup não devem
@@ -444,13 +444,63 @@ export function termsByRecency(terms: AcademicTerm[]): AcademicTerm[] {
   });
 }
 
-/** `true` quando o período já cumpriu o fim (ou o ordinal chegou ao teto). */
-export function shouldOfferRollover(
+/**
+ * Meses que um período fica aberto antes de o app sugerir a virada.
+ *
+ * Um semestre tem ~6 meses; 4 dá folga para o intervalo de férias e para quem
+ * entrou no período depois do início das aulas. É só **ênfase** — o botão
+ * existe desde o primeiro dia (ver `canRollover`).
+ */
+export const ROLLOVER_NUDGE_MONTHS = 4;
+
+/** Meses inteiros transcorridos de `from` até `to`, em `YYYY-MM-DD`. */
+function monthsElapsed(from: string, to: string): number {
+  const fromYear = Number(from.slice(0, 4));
+  const fromMonth = Number(from.slice(5, 7));
+  const fromDay = Number(from.slice(8, 10));
+  const toYear = Number(to.slice(0, 4));
+  const toMonth = Number(to.slice(5, 7));
+  const toDay = Number(to.slice(8, 10));
+  if (!Number.isFinite(fromYear + fromMonth + toYear + toMonth)) return 0;
+  let months = (toYear - fromYear) * 12 + (toMonth - fromMonth);
+  // o mês só fechou quando `to` passou do dia em que o período começou
+  if (toDay < fromDay) months -= 1;
+  return Math.max(0, months);
+}
+
+/**
+ * `true` quando existe um caminho para virar o semestre.
+ *
+ * Estrutural, sem data e sem número: basta um período aberto. A versão anterior
+ * (`shouldOfferRollover`) decidia a **existência** do caminho lendo
+ * `term.endedAt`, que só existe num período `encerrado` — e o CTA é sobre o
+ * período **ativo**, que nunca o tem. O ramo era código morto, então a virada só
+ * aparecia quando o ordinal coincidia com o total do curso (SPEC-008 N1).
+ */
+export function canRollover(term: AcademicTerm | null): term is AcademicTerm {
+  return term !== null && term.status === 'ativo';
+}
+
+export interface RolloverNudgeOptions {
+  /** Sobrescreve `ROLLOVER_NUDGE_MONTHS` (cursos de outro calendário). */
+  nudgeAfterMonths?: number;
+}
+
+/**
+ * `true` quando vale **destacar** a virada — nunca quando ela existe.
+ *
+ * Um período sugere virada quando já passou tempo suficiente desde `startedAt`
+ * ou quando o ordinal atingiu o total do curso. Fora disso a virada continua
+ * disponível e clicável, só não grita.
+ */
+export function shouldNudgeRollover(
   term: AcademicTerm | null,
   today: string,
   totalSemesters: number,
+  options: RolloverNudgeOptions = {},
 ): boolean {
-  if (!term) return false;
-  if (term.endedAt && term.endedAt <= today) return true;
-  return term.ordinal >= totalSemesters;
+  if (!canRollover(term)) return false;
+  const threshold = options.nudgeAfterMonths ?? ROLLOVER_NUDGE_MONTHS;
+  if (term.ordinal >= totalSemesters) return true;
+  return monthsElapsed(term.startedAt, today) >= threshold;
 }

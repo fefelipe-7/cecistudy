@@ -27,7 +27,14 @@ import { shouldCelebrateTasks } from '../lib/taskLogic';
 import { schedule } from '../lib/fsrs';
 import { normalizeText } from '../lib/readingMatching';
 import { toDateKey } from '../lib/streak';
-import { enforceSingleActiveTerm, reopenTerm, resolveActiveTerm, retitleTerm } from '../core/domain';
+import {
+  createAcademicTerm,
+  enforceSingleActiveTerm,
+  reopenTerm,
+  resolveActiveTerm,
+  retitleTerm,
+  MAX_TERM_ORDINAL,
+} from '../core/domain';
 import { remainingUndoWindowMs } from '../lib/termUndoWindow';
 import { undoTermRollover as undoRollover } from '../lib/termRollover';
 import type { TermRolloverPlan } from '../lib/termRollover';
@@ -148,6 +155,13 @@ export interface DataActions {
    * D6). Rejeita período encerrado — para isso existe `reopenTermById`.
    */
   correctTermOrdinal: (termId: string, ordinal: number) => void;
+  /**
+   * Ajusta o total de semestres do curso, `1..MAX_TERM_ORDINAL` (SPEC-008 D2).
+   * É o palpite que a `% do curso`, o `faltam N semestres` e o `array da
+   * timeline` leem — e antes não tinha editor nenhum.
+   */
+  setTotalSemesters: (total: number) => void;
+  openFirstTerm: (ordinal: number) => void;
   /** Reabre um período encerrado (o "re-roll" do histórico, SPEC-006 D7). */
   reopenTermById: (termId: string) => void;
   /** Arquiva a disciplina (sai da grade, continua pesquisável — nunca apaga). */
@@ -194,6 +208,8 @@ export interface DataActionGroups {
     | 'undoTermRollover'
     | 'undoLastRollover'
     | 'correctTermOrdinal'
+    | 'setTotalSemesters'
+    | 'openFirstTerm'
     | 'reopenTermById'
     | 'archiveCourse'
     | 'restoreCourse'
@@ -601,12 +617,17 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
    * É a correção que substitui o input fantasma de `profile.semester`: antes a
    * usuária editava um campo que nada lia, e o semester exibido continuava o
    * mesmo. Aqui o número que ela digita é o número que o app usa.
+   *
+   * O `cap` é o **teto global** (`MAX_TERM_ORDINAL`), não o total do curso
+   * (SPEC-008 D3): passar o total aqui prendia a usuária que está no 9º de um
+   * curso de 8 — e, como o total não tinha editor, a correção era impossível.
+   * Estar além do total é um aviso no cartão, não um clamp.
    */
   const correctTermOrdinal = useCallback(
     (termId: string, ordinal: number) => {
       const now = new Date().toISOString();
       const terms = enforceSingleActiveTerm(
-        retitleTerm(academicTerms, termId, ordinal, now, profile.totalSemesters)
+        retitleTerm(academicTerms, termId, ordinal, now, MAX_TERM_ORDINAL),
       );
       if (terms === academicTerms) return; // no-op (encerrado, planejado ou mesmo ordinal)
       setAcademicTerms(terms);
@@ -616,7 +637,47 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
       }
       hapticTap();
     },
-    [academicTerms, profile.totalSemesters, setAcademicTerms, setProfile]
+    [academicTerms, setAcademicTerms, setProfile],
+  );
+
+  /**
+   * Abre o **primeiro** período quando não há nenhum ativo (SPEC-008 F4.2).
+   *
+   * O estado "sem período ativo" é alcançável de verdade: `ensureActiveTerm` (o
+   * boot) só cria o bootstrap quando o id dele não existe ainda, então um
+   * backup com o bootstrap já **encerrado** e nenhum ativo fica assim para
+   * sempre. Antes, o wizard abria em cima desse estado com o passo 0 travado
+   * ("seu semestre ativo ainda não foi aberto") e o `handleSave` retornando
+   * sem fazer nada — beco sem saída.
+   *
+   * Não passa por `planTermRollover`: não há período para encerrar, e esse
+   * caminho não cria resumo de nada que não aconteceu.
+   */
+  const openFirstTerm = useCallback(
+    (ordinal: number) => {
+      if (resolveActiveTerm(academicTerms)) return; // já existe um ativo: nada a fazer
+      const now = new Date().toISOString();
+      const created = createAcademicTerm({ ordinal, startedAt: now.slice(0, 10), now });
+      const terms = enforceSingleActiveTerm([...academicTerms, created]);
+      setAcademicTerms(terms);
+      setProfile((prev) => (prev.semester === created.ordinal ? prev : { ...prev, semester: created.ordinal }));
+      hapticTap();
+    },
+    [academicTerms, setAcademicTerms, setProfile],
+  );
+
+  /**
+   * Ajusta o total de semestres do curso (`1..MAX_TERM_ORDINAL`) — o palpite que o
+   * `JourneyTermCard` expõe em stepper (SPEC-008 D2). Sem isto o total era um
+   * número que ninguém podia corrigir depois da migração do default `8` → `10`.
+   */
+  const setTotalSemesters = useCallback(
+    (total: number) => {
+      const next = Math.max(1, Math.min(MAX_TERM_ORDINAL, Math.trunc(total) || 1));
+      setProfile((prev) => (prev.totalSemesters === next ? prev : { ...prev, totalSemesters: next }));
+      hapticTap();
+    },
+    [setProfile],
   );
 
   /**
@@ -694,11 +755,13 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
       lastRollover: lastRolloverPlan,
       canUndoRollover: lastRollover !== null,
       correctTermOrdinal,
+      setTotalSemesters,
+      openFirstTerm,
       reopenTermById,
       archiveCourse,
       restoreCourse,
     }),
-    [applyTermRollover, undoTermRollover, undoLastRollover, lastRollover, lastRolloverPlan, correctTermOrdinal, reopenTermById, archiveCourse, restoreCourse]
+    [applyTermRollover, undoTermRollover, undoLastRollover, lastRollover, lastRolloverPlan, correctTermOrdinal, setTotalSemesters, openFirstTerm, reopenTermById, archiveCourse, restoreCourse]
   );
 
   // Grupos por domínio (PERF-001 A.3): cada grupo memoizado nas próprias

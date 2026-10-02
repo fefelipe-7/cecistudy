@@ -1,10 +1,12 @@
-// Faculdade — convite de virada de semestre (SPEC-005 §D6).
+// Faculdade — convite de virada de semestre (SPEC-005 §D6, refinado na SPEC-008 D1).
 //
-// Aparece em dois momentos, e só neles:
-//  - `due`: o semestre tá acabando (passou do meio, ou já é o último);
-//  - sem período ativo: a usuária precisa abrir o primeiro de mano.
+// Duas perguntas, e elas não são a mesma:
+//  - `available`: existe um caminho para virar? (basta um período aberto)
+//  - `nudge`: vale *destacar* agora? (o semestre está acabando)
 //
-// Fora disso a tela fica limpa — nada de nudge permanentes.
+// A versão anterior decidia as duas com um booleano só, o que escondia a virada
+// durante quase todo o semestre. Agora o convite fica sempre à mão e só muda de
+// intensidade — nada de nudge permanente, nada de caminho perdido.
 import React from 'react';
 import { Archive, Sparkles } from 'lucide-react';
 import type { AcademicTerm } from '../../../types';
@@ -15,8 +17,10 @@ interface TermRolloverCtaProps {
   totalSemesters: number;
   /** Disciplinas arquivadas (continuam pesquisáveis, saem da grade). */
   archivedCount: number;
-  /** `shouldOfferRollover()` já avaliado pela view (evita `Date.now()` no componente). */
-  due: boolean;
+  /** `canRollover()` — existe período aberto, logo existe caminho. */
+  available: boolean;
+  /** `shouldNudgeRollover()` — o semestre está no fim: aí sim a gente destaca. */
+  nudge: boolean;
   onOpenWizard: () => void;
 }
 
@@ -24,10 +28,11 @@ const TermRolloverCta: React.FC<TermRolloverCtaProps> = ({
   term,
   totalSemesters,
   archivedCount,
-  due,
+  available,
+  nudge,
   onOpenWizard,
 }) => {
-  if (!due && term) return null;
+  if (!available) return null;
 
   if (!term) {
     return (
@@ -45,28 +50,45 @@ const TermRolloverCta: React.FC<TermRolloverCtaProps> = ({
   }
 
   const left = semestersLeft(term.ordinal, totalSemesters);
+  const lastSemester = left <= 0;
 
   return (
-    <div className="rounded-[22px] border border-ceci-border-brand bg-surface-rose p-4 space-y-3">
+    <div
+      className={`rounded-[22px] border p-4 space-y-3 ${
+        nudge
+          ? 'border-ceci-border-brand bg-surface-rose'
+          : 'border-ceci-border-default bg-surface-default'
+      }`}
+    >
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold text-ceci-primary">
-            {left > 0
-              ? `seu ${term.label} tá chegando no fim`
-              : `seu ${term.label} é o último da graduação`}
+            {!nudge
+              ? `seu ${term.label} tá guardando tudo que você anota`
+              : lastSemester
+                ? `seu ${term.label} é o último da graduação`
+                : `seu ${term.label} tá chegando no fim`}
           </p>
           <p className="text-xs text-ceci-secondary mt-0.5">
             {degreeProgress(term.ordinal, totalSemesters)}% do caminho
-            {left > 0 ? ` · faltam ${left} semestre${left === 1 ? '' : 's'}` : ' · formatura à vista 🌷'}
-            {archivedCount > 0 ? ` · ${archivedCount} disciplina${archivedCount === 1 ? '' : 's'} arquivada${archivedCount === 1 ? '' : 's'}` : ''}
+            {lastSemester
+              ? ' · formatura à vista 🌷'
+              : ` · faltam ${left} semestre${left === 1 ? '' : 's'}`}
+            {archivedCount > 0
+              ? ` · ${archivedCount} disciplina${archivedCount === 1 ? '' : 's'} arquivada${archivedCount === 1 ? '' : 's'}`
+              : ''}
           </p>
         </div>
         <button
           type="button"
           onClick={onOpenWizard}
-          className="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-ceci-brand-strong px-4 py-2 text-xs font-semibold text-white hover:bg-ceci-brand transition-colors"
+          className={`shrink-0 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition-colors ${
+            nudge
+              ? 'bg-ceci-brand-strong text-white hover:bg-ceci-brand'
+              : 'border border-ceci-border-default bg-surface-default text-ceci-secondary hover:bg-surface-muted'
+          }`}
         >
-          <Sparkles className="w-3.5 h-3.5" />
+          {nudge && <Sparkles className="w-3.5 h-3.5" />}
           virar
         </button>
       </div>

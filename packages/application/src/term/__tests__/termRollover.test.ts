@@ -7,7 +7,7 @@ import {
   gradeCourses,
 } from '../rollover';
 import type { TermAttendanceInput, TermCourseDecisions, TermSummaryInput } from '../rollover';
-import { resolveActiveTerm } from '../../../../../src/core/domain';
+import { resolveActiveTerm, MAX_TERM_ORDINAL } from '../../../../../src/core/domain';
 import type { AcademicTerm, TermScopedCourse } from '../../../../../src/core/domain';
 
 function term(over: Partial<AcademicTerm> = {}): AcademicTerm {
@@ -392,9 +392,13 @@ describe('application/term — planTermRollover', () => {
     expect(plan.terms.filter((t) => t.status === 'ativo').map((t) => t.id)).toEqual(['trm-next']);
   });
 
-  it('B11 (SPEC-006 D8): o próximo ordinal respeita o teto do curso (não o teto global de 12)', () => {
-    // O clamp usava `clampTermOrdinal(x)` com o teto global (12), ignorando
-    // `totalSemesters` — num curso de 10, a 10ª virada criava "11º semestre".
+  it('B11 (SPEC-006 D8, revisto pela SPEC-008 D3): o próximo ordinal respeita o teto GLOBAL, não o total do curso', () => {
+    // A SPEC-006 D8 queria `min(totalSemesters, 12)` como teto: num curso de 10, a
+    // 10ª virada criava um "11º semestre" que não existe. O cap foi removido
+    // porque o total é um palpite editável — quando ele está errado, a usuária
+    // digita 9, o review promete "9º semestre" e a gravação joga 8 em silêncio,
+    // sem nenhum lugar de onde "8" ter vindo. O limite passa a ser o teto global
+    // e a UI **avisa** que o número passou do curso (e o total tem editor).
     const at = (totalSemesters: number, nextOrdinal: number) =>
       planTermRollover({
         terms: [term({ ordinal: 10 })],
@@ -406,14 +410,15 @@ describe('application/term — planTermRollover', () => {
         nextOrdinal,
         closedAt: '2026-06-30',
         now: '2026-06-30T12:00:00.000Z',
-        // `totalSemesters` só existe a partir da SPEC-006; o cast mantém o
-        // `tsc` verde enquanto a assinatura ainda não foi ampliada.
       } as Parameters<typeof planTermRollover>[0]).terms.find((t) => t.id === 'trm-2')?.ordinal;
-    expect(at(10, 11)).toBe(10);
-    expect(at(8, 9)).toBe(8);
-    expect(at(12, 13)).toBe(12);
-    // abaixo do teto, o valor pedido é respeitado
-    expect(at(10, 8)).toBe(8);
+    // passar do total do curso **não** é mais clamp
+    expect(at(10, 11)).toBe(11);
+    expect(at(8, 9)).toBe(9);
+    expect(at(8, 7)).toBe(7);
+    // o teto global continua valendo
+    expect(at(12, 13)).toBe(MAX_TERM_ORDINAL);
+    expect(at(8, 99)).toBe(MAX_TERM_ORDINAL);
+    expect(at(8, 0)).toBe(1);
   });
 });
 

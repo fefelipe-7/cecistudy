@@ -5,7 +5,7 @@ import { AnimatePresence, motion, useMotionValue, useTransform } from 'framer-mo
 import { useMobileApp } from '@/context/mobileApp';
 import { useNavValue } from '@/context/shellNavContexts';
 import { setupNativeShell } from '../lib/native';
-import { overlayVariants, PUSH_DURATION, PUSH_EXIT_DURATION } from '../lib/motion';
+import { EASE, overlayVariants, resolveProfile } from '../lib/motion';
 import { nativeNavigation } from '../navigation/native-navigation';
 
 import { HeaderNav } from '../components/HeaderNav';
@@ -14,6 +14,7 @@ import { EdgeSwipeBack } from '../components/ui/EdgeSwipeBack';
 import { OnboardingScreen } from '../components/views/OnboardingScreen';
 
 import { SlideScreen } from './SlideScreen';
+import { MotionProfileProvider, useMotionProfile } from '../components/motion/MotionProfileProvider';
 import { SlideContent, OverlayContent } from './SharedScreenLayers';
 import { focusController } from '../lib/focusController';
 import {
@@ -30,8 +31,21 @@ const BottomNavMemo = memo(BottomNav);
  * Casca mobile/web: header dinâmico + barra inferior + pilha com slide
  * horizontal e overlays em tela cheia. Efeitos nativos (Capacitor) vivem aqui.
  */
-export const MobileAppShell: React.FC = () => {
+export const MobileAppShell: React.FC = () => (
+  // O perfil de movimento envolve **tudo**, inclusive o onboarding (que anima os
+  // passos) — e fica aqui, dentro do shell, para que os dois clientes (web e
+  // `apps/mobile`) o ganhem sem mexer nos entrypoints. Ele não ramifica por
+  // plataforma: lê só o `prefers-reduced-motion` do sistema.
+  <MotionProfileProvider>
+    <MobileAppShellInner />
+  </MotionProfileProvider>
+);
+
+const MobileAppShellInner: React.FC = () => {
   const app = useMobileApp();
+  /** Perfil de movimento do chrome (bottom-nav). Lido fora do JSX para não
+   *  reconstruir o objeto a cada render. */
+  const chrome = useMotionProfile();
   // Campos de navegação via NavValueContext (identidade estável entre mudanças de
   // dados) — o BottomNavMemo só re-renderiza quando a NAVEGAÇÃO muda de fato.
   const nav = useNavValue();
@@ -213,8 +227,8 @@ export const MobileAppShell: React.FC = () => {
           style={{ x: Capacitor.isNativePlatform() ? swipeX : 0 }}
           className="relative z-10"
         >
-          <AnimatePresence initial={false} custom={app.navDirection}>
-            <SlideScreen key={app.slideKey} direction={app.navDirection}>
+          <AnimatePresence initial={false} custom={app.navIntent}>
+            <SlideScreen key={app.slideKey} intent={app.navIntent}>
               <SlideContent />
             </SlideScreen>
           </AnimatePresence>
@@ -240,16 +254,24 @@ export const MobileAppShell: React.FC = () => {
         </AnimatePresence>
       </main>
 
-      {/* Fixed Bottom Navigation Bar — some com fade sincronizado ao push/pop
-          (mesmos durações/easings do slide). Só opacity: transform em ancestral
-          viraria containing block do `fixed` interno. */}
+      {/* Fixed Bottom Navigation Bar — some junto com o push/pop, em tempo com o
+          slide. **Só opacity, de propósito:** um `transform` neste wrapper viraria
+          containing block do `fixed` interno (o `fixed` do nav deixaria de se
+          posicionar na viewport). Fazer a barra "deslizar para fora" exigiria
+          animar o `y` de dentro do elemento `fixed`, não do wrapper. */}
       <AnimatePresence initial={false}>
         {app.isBottomNavVisible && (
           <motion.div
             key="bottom-nav"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1, transition: { duration: PUSH_DURATION, ease: 'easeOut' } }}
-            exit={{ opacity: 0, transition: { duration: PUSH_EXIT_DURATION, ease: 'easeIn' } }}
+            animate={{
+              opacity: 1,
+              transition: { duration: chrome.d.navBar, ease: EASE.standard },
+            }}
+            exit={{
+              opacity: 0,
+              transition: { duration: chrome.d.navBar, ease: EASE.exit },
+            }}
             className="lg:hidden"
           >
             <BottomNavMemo

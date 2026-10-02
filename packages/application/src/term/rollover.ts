@@ -13,7 +13,7 @@
  * determinística (necessário para os golden files e para o undo).
  */
 import type { AcademicTerm, TermScopedCourse, TermSummary, TermStatus } from '../../../../src/core/domain';
-import { clampTermOrdinal, enforceSingleActiveTerm, termLabel, resolveActiveTerm, MAX_TERM_ORDINAL } from '../../../../src/core/domain';
+import { clampTermOrdinal, enforceSingleActiveTerm, termLabel, resolveActiveTerm } from '../../../../src/core/domain';
 
 /** O que a usuária decidiu para cada disciplina no passo 2 do wizard. */
 export type TermCourseDecision = 'continuar' | 'arquivar' | 'depois';
@@ -251,11 +251,23 @@ export function planTermRollover(input: {
   nextOrdinal?: number;
   nextLabel?: string;
   /**
-   * Total de semestres do curso (SPEC-006 D8) — é o **teto** do `nextOrdinal`.
+   * Total de semestres do curso (SPEC-006 D8 → **revisto pela SPEC-008 D3**).
    *
-   * Antes o clamp usava só o teto global (12), então num curso de 10 a 10ª
-   * virada criava um "11º semestre" que não existe. O cap efetivo é
-   * `min(totalSemesters, MAX_TERM_ORDINAL)`.
+   * Antes isto era o **teto** do `nextOrdinal` (`min(totalSemesters, 12)`), para
+   * que num curso de 10 a 10ª virada não criasse um "11º semestre". O cap foi
+   * removido: o total é um palpite editável, e um teto que depende de outro
+   * campo dá o pior resultado possível quando o palpite está errado — a usuária
+   * digita 9 num curso de 8, o passo de revisão promete "9º semestre" e a gravação
+   * joga 8 em silêncio. Ela nunca descobre de onde veio o 8.
+   *
+   * O `nextOrdinal` agora é limitado só pelo teto global (`MAX_TERM_ORDINAL`), e
+   * a UI **avisa** quando o número passa do total do curso, monitored
+   * (`JourneyTermCard`) ou no wizard — onde dá para corrigir o total. O
+   * `totalSemesters` continua no input e no resumo congelado, mas não decide
+   * nada: um teto não pode depender de um campo que a usuária ainda não corrigiu.
+   *
+   * @deprecated Mantido só para não quebrar chamadores externos. Não afeta o
+   * `nextOrdinal` — use `MAX_TERM_ORDINAL` para o teto.
    */
   totalSemesters?: number;
   /** Data do fechamento (YYYY-MM-DD) e carimbo ISO das transições. */
@@ -314,14 +326,11 @@ export function planTermRollover(input: {
       : t,
   );
 
-  // 2) o período novo: ativo, com o próximo `ordinal`, **tetoado pelo curso**.
+  // 2) o período novo: ativo, com o próximo `ordinal`, limitado pelo **teto global**
+  //    (SPEC-008 D3 — não mais pelo total do curso; ver o `@deprecated` acima).
   //    `statusTransitionAt: now` (e não `closedAt`) é o que faz este período
   //    ganhar a disputa de recência contra qualquer outro ativo.
-  const totalCap = Math.min(
-    MAX_TERM_ORDINAL,
-    Math.max(1, Math.trunc(input.totalSemesters ?? 0) || MAX_TERM_ORDINAL),
-  );
-  const nextOrdinal = clampTermOrdinal(input.nextOrdinal ?? activeTerm.ordinal + 1, totalCap);
+  const nextOrdinal = clampTermOrdinal(input.nextOrdinal ?? activeTerm.ordinal + 1);
   nextTerms.push({
     id: input.newTermId,
     workspaceId: input.workspaceId ?? activeTerm.workspaceId,
@@ -382,8 +391,9 @@ export function planTermRollover(input: {
  *
  * A reabertura **limpa `endedAt`/`summary`** (SPEC-006 D7) pelo mesmo motivo de
  * `reopenTerm`: um período `ativo` carregando o transcript de um encerramento é
- * um estado que não existe — o card do histórico mentiria e
- * `shouldOfferRollover` ofereceria virar de novo na hora. Depois do desfazer, a
+ * um estado que não existe — o card do histórico mentiria e um `endedAt` num termo
+ * `ativo` faria a elegibilidade da virada responder `true` na hora (SPEC-008 N1).
+ * Depois do desfazer, a
  * usuária está de volta **dentro** do semestre, como se a virada nunca tivesse
  * acontecido.
  *

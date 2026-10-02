@@ -1,6 +1,16 @@
 # Spec: Correção da virada de semestre (SPEC-005 em produção)
 
-> **Status: especificada (aguardando implementação).**
+> **Status: implementada (2026-09-28), com um item revisto pela SPEC-008.**
+> Lê-se junto com a
+> [SPEC-008](SPEC-008-virada-de-semestre-entradas-e-navegacao.md).
+> **O cabeçalho original dizia "especificada (aguardando implementação)" — isso já não era
+> verdade.** O inventário de bugs (B1–B18) foi escrito contra um código que já evoluiu.
+> A reconciliação item a item (o que foi implementado, o que continua aberto, e o que foi
+> **absorvido pela SPEC-008**) está no § *Reconciliação com a SPEC-006* da SPEC-008 — é lá
+> que o status real mora. **Não implemente daqui o que a SPEC-008 absorveu** (B5, B6,
+> B7-editor, B11, B12, B13, B14, D6, D11): está especificado lá, com o diagnóstico atualizado.
+> **B11 (D8) foi revisto:** o cap de `nextOrdinal` por `totalSemesters` foi **removido** —
+> a SPEC-008 D3 vence. Ver o critério N5b da SPEC-008.
 > Origem: auditoria de ponta a ponta da implementação de SPEC-005 (SPEC-005 §Correções
 > colaterais F1–F4 e §User Stories) + verificação manual de cada achado no código.
 > **Escopo: só o mobile (React/TS).** Nenhum crate Rust é tocado; os goldens TS são

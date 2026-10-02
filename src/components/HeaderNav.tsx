@@ -8,7 +8,8 @@ import { UserProfile, DynamicHeaderConfig } from '../types';
 import { CourseIcon } from './ui/CourseIcon';
 import { HeaderActionMenu } from './ui/HeaderActionMenu';
 import { BookmarkToggle } from './ui/BookmarkToggle';
-import { headerSwapVariants } from '../lib/motion';
+import { EASE, headerSwapVariants } from '../lib/motion';
+import { useMotionProfile } from '../components/motion/MotionProfileProvider';
 import { useDataClientApp } from '../context/DataClientProvider';
 import { useActiveTerm } from '../lib/termScope';
 
@@ -29,6 +30,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   direction = 0,
 }) => {
   const [scrolled, setScrolled] = useState(false);
+  const motionProfile = useMotionProfile();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -55,9 +57,25 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
 
   return (
     <motion.header
-      initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0, transition: { duration: 0.2, ease: 'easeOut' } }}
-      exit={{ opacity: 0, y: -10, transition: { duration: 0.15, ease: 'easeIn' } }}
+      initial={motionProfile.reduced ? { opacity: 0 } : { opacity: 0, y: -10 }}
+      animate={
+        motionProfile.reduced
+          ? { opacity: 1, transition: { duration: motionProfile.d.micro, ease: EASE.standard } }
+          : {
+              opacity: 1,
+              y: 0,
+              transition: { duration: motionProfile.d.navBar, ease: EASE.standard },
+            }
+      }
+      exit={
+        motionProfile.reduced
+          ? { opacity: 0, transition: { duration: motionProfile.d.micro, ease: EASE.exit } }
+          : {
+              opacity: 0,
+              y: -10,
+              transition: { duration: motionProfile.d.navBar, ease: EASE.exit },
+            }
+      }
       className={`sticky top-0 z-40 liquid-glass-nav border-b border-b-[color:var(--color-glass-hairline)] px-3.5 sm:px-4 transition-[padding,box-shadow,background-color,border-color] duration-300 ease-in-out ${
         scrolled
           ? 'pt-[calc(0.5rem+env(safe-area-inset-top,0px))] pb-2 shadow-sm'

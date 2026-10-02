@@ -1,6 +1,6 @@
-﻿import React, { useRef, useState } from 'react';
-import { AnimatePresence, motion, type Variants } from 'framer-motion';
-import { IOS_EASE } from '../../lib/motion';
+﻿import React, { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { stepVariants } from '../../lib/motion';
 import { Mascote, type MascoteExpression } from '../ui/Mascote';
 import { WizardScaffoldHeader } from './WizardScaffoldHeader';
 import { WizardScaffoldFooter } from './WizardScaffoldFooter';
@@ -59,13 +59,6 @@ interface WizardScaffoldProps {
   isDirty?: boolean;
 }
 
-/** Transição lateral entre steps: avançar desliza da direita, voltar da esquerda. */
-const stepVariants: Variants = {
-  initial: (dir: number) => ({ x: dir * 48, opacity: 0 }),
-  animate: { x: 0, opacity: 1, transition: { duration: 0.26, ease: IOS_EASE } },
-  exit: (dir: number) => ({ x: dir * -48, opacity: 0, transition: { duration: 0.16, ease: 'easeIn' } }),
-};
-
 export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
   title,
   subtitle,
@@ -89,9 +82,25 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
   isDirty = false,
 }) => {
   const dirRef = useRef<number>(1);
+  const headlineRef = useRef<HTMLHeadingElement>(null);
   const [confirmingDiscard, setConfirmingDiscard] = useState(false);
   const isLast = step === steps.length - 1;
   const canConfirm = isLast ? canSave ?? canNext : canNext;
+
+  /**
+   * O foco vai para a pergunta do passo (SPEC-008 F4.7).
+   *
+   * Trocar de passo substitui o conteúdo inteiro por baixo do dedo/teclado: sem
+   * isto, quem navega por teclado continua "dentro" de um botão que sumiu (o foco
+   * cai no `body` e o leitor de tela anuncia o cabeçalho do app inteiro). O
+   * `h2` da pergunta é o alvo natural — é a primeira coisa nova da tela.
+   *
+   * Só depois do primeiro passo, para não roubar o foco de quem acabou de abrir
+   * o wizard por um clique num botão que agora é outro.
+   */
+  useEffect(() => {
+    if (step > 0) headlineRef.current?.focus();
+  }, [step]);
 
   const goTo = (next: number) => {
     const clamped = Math.max(0, Math.min(steps.length - 1, next));
@@ -125,6 +134,7 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
         icon={icon}
         iconClass={iconClass}
         step={step}
+        stepTitles={steps.map((s) => s.title)}
         stepsLength={steps.length}
         showStepCount={showStepCount}
         isLast={isLast}
@@ -148,7 +158,11 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
               <div className="flex items-start gap-3 sm:gap-4">
                 <div className="flex-1 min-w-0">
                   {steps[step].headline && (
-                    <h2 className="font-display font-bold text-[22px] sm:text-[26px] leading-[1.18] text-ceci-primary">
+                    <h2
+                      ref={headlineRef}
+                      tabIndex={-1}
+                      className="font-display font-bold text-[22px] sm:text-[26px] leading-[1.18] text-ceci-primary focus:outline-none"
+                    >
                       {steps[step].headline}
                     </h2>
                   )}

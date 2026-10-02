@@ -12,6 +12,9 @@ import type { Sticker, StickerCondition } from '../../types';
 
 const baseState: StickerState = {
   profile: { name: '', semester: 1, totalSemesters: 8 },
+  // `termOrdinal` é o período ativo (SPEC-008 F4.8) e vem independente do
+  // legado: os testes de jornada mexem nele e **não** em `profile.semester`.
+  termOrdinal: 1,
   readings: [],
   flashcards: [],
   sessions: [],
@@ -84,10 +87,12 @@ describe('isConditionMet', () => {
     expect(isConditionMet({ type: 'streak', min: 14 }, { ...baseState, currentStreak: 5 })).toBe(false);
   });
 
-  it('degree-half: a partir da metade da graduação', () => {
+  it('degree-half: a partir da metade da graduação (lê termOrdinal, não profile.semester)', () => {
     const cond: StickerCondition = { type: 'degree-half' };
-    expect(isConditionMet(cond, { ...baseState, profile: { ...baseState.profile, semester: 3, totalSemesters: 8 } })).toBe(false);
-    expect(isConditionMet(cond, { ...baseState, profile: { ...baseState.profile, semester: 4, totalSemesters: 8 } })).toBe(true);
+    // `profile.semester` fica em 1 de propósito: se a condição ainda o lesse,
+    // estes dois asserts passariam a ser `false` e a trava reapareceria.
+    expect(isConditionMet(cond, { ...baseState, termOrdinal: 3 })).toBe(false);
+    expect(isConditionMet(cond, { ...baseState, termOrdinal: 4 })).toBe(true);
   });
 
   it('concepts-with-authors: conceitos ligados a autores', () => {
@@ -212,11 +217,11 @@ describe('isConditionMet', () => {
     expect(isConditionMet({ type: 'tcc-created' }, { ...baseState, tcc: { status: 'em_andamento', title: 'meu tcc', chapters: [] } })).toBe(true);
     expect(isConditionMet({ type: 'tcc-chapters-done', min: 1 }, { ...baseState, tcc: { status: 'em_andamento', title: 'x', chapters: [{ completed: false }] } })).toBe(false);
     expect(isConditionMet({ type: 'tcc-chapters-done', min: 1 }, { ...baseState, tcc: { status: 'em_andamento', title: 'x', chapters: [{ completed: true }] } })).toBe(true);
-    expect(isConditionMet({ type: 'penultimate-semester' }, { ...baseState, profile: { ...baseState.profile, semester: 7, totalSemesters: 8 } })).toBe(true);
-    expect(isConditionMet({ type: 'penultimate-semester' }, { ...baseState, profile: { ...baseState.profile, semester: 6, totalSemesters: 8 } })).toBe(false);
+    expect(isConditionMet({ type: 'penultimate-semester' }, { ...baseState, termOrdinal: 7 })).toBe(true);
+    expect(isConditionMet({ type: 'penultimate-semester' }, { ...baseState, termOrdinal: 6 })).toBe(false);
     expect(isConditionMet({ type: 'streak-longest', min: 21 }, { ...baseState, streakLongest: 21 })).toBe(true);
-    expect(isConditionMet({ type: 'graduation' }, { ...baseState, profile: { ...baseState.profile, semester: 8, totalSemesters: 8 } })).toBe(true);
-    expect(isConditionMet({ type: 'graduation' }, { ...baseState, profile: { ...baseState.profile, semester: 7, totalSemesters: 8 } })).toBe(false);
+    expect(isConditionMet({ type: 'graduation' }, { ...baseState, termOrdinal: 8 })).toBe(true);
+    expect(isConditionMet({ type: 'graduation' }, { ...baseState, termOrdinal: 7 })).toBe(false);
   });
 
   it('todo catálogo tem condição avaliável (nenhuma cai só em default)', () => {

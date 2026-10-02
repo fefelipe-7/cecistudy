@@ -8,7 +8,7 @@ import {
   activeTermOf,
   coursesOfTerm,
   degreeProgress,
-  gradeCourses,
+  allActiveCourses,
   isArchived,
   semestersLeft,
   clampOrdinal,
@@ -114,8 +114,20 @@ describe('lib/termScope — disciplina', () => {
     expect(activeCourses(COURSES, []).courses).toEqual([]);
   });
 
-  it('gradeCourses = só as ativas, independente do período', () => {
-    expect(gradeCourses(COURSES).map((c) => c.id)).toEqual(['c1', 'c3', 'c4']);
+  it('allActiveCourses = ativas de algum período ATIVO (c3 está num encerrado, c4 é órfã)', () => {
+    // c1 = trm-1 (ativo) · c2 = arquivada · c3 = trm-old (encerrado) · c4 = sem termId
+    expect(allActiveCourses(COURSES, TERMS).map((c) => c.id)).toEqual(['c1']);
+  });
+
+  it('allActiveCourses sem período ativo devolve vazio (não a grade inteira)', () => {
+    expect(allActiveCourses(COURSES, [])).toEqual([]);
+    expect(allActiveCourses(COURSES, [term({ status: 'encerrado' })])).toEqual([]);
+  });
+
+  it('allActiveCourses com DOIS ativos (conflito SPEC-006 D9) devolve a união', () => {
+    const conflicted = [term(), term({ id: 'trm-2', ordinal: 7, status: 'ativo' })];
+    expect(allActiveCourses([...COURSES, course('c5', { termId: 'trm-2' })], conflicted).map((c) => c.id))
+      .toEqual(['c1', 'c5']);
   });
 
   it('archivedCourses pega as arquivadas (continuam pesquisáveis)', () => {
@@ -158,12 +170,16 @@ describe('lib/termScope — progresso da graduação', () => {
     expect(semestersLeft(1, 0)).toBe(0);
   });
 
-  it('clampOrdinal respeita o teto do curso e o máximo de 12', () => {
-    expect(clampOrdinal(7, 8)).toBe(7);
-    expect(clampOrdinal(9, 8)).toBe(8);
-    expect(clampOrdinal(20, 8)).toBe(8);
-    expect(clampOrdinal(0, 8)).toBe(1);
-    expect(clampOrdinal(99, 99)).toBe(MAX_TERM_ORDINAL);
-    expect(clampOrdinal('6', 8)).toBe(6);
+  it('clampOrdinal respeita o teto GLOBAL de 12 (não o total do curso — SPEC-008 D3)', () => {
+    // O contrato antigo era `1..min(12, total)`, e o teste afirmava
+    // `clampOrdinal(9, 8) === 8`. Isso prendia a usuária que está no 9º de um
+    // curso de 8, e o total não tinha editor para destravar.
+    expect(clampOrdinal(7)).toBe(7);
+    expect(clampOrdinal(9)).toBe(9);
+    expect(clampOrdinal(20)).toBe(MAX_TERM_ORDINAL);
+    expect(clampOrdinal(0)).toBe(1);
+    expect(clampOrdinal(99)).toBe(MAX_TERM_ORDINAL);
+    expect(clampOrdinal('6')).toBe(6);
+    expect(clampOrdinal(undefined)).toBe(1);
   });
 });
