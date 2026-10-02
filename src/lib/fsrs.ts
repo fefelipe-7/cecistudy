@@ -4,10 +4,39 @@ export type FSRSQuality = 0 | 1 | 2 | 3;
 
 export const FSRS_PARAMS = [0.4,0.6,2.4,5.8,4.93,0.94,0.86,0.01,1.49,0.14,0.94,2.18,0.05,0.34,1.26,0.29,2.61];
 
+/**
+ * Data civil **local** no formato `YYYY-MM-DD`. Fonte única de "que dia é".
+ *
+ * ⚠️ Não trocar por `toISOString().slice(0, 10)`: `toISOString` converte para
+ * **UTC**, e data civil local não é data civil UTC. A conta sai errada nas duas
+ * pontas do fuso:
+ *
+ * - fusos **à frente** de UTC (ex.: `Asia/Sao_Paulo`, UTC-3): meia-noite local
+ *   vira o dia **anterior** em UTC → "hoje" responde ontem;
+ * - no Brasil depois das **21h** (UTC-3), um instante já é o dia seguinte em
+ *   UTC → `due` nasce um dia adiantado e um cartão novo prometia `2d` em vez de
+ *   `1d`.
+ *
+ * `daysBetween` faz o parse de `YYYY-MM-DD` como hora **local**, então é esta
+ * função que fecha o contrato: entrada e saída do módulo falam sempre em data
+ * civil local.
+ */
+export function localDateISO(d: Date = new Date()): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+/** `YYYY-MM-DD` local somado a `days` dias — âncora em `iso`, não no relógio. */
+export function addDaysISO(iso: string, days: number): string {
+  const d = new Date(iso + 'T00:00:00');
+  d.setDate(d.getDate() + days);
+  return localDateISO(d);
+}
+
 export function todayISO(): string {
-  const d = new Date();
-  d.setHours(0,0,0,0);
-  return d.toISOString().slice(0,10);
+  return localDateISO();
 }
 
 export function daysBetween(a: string, b: string): number {
@@ -79,9 +108,9 @@ export function schedule(card: Flashcard, quality: FSRSQuality, nowIso = todayIS
 
   const desiredRetention = 0.9;
   const interval = Math.max(1, Math.round(newStability * Math.log(desiredRetention) / Math.log(0.5)));
-  const dueDate = new Date();
-  dueDate.setDate(dueDate.getDate() + interval);
-  const due = dueDate.toISOString().slice(0,10);
+  // Ancorado em `nowIso`, não no relógio: a mesma entrada tem de render o mesmo
+  // `due` em qualquer hora do dia (e `nowIso` injetado vira testável).
+  const due = addDaysISO(nowIso, interval);
 
   const newRetrievability = Math.exp(-Math.log(2) / Math.max(0.01, newStability) * interval);
 
