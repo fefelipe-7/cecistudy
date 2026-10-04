@@ -23,13 +23,13 @@ permissions:
 # canonicalHash.test.ts. Por isso este workflow faz um segundo checkout, em
 # `.contrato-desktop/` na raiz deste repositório.
 #
-# A ref é fixada em SHA, não em `main`, de propósito: `main` do desktop mudaria
-# o resultado deste gate sem que ninguém mexesse no mobile. Quando o contrato
-# muda de propósito, o bump é explícito e o diff mostra por quê.
-#
-# Para subir o contrato: commitar no desktop, pegar o SHA e trocar aqui.
+# A ref vive em `vars.CONTRATO_REF`, uma variável do repositório, e não em
+# `env:` aqui: o `release.yml` precisa da mesma ref, e duas cópias de um SHA em
+# dois arquivos é drift esperando acontecer. Para subir o contrato: commitar no
+# desktop e rodar
+#   gh variable set CONTRATO_REF -b <sha> -R fefelipe-7/cecistudy
 env:
-  CONTRATO_REF: 71bc142a827dbd6d056d4ba5b889160fe983cec1
+  CONTRATO_REF: ${{ vars.CONTRATO_REF }}
 
 jobs:
   verify:
