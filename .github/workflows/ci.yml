@@ -17,7 +17,7 @@ concurrency:
 permissions:
   contents: read
 
-- O contrato de dados mora no repositório do desktop (ADR-007, ADR-009), e três
+# O contrato de dados mora no repositório do desktop (ADR-007, ADR-009), e três
 # testes daqui leem e escrevem os arquivos dele por caminho relativo:
 # src/lib/__tests__/goldenFixtures.test.ts, migrationFixtures.test.ts e
 # canonicalHash.test.ts. Por isso este workflow faz um segundo checkout, em
