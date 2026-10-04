@@ -526,6 +526,25 @@ export async function saveCollection(
         break;
       case 'internshipLogs':
         return saveInternshipLogs(driver, value);
+      case 'internshipClinical':
+        // `SPEC-M-013` `D1`. Escreve-se a **projeção** de cinco campos, nunca o
+        // registro clínico completo: o tradutor do desktop já reduziu, e aqui
+        // não há caminho que reconstrua o que foi omitido.
+        await driver.run('DELETE FROM internship_clinical');
+        await insertRows(
+          driver,
+          'INSERT INTO internship_clinical (id, iniciais, data, duracao_min, para_levar, data_json) VALUES (?, ?, ?, ?, ?, ?)',
+          () =>
+            asArray(value).map((c) => [
+              String(c.id),
+              str(c.iniciais),
+              str(c.data),
+              num(c.duracaoMin),
+              str(c.paraLevar),
+              json(c),
+            ])
+        );
+        break;
       case 'supervision':
         await driver.run('DELETE FROM supervision_notebook');
         await insertRows(

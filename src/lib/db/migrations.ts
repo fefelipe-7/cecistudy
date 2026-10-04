@@ -4,11 +4,12 @@
  * Cada passo registra sua versão em `schema_migrations`; o runner é idempotente
  * e aplica apenas os passos pendentes, em ordem. A v1 cria todo o schema
  * (ver `migrations/user.ts`); a v2 adiciona a tabela `deck` (baralhos de
- * flashcards), que installations já na v1 não tinham. Versões futuras entram
- * como novos passos com `ALTER`/`CREATE` incrementais — nunca editando um
- * passo já aplicado.
+ * flashcards), que instalações já na v1 não tinham; a v3 adiciona
+ * `internship_clinical`, a projeção clínica da `SPEC-M-013`. Versões futuras
+ * entram como novos passos com `ALTER`/`CREATE` incrementais — nunca editando
+ * um passo já aplicado.
  */
-import { USER_TABLES_SQL, DECK_TABLES_SQL } from './migrations/user.ts';
+import { USER_TABLES_SQL, DECK_TABLES_SQL, CLINICAL_TABLES_SQL } from './migrations/user.ts';
 import type { SqlDriver } from './driver.ts';
 
 export { USER_SCHEMA_VERSION, USER_DB_NAME } from './migrations/user.ts';
@@ -21,6 +22,7 @@ interface MigrationStep {
 const MIGRATIONS: MigrationStep[] = [
   { version: 1, up: USER_TABLES_SQL },
   { version: 2, up: DECK_TABLES_SQL },
+  { version: 3, up: CLINICAL_TABLES_SQL },
 ];
 
 /** Última versão conhecida deste código (independente do banco aberto). */

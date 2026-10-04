@@ -38,7 +38,6 @@ export function selectDiaryPreview(logs: InternshipLog[], now: Date, limit = 5):
  */
 export const INTERNSHIP_TYPE_LABEL: Record<InternshipLogType, string> = {
   estagio: 'estágio',
-  atendimento_clinico: 'atendimento clínico',
   supervisao: 'supervisão',
   intervisao: 'intervisão',
   outro: 'outro',

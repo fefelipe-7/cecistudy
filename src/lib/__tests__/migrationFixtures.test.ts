@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { dirDosFixturesDeMigracao } from '../../../packages/contracts/src/dados-path';
 import { canonicalize } from '../canonicalJson';
 import { MIGRATIONS, SCHEMA_VERSION, migrateDatabase } from '../../../packages/data/src/schema';
 
@@ -9,16 +10,13 @@ import { MIGRATIONS, SCHEMA_VERSION, migrateDatabase } from '../../../packages/d
  *
  * Um payload "legado v1" representativo percorre migrações 1→13 com o próprio
  * `migrateDatabase` do TS; o resultado de cada versão vira um arquivo enumerado
- * em `cecistudy-rust/contracts/golden/migrations/`. O Rust reaplica a cadeia e
+ * em `dirDosFixturesDeMigracao()`. O Rust reaplica a cadeia e
  * compara arquivo a arquivo (bloqueia divergência inclusive de *quirks* do TS).
  *
  * GERAÇÃO: `MIGRATION_WRITE=1 npm run test -- src/lib/__tests__/migrationFixtures.test.ts`
  * Nunca editar os arquivos manualmente: regenerar + revisar o diff.
  */
-const OUT = join(
-  import.meta.dirname,
-  '../../../cecistudy-rust/contracts/golden/migrations'
-);
+const OUT = dirDosFixturesDeMigracao();
 const WRITE = process.env.MIGRATION_WRITE === '1';
 
 /**

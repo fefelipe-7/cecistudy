@@ -25,7 +25,6 @@ ota-site/
 assets/mascote_expressoes_svgs/
 
 # Núcleo Rust (desktop) — artefatos de build
-cecistudy-rust/target/
 
 # Backup em zip de projeto (não versionar)
 apps/desktop-flutter.zip

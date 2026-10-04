@@ -20,6 +20,7 @@ import {
   FlashcardDeck,
   MaterialItem,
   InternshipLog,
+  ClinicalProjection,
   TccData,
   Sticker,
   UserProfile,
@@ -80,6 +81,15 @@ export interface EmptyDatabase {
   decks: FlashcardDeck[];
   materials: MaterialItem[];
   internshipLogs: InternshipLog[];
+  /**
+   * A projeção da camada clínica do Estágio — `SPEC-M-013` `D1`.
+   *
+   * É a **única** representação de dado clínico que o mobile guarda, e ela são
+   * cinco campos. O registro completo vive no desktop, no store clínico
+   * separado, e o tradutor aplica a lista fechada antes de serializar
+   * (`SPEC-C-013` `D5`).
+   */
+  internshipClinical: ClinicalProjection[];
   tcc: TccData;
    stickers: Sticker[];
    sessions: StudySession[];
@@ -116,6 +126,7 @@ export function emptyDatabase(): EmptyDatabase {
     decks: [],
     materials: [],
     internshipLogs: [],
+    internshipClinical: [],
     tcc: emptyTcc,
 stickers: lockedStickerCatalog(),
    sessions: [],

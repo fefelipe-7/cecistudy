@@ -12,8 +12,38 @@
  * depois disso, toda mudança exige migração numerada em `migrations.ts`.
  */
 
-/** Versão de schema da base da usuária (espelha `data/schema.ts`). */
-export const USER_SCHEMA_VERSION = 2;
+/**
+ * Versão de schema da base da usuária.
+ *
+ * **Não redeclare aqui.** A fonte única é `USER_SCHEMA_VERSION` em
+ * `packages/data/src/schema.ts` (débito C2, fechado), porque `packages/*` é a
+ * biblioteca canônica e este arquivo é stub de compat. Reexportar mantém uma
+ * única declaração e impede que os dois valores se desincronizem.
+ */
+export { USER_SCHEMA_VERSION } from '../../../../packages/data/src/schema';
+
+/**
+ * Tabela `internship_clinical` — a projeção clínica (`SPEC-M-013` `D1`).
+ *
+ * É o **único** dado clínico que o celular persiste, e são cinco campos
+ * (`SPEC-M-013` `D2`). As colunas são projeção para consulta; `data_json` é a
+ * fonte, como em toda coleção deste schema.
+ *
+ * `IF NOT EXISTS` → reaplicar em base nova é no-op. Vive num passo numerado
+ * (v3) e **não** no DDL completo da v1: uma base já na v1/v2 não tem a tabela e
+ * precisa criá-la, e editar a v1 seria reescrever um passo já aplicado.
+ */
+export const CLINICAL_TABLES_SQL = `
+CREATE TABLE IF NOT EXISTS internship_clinical (
+  id TEXT PRIMARY KEY,
+  iniciais TEXT NOT NULL,
+  data TEXT NOT NULL,
+  duracao_min INTEGER NOT NULL,
+  para_levar TEXT,
+  data_json TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_internship_clinical_data ON internship_clinical(data);
+`;
 
 /** Nome lógico do banco da usuária (sem extensão). */
 export const USER_DB_NAME = 'cecistudy_user';

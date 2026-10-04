@@ -13,7 +13,6 @@ const PHASE_LABEL: Record<InternshipPhase, string> = {
 
 const TYPE_LABEL: Record<InternshipLogType, string> = {
   estagio: 'estágio',
-  atendimento_clinico: 'atendimento clínico',
   supervisao: 'supervisão',
   intervisao: 'intervisão',
   outro: 'outro',
@@ -21,7 +20,6 @@ const TYPE_LABEL: Record<InternshipLogType, string> = {
 
 const TYPE_EMOJI: Record<InternshipLogType, string> = {
   estagio: '🩺',
-  atendimento_clinico: '🧑‍⚕️',
   supervisao: '🧭',
   intervisao: '👥',
   outro: '✨',

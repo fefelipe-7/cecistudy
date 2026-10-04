@@ -28,6 +28,7 @@ import type {
   Flashcard,
   FlashcardDeck,
   MaterialItem,
+  ClinicalProjection,
   InternshipLog,
   TccData,
   Sticker,
@@ -90,6 +91,15 @@ export interface AppContextValue {
   decks: FlashcardDeck[];
   materials: MaterialItem[];
   internshipLogs: InternshipLog[];
+  /**
+   * A projeção da camada clínica — `SPEC-M-013` `D1`.
+   *
+   * Cinco campos, e é o **único** dado clínico que o celular guarda. Ela é
+   * somente leitura: o registro completo vive no desktop, no store clínico
+   * separado, e o tradutor aplica a lista fechada antes de serializar
+   * (`SPEC-C-013` `D5`).
+   */
+  internshipClinical: ClinicalProjection[];
   tcc: TccData;
   stickers: Sticker[];
   /** Snapshot do estado avaliado para as condições dos stickers (barras de progresso). */

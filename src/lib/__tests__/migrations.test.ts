@@ -1,6 +1,26 @@
 import { describe, it, expect } from 'vitest';
 import { migrateSupervisionNotebook } from '../migrations';
+import { LATEST_USER_VERSION, USER_SCHEMA_VERSION } from '../db/migrations';
+import { USER_SCHEMA_VERSION as VERSAO_DO_CONTRATO } from '../../../packages/data/src/schema';
 import type { InternshipLog, SupervisionNotebook } from '../../types';
+
+describe('USER_SCHEMA_VERSION tem uma fonte só (débito C2)', () => {
+  it('o valor reexportado é o de packages/data/src/schema.ts', () => {
+    // Duas declarações independentes foram o que produziu o débito: uma valia 1
+    // e a outra 3, e o envelope de backup carimbava a errada.
+    expect(USER_SCHEMA_VERSION).toBe(VERSAO_DO_CONTRATO);
+  });
+
+  it('o valor do contrato é o último passo de migração registrado', () => {
+    // Se alguém acrescentar um passo em `migrations.ts` e não subir a
+    // constante do contrato, o backup passa a declarar menos do que a base tem.
+    expect(VERSAO_DO_CONTRATO).toBe(LATEST_USER_VERSION);
+  });
+
+  it('a base da usuária está na v3, que é a que cria internship_clinical', () => {
+    expect(LATEST_USER_VERSION).toBe(3);
+  });
+});
 
 describe('migrateSupervisionNotebook', () => {
   const notebook: SupervisionNotebook = {
@@ -19,7 +39,7 @@ describe('migrateSupervisionNotebook', () => {
   it('concatena cadernos legados como logs de supervisão', () => {
     const base: InternshipLog = {
       id: 'ilog-1',
-      type: 'atendimento_clinico',
+      type: 'estagio',
       date: '2026-09-02',
       hours: 1,
       activity: 'atendimento',

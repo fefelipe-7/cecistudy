@@ -115,6 +115,8 @@ describe('registry de coleções (T0.3)', () => {
       'readingProgress',
       'quizSessions',
       'academicTerms',
+      // `SPEC-M-013` `D1` — a projeção clínica entra no fim, como `academicTerms`.
+      'internshipClinical',
     ]);
   });
 

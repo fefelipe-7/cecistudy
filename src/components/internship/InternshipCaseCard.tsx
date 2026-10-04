@@ -8,8 +8,16 @@ interface Props {
 }
 
 export const InternshipCaseCard: React.FC<Props> = ({ caseData, onPress }) => {
-  const { patientLabel, totalHours, lastSessionDate, pendingReflection, pendingSupervision, logs } = caseData;
-  const sessionsCount = logs.length;
+  const {
+    patientLabel,
+    totalMin,
+    lastSessionDate,
+    pendingParaLevar,
+    pendingSupervision,
+    projections,
+  } = caseData;
+  const sessionsCount = projections.length;
+  const horas = Math.round((totalMin / 60) * 10) / 10;
 
   return (
     <button
@@ -26,7 +34,7 @@ export const InternshipCaseCard: React.FC<Props> = ({ caseData, onPress }) => {
           </div>
           <div className="flex items-center gap-3 text-[11px] text-ceci-secondary">
             <span className="flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5" /> {totalHours} h total
+              <Clock className="w-3.5 h-3.5" /> {horas} h total
             </span>
             {lastSessionDate && (
               <span className="flex items-center gap-1">
@@ -39,12 +47,12 @@ export const InternshipCaseCard: React.FC<Props> = ({ caseData, onPress }) => {
         <ArrowRight className="w-5 h-5 text-ceci-muted shrink-0" />
       </div>
 
-      {(pendingReflection > 0 || pendingSupervision > 0) && (
+      {(pendingParaLevar > 0 || pendingSupervision > 0) && (
         <div className="mt-3 flex gap-2">
-          {pendingReflection > 0 && (
+          {pendingParaLevar > 0 && (
             <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-surface-rose border border-ceci-border-brand text-[10px] font-semibold text-ceci-brand-strong">
               <AlertCircle className="w-3 h-3" />
-              {pendingReflection} reflexão{pendingReflection !== 1 ? 'ões' : ''}
+              {pendingParaLevar} sem "para levar"
             </span>
           )}
           {pendingSupervision > 0 && (

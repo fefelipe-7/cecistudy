@@ -26,6 +26,7 @@ import type {
   Flashcard,
   FlashcardDeck,
   MaterialItem,
+  ClinicalProjection,
   InternshipLog,
   TccData,
   Sticker,
@@ -64,6 +65,12 @@ export interface PersistedStateSnapshot {
   decks: FlashcardDeck[];
   materials: MaterialItem[];
   internshipLogs: InternshipLog[];
+  /**
+   * A projeção clínica — `SPEC-M-013` `D1`. Opcional no snapshot porque um
+   * estado carregado de versão anterior não a tem, e `readDatabaseFromState`
+   * normaliza para `[]`.
+   */
+  internshipClinical?: ClinicalProjection[];
   tcc: TccData;
 stickers: Sticker[];
    sessions: StudySession[];
@@ -97,6 +104,7 @@ export function readDatabaseFromState(state: PersistedStateSnapshot): PersistedD
     decks: state.decks,
     materials: state.materials,
     internshipLogs: state.internshipLogs,
+    internshipClinical: state.internshipClinical ?? [],
     tcc: state.tcc,
      stickers: state.stickers,
      sessions: state.sessions,

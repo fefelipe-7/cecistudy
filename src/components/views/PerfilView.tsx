@@ -137,6 +137,7 @@ export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
   const {
     profile,
     internshipLogs,
+    internshipClinical,
     tcc,
     stickers,
     reminderSettings,
@@ -217,9 +218,12 @@ const profileTotalXp = totalXp(profile);
   const tasksDone = tasks.filter((t) => t.completed).length;
   const examsPending = exams.filter((e) => !e.completed).length;
   const totalInternshipHours = internshipLogs.reduce((acc, l) => acc + l.hours, 0);
-  const cases = useMemo(() => deriveCases(internshipLogs), [internshipLogs]);
+  const cases = useMemo(
+    () => deriveCases(internshipClinical, internshipLogs.filter((l) => l.type === 'supervisao')),
+    [internshipClinical, internshipLogs],
+  );
   const patientsCount = cases.length;
-  const pendingReflection = cases.reduce((a, c) => a + c.pendingReflection, 0);
+  const pendingParaLevar = cases.reduce((a, c) => a + c.pendingParaLevar, 0);
   const pendingSupervision = cases.reduce((a, c) => a + c.pendingSupervision, 0);
   const tccChaptersDone = tcc.chapters.filter((ch) => ch.completed).length;
   const tccChaptersTotal = tcc.chapters.length;

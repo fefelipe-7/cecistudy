@@ -13,6 +13,7 @@ import {
    Flashcard,
    FlashcardDeck,
    MaterialItem,
+   ClinicalProjection,
    InternshipLog,
    TccData,
    Sticker,
@@ -176,6 +177,10 @@ export interface DataClientAppSlice {
   internshipLogs: InternshipLog[];
   setInternshipLogs: React.Dispatch<React.SetStateAction<InternshipLog[]>>;
   setInternshipLogsRaw: React.Dispatch<React.SetStateAction<InternshipLog[]>>;
+  /** A projeção clínica — `SPEC-M-013` `D1`. Cinco campos, somente leitura no app. */
+  internshipClinical: ClinicalProjection[];
+  setInternshipClinical: React.Dispatch<React.SetStateAction<ClinicalProjection[]>>;
+  setInternshipClinicalRaw: React.Dispatch<React.SetStateAction<ClinicalProjection[]>>;
   tcc: TccData;
   setTcc: React.Dispatch<React.SetStateAction<TccData>>;
   setTccRaw: React.Dispatch<React.SetStateAction<TccData>>;
@@ -298,6 +303,10 @@ export interface DataClientValue {
 internshipLogs: InternshipLog[];
    setInternshipLogs: React.Dispatch<React.SetStateAction<InternshipLog[]>>;
    setInternshipLogsRaw: React.Dispatch<React.SetStateAction<InternshipLog[]>>;
+  /** Projeção clínica — `SPEC-M-013` `D1`. Cinco campos, somente leitura no app. */
+  internshipClinical: ClinicalProjection[];
+  setInternshipClinical: React.Dispatch<React.SetStateAction<ClinicalProjection[]>>;
+  setInternshipClinicalRaw: React.Dispatch<React.SetStateAction<ClinicalProjection[]>>;
   tcc: TccData;
   setTcc: React.Dispatch<React.SetStateAction<TccData>>;
   setTccRaw: React.Dispatch<React.SetStateAction<TccData>>;
@@ -454,6 +463,7 @@ export function useDataClient(): DataClientValue {
   const { value: decks, set: setDecks, setRaw: setDecksRaw } = useStampedState<FlashcardDeck[]>('decks', [], syncIndex, setSyncIndex);
   const { value: materials, set: setMaterials, setRaw: setMaterialsRaw } = useStampedState<MaterialItem[]>('materials', [], syncIndex, setSyncIndex);
   const { value: internshipLogs, set: setInternshipLogs, setRaw: setInternshipLogsRaw } = useStampedState<InternshipLog[]>('internship', [], syncIndex, setSyncIndex);
+  const { value: internshipClinical, set: setInternshipClinical, setRaw: setInternshipClinicalRaw } = useStampedState<ClinicalProjection[]>('internshipClinical', [], syncIndex, setSyncIndex);
   const { value: tcc, set: setTcc, setRaw: setTccRaw } = useStampedState<TccData>('tcc', emptyTcc, syncIndex, setSyncIndex);
   const { value: stickers, set: setStickers, setRaw: setStickersRaw } = useStampedState<Sticker[]>('stickers', lockedStickerCatalog(), syncIndex, setSyncIndex);
   const { value: sessions, set: setSessions, setRaw: setSessionsRaw } = useStampedState<StudySession[]>('sessions', [], syncIndex, setSyncIndex);
@@ -1026,6 +1036,9 @@ export function useDataClient(): DataClientValue {
       internshipLogs,
       setInternshipLogs,
       setInternshipLogsRaw,
+      internshipClinical,
+      setInternshipClinical,
+      setInternshipClinicalRaw,
       tcc,
       setTcc,
       setTccRaw,
@@ -1154,6 +1167,9 @@ export function useDataClient(): DataClientValue {
      internshipLogs,
      setInternshipLogs,
      setInternshipLogsRaw,
+     internshipClinical,
+     setInternshipClinical,
+     setInternshipClinicalRaw,
      tcc,
      setTcc,
      setTccRaw,

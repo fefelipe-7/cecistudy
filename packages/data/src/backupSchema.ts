@@ -121,14 +121,34 @@ const materialSchema = passthrough({
   addedAt: z.string(),
 });
 
-const internshipLogSchema = passthrough({
-  id: z.string(),
-  type: z.string(),
-  date: z.string(),
-  hours: z.number(),
-  activity: z.string(),
-  reflections: z.string(),
-});
+/**
+ * A coleção clínica, com schema **estrito**.
+ *
+ * `SPEC-M-013` `D3`. Este é o único schema de `backupSchema.ts` que **não** usa
+ * `passthrough()`, e a assimetria é deliberada: `passthrough()` existe por um
+ * motivo bom e escrito — não travar import de backup antigo com campo legado. Isso
+ * justifica um campo decorativo e **não** justifica dado de paciente, que foi
+ * exatamente por onde entrou: nove campos sem checagem nenhuma.
+ *
+ * `.strict()` faz o campo a mais virar erro de validação, com o nome no erro. É a
+ * diferença entre "chegar ao banco" e "ser recusado antes de gravar" — e
+ * §4.8 linha 545 diz que a exclusão é "regra fixa, não configuração".
+ */
+const clinicalProjectionSchema = z
+  .object({
+    /** Identificador da projeção. Aponta para o registro no desktop, e é o que
+     *  `discussedClinicalIds` referencia — sem ele a supervisão não liga em nada. */
+    id: z.string().min(1),
+    /** §4.8 linha 466 — iniciais ou código, nunca nome completo. */
+    iniciais: z.string().min(1),
+    /** ISO 8601 de data local. */
+    data: z.string().min(1),
+    /** Duração em minutos. */
+    duracaoMin: z.number().int().nonnegative(),
+    /** §4.8 linha 472 — o único texto que ela escolhe levar. Vazio é escolha. */
+    paraLevar: z.string(),
+  })
+  .strict();
 
 const supervisionNotebookSchema = passthrough({
   id: z.string(),
@@ -307,7 +327,21 @@ export const backupDataSchema = z
     readings: z.array(readingItemSchema),
     flashcards: z.array(flashcardSchema),
     materials: z.array(materialSchema),
-    internshipLogs: z.array(internshipLogSchema),
+    // `internshipLogs` é validada por forma mínima e `passthrough()` de propósito:
+    // a coleção **acadêmica** é onde compatibilidade de backup antigo é legítima,
+    // e §4.8 linha 472 já tirou o registro clínico de fora dela. Ver
+    // `SPEC-M-013` `D3` para por que a assimetria é o ponto.
+    internshipLogs: z.array(
+      passthrough({
+        id: z.string(),
+        type: z.enum(['estagio', 'supervisao', 'intervisao', 'outro']),
+        date: z.string(),
+        hours: z.number(),
+        activity: z.string(),
+        reflections: z.string(),
+      }),
+    ),
+    internshipClinical: z.array(clinicalProjectionSchema),
     supervision: z.array(supervisionNotebookSchema),
     tcc: tccSchema,
     stickers: z.array(stickerSchema),

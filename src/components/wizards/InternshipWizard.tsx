@@ -22,7 +22,6 @@ const KINDS: {
   Icon: React.ComponentType<{ className?: string }>;
 }[] = [
   { value: 'estagio', label: 'estágio', caption: 'dia de campo na clínica escola', Icon: HeartHandshake },
-  { value: 'atendimento_clinico', label: 'atendimento clínico', caption: 'sessão com paciente', Icon: Stethoscope },
   { value: 'supervisao', label: 'supervisão', caption: 'orientação da supervisora', Icon: Compass },
   { value: 'intervisao', label: 'intervisão', caption: 'troca com colegas de estágio', Icon: Users },
   { value: 'outro', label: 'outro', caption: 'registro avulso de campo', Icon: Sparkles },
@@ -30,7 +29,6 @@ const KINDS: {
 
 const KIND_META: Record<InternshipLogType, { title: string; icon: React.ReactNode }> = {
   estagio: { title: 'novo registro de estágio', icon: <HeartHandshake className="w-3.5 h-3.5" /> },
-  atendimento_clinico: { title: 'novo atendimento clínico', icon: <Stethoscope className="w-3.5 h-3.5" /> },
   supervisao: { title: 'nova supervisão', icon: <Compass className="w-3.5 h-3.5" /> },
   intervisao: { title: 'nova intervisão', icon: <Users className="w-3.5 h-3.5" /> },
   outro: { title: 'novo registro', icon: <Sparkles className="w-3.5 h-3.5" /> },
@@ -43,7 +41,7 @@ interface InternshipDraft {
   hours?: string;
   date?: string;
   reflections?: string;
-  discussedLogIds?: string[];
+  discussedClinicalIds?: string[];
   beforeNotes?: string;
   afterNotes?: string;
   selfAssessment?: {
@@ -56,18 +54,12 @@ interface InternshipDraft {
   topics?: string[];
   orientations?: string;
   doubts?: string;
-  patient?: string;
-  sessionNumber?: string;
-  patientAge?: string;
-  theme?: string;
-  approach?: string;
-  interventionNotes?: string;
-  observations?: string;
 }
 
 export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
   const {
     internshipLogs,
+    internshipClinical,
     handleAddInternshipLog,
     handleUpdateInternshipLog,
     closeWizard,
@@ -87,20 +79,12 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
       date: editingLog?.date ?? '',
       reflections: editingLog?.reflections ?? '',
       // atendimento clínico
-      patient: editingLog?.patient ?? '',
-      sessionNumber: editingLog?.sessionNumber ? String(editingLog.sessionNumber) : '',
-      patientAge: editingLog?.patientAge ?? '',
-      theme: editingLog?.theme ?? '',
-      approach: editingLog?.approach ?? '',
-      interventionNotes: editingLog?.interventionNotes ?? '',
-      observations: editingLog?.observations ?? '',
       // supervisão / intervisão
       supervisor: editingLog?.supervisor ?? '',
       topics: editingLog?.topics ?? [],
       orientations: editingLog?.orientations ?? '',
       doubts: editingLog?.doubts ?? '',
       nextSteps: editingLog?.nextSteps ?? [],
-      discussedLogIds: editingLog?.discussedLogIds ?? [],
       beforeNotes: editingLog?.beforeNotes ?? '',
       afterNotes: editingLog?.afterNotes ?? '',
       selfAssessment: editingLog?.selfAssessment
@@ -121,19 +105,12 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
     hours,
     date,
     reflections,
-    patient,
-    sessionNumber,
-    patientAge,
-    theme,
-    approach,
-    interventionNotes,
-    observations,
     supervisor,
     topics,
     orientations,
     doubts,
     nextSteps,
-    discussedLogIds,
+    discussedClinicalIds,
     beforeNotes,
     afterNotes,
     selfAssessment,
@@ -143,20 +120,41 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
   const themes = selfAssessment?.themes ?? '';
   const setKind = (k: InternshipLogType | null) => patch({ kind: k });
 
-  // atendimentos clínicos disponíveis para discussão
+  /**
+   * Ids das projeções já discutidas em alguma supervisão.
+   *
+   * A relação mora na **supervisão** (`discussedClinicalIds`), e não na projeção:
+   * a projeção não sabe se foi discutida, e afirmar que sabe seria inventar estado
+   * que o tradutor não tem como enviar.
+   */
+  const discutidas = useMemo(
+    () =>
+      new Set(
+        internshipLogs.flatMap((l) => (l.type === 'supervisao' ? (l.discussedClinicalIds ?? []) : [])),
+      ),
+    [internshipLogs],
+  );
+
+  // Projeções de atendimento disponíveis para discussão em supervisão.
+  //
+  // `SPEC-M-013` `D1`: a fonte é a **projeção** de cinco campos, não o registro
+  // clínico. Antes, esta lista vinha de `internshipLogs` com
+  // `type === 'atendimento_clinico'` e lia `supervisionLogId` e `sessionNumber` —
+  // dois campos que §4.8 linha 472 proíbe no aparelho.
+  //
+  // A ordenação põe as não discutidas primeiro, que é o que a supervisora precisa
+  // ver, e ordena por data porque a projeção **não** tem número de sessão: ela não
+  // guarda `sessionNumber` porque §4.8 linha 466 não autoriza dado além das
+  // iniciais.
   const attendanceLogs = useMemo(() => {
-    return internshipLogs
-      .filter((l) => l.type === 'atendimento_clinico')
-      .sort((a, b) => {
-        const aPending = !a.supervisionLogId;
-        const bPending = !b.supervisionLogId;
-        if (aPending !== bPending) return aPending ? -1 : 1;
-        const aNum = a.sessionNumber ?? 0;
-        const bNum = b.sessionNumber ?? 0;
-        if (aNum !== bNum) return aNum - bNum;
-        return new Date(a.date).getTime() - new Date(b.date).getTime();
-      });
-  }, [internshipLogs]);
+    return [...internshipClinical].sort((a, b) => {
+      const aPending = !discutidas.has(a.id);
+      const bPending = !discutidas.has(b.id);
+      if (aPending !== bPending) return aPending ? -1 : 1;
+      return new Date(a.data).getTime() - new Date(b.data).getTime();
+    });
+    // `discutidas` é derivado de `internshipLogs`, que já está na depêndencia.
+  }, [internshipClinical, internshipLogs]);
 
   const finish = () => {
     clearDraft();
@@ -269,91 +267,6 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
     },
   ];
 
-  const atendimentoSteps: WizardStep[] = [
-    essentialStep(
-      <TextInput
-        value={activity}
-        onChange={(e) => patch({ activity: e.target.value })}
-        placeholder="ex: sessão de escuta com paciente em acompanhamento"
-        autoFocus
-      />
-    ),
-    {
-      id: 'contexto-atendimento',
-      title: 'contexto profissional',
-      headline: 'quem você atendeu e qual foi a demanda?',
-      subtitle: 'só o necessário do paciente (iniciais bastam) e as intervenções que você usou.',
-      content: (
-        <div className="space-y-4">
-          <div className="grid grid-cols-3 gap-3">
-            <div className="col-span-1">
-              <FieldLabel>sessão nº</FieldLabel>
-              <TextInput
-                type="number"
-                value={sessionNumber}
-                onChange={(e) => patch({ sessionNumber: e.target.value })}
-                placeholder="ex: 3"
-              />
-            </div>
-            <div className="col-span-2">
-              <FieldLabel>idade</FieldLabel>
-              <TextInput value={patientAge} onChange={(e) => patch({ patientAge: e.target.value })} placeholder="ex: 28 anos" />
-            </div>
-          </div>
-          <div>
-            <FieldLabel>paciente (só iniciais, sem nome completo)</FieldLabel>
-            <TextInput value={patient} onChange={(e) => patch({ patient: e.target.value })} placeholder="ex: M. S." />
-          </div>
-          <div>
-            <FieldLabel>tema / queixa central</FieldLabel>
-            <TextArea rows={4} value={theme} onChange={(e) => patch({ theme: e.target.value })} placeholder="o que trouxe hoje..." />
-          </div>
-          <div>
-            <FieldLabel>abordagem teórica (opcional)</FieldLabel>
-            <TextInput value={approach} onChange={(e) => patch({ approach: e.target.value })} placeholder="ex: TCC, psicanálise..." />
-          </div>
-          <div>
-            <FieldLabel>intervenções / técnicas</FieldLabel>
-            <TextArea rows={4} value={interventionNotes} onChange={(e) => patch({ interventionNotes: e.target.value })} placeholder="ex: escuta ativa, perguntas abertas..." />
-          </div>
-        </div>
-      ),
-    },
-    reflectionStep(
-      <div>
-        <FieldLabel>impressões clínicas / observações</FieldLabel>
-        <TextArea
-          rows={4}
-          value={observations}
-          onChange={(e) => patch({ observations: e.target.value })}
-          placeholder="como foi o vínculo, o estado emocional, algo que chamou atenção..."
-        />
-      </div>
-    ),
-    {
-      id: 'revisar',
-      title: 'revisar',
-      headline: 'confere se está tudo certinho ♡',
-      content: (
-        <ReviewCard
-          rows={[
-            { label: 'resumo', value: activity.trim() },
-            { label: 'sessão', value: sessionNumber ? `sessão ${sessionNumber}` : '—' },
-            { label: 'paciente', value: patient.trim() || '—' },
-            { label: 'idade', value: patientAge.trim() || '—' },
-            { label: 'tema / queixa', value: theme.trim() || '—' },
-            { label: 'abordagem', value: approach.trim() || '—' },
-            { label: 'intervenções', value: interventionNotes.trim() || '—' },
-            { label: 'impressões', value: observations.trim() || '—' },
-            { label: 'horas', value: `${parseFloat(hours) || 0} h` },
-            { label: 'data', value: date ? new Date(date).toLocaleDateString('pt-BR') : today() },
-            { label: 'reflexões', value: reflections.trim() || 'sem reflexões' },
-          ]}
-        />
-      ),
-    },
-  ];
-
   const supervisionSteps: WizardStep[] = [
     essentialStep(
       <TextInput
@@ -399,29 +312,29 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
       content: (
         <div className="space-y-3">
           <div className="max-h-[200px] overflow-y-auto border border-ceci-border-default rounded-xl p-3">
-            {attendanceLogs.map((log) => (
-              <div key={log.id} className="flex items-start gap-3 p-2 rounded-lg border border-ceci-border-subtle">
+            {attendanceLogs.map((projecao) => (
+              <div key={projecao.id} className="flex items-start gap-3 p-2 rounded-lg border border-ceci-border-subtle">
                 <input
                   type="checkbox"
-                  checked={discussedLogIds.includes(log.id)}
+                  checked={discussedClinicalIds.includes(projecao.id)}
                   onChange={(e) => {
                     if (e.target.checked) {
-                      patch({ discussedLogIds: [...discussedLogIds, log.id] });
+                      patch({ discussedClinicalIds: [...discussedClinicalIds, projecao.id] });
                     } else {
-                      patch({ discussedLogIds: discussedLogIds.filter((id) => id !== log.id) });
+                      patch({ discussedClinicalIds: discussedClinicalIds.filter((id) => id !== projecao.id) });
                     }
                   }}
                   className="h-4 w-4 flex-shrink-0 text-ceci-primary"
                 />
                 <div className="flex-1 space-y-1">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-ceci-primary">Sessão {log.sessionNumber ?? '—'}</span>
+                    <span className="font-semibold text-ceci-primary">{projecao.iniciais}</span>
                     <span className="text-xs text-ceci-secondary">
-                      {log.date ? new Date(log.date).toLocaleDateString('pt-BR') : '—'}
+                      {new Date(projecao.data).toLocaleDateString('pt-BR')}
                     </span>
                   </div>
                   <span className="text-xs text-ceci-secondary truncate max-w-[200px]">
-                    {log.activity}
+                    {projecao.paraLevar.trim() || 'sem "para levar"'}
                   </span>
                 </div>
               </div>
@@ -514,7 +427,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
             { label: 'temas', value: topics.length ? topics.join(' · ') : '—' },
             { label: 'orientações', value: orientations.trim() || '—' },
             { label: 'dúvidas', value: doubts.trim() || '—' },
-            { label: 'atendimentos discutidos', value: discussedLogIds.length ? `${discussedLogIds.length} sessões` : '—' },
+            { label: 'atendimentos discutidos', value: discussedClinicalIds.length ? `${discussedClinicalIds.length} sessões` : '—' },
             { label: 'próximos passos', value: nextSteps.length ? nextSteps.join(' · ') : '—' },
             { label: 'horas', value: `${parseFloat(hours) || 0} h` },
             { label: 'data', value: date ? new Date(date).toLocaleDateString('pt-BR') : today() },
@@ -525,14 +438,12 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
     },
   ];
 
-  const steps =
+const steps =
     kind === null
       ? [choiceStep]
-      : kind === 'atendimento_clinico'
-      ? atendimentoSteps
       : kind === 'supervisao' || kind === 'intervisao'
-      ? supervisionSteps
-      : estagioSteps;
+        ? supervisionSteps
+        : estagioSteps;
 
   const canNext = kind === null ? false : activity.trim().length > 0;
 
@@ -546,25 +457,18 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
       activity: activity.trim(),
       reflections: reflections.trim(),
     };
-    return kind === 'atendimento_clinico'
-      ? {
-          ...base,
-          patient: patient.trim() || undefined,
-          sessionNumber: sessionNumber ? Number(sessionNumber) : undefined,
-          patientAge: patientAge.trim() || undefined,
-          theme: theme.trim() || undefined,
-          approach: approach.trim() || undefined,
-          interventionNotes: interventionNotes.trim() || undefined,
-          observations: observations.trim() || undefined,
-        }
-      : kind === 'supervisao' || kind === 'intervisao'
+    // Não existe ramo clínico. §4.8 linha 471 é `[D]`: a camada clínica é só
+    // desktop, e `SPEC-M-013` `D1` tirou o registro do aparelho. O que o celular
+    // mostra de um atendimento é a projeção, que vem pronta do desktop — e por
+    // isso este `buildLog` nunca produz um.
+    return kind === 'supervisao' || kind === 'intervisao'
       ? {
           ...base,
           supervisor: supervisor.trim() || undefined,
           topics: topics.length ? topics : undefined,
           orientations: orientations.trim() || undefined,
           doubts: doubts.trim() || undefined,
-          discussedLogIds: discussedLogIds.length ? discussedLogIds : undefined,
+          discussedClinicalIds: discussedClinicalIds.length ? discussedClinicalIds : undefined,
           beforeNotes: beforeNotes.trim() || undefined,
           afterNotes: afterNotes.trim() || undefined,
           selfAssessment: (confidence || limits || themes) ? { confidence, limits, themes } : undefined,
@@ -580,41 +484,17 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
     if (!log) return;
     if (editingLog) {
       handleUpdateInternshipLog({ ...editingLog, ...log });
-      // side effect: sync supervisionLogId
-      if ((log.type === 'supervisao' || log.type === 'intervisao') && discussedLogIds.length > 0) {
-        const currentId = log.id;
-        internshipLogs.forEach((target) => {
-          if (target.type === 'atendimento_clinico') {
-            const should = discussedLogIds.includes(target.id);
-            const currently = target.supervisionLogId === currentId;
-            if (should && !currently) {
-              handleUpdateInternshipLog({ ...target, supervisionLogId: currentId });
-            } else if (!should && currently) {
-              handleUpdateInternshipLog({ ...target, supervisionLogId: undefined });
-            }
-          }
-        });
-      }
+      // Sem efeito colateral em registro clínico. Antes, salvar uma supervisão
+      // reescrevia `supervisionLogId` em cada `atendimento_clinico` — ou seja,
+      // cada gravação de supervisão escreva em registro de paciente. A relação
+      // agora mora na supervisão (`discussedClinicalIds`), que o `buildLog` acima
+      // já grava, e `SPEC-M-013` `D1` tirou o registro clínico do aparelho.
       hapticSuccess();
       finish();
       showToast('registro de estágio atualizado ♡');
       return;
     }
     handleAddInternshipLog(log);
-    if ((log.type === 'supervisao' || log.type === 'intervisao') && discussedLogIds.length > 0) {
-      const currentId = log.id;
-      internshipLogs.forEach((target) => {
-        if (target.type === 'atendimento_clinico') {
-          const should = discussedLogIds.includes(target.id);
-          const currently = target.supervisionLogId === currentId;
-          if (should && !currently) {
-            handleUpdateInternshipLog({ ...target, supervisionLogId: currentId });
-          } else if (!should && currently) {
-            handleUpdateInternshipLog({ ...target, supervisionLogId: undefined });
-          }
-        }
-      });
-    }
     hapticSuccess();
     finish();
     showToast('registro de estágio guardado ♡');
@@ -624,17 +504,15 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
     ? KIND_META[kind]
     : { title: 'novo registro de estágio', icon: <Sparkles className="w-3.5 h-3.5" /> };
 
+  // O mascote de atendimento clínico saiu com o registro clínico: §4.8 linha 471
+  // é `[D]` e o celular não registra atendimento.
   const mascote =
-    kind === 'supervisao' || kind === 'intervisao'
-      ? 'supervision-reflect'
-      : kind === 'atendimento_clinico'
-      ? 'listening-hello'
-      : 'field-prepare';
+    kind === 'supervisao' || kind === 'intervisao' ? 'supervision-reflect' : 'field-prepare';
 
   return (
     <WizardScaffold
       title={editing ? `editar ${meta.title.replace('novo ', '')}` : meta.title}
-      subtitle={kind === null ? 'estágio, atendimento, supervisão...' : undefined}
+      subtitle={kind === null ? 'estágio, supervisão, intervisão...' : undefined}
       icon={meta.icon}
       iconClass="bg-surface-rose border-ceci-border-brand text-ceci-brand-strong"
       mascote={mascote}

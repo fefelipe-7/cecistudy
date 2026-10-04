@@ -1,15 +1,26 @@
 // Domínio: estágio supervisionado — diário, supervisão e intervisão (MOD-001 / B.3).
 // Fonte única de verdade: InternshipLog. "Visão por caso" é derivada (internshipCases.ts).
 
-/** Tipos de registro do estágio (clínica escola / campo). */
-export type InternshipLogType =
-  | 'estagio'
-  | 'atendimento_clinico'
-  | 'supervisao'
-  | 'intervisao'
-  | 'outro';
+import type { ClinicalProjection } from './clinical.ts';
 
-/** Fase do ciclo de formação de um registro de estágio (Estágio 2.0). */
+/**
+ * Tipos de registro **acadêmico** do estágio.
+ *
+ * `atendimento_clinico` **não** está aqui, e a ausência é a regra.
+ * `SPEC-M-013` `D2`: §1.6 da spec referencial linha 23 é `[D]` — paciente de
+ * estágio é um dos três domínios que nunca compartilham tabela, `id` nem vínculo.
+ * Enquanto o tipo clínico valor do mesmo union do tipo acadêmico, a distinção
+ * existe só em tempo de execução, e um `if` esquecido vira dado de paciente num
+ * payload de sincronização.
+ *
+ * O que existe no lugar é a **projeção** de quatro campos, em
+ * `ClinicalProjection`, e ela mora em coleção própria.
+ */
+export type InternshipLogType = 'estagio' | 'supervisao' | 'intervisao' | 'outro';
+
+/**
+ * Fase do ciclo de formação de um registro de estágio (Estágio 2.0).
+ */
 export type InternshipPhase =
   | 'preparar'
   | 'registrar'
@@ -34,21 +45,6 @@ export interface InternshipLog {
   prepChecklist?: string[];
   conceptIds?: string[];
 
-  // ---- atendimento clínico ----
-  /** Iniciais anônimas do(a) paciente (sem nome completo). */
-  patient?: string;
-  /** Número da sessão do atendimento. */
-  sessionNumber?: number;
-  patientAge?: string;
-  /** Tema central / queixa / demanda da sessão. */
-  theme?: string;
-  /** Abordagem teórica usada (ex.: TCC, psicanálise). */
-  approach?: string;
-  /** O que foi feito na sessão (intervenções, técnicas). */
-  interventionNotes?: string;
-  /** Impressões clínicas / observações. */
-  observations?: string;
-
   // ---- supervisão / intervisão ----
   supervisor?: string;
   /** Temas discutidos na supervisão. */
@@ -71,15 +67,21 @@ export interface InternshipLog {
     themes?: string;
   };
 
-  // ---- vínculo sessão ↔ supervisão ----
-  /** Em logs tipo `atendimento_clinico`: id da supervisão que discutiu a sessão. */
-  supervisionLogId?: string;
-  /** Em logs tipo `supervisao`/`intervisao`: ids dos atendimentos discutidos. */
-  discussedLogIds?: string[];
+  /**
+   * Ids das projeções de atendimento discutidas nesta supervisão.
+   *
+   * Aponta para `ClinicalProjection.id`, e **não** para um registro clínico: a
+   * relação é com a projeção, que é o que existe fora do desktop. É esta a
+   * distinção de §4.8 linha 473 — a camada clínica não é sincronizada, e o que
+   * atravessa é a projeção de quatro campos.
+   */
+  discussedClinicalIds?: string[];
 
   // ---- legado (dados antigos sem `type`) ----
   supervisionNotes?: string;
 }
+
+export type { ClinicalProjection };
 
 /**
  * Caderno de supervisão — encontro próprio que conecta teoria, prática e

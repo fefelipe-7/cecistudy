@@ -23,8 +23,8 @@ describe('schema — migração 11 → 12 (escopo de workspace)', () => {
     tcc: { title: '', advisor: '', field: '', problemStatement: '', objectives: [], status: 'em_andamento', chapters: [], references: [] },
   };
 
-  it('SCHEMA_VERSION é 19', () => {
-    expect(SCHEMA_VERSION).toBe(19);
+  it('SCHEMA_VERSION é 20', () => {
+    expect(SCHEMA_VERSION).toBe(20);
   });
 
   it('adiciona workspaceId default a todas as entidades sincronizáveis', () => {

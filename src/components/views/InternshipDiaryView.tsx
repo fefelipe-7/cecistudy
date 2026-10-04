@@ -20,7 +20,7 @@ function weekStart(d: Date): Date {
 
 /** Tela do estágio 2.0: diário + supervisão + pendências. */
 export const InternshipDiaryView: React.FC = () => {
-  const { internshipLogs, openWizard, themePref } = useMobileApp();
+  const { internshipLogs, internshipClinical, openWizard, themePref } = useMobileApp();
   const appIsDark = isDarkTheme(themePref);
   const [tab, setTab] = useState<'diario' | 'supervisao' | 'pacientes'>('diario');
   const [selectedCase, setSelectedCase] = useState<ReturnType<typeof deriveCases>[0] | null>(null);
@@ -53,8 +53,11 @@ export const InternshipDiaryView: React.FC = () => {
   const supervisionCount = internshipLogs.filter((l) => l.type === 'supervisao').length;
 
   // pendências derivadas
-  const cases = useMemo(() => deriveCases(internshipLogs), [internshipLogs]);
-  const pendingReflection = cases.reduce((a, c) => a + c.pendingReflection, 0);
+  const cases = useMemo(
+    () => deriveCases(internshipClinical, internshipLogs.filter((l) => l.type === 'supervisao')),
+    [internshipClinical, internshipLogs],
+  );
+  const pendingParaLevar = cases.reduce((a, c) => a + c.pendingParaLevar, 0);
   const pendingSupervision = cases.reduce((a, c) => a + c.pendingSupervision, 0);
 
   return (
@@ -123,7 +126,7 @@ export const InternshipDiaryView: React.FC = () => {
           </div>
 
           {/* Pendências */}
-          {(pendingReflection > 0 || pendingSupervision > 0) && (
+          {(pendingParaLevar > 0 || pendingSupervision > 0) && (
             <div className="rounded-2xl p-3 bg-surface-rose border border-ceci-border-brand shadow-sm">
               <div className="flex items-center gap-2 text-[11px] font-semibold text-ceci-brand-strong mb-2">
                 <AlertCircle className="w-4 h-4" />
@@ -131,8 +134,8 @@ export const InternshipDiaryView: React.FC = () => {
               </div>
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div className="bg-surface-default rounded-xl p-2 text-center">
-                  <p className="font-bold text-ceci-primary">{pendingReflection}</p>
-                  <p className="text-ceci-secondary">reflexões em aberto</p>
+                  <p className="font-bold text-ceci-primary">{pendingParaLevar}</p>
+                  <p className="text-ceci-secondary">sem &quot;para levar&quot;</p>
                 </div>
                 <div className="bg-surface-default rounded-xl p-2 text-center">
                   <p className="font-bold text-ceci-primary">{pendingSupervision}</p>

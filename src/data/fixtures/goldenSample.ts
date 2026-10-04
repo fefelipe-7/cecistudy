@@ -2,7 +2,7 @@
  * Fixtures douradas (F0.4) — banco "cheio" de referência compartilhado TS/Rust.
  *
  * O MESMO snapshot alimenta os golden files em
- * `cecistudy-rust/contracts/golden/` (gerados/verificados por
+ * `../../../cecistudy-desktop/contratos/dados/golden/` (gerados/verificados por
  * `src/lib/__tests__/goldenFixtures.test.ts`) e o teste de paridade Rust
  * (`golden_parity_test.rs`, Fase 1). Dados cênicos: psicologia clínica, pt-BR,
  * sem dados identificáveis de pacientes.
@@ -12,7 +12,7 @@
  */
 import type { PersistedStateSnapshot } from '../../../packages/data/src/persistentData';
 import type { BackupV2 } from '../../../packages/data/src/exportImport';
-import { SCHEMA_VERSION } from '../../../packages/data/src/schema';
+import { SCHEMA_VERSION, USER_SCHEMA_VERSION } from '../../../packages/data/src/schema';
 import type { LooseNote } from '../../../src/types';
 import { emptyDatabase } from '../empty';
 
@@ -300,18 +300,13 @@ export function sampleSnapshot(): PersistedStateSnapshot {
       {
         id: 'ilog-1',
         workspaceId: 'ws-academico',
-        type: 'atendimento_clinico',
+        type: 'estagio',
         date: '2026-09-08',
         hours: 1.5,
-        activity: 'atendimento 12 — paciente M.',
+        activity: 'atendimento 12 — suivi evolution 3',
         reflections: 'escuta ativa sustentada; retomamos o luto recente.',
         phase: 'refletir',
         conceptIds: ['con-1'],
-        patient: 'M.',
-        sessionNumber: 12,
-        theme: 'luto',
-        approach: 'psicanalítica',
-        supervisionLogId: 'ilog-3',
       },
       {
         id: 'ilog-2',
@@ -324,10 +319,21 @@ export function sampleSnapshot(): PersistedStateSnapshot {
         supervisor: 'Helena Duarte',
         topics: ['luto', 'intervenção'],
         nextSteps: ['ler sobre luto complicado'],
-        discussedLogIds: ['ilog-1'],
-        beforeNotes: 'ansiosa com o caso M.',
+        discussedClinicalIds: ['clin-1'],
+        beforeNotes: 'ansiosa com o caso.',
         afterNotes: 'plano: espaço para o luto, sem apressar.',
         selfAssessment: { confidence: 'confiante frente à estagiária aceita' },
+      },
+    ],
+    // `SPEC-M-013` `D1` — a projeção clínica é coleção própria. Cinco campos,
+    // e o golden existe para provar que nada além deles atravessa.
+    internshipClinical: [
+      {
+        id: 'clin-1',
+        iniciais: 'M.',
+        data: '2026-09-08',
+        duracaoMin: 90,
+        paraLevar: 'espaço para o luto, sem apressar',
       },
     ],
     tcc: {
@@ -461,10 +467,15 @@ export function goldenEnvelope(snapshot: PersistedStateSnapshot): BackupV2 {
   return {
     format: 'cecistudy-user-backup',
     formatVersion: 1,
-    userSchemaVersion: 1,
     // Vem da constante real (nunca literal): um literal aqui ficava defasado
     // silenciosamente quando o schema subia, e o golden parava de refletir o
     // payload migrado — a paridade TS↔Rust quebrava sem aviso.
+    //
+    // Este campo era `1` hardcoded enquanto `USER_SCHEMA_VERSION` valia 3 (débito
+    // C2). O literal escondia justamente o drift que o golden deveria pegar: o
+    // envelope de golden dizia v1 e o de produção dizia v3, e nada comparava os
+    // dois. Por isso os dois campos acima são constantes e não números.
+    userSchemaVersion: USER_SCHEMA_VERSION,
     schemaVersion: SCHEMA_VERSION,
     catalogRelease: null,
     exportedAt: GOLDEN_EXPORTED_AT,

@@ -102,6 +102,10 @@ export const COLLECTIONS = [
   { key: 'techniques', kind: 'array', table: 'technique', syncable: true },
   // chave `internshipLogs` → tabela `internship`: o mesmo desvio dos demais,
   // agora declarado uma vez só em vez de repetido em read/write.
+  //
+  // `SPEC-M-013` `D2`: a partir da versão 20, `internshipLogs` carrega **só**
+  // tipos acadêmicos. `atendimento_clinico` saiu do union de `InternshipLogType`,
+  // e a distinção agora é impossível de errar em vez de depender de um `if`.
   { key: 'internshipLogs', kind: 'array', table: 'internship', syncable: true },
   { key: 'supervision', kind: 'array', table: 'supervision_notebook', syncable: false },
   { key: 'tcc', kind: 'singleton', table: 'thesis_project', syncable: true },
@@ -119,6 +123,15 @@ export const COLLECTIONS = [
   // leem as tabelas. `academicTerms` não tem dependência de leitura de nenhuma
   // outra coleção, então o fim é seguro.
   { key: 'academicTerms', kind: 'array', table: 'academic_term', syncable: true },
+  // `SPEC-M-013` `D1`: a **projeção** da camada clínica. Fica no fim pela mesma
+  // razão de `academicTerms`: a ordem do array é a ordem de hidratação.
+  //
+  // Ela sincroniza, e é a única coisa da camada clínica que sincroniza — cinco
+  // campos, em schema estrito, porque §4.8 linha 472 é lista fechada e a linha
+  // 545 diz que isso é "regra fixa, não configuração". `syncable: true` não é
+  // incoerência com a linha 471: a 471 proíbe que a camada clínica sincronize, e
+  // a projeção não é a camada clínica. É a metade que a 472 autoriza.
+  { key: 'internshipClinical', kind: 'array', table: 'internship_clinical', syncable: true },
 ] as const satisfies readonly CollectionSpec[];
 
 /** União das chaves persistidas (ex.: `'courses' | 'decks' | …`). */
@@ -152,10 +165,29 @@ export const SYNCABLE_COLLECTION_KEYS = COLLECTIONS.filter((c) => c.syncable).ma
   (c) => c.key
 ) as CollectionKey[];
 
-/** Coleções com merge por conjunto/mapa — exigem tombstones/stamp por chave. */
+/** `spec §7.1` — Coleções com merge por conjunto/mapa — exigem tombstones/stamp por chave. */
 export const SET_LIKE_COLLECTION_KEYS: CollectionKey[] = [
   'savedBookIds',
   'bookmarkedCourseIds',
   'readingProgress',
   'streakData',
 ];
+
+/**
+ * Coleções de conteúdo **clínico** — a projeção da camada do Estágio.
+ *
+ * `SPEC-M-013`. A lista existe para o gate e para a validação, e não para filtrar
+ * payload: a regra é que a coleção **só pode** ter os campos de
+ * `CAMPOS_DA_PROJECAO`, e isso é verificado por
+ * `.github/scripts/check-clinical-isolation.mjs` e pelo schema estrito em
+ * `backupSchema.ts`.
+ *
+ * Um filtro aqui deixaria passar o que não conhece, e §4.8 linha 545 é explícita:
+ * "Isso é regra fixa, não configuração".
+ */
+export const CLINICAL_COLLECTION_KEYS: readonly CollectionKey[] = ['internshipClinical'];
+
+/** `true` se a coleção é de conteúdo clínico. */
+export function isClinicalCollectionKey(key: string): key is CollectionKey {
+  return (CLINICAL_COLLECTION_KEYS as readonly string[]).includes(key);
+}

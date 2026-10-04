@@ -9,10 +9,28 @@ import type { AcademicTerm } from '@/types';
  * incremente esta versão e registre a migração correspondente em `MIGRATIONS`.
  * O export/import carrega a versão junto; o app recusa/avisa dados de versão desconhecida.
  */
-export const SCHEMA_VERSION = 19;
+export const SCHEMA_VERSION = 20;
 
-/** Versão de schema da base da usuária (antigo scaffold SQLite, hoje mantida por compatibilidade de import). */
-export const USER_SCHEMA_VERSION = 1;
+/**
+ * Versão de schema da base da usuária (`cecistudy_user`, SQLite nativo).
+ *
+ * **Débito C2, fechado.** Esta constante e `USER_SCHEMA_VERSION` em
+ * `src/lib/db/migrations/user.ts` eram duas declarações independentes com
+ * valores diferentes (1 e 3). O valor daqui é o que `exportImport.ts` carimba em
+ * `userSchemaVersion` no envelope de backup; o valor de lá é o que o runner de
+ * migração realmente aplica. Divergindo, **um backup declara v1 quando a base
+ * está em v3**, e na restauração o app não sabe que precisa migrar.
+ *
+ * A fonte única é esta, em `packages/data`, porque `packages/*` é a biblioteca
+ * canônica e `src/*` são stubs de compat que reexportam dela — a dependência
+ * nunca pode ser invertida (ver `ADR-007` e o débito C9).
+ *
+ * Invariante, verificada por gate: este valor tem que ser igual a
+ * `LATEST_USER_VERSION` em `src/lib/db/migrations.ts`, que é
+ * `MIGRATIONS[MIGRATIONS.length - 1].version`. Ao acrescentar um passo de
+ * migração, suba os dois — o gate falha se você esquecer.
+ */
+export const USER_SCHEMA_VERSION = 3;
 
 /** Chave persistida que guarda a versão do schema em uso. */
 export const SCHEMA_VERSION_KEY = 'schemaVersion';
@@ -443,12 +461,86 @@ export const MIGRATIONS: Record<number, Migration> = {
   // corrigiria o caso real, que é estar no 6º com o total errado. O Perfil deixa
   // reassinar o total depois (clamp `1..12`), então o custo de errar aqui é
   // baixo e o custo de não corrigir era um progresso de;formatura sempre furado.
-  19: (data) => {
+19: (data) => {
     const profile = { ...(data.profile as Record<string, unknown> ?? {}) };
     if (profile.totalSemesters === DEFAULT_TOTAL_SEMESTERS_LEGACY) {
       profile.totalSemesters = DEFAULT_TOTAL_SEMESTERS;
     }
     return { ...data, profile };
+  },
+  // 19 → 20: a camada clínica do Estágio sai do mobile (SPEC-M-013 `D4`).
+  //
+  // ## O que esta migração faz, e por que ela é irreversível
+  //
+  // Converte cada `internshipLogs` com `type === 'atendimento_clinico'` numa
+  // **projeção** de cinco campos, e **descarta o resto**. Os campos
+  // descartados são `patient`, `patientAge`, `sessionNumber`, `theme`,
+  // `approach`, `interventionNotes`, `observations`, `supervisionLogId` e
+  // `discussedLogIds` — nove campos de dado de paciente real.
+  //
+  // ## Por que descartar em vez de migrar
+  //
+  // Não há como cumprir `SPEC-M-013` `D1` e manter o dado: se o conteúdo clínico
+  // continuar na base, ele continua no aparelho, e a próxima exportação o leva.
+  // A escolha real era entre apagar do aparelho agora ou apagar quando alguém
+  // descobrir. A lista de campos que **sobrevive** é a de §4.8 linha 472 da spec
+  // referencial: iniciais, data, duração e "Para levar" — o único texto que a
+  // usuária escolhe levar, e que ela pode ter deixado vazio.
+  //
+  // ## Por que isto precisa de confirmação da dona antes de produção
+  //
+  // A consequência é visível: a usuária que registrou atendimento no celular
+  // **perde o texto**. A decisão não está aberta — §4.8 linha 471 é `[D]` e diz
+  // "Só desktop" — mas a consequência é dela, e ninguém deve descobrir por conta
+  // própria. Ver `SPEC-M-013` `## 10`.
+  //
+  // ## Idempotência
+  //
+  // Rodar duas vezes não faz nada: a segunda passagem não encontra
+  // `atendimento_clinico` em `internshipLogs`, porque a primeira já removeu. E a
+  // coleção `internshipClinical` é criada só se ainda não existir, para uma
+  // projeção antiga não ser duplicada.
+  20: (data) => {
+    const logs = Array.isArray(data.internshipLogs)
+      ? (data.internshipLogs as Record<string, unknown>[])
+      : [];
+
+    const academicos: Record<string, unknown>[] = [];
+    const projecoes: Record<string, unknown>[] = [];
+
+    for (const log of logs) {
+      if (log.type !== 'atendimento_clinico') {
+        academicos.push(log);
+        continue;
+      }
+
+      // Só os cinco campos de §4.8 linha 472. `paraLevar` ausente vira string
+      // vazia porque **ausente é escolha válida**: "não levei nada" é informação,
+      // e `undefined` no payload seria ambíguo entre "não escolheu" e "não tinha".
+      projecoes.push({
+        id: typeof log.id === 'string' ? log.id : '',
+        iniciais: typeof log.patient === 'string' && log.patient.trim() ? log.patient.trim() : '—',
+        data: typeof log.date === 'string' ? log.date : '',
+        duracaoMin: typeof log.hours === 'number' && Number.isFinite(log.hours)
+          ? Math.round(log.hours * 60)
+          : 0,
+        paraLevar: typeof log.paraLevar === 'string' ? log.paraLevar : '',
+      });
+    }
+
+    const jaExistentes = Array.isArray(data.internshipClinical)
+      ? (data.internshipClinical as Record<string, unknown>[])
+      : [];
+    const idsConhecidos = new Set(jaExistentes.map((p) => p.id));
+
+    return {
+      ...data,
+      internshipLogs: academicos,
+      internshipClinical: [
+        ...jaExistentes,
+        ...projecoes.filter((p) => p.id && !idsConhecidos.has(p.id)),
+      ],
+    };
   },
 };
 
