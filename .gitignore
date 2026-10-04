@@ -32,3 +32,7 @@ apps/desktop-flutter.zip
 # Python (skills/scripts)
 **/__pycache__/
 *.pyc
+
+# Contrato de dados baixado pelo ci.yml (segundo checkout do repo desktop).
+# Não versionar: o dono é cecistudy-desktop/contratos/dados/.
+.contrato-desktop/

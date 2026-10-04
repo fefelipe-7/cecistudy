@@ -8,20 +8,22 @@
  *
  * ## Por que isto existe e não um caminho literal
  *
- * A profundidade relativa entre os dois repositórios **não é a mesma** em todo
- * lugar:
+ * A localização do contrato **não é a mesma** em todo lugar:
  *
- * | onde | mobile | desktop | quantos `..` |
- * |---|---|---|---|
- * | local | `cecigroup/cecistudy/cecistudy` | `cecigroup/cecistudy-desktop` | 5 |
- * | CI | `work/cecistudy/cecistudy` | `work/cecistudy/cecistudy-desktop` | 4 |
+ * | onde | contrato | como se chega nele |
+ * |---|---|---|
+ * | CI | `<repo>/.contrato-desktop/contratos/dados` | checkout dentro do workspace |
+ * | local | `../cecistudy-desktop/contratos/dados` | repositório irmão |
  *
- * Um caminho literal passaria num lugar e falharia no outro, e a falha aparece
- * como "golden ausente", que parece problema de fixture em vez de problema de
- * caminho. Então o caminho é **descoberto**, subindo a árvore até achar o
- * diretório, com um nome de variável de ambiente como escape.
+ * E a profundidade relativa entre os dois repositórios também não é a mesma:
+ * localmente o mobile está dois níveis abaixo da raiz do grupo e o desktop
+ * está em um; no CI os dois são irmãos. Um caminho literal passava num lugar e
+ * falhava no outro, e a falha aparece como "golden ausente", que parece
+ * problema de fixture em vez de problema de caminho. Então o caminho é
+ * **descoberto**: primeiro o diretório do checkout do CI, depois busca
+ * ascendente.
  *
- * `CECISTUDY_CONTRATO_DIR` (absoluto) tem precedência sobre a busca. É o que
+ * `CECISTUDY_CONTRATO_DIR` (absoluto) tem precedência sobre tudo. É o que
  * permite rodar o gate contra uma cópia do contrato em outro lugar.
  */
 import { existsSync } from 'node:fs';
@@ -34,15 +36,21 @@ export const RAIZ_MOBILE = resolve(dirname(fileURLToPath(import.meta.url)), '../
 /** Subcaminho do contrato dentro do repositório desktop. */
 const SUBCAMINHO = 'contratos/dados';
 
+/** Onde o `ci.yml` faz o segundo checkout. Procurado primeiro. */
+const CHECKOUT_DO_CI = '.contrato-desktop';
+
 /** Quantos níveis subir na busca. Suficiente para os dois layouts acima. */
 const NIVEIS = 8;
 
 /**
- * Acha o diretório do contrato subindo a árvore a partir de `de`.
+ * Acha o diretório do contrato. Tenta o checkout do CI, depois sobe a árvore.
  * Retorna `null` se não achar — e aí a mensagem de erro precisa ser boa,
  * porque "não achei" é o caso que alguém vai bater.
  */
 function achaContrato(de: string): string | null {
+  const doCi = resolve(de, CHECKOUT_DO_CI, SUBCAMINHO);
+  if (existsSync(doCi)) return doCi;
+
   let dir = de;
   for (let i = 0; i < NIVEIS; i += 1) {
     const candidato = resolve(dir, 'cecistudy-desktop', SUBCAMINHO);
@@ -104,8 +112,8 @@ function falhar(): never {
       `${RAIZ_MOBILE}).\n` +
       `O contrato é do app desktop (ADR-007, ADR-009). Para o gate passar:\n` +
       `  - no CI: o workflow tem que fazer checkout de fefelipe-7/cecistudy-desktop\n` +
-      `    em ../cecistudy-desktop, porque os dois repositórios são irmãos ali;\n` +
-      `  - localmente, os dois repositórios têm que estar no mesmo grupo de pastas,\n` +
-      `    ou CECISTUDY_CONTRATO_DIR precisa apontar para o diretório do contrato.`,
+      `    em ${CHECKOUT_DO_CI}/ (é o que o ci.yml faz);\n` +
+      `  - localmente, os dois repositórios têm que estar no mesmo grupo de pastas;\n` +
+      `  - ou CECISTUDY_CONTRATO_DIR aponta direto para o diretório do contrato.`,
   );
 }
