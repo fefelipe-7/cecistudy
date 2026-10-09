@@ -45,7 +45,9 @@ const KNOWN_INLINE: Record<string, number[]> = {
   'src/components/quizzes/QuizResultScreen.tsx': [61],
   'src/components/ui/AnimatedNumber.tsx': [12],
   'src/components/ui/BootSplash.tsx': [121],
-  'src/components/ui/ProgressBar.tsx': [29],
+  // SPEC-012 F3.5: `aria-valuetext` entrou acima do literal — o número de linha
+  // do ratchet acompanha (o literal em si não mudou; o gate é o mesmo).
+  'src/components/ui/ProgressBar.tsx': [36],
   'src/components/ui/SegmentedControl.tsx': [67],
   'src/components/views/NoteTransformWizard.tsx': [45],
   'src/components/wizards/FlashcardWizard.tsx': [194],

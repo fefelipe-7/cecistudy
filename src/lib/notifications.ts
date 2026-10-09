@@ -1,5 +1,12 @@
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { isNativePlatform } from './storage';
+import {
+  THESIS_REMINDER_BASE,
+  THESIS_REMINDER_RANGE,
+  planThesisReminders,
+  type ThesisReminderPrefs,
+  type ThesisReminderState,
+} from '../../packages/domain/src/core/domain/thesis';
 
 /** id fixo do lembrete diário (para cancelar/substituir com segurança) */
 const DAILY_REMINDER_ID = 1001;
@@ -133,5 +140,65 @@ export async function cancelClassReminders(): Promise<void> {
     await LocalNotifications.cancel({ notifications: classReminderIds() });
   } catch (e) {
     console.error('Cancel class reminders error', e);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// TCC (SPEC-012 §6.3) — faixa própria 3000-3199, sem colidir com a de aulas.
+// O PLANO é puro (`planThesisReminders`, domínio); este é só o adaptador
+// nativo: cancela a faixa inteira e reagenda, no padrão de `syncClassReminders`.
+// ---------------------------------------------------------------------------
+
+function thesisReminderIds(): { id: number }[] {
+  return Array.from({ length: THESIS_REMINDER_RANGE }, (_, i) => ({ id: THESIS_REMINDER_BASE + i }));
+}
+
+/**
+ * Reagenda os lembretes do TCC a partir do plano puro. Reagendar em: abrir o
+ * app, e salvar/editar/remover qualquer entidade com data (o chamador é um
+ * efeito sobre as coleções — `DataClientProvider`).
+ *
+ * Desligado ou sem permissão: só cancela (fica limpo, nunca órfão).
+ */
+export async function syncThesisReminders(
+  state: ThesisReminderState,
+  today: string,
+  prefs: ThesisReminderPrefs,
+): Promise<boolean> {
+  if (!isNativePlatform) return false;
+  try {
+    await LocalNotifications.cancel({ notifications: thesisReminderIds() });
+    if (!prefs.enabled) return true;
+    const granted = await ensureNotificationPermission();
+    if (!granted) return false;
+    const plan = planThesisReminders(state, today, prefs);
+    if (plan.length === 0) return true;
+    await LocalNotifications.schedule({
+      notifications: plan.map((p) => ({
+        id: p.id,
+        title: p.title,
+        body: p.body,
+        schedule: { at: p.at, allowWhileIdle: true },
+        smallIcon: 'ic_stat_cecistudy',
+        // Q10: o toque roteia para a aba certa via `routeFromNotificationExtra`
+        // (domínio, puro e defensivo). `[V]` conferir no aparelho que o
+        // `extra` sobrevive ao agendamento nativo (fallback: abre a visão geral).
+        extra: { thesis: p.target },
+      })),
+    });
+    return true;
+  } catch (e) {
+    console.error('Thesis reminder schedule error', e);
+    return false;
+  }
+}
+
+/** cancela todos os lembretes do TCC (reset, ou prefs desligadas). */
+export async function cancelThesisReminders(): Promise<void> {
+  if (!isNativePlatform) return;
+  try {
+    await LocalNotifications.cancel({ notifications: thesisReminderIds() });
+  } catch (e) {
+    console.error('Cancel thesis reminders error', e);
   }
 }

@@ -31,7 +31,13 @@ export type EntityPrefix =
   | 'pub' // publication
   | 'mts' // metric snapshot
   | 'trm' // academic term (período letivo, SPEC-005)
-  | 'sin'; // strategic insight
+  | 'sin' // strategic insight
+  | 'thc' // thesis chapter (SPEC-012)
+  | 'thr' // thesis reference (SPEC-012)
+  | 'thm' // thesis meeting (SPEC-012)
+  | 'tts' // thesis task (SPEC-012)
+  | 'twl' // thesis writing log (SPEC-012)
+  | 'rdr'; // reading capturada por link (SPEC-012 F8)
 
 let counter = 0;
 

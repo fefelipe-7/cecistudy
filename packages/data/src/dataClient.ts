@@ -27,7 +27,12 @@ import type {
   Flashcard,
   MaterialItem,
   InternshipLog,
-  TccData,
+  ThesisProject,
+  ThesisChapter,
+  ThesisReference,
+  ThesisMeeting,
+  ThesisTask,
+  ThesisWritingLog,
   Sticker,
   StudySession,
   StreakData,
@@ -37,6 +42,9 @@ import type {
   LooseNote,
   SyncIndex,
   AcademicTerm,
+  ReadingSession,
+  ReadingHighlight,
+  ReadingBookmark,
 } from '@/types';
 import {
   emptyDatabase,
@@ -75,7 +83,13 @@ export type ArrayCollectionKey =
   | 'techniques'
   | 'quizSessions'
   | 'looseNotes'
-  | 'academicTerms';
+  | 'academicTerms'
+  // SPEC-012: TCC como coleções com id (LWW por registro no sync).
+  | 'thesisChapters'
+  | 'thesisReferences'
+  | 'thesisMeetings'
+  | 'thesisTasks'
+  | 'thesisWritingLogs';
 
 type ElementOf<K extends keyof PersistedStateSnapshot> =
   PersistedStateSnapshot[K] extends Array<infer U> ? U : never;
@@ -138,6 +152,11 @@ export const repositories = {
   quizSessions: createRepository('quizSessions'),
   looseNotes: createRepository('looseNotes'),
   academicTerms: createRepository('academicTerms'),
+  thesisChapters: createRepository('thesisChapters'),
+  thesisReferences: createRepository('thesisReferences'),
+  thesisMeetings: createRepository('thesisMeetings'),
+  thesisTasks: createRepository('thesisTasks'),
+  thesisWritingLogs: createRepository('thesisWritingLogs'),
 } as const;
 
 /** Mapa de setters do contexto para aplicação de um banco persistido. */
@@ -158,13 +177,21 @@ export interface DataClientSetters {
   techniques: (v: Technique[]) => void;
   quizSessions: (v: QuizSession[]) => void;
   academicTerms: (v: AcademicTerm[]) => void;
+  readingSessions: (v: ReadingSession[]) => void;
+  readingHighlights: (v: ReadingHighlight[]) => void;
+  readingBookmarks: (v: ReadingBookmark[]) => void;
+  thesisChapters: (v: ThesisChapter[]) => void;
+  thesisReferences: (v: ThesisReference[]) => void;
+  thesisMeetings: (v: ThesisMeeting[]) => void;
+  thesisTasks: (v: ThesisTask[]) => void;
+  thesisWritingLogs: (v: ThesisWritingLog[]) => void;
   streakData: (v: StreakData) => void;
   reminder: (v: { enabled: boolean; time: string }) => void;
   looseNotes: (v: LooseNote[]) => void;
   savedBookIds: (v: string[]) => void;
   readingProgress: (v: Record<string, number>) => void;
 bookmarkedCourseIds: (v: string[]) => void;
-   tcc: (v: TccData) => void;
+    tcc: (v: ThesisProject) => void;
    onboarding: (v: OnboardingState) => void;
    syncIndex: (v: SyncIndex) => void;
 }
@@ -203,6 +230,15 @@ export function applyDatabaseToSetters(
   setters.techniques(db.techniques);
   setters.quizSessions(db.quizSessions);
   setters.academicTerms(db.academicTerms ?? []);
+  setters.readingSessions(db.readingSessions ?? []);
+  setters.readingHighlights(db.readingHighlights ?? []);
+  setters.readingBookmarks(db.readingBookmarks ?? []);
+  // SPEC-012: tolerância `?? []` — snapshot antigo (pré-22) não carrega as chaves.
+  setters.thesisChapters(db.thesisChapters ?? []);
+  setters.thesisReferences(db.thesisReferences ?? []);
+  setters.thesisMeetings(db.thesisMeetings ?? []);
+  setters.thesisTasks(db.thesisTasks ?? []);
+  setters.thesisWritingLogs(db.thesisWritingLogs ?? []);
   setters.streakData(db.streakData);
   setters.reminder(db.reminder);
   setters.looseNotes(db.looseNotes as LooseNote[]);

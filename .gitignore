@@ -25,6 +25,7 @@ ota-site/
 assets/mascote_expressoes_svgs/
 
 # Núcleo Rust (desktop) — artefatos de build
+cecistudy-rust/target/
 
 # Backup em zip de projeto (não versionar)
 apps/desktop-flutter.zip
@@ -32,7 +33,3 @@ apps/desktop-flutter.zip
 # Python (skills/scripts)
 **/__pycache__/
 *.pyc
-
-# Contrato de dados baixado pelo ci.yml (segundo checkout do repo desktop).
-# Não versionar: o dono é cecistudy-desktop/contratos/dados/.
-.contrato-desktop/

@@ -1,6 +1,6 @@
 /**
  * SHA-256 sobre Canonical JSON v1 (T0.4) — paridade byte a byte com
- * `src-tauri/src/lib.rs` (desktop).
+ * `cecistudy-rust/crates/cecistudy-common/src/hash.rs`.
  *
  * O `payloadHash` do envelope de sync é o SHA-256 dos bytes do Canonical JSON
  * v1 do snapshot. Hashar um `JSON.stringify` qualquer faria o mesmo dado
@@ -8,7 +8,7 @@
  * motivo — por isso a entrada é sempre `canonicalize()`.
  *
  * Os vetores compartilhados ficam em
- * `../../../cecistudy-desktop/contratos/dados/golden/canonical_hash_vectors.json`.
+ * `cecistudy-rust/contracts/golden/canonical_hash_vectors.json`.
  */
 import { canonicalize } from './canonical-json';
 

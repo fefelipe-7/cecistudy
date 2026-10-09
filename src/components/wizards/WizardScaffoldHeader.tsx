@@ -96,7 +96,7 @@ export const WizardScaffoldHeader: React.FC<WizardScaffoldHeaderProps> = ({
     {stepTitles && stepTitles.length > 1 && (
       <ol className={STEP_LIST_CLASS}>
         {stepTitles.map((t, i) => (
-          <li key={t} aria-current={i === step ? 'step' : undefined}>
+          <li key={`${t}-${i}`} aria-current={i === step ? 'step' : undefined}>
             {t}
           </li>
         ))}

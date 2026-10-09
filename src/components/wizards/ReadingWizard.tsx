@@ -320,6 +320,8 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       readPages: 0,
       status,
       highlights: [],
+      sourceKind: 'custom',
+      catalogId: undefined,
     });
     hapticSuccess();
     closeWizard();

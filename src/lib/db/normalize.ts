@@ -294,31 +294,15 @@ async function saveInternshipLogs(driver: SqlDriver, value: unknown): Promise<vo
 
 async function saveTcc(driver: SqlDriver, value: unknown): Promise<void> {
   if (!isRec(value)) throw new Error('tcc: objeto esperado');
-  const chapters = asArray(value.chapters);
-  const references = Array.isArray(value.references)
-    ? value.references.filter((r): r is string => typeof r === 'string')
-    : [];
+  // SPEC-012: o singleton emagrecece. Capítulos e referências são coleções
+  // próprias (`thesisChapters`/`thesisReferences`), gravadas pelos cases abaixo —
+  // este save não projeta mais nada nelas. As antigas projeções sem id caíram
+  // com o passo 4 da base nativa.
   await driver.run('DELETE FROM thesis_project');
-  await driver.run('DELETE FROM thesis_chapter');
-  await driver.run('DELETE FROM thesis_reference');
   await driver.run(
     'INSERT INTO thesis_project (id, title, advisor, field, status, data_json) VALUES (1, ?, ?, ?, ?, ?)',
     [str(value.title), str(value.advisor), str(value.field), str(value.status), json(value)]
   );
-  let position = 0;
-  for (const ch of chapters) {
-    await driver.run(
-      'INSERT INTO thesis_chapter (thesis_id, position, title, completed, due_date) VALUES (1, ?, ?, ?, ?)',
-      [position++, String(ch.title ?? ''), ch.completed ? 1 : 0, str(ch.dueDate)]
-    );
-  }
-  position = 0;
-  for (const ref of references) {
-    await driver.run('INSERT INTO thesis_reference (thesis_id, position, reference) VALUES (1, ?, ?)', [
-      position++,
-      ref,
-    ]);
-  }
 }
 
 async function saveSessions(driver: SqlDriver, value: unknown): Promise<void> {
@@ -526,25 +510,6 @@ export async function saveCollection(
         break;
       case 'internshipLogs':
         return saveInternshipLogs(driver, value);
-      case 'internshipClinical':
-        // `SPEC-M-013` `D1`. Escreve-se a **projeção** de cinco campos, nunca o
-        // registro clínico completo: o tradutor do desktop já reduziu, e aqui
-        // não há caminho que reconstrua o que foi omitido.
-        await driver.run('DELETE FROM internship_clinical');
-        await insertRows(
-          driver,
-          'INSERT INTO internship_clinical (id, iniciais, data, duracao_min, para_levar, data_json) VALUES (?, ?, ?, ?, ?, ?)',
-          () =>
-            asArray(value).map((c) => [
-              String(c.id),
-              str(c.iniciais),
-              str(c.data),
-              num(c.duracaoMin),
-              str(c.paraLevar),
-              json(c),
-            ])
-        );
-        break;
       case 'supervision':
         await driver.run('DELETE FROM supervision_notebook');
         await insertRows(
@@ -609,6 +574,131 @@ export async function saveCollection(
               str(t.endedAt),
               str(t.updatedAt),
               json(t),
+            ])
+        );
+        break;
+      // SPEC-M-014 — leitura. Colunas são projeção; `data_json` é a fonte.
+      case 'readingSessions':
+        await driver.run('DELETE FROM reading_session');
+        await insertRows(
+          driver,
+          'INSERT INTO reading_session (id, reading_id, kind, date, unit, data_json) VALUES (?, ?, ?, ?, ?, ?)',
+          () =>
+            asArray(value).map((s) => [
+              String(s.id),
+              str(s.readingId),
+              str(s.kind),
+              str(s.date),
+              str(s.unit),
+              json(s),
+            ])
+        );
+        break;
+      case 'readingHighlights':
+        await driver.run('DELETE FROM reading_highlight_entry');
+        await insertRows(
+          driver,
+          'INSERT INTO reading_highlight_entry (id, reading_id, color, data_json) VALUES (?, ?, ?, ?)',
+          () =>
+            asArray(value).map((h) => [
+              String(h.id),
+              str(h.readingId),
+              str(h.color),
+              json(h),
+            ])
+        );
+        break;
+      case 'readingBookmarks':
+        await driver.run('DELETE FROM reading_bookmark');
+        await insertRows(
+          driver,
+          'INSERT INTO reading_bookmark (id, reading_id, created_at, data_json) VALUES (?, ?, ?, ?)',
+          () =>
+            asArray(value).map((b) => [
+              String(b.id),
+              str(b.readingId),
+              str(b.createdAt),
+              json(b),
+            ])
+        );
+        break;
+      // SPEC-012 — TCC. Colunas são projeção; `data_json` é a fonte, como em
+      // todas as coleções-array.
+      case 'thesisChapters':
+        await driver.run('DELETE FROM thesis_chapter');
+        await insertRows(
+          driver,
+          'INSERT INTO thesis_chapter (id, thesis_id, parent_id, position, title, stage, due_date, data_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+          () =>
+            asArray(value).map((c) => [
+              String(c.id),
+              str(c.thesisId),
+              str(c.parentId),
+              int(c.position),
+              str(c.title),
+              str(c.stage),
+              str(c.dueDate),
+              json(c),
+            ])
+        );
+        break;
+      case 'thesisReferences':
+        await driver.run('DELETE FROM thesis_reference');
+        await insertRows(
+          driver,
+          'INSERT INTO thesis_reference (id, thesis_id, reading_id, status, data_json) VALUES (?, ?, ?, ?, ?)',
+          () =>
+            asArray(value).map((r) => [
+              String(r.id),
+              str(r.thesisId),
+              str(r.readingId),
+              str(r.status),
+              json(r),
+            ])
+        );
+        break;
+      case 'thesisMeetings':
+        await driver.run('DELETE FROM thesis_meeting');
+        await insertRows(
+          driver,
+          'INSERT INTO thesis_meeting (id, thesis_id, date, status, data_json) VALUES (?, ?, ?, ?, ?)',
+          () =>
+            asArray(value).map((m) => [
+              String(m.id),
+              str(m.thesisId),
+              str(m.date),
+              str(m.status),
+              json(m),
+            ])
+        );
+        break;
+      case 'thesisTasks':
+        await driver.run('DELETE FROM thesis_task');
+        await insertRows(
+          driver,
+          'INSERT INTO thesis_task (id, thesis_id, due_date, status, data_json) VALUES (?, ?, ?, ?, ?)',
+          () =>
+            asArray(value).map((t) => [
+              String(t.id),
+              str(t.thesisId),
+              str(t.dueDate),
+              str(t.status),
+              json(t),
+            ])
+        );
+        break;
+      case 'thesisWritingLogs':
+        await driver.run('DELETE FROM thesis_writing_log');
+        await insertRows(
+          driver,
+          'INSERT INTO thesis_writing_log (id, thesis_id, date, words, data_json) VALUES (?, ?, ?, ?, ?)',
+          () =>
+            asArray(value).map((l) => [
+              String(l.id),
+              str(l.thesisId),
+              str(l.date),
+              int(l.words),
+              json(l),
             ])
         );
         break;

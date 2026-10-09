@@ -1,5 +1,5 @@
 ﻿import React, { useMemo } from 'react';
-import { BookOpen, Calendar as CalendarIcon, HeartHandshake } from 'lucide-react';
+import { BookOpen, Calendar as CalendarIcon, HeartHandshake, ChevronRight, Plus } from 'lucide-react';
 import { SubTabFaculdade, Course } from '../../types';
 import { CourseDetailView } from './CourseDetailView';
 import { UnderlineTabBar } from '../ui/UnderlineTabBar';
@@ -7,9 +7,8 @@ import { useDataClientApp, useDataClientCourses } from '@/context/DataClientProv
 import { useNavValue } from '@/context/shellNavContexts';
 import { getTodaySchedule, upcomingEvents } from '../../lib/schedule';
 import type { CalendarEvent } from '../../lib/schedule';
-import { useTermScope, semestersLeft } from '../../lib/termScope';
-import { canRollover, shouldNudgeRollover } from '../../core/domain';
-import TermRolloverCta from './faculdade/TermRolloverCta';
+import { useTermScope } from '../../lib/termScope';
+import { Mascote } from '../ui/Mascote';
 import HeroSection from './faculdade/HeroSection';
 import WeekGrid from './faculdade/WeekGrid';
 import DisciplinasGrid from './faculdade/DisciplinasGrid';
@@ -23,7 +22,15 @@ interface FaculdadeViewProps {
 }
 
 export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
-  const { profile, internshipLogs, academicTerms } = useDataClientApp();
+  const {
+    profile,
+    internshipLogs,
+    academicTerms,
+    tcc,
+    thesisChapters,
+    thesisMeetings,
+    thesisTasks,
+  } = useDataClientApp();
   const { courses, classes, exams, tasks } = useDataClientCourses();
   // Recorte do período (SPEC-005): a tela do "agora" só enxerga o semestre ativo.
   // `all` preserva a lista completa para o calendário e a busca.
@@ -33,6 +40,7 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
     setSubTabFaculdade: setSubTab,
     openCourseDetail,
     openInternshipDiary,
+    openTccScreen,
     openWizard,
   } = useNavValue();
 
@@ -73,19 +81,13 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
 
   /** Linha da semana acadêmica: prova/tarefa navegam pra disciplina; estágio abre o diário. */
   const eventDestination = (ev: CalendarEvent): (() => void) | null => {
+    // SPEC-012 F4.5: prazo do TCC abre a tela do TCC na aba certa (mesmo
+    // caminho da notificação — `openTccScreen(tab, focusId)`).
+    if (ev.kind === 'tcc') return () => openTccScreen(ev.tccTab, ev.tccFocusId);
     if (!examIds.has(ev.id) && !taskIds.has(ev.id)) return openInternshipDiary;
     if (ev.courseId) return () => openCourseDetail(ev.courseId as string);
     return null;
   };
-
-  // Existência e ênfase são perguntas separadas (SPEC-008 D1): com um período
-  // aberto sempre dá para virar; o `nudge` só destaca quando o semestre acaba.
-  const rolloverAvailable = canRollover(term);
-  const rolloverNudge = shouldNudgeRollover(
-    term,
-    new Date().toISOString().slice(0, 10),
-    profile.totalSemesters,
-  );
 
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-6 pb-1">
@@ -100,15 +102,35 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
         onOpenCalendar={() => setSubTab('calendario')}
       />
 
-      {/* Virada de semestre (SPEC-005/008) — sempre à mão, destaca quando é hora. */}
-      <TermRolloverCta
-        term={term}
-        totalSemesters={profile.totalSemesters}
-        archivedCount={archived.length}
-        available={rolloverAvailable}
-        nudge={rolloverNudge}
-        onOpenWizard={() => openWizard('semester')}
-      />
+      {/* Card de estágio em destaque */}
+      <button
+        onClick={() => openInternshipDiary()}
+        aria-label="abrir diário de estágio"
+        className="w-full rounded-[26px] p-5 bg-gradient-to-br from-surface-rose via-surface-default to-surface-blue border border-ceci-border-brand shadow-sm card-lift press-card cursor-pointer relative overflow-hidden group"
+      >
+        <div className="flex items-center gap-4">
+          <span className="w-14 h-14 rounded-xl bg-surface-default border border-ceci-border-brand flex items-center justify-center shadow-2xs shrink-0">
+            <HeartHandshake className="w-7 h-7 text-ceci-brand-strong" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <h2 className="font-display text-lg font-bold text-ceci-primary leading-tight">diário de estágio</h2>
+            <p className="text-xs text-ceci-secondary mt-1 leading-relaxed">
+              {allInternshipRecords.length > 0
+                ? `${allInternshipRecords.length} ${allInternshipRecords.length === 1 ? 'registro' : 'registros'} · ${internshipTotalHours}h de campo — toca para entrar no diário ♡`
+                : 'campo, supervisão e entregas — tudo num lugar só ♡'}
+            </p>
+          </div>
+          <ChevronRight className="w-5 h-5 text-ceci-brand-strong group-hover:translate-x-0.5 transition-transform shrink-0" />
+        </div>
+        <Mascote expression="field-prepare" className="w-14 h-14 absolute -bottom-2 -right-1 opacity-95 pointer-events-none" decorative />
+      </button>
+
+      <button
+        onClick={() => openWizard('internship')}
+        className="w-full flex items-center justify-center gap-1.5 py-3 rounded-full text-xs font-semibold bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand hover:bg-surface-rose transition-colors cursor-pointer tap-interactive"
+      >
+        <Plus className="w-4 h-4" /> anotar ou agendar um estágio
+      </button>
 
       {/* 2. MINHA SEMANA — grade real da semana (seg → dom) */}
       <WeekGrid courses={grade} now={now} onOpenCourse={openCourseDetail} />
@@ -147,6 +169,10 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
               courses={courses}
               exams={exams}
               tasks={tasks}
+              tcc={tcc}
+              thesisChapters={thesisChapters}
+              thesisMeetings={thesisMeetings}
+              thesisTasks={thesisTasks}
               now={now}
               onOpenCourse={openCourseDetail}
               onEventDestination={eventDestination}
@@ -157,10 +183,8 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
           {subTab === 'estagio' && (
             <InternshipSection
               records={allInternshipRecords}
-              totalHours={internshipTotalHours}
               now={now}
               onOpenDiary={openInternshipDiary}
-              onOpenWizard={() => openWizard('internship')}
             />
           )}
 

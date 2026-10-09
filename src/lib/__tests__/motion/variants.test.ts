@@ -29,15 +29,6 @@ describe('posicao de repouso (funcao da profundidade — §D3)', () => {
     expect(t.front.x).toBe(0);
   });
 
-  it('front: opacity 1 EXPLICITO — sem isso a tela fica invisivel apos trocar de aba', () => {
-    // Regressão: `enter` de tab/replace nasce em `opacity: 0`, e `framer-motion`
-    // escreve só as chaves presentes no alvo `animate`. Um `front` sem `opacity`
-    // deixa a tela montada e permanentemente invisível.
-    expect(t.front.opacity).toBe(1);
-    expect(t.behind(0).opacity).toBe(1);
-    expect(t.behind(1).opacity).toBe(1);
-  });
-
   it('behind(1) = -PARALLAX * width (parallax de uma camada coberta)', () => {
     expect(t.behind(1).x).toBeCloseTo(-PARALLAX * W, 5);
   });
@@ -128,17 +119,6 @@ describe('tab / replace: sem slide', () => {
     const out = t.enter(intent({ kind: 'none', dir: 0 }));
     expect(out.x).toBe(0);
   });
-
-  it('tab/replace NASCE invisível e o `animate` devolve a visibilidade', () => {
-    // O par `initial`/`animate` é o contrato inteiro do crossfade de aba:
-    // `initial` em 0 e `animate` em 1. Se `animate` não disser 1, o crossfade
-    // não termina nunca e a tela fica em branco depois do app já ter carregado.
-    for (const kind of ['tab', 'replace', 'none'] as const) {
-      const i = intent({ kind, dir: 0 });
-      expect(t.enter(i).opacity).toBe(0);
-      expect(t.front.opacity).toBe(1);
-    }
-  });
 });
 
 describe('shade (dim sobre a camada coberta)', () => {
@@ -189,36 +169,6 @@ describe('createScreenVariants (API de rotulos, para o wrapper declarativo)', ()
     expect((v.animate as (i: NavIntent) => { x: number })(intent({ dir: 1 })).x).toBe(0);
   });
 
-  it('o alvo `animate` sempre carrega opacity 1, em TODOS os kinds de intent', () => {
-    // Este é o teste que pega o bug do "só o fundo aparece": `animate` é o
-    // alvo final de toda tela montada. Se ele não disser `opacity: 1`, uma tela
-    // que nasceu em `initial` com `opacity: 0` (tab/replace) nunca fica visível.
-    const v = createScreenVariants(W, FULL_PROFILE);
-    const animate = v.animate as (i: NavIntent) => { opacity?: number };
-    for (const i of [
-      intent({ kind: 'tab', dir: 0 }),
-      intent({ kind: 'replace', dir: 0 }),
-      intent({ kind: 'none', dir: 0 }),
-      intent({ kind: 'push', dir: 1 }),
-      intent({ kind: 'pop', dir: -1 }),
-    ]) {
-      expect(animate(i).opacity).toBe(1);
-    }
-  });
-
-  it('o mesmo vale no perfil reduzido (fade puro)', () => {
-    const v = createScreenVariants(W, REDUCED_PROFILE);
-    const animate = v.animate as (i: NavIntent) => { opacity?: number };
-    for (const i of [
-      intent({ kind: 'tab', dir: 0 }),
-      intent({ kind: 'replace', dir: 0 }),
-      intent({ kind: 'push', dir: 1 }),
-      intent({ kind: 'pop', dir: -1 }),
-    ]) {
-      expect(animate(i).opacity).toBe(1);
-    }
-  });
-
   it('exit lê o intent do canal de módulo (props congeladas nao chegam)', () => {
     const v = createScreenVariants(W, FULL_PROFILE);
     setMotionIntent(intent({ kind: 'pop', dir: -1, fromGesture: true, gestureX: 111 }));
@@ -226,5 +176,42 @@ describe('createScreenVariants (API de rotulos, para o wrapper declarativo)', ()
     expect(out.x[0]).toBe(111);
     // consome uma vez: o proximo exit nao herda o offset velho
     consumeMotionIntent();
+  });
+
+  // Regressão do bug "troco de aba e a tela fica vazia, só com o fundo do app".
+  // O `enter` de `tab`/`replace` nasce em `opacity: 0`; o `animate` precisa declarar
+  // `opacity: 1` explicitamente, porque o framer-motion só anima as keys presentes no
+  // alvo — omitting-la deixava a camada transparente para sempre.
+  it('animate devolve opacity 1 para TODA intenção (senão a tela fica invisível)', () => {
+    const v = createScreenVariants(W, FULL_PROFILE);
+    const kinds: NavIntent['kind'][] = ['push', 'pop', 'tab', 'replace', 'none'];
+    for (const kind of kinds) {
+      const animate = (v.animate as (i: NavIntent) => { opacity?: number })(
+        intent({ kind, dir: 1 })
+      );
+      expect(animate.opacity, `animate.kind=${kind}`).toBe(1);
+    }
+  });
+
+  it('initial só é transparente para tab/replace — push e pop nunca fazem fade', () => {
+    const v = createScreenVariants(W, FULL_PROFILE);
+    const initial = (i: NavIntent) => (v.initial as (x: NavIntent) => { opacity?: number })(i);
+    expect(initial(intent({ kind: 'push', dir: 1 })).opacity).toBe(1);
+    expect(initial(intent({ kind: 'pop', dir: -1 })).opacity).toBe(1);
+    expect(initial(intent({ kind: 'tab', dir: 0 })).opacity).toBe(0);
+    expect(initial(intent({ kind: 'replace', dir: 0 })).opacity).toBe(0);
+  });
+
+  it('todo alvo de repouso declara opacity 1 — nenhum devolve a camada ao valor herdado', () => {
+    const t = createScreenTargets(W, FULL_PROFILE);
+    expect(t.front.opacity).toBe(1);
+    for (const depth of [0, 1, 3]) expect(t.behind(depth).opacity).toBe(1);
+  });
+
+  it('sob movimento reduzido o animate também é opaco (o perfil reduzido é o caminho que funcionava)', () => {
+    const v = createScreenVariants(W, REDUCED_PROFILE);
+    for (const kind of ['push', 'pop', 'tab', 'replace'] as NavIntent['kind'][]) {
+      expect((v.animate as (i: NavIntent) => { opacity?: number })(intent({ kind, dir: 1 })).opacity).toBe(1);
+    }
   });
 });

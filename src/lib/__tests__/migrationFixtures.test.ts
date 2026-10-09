@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { dirDosFixturesDeMigracao } from '../../../packages/contracts/src/dados-path';
 import { canonicalize } from '../canonicalJson';
 import { MIGRATIONS, SCHEMA_VERSION, migrateDatabase } from '../../../packages/data/src/schema';
 
@@ -10,13 +9,16 @@ import { MIGRATIONS, SCHEMA_VERSION, migrateDatabase } from '../../../packages/d
  *
  * Um payload "legado v1" representativo percorre migrações 1→13 com o próprio
  * `migrateDatabase` do TS; o resultado de cada versão vira um arquivo enumerado
- * em `dirDosFixturesDeMigracao()`. O Rust reaplica a cadeia e
+ * em `cecistudy-rust/contracts/golden/migrations/`. O Rust reaplica a cadeia e
  * compara arquivo a arquivo (bloqueia divergência inclusive de *quirks* do TS).
  *
  * GERAÇÃO: `MIGRATION_WRITE=1 npm run test -- src/lib/__tests__/migrationFixtures.test.ts`
  * Nunca editar os arquivos manualmente: regenerar + revisar o diff.
  */
-const OUT = dirDosFixturesDeMigracao();
+const OUT = join(
+  import.meta.dirname,
+  '../../../cecistudy-rust/contracts/golden/migrations'
+);
 const WRITE = process.env.MIGRATION_WRITE === '1';
 
 /**
@@ -139,19 +141,33 @@ describe('fixtures de migração (F1.13)', () => {
     }
   });
 
-  it('ramo não-determinístico da migração 16: due sem lastReviewed = hoje', () => {
-    // O golden NÃO pode cobrir este ramo (mudaria todo dia). Aqui só asserimos
-    // a forma e a paridade com `new Date()` do próprio dia.
+  it('ramo da migração 16 sem lastReviewed é DETERMINÍSTICO (F15)', () => {
+    // Antes este ramo caía em `new Date().toISOString()`, então **reimportar o mesmo
+    // backup duas vezes produzia payloads diferentes** — contra o invariante que o
+    // próprio `MIGRATIONS[18]` declara. Agora o `due` vem do dado: sem
+    // `lastReviewed` nem `createdAt`, o campo fica indefinido e o flashcard entra
+    // como `new`, que o app trata como "para hoje".
     const step = MIGRATIONS[16];
-    const today = new Date().toISOString().slice(0, 10);
-    const out = step({
+    const semNada = step({
       flashcards: [{ id: 'f-nr', timesReviewed: 0, easeFactor: 2.5 }],
-    });
-    const f = (out.flashcards as Record<string, unknown>[])[0];
-    expect(f.due).toBe(today);
+    }) as Record<string, Record<string, unknown>[]>;
+    const f = semNada.flashcards[0];
+    expect(f.due).toBeUndefined();
     expect(f.state).toBe('new');
     expect(f.deckId).toBeUndefined();
     expect(f.decks).toBeUndefined();
+
+    // Duas execuções seguidas dão exatamente o mesmo payload.
+    const entrada = { flashcards: [{ id: 'f-nr', timesReviewed: 0, easeFactor: 2.5 }] };
+    const a = step(JSON.parse(JSON.stringify(entrada)));
+    const b = step(JSON.parse(JSON.stringify(entrada)));
+    expect(b).toEqual(a);
+
+    // Com `createdAt` no dado, o `due` usa o dado — não o relógio.
+    const comCreated = step({
+      flashcards: [{ id: 'f-cr', timesReviewed: 0, easeFactor: 2.5, createdAt: '2026-03-04' }],
+    }) as Record<string, Record<string, unknown>[]>;
+    expect(comCreated.flashcards[0].due).toBe('2026-03-04');
   });
 
   it('versões desconhecidas são recusadas', () => {

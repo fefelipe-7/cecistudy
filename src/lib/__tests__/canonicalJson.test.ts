@@ -3,8 +3,8 @@ import { canonicalize } from '../canonicalJson';
 
 /**
  * Test vectors compartilhados — a MESMA tabela é usada no lado Rust
- * (o gate de paridade Rust em `src-tauri/` (a reconstruir)). Fonte:
- * `../../../cecistudy-desktop/contratos/dados/canonical-json-v1.md` seção 6.
+ * (`cecistudy-rust/tests/golden_parity_test.rs`, Fase 1). Fonte:
+ * `cecistudy-rust/docs/canonical-json-v1.md` seção 6.
  */
 const VECTORS: Array<[unknown, string]> = [
   [null, 'null'],

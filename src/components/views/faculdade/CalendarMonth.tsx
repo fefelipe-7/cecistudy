@@ -2,10 +2,19 @@
 // Extraído de `FaculdadeView.tsx`.
 import React, { useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
-import type { Course, Exam, Task } from '../../../types';
+import type {
+  Course,
+  Exam,
+  Task,
+  ThesisProject,
+  ThesisChapter,
+  ThesisMeeting,
+  ThesisTask,
+} from '../../../types';
 import type { CalendarEvent } from '../../../lib/schedule';
 import {
   eventsForMonth,
+  thesisEventsForMonth,
   formatShortDate,
   monthName,
   daysInMonth,
@@ -18,6 +27,11 @@ interface CalendarMonthProps {
   courses: Course[];
   exams: Exam[];
   tasks: Task[];
+  /** SPEC-012 F4.5: o calendário também desenha prazos do TCC. */
+  tcc: ThesisProject;
+  thesisChapters: ThesisChapter[];
+  thesisMeetings: ThesisMeeting[];
+  thesisTasks: ThesisTask[];
   now: Date;
   onOpenCourse: (courseId: string) => void;
   onEventDestination: (ev: CalendarEvent) => (() => void) | null;
@@ -27,6 +41,10 @@ const CalendarMonth: React.FC<CalendarMonthProps> = ({
   courses,
   exams,
   tasks,
+  tcc,
+  thesisChapters,
+  thesisMeetings,
+  thesisTasks,
   now,
   onOpenCourse,
   onEventDestination,
@@ -41,8 +59,22 @@ const CalendarMonth: React.FC<CalendarMonthProps> = ({
     [courses, calYear, calMonth]
   );
 
-  // Calendário real (eventos de provas/tarefas do mês exibido)
-  const calEvents = eventsForMonth(exams, tasks, calMonth, calYear);
+  // Calendário real (provas/tarefas do mês exibido + prazos do TCC — F4.5)
+  const calEvents = useMemo(() => {
+    const base = eventsForMonth(exams, tasks, calMonth, calYear);
+    const tccEvents = thesisEventsForMonth(
+      tcc,
+      thesisChapters,
+      thesisMeetings,
+      thesisTasks,
+      calMonth,
+      calYear
+    );
+    for (const [day, list] of tccEvents) {
+      base.set(day, [...(base.get(day) ?? []), ...list]);
+    }
+    return base;
+  }, [exams, tasks, tcc, thesisChapters, thesisMeetings, thesisTasks, calMonth, calYear]);
   const todayDay = now.getDate();
   const totalDays = daysInMonth(calYear, calMonth);
   const firstWeekday = new Date(calYear, calMonth - 1, 1).getDay();
@@ -191,10 +223,12 @@ const CalendarMonth: React.FC<CalendarMonthProps> = ({
                         className={`text-[10px] font-bold px-2.5 py-1 rounded-full border shrink-0 ${
                           ev.kind === 'prova'
                             ? 'text-ceci-brand-strong bg-surface-default border-ceci-border-brand'
-                            : 'text-ceci-academic-strong bg-surface-default border-ceci-border-academic'
+                            : ev.kind === 'tcc'
+                              ? 'text-ceci-primary bg-surface-rose border-ceci-border-brand'
+                              : 'text-ceci-academic-strong bg-surface-default border-ceci-border-academic'
                         }`}
                       >
-                        {ev.kind}
+                        {ev.kind === 'tcc' ? 'tcc' : ev.kind}
                       </span>
                     </>
                   );

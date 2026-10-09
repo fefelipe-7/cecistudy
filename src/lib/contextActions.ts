@@ -1,5 +1,6 @@
 import type { ManagedItemKind } from '../types';
 import type { ManagedDB } from './entityOps';
+import { todayKeyLocal } from './dateBR';
 
 /**
  * Ações contextuais do menu universal (long-press) — docs/modais-wizards.md §3.
@@ -71,7 +72,10 @@ const EDIT_ACTION = (): ContextActionDef => ({
   tone: 'neutral',
 });
 
-const todayISO = () => new Date().toISOString().split('T')[0];
+// Data civil local (SPEC-C-002). `toISOString()` erraria o dia à noite em fuso
+// negativo e o `lastReviewed` de `schedule` é escrito em data local — precisam
+// concordar.
+const todayISO = () => todayKeyLocal();
 
 const fmtDate = (iso: string | undefined): string | undefined => {
   if (!iso) return undefined;

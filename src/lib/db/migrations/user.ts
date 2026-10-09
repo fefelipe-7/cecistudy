@@ -1,5 +1,5 @@
 /**
- * Schema v1 da base da usuária (`cecistudy_user`).
+ * Schema da base da usuária (`cecistudy_user`).
  *
  * Modelo normalizado por coleção: colunas escalares consultáveis + `data_json`
  * com a entidade completa (o load reconstrói do `data_json`; as colunas/joins
@@ -7,43 +7,14 @@
  * Sem foreign keys enforcement — gravação é por coleção independente
  * (uma transação por coleção em `normalize.saveCollection`).
  *
- * ⚠️ Esta versão (1) ainda não saiu em nenhuma build nativa publicada:
- * mudanças de shape são livres ATÉ o primeiro release com o plugin embutido;
- * depois disso, toda mudança exige migração numerada em `migrations.ts`.
+ * Os passos vivem em `migrations.ts`: 1 = schema base, 2 = `deck`,
+ * 3 = leitura (SPEC-M-014). Um passo aplicado nunca é editado.
+ *
+ * ⚠️ Toda mudança de tabela a partir daqui é um passo novo numerado.
  */
 
-/**
- * Versão de schema da base da usuária.
- *
- * **Não redeclare aqui.** A fonte única é `USER_SCHEMA_VERSION` em
- * `packages/data/src/schema.ts` (débito C2, fechado), porque `packages/*` é a
- * biblioteca canônica e este arquivo é stub de compat. Reexportar mantém uma
- * única declaração e impede que os dois valores se desincronizem.
- */
-export { USER_SCHEMA_VERSION } from '../../../../packages/data/src/schema';
-
-/**
- * Tabela `internship_clinical` — a projeção clínica (`SPEC-M-013` `D1`).
- *
- * É o **único** dado clínico que o celular persiste, e são cinco campos
- * (`SPEC-M-013` `D2`). As colunas são projeção para consulta; `data_json` é a
- * fonte, como em toda coleção deste schema.
- *
- * `IF NOT EXISTS` → reaplicar em base nova é no-op. Vive num passo numerado
- * (v3) e **não** no DDL completo da v1: uma base já na v1/v2 não tem a tabela e
- * precisa criá-la, e editar a v1 seria reescrever um passo já aplicado.
- */
-export const CLINICAL_TABLES_SQL = `
-CREATE TABLE IF NOT EXISTS internship_clinical (
-  id TEXT PRIMARY KEY,
-  iniciais TEXT NOT NULL,
-  data TEXT NOT NULL,
-  duracao_min INTEGER NOT NULL,
-  para_levar TEXT,
-  data_json TEXT NOT NULL
-);
-CREATE INDEX IF NOT EXISTS idx_internship_clinical_data ON internship_clinical(data);
-`;
+/** Versão de schema da base da usuária (espelha `data/schema.ts`). */
+export const USER_SCHEMA_VERSION = 4;
 
 /** Nome lógico do banco da usuária (sem extensão). */
 export const USER_DB_NAME = 'cecistudy_user';
@@ -381,4 +352,115 @@ CREATE TABLE IF NOT EXISTS legacy_import_map (
   imported_at TEXT NOT NULL,
   entity_type TEXT
 );
+`.trim();
+
+/**
+ * Passo 3 — leitura (SPEC-M-014): sessões, destaques e marcadores.
+ *
+ * `reading_highlight` (v1) é a **projeção legada** de `ReadingItem.highlights`
+ * (`normalize.ts`), sem `data_json` e sem `id` — não serve de tabela da coleção
+ * nova. Por isso os destaques vão para `reading_highlight_entry`.
+ *
+ * Colunas são projeção para consulta (`reading_id`, `date`, `color`); a fonte
+ * continua sendo `data_json`, como em todas as coleções-array.
+ */
+export const READING_TABLES_SQL = `
+CREATE TABLE IF NOT EXISTS reading_session (
+  id TEXT PRIMARY KEY,
+  reading_id TEXT,
+  kind TEXT,
+  date TEXT,
+  unit TEXT,
+  data_json TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_reading_session_reading ON reading_session(reading_id);
+CREATE INDEX IF NOT EXISTS idx_reading_session_date ON reading_session(date);
+
+CREATE TABLE IF NOT EXISTS reading_highlight_entry (
+  id TEXT PRIMARY KEY,
+  reading_id TEXT,
+  color TEXT,
+  data_json TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_reading_highlight_entry_reading ON reading_highlight_entry(reading_id);
+
+CREATE TABLE IF NOT EXISTS reading_bookmark (
+  id TEXT PRIMARY KEY,
+  reading_id TEXT,
+  created_at TEXT,
+  data_json TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_reading_bookmark_reading ON reading_bookmark(reading_id);
+`.trim();
+
+/**
+ * Passo 4 — TCC como coleções (SPEC-012).
+ *
+ * `thesis_chapter`/`thesis_reference` do passo 1 eram **projeção write-only do
+ * singleton**: sem `id`, sem `data_json`, e nada no app as lia (`normalize.ts`
+ * reconstruía tudo de `thesis_project.data_json`). Coleção própria exige `id` +
+ * `data_json`, e SQLite não troca a chave de tabela existente — daí o `DROP` +
+ * `CREATE`, sem perda (a verdade está no `data_json` do singleton, e o dreno do
+ * boot, `DataClientProvider`, repõe os capítulos a partir dele).
+ *
+ * `DROP`+`CREATE` ficam num **único `exec`**: o runner não abre transação por
+ * passo (`migrations.ts:55-62`), e um `exec` atômico é a garantia disponível
+ * contra base sem tabela no meio do passo. Este é o primeiro `DROP TABLE` do
+ * projeto — comentado e testado por ser precedente.
+ */
+export const THESIS_TABLES_SQL = `
+DROP TABLE IF EXISTS thesis_chapter;
+DROP TABLE IF EXISTS thesis_reference;
+
+CREATE TABLE thesis_chapter (
+  id TEXT PRIMARY KEY,
+  thesis_id TEXT,
+  parent_id TEXT,
+  position INTEGER,
+  title TEXT,
+  stage TEXT,
+  due_date TEXT,
+  data_json TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_thesis_chapter_thesis ON thesis_chapter(thesis_id);
+CREATE INDEX IF NOT EXISTS idx_thesis_chapter_due_date ON thesis_chapter(due_date);
+
+CREATE TABLE thesis_reference (
+  id TEXT PRIMARY KEY,
+  thesis_id TEXT,
+  reading_id TEXT,
+  status TEXT,
+  data_json TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_thesis_reference_thesis ON thesis_reference(thesis_id);
+
+CREATE TABLE thesis_meeting (
+  id TEXT PRIMARY KEY,
+  thesis_id TEXT,
+  date TEXT,
+  status TEXT,
+  data_json TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_thesis_meeting_thesis ON thesis_meeting(thesis_id);
+CREATE INDEX IF NOT EXISTS idx_thesis_meeting_date ON thesis_meeting(date);
+
+CREATE TABLE thesis_task (
+  id TEXT PRIMARY KEY,
+  thesis_id TEXT,
+  due_date TEXT,
+  status TEXT,
+  data_json TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_thesis_task_thesis ON thesis_task(thesis_id);
+CREATE INDEX IF NOT EXISTS idx_thesis_task_due_date ON thesis_task(due_date);
+
+CREATE TABLE thesis_writing_log (
+  id TEXT PRIMARY KEY,
+  thesis_id TEXT,
+  date TEXT,
+  words INTEGER,
+  data_json TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_thesis_writing_log_thesis ON thesis_writing_log(thesis_id);
+CREATE INDEX IF NOT EXISTS idx_thesis_writing_log_date ON thesis_writing_log(date);
 `.trim();

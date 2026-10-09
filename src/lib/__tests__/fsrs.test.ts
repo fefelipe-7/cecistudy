@@ -10,6 +10,7 @@ import {
   cardCounts,
   legacyIntervalFor,
 } from '../fsrs';
+import { addDaysKey } from '../dateBR';
 
 describe('fsrs', () => {
   it('initCard cria card novo com estado correto', () => {
@@ -48,6 +49,15 @@ describe('fsrs', () => {
     expect(updated.reviews).toBe(1);
     expect(updated.lastInterval).toBeGreaterThanOrEqual(1);
     expect(updated.due > '2026-09-22').toBe(true);
+  });
+
+  it('due é nowIso + interval em dias civis (não depende do relógio/UTC)', () => {
+    const c = initCard({ stability: 5, difficulty: 5, due: '2026-09-22' });
+    const updated = schedule(c, 3, '2026-09-22');
+    expect(updated.due).toBe(addDaysKey('2026-09-22', updated.lastInterval ?? 0));
+    // atravessa mês sem vazar de dia
+    const endOfMonth = schedule(initCard({ due: '2026-01-31' }), 2, '2026-01-31');
+    expect(endOfMonth.due).toBe(addDaysKey('2026-01-31', endOfMonth.lastInterval ?? 0));
   });
 
   describe('isCardDue', () => {

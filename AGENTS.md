@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Guidance for OpenCode sessions in **cecistudy ♡** — personal, mobile-first, pt-BR academic organizer for Psychology (React 19 + TS + Vite 6 + Tailwind 4 + Capacitor 8). O desktop é o app **Campus**, em `../../cecistudy-desktop/` (React/Tauri v2), e é o canônico — ver `ADR-001` e `ADR-008`.
+Guidance for OpenCode sessions in **cecistudy ♡** — personal, mobile-first, pt-BR academic organizer for Psychology (React 19 + TS + Vite 6 + Tailwind 4 + Capacitor 8; desktop novo em Flutter+Rust).
 
 ## Commands & Verification
 - Package manager: **npm** (no bun).
@@ -30,11 +30,9 @@ Guidance for OpenCode sessions in **cecistudy ♡** — personal, mobile-first, 
   (`src/context/mobileApp.ts`), e as views pesadas consomem os sub-contextos por domínio
   (`src/context/DataClientProvider.tsx` + `shellNavContexts.ts` + `navigationEngine.ts`).
   `src/context/AppContext.tsx` é agora um módulo **só de tipos** (470 linhas: `AppContextValue`,
-  `pickDomainActions`, `buildAppContextValue`), sem provider/hook. **O desktop é o
-  app `Campus`, em outro repositório** (`../../cecistudy-desktop/`), e é o canônico
-  — nada aqui é importado por ele e nada dele é importado aqui; o que os dois
-  compartilham é decisão, spec e contrato de dados, nunca código. Não adicione
-  regras de negócio novas a `AppContext`; chame
+  `pickDomainActions`, `buildAppContextValue`), sem provider/hook. **O desktop legado (React/Tauri)
+  foi removido (2026-09):** `desktop/`, `apps/desktop/` e `src/desktop/` não existem mais; o desktop
+  novo é Flutter+Rust sem base React/JS. Não adicione regras de negócio novas a `AppContext`; chame
   `packages/*` (domínio/data/sync/navigation) ou os use-cases.
 
 ## Architecture & Navigation
@@ -46,29 +44,37 @@ Guidance for OpenCode sessions in **cecistudy ♡** — personal, mobile-first, 
 ## Code Conventions
 - **Design tokens:** use semantic tokens from `src/index.css` `@theme` (`text-ceci-primary`, `bg-surface-rose`, `border-ceci-border-brand`); never raw hex in classNames (hex only as data values via `style={{}}`). See `.context/design-system.md`.
 - **Copy:** pt-BR, lowercase, warm ("guardar", "bora estudar?", "prontinho ♡"). Never refer to the user as "Ceci".
-- **Schema changes:** bump `SCHEMA_VERSION` only in `packages/data/src/schema.ts` (re-exported at `src/data/schema.ts`) and add a `MIGRATIONS` entry — and ONLY when the persisted format in `packages/domain|data` changes. Navigation/UI changes (e.g. `NavScreen`) must never bump it. New persisted state needs a `usePersistentState` key + seed in `src/data/empty.ts`. **Não escreva o número aqui:** ele envelhece e vira mentira, e foi o que produziu o drift C3. Para o valor, leia `packages/data/src/schema.ts:12`; para conferi-lo contra o contrato, `node ../../cecistudy-desktop/contratos/dados/verify-schema.mjs --schema-ts=packages/data/src/schema.ts`.
+- **Schema changes:** `SCHEMA_VERSION` is currently **21** (`packages/data/src/schema.ts:13`). Bump it only in `packages/data/src/schema` (re-exported at `src/data/schema.ts`) and add a `MIGRATIONS` entry — and ONLY when the persisted format in `packages/domain|data` changes. Navigation/UI changes (e.g. `NavScreen`) must never bump `SCHEMA_VERSION`. New persisted state needs a `usePersistentState` key + seed in `src/data/empty.ts`. A próxima migração é a **22** (Gestão de TCC, SPEC-012).
 - **Academic term (SPEC-005):** `academicTerms` (`AcademicTerm`) is the **source of truth** for "which semester am I in". `profile.semester` is legacy/fallback — in the UI always read `useActiveTerm(terms)?.ordinal`, never `profile.semester` directly. Scope the views with `useTermScope`/`activeCourses` (inheritance by `courseId`; `Course.termId == null` is the anti-orphan escape hatch, not a term course). `Course.status` `arquivado` removes it from the grade, **never** deletes it. `MIGRATIONS[18]` creates the bootstrap term idempotently; the native `academic_term` table is `IF NOT EXISTS` (no `USER_SCHEMA_VERSION` bump) and the course `termId` still travels inside the course `data_json` (the denormalized `course_term` is a Rust-phase follow-up). Spec: `docs/specs/SPEC-005-periodo-letivo-e-progressao-de-semestre.md` · tasks: `tasks/todo-periodo-letivo.md` · status: `.context/backlog.md` Fase 22 (implementada).
 - **Rollover entry points (SPEC-008):** the rollover button is **always available** with an active term — `canRollover(term)` gates *enablement*, `shouldNudgeRollover(...)` only decides the emphasis (SPEC-008 D1). Never gate visibility on the nudge. The semester number is capped by `MAX_TERM_ORDINAL` (12), **never** by `profile.totalSemesters`: `totalSemesters` is an editable guess, and a cap that depends on another field hides the mistake. Going past the course total is a **warning** ("além dos 8 do curso"), not a clamp (SPEC-008 D3, which **overrides** SPEC-006 D8). The term history is a **sibling** of the wizard, not a child; expanding a term is local state. With no active term the wizard collapses to a single "open my 1st semester" step (`openFirstTerm`) — never `planTermRollover` on that path. Spec: `docs/specs/SPEC-008-virada-de-semestre-entradas-e-navegacao.md` · tasks: `tasks/todo-virada-entradas-navegacao.md`.
+- **Estágio (SPEC-009):** toda a regra do Estágio vive em `packages/domain/src/core/domain/internship.ts`; `src/lib/internshipCases.ts`, `src/types/internship.ts` e `src/lib/dateBR.ts` são stubs de compat com re-export **relativo**. Três regras que não se negociam:
+  1. **Data civil, nunca `Date`.** `InternshipLog.date` é `DateKey` (`YYYY-MM-DD`) em fuso **local**. `new Date('2026-08-26')` é UTC 00:00 e, em São Paulo (UTC−3), formatar por `Date` mostra `25/08`. Use `toDateKey`/`formatDateBR`/`weekStartKey`/`inWeek` do domínio. `toISOString().slice(0,10)` **não** serve para "é hoje?".
+  2. **O vínculo sessão ↔ supervisão tem fonte única:** `discussedLogIds`, do lado da supervisão (`D3`). "Supervisionada" é **derivado** (`buildLinkIndex`/`statusOf`). `supervisionLogId` não é escrito — a `MIGRATIONS[20]` o converte e o apaga. Se você se pegar escrevendo o vínculo nos dois lados, está reintroduzindo `F2`/`F3`.
+  3. **Uma escrita por ação.** `handleSaveInternshipLog`/`handleDeleteInternshipLog` usam `planSave`/`planDelete` e fazem **uma** atualização de estado. O wizard **não** itera `handleUpdateInternshipLog` por sessão marcada.
+  - `MIGRATIONS[20]` é pura, idempotente e determinística: **nenhum `Date` dentro de migração** (`F15`). Versão faltante é erro, não `continue` (`F17`).
+  - Spec: `docs/specs/SPEC-009-estagio-supervisao-e-intervisao-v4.md` · cópia de grupo: `SPEC-M-013`.
+- **Estágio (SPEC-010, entregue 2026-10-07):** toda superfície de Estágio abre com **um** `HeroCard` (`src/components/ui/HeroCard.tsx`) acima dos controles — o conteúdo muda com a aba/tela, a identidade (eyebrow "estágio", serifa, mascote, `rounded-[26px]`) é fixa. Não criar cabeçalho compacto próprio por aba, nem segunda ação primária fora do hero (o botão de ação fica no hero; a barra inferior só leva secundárias). Cartão de paciente tem tile de iniciais à esquerda (D5). Filtro único por tela = `PillGroup` (D7). Spec: `docs/specs/SPEC-010-padrao-hero-e-qualidade-de-ui-do-estagio.md` · tasks: `tasks/todo-hero-estagio.md`.
 - **Editing files (MANDATORY):** ALWAYS edit via the `edit` tool. **Never** bulk-rewrite source files with PowerShell `Get-Content`/`Set-Content` (or any encoding-naive write) — it silently corrupts UTF‑8/non‑ASCII and turns pt‑BR accents (á/ã/ç/ê/õ…) into the U+FFFD replacement char, which is lossy and unrecoverable. Mechanical renames across many files must be done with the `edit` tool per file, or a script that reads **and** writes explicitly as UTF‑8 — and must be verified with `npm run lint` + a check for the replacement character (`\x{FFFD}`). (Incidente 2026‑08: migração em lote via PowerShell corrompeu 9 arquivos de views; recuperados de backup e refeitos com o `edit` tool.)
 
 ## Persistence & Native
 - **Tri-modal storage:** web = `localStorage` · native domain data = **SQLite** (`@capacitor-community/sqlite`, `cecistudy_user`) via `src/lib/db/` · small prefs (`reminder`, `onboarding`, `gcal`) = `@capacitor/preferences` (through `usePersistentState`). Static catalog (questions/approaches/works) ships in `public/assets/databases/*.db` (built by `content:build`, checked by `db:verify`); web reads it via JS facades.
 - **Native (`android/`, `ios/`):** committed. Releases OTA/mobile (APK+IPA+OTA) rodam em CI (`.github/workflows/release.yml`). Gates de PR em `.github/workflows/ci.yml` (lint+test+boundary). This Linux box has no JDK/SDK/Xcode, so you cannot compile native here.
-- **Desktop é outro repositório: `../../cecistudy-desktop/` (produto Campus, React 19 + Tauri v2).**
-  É o app canônico do desktop (`ADR-001`). O `cecistudy-rust/` — o desktop Flutter+Rust — foi
-  **removido** pela `ADR-008`, executada em `01c249f`. Não traga a referência de volta.
-- **Nenhum app importa o outro.** O que se compartilha é decisão, spec e contrato de dados
-  (`ADR-007`, `ADR-009`), nunca código. Regras do desktop vivem em
-  `cecistudy-desktop/src-tauri/`; as suas specs em `cecigroup/docs/specs/desktop/` (`SPEC-D-xxx`).
-- **O contrato de dados é deste repositório mobile para escrita e do desktop para dono.** Os
-  goldens e o `schema.sql` moram em `cecistudy-desktop/contratos/dados/`. Este app os **gera**
-  (`GOLDEN_WRITE=1 npm run test -- src/lib/__tests__/goldenFixtures.test.ts` e
-  `MIGRATION_WRITE=1 ... migrationFixtures.test.ts`) e escreve no outro repositório, porque só
-  ele tem estado cênico. O caminho é descoberto por `packages/contracts/src/dados-path.ts` — não
-  escreva caminho literal, a profundidade difere entre local e CI. `CECISTUDY_CONTRATO_DIR`
-  sobrescreve a busca.
-- **SPEC-005 (Fase 22, mobile):** implementada **só** no React/TS. O goldens foram regerados com
-  aprovação explícita da usuária, porque
+- **Desktop legado (`desktop/` — Tauri 2):** **removido** (2026-09). **⚠️ O desktop novo é Flutter+Rust (abaixo).**
+- **Desktop novo (`cecistudy-rust/` — Flutter + Rust, em progresso):** o plano de migração
+  Tauri→Flutter+Rust vive em `cecistudy-rust/plano-desktop-flutter-rust.md`
+  (spec macro) + `cecistudy-rust/spec/01-task-breakdown-flutter-rust.md` (fonte de verdade de status)
+  + `cecistudy-rust/spec/PLANO-CONSOLIDADO-FLUTTER-RUST.md` (consulta de planejamento; numeração
+  diferente do breakdown). O núcleo Rust (workspace em `cecistudy-rust/`) está na **Fase 1 (21/23)**:
+  crates `common/domain/data/content/sync/app` implementados e com gate verde
+  (`cargo clippy -D warnings` + `cargo fmt --check` + **162 testes**); módulos de domínio
+  `calendar/knowledge/marketing/projects/internship` portados (R2, spec-first). Regras do workspace em
+  `cecistudy-rust/AGENTS.md`. **⚠️ Decisões 2026-09-12:** o desktop novo **NÃO usa nada do React/JS
+  como base** — domínio é implementado **spec-first em Rust** a partir de `contracts/` (schema.sql +
+  golden + backup-v2-spec); os pacotes TS servem apenas como oráculo de paridade via golden files. Data
+  crate será **alinhada a entidades tipadas** (forma vinda do schema.sql). Próximos passos (ordem R0→R6 no
+  breakdown): R1 data-tipado → R2 módulos de domínio (`calendar/knowledge/marketing/projects/internship`)
+  → R3 content naming → R4 paridade full → R5 `cecistudy-ffi` (bridge flutter_rust_bridge) → R6 UI Flutter
+  (greenfield). **Não tocar os crates Rust através do `eslint`/`tsc` da raiz — o gate Rust é o `cargo`.**
 - **SPEC-005 (Fase 22, mobile):** implementada **só** no React/TS. O workspace Rust **não** foi
   tocado (nenhum crate); os goldens TS foram regerados com aprovação explícita da usuária, porque
   `goldenFixtures`/`migrationFixtures` são o gate que o mobile consome.
@@ -114,8 +120,6 @@ função — use a skill certa na hora certa (leia o `SKILL.md` correspondente a
 - `incremental-implementation` — implementação incremental e segura; use ao planejar a remoção do código mobile compartilhado.
 - `context-engineering` — engenharia de contexto/estado; use na separação de estado/contextos.
 
-**Regra:** o desktop é outro repositório — `../../cecistudy-desktop/` — e não tem `AGENTS.md`
-de skill local. Para trabalho de domínio do desktop, o caminho é o grupo:
-`cecigroup/docs/specs/desktop/` (`SPEC-D-xxx`) e `cecigroup/.opencode/skill/`. A pasta
-`cecistudy-rust/` e as skills do workspace Rust saíram com a `ADR-008`; se uma referência a elas
-aparecer neste arquivo, ela é drift.
+**Regra:** o desktop novo (Flutter+Rust) é planejado em `cecistudy-rust/` — specs em
+`cecistudy-rust/spec/` (workspace Rust), regras em `cecistudy-rust/AGENTS.md`. O relatório-base de
+varredura do React legado ficou em `cecistudy-rust/spec/00-relatorio-varredura.md` (arquivado).

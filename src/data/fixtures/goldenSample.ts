@@ -2,7 +2,7 @@
  * Fixtures douradas (F0.4) — banco "cheio" de referência compartilhado TS/Rust.
  *
  * O MESMO snapshot alimenta os golden files em
- * `../../../cecistudy-desktop/contratos/dados/golden/` (gerados/verificados por
+ * `cecistudy-rust/contracts/golden/` (gerados/verificados por
  * `src/lib/__tests__/goldenFixtures.test.ts`) e o teste de paridade Rust
  * (`golden_parity_test.rs`, Fase 1). Dados cênicos: psicologia clínica, pt-BR,
  * sem dados identificáveis de pacientes.
@@ -12,7 +12,7 @@
  */
 import type { PersistedStateSnapshot } from '../../../packages/data/src/persistentData';
 import type { BackupV2 } from '../../../packages/data/src/exportImport';
-import { SCHEMA_VERSION, USER_SCHEMA_VERSION } from '../../../packages/data/src/schema';
+import { SCHEMA_VERSION } from '../../../packages/data/src/schema';
 import type { LooseNote } from '../../../src/types';
 import { emptyDatabase } from '../empty';
 
@@ -251,6 +251,19 @@ export function sampleSnapshot(): PersistedStateSnapshot {
           { id: 'ch-1', title: 'a entrevista inicial', body: 'estabelecimento do contrato.' },
         ],
       },
+      // SPEC-012: referência legada do TCC promovida a `ReadingItem` — o texto
+      // original dela vive em `rawCitation` e a `ThesisReference` fina aponta
+      // para cá (`thr-1`).
+      {
+        id: 'r-legacy-tcc-1',
+        workspaceId: 'ws-academico',
+        title: 'Worden, J. W. (2018). Tratamento do luto.',
+        author: 'autor não informado',
+        type: 'artigo',
+        status: 'nao_iniciado',
+        sourceKind: 'custom',
+        rawCitation: 'Worden, J. W. (2018). Tratamento do luto.',
+      },
     ],
     flashcards: [
       {
@@ -300,13 +313,17 @@ export function sampleSnapshot(): PersistedStateSnapshot {
       {
         id: 'ilog-1',
         workspaceId: 'ws-academico',
-        type: 'estagio',
+        type: 'atendimento_clinico',
         date: '2026-09-08',
         hours: 1.5,
-        activity: 'atendimento 12 — suivi evolution 3',
+        activity: 'atendimento 12 — paciente M.',
         reflections: 'escuta ativa sustentada; retomamos o luto recente.',
         phase: 'refletir',
         conceptIds: ['con-1'],
+        patient: 'M.',
+        sessionNumber: 12,
+        theme: 'luto',
+        approach: 'psicanalítica',
       },
       {
         id: 'ilog-2',
@@ -319,34 +336,62 @@ export function sampleSnapshot(): PersistedStateSnapshot {
         supervisor: 'Helena Duarte',
         topics: ['luto', 'intervenção'],
         nextSteps: ['ler sobre luto complicado'],
-        discussedClinicalIds: ['clin-1'],
-        beforeNotes: 'ansiosa com o caso.',
+        discussedLogIds: ['ilog-1'],
+        beforeNotes: 'ansiosa com o caso M.',
         afterNotes: 'plano: espaço para o luto, sem apressar.',
         selfAssessment: { confidence: 'confiante frente à estagiária aceita' },
       },
     ],
-    // `SPEC-M-013` `D1` — a projeção clínica é coleção própria. Cinco campos,
-    // e o golden existe para provar que nada além deles atravessa.
-    internshipClinical: [
-      {
-        id: 'clin-1',
-        iniciais: 'M.',
-        data: '2026-09-08',
-        duracaoMin: 90,
-        paraLevar: 'espaço para o luto, sem apressar',
-      },
-    ],
+    // SPEC-012: o singleton emagrecece (sem chapters/references); capítulos e
+    // referências são coleções próprias logo abaixo. A referência legada virou
+    // `ReadingItem` com `rawCitation` (ADR-010) + `ThesisReference` fina.
     tcc: {
       workspaceId: 'ws-academico',
+      id: 'tcc-main',
       title: 'luto e escuta clínica na psicoterapia do idoso',
       advisor: 'Profa. Helena Duarte',
       field: 'Psicologia Clínica',
       problemStatement: 'como a escuta clínica sustenta o processo de luto no idoso?',
       objectives: ['revisar a literatura sobre luto no idoso'],
       status: 'em_andamento',
-      chapters: [{ title: 'introdução', completed: true, dueDate: '2026-10-01' }],
-      references: ['Worden, J. W. (2018). Tratamento do luto.'],
+      reminderPrefs: {
+        enabled: false,
+        chapterDaysBefore: [7, 1, 0],
+        milestoneDaysBefore: [30, 14, 7, 1],
+        time: '09:00',
+        meetingEve: true,
+        meetingMinutesBefore: [60],
+      },
     },
+    thesisChapters: [
+      {
+        id: 'thc-1',
+        workspaceId: 'ws-academico',
+        thesisId: 'tcc-main',
+        position: 0,
+        title: 'introdução',
+        kind: 'capitulo',
+        requiredness: 'obrigatorio',
+        stage: 'pronto',
+        dueDate: '2026-10-01',
+        createdAt: '1970-01-01T00:00:00.000Z',
+        updatedAt: '1970-01-01T00:00:00.000Z',
+      },
+    ],
+    thesisReferences: [
+      {
+        id: 'thr-1',
+        workspaceId: 'ws-academico',
+        thesisId: 'tcc-main',
+        readingId: 'r-legacy-tcc-1',
+        status: 'citada',
+        createdAt: '1970-01-01T00:00:00.000Z',
+        updatedAt: '1970-01-01T00:00:00.000Z',
+      },
+    ],
+    thesisMeetings: [],
+    thesisTasks: [],
+    thesisWritingLogs: [],
     stickers: [
       {
         id: 'st-1',
@@ -467,15 +512,10 @@ export function goldenEnvelope(snapshot: PersistedStateSnapshot): BackupV2 {
   return {
     format: 'cecistudy-user-backup',
     formatVersion: 1,
+    userSchemaVersion: 1,
     // Vem da constante real (nunca literal): um literal aqui ficava defasado
     // silenciosamente quando o schema subia, e o golden parava de refletir o
     // payload migrado — a paridade TS↔Rust quebrava sem aviso.
-    //
-    // Este campo era `1` hardcoded enquanto `USER_SCHEMA_VERSION` valia 3 (débito
-    // C2). O literal escondia justamente o drift que o golden deveria pegar: o
-    // envelope de golden dizia v1 e o de produção dizia v3, e nada comparava os
-    // dois. Por isso os dois campos acima são constantes e não números.
-    userSchemaVersion: USER_SCHEMA_VERSION,
     schemaVersion: SCHEMA_VERSION,
     catalogRelease: null,
     exportedAt: GOLDEN_EXPORTED_AT,

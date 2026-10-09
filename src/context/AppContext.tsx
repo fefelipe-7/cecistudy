@@ -5,6 +5,8 @@ import type {
   ToastOptions,
 } from './DataClientProvider';
 import type { SharedAppValue } from './sharedAppValue';
+import type { InternshipWizardSeed } from '../types/internshipSeed';
+import type { InternshipTab, ThesisTab } from '../../packages/navigation/src/types';
 import type { ToastState } from '../components/ui/Toast';
 import type { StickerState } from '../lib/stickers';
 import type { ThemeId } from '../lib/themes';
@@ -28,9 +30,14 @@ import type {
   Flashcard,
   FlashcardDeck,
   MaterialItem,
-  ClinicalProjection,
   InternshipLog,
-  TccData,
+  InternshipNextStepLink,
+  ThesisProject,
+  ThesisChapter,
+  ThesisReference,
+  ThesisMeeting,
+  ThesisTask,
+  ThesisWritingLog,
   Sticker,
   StudySession,
   DynamicHeaderConfig,
@@ -44,6 +51,9 @@ import type {
   QuizAnswer,
   QuizSession,
   AcademicTerm,
+  ReadingSession,
+  ReadingHighlight,
+  ReadingBookmark,
   QuizPlayState,
   LooseNote,
   StudyScreen,
@@ -87,20 +97,37 @@ export interface AppContextValue {
   concepts: PsychologyConcept[];
   approaches: PsychologyApproach[];
   readings: ReadingItem[];
+  /**
+   * Setter bruto da estante — exposto para seed de teste e reparos de boot
+   * (o mesmo critério do `setTcc`/`setThesisChapters`). Views preferem os
+   * handlers (`handleUpdateReading` etc.).
+   */
+  setReadings: React.Dispatch<React.SetStateAction<ReadingItem[]>>;
+  /** Leitura (SPEC-M-014): sessões, destaques e marcadores. */
+  readingSessions: ReadingSession[];
+  readingHighlights: ReadingHighlight[];
+  readingBookmarks: ReadingBookmark[];
   flashcards: Flashcard[];
   decks: FlashcardDeck[];
   materials: MaterialItem[];
   internshipLogs: InternshipLog[];
+  tcc: ThesisProject;
+  /** TCC (SPEC-012) — coleções com id estável. */
+  thesisChapters: ThesisChapter[];
+  thesisReferences: ThesisReference[];
+  thesisMeetings: ThesisMeeting[];
+  thesisTasks: ThesisTask[];
+  thesisWritingLogs: ThesisWritingLog[];
+  setThesisChapters: React.Dispatch<React.SetStateAction<ThesisChapter[]>>;
+  setThesisReferences: React.Dispatch<React.SetStateAction<ThesisReference[]>>;
+  setThesisMeetings: React.Dispatch<React.SetStateAction<ThesisMeeting[]>>;
+  setThesisTasks: React.Dispatch<React.SetStateAction<ThesisTask[]>>;
   /**
-   * A projeção da camada clínica — `SPEC-M-013` `D1`.
-   *
-   * Cinco campos, e é o **único** dado clínico que o celular guarda. Ela é
-   * somente leitura: o registro completo vive no desktop, no store clínico
-   * separado, e o tradutor aplica a lista fechada antes de serializar
-   * (`SPEC-C-013` `D5`).
+   * Setter bruto das sessões de escrita (SPEC-012 F5.2). A escrita é **uma por
+   * ação**: o log entra na coleção e, quando há capítulo, o `wordCount` dele é
+   * somado no mesmo handler (o provider entrega o par `...data`).
    */
-  internshipClinical: ClinicalProjection[];
-  tcc: TccData;
+  setThesisWritingLogs: React.Dispatch<React.SetStateAction<ThesisWritingLog[]>>;
   stickers: Sticker[];
   /** Snapshot do estado avaliado para as condições dos stickers (barras de progresso). */
   stickerState: StickerState | null;
@@ -243,7 +270,9 @@ export interface AppContextValue {
   isWizardOpen: boolean;
   currentWizardType: WizardFlow | null;
   wizardCourseId: string | undefined;
-  openWizard: (type: WizardFlow, courseId?: string) => void;
+  wizardSeed: InternshipWizardSeed | undefined;
+  openWizard: (type: WizardFlow, courseId?: string, seed?: InternshipWizardSeed) => void;
+  openInternshipWizard: (seed?: InternshipWizardSeed) => void;
   openTaskExamWizard: () => void;
   closeWizard: () => void;
 
@@ -268,10 +297,19 @@ export interface AppContextValue {
   openStreak: () => void;
   closeStreak: () => void;
   isInternshipDiaryOpen: boolean;
-  openInternshipDiary: () => void;
+  isInternshipCaseOpen: boolean;
+  internshipTab: InternshipTab | undefined;
+  internshipFocusId: string | undefined;
+  internshipPatientKey: string | undefined;
+  openInternshipDiary: (tab?: InternshipTab, focusLogId?: string) => void;
+  openInternshipCase: (patientKey: string) => void;
   closeInternshipDiary: () => void;
+  closeInternshipCase: () => void;
   isTccScreenOpen: boolean;
-  openTccScreen: () => void;
+  /** Aba/foco ativos do TCC (`SPEC-012 F3`) — moram na navegação, não em `useState`. */
+  thesisTab: ThesisTab | undefined;
+  thesisFocusId: string | undefined;
+  openTccScreen: (tab?: ThesisTab, focusId?: string) => void;
   closeTccScreen: () => void;
   isStickersScreenOpen: boolean;
   openStickersScreen: () => void;
@@ -410,10 +448,27 @@ export interface AppContextValue {
   adoptAcervoConcept: (draft: ConceptDraft) => string;
   handleAddMaterial: (material: MaterialItem) => void;
   handleAddReading: (reading: ReadingItem) => void;
+  handleAddReadingSession: (session: ReadingSession) => void;
+  handleAddReadingHighlight: (highlight: ReadingHighlight) => void;
+  handleAddReadingBookmark: (bookmark: ReadingBookmark) => void;
   handleUpdateReadingPages: (readingId: string, newPages: number) => void;
   handleAddFlashcard: (card: Flashcard) => void;
   handleReviewFlashcard: (id: string, quality: 0 | 1 | 2 | 3) => void;
   handleAddInternshipLog: (log: InternshipLog) => void;
+  handleUpdateInternshipLog: (log: InternshipLog) => void;
+  /** Porta de escrita **única** do estágio (`SPEC-009 §8.1`): uma atualização
+   *  por salvamento, e o vínculo sessão ↔ supervisão é derivado. */
+  handleSaveInternshipLog: (draft: InternshipLog) => void;
+  handleDeleteInternshipLog: (id: string) => void;
+  handleRenamePatient: (fromKey: string, toLabel: string) => void;
+  handleSetPatient: (ids: string[], label: string) => void;
+  handleConvertNextStep: (
+    log: InternshipLog,
+    step: string,
+    kind: InternshipNextStepLink['kind'],
+    entityId: string,
+    nowIso: string
+  ) => InternshipLog;
   handleAddExam: (exam: Exam) => void;
   handleAddCourse: (course: Course) => void;
   handleAddAuthor: (author: PsychologyAuthor) => void;
@@ -430,13 +485,12 @@ export interface AppContextValue {
     chapters: ReadingItem['chapters']
   ) => void;
   handleUpdateProfile: (updated: Partial<UserProfile>) => void;
-  handleUpdateTcc: (updated: TccData) => void;
+  handleUpdateTcc: (updated: ThesisProject) => void;
   handleUpdateCourse: (updated: Course) => void;
   handleUpdateExam: (exam: Exam) => void;
   handleUpdateReading: (reading: ReadingItem) => void;
   handleUpdateFlashcard: (card: Flashcard) => void;
   handleUpdateSession: (session: StudySession) => void;
-  handleUpdateInternshipLog: (log: InternshipLog) => void;
   handleUpdateAuthor: (author: PsychologyAuthor) => void;
   handleUpdateConcept: (concept: PsychologyConcept) => void;
   handleUpdateMaterial: (material: MaterialItem) => void;

@@ -24,7 +24,12 @@ const baseState: StickerState = {
   currentStreak: 0,
   streakTotal: 0,
   streakLongest: 0,
-  tcc: { status: 'em_andamento', title: '', chapters: [] },
+  tcc: { status: 'em_andamento', title: '' },
+  // SPEC-012: capítulos/referências/reuniões/escrita chegam como coleções.
+  thesisChapters: [],
+  thesisReferences: [],
+  thesisMeetings: [],
+  thesisWritingLogs: [],
   savedBookIds: [],
   concepts: [],
   exams: [],
@@ -111,9 +116,17 @@ describe('isConditionMet', () => {
     ).toBe(true);
   });
 
-  it('tcc-done: status concluido', () => {
-    expect(isConditionMet({ type: 'tcc-done' }, { ...baseState, tcc: { status: 'concluido', title: '', chapters: [] } })).toBe(true);
-    expect(isConditionMet({ type: 'tcc-done' }, { ...baseState, tcc: { status: 'revisao', title: '', chapters: [] } })).toBe(false);
+  it('tcc-done: concluído exige status E nenhum capítulo pendente (D4)', () => {
+    expect(
+      isConditionMet({ type: 'tcc-done' }, { ...baseState, tcc: { status: 'concluido', title: '' }, thesisChapters: [{ stage: 'pronto' }] })
+    ).toBe(true);
+    // Capítulo pendente trava a conquista mesmo com status concluído.
+    expect(
+      isConditionMet({ type: 'tcc-done' }, { ...baseState, tcc: { status: 'concluido', title: '' }, thesisChapters: [{ stage: 'escrevendo' }] })
+    ).toBe(false);
+    expect(
+      isConditionMet({ type: 'tcc-done' }, { ...baseState, tcc: { status: 'revisao', title: '' } })
+    ).toBe(false);
   });
 
   it('limiares simples (sessions, class-notes, pages-read, tasks-done, saved-books, internship-first)', () => {
@@ -213,10 +226,16 @@ describe('isConditionMet', () => {
     expect(isConditionMet({ type: 'internship-hours', min: 1 }, { ...baseState, internshipLogs: [{ hours: 1 }] })).toBe(true);
     expect(isConditionMet({ type: 'internship-hours', min: 10 }, { ...baseState, internshipLogs: [{ hours: 6 }, { hours: 4 }] })).toBe(true);
     expect(isConditionMet({ type: 'internship-logs', min: 3 }, { ...baseState, internshipLogs: new Array(3) })).toBe(true);
-    expect(isConditionMet({ type: 'tcc-created' }, { ...baseState, tcc: { status: 'em_andamento', title: '', chapters: [] } })).toBe(false);
-    expect(isConditionMet({ type: 'tcc-created' }, { ...baseState, tcc: { status: 'em_andamento', title: 'meu tcc', chapters: [] } })).toBe(true);
-    expect(isConditionMet({ type: 'tcc-chapters-done', min: 1 }, { ...baseState, tcc: { status: 'em_andamento', title: 'x', chapters: [{ completed: false }] } })).toBe(false);
-    expect(isConditionMet({ type: 'tcc-chapters-done', min: 1 }, { ...baseState, tcc: { status: 'em_andamento', title: 'x', chapters: [{ completed: true }] } })).toBe(true);
+    expect(isConditionMet({ type: 'tcc-created' }, { ...baseState, tcc: { status: 'em_andamento', title: '' } })).toBe(false);
+    expect(isConditionMet({ type: 'tcc-created' }, { ...baseState, tcc: { status: 'em_andamento', title: 'meu tcc' } })).toBe(true);
+    expect(isConditionMet({ type: 'tcc-chapters-done', min: 1 }, { ...baseState, thesisChapters: [{ stage: 'a_fazer' }] })).toBe(false);
+    expect(isConditionMet({ type: 'tcc-chapters-done', min: 1 }, { ...baseState, thesisChapters: [{ stage: 'pronto' }] })).toBe(true);
+    // SPEC-012: condições novas (coleções de reunião, escrita e citação).
+    expect(isConditionMet({ type: 'thesis-words', min: 1000 }, { ...baseState, thesisWritingLogs: [{ words: 600 }, { words: 500 }] })).toBe(true);
+    expect(isConditionMet({ type: 'thesis-meetings', min: 2 }, { ...baseState, thesisMeetings: [{ status: 'realizada' }, { status: 'agendada' }] })).toBe(false);
+    expect(isConditionMet({ type: 'thesis-meetings', min: 2 }, { ...baseState, thesisMeetings: [{ status: 'realizada' }, { status: 'realizada' }] })).toBe(true);
+    expect(isConditionMet({ type: 'thesis-refs-cited', min: 1 }, { ...baseState, thesisReferences: [{ status: 'candidata' }] })).toBe(false);
+    expect(isConditionMet({ type: 'thesis-refs-cited', min: 1 }, { ...baseState, thesisReferences: [{ status: 'citada' }] })).toBe(true);
     expect(isConditionMet({ type: 'penultimate-semester' }, { ...baseState, termOrdinal: 7 })).toBe(true);
     expect(isConditionMet({ type: 'penultimate-semester' }, { ...baseState, termOrdinal: 6 })).toBe(false);
     expect(isConditionMet({ type: 'streak-longest', min: 21 }, { ...baseState, streakLongest: 21 })).toBe(true);
@@ -337,7 +356,8 @@ describe('applyStickerUnlocks', () => {
       ...baseState,
       internshipLogs: [{}],
       currentStreak: 7,
-      tcc: { status: 'concluido', title: '', chapters: [] },
+      tcc: { status: 'concluido', title: '' },
+      thesisChapters: [{ stage: 'pronto' }],
     }, '2026-08-15');
 
     expect(updated.find((s) => s.id === 'st-4')?.unlocked).toBe(true);
@@ -347,7 +367,32 @@ describe('applyStickerUnlocks', () => {
     expect(updated.find((s) => s.id === 'st-1')?.unlocked).toBe(false);
 
     const ids = newlyUnlocked.map((s) => s.id).sort();
-    expect(ids).toEqual(['st-4', 'st-5', 'st-8']);
+    // `st-37` (primeiro capítulo do tcc) dispara agora pela coleção nova:
+    // `thesisChapters: [{ stage: 'pronto' }]` (SPEC-012).
+    expect(ids).toEqual(['st-37', 'st-4', 'st-5', 'st-8']);
+  });
+
+  it('F5.4: escrita, reuniões e referências citadas desbloqueiam do estado real', () => {
+    const { newlyUnlocked } = applyStickerUnlocks(
+      makeStickers(),
+      {
+        ...baseState,
+        thesisWritingLogs: [{ words: 3000 }, { words: 2500 }],
+        thesisMeetings: [
+          { status: 'realizada' },
+          { status: 'realizada' },
+          { status: 'realizada' },
+          { status: 'realizada' },
+          { status: 'realizada' },
+        ],
+        thesisReferences: Array.from({ length: 10 }, () => ({ status: 'citada' })),
+      },
+      '2026-08-15',
+    );
+
+    const ids = newlyUnlocked.map((s) => s.id).sort();
+    // 5000 palavras (st-36b), 5 reuniões realizadas (st-37d), 10 citadas (st-37e).
+    expect(ids).toEqual(['st-36b', 'st-37d', 'st-37e']);
   });
 
   it('nunca re-bloqueia conquistas já feitas quando o estado regride', () => {
@@ -398,5 +443,14 @@ describe('catálogo (T2.1)', () => {
     for (let i = 1; i <= 45; i++) {
       expect(ids.has(`st-${i}`)).toBe(true);
     }
+  });
+
+  it('F5.4: as conquistas de escrita do TCC estão no catálogo (jornada)', () => {
+    // Três entradas de estágio redundantes cederam lugar às condições do TCC,
+    // preservando 80/20 e a curva de raridade (SPEC-012 F5.4).
+    const porCondicao = (type: string) => STICKER_CATALOG.find((d) => d.condition.type === type);
+    expect(porCondicao('thesis-words')).toMatchObject({ id: 'st-36b', category: 'jornada', rarity: 'broto' });
+    expect(porCondicao('thesis-meetings')).toMatchObject({ id: 'st-37d', category: 'jornada', rarity: 'raiz' });
+    expect(porCondicao('thesis-refs-cited')).toMatchObject({ id: 'st-37e', category: 'jornada', rarity: 'copa' });
   });
 });

@@ -1,20 +1,22 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { arquivoDosVetoresDeHash } from '../../../packages/contracts/src/dados-path';
 import { canonicalize } from '../canonicalJson';
 import { canonicalSha256, canonicalPayloadHash, sha256HexUtf8 } from '../canonicalHash';
 
 /**
  * Vetores compartilhados TS ↔ Rust de Canonical JSON v1 + SHA-256 (T0.4).
  *
- * Lê o MESMO arquivo que `src-tauri/tests/ (a reconstruir)
+ * Lê o MESMO arquivo que `cecistudy-rust/crates/cecistudy-common/tests/
  * canonical_hash_vectors_test.rs`. As expectativas foram calculadas fora de TS
  * e Rust, então o teste não é tautológico: se este lado canonicalizar ou hashear
  * diferente, ele quebra — e o lado Rust quebra junto.
  */
 
-const VECTORS_PATH = arquivoDosVetoresDeHash();
+const VECTORS_PATH = join(
+  import.meta.dirname,
+  '../../../cecistudy-rust/contracts/golden/canonical_hash_vectors.json'
+);
 
 interface Vector {
   name: string;

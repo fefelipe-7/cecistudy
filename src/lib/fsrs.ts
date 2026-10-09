@@ -1,48 +1,22 @@
 import { Flashcard } from '../types/entity';
+import { todayKeyLocal, addDaysKey, daysBetween as civilDaysBetween } from './dateBR';
 
 export type FSRSQuality = 0 | 1 | 2 | 3;
 
 export const FSRS_PARAMS = [0.4,0.6,2.4,5.8,4.93,0.94,0.86,0.01,1.49,0.14,0.94,2.18,0.05,0.34,1.26,0.29,2.61];
 
 /**
- * Data civil **local** no formato `YYYY-MM-DD`. Fonte única de "que dia é".
- *
- * ⚠️ Não trocar por `toISOString().slice(0, 10)`: `toISOString` converte para
- * **UTC**, e data civil local não é data civil UTC. A conta sai errada nas duas
- * pontas do fuso:
- *
- * - fusos **à frente** de UTC (ex.: `Asia/Sao_Paulo`, UTC-3): meia-noite local
- *   vira o dia **anterior** em UTC → "hoje" responde ontem;
- * - no Brasil depois das **21h** (UTC-3), um instante já é o dia seguinte em
- *   UTC → `due` nasce um dia adiantado e um cartão novo prometia `2d` em vez de
- *   `1d`.
- *
- * `daysBetween` faz o parse de `YYYY-MM-DD` como hora **local**, então é esta
- * função que fecha o contrato: entrada e saída do módulo falam sempre em data
- * civil local.
+ * Data civil local (`YYYY-MM-DD`). **Nunca** `toISOString()`: em fuso negativo
+ * (São Paulo, UTC−3) o dia UTC vaza +1 a partir das 21h e o vencimento erra de
+ * data. A fonte é `todayKeyLocal` (SPEC-C-002), o mesmo helper do app inteiro.
  */
-export function localDateISO(d: Date = new Date()): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${day}`;
-}
-
-/** `YYYY-MM-DD` local somado a `days` dias — âncora em `iso`, não no relógio. */
-export function addDaysISO(iso: string, days: number): string {
-  const d = new Date(iso + 'T00:00:00');
-  d.setDate(d.getDate() + days);
-  return localDateISO(d);
-}
-
 export function todayISO(): string {
-  return localDateISO();
+  return todayKeyLocal();
 }
 
+/** Dias civis entre duas datas (`to - from`), nunca negativo. */
 export function daysBetween(a: string, b: string): number {
-  const da = new Date(a + 'T00:00:00');
-  const db = new Date(b + 'T00:00:00');
-  return Math.max(0, Math.round((db.getTime() - da.getTime()) / 86400000));
+  return Math.max(0, civilDaysBetween(a, b));
 }
 
 export function initCard(card: Partial<Flashcard> = {}): Flashcard {
@@ -108,9 +82,9 @@ export function schedule(card: Flashcard, quality: FSRSQuality, nowIso = todayIS
 
   const desiredRetention = 0.9;
   const interval = Math.max(1, Math.round(newStability * Math.log(desiredRetention) / Math.log(0.5)));
-  // Ancorado em `nowIso`, não no relógio: a mesma entrada tem de render o mesmo
-  // `due` em qualquer hora do dia (e `nowIso` injetado vira testável).
-  const due = addDaysISO(nowIso, interval);
+  // Aritmética civil sobre `nowIso` (não `new Date()` + `toISOString()`): o
+  // vencimento é `nowIso + interval` em dias civis, sem deslocamento de fuso.
+  const due = addDaysKey(nowIso, interval);
 
   const newRetrievability = Math.exp(-Math.log(2) / Math.max(0.01, newStability) * interval);
 

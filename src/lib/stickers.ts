@@ -33,7 +33,16 @@ export interface StickerState {
   tasks: { completed: boolean }[];
   internshipLogs: { hours?: number }[];
   currentStreak: number;
-  tcc: { status: string; title: string; chapters: { completed: boolean }[] };
+  /** SPEC-012: o singleton não carrega mais capítulos — a coleção chega aqui. */
+  tcc: { status: string; title: string };
+  /** Capítulos da coleção `thesisChapters`; pronto === `stage === 'pronto'`. */
+  thesisChapters: { stage?: string }[];
+  /** Referências da coleção `thesisReferences` (condição `thesis-refs-cited`). */
+  thesisReferences: { status?: string }[];
+  /** Reuniões da coleção `thesisMeetings` (condição `thesis-meetings`). */
+  thesisMeetings: { status?: string }[];
+  /** Sessões de escrita da coleção `thesisWritingLogs` (condição `thesis-words`). */
+  thesisWritingLogs: { words?: number }[];
   savedBookIds: string[];
   concepts: { authorIds: string[] }[];
   exams: { completed: boolean }[];
@@ -85,7 +94,12 @@ export function isConditionMet(condition: StickerCondition, state: StickerState)
     case 'concepts-with-authors':
       return state.concepts.filter((c) => c.authorIds.length > 0).length >= condition.min;
     case 'tcc-done':
-      return state.tcc.status === 'concluido';
+      // D4 (SPEC-012): concluído exige status E nenhum capítulo pendente —
+      // marcar "concluído" com capítulo em aberto não dispara a conquista.
+      return (
+        state.tcc.status === 'concluido' &&
+        state.thesisChapters.every((c) => c.stage === 'pronto')
+      );
     case 'sessions':
       return state.sessions.length >= condition.min;
     case 'class-notes':
@@ -147,7 +161,20 @@ export function isConditionMet(condition: StickerCondition, state: StickerState)
     case 'tcc-created':
       return state.tcc.title.trim().length > 0;
     case 'tcc-chapters-done':
-      return state.tcc.chapters.filter((c) => c.completed).length >= condition.min;
+      return state.thesisChapters.filter((c) => c.stage === 'pronto').length >= condition.min;
+    // SPEC-012: as condições novas da F2.2 (uso real na F5, catálogo lá).
+    case 'thesis-words':
+      return (
+        state.thesisWritingLogs.reduce((acc, l) => acc + (l.words ?? 0), 0) >= condition.min
+      );
+    case 'thesis-meetings':
+      return (
+        state.thesisMeetings.filter((m) => m.status === 'realizada').length >= condition.min
+      );
+    case 'thesis-refs-cited':
+      return (
+        state.thesisReferences.filter((r) => r.status === 'citada').length >= condition.min
+      );
     case 'penultimate-semester':
       return state.termOrdinal >= state.profile.totalSemesters - 1;
     case 'streak-longest':
@@ -218,7 +245,13 @@ export function currentValueFor(condition: StickerCondition, state: StickerState
     case 'internship-logs':
       return state.internshipLogs.length;
     case 'tcc-chapters-done':
-      return state.tcc.chapters.filter((c) => c.completed).length;
+      return state.thesisChapters.filter((c) => c.stage === 'pronto').length;
+    case 'thesis-words':
+      return state.thesisWritingLogs.reduce((acc, l) => acc + (l.words ?? 0), 0);
+    case 'thesis-meetings':
+      return state.thesisMeetings.filter((m) => m.status === 'realizada').length;
+    case 'thesis-refs-cited':
+      return state.thesisReferences.filter((r) => r.status === 'citada').length;
     case 'questions-created':
       return answeredQuestionIds(state.quizSessions).size;
     case 'questions-mastered':

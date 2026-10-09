@@ -1,12 +1,14 @@
 import React, { memo, useCallback, useEffect, useRef } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { App as CapacitorApp } from '@capacitor/app';
+import { LocalNotifications } from '@capacitor/local-notifications';
 import { AnimatePresence, motion, useMotionValue, useTransform } from 'framer-motion';
 import { useMobileApp } from '@/context/mobileApp';
 import { useNavValue } from '@/context/shellNavContexts';
 import { setupNativeShell } from '../lib/native';
 import { EASE, overlayVariants, resolveProfile } from '../lib/motion';
 import { nativeNavigation } from '../navigation/native-navigation';
+import { routeFromNotificationExtra } from '../../packages/domain/src/core/domain/thesis';
 
 import { HeaderNav } from '../components/HeaderNav';
 import { BottomNav } from '../components/BottomNav';
@@ -14,6 +16,7 @@ import { EdgeSwipeBack } from '../components/ui/EdgeSwipeBack';
 import { OnboardingScreen } from '../components/views/OnboardingScreen';
 
 import { SlideScreen } from './SlideScreen';
+import { CaptureHost } from './CaptureHost';
 import { MotionProfileProvider, useMotionProfile } from '../components/motion/MotionProfileProvider';
 import { SlideContent, OverlayContent } from './SharedScreenLayers';
 import { focusController } from '../lib/focusController';
@@ -143,6 +146,25 @@ const MobileAppShellInner: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Toque na notificação do TCC → aba certa (SPEC-012 §6.5, Q10). Registrado
+  // cedo no bootstrap: em partida a frio o iOS entrega o evento após o
+  // `addListener` — e a navegação não depende de dado hidratado (o `focusId`
+  // de item removido degrada na própria tela). `routeFromNotificationExtra`
+  // é puro e defensivo: `extra` inválido simplesmente não navega.
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+    const handler = LocalNotifications.addListener('localNotificationActionPerformed', (event) => {
+      const route = routeFromNotificationExtra(
+        (event.notification as { extra?: unknown }).extra,
+      );
+      if (route) app.openTccScreen(route.tab, route.focusId);
+    });
+    return () => {
+      void handler.then((h) => h.remove());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const {
     profile,
     headerConfig,
@@ -253,6 +275,10 @@ const MobileAppShellInner: React.FC = () => {
           )}
         </AnimatePresence>
       </main>
+
+      {/* Captura de link (F8.4/F8.5): deep link iOS e share Android caem aqui,
+          fora das views — o host decide salvar direto ou abrir a sheet. */}
+      <CaptureHost />
 
       {/* Fixed Bottom Navigation Bar — some junto com o push/pop, em tempo com o
           slide. **Só opacity, de propósito:** um `transform` neste wrapper viraria

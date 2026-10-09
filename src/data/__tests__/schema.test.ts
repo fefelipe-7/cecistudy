@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { migrateDatabase, SCHEMA_VERSION, DEFAULT_WORKSPACE_ID } from '../schema';
+import { migrateDatabase, MIGRATIONS, SCHEMA_VERSION, DEFAULT_WORKSPACE_ID } from '../schema';
 
 describe('schema — migração 11 → 12 (escopo de workspace)', () => {
   const sample = {
@@ -23,8 +23,105 @@ describe('schema — migração 11 → 12 (escopo de workspace)', () => {
     tcc: { title: '', advisor: '', field: '', problemStatement: '', objectives: [], status: 'em_andamento', chapters: [], references: [] },
   };
 
-  it('SCHEMA_VERSION é 20', () => {
-    expect(SCHEMA_VERSION).toBe(20);
+  it('SCHEMA_VERSION é 22', () => {
+    expect(SCHEMA_VERSION).toBe(22);
+  });
+
+  it('nenhum Date dentro da MIGRATIONS[22] (F15: determinismo, nunca "agora")', () => {
+    // O código-fonte da migração 22 não instancia Date nem lê Date.now —
+    // os timestamps legados são a época fixa (testado abaixo).
+    expect(MIGRATIONS[22].toString()).not.toMatch(/new Date\(|Date\.now/);
+  });
+
+  describe('MIGRATIONS[22] — TCC como coleções (SPEC-012)', () => {
+    /** TCC legado COM capítulos e referências — o caso que o fixture v21 não cobre. */
+    const legacyPayload = () => ({
+      profile: { name: 'Ceci' },
+      readings: [
+        { id: 'r1', title: 'l', author: 'a', type: 'livro', status: 'nao_iniciado' },
+      ],
+      tcc: {
+        title: 'luto e escuta clínica',
+        advisor: 'Helena',
+        field: 'clínica',
+        problemStatement: 'p?',
+        objectives: ['o1'],
+        status: 'em_andamento',
+        chapters: [
+          { title: 'introdução', completed: true, dueDate: '2026-10-01' },
+          { title: 'métodos', completed: false, dueDate: 'amanhã' },
+        ],
+        references: ['Worden, J. W. (2018). Tratamento do luto.', ''],
+      },
+    });
+
+    it('move capítulos para thesisChapters com id determinístico e stage', () => {
+      const next = migrateDatabase(21, legacyPayload()) as Record<string, any>;
+      const chapters = next.thesisChapters as any[];
+      expect(chapters).toHaveLength(2);
+      expect(chapters[0]).toMatchObject({
+        id: 'thc-1',
+        thesisId: 'tcc-main',
+        position: 0,
+        title: 'introdução',
+        stage: 'pronto',
+        dueDate: '2026-10-01',
+      });
+      expect(chapters[1]).toMatchObject({ id: 'thc-2', stage: 'a_fazer' });
+      // Prazo fora de `YYYY-MM-DD` é descartado, nunca adivinhado…
+      expect(chapters[1].dueDate).toBeUndefined();
+      // …e listado em migrationNotes (§9.1).
+      expect((next.migrationNotes as string[])[0]).toContain('descartado');
+    });
+
+    it('referência legada vira ReadingItem com rawCitation + ThesisReference fina (ADR-010)', () => {
+      const next = migrateDatabase(21, legacyPayload()) as Record<string, any>;
+      const readings = next.readings as any[];
+      const refs = next.thesisReferences as any[];
+      // A string vazia não vira nada.
+      expect(readings).toHaveLength(2);
+      expect(readings[1]).toMatchObject({
+        id: 'r-legacy-tcc-1',
+        rawCitation: 'Worden, J. W. (2018). Tratamento do luto.',
+        sourceKind: 'custom',
+      });
+      expect(refs).toHaveLength(1);
+      expect(refs[0]).toMatchObject({
+        id: 'thr-1',
+        readingId: 'r-legacy-tcc-1',
+        status: 'citada',
+      });
+    });
+
+    it('tcc perde chapters/references e ganha id + reminderPrefs', () => {
+      const next = migrateDatabase(21, legacyPayload()) as Record<string, any>;
+      expect(next.tcc.chapters).toBeUndefined();
+      expect(next.tcc.references).toBeUndefined();
+      expect(next.tcc.id).toBe('tcc-main');
+      expect(next.tcc.reminderPrefs).toMatchObject({ enabled: false, time: '09:00' });
+      // Seeds das coleções novas.
+      expect(next.thesisMeetings).toEqual([]);
+      expect(next.thesisTasks).toEqual([]);
+      expect(next.thesisWritingLogs).toEqual([]);
+    });
+
+    it('é idempotente: aplicar duas vezes dá o mesmo resultado', () => {
+      const once = migrateDatabase(21, legacyPayload()) as Record<string, unknown>;
+      const twice = migrateDatabase(21, once) as Record<string, unknown>;
+      // A segunda passada já encontra `thesisChapters` e devolve sem mudar.
+      expect(JSON.stringify(twice.thesisChapters)).toBe(JSON.stringify(once.thesisChapters));
+      expect(twice.tcc).toEqual(once.tcc);
+      // E o dreno pode rodar de novo: mesmo resultado.
+      expect(Object.keys(twice).sort()).toEqual(Object.keys(once).sort());
+    });
+
+    it('timestamps legados são a época fixa, determinísticos', () => {
+      const next = migrateDatabase(21, legacyPayload()) as Record<string, any>;
+      for (const ch of next.thesisChapters) {
+        expect(ch.createdAt).toBe('1970-01-01T00:00:00.000Z');
+        expect(ch.updatedAt).toBe('1970-01-01T00:00:00.000Z');
+      }
+    });
   });
 
   it('adiciona workspaceId default a todas as entidades sincronizáveis', () => {
@@ -39,7 +136,11 @@ describe('schema — migração 11 → 12 (escopo de workspace)', () => {
     expect(next.flashcards[0].workspaceId).toBe(DEFAULT_WORKSPACE_ID);
     expect(next.materials[0].workspaceId).toBe(DEFAULT_WORKSPACE_ID);
     expect(next.internshipLogs[0].workspaceId).toBe(DEFAULT_WORKSPACE_ID);
-    expect(next.supervision[0].workspaceId).toBe(DEFAULT_WORKSPACE_ID);
+    // A coleção legada `supervision` é drenada pela migração 20 (`SPEC-009 §6`):
+    // o caderno vira `InternshipLog` e a chave fica vazia. Ela **não** recebe mais
+    // `workspaceId` porque não tem mais linha — e é por isso que o log migrado
+    // precisa receber o default em `legacyNotebookToLog`, e não depender daqui.
+    expect(next.supervision).toEqual([]);
     expect(next.stickers[0].workspaceId).toBe(DEFAULT_WORKSPACE_ID);
     expect(next.sessions[0].workspaceId).toBe(DEFAULT_WORKSPACE_ID);
     expect(next.techniques[0].workspaceId).toBe(DEFAULT_WORKSPACE_ID);
@@ -68,7 +169,9 @@ describe('schema — migração 12 → 13 (rename internshipLogsLegacy → inter
   it('é idempotente quando a chave nova já existe', () => {
     const both = { internshipLogs: [{ id: 'ilog-9' }], internshipLogsLegacy: [{ id: 'ilog-1' }] };
     const next = migrateDatabase(12, both as Record<string, unknown>) as Record<string, any>;
-    expect(next.internshipLogs).toEqual([{ id: 'ilog-9' }]);
+    // 	ype: 'estagio' é a migração 20 normalizando (invariante I7): dado antigo
+    // sem tipo vira estágio. A chave legada continua sendo removida.
+    expect(next.internshipLogs).toEqual([{ id: 'ilog-9', type: 'estagio' }]);
     expect(next.internshipLogsLegacy).toBeUndefined();
   });
 });

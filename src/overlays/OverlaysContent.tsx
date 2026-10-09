@@ -139,9 +139,13 @@ export const OverlaysContent: React.FC<{ app: AppContextValue }> = ({ app }) => 
         tasks={app.tasks}
         exams={app.exams}
         looseNotes={app.looseNotes}
+        thesisChapters={app.thesisChapters}
+        thesisReferences={app.thesisReferences}
+        thesisTasks={app.thesisTasks}
         onNavigate={app.handleNavigate}
         onOpenNoteDetail={app.openNoteDetail}
         onOpenCourseDetail={app.openCourseDetail}
+        onOpenTccScreen={app.openTccScreen}
       />
 
       <EditCourseModalMemo
@@ -160,6 +164,7 @@ export const OverlaysContent: React.FC<{ app: AppContextValue }> = ({ app }) => 
       <EditTccModal
         isOpen={app.isEditTccOpen}
         tcc={app.tcc}
+        chapters={app.thesisChapters}
         onClose={app.closeEditTcc}
         onSave={app.handleUpdateTcc}
       />

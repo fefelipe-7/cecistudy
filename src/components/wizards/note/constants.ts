@@ -55,19 +55,9 @@ export const PRIORITIES: { value: Task['priority']; label: string; emoji?: strin
   { value: 'alta', label: 'alta', emoji: '🔥' },
 ];
 
-/**
- * Tipos de registro que o celular oferece.
- *
- * `atendimento_clinico` não está aqui, e a ausência é a regra: §4.8 linha 471 da
- * spec referencial é `[D]` — "Só desktop. A camada clínica não sincroniza para o
- * mobile." O botão de registro clínico saiu do wizard em `SPEC-M-013` `D1`, e o
- * tipo saiu do union em `D2`.
- *
- * O que o celular mostra de um atendimento é a **projeção** de quatro campos, que
- * vem do desktop; ela não é editável aqui, e por isso não é um item deste menu.
- */
 export const INTERNSHIP_TYPES: { value: InternshipLogType; label: string; emoji?: string }[] = [
   { value: 'estagio', label: 'estágio', emoji: '🏫' },
+  { value: 'atendimento_clinico', label: 'atendimento clínico', emoji: '🛋️' },
   { value: 'supervisao', label: 'supervisão', emoji: '🧑‍🏫' },
   { value: 'intervisao', label: 'intervisão', emoji: '👥' },
   { value: 'outro', label: 'outro', emoji: '✨' },

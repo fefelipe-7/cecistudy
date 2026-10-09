@@ -1,215 +1,148 @@
 import React, { useState } from 'react';
-import { Compass, Plus, Trash2, Pencil, Check, FileText, BookOpen, Brain } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
+import { InternshipLogCard } from '../InternshipLogCard';
+import { EmptyState } from '../ui/EmptyState';
+import { PillGroup } from '../ui/PillGroup';
+import { StatusChip } from '../internship/StatusChip';
+import type { DerivedCase } from '../../lib/internshipCases';
 import type { InternshipLog } from '../../types';
-import { TagField } from '../ui/TagField';
-import { DateInput, FieldLabel, TextArea, TextInput } from '../wizards/wizardFields';
-import { Mascote } from '../ui/Mascote';
-import { today } from '../wizards/note/constants';
+import { formatDateShortBR } from '../../lib/dateBR';
+import { pluralPt } from '../../lib/pluralPt';
 
-const emptyEntry = (): InternshipLog => ({
-  id: 'sup-' + Date.now(),
-  type: 'supervisao',
-  date: today(),
-  hours: 0,
-  activity: 'supervisão',
-  reflections: '',
-  supervisor: '',
-  topics: [],
-  conceptIds: [],
-  referenceIds: [],
-  nextSteps: [],
-  selfAssessment: {},
-});
+type Filtro = 'todas' | 'supervisao' | 'intervisao';
 
-/** Cria entidade a partir de um próximo passo (elo "transformar em próximo passo"). */
-const useNextStepActions = () => {
-  const { handleAddTask, handleAddReading, handleAddSession, showToast } = useMobileApp();
-  const toTask = (text: string) => {
-    handleAddTask({ id: 'task_' + Date.now(), title: text, completed: false, priority: 'media', category: 'estagio' });
-    showToast('virou tarefa ♡');
-  };
-  const toReading = (text: string) => {
-    handleAddReading({ id: 'r-' + Date.now(), title: text, author: '', type: 'artigo', status: 'nao_iniciado' });
-    showToast('virou leitura ♡');
-  };
-  const toFocus = (text: string) => {
-    handleAddSession({ id: 'ss-' + Date.now(), topic: text, date: today(), durationMinutes: 30 });
-    showToast('virou sessão de foco ♡');
-  };
-  return { toTask, toReading, toFocus };
+const FILTRO_TYPES: Record<Filtro, InternshipLog['type'][]> = {
+  todas: ['supervisao', 'intervisao'],
+  supervisao: ['supervisao'],
+  intervisao: ['intervisao'],
 };
 
-export const SupervisionView: React.FC = () => {
-  const { internshipLogs, handleAddInternshipLog, handleUpdateInternshipLog, deleteManagedItem } = useMobileApp();
-  const [form, setForm] = useState<InternshipLog | null>(null);
-  const actions = useNextStepActions();
+/**
+ * Aba de supervisão — v2 (`SPEC-009 §9.6`).
+ *
+ * **A porta dupla fechou (`F10`).** Antes esta tela tinha estado, formulário e
+ * `emptyEntry` próprios: criava supervisão com `activity` fixo `"supervisão"`,
+ * `hours: 0` fixo, **sem nenhuma forma de vincular sessões**, e decidia novo vs
+ * edição pelo **prefixo do id** (`sup-`). O wizard gravava horas reais. Duas telas,
+ * dois comportamentos, e a intervisão não aparecia em lugar nenhum — era gravada
+ * (`InternshipWizard.tsx:27`) e não tinha tela.
+ *
+ * Agora é uma **vista filtrada** dos logs, e a criação é pelo wizard.
+ */
+export const SupervisionView: React.FC<{
+  today: string;
+  cases: DerivedCase[];
+  pendingIds: string[];
+}> = ({ today, cases, pendingIds }) => {
+  const { internshipLogs, openWizard } = useMobileApp();
+  const [filtro, setFiltro] = useState<Filtro>('todas');
 
-  const supervisions = internshipLogs.filter((l) => l.type === 'supervisao');
+  const logs = internshipLogs.filter((l) => FILTRO_TYPES[filtro].includes(l.type));
+  const agendadas = logs.filter((l) => l.date > today).sort((a, b) => a.date.localeCompare(b.date));
+  const feitas = logs.filter((l) => l.date <= today).sort((a, b) => b.date.localeCompare(a.date));
 
-  const openNew = () => setForm(emptyEntry());
-  const openEdit = (entry: InternshipLog) => setForm({ ...entry });
-  const closeForm = () => setForm(null);
+  const porPaciente = pendingIds
+    .map((id) => internshipLogs.find((l) => l.id === id))
+    .filter((l): l is InternshipLog => Boolean(l))
+    .map((l) => ({
+      log: l,
+      key: `${l.patient ?? ''} ${l.sessionNumber ?? ''}`.trim(),
+    }));
 
-  const save = () => {
-    if (!form) return;
-    if (form.id.startsWith('sup-') && !supervisions.some((s) => s.id === form.id)) {
-      handleAddInternshipLog(form);
-    } else {
-      handleUpdateInternshipLog(form);
-    }
-    closeForm();
-  };
-
-  const sorted = [...supervisions].sort((a, b) => (a.date < b.date ? 1 : -1));
+  const abrirWizard = (seed?: Record<string, unknown>) =>
+    openWizard('internship', undefined, { kind: 'supervisao', ...(seed ?? {}) });
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-3 rounded-2xl p-4 bg-surface-default border border-ceci-border-default shadow-sm">
-        <div className="flex items-center gap-3 min-w-0">
-          <span className="w-10 h-10 rounded-2xl bg-surface-blue border border-ceci-border-academic flex items-center justify-center text-ceci-academic-strong shrink-0">
-            <Compass className="w-5 h-5" />
-          </span>
-          <div className="min-w-0">
-            <h2 className="font-display font-bold text-lg text-ceci-primary leading-tight">caderno de supervisão</h2>
-            <p className="text-[11px] text-ceci-secondary">teoria, prática e responsabilidade ♡</p>
-          </div>
-        </div>
-        <button
-          onClick={openNew}
-          className="flex items-center gap-1.5 bg-ceci-primary hover:bg-ceci-ink text-ceci-on-primary px-3.5 py-2 rounded-full text-xs font-semibold shadow-xs cursor-pointer shrink-0"
-        >
-          <Plus className="w-4 h-4" /> anotar
-        </button>
-      </div>
+      {/* Sem cabeçalho próprio (SPEC-010 D3): o hero do Diário é o topo da aba.
+          O que restava aqui era o segundo cabeçalho empilhado na mesma tela. */}
 
-      {form && (
-        <div className="space-y-4 p-4 rounded-2xl bg-surface-default border border-ceci-border-default shadow-sm">
-          <FieldLabel>data</FieldLabel>
-          <DateInput value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
-          <div>
-            <FieldLabel>supervisora / orientadora</FieldLabel>
-            <TextInput value={form.supervisor ?? ''} onChange={(e) => setForm({ ...form, supervisor: e.target.value })} placeholder="ex: supervisora do estágio básico" />
-          </div>
-          <div>
-            <FieldLabel>perguntas que você levou</FieldLabel>
-            <TagField tags={form.topics ?? []} onChange={(t) => setForm({ ...form, topics: t })} placeholder="ex: caso de ansiedade" emptyMessage="toque em + para adicionar" />
-          </div>
-          <div>
-            <FieldLabel>antes da supervisão — o que você trouxe?</FieldLabel>
-            <TextArea rows={3} value={form.beforeNotes ?? ''} onChange={(e) => setForm({ ...form, beforeNotes: e.target.value })} placeholder="suas hipóteses e dúvidas de preparação..." />
-          </div>
-          <div>
-            <FieldLabel>depois da supervisão — o que ficou?</FieldLabel>
-            <TextArea rows={3} value={form.afterNotes ?? ''} onChange={(e) => setForm({ ...form, afterNotes: e.target.value })} placeholder="a decisão que a supervisão produziu..." />
-          </div>
-          <div>
-            <FieldLabel>próximos passos</FieldLabel>
-            <TagField tags={form.nextSteps ?? []} onChange={(t) => setForm({ ...form, nextSteps: t })} placeholder="ex: revisar capítulo de TCC" emptyMessage="toque em + para adicionar" />
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <div>
-              <FieldLabel>confiança</FieldLabel>
-              <TextArea rows={2} value={form.selfAssessment?.confidence ?? ''} onChange={(e) => setForm({ ...form, selfAssessment: { ...form.selfAssessment, confidence: e.target.value } })} placeholder="o que já consigo..." />
-            </div>
-            <div>
-              <FieldLabel>limites</FieldLabel>
-              <TextArea rows={2} value={form.selfAssessment?.limits ?? ''} onChange={(e) => setForm({ ...form, selfAssessment: { ...form.selfAssessment, limits: e.target.value } })} placeholder="o que ainda hesito..." />
-            </div>
-            <div>
-              <FieldLabel>temas</FieldLabel>
-              <TextArea rows={2} value={form.selfAssessment?.themes ?? ''} onChange={(e) => setForm({ ...form, selfAssessment: { ...form.selfAssessment, themes: e.target.value } })} placeholder="temas para retomar..." />
-            </div>
-          </div>
-          <div className="flex gap-2 pt-1">
-            <button onClick={save} className="flex-1 bg-ceci-brand hover:bg-ceci-brand text-ceci-on-brand py-2.5 rounded-full text-xs font-semibold cursor-pointer flex items-center justify-center gap-1.5">
-              <Check className="w-4 h-4" /> guardar
+      <PillGroup<Filtro>
+        size="sm"
+        variant="rose"
+        value={filtro}
+        onChange={setFiltro}
+        options={[
+          { value: 'todas', label: 'todas' },
+          { value: 'supervisao', label: 'supervisão' },
+          { value: 'intervisao', label: 'intervisão' },
+        ]}
+      />
+
+      {porPaciente.length > 0 && (
+        <div className="rounded-2xl p-3 bg-surface-muted border border-status-warning-border space-y-2">
+          <p className="text-[11px] font-semibold text-status-warning-strong inline-flex items-center gap-1.5">
+            <Clock className="w-4 h-4" aria-hidden />
+            {pluralPt(porPaciente.length, 'sessão esperando supervisão', 'sessões esperando supervisão')}
+          </p>
+          <div className="flex flex-wrap items-center gap-2">
+            {porPaciente.slice(0, 6).map(({ log, key }) => (
+              <span
+                key={log.id}
+                className="text-[10px] px-2 py-1 rounded-full bg-surface-default border border-ceci-border-default text-ceci-secondary"
+              >
+                {key}
+              </span>
+            ))}
+            <button
+              type="button"
+              onClick={() => abrirWizard()}
+              className="min-h-[44px] px-3 rounded-full text-[11px] font-semibold bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand cursor-pointer tap-interactive"
+            >
+              levar pra próxima
             </button>
-            <button onClick={closeForm} className="px-4 py-2.5 rounded-full text-xs font-semibold text-ceci-secondary border border-ceci-border-default cursor-pointer">cancelar</button>
           </div>
         </div>
       )}
 
-      <div className="space-y-3">
-        {sorted.map((entry) => (
-          <div key={entry.id} className="p-4 rounded-2xl bg-surface-default border border-ceci-border-default shadow-2xs space-y-3">
-            <div className="flex items-center justify-between gap-2 flex-wrap">
-              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-ceci-academic-strong bg-surface-blue border border-ceci-border-academic px-2.5 py-1 rounded-full">
-                <Compass className="w-3.5 h-3.5" /> supervisão
-              </span>
-              <span className="text-[11px] font-medium text-ceci-tertiary">
-                {new Date(entry.date).toLocaleDateString('pt-BR')}
-                {entry.supervisor ? ` • com ${entry.supervisor}` : ''}
-              </span>
-            </div>
-
-            {(entry.topics?.length ?? 0) > 0 && (
-              <div className="flex flex-wrap gap-1.5">
-                {(entry.topics ?? []).map((q) => (
-                  <span key={q} className="px-2.5 py-1 rounded-full bg-surface-muted border border-ceci-border-subtle text-[11px] text-ceci-secondary">{q}</span>
+      {logs.length === 0 ? (
+        <EmptyState
+          description="ainda não tem supervisão anotada — que tal registrar a próxima? ♡"
+          actionLabel="anotar supervisão"
+          onAction={() => abrirWizard()}
+        />
+      ) : (
+        <div className="space-y-4">
+          {agendadas.length > 0 && (
+            <section>
+              <h3 className="text-[11px] font-bold uppercase tracking-wider text-ceci-tertiary mb-1.5">
+                próximas
+              </h3>
+              <div className="space-y-3">
+                {agendadas.map((log) => (
+                  <InternshipLogCard
+                    key={log.id}
+                    log={log}
+                    today={today}
+                    allLogs={internshipLogs}
+                  />
                 ))}
               </div>
-            )}
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <div className="bg-surface-muted border border-ceci-border-default rounded-xl p-3">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-ceci-tertiary mb-1">antes</p>
-                <p className="text-xs text-ceci-secondary leading-relaxed">{entry.beforeNotes || '—'}</p>
-              </div>
-              <div className="bg-surface-rose border border-ceci-border-brand rounded-xl p-3">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-ceci-brand-strong mb-1">depois</p>
-                <p className="text-xs text-ceci-secondary leading-relaxed">{entry.afterNotes || '—'}</p>
-              </div>
-            </div>
-
-            {(entry.nextSteps?.length ?? 0) > 0 && (
-              <div className="space-y-1.5">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-ceci-tertiary">próximos passos</p>
-                {(entry.nextSteps ?? []).map((step) => (
-                  <div key={step} className="flex items-center justify-between gap-2 p-2 rounded-xl bg-surface-muted border border-ceci-border-subtle">
-                    <span className="text-xs text-ceci-primary truncate">{step}</span>
-                    <div className="flex items-center gap-1 shrink-0">
-                      <button onClick={() => actions.toTask(step)} title="virar tarefa" className="w-7 h-7 rounded-lg bg-surface-default border border-ceci-border-default flex items-center justify-center text-ceci-primary hover:border-ceci-border-brand cursor-pointer"><FileText className="w-3.5 h-3.5" /></button>
-                      <button onClick={() => actions.toReading(step)} title="virar leitura" className="w-7 h-7 rounded-lg bg-surface-default border border-ceci-border-default flex items-center justify-center text-ceci-primary hover:border-ceci-border-brand cursor-pointer"><BookOpen className="w-3.5 h-3.5" /></button>
-                      <button onClick={() => actions.toFocus(step)} title="virar foco" className="w-7 h-7 rounded-lg bg-surface-default border border-ceci-border-default flex items-center justify-center text-ceci-primary hover:border-ceci-border-brand cursor-pointer"><Brain className="w-3.5 h-3.5" /></button>
-                    </div>
-                  </div>
+            </section>
+          )}
+          {feitas.length > 0 && (
+            <section>
+              <h3 className="text-[11px] font-bold uppercase tracking-wider text-ceci-tertiary mb-1.5">
+                anteriores
+              </h3>
+              <div className="space-y-3">
+                {feitas.map((log) => (
+                  <InternshipLogCard
+                    key={log.id}
+                    log={log}
+                    today={today}
+                    allLogs={internshipLogs}
+                  />
                 ))}
               </div>
-            )}
-
-            {(() => {
-              const sa = entry.selfAssessment;
-              if (sa && (sa.confidence || sa.limits || sa.themes)) {
-                return (
-                  <div className="flex flex-wrap gap-1.5 text-[10px] text-ceci-tertiary">
-                    {sa.confidence && <span>💪 {sa.confidence}</span>}
-                    {sa.limits && <span>🚧 {sa.limits}</span>}
-                    {sa.themes && <span>🔎 {sa.themes}</span>}
-                  </div>
-                );
-              }
-              return null;
-            })()}
-
-            <div className="flex items-center gap-2 pt-1">
-              <button onClick={() => openEdit(entry)} className="flex items-center gap-1 text-[11px] font-semibold text-ceci-secondary hover:text-ceci-primary cursor-pointer">
-                <Pencil className="w-3.5 h-3.5" /> editar
-              </button>
-              <button onClick={() => deleteManagedItem('internship', entry.id)} className="flex items-center gap-1 text-[11px] font-semibold text-ceci-brand-strong hover:text-ceci-brand cursor-pointer">
-                <Trash2 className="w-3.5 h-3.5" /> apagar
-              </button>
-            </div>
-          </div>
-        ))}
-
-        {supervisions.length === 0 && !form && (
-          <div className="bg-surface-muted border border-ceci-border-subtle rounded-2xl p-5 text-center space-y-2">
-            <Mascote expression="supervision-reflect" className="w-14 h-14 mx-auto" decorative />
-            <p className="text-xs text-ceci-secondary">ainda não tem supervisão anotada — que tal registrar a próxima? ♡</p>
-          </div>
-        )}
-      </div>
+            </section>
+          )}
+        </div>
+      )}
     </div>
   );
 };
+
+/** Reexportado para os testes de formatação da faixa. */
+export { formatDateShortBR, StatusChip };

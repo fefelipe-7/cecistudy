@@ -3,6 +3,8 @@
 import type {
   NavTab,
   NavScreen,
+  InternshipTab,
+  ThesisTab,
   WizardFlow,
   QuizConfig,
   QuizAnswer,
@@ -37,8 +39,18 @@ export interface Route {
   streak?: boolean;
   /** Diário de estágio (tela cheia de todos os registros, empilhada sobre a faculdade). */
   internshipDiary?: boolean;
+  /** Aba ativa do diário de estágio (`SPEC-009 D16`). */
+  internshipTab?: InternshipTab;
+  /** Tela do caso (paciente) empilhada sobre a aba pacientes. `''` = grupo sem iniciais. */
+  internshipPatientKey?: string;
+  /** Registro de supervisão a destacar ao voltar (`focusLogId`). */
+  internshipFocusId?: string;
   /** Tela cheia do meu TCC (criar/manter), empilhada sobre os estudos. */
   tcc?: boolean;
+  /** Aba ativa do TCC (`SPEC-012 F3`): `#/estudos/tcc/<tab>`. */
+  tccTab?: ThesisTab;
+  /** Entidade do TCC a destacar ao abrir (capítulo/referência/pendência). */
+  tccFocusId?: string;
   /** Tela cheia de stickers & conquistas, empilhada sobre o perfil. */
   stickers?: boolean;
   /** Quiz: tela de escolha de filtros/categoria. */
@@ -100,6 +112,15 @@ const STUDY_SCREEN_TO_SLUG: Record<StudyScreen, string> = {
   revisar: 'revisar',
   leituras: 'leituras',
   historico: 'historico',
+};
+
+/** Slug de URL ↔ aba do TCC (`#/estudos/tcc/<slug>`, SPEC-012 F3). */
+const THESIS_TAB_SLUGS: Record<string, ThesisTab> = {
+  visao: 'visao',
+  capitulos: 'capitulos',
+  leituras: 'leituras',
+  orientacao: 'orientacao',
+  escrita: 'escrita',
 };
 
 /** Sub-tab padrão de cada aba (não é codificada no hash — mantém URLs limpas). */
@@ -214,7 +235,24 @@ export function parseRoute(hash: string): Route {
   if (!seg || seg === 'home') return { tab: 'home' };
   if (seg === 'faculdade') {
     // Diário de estágio: `#/faculdade/estagio/diario`
-    if (h[1] === 'estagio' && h[2] === 'diario') return { tab: 'faculdade', internshipDiary: true };
+    // #/faculdade/estagio/<aba> e #/faculdade/estagio/pacientes/:patientKey
+    // (SPEC-009 D16). sem-iniciais e '' significam o grupo de ?rfãos.
+    if (h[1] === 'estagio' && h[2] === 'diario') return { tab: 'faculdade', internshipTab: 'diario' };
+    if (h[1] === 'estagio' && h[2] === 'supervisao') return { tab: 'faculdade', internshipTab: 'supervisao' };
+    if (h[1] === 'estagio' && h[2] === 'pacientes') {
+      if (h[3]) {
+        const raw = decodeURIComponent(h[3]);
+        return {
+          tab: 'faculdade',
+          internshipTab: 'pacientes',
+          internshipPatientKey: raw === 'sem-iniciais' ? '' : raw,
+        };
+      }
+      return { tab: 'faculdade', internshipTab: 'pacientes' };
+    }
+    // Sem 3º segmento, `#/faculdade/estagio` continua sendo a **sub-tab** da
+    // Faculdade (a Seção de Estágio), não o diário — é o que o round-trip antigo
+    // prometia e o que a bottom nav envia.
     // Detalhe de aula: `#/faculdade/:courseId/aula/:classNoteId`
     if (h[2] === 'aula' && h[3]) {
       return { tab: 'faculdade', focusedCourseId: h[1], classNoteId: h[3] };
@@ -267,8 +305,16 @@ export function parseRoute(hash: string): Route {
     if (h[1] && STUDY_SCREEN_SLUGS[h[1]]) return { tab: 'estudos', studyScreen: STUDY_SCREEN_SLUGS[h[1]] };
     if (h[1] === 'flashcards') return { tab: 'estudos', studyScreen: 'revisar' };
     if (h[1] === 'questoes') return { tab: 'estudos', quizCategory: true };
-    // Meu TCC: `#/estudos/tcc`
-    if (h[1] === 'tcc') return { tab: 'estudos', tcc: true };
+    // Meu TCC: `#/estudos/tcc[/<aba>[/<id>]]` (SPEC-012 F3 — a aba é deep-link:
+    // toque em notificação e busca global caem aqui).
+    if (h[1] === 'tcc') {
+      const tccTab = THESIS_TAB_SLUGS[h[2] ?? ''] as ThesisTab | undefined;
+      return {
+        tab: 'estudos',
+        tcc: true,
+        ...(tccTab ? { tccTab, ...(h[3] ? { tccFocusId: h[3] } : {}) } : {}),
+      };
+    }
     return { tab: 'estudos' };
   }
   if (seg === 'perfil') {
@@ -327,8 +373,23 @@ export function routeToStack(route: Route): NavScreen[] {
     return [...baseStackFor(route.baseTab ?? 'home', route.baseCourseId), { kind: 'wizard', type: route.wizard }];
   }
   if (route.streak) return [...baseStackFor(route.tab ?? 'home'), { kind: 'streak' }];
+  if (route.internshipPatientKey !== undefined) {
+    return [
+      { kind: 'tab', tab: 'faculdade' },
+      { kind: 'internshipDiary', tab: 'pacientes' },
+      { kind: 'internshipCase', patientKey: route.internshipPatientKey },
+    ];
+  }
+  if (route.internshipTab) {
+    return [{ kind: 'tab', tab: 'faculdade' }, { kind: 'internshipDiary', tab: route.internshipTab }];
+  }
   if (route.internshipDiary) return [{ kind: 'tab', tab: 'faculdade' }, { kind: 'internshipDiary' }];
-  if (route.tcc) return [{ kind: 'tab', tab: 'estudos' }, { kind: 'tcc' }];
+  if (route.tcc) {
+    return [
+      { kind: 'tab', tab: 'estudos' },
+      { kind: 'tcc', tab: route.tccTab, focusId: route.tccFocusId },
+    ];
+  }
   if (route.stickers) return [{ kind: 'tab', tab: 'perfil' }, { kind: 'stickers' }];
   if (route.termHistory) {
     // O histórico é **irmão** do wizard (SPEC-008 D5): a rota só sabe que a base
@@ -441,8 +502,18 @@ export function stackToHash(stack: NavScreen[], subTab?: string): string {
     const tab = base?.kind === 'tab' ? base.tab : 'home';
     return tab === 'home' ? '#/streak' : `#/${tab}/streak`;
   }
-  if (top.kind === 'internshipDiary') return '#/faculdade/estagio/diario';
-  if (top.kind === 'tcc') return '#/estudos/tcc';
+  if (top.kind === 'internshipCase') {
+    const key = top.patientKey ? encodeURIComponent(top.patientKey) : 'sem-iniciais';
+    return `#/faculdade/estagio/pacientes/${key}`;
+  }
+  if (top.kind === 'internshipDiary') {
+    return `#/faculdade/estagio/${top.tab ?? 'diario'}`;
+  }
+  if (top.kind === 'tcc') {
+    // `#/estudos/tcc/<aba>[/<id>]` — a aba é deep-link (SPEC-012 F3).
+    const base = top.tab ? `#/estudos/tcc/${top.tab}` : '#/estudos/tcc';
+    return top.focusId ? `${base}/${top.focusId}` : base;
+  }
   if (top.kind === 'stickers') return '#/perfil/stickers';
   if (top.kind === 'termHistory') {
     return top.termId

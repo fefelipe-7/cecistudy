@@ -93,6 +93,7 @@ export const SlideScreen: React.FC<SlideScreenProps> = ({ intent, children }) =>
     >
       <div
         aria-hidden={!isPresent}
+        inert={!isPresent}
         className={
           isPresent
             ? undefined

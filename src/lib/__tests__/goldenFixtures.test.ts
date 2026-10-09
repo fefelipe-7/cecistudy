@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { dirDosGoldens } from '../../../packages/contracts/src/dados-path';
 import { canonicalize } from '../canonicalJson';
 import { COLLECTIONS, type CollectionSpec } from '../collections';
 import type { BackupV2 } from '../../../packages/data/src/exportImport';
@@ -14,13 +13,13 @@ import {
 
 /**
  * Golden files (F0.4) — paridade byte-a-byte TS ↔ arquivos em
- * `dirDosGoldens()` (o conteúdo é o canonical JSON v1).
+ * `cecistudy-rust/contracts/golden/` (o conteúdo é o canonical JSON v1).
  *
  * GERAÇÃO: `GOLDEN_WRITE=1 npm run test -- src/lib/__tests__/goldenFixtures.test.ts`
  * IMPORTANTE: alterar `goldenSample.ts` ou `packages/data/src/schema` nUNCA deve
  * produzir diff sem regenerar + revisar os arquivos (paridade com o lado Rust).
  */
-const GOLDEN_DIR = dirDosGoldens();
+const GOLDEN_DIR = join(import.meta.dirname, '../../../cecistudy-rust/contracts/golden');
 const WRITE = process.env.GOLDEN_WRITE === '1';
 
 function fixtures(): { empty: BackupV2; sample: BackupV2 } {

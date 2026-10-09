@@ -1,134 +1,140 @@
 import { describe, it, expect } from 'vitest';
-import { deriveCases, temCampoForaDaLista, CAMPOS_QUE_NAO_ATRAVESSAM } from '../internshipCases';
-import { CAMPOS_DA_PROJECAO } from '../../types/clinical';
-import type { ClinicalProjection, InternshipLog } from '../../types';
+import type { InternshipLog, DateKey } from '../../types';
+import { deriveCases } from '../internshipCases';
 
-let seq = 0;
+// `deriveCases` foi para `packages/domain` (SPEC-009 §7) e a assinatura mudou:
+// `today` é parâmetro, o retorno é `{ cases, orphans }`, `lastSessionDate` é a
+// **maior data** (não a última por `sessionNumber`, regressão `F23`) e
+// `pendingSupervision` vem do índice de vínculos, não de `!log.supervisionLogId`
+// (regressão `F3`). Estes testes são o gate dessa troca.
 
-/** Uma projeção válida. Só os cinco campos da lista fechada. */
-const projecao = (over: Partial<ClinicalProjection> = {}): ClinicalProjection => ({
-  id: `clin-${++seq}`,
-  iniciais: 'AB',
-  data: '2026-09-02',
-  duracaoMin: 60,
-  paraLevar: 'espaço para o luto',
-  ...over,
-});
+const TODAY: DateKey = '2026-09-10';
 
-/** Um registro acadêmico. `discussedClinicalIds` aponta para a projeção. */
-const supervisao = (over: Partial<InternshipLog> = {}): InternshipLog => ({
-  id: `ilog-${++seq}`,
-  type: 'supervisao',
-  date: '2026-09-09',
+const session = (over: Partial<InternshipLog> = {}): InternshipLog => ({
+  id: 'ilog-1',
+  type: 'atendimento_clinico',
+  date: '2026-09-02',
   hours: 1,
-  activity: 'supervisão de caso',
-  reflections: '',
+  activity: 'atendimento clínico',
+  reflections: 'reflexão',
+  patient: 'AB',
+  sessionNumber: 1,
   ...over,
 });
 
-describe('deriveCases', () => {
-  it('vazio → nenhum caso', () => {
-    expect(deriveCases([])).toEqual([]);
+describe('deriveCases (nova assinatura)', () => {
+  it('vazio → nenhum caso e nenhum órfão', () => {
+    expect(derive([])).toEqual({ cases: [], orphans: [] });
   });
 
-  it('um caso agrupa projeções e totaliza minutos', () => {
-    const cases = deriveCases([
-      projecao({ data: '2026-09-02', duracaoMin: 60 }),
-      projecao({ data: '2026-09-09', duracaoMin: 120 }),
+  it('um paciente agrupa sessões e totaliza horas', () => {
+    const { cases } = derive([
+      session({ id: 'a', date: '2026-09-02', sessionNumber: 1, hours: 1 }),
+      session({ id: 'b', date: '2026-09-09', sessionNumber: 2, hours: 2 }),
     ]);
     expect(cases).toHaveLength(1);
     expect(cases[0]).toMatchObject({
       patientKey: 'ab',
       patientLabel: 'AB',
-      totalMin: 180,
+      totalHours: 3,
       lastSessionDate: '2026-09-09',
+      sessionsDone: 2,
     });
-    expect(cases[0].projections).toHaveLength(2);
+    expect(cases[0].logs).toHaveLength(2);
   });
 
-  it('agrupa iniciais distintas separadamente, mais recente primeiro', () => {
-    const cases = deriveCases([
-      projecao({ iniciais: 'AB', data: '2026-08-01' }),
-      projecao({ iniciais: 'CD', data: '2026-09-15' }),
+  it('agrupa pacientes distintos, mais recente primeiro', () => {
+    const { cases } = derive([
+      session({ id: 'a', patient: 'AB', date: '2026-08-01' }),
+      session({ id: 'b', patient: 'CD', date: '2026-09-09' }),
     ]);
-    expect(cases).toHaveLength(2);
-    expect(cases[0].patientKey).toBe('cd');
-    expect(cases[1].patientKey).toBe('ab');
+    expect(cases.map((c) => c.patientKey)).toEqual(['cd', 'ab']);
   });
 
-  it('ignora projeção sem iniciais', () => {
-    expect(deriveCases([projecao(), projecao({ iniciais: '  ' })])).toHaveLength(1);
-  });
-
-  it('a mesma inicial com caixa e espaço diferentes agrupa junto', () => {
-    const cases = deriveCases([projecao({ iniciais: 'AB' }), projecao({ iniciais: ' ab ' })]);
+  it('NÃO normaliza a chave com trim+lower apenas: "M. S.", "ms" e "M.S" são o mesmo caso (D8)', () => {
+    const { cases } = derive([
+      session({ id: 'a', patient: 'M. S.' }),
+      session({ id: 'b', patient: 'ms', date: '2026-09-09', sessionNumber: 2 }),
+      session({ id: 'c', patient: 'M.S', date: '2026-09-16', sessionNumber: 3 }),
+    ]);
     expect(cases).toHaveLength(1);
-    expect(cases[0].projections).toHaveLength(2);
+    expect(cases[0].patientKey).toBe('ms');
+    expect(cases[0].logs).toHaveLength(3);
   });
 
-  it('"para levar" vazio é pendência; preenchido não é', () => {
-    const cases = deriveCases([
-      projecao({ paraLevar: '' }),
-      projecao({ paraLevar: '   ' }),
-      projecao({ paraLevar: 'algo' }),
+  it('ignora não-atendimentos', () => {
+    const { cases } = derive([
+      session({ id: 'a' }),
+      session({ id: 'x', type: 'supervisao', patient: undefined }),
     ]);
-    expect(cases[0]).toMatchObject({ pendingParaLevar: 2, pendingSupervision: 3 });
+    expect(cases).toHaveLength(1);
   });
 
-  it('supervisão registrada zera a pendência do id que ela cita', () => {
-    const a = projecao({ id: 'clin-a' });
-    const b = projecao({ id: 'clin-b' });
-    const cases = deriveCases([a, b], [supervisao({ discussedClinicalIds: ['clin-a'] })]);
-    expect(cases[0].pendingSupervision).toBe(1);
-  });
-
-  it('supervisão que não cita nada não zera nada', () => {
-    const cases = deriveCases([projecao({ id: 'clin-a' })], [supervisao()]);
-    expect(cases[0].pendingSupervision).toBe(1);
-  });
-
-  it('ordena as projeções do caso por data', () => {
-    const cases = deriveCases([
-      projecao({ data: '2026-09-09', duracaoMin: 30 }),
-      projecao({ data: '2026-08-01', duracaoMin: 60 }),
+  it('atendimento SEM iniciais vira órfão, e some das pendências por caso (F9/D9)', () => {
+    const { cases, orphans } = derive([
+      session({ id: 'a', patient: 'AB' }),
+      session({ id: 'b', patient: '', reflections: '' }),
     ]);
-    expect(cases[0].projections.map((p) => p.data)).toEqual(['2026-08-01', '2026-09-09']);
+    expect(cases).toHaveLength(1);
+    expect(orphans.map((l) => l.id)).toEqual(['b']);
+  });
+
+  it('lastSessionDate é a MAIOR data, não a última por sessão (regressão F23)', () => {
+    // Sessão 1 em setembro, sessão 2 em agosto: a ordem por `sessionNumber` punha a
+    // de agosto por último e a tela dizia "última sessão: agosto".
+    const { cases } = derive([
+      session({ id: 'a', sessionNumber: 1, date: '2026-09-09' }),
+      session({ id: 'b', sessionNumber: 2, date: '2026-08-01' }),
+    ]);
+    expect(cases[0].lastSessionDate).toBe('2026-09-09');
+  });
+
+  it('pendingSupervision vem do índice de vínculos, não de supervisionLogId (regressão F3)', () => {
+    const logs = [
+      session({ id: 'at-1', reflections: '' }),
+      // A sessão aponta para uma supervisão que NÃO existe: o modelo antigo
+      // contava como supervisionada para sempre.
+      session({ id: 'at-2', supervisionLogId: 'sup-fantasma', reflections: '' }),
+      { ...session({ id: 'sup-1' }), type: 'supervisao' as const, date: '2026-09-08', discussedLogIds: ['at-1'] },
+    ];
+    const { cases } = derive(logs);
+    expect(cases[0].pendingSupervision).toBe(1); // só at-2
+  });
+
+  it('registro agendado não conta como sessão feita nem nas horas', () => {
+    const { cases } = derive([
+      session({ id: 'a', date: '2026-09-09', hours: 2 }),
+      session({ id: 'b', date: '2026-09-20', hours: 5, sessionNumber: 2 }),
+    ]);
+    expect(cases[0].sessionsDone).toBe(1);
+    expect(cases[0].totalHours).toBe(2); // não 7 (D7)
+    expect(cases[0].nextScheduledDate).toBe('2026-09-20');
+    expect(cases[0].scheduledLogs).toHaveLength(1);
+  });
+
+  it('caso só com agendados vai para o topo, com progresso 0', () => {
+    const { cases } = derive([
+      session({ id: 'a', patient: 'AB', date: '2026-09-09' }),
+      session({ id: 'b', patient: 'CD', date: '2026-09-30' }),
+    ]);
+    expect(cases[0].patientKey).toBe('cd');
+    expect(cases[0].progress).toBe(0);
+  });
+
+  it('progress = supervisionadas / feitas, 0–100', () => {
+    const { cases } = derive([
+      session({ id: 'at-1', reflections: '' }),
+      session({ id: 'at-2', date: '2026-09-09', sessionNumber: 2, reflections: '' }),
+      {
+        ...session({ id: 'sup-1' }),
+        type: 'supervisao' as const,
+        date: '2026-09-09',
+        discussedLogIds: ['at-1'],
+      },
+    ]);
+    expect(cases[0].sessionsSupervised).toBe(1);
+    expect(cases[0].progress).toBe(50);
   });
 });
 
-describe('a lista fechada de campos', () => {
-  it('a projeção não tem nenhum campo sensível', () => {
-    expect(CAMPOS_QUE_NAO_ATRAVESSAM).not.toContain('iniciais');
-    expect(CAMPOS_QUE_NAO_ATRAVESSAM).not.toContain('duracaoMin');
-    expect(CAMPOS_QUE_NAO_ATRAVESSAM).not.toContain('paraLevar');
-  });
-
-  it('o registro completo é recusado campo a campo', () => {
-    const completo = {
-      id: 'clin-1',
-      iniciais: 'AB',
-      data: '2026-09-02',
-      duracaoMin: 60,
-      paraLevar: '',
-      // tudo abaixo é o que §4.8 linha 466 proíbe
-      patient: 'Ana Souza',
-      sessionNumber: 12,
-      theme: 'luto',
-      approach: 'psicanalítica',
-      interventionNotes: 'intervenção',
-      observations: 'observação',
-    };
-    expect(temCampoForaDaLista(completo)).toEqual({
-      dentro: false,
-      campos: expect.arrayContaining(['patient', 'sessionNumber', 'theme']),
-    });
-  });
-
-  it('a projeção canônica passa', () => {
-    expect(temCampoForaDaLista({ ...projecao() })).toEqual({ dentro: true, campos: [] });
-  });
-
-  it('a lista de campos que atravessam é exatamente a do contrato', () => {
-    expect([...CAMPOS_DA_PROJECAO]).toEqual(['id', 'iniciais', 'data', 'duracaoMin', 'paraLevar']);
-  });
-});
+const derive = (logs: InternshipLog[]) => deriveCases(logs, TODAY);

@@ -12,6 +12,8 @@ import {
   FileText,
   Landmark,
   Clock,
+  BookMarked,
+  ListTodo,
 } from 'lucide-react';
 import { Modal } from './ui/Modal';
 import { Mascote } from './ui/Mascote';
@@ -37,7 +39,11 @@ import {
   Exam,
   LooseNote,
   NavTab,
+  ThesisChapter,
+  ThesisReference,
+  ThesisTask,
 } from '../types';
+import type { ThesisTab } from '../../packages/navigation/src/types';
 
 interface GlobalSearchModalProps {
   isOpen: boolean;
@@ -51,9 +57,15 @@ interface GlobalSearchModalProps {
   tasks: Task[];
   exams: Exam[];
   looseNotes: LooseNote[];
+  /** SPEC-012 F4.8: o TCC é pesquisável (capítulo, referência e pendência). */
+  thesisChapters: ThesisChapter[];
+  thesisReferences: ThesisReference[];
+  thesisTasks: ThesisTask[];
   onNavigate: (tab: NavTab, subTab?: string, targetId?: string) => void;
   onOpenNoteDetail: (noteId: string) => void;
   onOpenCourseDetail: (courseId: string) => void;
+  /** Abre a tela do TCC na aba/foco certos (mesmo caminho da notificação, Q10). */
+  onOpenTccScreen: (tab?: ThesisTab, focusId?: string) => void;
 }
 
 /** Item pesquisável + legenda de exibição + navegação de destino. */
@@ -73,6 +85,9 @@ const TYPE_ICON: Record<SearchType, React.ReactNode> = {
   task: <ListChecks className="w-4 h-4" />,
   exam: <ClipboardList className="w-4 h-4" />,
   note: <FileText className="w-4 h-4" />,
+  thesisChapter: <ListChecks className="w-4 h-4" />,
+  thesisReference: <BookMarked className="w-4 h-4" />,
+  thesisTask: <ListTodo className="w-4 h-4" />,
 };
 
 /** Corta com "…" só quando passa do limite (antes grudava sempre). */
@@ -107,9 +122,13 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
   tasks,
   exams,
   looseNotes,
+  thesisChapters,
+  thesisReferences,
+  thesisTasks,
   onNavigate,
   onOpenNoteDetail,
   onOpenCourseDetail,
+  onOpenTccScreen,
 }) => {
   const [query, setQuery] = useState('');
   const [recents, setRecents] = usePersistentState<string[]>('recentSearches', []);
@@ -261,6 +280,57 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         go: () => onOpenNoteDetail(n.id),
       })
     );
+    // SPEC-012 F4.8: TCC — capítulo (título/nota), referência e pendência.
+    const STAGE_LABEL: Record<ThesisChapter['stage'], string> = {
+      a_fazer: 'a fazer',
+      escrevendo: 'escrevendo',
+      em_revisao: 'em revisão',
+      pronto: 'pronto',
+    };
+    thesisChapters.forEach((ch) =>
+      list.push({
+        entry: {
+          id: `thesisChapter:${ch.id}`,
+          title: ch.title,
+          body: ch.note ?? '',
+          tags: [],
+          type: 'thesisChapter',
+          badge: 'capítulo do tcc',
+        },
+        subtitle: `tcc • ${STAGE_LABEL[ch.stage]}`,
+        go: () => onOpenTccScreen('capitulos', ch.id),
+      })
+    );
+    thesisReferences.forEach((ref) => {
+      const reading = readings.find((r) => r.id === ref.readingId);
+      const title = reading?.rawCitation ?? reading?.title ?? 'referência do tcc';
+      list.push({
+        entry: {
+          id: `thesisReference:${ref.id}`,
+          title,
+          body: reading?.author ?? '',
+          tags: [],
+          type: 'thesisReference',
+          badge: 'referência do tcc',
+        },
+        subtitle: `tcc • ${ref.status}`,
+        go: () => onOpenTccScreen('leituras', ref.id),
+      });
+    });
+    thesisTasks.forEach((t) =>
+      list.push({
+        entry: {
+          id: `thesisTask:${t.id}`,
+          title: t.title,
+          body: '',
+          tags: [t.origin],
+          type: 'thesisTask',
+          badge: 'pendência do tcc',
+        },
+        subtitle: `tcc • ${t.origin === 'orientadora' ? 'da orientação' : 'minha'}`,
+        go: () => onOpenTccScreen('orientacao', t.id),
+      })
+    );
     return list;
   }, [
     concepts,
@@ -272,9 +342,13 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     tasks,
     exams,
     looseNotes,
+    thesisChapters,
+    thesisReferences,
+    thesisTasks,
     onNavigate,
     onOpenNoteDetail,
     onOpenCourseDetail,
+    onOpenTccScreen,
   ]);
 
   const byId = useMemo(() => new Map(items.map((it) => [it.entry.id, it])), [items]);

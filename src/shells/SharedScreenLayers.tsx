@@ -40,6 +40,7 @@ const loadStudyHistoricoScreen = () => import('../components/estudos/StudyHistor
 
 // Telas de domínio empilhadas sobre suas abas (estágio → faculdade, TCC → estudos)
 const loadInternshipDiaryView = () => import('../components/views/InternshipDiaryView').then((m) => ({ default: m.InternshipDiaryView }));
+const loadInternshipCaseView = () => import('../components/views/InternshipCaseView').then((m) => ({ default: m.InternshipCaseView }));
 const loadTccView = () => import('../components/views/TccView').then((m) => ({ default: m.TccView }));
 
 const HomeView = memo(lazy(loadHomeView));
@@ -73,6 +74,7 @@ const StudyHistoricoScreen = lazy(loadStudyHistoricoScreen);
 
 // Telas de domínio empilhadas sobre suas abas (estágio → faculdade, TCC → estudos)
 const InternshipDiaryView = lazy(loadInternshipDiaryView);
+const InternshipCaseView = lazy(loadInternshipCaseView);
 const TccView = lazy(loadTccView);
 
 /** Fallback discreto enquanto um chunk de view carrega (primeira visita à aba). */
@@ -105,6 +107,7 @@ const SCREEN_CHUNK_LOADERS = [
   loadStudyLeiturasScreen,
   loadStudyHistoricoScreen,
   loadInternshipDiaryView,
+  loadInternshipCaseView,
   loadTccView,
 ];
 
@@ -274,7 +277,9 @@ export const SlideContent: React.FC = () => {
           <Suspense fallback={<ViewFallback />}>
             {activeTab === 'home' && <HomeView />}
             {activeTab === 'faculdade' &&
-              (app.isInternshipDiaryOpen ? (
+              (app.isInternshipCaseOpen ? (
+                <InternshipCaseView />
+              ) : app.isInternshipDiaryOpen ? (
                 <InternshipDiaryView />
               ) : app.isClassNoteDetailOpen ? (
                 <ClassNoteDetailScreen />

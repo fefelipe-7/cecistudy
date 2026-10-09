@@ -31,6 +31,19 @@ export const RECORD_COLLECTION_KEYS = [
   'questions',
   // SPEC-005: array com LWW por registro (mesmo modelo de `courses`).
   'academicTerms',
+  // SPEC-M-014: leitura — sessões, destaques e marcadores (LWW por registro).
+  'readingSessions',
+  'readingHighlights',
+  'readingBookmarks',
+  // SPEC-012: TCC — capítulos, referências, reuniões, pendências e escrita.
+  // O `tcc` segue singleton em `SINGLE_COLLECTION_KEYS` (só emagrecece); quem
+  // sai do LWW de documento inteiro são os capítulos/referências que moravam
+  // dentro dele (F13 da spec).
+  'thesisChapters',
+  'thesisReferences',
+  'thesisMeetings',
+  'thesisTasks',
+  'thesisWritingLogs',
 ] as const;
 
 export type RecordCollectionKey = (typeof RECORD_COLLECTION_KEYS)[number];

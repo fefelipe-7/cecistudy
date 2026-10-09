@@ -11,7 +11,8 @@ import type {
   Flashcard,
   MaterialItem,
    InternshipLog,
-   TccData,
+   InternshipNextStepLink,
+   ThesisProject,
   StudySession,
   Technique,
   QuizSession,
@@ -19,8 +20,18 @@ import type {
   AttendanceRecord,
   AttendanceStatus,
   AcademicTerm,
+  ReadingSession,
+  ReadingHighlight,
+  ReadingBookmark,
 } from '../types';
 import type { AuthorDraft, ConceptDraft } from '../lib/acervoBridge';
+import {
+  planSave,
+  planDelete,
+  planRenamePatient,
+  planSetPatient,
+  planLinkNextStep,
+} from '../lib/internshipCases';
 import { hapticTap, hapticSuccess } from '../lib/haptics';
 import { celebrate } from '../lib/celebrate';
 import { shouldCelebrateTasks } from '../lib/taskLogic';
@@ -62,6 +73,9 @@ export interface DataActionsDeps {
   authors: PsychologyAuthor[];
   profile: UserProfile;
   currentWorkspaceId: string;
+  readingSessions: ReadingSession[];
+  readingHighlights: ReadingHighlight[];
+  readingBookmarks: ReadingBookmark[];
 
   // setters do useDataClient
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
@@ -79,7 +93,10 @@ export interface DataActionsDeps {
   setQuizSessions: React.Dispatch<React.SetStateAction<QuizSession[]>>;
   setTechniques: React.Dispatch<React.SetStateAction<Technique[]>>;
   setProfile: React.Dispatch<React.SetStateAction<UserProfile>>;
-  setTcc: React.Dispatch<React.SetStateAction<TccData>>;
+  setTcc: React.Dispatch<React.SetStateAction<ThesisProject>>;
+  setReadingSessions: React.Dispatch<React.SetStateAction<ReadingSession[]>>;
+  setReadingHighlights: React.Dispatch<React.SetStateAction<ReadingHighlight[]>>;
+  setReadingBookmarks: React.Dispatch<React.SetStateAction<ReadingBookmark[]>>;
   // Períodos letivos (SPEC-005)
   academicTerms: AcademicTerm[];
   setAcademicTerms: React.Dispatch<React.SetStateAction<AcademicTerm[]>>;
@@ -121,13 +138,29 @@ export interface DataActions {
   handleAddTechnique: (technique: Technique) => void;
   handleUpdateReadingChapters: (readingId: string, chapters: ReadingItem['chapters']) => void;
   handleUpdateProfile: (updated: Partial<UserProfile>) => void;
-  handleUpdateTcc: (updated: TccData) => void;
+  handleUpdateTcc: (updated: ThesisProject) => void;
   handleUpdateCourse: (updated: Course) => void;
   handleUpdateExam: (exam: Exam) => void;
   handleUpdateReading: (reading: ReadingItem) => void;
+  handleAddReadingSession: (session: ReadingSession) => void;
+  handleAddReadingHighlight: (highlight: ReadingHighlight) => void;
+  handleAddReadingBookmark: (bookmark: ReadingBookmark) => void;
   handleUpdateFlashcard: (card: Flashcard) => void;
   handleUpdateSession: (session: StudySession) => void;
   handleUpdateInternshipLog: (log: InternshipLog) => void;
+  /** Porta de escrita única do estágio (`SPEC-009 §8.1`): uma atualização por
+   *  salvamento, e o vínculo sessão ↔ supervisão passa a ser derivado (`D3`). */
+  handleSaveInternshipLog: (draft: InternshipLog) => void;
+  handleDeleteInternshipLog: (id: string) => void;
+  handleRenamePatient: (fromKey: string, toLabel: string) => void;
+  handleSetPatient: (ids: string[], label: string) => void;
+  handleConvertNextStep: (
+    log: InternshipLog,
+    step: string,
+    kind: InternshipNextStepLink['kind'],
+    entityId: string,
+    nowIso: string
+  ) => InternshipLog;
   handleUpdateAuthor: (author: PsychologyAuthor) => void;
   handleUpdateConcept: (concept: PsychologyConcept) => void;
   handleUpdateMaterial: (material: MaterialItem) => void;
@@ -229,6 +262,9 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
     authors,
     profile,
     currentWorkspaceId,
+    readingSessions,
+    readingHighlights,
+    readingBookmarks,
     setTasks,
     setClasses,
     setLooseNotes,
@@ -245,6 +281,9 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
     setTechniques,
     setProfile,
     setTcc,
+    setReadingSessions,
+    setReadingHighlights,
+    setReadingBookmarks,
     academicTerms,
     setAcademicTerms,
     registerActivity,
@@ -361,6 +400,19 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
     setReadings((prev) => [{ ...reading, workspaceId: currentWorkspaceId }, ...prev]);
   }, [currentWorkspaceId, setReadings]);
 
+  const handleAddReadingSession = useCallback((session: ReadingSession) => {
+    setReadingSessions((prev) => [{ ...session, workspaceId: currentWorkspaceId }, ...prev]);
+    registerActivity();
+  }, [currentWorkspaceId, setReadingSessions, registerActivity]);
+
+  const handleAddReadingHighlight = useCallback((highlight: ReadingHighlight) => {
+    setReadingHighlights((prev) => [{ ...highlight, workspaceId: currentWorkspaceId }, ...prev]);
+  }, [currentWorkspaceId, setReadingHighlights]);
+
+  const handleAddReadingBookmark = useCallback((bookmark: ReadingBookmark) => {
+    setReadingBookmarks((prev) => [{ ...bookmark, workspaceId: currentWorkspaceId }, ...prev]);
+  }, [currentWorkspaceId, setReadingBookmarks]);
+
   const handleUpdateReadingPages = useCallback((readingId: string, newPages: number) => {
     const prev = readings.find((r) => r.id === readingId);
     const nextReadings = readings.map((r) => {
@@ -368,7 +420,9 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
         const updatedPages = Math.min(newPages, r.totalPages || 999);
         const isDone = updatedPages >= (r.totalPages || 100);
         const status: ReadingItem['status'] = isDone ? 'concluido' : 'lendo';
-        return { ...r, readPages: updatedPages, status };
+        // `lastReadAt` é o que alimenta o "continue lendo" do hub (SPEC-M-014):
+        // sem ele a estante nunca mostra por onde retomar.
+        return { ...r, readPages: updatedPages, status, lastReadAt: new Date().toISOString() };
       }
       return r;
     });
@@ -471,7 +525,7 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
     setProfile((prev) => ({ ...prev, ...updated }));
   }, [setProfile]);
 
-  const handleUpdateTcc = useCallback((updated: TccData) => {
+  const handleUpdateTcc = useCallback((updated: ThesisProject) => {
     setTcc(updated);
   }, [setTcc]);
 
@@ -499,6 +553,72 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
   const handleUpdateInternshipLog = useCallback((log: InternshipLog) => {
     setInternshipLogs((prev) => prev.map((l) => (l.id === log.id ? log : l)));
   }, [setInternshipLogs]);
+
+  /**
+   * A porta de escrita **única** do estágio (`SPEC-009 §8.1`, `D3`).
+   *
+   * Antes o wizard salvava a supervisão e depois chamava `handleUpdateInternshipLog`
+   * **uma vez por sessão marcada** para escrever o `supervisionLogId` do outro lado
+   * do vínculo — `1 + n` escritas sequenciais, sem lote. Com N marking grande, um
+   * toque produzia dezenas de `setState`, e qualquer falha no meio deixava o banco
+   * com metade do vínculo gravado.
+   *
+   * Agora `planSave` devolve a lista inteira numa operação só, e o vínculo é
+   * **derivado** (`discussedLogIds` mora na supervisão), então salvar não precisa
+   * tocar em nenhum outro registro.
+   */
+  const handleSaveInternshipLog = useCallback(
+    (draft: InternshipLog) => {
+      setInternshipLogs((prev) =>
+        planSave(prev, { ...draft, workspaceId: draft.workspaceId ?? currentWorkspaceId })
+      );
+    },
+    [currentWorkspaceId, setInternshipLogs]
+  );
+
+  /** Apagar um registro e retirar o id de todo `discussedLogIds` (`E3`, `E4`). */
+  const handleDeleteInternshipLog = useCallback(
+    (id: string) => {
+      setInternshipLogs((prev) => planDelete(prev, id));
+    },
+    [setInternshipLogs]
+  );
+
+  /** Renomear as iniciais de um caso inteiro (`E5`). */
+  const handleRenamePatient = useCallback(
+    (fromKey: string, toLabel: string) => {
+      setInternshipLogs((prev) => planRenamePatient(prev, fromKey, toLabel).logs);
+    },
+    [setInternshipLogs]
+  );
+
+  /** Definir iniciais de registros específicos — o caminho dos órfãos (`D9`). */
+  const handleSetPatient = useCallback(
+    (ids: string[], label: string) => {
+      setInternshipLogs((prev) => planSetPatient(prev, ids, label));
+    },
+    [setInternshipLogs]
+  );
+
+  /**
+   * Converter um próximo passo em entidade **e** gravar o vínculo na mesma
+   * atualização (`D17`). Recusa se já existe vínculo vivo, e devolve o novo log
+   * para o chamador poder mostrar o toast certo.
+   */
+  const handleConvertNextStep = useCallback(
+    (
+      log: InternshipLog,
+      step: string,
+      kind: InternshipNextStepLink['kind'],
+      entityId: string,
+      nowIso: string
+    ): InternshipLog => {
+      const linked = planLinkNextStep(log, step, kind, entityId, nowIso);
+      setInternshipLogs((prev) => planSave(prev, linked));
+      return linked;
+    },
+    [setInternshipLogs]
+  );
 
   const handleUpdateAuthor = useCallback((author: PsychologyAuthor) => {
     setAuthors((prev) => prev.map((a) => (a.id === author.id ? author : a)));
@@ -811,6 +931,9 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
       handleUpdateReadingPages,
       handleUpdateReadingChapters,
       handleUpdateReading,
+      handleAddReadingSession,
+      handleAddReadingHighlight,
+      handleAddReadingBookmark,
       handleAddFlashcard,
       handleReviewFlashcard,
       handleUpdateFlashcard,
@@ -824,6 +947,9 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
       handleUpdateReadingPages,
       handleUpdateReadingChapters,
       handleUpdateReading,
+      handleAddReadingSession,
+      handleAddReadingHighlight,
+      handleAddReadingBookmark,
       handleAddFlashcard,
       handleReviewFlashcard,
       handleUpdateFlashcard,
@@ -863,10 +989,25 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
     () => ({
       handleAddInternshipLog,
       handleUpdateInternshipLog,
+      handleSaveInternshipLog,
+      handleDeleteInternshipLog,
+      handleRenamePatient,
+      handleSetPatient,
+      handleConvertNextStep,
       handleUpdateProfile,
       handleUpdateTcc,
     }),
-    [handleAddInternshipLog, handleUpdateInternshipLog, handleUpdateProfile, handleUpdateTcc]
+    [
+      handleAddInternshipLog,
+      handleUpdateInternshipLog,
+      handleSaveInternshipLog,
+      handleDeleteInternshipLog,
+      handleRenamePatient,
+      handleSetPatient,
+      handleConvertNextStep,
+      handleUpdateProfile,
+      handleUpdateTcc,
+    ]
   );
 
   return {

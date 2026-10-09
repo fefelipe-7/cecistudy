@@ -20,7 +20,7 @@
  * consumidor é dívida. Devem entrar na mesma task que as passar a usar.
  *
  * A spec pede `id` **e** "chave persistida" como campos separados. Estão
- * unificados em `key`: hoje `id === chave persistida` nas 24 coleções, e um
+ * unificados em `key`: hoje `id === chave persistida` nas coleções, e um
  * campo idêntico sem uso seria peso morto. Se um dia uma chave precisar ser
  * renomeada sem quebrar o payload, aí `id` ganha a depreciação da chave.
  *
@@ -82,7 +82,8 @@ export interface CollectionSpec {
 }
 
 /**
- * As 24 coleções persistidas na base da usuária, na ordem do payload.
+ * As coleções persistidas na base da usuária, na ordem do payload.
+ * A contagem exata vive no teste (`src/lib/__tests__/collections.test.ts`).
  * `reminder`, `onboarding` e `syncIndex` são preferências (Preferences) e os
  * catálogos `approaches`/`questions` são dados estáticos — nenhum dos dois
  * grupos entra aqui (spec §7.2).
@@ -102,10 +103,6 @@ export const COLLECTIONS = [
   { key: 'techniques', kind: 'array', table: 'technique', syncable: true },
   // chave `internshipLogs` → tabela `internship`: o mesmo desvio dos demais,
   // agora declarado uma vez só em vez de repetido em read/write.
-  //
-  // `SPEC-M-013` `D2`: a partir da versão 20, `internshipLogs` carrega **só**
-  // tipos acadêmicos. `atendimento_clinico` saiu do union de `InternshipLogType`,
-  // e a distinção agora é impossível de errar em vez de depender de um `if`.
   { key: 'internshipLogs', kind: 'array', table: 'internship', syncable: true },
   { key: 'supervision', kind: 'array', table: 'supervision_notebook', syncable: false },
   { key: 'tcc', kind: 'singleton', table: 'thesis_project', syncable: true },
@@ -123,15 +120,24 @@ export const COLLECTIONS = [
   // leem as tabelas. `academicTerms` não tem dependência de leitura de nenhuma
   // outra coleção, então o fim é seguro.
   { key: 'academicTerms', kind: 'array', table: 'academic_term', syncable: true },
-  // `SPEC-M-013` `D1`: a **projeção** da camada clínica. Fica no fim pela mesma
-  // razão de `academicTerms`: a ordem do array é a ordem de hidratação.
-  //
-  // Ela sincroniza, e é a única coisa da camada clínica que sincroniza — cinco
-  // campos, em schema estrito, porque §4.8 linha 472 é lista fechada e a linha
-  // 545 diz que isso é "regra fixa, não configuração". `syncable: true` não é
-  // incoerência com a linha 471: a 471 proíbe que a camada clínica sincronize, e
-  // a projeção não é a camada clínica. É a metade que a 472 autoriza.
-  { key: 'internshipClinical', kind: 'array', table: 'internship_clinical', syncable: true },
+  // SPEC-M-014: leitura com sessões, destaques e marcadores. Também no **fim**
+  // (mesmo motivo de `academicTerms`) e com tabela própria: `reading_highlight`
+  // é a projeção legada de `ReadingItem.highlights` (`normalize.ts`), não a
+  // coleção nova — por isso a tabela nova é `reading_highlight_entry`.
+  { key: 'readingSessions', kind: 'array', table: 'reading_session', syncable: true },
+  { key: 'readingHighlights', kind: 'array', table: 'reading_highlight_entry', syncable: true },
+  { key: 'readingBookmarks', kind: 'array', table: 'reading_bookmark', syncable: true },
+  // SPEC-012: capítulos e referências saem do singleton `tcc` e viram coleções
+  // com id estável (F2/F13 da spec). No **fim** pelo mesmo motivo de
+  // `academicTerms`: nenhuma dependência de leitura de outra coleção.
+  // `thesisChapters`/`thesisReferences` reaproveitam as tabelas que eram
+  // projeção write-only do singleton — a passo 4 da base nativa as recria com
+  // `id` + `data_json` (o DDL antigo não tinha id).
+  { key: 'thesisChapters', kind: 'array', table: 'thesis_chapter', syncable: true },
+  { key: 'thesisReferences', kind: 'array', table: 'thesis_reference', syncable: true },
+  { key: 'thesisMeetings', kind: 'array', table: 'thesis_meeting', syncable: true },
+  { key: 'thesisTasks', kind: 'array', table: 'thesis_task', syncable: true },
+  { key: 'thesisWritingLogs', kind: 'array', table: 'thesis_writing_log', syncable: true },
 ] as const satisfies readonly CollectionSpec[];
 
 /** União das chaves persistidas (ex.: `'courses' | 'decks' | …`). */
@@ -165,29 +171,10 @@ export const SYNCABLE_COLLECTION_KEYS = COLLECTIONS.filter((c) => c.syncable).ma
   (c) => c.key
 ) as CollectionKey[];
 
-/** `spec §7.1` — Coleções com merge por conjunto/mapa — exigem tombstones/stamp por chave. */
+/** Coleções com merge por conjunto/mapa — exigem tombstones/stamp por chave. */
 export const SET_LIKE_COLLECTION_KEYS: CollectionKey[] = [
   'savedBookIds',
   'bookmarkedCourseIds',
   'readingProgress',
   'streakData',
 ];
-
-/**
- * Coleções de conteúdo **clínico** — a projeção da camada do Estágio.
- *
- * `SPEC-M-013`. A lista existe para o gate e para a validação, e não para filtrar
- * payload: a regra é que a coleção **só pode** ter os campos de
- * `CAMPOS_DA_PROJECAO`, e isso é verificado por
- * `.github/scripts/check-clinical-isolation.mjs` e pelo schema estrito em
- * `backupSchema.ts`.
- *
- * Um filtro aqui deixaria passar o que não conhece, e §4.8 linha 545 é explícita:
- * "Isso é regra fixa, não configuração".
- */
-export const CLINICAL_COLLECTION_KEYS: readonly CollectionKey[] = ['internshipClinical'];
-
-/** `true` se a coleção é de conteúdo clínico. */
-export function isClinicalCollectionKey(key: string): key is CollectionKey {
-  return (CLINICAL_COLLECTION_KEYS as readonly string[]).includes(key);
-}

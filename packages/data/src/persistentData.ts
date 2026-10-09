@@ -26,9 +26,13 @@ import type {
   Flashcard,
   FlashcardDeck,
   MaterialItem,
-  ClinicalProjection,
   InternshipLog,
-  TccData,
+  ThesisProject,
+  ThesisChapter,
+  ThesisReference,
+  ThesisMeeting,
+  ThesisTask,
+  ThesisWritingLog,
   Sticker,
   StudySession,
   StreakData,
@@ -39,6 +43,9 @@ import type {
   LooseNote,
   SyncIndex,
   AcademicTerm,
+  ReadingSession,
+  ReadingHighlight,
+  ReadingBookmark,
 } from '@/types';
 
 /** Tipo do banco persistido completo (fonte única de verdade). */
@@ -65,14 +72,13 @@ export interface PersistedStateSnapshot {
   decks: FlashcardDeck[];
   materials: MaterialItem[];
   internshipLogs: InternshipLog[];
-  /**
-   * A projeção clínica — `SPEC-M-013` `D1`. Opcional no snapshot porque um
-   * estado carregado de versão anterior não a tem, e `readDatabaseFromState`
-   * normaliza para `[]`.
-   */
-  internshipClinical?: ClinicalProjection[];
-  tcc: TccData;
-stickers: Sticker[];
+  tcc: ThesisProject;
+  thesisChapters: ThesisChapter[];
+  thesisReferences: ThesisReference[];
+  thesisMeetings: ThesisMeeting[];
+  thesisTasks: ThesisTask[];
+  thesisWritingLogs: ThesisWritingLog[];
+ stickers: Sticker[];
    sessions: StudySession[];
   streakData: StreakData;
   reminder: { enabled: boolean; time: string };
@@ -84,6 +90,9 @@ stickers: Sticker[];
   techniques: Technique[];
   quizSessions: QuizSession[];
   academicTerms: AcademicTerm[];
+  readingSessions: ReadingSession[];
+  readingHighlights: ReadingHighlight[];
+  readingBookmarks: ReadingBookmark[];
   onboarding: OnboardingState;
   syncIndex: SyncIndex;
 }
@@ -104,7 +113,6 @@ export function readDatabaseFromState(state: PersistedStateSnapshot): PersistedD
     decks: state.decks,
     materials: state.materials,
     internshipLogs: state.internshipLogs,
-    internshipClinical: state.internshipClinical ?? [],
     tcc: state.tcc,
      stickers: state.stickers,
      sessions: state.sessions,
@@ -118,6 +126,16 @@ export function readDatabaseFromState(state: PersistedStateSnapshot): PersistedD
     techniques: state.techniques,
     quizSessions: state.quizSessions,
     academicTerms: state.academicTerms,
+    readingSessions: state.readingSessions ?? [],
+    readingHighlights: state.readingHighlights ?? [],
+    readingBookmarks: state.readingBookmarks ?? [],
+    // SPEC-012: tolerância `?? []` no mesmo padrão das coleções de leitura —
+    // snapshot antigo (pré-22) não carrega as chaves.
+    thesisChapters: state.thesisChapters ?? [],
+    thesisReferences: state.thesisReferences ?? [],
+    thesisMeetings: state.thesisMeetings ?? [],
+    thesisTasks: state.thesisTasks ?? [],
+    thesisWritingLogs: state.thesisWritingLogs ?? [],
     onboarding: state.onboarding,
     syncIndex: state.syncIndex ?? emptyDatabase().syncIndex,
   };

@@ -341,17 +341,17 @@ Humor temático **mantido e expandido** (decisão do usuário).
 | st-4 | primeiro dia de estágio | 🩺 | `internship-first` | semente |
 | st-34 | hora na clínica | 🕐 | `internship-hours` ≥1 | semente |
 | st-36 | tcc germinando | 🌱 | `tcc-created` | semente |
-| st-34b | dez horas de campo | 🕑 | `internship-hours` ≥10 | broto |
+| st-36b | palavras no papel | ✍️ | `thesis-words` ≥5000 | broto |
 | st-35 | diário de campo em dia | 📔 | `internship-logs` ≥3 | broto |
 | st-37 | primeiro capítulo do tcc | 📑 | `tcc-chapters-done` ≥1 | broto |
 | st-4b | supervisão, chat é sério | 🗣️ | `internship-logs` ≥8 | broto |
 | st-6 | rumo ao CRP! | 🎓 | `degree-half` | raiz |
 | st-34c | cem horas de campo | 🕒 | `internship-hours` ≥100 | raiz |
-| st-35b | registro constante de campo | 🗃️ | `internship-logs` ≥15 | raiz |
+| st-37d | orientação em dia | 🧭 | `thesis-meetings` ≥5 | raiz |
 | st-37b | metade do caminho do tcc | 📘 | `tcc-chapters-done` ≥3 | raiz |
 | st-4c | analisando até a fila do mercado | 🛒 | `internship-hours` ≥50 | raiz |
 | st-38 | reta final da graduação | 🏁 | `penultimate-semester` | copa |
-| st-34d | duzentas horas — marco de estágio | 🕓 | `internship-hours` ≥200 | copa |
+| st-37e | referências tecidas | 🧵 | `thesis-refs-cited` ≥10 | copa |
 | st-35c | freud ficaria orgulhoso das suas anotações | 🛋️ | `internship-logs` ≥40 | copa |
 | st-37c | tcc quase lá, resiliência de quem faz TCC em trio | 🤝 | `tcc-chapters-done` ≥5 | copa |
 | st-39 | ofensiva de mestre | 🏆 | `streak-longest` ≥21 | copa |
@@ -365,6 +365,12 @@ Humor temático **mantido e expandido** (decisão do usuário).
 - st-23: descrição muda para "pratique 5 questões diferentes" (fonte = quiz, seção 1.2).
 - Ids `st-1..st-45` preservados (progresso persistido casa); novos ids `st-*a/*b/*c` entram
   bloqueados via `mergeCatalogWithProgress`.
+- **SPEC-012 F5.4 (2026-10-08):** três ids de estágio redundantes saíram para dar lugar às
+  conquistas de escrita do TCC, **preservando a invariante 80/20 e a curva de raridade**
+  (`st-34b` broto → `st-36b` `thesis-words`; `st-35b` raiz → `st-37d` `thesis-meetings`;
+  `st-34d` copa → `st-37e` `thesis-refs-cited`). As conquistas de estágio continuam cobertas
+  por `st-34`/`st-34c`, `st-35`/`st-4b`/`st-35c` e `st-4c`. Progresso persistido dos ids
+  removidos é preservado por `mergeCatalogWithProgress`, não some.
 - Total: **80 stickers, 20 por categoria**, todos com condição implementada (nenhum
   `default: return false`).
 

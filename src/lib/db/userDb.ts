@@ -101,6 +101,19 @@ export async function clearUserData(driver: SqlDriver): Promise<void> {
     'streak',
     'activity_event',
     'legacy_import_map',
+    // deck (passo 2) e academic_term (SPEC-005) faltavam aqui: o reset apagava
+    // tudo e o load seguinte relia as duas tabelas — dado "ressuscitado".
+    'deck',
+    'academic_term',
+    // SPEC-M-014: leitura.
+    'reading_session',
+    'reading_highlight_entry',
+    'reading_bookmark',
+    // SPEC-012: TCC como coleções (passo 4). `thesis_chapter`/`thesis_reference`
+    // já estavam na lista — as 3 novas não podem repetir o incidente do `deck`.
+    'thesis_meeting',
+    'thesis_task',
+    'thesis_writing_log',
   ];
   await driver.exec(`DELETE FROM ${tables.join('; DELETE FROM ')}`);
 }

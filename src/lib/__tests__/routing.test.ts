@@ -106,7 +106,9 @@ describe('parseRoute', () => {
 
   it('nova sub-tab estágio: `/faculdade/estagio` → subTab estagio; diário em `/faculdade/estagio/diario`', () => {
     expect(parseRoute('#/faculdade/estagio')).toEqual({ tab: 'faculdade', subTab: 'estagio' });
-    expect(parseRoute('#/faculdade/estagio/diario')).toEqual({ tab: 'faculdade', internshipDiary: true });
+    expect(parseRoute('#/faculdade/estagio/diario')).toEqual({ tab: 'faculdade', internshipTab: 'diario' });
+    expect(parseRoute('#/faculdade/estagio/supervisao')).toEqual({ tab: 'faculdade', internshipTab: 'supervisao' });
+    expect(parseRoute('#/faculdade/estagio/pacientes')).toEqual({ tab: 'faculdade', internshipTab: 'pacientes' });
     // round-trip
     expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'internshipDiary' }])).toBe(
       '#/faculdade/estagio/diario'
@@ -121,7 +123,9 @@ describe('parseRoute', () => {
   });
 
   it('reconhece o diário de estágio em /faculdade/estagio/diario (legado /perfil/estagio degrada para tab estágio)', () => {
-    expect(parseRoute('#/faculdade/estagio/diario')).toEqual({ tab: 'faculdade', internshipDiary: true });
+    expect(parseRoute('#/faculdade/estagio/diario')).toEqual({ tab: 'faculdade', internshipTab: 'diario' });
+    expect(parseRoute('#/faculdade/estagio/supervisao')).toEqual({ tab: 'faculdade', internshipTab: 'supervisao' });
+    expect(parseRoute('#/faculdade/estagio/pacientes')).toEqual({ tab: 'faculdade', internshipTab: 'pacientes' });
     expect(parseRoute('#/perfil/estagio')).toEqual({ tab: 'faculdade', subTab: 'estagio' });
   });
 
@@ -337,9 +341,16 @@ describe('routeToStack', () => {
       { kind: 'tab', tab: 'perfil' },
       { kind: 'streak' },
     ]);
-    expect(routeToStack({ internshipDiary: true })).toEqual([
+    expect(routeToStack({ internshipTab: 'diario' })).toEqual([
       { kind: 'tab', tab: 'faculdade' },
-      { kind: 'internshipDiary' },
+      { kind: 'internshipDiary', tab: 'diario' },
+    ]);
+    // A tela do caso empilha **sobre a aba pacientes** (`SPEC-009 D15`), então
+    // voltar devolve o contexto de onde o caso foi aberto (`D16`).
+    expect(routeToStack({ internshipPatientKey: 'ms' })).toEqual([
+      { kind: 'tab', tab: 'faculdade' },
+      { kind: 'internshipDiary', tab: 'pacientes' },
+      { kind: 'internshipCase', patientKey: 'ms' },
     ]);
     expect(routeToStack({ tcc: true })).toEqual([
       { kind: 'tab', tab: 'estudos' },
@@ -431,7 +442,7 @@ describe('stackToHash', () => {
     expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c3' }, { kind: 'repertorioItem', courseId: 'c3', itemId: 'r-9' }])).toBe('#/faculdade/c3/repertorio/r-9');
     expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'streak' }])).toBe('#/streak');
     expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'streak' }])).toBe('#/perfil/streak');
-    expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'internshipDiary' }])).toBe('#/faculdade/estagio/diario');
+    expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'internshipDiary', tab: 'supervisao' }])).toBe('#/faculdade/estagio/supervisao');
     expect(stackToHash([{ kind: 'tab', tab: 'estudos' }, { kind: 'tcc' }])).toBe('#/estudos/tcc');
     expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'stickers' }])).toBe('#/perfil/stickers');
     expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }])).toBe('#/biblioteca/notas');

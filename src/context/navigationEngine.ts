@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { InternshipWizardSeed } from '../types/internshipSeed';
+import type { InternshipTab, ThesisTab } from '../../packages/navigation/src/types';
 import type {
   NavTab,
   NavScreen,
@@ -180,10 +182,19 @@ export interface NavigationValue {
   openStreak: () => void;
   closeStreak: () => void;
   isInternshipDiaryOpen: boolean;
-  openInternshipDiary: () => void;
+  isInternshipCaseOpen: boolean;
+  internshipTab: InternshipTab | undefined;
+  internshipFocusId: string | undefined;
+  internshipPatientKey: string | undefined;
+  openInternshipDiary: (tab?: InternshipTab, focusLogId?: string) => void;
+  openInternshipCase: (patientKey: string) => void;
   closeInternshipDiary: () => void;
+  closeInternshipCase: () => void;
   isTccScreenOpen: boolean;
-  openTccScreen: () => void;
+  /** Aba/foco ativos do TCC (`SPEC-012 F3`) — deep-link de notificação e busca. */
+  thesisTab: ThesisTab | undefined;
+  thesisFocusId: string | undefined;
+  openTccScreen: (tab?: ThesisTab, focusId?: string) => void;
   closeTccScreen: () => void;
   isStickersScreenOpen: boolean;
   openStickersScreen: () => void;
@@ -238,7 +249,10 @@ export interface NavigationValue {
   isWizardOpen: boolean;
   currentWizardType: WizardFlow | null;
   wizardCourseId: string | undefined;
-  openWizard: (type: WizardFlow, courseId?: string) => void;
+  /** Seed do wizard de estágio (SPEC-009 §8.4). undefined = sem seed. */
+  wizardSeed: InternshipWizardSeed | undefined;
+  openWizard: (type: WizardFlow, courseId?: string, seed?: InternshipWizardSeed) => void;
+  openInternshipWizard: (seed?: InternshipWizardSeed) => void;
   openTaskExamWizard: () => void;
   closeWizard: () => void;
   /** Histórico de períodos letivos (SPEC-005). */
@@ -408,6 +422,7 @@ export function useNavigationEngine(
 
   // Curso pré-selecionado nos wizards (ex.: aberto a partir de uma disciplina)
   const [wizardCourseId, setWizardCourseId] = useState<string | undefined>(undefined);
+  const [wizardSeed, setWizardSeed] = useState<InternshipWizardSeed | undefined>(undefined);
 
   // Wizard de detalhes da aula
   const [wizardNoteId, setWizardNoteId] = useState<string | null>(null);
@@ -426,7 +441,20 @@ export function useNavigationEngine(
         : 'home';
   const isStreakScreenOpen = currentScreen.kind === 'streak';
   const isInternshipDiaryOpen = currentScreen.kind === 'internshipDiary';
+  const isInternshipCaseOpen = currentScreen.kind === 'internshipCase';
+  /** Aba ativa do diário: mora na navegação, não em `useState` (`D16`). */
+  const internshipTab: InternshipTab | undefined =
+    currentScreen.kind === 'internshipDiary' ? currentScreen.tab : undefined;
+  const internshipFocusId =
+    currentScreen.kind === 'internshipDiary' ? currentScreen.focusLogId : undefined;
+  const internshipPatientKey =
+    currentScreen.kind === 'internshipCase' ? currentScreen.patientKey : undefined;
   const isTccScreenOpen = currentScreen.kind === 'tcc';
+  /** Aba/foco ativos do TCC: moram na navegação (`SPEC-012 F3`, molde `D16`). */
+  const thesisTab: ThesisTab | undefined =
+    currentScreen.kind === 'tcc' ? currentScreen.tab : undefined;
+  const thesisFocusId: string | undefined =
+    currentScreen.kind === 'tcc' ? currentScreen.focusId : undefined;
   const isStickersScreenOpen = currentScreen.kind === 'stickers';
   const isSyncScreenOpen = currentScreen.kind === 'sync';
   const isNotesScreenOpen = currentScreen.kind === 'notes';
@@ -987,29 +1015,62 @@ export function useNavigationEngine(
 
   const closeStreak = useCallback(() => goBack(), [goBack]);
 
-  const openInternshipDiary = useCallback(() => {
-    const top = navigationStack[navigationStack.length - 1];
-    const next: NavScreen[] =
-      top.kind === 'internshipDiary'
-        ? navigationStack
-        : [{ kind: 'tab', tab: 'faculdade' as NavTab }, { kind: 'internshipDiary' }];
-    setStack(next);
-    syncHash(next);
-    scrollToTop();
-  }, [navigationStack, setStack, syncHash]);
+  const openInternshipDiary = useCallback(
+    (tab?: InternshipTab, focusLogId?: string) => {
+      const top = navigationStack[navigationStack.length - 1];
+      const next: NavScreen[] =
+        top.kind === 'internshipDiary'
+          ? navigationStack.map((s) =>
+              s.kind === 'internshipDiary' ? { ...s, tab, focusLogId } : s
+            )
+          : [{ kind: 'tab', tab: 'faculdade' as NavTab }, { kind: 'internshipDiary', tab, focusLogId }];
+      setStack(next);
+      syncHash(next);
+      scrollToTop();
+    },
+    [navigationStack, setStack, syncHash]
+  );
+
+  /**
+   * Abre a tela do caso (`SPEC-009 D15`).
+   *
+   * A pilha fica `faculdade → diário(pacientes) → caso`, então voltar devolve a
+   * **aba pacientes** — que é o contexto de onde o caso foi aberto. E a aba é
+   * lida do estado de navegação (`D16`), não de `useState` local.
+   */
+  const openInternshipCase = useCallback(
+    (patientKey: string) => {
+      const next: NavScreen[] = [
+        { kind: 'tab', tab: 'faculdade' as NavTab },
+        { kind: 'internshipDiary', tab: 'pacientes' },
+        { kind: 'internshipCase', patientKey },
+      ];
+      setStack(next);
+      syncHash(next);
+      scrollToTop();
+    },
+    [setStack, syncHash]
+  );
 
   const closeInternshipDiary = useCallback(() => goBack(), [goBack]);
+  const closeInternshipCase = useCallback(() => goBack(), [goBack]);
 
-  const openTccScreen = useCallback(() => {
-    const top = navigationStack[navigationStack.length - 1];
-    const next: NavScreen[] =
-      top.kind === 'tcc'
-        ? navigationStack
-        : [{ kind: 'tab', tab: 'estudos' as NavTab }, { kind: 'tcc' } as const];
-    setStack(next);
-    syncHash(next);
-    scrollToTop();
-  }, [navigationStack, setStack, syncHash]);
+  const openTccScreen = useCallback(
+    (tab?: ThesisTab, focusId?: string) => {
+      const top = navigationStack[navigationStack.length - 1];
+      // Já na tela do TCC: troca a aba (deep-link de notificação/busca) em
+      // vez de empilhar de novo — mesmo comportamento do `openInternshipDiary`
+      // (`SPEC-009 D16`).
+      const next: NavScreen[] =
+        top.kind === 'tcc'
+          ? navigationStack.map((s) => (s.kind === 'tcc' ? { ...s, tab, focusId } : s))
+          : [{ kind: 'tab', tab: 'estudos' as NavTab }, { kind: 'tcc', tab, focusId } as const];
+      setStack(next);
+      syncHash(next);
+      scrollToTop();
+    },
+    [navigationStack, setStack, syncHash]
+  );
 
   const closeTccScreen = useCallback(() => goBack(), [goBack]);
 
@@ -1291,8 +1352,9 @@ export function useNavigationEngine(
   }, []);
 
   const openWizard = useCallback(
-    (type: WizardFlow, courseId?: string) => {
+    (type: WizardFlow, courseId?: string, seed?: InternshipWizardSeed) => {
       setWizardCourseId(courseId);
+      setWizardSeed(seed);
       setWizardEdit(null);
       const top = navigationStack[navigationStack.length - 1];
       // SPEC-005: o wizard de semestre sempre nasce **sobre o perfil** — a rota
@@ -1315,11 +1377,26 @@ export function useNavigationEngine(
 
   const openTaskExamWizard = useCallback(() => openWizard('task-exam'), [openWizard]);
 
+  /**
+   * Atalho tipado para o wizard de estágio com seed (`SPEC-009 §8.4`).
+   *
+   * Existe para não espalhar `{ kind: 'supervisao', ... }` por cinco botões: a
+   * forma do seed é contrato da spec, e um botão que inventa o objeto quebra o
+   * contrato sem o compilador avisar.
+   */
+  const openInternshipWizard = useCallback(
+    (seed?: InternshipWizardSeed) => openWizard('internship', undefined, seed),
+    [openWizard]
+  );
+
   const closeWizard = useCallback(() => {
     setWizardCourseId(undefined);
+    // O seed morre com o wizard: se sobreviver, o próximo `openWizard` sem seed
+    // abriria pré-preenchido com dados do registro anterior (`SPEC-009 §8.4`).
+    setWizardSeed(undefined);
     setWizardEdit(null);
     goBack();
-  }, [goBack, setWizardCourseId]);
+  }, [goBack, setWizardCourseId, setWizardSeed]);
 
   /**
    * Abre o histórico de períodos empilhado sobre a base **atual** (SPEC-008 D5).
@@ -1616,9 +1693,17 @@ export function useNavigationEngine(
     openStreak,
     closeStreak,
     isInternshipDiaryOpen,
+    isInternshipCaseOpen,
+    internshipTab,
+    internshipFocusId,
+    internshipPatientKey,
     openInternshipDiary,
+    openInternshipCase,
     closeInternshipDiary,
+    closeInternshipCase,
     isTccScreenOpen,
+    thesisTab,
+    thesisFocusId,
     openTccScreen,
     closeTccScreen,
     isStickersScreenOpen,
@@ -1657,7 +1742,9 @@ export function useNavigationEngine(
     isWizardOpen,
     currentWizardType,
     wizardCourseId,
+    wizardSeed,
     openWizard,
+    openInternshipWizard,
     openTaskExamWizard,
     closeWizard,
     managedItem,
@@ -1707,10 +1794,14 @@ export function useNavigationEngine(
       focusedTempleSection, focusedTermId, handleNavigate, handleSystemBack, headerConfig,
       isBottomNavVisible, isClassNoteDetailOpen, isComposeDetailsOpen, isComposeScreenOpen, isCreatingLooseNote,
       isDetailPromptOpen, isEditCourseOpen, isEditTccOpen, isFamiliesScreenOpen,
-      isInternshipDiaryOpen, isNoteDetailOpen, isNoteTransformOpen, isNotesScreenOpen,
+      isInternshipDiaryOpen,
+    isInternshipCaseOpen,
+    internshipTab,
+    internshipFocusId,
+    internshipPatientKey, isNoteDetailOpen, isNoteTransformOpen, isNotesScreenOpen,
       isQuickAddOpen, isQuizCategoryOpen, isQuizGroupDetailOpen, isQuizLoadingOpen,
       isQuizPlayOpen, isQuizResultOpen, isRepertorioItemOpen, isSearchOpen, isStickersScreenOpen, isStreakScreenOpen,
-      isSyncScreenOpen, isTccScreenOpen, isTempleScreenOpen, isTermHistoryOpen, isWizardOpen, managedItem,
+      isSyncScreenOpen, isTccScreenOpen, thesisTab, thesisFocusId, isTempleScreenOpen, isTermHistoryOpen, isWizardOpen, managedItem,
       navDirection, navigationStack, newQuizFromResult, openApproach, openComparison, openCompose,
       openComposeDetails, openCourseDetail, openDetailPrompt, openEditCourse, openEditTcc,
       openClassNoteDetail, openFamilies, openFamily, openInternshipDiary, openManageItem, openNoteDetail,

@@ -4,6 +4,7 @@ import { stepVariants } from '../../lib/motion';
 import { Mascote, type MascoteExpression } from '../ui/Mascote';
 import { WizardScaffoldHeader } from './WizardScaffoldHeader';
 import { WizardScaffoldFooter } from './WizardScaffoldFooter';
+import { StepProgress } from './StepProgress';
 
 export interface WizardStep {
   id: string;
@@ -145,6 +146,7 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
           (popLayout): o passo que sai desliza enquanto o novo entra — sem o
           "vazio" do mode="wait" entre passos. */}
       <div className="flex-1 pt-4">
+        <StepProgress steps={steps.map(s => s.title)} current={step} />
         <AnimatePresence mode="popLayout" initial={false} custom={dirRef.current}>
           <motion.div
             key={steps[step].id}

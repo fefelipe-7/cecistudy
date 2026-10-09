@@ -326,10 +326,9 @@ export const createScreenVariants = (width: number) => ({
   /** Descanso de uma camada `depth` níveis abaixo do topo. */
   behind: (depth: number): TargetAndTransition => ({
     x: -depth * PARALLAX * width,
-    opacity: 1,
     transition: { duration: BASE_D.screenRest, ease: EASE.standard },
   }),
-  front: { x: 0, opacity: 1, transition: { duration: BASE_D.screenRest, ease: EASE.standard } },
+  front: { x: 0, transition: { duration: BASE_D.screenRest, ease: EASE.standard } },
 
   enter: (i: NavIntent): TargetAndTransition =>
     i.kind === 'push' || i.kind === 'pop'
@@ -362,14 +361,6 @@ export const createScreenVariants = (width: number) => ({
 
 > ⚠️ **`opacity: 1` nos alvos de push/pop.** Um push **não pode fazer fade** — sumir
 > enquanto desliza é o maior sinal de "web app fingindo ser nativo".
->
-> ⚠️ **`opacity: 1` também em `front` e `behind`.** `framer-motion` escreve no DOM
-> **só as chaves presentes no alvo**. Como `enter` de `tab`/`replace` nasce em
-> `opacity: 0`, um `front` sem `opacity` **não anima de volta** — a tela fica
-> montada e permanentemente invisível. O sintoma é "troco de aba e só o fundo
-> aparece". `AnimatePresence initial={false}` mascara o caso de boot (a primeira
-> tela monta direto no alvo `animate`), então o defeito só aparece a partir da
-> **segunda** navegação. Omissão aqui é bug, não encurtamento.
 
 ### 5.4 Transporte do `intent` (corrige B2)
 

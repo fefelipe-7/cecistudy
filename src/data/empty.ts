@@ -20,8 +20,12 @@ import {
   FlashcardDeck,
   MaterialItem,
   InternshipLog,
-  ClinicalProjection,
-  TccData,
+  ThesisProject,
+  ThesisChapter,
+  ThesisReference,
+  ThesisMeeting,
+  ThesisTask,
+  ThesisWritingLog,
   Sticker,
   UserProfile,
   StudySession,
@@ -32,9 +36,13 @@ import {
   QuizSession,
   SyncIndex,
   AcademicTerm,
+  ReadingSession,
+  ReadingHighlight,
+  ReadingBookmark,
 } from '../types';
 import { emptySyncIndex } from '../lib/sync/stamp';
 import { DEFAULT_TOTAL_SEMESTERS } from '../data/schema';
+import { emptyThesis } from '@cecistudy/domain';
 
 export const emptyProfile: UserProfile = {
   name: '',
@@ -50,16 +58,11 @@ export const emptyProfile: UserProfile = {
   photoUrl: '',
 };
 
-export const emptyTcc: TccData = {
-  title: '',
-  advisor: '',
-  field: '',
-  problemStatement: '',
-  objectives: [],
-  status: 'em_andamento',
-  chapters: [],
-  references: [],
-};
+// SPEC-012: o singleton emagrecece — sem `chapters`/`references` (viraram
+// coleções), **sem metas** (INV-T7: ela define; `wordGoalTotal`/`weeklyWordGoal`
+// ausentes, não zero) e **sem nada semeado** (INV-T6: registro livre, Q7).
+// A factory do domínio é a fonte única (`emptyThesis`, `thesis.ts`).
+export const emptyTcc: ThesisProject = emptyThesis();
 
 export const emptyStreakData: StreakData = { activeDays: [] };
 
@@ -81,17 +84,8 @@ export interface EmptyDatabase {
   decks: FlashcardDeck[];
   materials: MaterialItem[];
   internshipLogs: InternshipLog[];
-  /**
-   * A projeção da camada clínica do Estágio — `SPEC-M-013` `D1`.
-   *
-   * É a **única** representação de dado clínico que o mobile guarda, e ela são
-   * cinco campos. O registro completo vive no desktop, no store clínico
-   * separado, e o tradutor aplica a lista fechada antes de serializar
-   * (`SPEC-C-013` `D5`).
-   */
-  internshipClinical: ClinicalProjection[];
-  tcc: TccData;
-   stickers: Sticker[];
+  tcc: ThesisProject;
+    stickers: Sticker[];
    sessions: StudySession[];
    streakData: StreakData;
    reminder: { enabled: boolean; time: string };
@@ -106,9 +100,20 @@ export interface EmptyDatabase {
     *  no boot (`ensureActiveTerm`), não no seed — assim o golden `empty` segue
     *  determinístico e não carrega um período fictício para o app de 1ª vez. */
    academicTerms: AcademicTerm[];
-   readingProgress: Record<string, number>;
-  /** Carimbos de alteração p/ sincronização entre dispositivos (Fase Sync). */
-  syncIndex: SyncIndex;
+    /** Leitura (SPEC-M-014): sessões, destaques e marcadores. */
+    readingSessions: ReadingSession[];
+    readingHighlights: ReadingHighlight[];
+    readingBookmarks: ReadingBookmark[];
+    readingProgress: Record<string, number>;
+    /** TCC (SPEC-012): capítulos, referências, reuniões, pendências, escrita.
+     *  Seeds `[]` — nada semeado (INV-T6), metas ausentes (INV-T7). */
+    thesisChapters: ThesisChapter[];
+    thesisReferences: ThesisReference[];
+    thesisMeetings: ThesisMeeting[];
+    thesisTasks: ThesisTask[];
+    thesisWritingLogs: ThesisWritingLog[];
+   /** Carimbos de alteração p/ sincronização entre dispositivos (Fase Sync). */
+   syncIndex: SyncIndex;
 }
 
 export function emptyDatabase(): EmptyDatabase {
@@ -126,7 +131,6 @@ export function emptyDatabase(): EmptyDatabase {
     decks: [],
     materials: [],
     internshipLogs: [],
-    internshipClinical: [],
     tcc: emptyTcc,
 stickers: lockedStickerCatalog(),
    sessions: [],
@@ -140,7 +144,15 @@ stickers: lockedStickerCatalog(),
     onboarding: emptyOnboarding,
     quizSessions: [],
     academicTerms: [],
+    readingSessions: [],
+    readingHighlights: [],
+    readingBookmarks: [],
     readingProgress: {},
+    thesisChapters: [],
+    thesisReferences: [],
+    thesisMeetings: [],
+    thesisTasks: [],
+    thesisWritingLogs: [],
     syncIndex: emptySyncIndex(),
   };
 }

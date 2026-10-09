@@ -14,6 +14,15 @@ export interface UserProfile {
   categoryXp?: Record<Sticker['category'], number>;
   /** Foto de perfil (data URL). Vazia quando não definida. */
   photoUrl?: string;
+  /**
+   * Meta total de horas de estágio (`SPEC-009 D2`).
+   *
+   * Inteiro de 1 a 5000. **Ausente = sem meta**, e é assim que a tela trata:
+   * aparece só o "definir meta". Opcional de propósito — não exige backfill, e o
+   * `userProfileSchema` do backup é `passthrough`, então o campo atravessa sem
+   * precisar de migração.
+   */
+  internshipGoalHours?: number;
 }
 
 export interface StreakData {
@@ -78,24 +87,16 @@ export type StickerCondition =
   | { type: 'streak-month'; min: number }
   | { type: 'flashcard-streak' }
   | { type: 'questions-mastered'; min: number }
-  | { type: 'techniques-explored'; min: number };
+  | { type: 'techniques-explored'; min: number }
+  | { type: 'thesis-words'; min: number }
+  | { type: 'thesis-meetings'; min: number }
+  | { type: 'thesis-refs-cited'; min: number };
 
-export interface TccData {
-  /** Escopo de workspace (Fase 3). TccData é singleton por workspace. */
-  workspaceId?: string;
-  title: string;
-  advisor: string;
-  field: string;
-  problemStatement: string;
-  objectives: string[];
-  status: 'em_andamento' | 'revisao' | 'concluido';
-  chapters: {
-    title: string;
-    completed: boolean;
-    dueDate?: string;
-  }[];
-  references: string[];
-}
+// SPEC-012: o tipo do singleton `tcc` é `ThesisProject`, do domínio
+// (`packages/domain/.../thesis.ts`, reexportado pelo barrel `@/types`).
+// O antigo `TccData` — com `chapters` e `references` dentro — foi absorvido pela
+// `MIGRATIONS[22]`: capítulos e referências viraram coleções próprias com id
+// estável. Não existe alias: o nome novo é o vocabulário do domínio.
 
 /** Estado de onboarding (primeiro acesso). */
 export interface OnboardingState {

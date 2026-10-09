@@ -22,7 +22,7 @@ import { Mascote } from '../ui/Mascote';
 import { SectionTitle } from '../ui/SectionTitle';
 
 export const EstudosView: React.FC = () => {
-  const { tcc } = useDataClientApp();
+  const { tcc, thesisChapters } = useDataClientApp();
   const { courses } = useDataClientCourses();
   const { flashcards, readings, sessions, questions } = useDataClientStudy();
   const { streakStats, currentWeekProgress } = useStudyActions();
@@ -47,10 +47,9 @@ export const EstudosView: React.FC = () => {
     ? Math.round(((readingInProgress.readPages || 0) / readingInProgress.totalPages) * 100)
     : 0;
 
-  // TCC: progresso de capítulos concluídos
-  const tccChapters = tcc.chapters ?? [];
-  const tccDone = tccChapters.filter((c) => c.completed).length;
-  const tccPct = tccChapters.length > 0 ? Math.round((tccDone / tccChapters.length) * 100) : 0;
+  // TCC: progresso de capítulos (SPEC-012 — coleção `thesisChapters`)
+  const tccDone = thesisChapters.filter((c) => c.stage === 'pronto').length;
+  const tccPct = thesisChapters.length > 0 ? Math.round((tccDone / thesisChapters.length) * 100) : 0;
 
   const daySummary = [
     todayFocusMinutes > 0 ? `${todayFocusMinutes} min de foco` : null,
@@ -280,7 +279,9 @@ export const EstudosView: React.FC = () => {
 
           <motion.button
             whileTap={{ scale: 0.97 }}
-            onClick={openTccScreen}
+            // SPEC-012 F3: `openTccScreen` agora recebe (tab?, focusId?) —
+            // passar direto no onClick entregaria o MouseEvent como aba.
+            onClick={() => openTccScreen()}
             className="bg-surface-subtle hover:border-ceci-border-brand rounded-2xl p-4 text-left border border-ceci-border-subtle tap-interactive cursor-pointer space-y-1.5 min-h-[96px]"
           >
             <GraduationCap className="w-5 h-5 text-ceci-brand-strong" />

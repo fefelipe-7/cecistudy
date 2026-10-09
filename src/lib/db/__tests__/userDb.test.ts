@@ -8,6 +8,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createSqlJsDriver } from '../sqlJsDriver';
 import { runUserMigrations, getAppliedVersion, LATEST_USER_VERSION } from '../migrations';
+import { USER_TABLES_SQL, DECK_TABLES_SQL, READING_TABLES_SQL } from '../migrations/user';
 import {
   saveCollection,
   loadCollection,
@@ -151,7 +152,11 @@ describe('round-trip das coleções', () => {
     expect(await loadCollection(d, 'readings')).toEqual(readings);
   });
 
-  it('tcc com capítulos e referências (singleton)', async () => {
+  it('tcc legado (com capítulos dentro) sobrevive ao round-trip do singleton', async () => {
+    // SPEC-012: o app não grava mais essa forma — mas a base de uma instalação
+    // antiga carrega exatamente isso em `thesis_project.data_json`, e é daí que
+    // o dreno do boot (`DataClientProvider`) extrai os capítulos. O round-trip
+    // tem que preservá-la byte a byte até o dreno reescrever.
     const tcc = {
       title: 'Luto e psicoterapia', advisor: 'Profa. X', field: 'Clínica',
       problemStatement: '', objectives: [], status: 'em_andamento',
@@ -160,6 +165,31 @@ describe('round-trip das coleções', () => {
     };
     await saveCollection(d, 'tcc', tcc);
     expect(await loadCollection(d, 'tcc')).toEqual(tcc);
+  });
+
+  it('coleções do TCC gravam e leem (id + data_json, SPEC-012)', async () => {
+    const chapters = [{
+      id: 'thc-1', thesisId: 'tcc-main', position: 0, title: 'introdução',
+      kind: 'capitulo', requiredness: 'obrigatorio', stage: 'pronto',
+      createdAt: '1970-01-01T00:00:00.000Z', updatedAt: '1970-01-01T00:00:00.000Z',
+    }];
+    const refs = [{
+      id: 'thr-1', thesisId: 'tcc-main', readingId: 'r-legacy-tcc-1', status: 'citada',
+      createdAt: '1970-01-01T00:00:00.000Z', updatedAt: '1970-01-01T00:00:00.000Z',
+    }];
+    const meetings = [{ id: 'thm-1', thesisId: 'tcc-main', date: '2026-10-15', mode: 'online', status: 'agendada', decisions: [], createdAt: 'x', updatedAt: 'x' }];
+    const tasks = [{ id: 'tts-1', thesisId: 'tcc-main', title: 'ler artigo', origin: 'orientadora', status: 'aberta', createdAt: 'x', updatedAt: 'x' }];
+    const logs = [{ id: 'twl-1', thesisId: 'tcc-main', date: '2026-10-05', words: 300, createdAt: 'x' }];
+    await saveCollection(d, 'thesisChapters', chapters);
+    await saveCollection(d, 'thesisReferences', refs);
+    await saveCollection(d, 'thesisMeetings', meetings);
+    await saveCollection(d, 'thesisTasks', tasks);
+    await saveCollection(d, 'thesisWritingLogs', logs);
+    expect(await loadCollection(d, 'thesisChapters')).toEqual(chapters);
+    expect(await loadCollection(d, 'thesisReferences')).toEqual(refs);
+    expect(await loadCollection(d, 'thesisMeetings')).toEqual(meetings);
+    expect(await loadCollection(d, 'thesisTasks')).toEqual(tasks);
+    expect(await loadCollection(d, 'thesisWritingLogs')).toEqual(logs);
   });
 
   it('quizSessions com respostas', async () => {
@@ -291,5 +321,73 @@ describe('clearUserData', () => {
     // base continua utilizável após o reset
     await saveCollection(d, 'tasks', [{ id: 't1', completed: false }]);
     expect(await loadCollection<unknown[]>(d, 'tasks')).toHaveLength(1);
+  });
+
+  it('limpa as 5 tabelas do TCC — nada ressuscita (SPEC-012)', async () => {
+    // O comentário do `userDb.ts` registra o incidente do `deck`/`academic_term`
+    // fora da lista: o reset apagava tudo e o load seguinte relia as tabelas.
+    // As 5 novas não podem repetir.
+    const d = await openDb();
+    await runUserMigrations(d);
+    await saveCollection(d, 'thesisChapters', [{ id: 'thc-1', title: 'x' }]);
+    await saveCollection(d, 'thesisReferences', [{ id: 'thr-1', readingId: 'r' }]);
+    await saveCollection(d, 'thesisMeetings', [{ id: 'thm-1', date: '2026-10-15' }]);
+    await saveCollection(d, 'thesisTasks', [{ id: 'tts-1', title: 'x' }]);
+    await saveCollection(d, 'thesisWritingLogs', [{ id: 'twl-1', words: 1 }]);
+
+    await clearUserData(d);
+
+    for (const key of ['thesisChapters', 'thesisReferences', 'thesisMeetings', 'thesisTasks', 'thesisWritingLogs'] as const) {
+      expect(await loadCollection<unknown[]>(d, key)).toEqual([]);
+    }
+  });
+});
+
+describe('SPEC-012 — passo 4: base v3 com tcc legado atualiza sem perder nada', () => {
+  it('o DROP das projeções preserva o data_json e as tabelas novas funcionam', async () => {
+    // Instalação antiga: passos 1..3 aplicados, tcc legado no `data_json`
+    // (as tabelas `thesis_chapter`/`thesis_reference` antigas eram projeção
+    // write-only — nada as lia, `normalize.ts` reconstruía do singleton).
+    const d = await openDb();
+    await d.exec(`CREATE TABLE IF NOT EXISTS schema_migrations (
+      version INTEGER PRIMARY KEY,
+      applied_at TEXT NOT NULL
+    )`);
+    await d.exec(USER_TABLES_SQL);
+    await d.exec(DECK_TABLES_SQL);
+    await d.exec(READING_TABLES_SQL);
+    for (const v of [1, 2, 3]) {
+      await d.run('INSERT INTO schema_migrations (version, applied_at) VALUES (?, ?)', [
+        v,
+        '1970-01-01T00:00:00.000Z',
+      ]);
+    }
+    const legacyTcc = {
+      title: 'luto e escuta', advisor: 'Helena', field: 'clínica',
+      problemStatement: '', objectives: [], status: 'em_andamento',
+      chapters: [{ title: 'introdução', completed: false, dueDate: '2026-10-01' }],
+      references: ['Worden (2018)'],
+    };
+    await saveCollection(d, 'tcc', legacyTcc);
+    expect(await getAppliedVersion(d)).toBe(3);
+
+    // Atualização para o build SPEC-012: só o passo 4 falta.
+    await runUserMigrations(d);
+    expect(await getAppliedVersion(d)).toBe(4);
+
+    // A fonte da verdade atravessou o DROP intacta — é dela que o dreno extrai.
+    expect(await loadCollection(d, 'tcc')).toEqual(legacyTcc);
+    // E as tabelas recriadas/criadas aceitam a forma nova (id + data_json).
+    const migrated = [{
+      id: 'thc-1', thesisId: 'tcc-main', position: 0, title: 'introdução',
+      kind: 'capitulo', requiredness: 'obrigatorio', stage: 'a_fazer',
+      dueDate: '2026-10-01',
+      createdAt: '1970-01-01T00:00:00.000Z', updatedAt: '1970-01-01T00:00:00.000Z',
+    }];
+    await saveCollection(d, 'thesisChapters', migrated);
+    expect(await loadCollection(d, 'thesisChapters')).toEqual(migrated);
+    // Idempotente: reabrir a base não re-dropa nada (o runner pula o 4 aplicado).
+    await runUserMigrations(d);
+    expect(await loadCollection(d, 'thesisChapters')).toEqual(migrated);
   });
 });

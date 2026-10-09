@@ -72,10 +72,12 @@ export function createScreenTargets(width: number, profile: MotionProfile): Scre
 
   return {
     /** No topo, em repouso. */
-    // `opacity: 1` explícito pelo mesmo motivo do perfil reduzido: `animate`
-    // escreve só as chaves presentes no alvo. Como `enter` de tab/replace nasce
-    // em `opacity: 0`, omitir aqui deixaria a tela montada **permanentemente
-    // invisível** — o sintoma era "troco de aba e só o fundo aparece".
+    // `opacity: 1` explícito, e pelo mesmo motivo do bloco `reduced` acima: o alvo
+    // de repouso precisa declarar a propriedade que a entrada mexe. `enter` de
+    // `tab`/`replace` nasce em `opacity: 0`; se `front` omitisse `opacity`, o alvo
+    // `animate` também omitiria, e o framer-motion só anima as keys **presentes**
+    // no alvo — a tela ficaria transparente para sempre, com o fundo do app
+    // aparecendo por baixo. Era o bug de "troco de aba e a tela some".
     front: { x: 0, opacity: 1, transition: { duration: d.screenRest, ease: EASE.standard } },
 
     /** `depth` níveis abaixo do topo. */
@@ -83,7 +85,6 @@ export function createScreenTargets(width: number, profile: MotionProfile): Scre
     // `-0` vira `translateX(-0px)` e quebra igualdade por `Object.is`; depth 0 é
     // a própria frente, então devolvemos `0` limpo.
     x: depth === 0 ? 0 : -depth * PARALLAX * width,
-    // Mesmo motivo de `front`: camada coberta fica visível, nunca apagada.
     opacity: 1,
     transition: { duration: d.screenRest, ease: EASE.standard },
   }),
@@ -139,6 +140,11 @@ export function createScreenVariants(width: number, profile: MotionProfile): Var
     initial: (intent: NavIntent) => targets.enter(intent),
     animate: (intent: NavIntent) =>
       intent.kind === 'push' || intent.kind === 'pop'
+        // `behind()` pode virar `front` e `front()` pode virar `behind()` na mesma
+        // camada (a tela-base troca de papel em push e pop). Se qualquer um dos dois
+        // dissesse `opacity`, a troca de papel devolveria a camada para o valor herdado
+        // do papel anterior — e o sintoma seria "depois de navegar, some tudo". Por isso
+        // o par é reescrito, e não só `front`: os dois alvos declaram `opacity`.
         ? { ...targets.front, transition: { duration: profile.d.screenRest, ease: EASE.standard } }
         : { ...targets.front },
     exit: () => targets.exit(consumeMotionIntent()),

@@ -13,7 +13,11 @@ export type SearchType =
   | 'approach'
   | 'task'
   | 'exam'
-  | 'note';
+  | 'note'
+  // SPEC-012 F4.8: o TCC entra na busca (capítulo, referência e pendência).
+  | 'thesisChapter'
+  | 'thesisReference'
+  | 'thesisTask';
 
 export interface SearchEntry {
   id: string;
@@ -52,6 +56,9 @@ const SECTION_OF: Record<SearchType, { key: string; label: string }> = {
   approach: { key: 'abordagens', label: 'abordagens' },
   reading: { key: 'leituras', label: 'leituras' },
   note: { key: 'notas', label: 'notas avulsas' },
+  thesisChapter: { key: 'tcc', label: 'tcc' },
+  thesisReference: { key: 'tcc', label: 'tcc' },
+  thesisTask: { key: 'tcc', label: 'tcc' },
 };
 
 const SECTION_ORDER = [
@@ -59,6 +66,7 @@ const SECTION_ORDER = [
   'disciplinas',
   'tarefas',
   'provas',
+  'tcc',
   'conceitos',
   'autores',
   'abordagens',

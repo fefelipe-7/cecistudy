@@ -88,10 +88,9 @@ describe('selectDiaryPreview', () => {
 
 describe('INTERNSHIP_TYPE_LABEL', () => {
   it('contém todos os tipos', () => {
-    // `atendimento_clinico` não está aqui, e a ausência é a regra:
-    // `SPEC-M-013` `D2` — o registro clínico não é um tipo de registro acadêmico.
     expect(Object.keys(INTERNSHIP_TYPE_LABEL)).toEqual([
       'estagio',
+      'atendimento_clinico',
       'supervisao',
       'intervisao',
       'outro',

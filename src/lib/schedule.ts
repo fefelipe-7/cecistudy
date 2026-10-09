@@ -1,5 +1,17 @@
-import type { Course, CourseScheduleSlot, Exam, Task, StudySession, TccData } from '../types';
+import type {
+  Course,
+  CourseScheduleSlot,
+  Exam,
+  Task,
+  StudySession,
+  ThesisProject,
+  ThesisChapter,
+  ThesisMeeting,
+  ThesisTask,
+} from '../types';
+import { isChapterDone } from '../types';
 import { WEEKDAY_LABELS } from '../data/constants';
+import { todayKeyLocal, formatDateShortBR } from './dateBR';
 
 const WEEKDAY_MAP: Record<string, number> = {
   domingo: 0, dom: 0,
@@ -143,14 +155,21 @@ export function extractScheduleTime(slots?: string | CourseScheduleSlot[] | unde
   return arr[0].start;
 }
 
-/** Eventos de uma data (YYYY-MM-DD) derivados de provas e tarefas com prazo. */
+/** Eventos de uma data (YYYY-MM-DD) derivados de provas, tarefas e TCC. */
 export interface CalendarEvent {
   id: string;
   title: string;
   date: string;
-  kind: 'prova' | 'tarefa';
+  kind: 'prova' | 'tarefa' | 'tcc';
   courseId?: string;
   completed: boolean;
+  /**
+   * SPEC-012 F4.5: destino do toque quando `kind === 'tcc'`. A aba é um
+   * subconjunto de `ThesisTab` (`packages/navigation`) — o mesmo caminho de
+   * `openTccScreen(tab, focusId)` usado pela notificação (Q10).
+   */
+  tccTab?: 'visao' | 'capitulos' | 'orientacao';
+  tccFocusId?: string;
 }
 
 export function eventsForMonth(
@@ -181,6 +200,91 @@ export function eventsForMonth(
   return byDay;
 }
 
+/**
+ * Eventos derivados do TCC para o mês (SPEC-012 F4.5): capítulos com prazo,
+ * pendências abertas, reuniões agendadas e os marcos (entrega/banca).
+ *
+ * **Puro** — nenhum relógio: a data civil vem dos campos `dueDate`/`date`.
+ * `id = tcc-<tipo>-<entityId>` (por id estável, nunca por índice — F2 da spec).
+ * O destino do toque viaja no próprio evento (`tccTab`/`tccFocusId`).
+ */
+export function thesisEventsForMonth(
+  thesis: ThesisProject,
+  chapters: ThesisChapter[],
+  meetings: ThesisMeeting[],
+  tasks: ThesisTask[],
+  month: number,
+  year: number
+): Map<number, CalendarEvent[]> {
+  const prefix = `${year}-${String(month).padStart(2, '0')}`;
+  const byDay = new Map<number, CalendarEvent[]>();
+  const add = (date: string, ev: CalendarEvent) => {
+    const day = Number(date.slice(8, 10));
+    if (Number.isNaN(day)) return;
+    const list = byDay.get(day) ?? [];
+    list.push(ev);
+    byDay.set(day, list);
+  };
+
+  chapters.forEach((ch) => {
+    // Mesma regra de `nextThesisDeadline`: capítulo pronto deixa de ser prazo.
+    if (isChapterDone(ch)) return;
+    if (!ch.dueDate || !ch.dueDate.startsWith(prefix)) return;
+    add(ch.dueDate, {
+      id: `tcc-chapter-${ch.id}`,
+      title: ch.title,
+      date: ch.dueDate,
+      kind: 'tcc',
+      completed: false,
+      tccTab: 'capitulos',
+      tccFocusId: ch.id,
+    });
+  });
+
+  tasks.forEach((t) => {
+    if (!t.dueDate || !t.dueDate.startsWith(prefix)) return;
+    if (t.status === 'resolvida' || t.status === 'arquivada') return;
+    add(t.dueDate, {
+      id: `tcc-task-${t.id}`,
+      title: t.title,
+      date: t.dueDate,
+      kind: 'tcc',
+      completed: false,
+      tccTab: 'orientacao',
+      tccFocusId: t.id,
+    });
+  });
+
+  meetings.forEach((m) => {
+    if (m.status !== 'agendada' || !m.date.startsWith(prefix)) return;
+    add(m.date, {
+      id: `tcc-meeting-${m.id}`,
+      title: `reunião com ${thesis.advisor || 'a orientação'}`,
+      date: m.date,
+      kind: 'tcc',
+      completed: false,
+      tccTab: 'orientacao',
+      tccFocusId: m.id,
+    });
+  });
+
+  const milestone = (date: string | undefined, id: string, title: string) => {
+    if (!date || !date.startsWith(prefix)) return;
+    add(date, {
+      id: `tcc-milestone-${id}`,
+      title,
+      date,
+      kind: 'tcc',
+      completed: false,
+      tccTab: 'visao',
+    });
+  };
+  milestone(thesis.deliveryDate, 'delivery', 'entrega final do tcc');
+  milestone(thesis.defenseDate, 'defense', 'banca do tcc');
+
+  return byDay;
+}
+
 /** Próximos eventos (ordenados por data, a partir de hoje), com limite. */
 export function upcomingEvents(
   exams: { id: string; title: string; date: string; courseId: string }[],
@@ -188,7 +292,7 @@ export function upcomingEvents(
   internshipLogs: { id: string; date: string; activity: string }[],
   limit = 5
 ): CalendarEvent[] {
-  const todayKey = new Date().toISOString().slice(0, 10);
+  const todayKey = todayKeyLocal();
   const all: CalendarEvent[] = [
     ...exams.map((e) => ({ id: e.id, title: e.title, date: e.date, kind: 'prova' as const, courseId: e.courseId, completed: false })),
     ...tasks
@@ -204,9 +308,7 @@ export function upcomingEvents(
 
 /** Formata "2026-08-11" → "11/08". */
 export function formatShortDate(date: string): string {
-  const [y, m, d] = date.split('-');
-  if (!y || !m || !d) return date;
-  return `${d}/${m}`;
+  return formatDateShortBR(date);
 }
 
 /** Nome do mês em pt-BR minúsculo (ex.: "agosto"). */
@@ -265,7 +367,7 @@ export interface CalendarEntry {
   end?: string; // HH:MM
   /** Referência ao dado real para write-back (arrasto/redimensionar). */
   entryRef?: CalendarEntryRef;
-  /** Id da entidade real (índice do capítulo do TCC quando entryRef='tccChapter'). */
+  /** Id da entidade real (id do capítulo do TCC quando entryRef='tccChapter'). */
   dataId?: string;
 }
 
@@ -285,7 +387,9 @@ export interface BuildCalendarWeekArgs {
   exams: Exam[];
   tasks: Task[];
   sessions: StudySession[];
-  tcc?: TccData;
+  /** SPEC-012: o singleton e os capítulos são coleções separadas agora. */
+  tcc?: ThesisProject;
+  thesisChapters?: ThesisChapter[];
   gcal?: CalendarEntry[];
 }
 
@@ -384,32 +488,34 @@ export function buildCalendarWeek(args: BuildCalendarWeekArgs): Record<number, D
         });
       });
 
-    // TCC: capítulos com prazo viram bloco tcc; etapas = capítulos do tcc
+    // TCC: capítulos com prazo viram bloco tcc; etapas = capítulos do tcc.
+    // SPEC-012: id por `entityId` (nunca por índice — F2 da spec) e `stage` no
+    // lugar de `completed`. Ainda sem chamador em produção (F4.5 liga).
     if (args.tcc) {
       const tcc = args.tcc;
-      const stages: CalendarStage[] = tcc.chapters.map((c, ci) => ({
-        id: `tcc-ch-${ci}`,
+      const chapters = args.thesisChapters ?? [];
+      const stages: CalendarStage[] = chapters.map((c) => ({
+        id: c.id,
         label: c.title,
-        done: c.completed,
+        done: c.stage === 'pronto',
       }));
-      tcc.chapters.forEach((ch, i) => {
+      chapters.forEach((ch) => {
         if (ch.dueDate && ch.dueDate === key) {
           dayEntries.timed.push({
-            id: `tcc-${i}-${key}`,
+            id: `tcc-chapter-${ch.id}-${key}`,
             layer: 'tcc',
             subtype: 'tcc',
             title: `${tcc.title} — ${ch.title}`,
             subtitle: 'bloco tcc',
             date: key,
-            importance: ch.completed ? undefined : 'importante',
-            status: ch.completed ? 'concluído' : undefined,
+            importance: ch.stage === 'pronto' ? undefined : 'importante',
+            status: ch.stage === 'pronto' ? 'concluído' : undefined,
             stages,
-            links: tcc.references.slice(0, 3).map((r) => ({ label: r })),
             notes: tcc.problemStatement,
             start: '16:00',
             end: '18:00',
             entryRef: 'tccChapter',
-            dataId: String(i),
+            dataId: ch.id,
           });
         }
       });

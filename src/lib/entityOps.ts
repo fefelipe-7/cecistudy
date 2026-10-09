@@ -1,3 +1,4 @@
+import { planDelete } from './internshipCases';
 import type {
    Course,
    ClassNote,
@@ -144,7 +145,10 @@ export function deleteManagedItem(
         savedBookIds: (db.savedBookIds ?? []).filter((x) => x !== id),
       };
     case 'internship':
-      return { ...db, internshipLogs: removeId(db.internshipLogs, id) };
+      // `planDelete` é a regra do domínio (`SPEC-009 §7.1`): remove o registro e
+      // retira o id de todo `discussedLogIds`. A cascata manual que estava aqui
+      // (hotfix de `F3`) é agora a mesma regra — e ela já cobre `E3` e `E4`.
+      return { ...db, internshipLogs: planDelete(db.internshipLogs, id) };
     case 'looseNote':
       return { ...db, looseNotes: removeId(db.looseNotes, id) };
     case 'concept': {

@@ -6,12 +6,18 @@ interface ProgressBarProps {
   value: number;
   className?: string;
   barClassName?: string;
+  /**
+   * Leitura humana do valor (SPEC-010 D6.4): sem ele o leitor de tela anuncia
+   * "45" sem unidade. Ex.: "4 de 7 capítulos prontos".
+   */
+  valueText?: string;
 }
 
 export const ProgressBar: React.FC<ProgressBarProps> = ({
   value,
   className,
   barClassName,
+  valueText,
 }) => {
   const clamped = Math.min(100, Math.max(0, value));
   return (
@@ -21,6 +27,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
       aria-valuenow={Math.round(clamped)}
       aria-valuemin={0}
       aria-valuemax={100}
+      aria-valuetext={valueText}
     >
       <motion.div
         className={cn('h-full rounded-full bg-ceci-brand', barClassName)}

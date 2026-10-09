@@ -18,6 +18,7 @@ import {
   cancelDailyReminder,
   scheduleDailyReminder,
   syncClassReminders,
+  syncThesisReminders,
 } from '../lib/notifications';
 import { connectGcal, disconnectGcal, syncExam, syncTask, unsyncEvent } from '../lib/gcal';
 
@@ -90,12 +91,25 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
     setQuizSessions,
     academicTerms,
     setAcademicTerms,
+    readingSessions,
+    setReadingSessions,
+    readingHighlights,
+    setReadingHighlights,
+    readingBookmarks,
+    setReadingBookmarks,
     techniques,
     setTechniques,
     stickers,
     setStickers,
     tcc,
     setTcc,
+    // SPEC-012: coleções do TCC (stickers + UI transição).
+    thesisChapters,
+    setThesisChapters,
+    thesisReferences,
+    thesisMeetings,
+    thesisTasks,
+    thesisWritingLogs,
     savedBookIds,
     setSavedBookIds,
     readingProgress,
@@ -177,6 +191,11 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
       streakTotal: streakStats.total,
       streakLongest: streakStats.longest,
       tcc,
+      // SPEC-012: coleções do TCC para as condições `thesis-*` e o D4 do `tcc-done`.
+      thesisChapters,
+      thesisReferences,
+      thesisMeetings,
+      thesisWritingLogs,
       savedBookIds,
       concepts,
       looseNotes,
@@ -319,6 +338,19 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courses]);
 
+  // Lembretes do TCC (SPEC-012 §6.3): reagenda no boot e quando qualquer
+  // entidade com data muda — cancela a faixa e refaz o plano (mais próximos
+  // primeiro, teto de 64 do iOS). Nativo-only; o plano é puro no domínio.
+  // Preferências desligadas: só o cancelamento (nunca fica lembrete órfão).
+  useEffect(() => {
+    void syncThesisReminders(
+      { thesis: tcc, chapters: thesisChapters, tasks: thesisTasks, meetings: thesisMeetings },
+      todayKey,
+      tcc.reminderPrefs,
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tcc, thesisChapters, thesisTasks, thesisMeetings, todayKey]);
+
   const setGcalEnabled = useCallback(
     async (on: boolean) => {
       if (on) {
@@ -423,6 +455,12 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
     setTcc,
     academicTerms,
     setAcademicTerms,
+    readingSessions,
+    setReadingSessions,
+    readingHighlights,
+    setReadingHighlights,
+    readingBookmarks,
+    setReadingBookmarks,
     registerActivity,
     showToast,
     gcalSyncTask,

@@ -1,13 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { buildItemContext, clampPageInput } from '../contextActions';
 import type { ManagedDB } from '../entityOps';
+import { todayKeyLocal, addDaysKey } from '../dateBR';
 
-const todayISO = () => new Date().toISOString().split('T')[0];
-const yesterday = () => {
-  const d = new Date();
-  d.setDate(d.getDate() - 1);
-  return d.toISOString().split('T')[0];
-};
+const todayISO = () => todayKeyLocal();
+const yesterday = () => addDaysKey(todayKeyLocal(), -1);
 
 function makeDb(overrides: Partial<ManagedDB> = {}): ManagedDB {
    return {

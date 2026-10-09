@@ -1,6 +1,6 @@
 import React from 'react';
-import { Check } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import ToggleSwitch from './toggle-switch-glass';
 
 interface ToggleProps {
   checked: boolean;
@@ -11,7 +11,7 @@ interface ToggleProps {
   className?: string;
 }
 
-/** Interruptor iOS-like (trilho + botãozinho branco), padrão do cecistudy. */
+/** Interruptor de vidro (toggle-switch-glass), padrão do cecistudy. */
 export const Toggle: React.FC<ToggleProps> = ({
   checked,
   onChange,
@@ -19,34 +19,14 @@ export const Toggle: React.FC<ToggleProps> = ({
   disabled,
   loading,
   className,
-}) => {
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      aria-label={label}
-      onClick={onChange}
-      disabled={disabled || loading}
-      className={cn(
-        'relative w-11 h-6 rounded-full tap-interactive cursor-pointer shrink-0 touch-target transition-colors duration-200',
-        checked ? 'bg-ceci-brand' : 'bg-ceci-border-strong',
-        (disabled || loading) && 'opacity-50 cursor-not-allowed',
-        className
-      )}
-    >
-      <span
-        className={cn(
-          'absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-surface-default shadow-xs flex items-center justify-center transition-transform duration-200',
-          checked && 'translate-x-[20px]'
-        )}
-      >
-        {loading ? (
-          <span className="text-[9px] text-ceci-secondary">…</span>
-        ) : (
-          checked && <Check className="w-3 h-3 text-ceci-brand-strong" />
-        )}
-      </span>
-    </button>
-  );
-};
+}) => (
+  <ToggleSwitch
+    isActive={checked}
+    onChange={() => onChange()}
+    label={label}
+    disabled={disabled || loading}
+    size="sm"
+    colorTheme="brand"
+    className={cn('shrink-0', className)}
+  />
+);

@@ -1,6 +1,6 @@
 // Domínio: entidades acadêmicas e de biblioteca (MOD-001 / B.3).
 
-import type { CourseStatus } from '@/core/domain';
+import type { CourseStatus, RefAuthor, RefType } from '@/core/domain';
 
 export type { CourseStatus };
 
@@ -181,6 +181,99 @@ export interface ReadingItem {
   highlights?: string[];
   /** Conteúdo real do leitor — capítulos/anotações da própria usuária (livros completos não são embutidos). */
   chapters?: ReadingChapter[];
+  catalogId?: string;
+  sourceKind?: 'catalog-book' | 'catalog-article' | 'custom';
+  url?: string;
+  contentRef?: { contentId: string; version: number };
+  position?: { sectionId: string; blockId: string; ratio: number; percent: number; updatedAt: string };
+  furthestPercent?: number;
+  lastReadAt?: string;
+  coverColor?: string;
+  /**
+   * Texto de citação montado à mão pela usuária (SPEC-012 / ADR-010). Quando
+   * preenchido, `formatAbnt` o respeita **inteiro** — é o escape da referência
+   * legada (string solta da lista antiga do TCC) e da citação que ela prefere
+   * digitar.
+   */
+  rawCitation?: string;
+  // ---------------------------------------------------------------------------
+  // Dado bibliográfico estruturado (SPEC-012 F7.1 / ADR-010): o `ReadingItem` é
+  // o **dono** da obra, e `formatAbnt`/`validateRef` leem daqui. Todos
+  // opcionais — `backupSchema` é `passthrough`, então a `MIGRATIONS[22]` não
+  // transforma nada. `enrichStatus` é estado de enriquecimento (Q13), não
+  // vínculo.
+  // ---------------------------------------------------------------------------
+  /** Autores com sobrenome já separado — `formatAbnt` não adivinha. */
+  authors?: RefAuthor[];
+  year?: string;
+  /** Periódico (artigo), site, ou título do livro (capítulo). */
+  container?: string;
+  publisher?: string;
+  place?: string;
+  edition?: string;
+  volume?: string;
+  issue?: string;
+  pages?: string;
+  doi?: string;
+  accessedOn?: string;
+  /** Tipo ABNT; ausente cai no mapeamento de `type` (pdf = outro). */
+  refType?: RefType;
+  /** Estado do enriquecimento por link/DOI; ausente = nada a buscar. */
+  enrichStatus?: 'pendente' | 'ok' | 'falhou';
+  /** Aberturas já tentando enriquecer sem sucesso (máx. antes de `falhou`). */
+  enrichAttempts?: number;
+}
+
+export type ReadingSessionUnit = 'pages' | 'position' | 'time';
+
+export interface ReadingSession {
+  id: string;
+  workspaceId?: string;
+  readingId: string;
+  kind: 'session' | 'baseline';
+  date: string;
+  unit: ReadingSessionUnit;
+  fromPage?: number;
+  toPage?: number;
+  fromPercent?: number;
+  toPercent?: number;
+  fromBlockId?: string;
+  toBlockId?: string;
+  minutes?: number;
+  note?: string;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export type HighlightColor = 'idea' | 'doubt' | 'quote' | 'review';
+
+export interface ReadingHighlight {
+  id: string;
+  workspaceId?: string;
+  readingId: string;
+  kind: 'text' | 'manual';
+  anchor?: { sectionId: string; blockId: string; start: number; end: number };
+  quote: string;
+  page?: number;
+  color: HighlightColor;
+  note?: string;
+  conceptIds?: string[];
+  authorIds?: string[];
+  flashcardId?: string;
+  looseNoteId?: string;
+  contentVersion?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ReadingBookmark {
+  id: string;
+  workspaceId?: string;
+  readingId: string;
+  sectionId: string;
+  blockId: string;
+  label?: string;
+  createdAt: string;
 }
 
 export interface FlashcardDeck {

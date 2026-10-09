@@ -47,7 +47,8 @@ import PersonalizationSection from './perfil/PersonalizationSection';
 import JourneyTermCard from './perfil/JourneyTermCard';
 import DataSection from './perfil/DataSection';
 
-import { deriveCases } from '../../lib/internshipCases';
+import { deriveCases, computeStats, computePendencies } from '../../lib/internshipCases';
+import { todayKeyLocal } from '../../lib/dateBR';
 import { totalXp, levelFor, generalTitle } from '../../lib/levels';
 
 const scrollToSection = (id: string) => {
@@ -129,16 +130,26 @@ interface PerfilViewProps {
 }
 
 export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
-  // Early return for stickers mode - must be before any hooks
+  // `stickers` sai num componente próprio, não por early return: um retorno antes
+  // dos hooks quebra a ordem de hooks quando o mesmo `PerfilView` é re-renderizado
+  // com `mode` diferente, e o React derruba a árvore inteira com
+  // "Rendered fewer hooks than expected" — que é o app em branco atrás do
+  // ErrorBoundary.
   if (mode === 'stickers') {
-    return <StickersView />;
+    return <StickersRoute />;
   }
 
+  return <PerfilProfileRoute />;
+};
+
+const StickersRoute: React.FC = () => <StickersView />;
+
+const PerfilProfileRoute: React.FC = () => {
   const {
     profile,
     internshipLogs,
-    internshipClinical,
     tcc,
+    thesisChapters,
     stickers,
     reminderSettings,
     gcalEnabled,
@@ -217,16 +228,21 @@ const profileTotalXp = totalXp(profile);
   const flashcardsReviewed = flashcards.reduce((acc, f) => acc + (f.timesReviewed || 0), 0);
   const tasksDone = tasks.filter((t) => t.completed).length;
   const examsPending = exams.filter((e) => !e.completed).length;
-  const totalInternshipHours = internshipLogs.reduce((acc, l) => acc + l.hours, 0);
-  const cases = useMemo(
-    () => deriveCases(internshipClinical, internshipLogs.filter((l) => l.type === 'supervisao')),
-    [internshipClinical, internshipLogs],
-  );
+  // Estágio: uma derivação só, do domínio (SPEC-009 §8.2). Antes eram três somas
+  // independentes do mesmo dado, cada uma com seu filtro — e as horas contavam
+  // registro agendado (`F6`), e as pendências eram por caso e sumiam para
+  // atendimento sem iniciais (`F9`).
+const today = todayKeyLocal();
+  const internshipStats = useMemo(() => computeStats(internshipLogs, today), [internshipLogs, today]);
+  const totalInternshipHours = internshipStats.doneHours;
+  const pendencies = useMemo(() => computePendencies(internshipLogs, today), [internshipLogs, today]);
+  const { cases } = useMemo(() => deriveCases(internshipLogs, today), [internshipLogs, today]);
   const patientsCount = cases.length;
-  const pendingParaLevar = cases.reduce((a, c) => a + c.pendingParaLevar, 0);
-  const pendingSupervision = cases.reduce((a, c) => a + c.pendingSupervision, 0);
-  const tccChaptersDone = tcc.chapters.filter((ch) => ch.completed).length;
-  const tccChaptersTotal = tcc.chapters.length;
+  const pendingReflection = pendencies.noReflection.length;
+  const pendingSupervision = pendencies.noSupervision.length;
+  // SPEC-012: capítulos são coleção própria; pronto === `stage === 'pronto'`.
+  const tccChaptersDone = thesisChapters.filter((ch) => ch.stage === 'pronto').length;
+  const tccChaptersTotal = thesisChapters.length;
   const stickersUnlocked = stickers.filter((s) => s.unlocked).length;
 
   // ---- funil da jornada (dithered, gradiente de cor única) ----

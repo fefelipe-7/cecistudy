@@ -25,6 +25,23 @@ export type NavTab = 'home' | 'faculdade' | 'estudos' | 'biblioteca' | 'perfil';
 
 export type SubTabFaculdade = 'disciplinas' | 'calendario' | 'estagio';
 
+/**
+ * Aba do diário de estágio (`SPEC-009 D16`).
+ *
+ * Vive no **estado de navegação**, não em `useState` local: voltar do caso ou do
+ * wizard reabre na mesma aba, e a aba é deep-link.
+ */
+export type InternshipTab = 'diario' | 'pacientes' | 'supervisao';
+
+/**
+ * Aba da tela do TCC (`SPEC-012 F3`).
+ *
+ * Vive no **estado de navegação** pelo mesmo motivo do `InternshipTab`
+ * (`SPEC-009 D16`): a tela empilha sheet por cima, voltar tem que reabrir na
+ * mesma aba, e o toque na notificação (Q10) é deep-link para a aba certa.
+ */
+export type ThesisTab = 'visao' | 'capitulos' | 'leituras' | 'orientacao' | 'escrita';
+
 /** Telas dedicadas abertas a partir do feed de estudos. */
 export type StudyScreen = 'focus' | 'revisar' | 'leituras' | 'historico';
 export type SubTabBiblioteca = 'materiais' | 'autores' | 'conceitos' | 'abordagens' | 'mapa';
@@ -47,8 +64,22 @@ export type NavScreen =
   /** Detalhe de uma comparação do templo (`#/biblioteca/templo/comparacoes/:slug`). */
   | { kind: 'comparison'; slug: string }
   | { kind: 'streak' }
-  | { kind: 'internshipDiary' }
-  | { kind: 'tcc' }
+  | { kind: 'internshipDiary'; tab?: InternshipTab; focusLogId?: string }
+  /**
+   * Tela do caso (paciente) empilhada sobre a aba pacientes (`SPEC-009 D15`).
+   *
+   * `patientKey` é a chave **normalizada** (`normalizePatientKey`). `''` é o grupo
+   * "sem iniciais" — e por isso a rota usa o literal `sem-iniciais`, porque um
+   * segmento de hash vazio não sobrevive ao round-trip.
+   */
+  | { kind: 'internshipCase'; patientKey: string }
+  /**
+   * Tela cheia do meu TCC (SPEC-012). `tab`/`focusId` são o deep-link da aba
+   * (toque em notificação, busca global, hash `#/estudos/tcc/<tab>[/<id>]`);
+   * ausentes = default (`visao`). `focusId` inexistente degrada para a aba sem
+   * erro — item removido não pode derrubar a navegação.
+   */
+  | { kind: 'tcc'; tab?: ThesisTab; focusId?: string }
   | { kind: 'stickers' }
   | { kind: 'compose' }
   | { kind: 'composeDetails' }

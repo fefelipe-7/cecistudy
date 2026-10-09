@@ -13,6 +13,13 @@ interface UseWizardFormOptions<T extends object> {
   initial: T;
   /** Editando item existente: nunca lê nem escreve rascunho. */
   editing?: boolean;
+  /**
+   * Passo inicial (`SPEC-009 §8.4`).
+   *
+   * Existe para o seed: abrir em `reflexao` vindo do chip "sem reflexão ·
+   * adicionar" não pode depender de o usuário andar por todos os passos antes.
+   */
+  initialStep?: number;
   /** Deriva `isDirty` para a confirmação de descarte do WizardScaffold. */
   isDirty?: (values: T) => boolean;
 }
@@ -27,6 +34,7 @@ export function useWizardForm<T extends object>({
   draftKey,
   initial,
   editing = false,
+  initialStep = 0,
   isDirty,
 }: UseWizardFormOptions<T>) {
   const draft = useWizardDraft<T>(draftKey ?? 'transient');
@@ -35,7 +43,7 @@ export function useWizardForm<T extends object>({
     const saved = draft.load();
     return saved ? { ...initial, ...saved } : initial;
   });
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(initialStep);
 
   useEffect(() => {
     if (draftKey && !editing) draft.save(values);

@@ -10,6 +10,8 @@ import type {
   Task,
   Exam,
   LooseNote,
+  ThesisChapter,
+  ThesisTask,
 } from '../../types';
 
 const courses: Course[] = [
@@ -45,23 +47,39 @@ const exams: Exam[] = [
 const looseNotes: LooseNote[] = [
   { id: 'n-1', title: '', content: 'anotação sobre análise do comportamento', category: 'estudo', date: '2026-01-01' },
 ];
+const thesisChapters: ThesisChapter[] = [
+  {
+    id: 'ch-1', thesisId: 'tcc-main', position: 1, title: 'revisão de literatura',
+    kind: 'capitulo', requiredness: 'obrigatorio', stage: 'escrevendo',
+    createdAt: '2026-01-01', updatedAt: '2026-01-01',
+  },
+];
+const thesisTasks: ThesisTask[] = [
+  {
+    id: 'tt-1', thesisId: 'tcc-main', title: 'enviar pré-projeto pra orientadora',
+    origin: 'minha', status: 'aberta', createdAt: '2026-01-01', updatedAt: '2026-01-01',
+  },
+];
 
 function renderModal(over: {
   onClose?: Mock;
   onNavigate?: Mock;
   onOpenNoteDetail?: Mock;
   onOpenCourseDetail?: Mock;
+  onOpenTccScreen?: Mock;
 } = {}) {
   const handlers: {
     onClose: Mock;
     onNavigate: Mock;
     onOpenNoteDetail: Mock;
     onOpenCourseDetail: Mock;
+    onOpenTccScreen: Mock;
   } = {
     onClose: vi.fn(),
     onNavigate: vi.fn(),
     onOpenNoteDetail: vi.fn(),
     onOpenCourseDetail: vi.fn(),
+    onOpenTccScreen: vi.fn(),
     ...over,
   };
   render(
@@ -76,6 +94,9 @@ function renderModal(over: {
       tasks={tasks}
       exams={exams}
       looseNotes={looseNotes}
+      thesisChapters={thesisChapters}
+      thesisReferences={[]}
+      thesisTasks={thesisTasks}
       {...handlers}
     />
   );
@@ -123,6 +144,21 @@ describe('GlobalSearchModal', () => {
     fireEvent.change(screen.getByRole('combobox'), { target: { value: 'capítulo' } });
     fireEvent.click(screen.getAllByRole('option')[0]);
     expect(h.onOpenCourseDetail).toHaveBeenCalledWith('c1');
+  });
+
+  it('pendência do tcc abre a tela do tcc na aba orientação', () => {
+    const h = renderModal();
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'orientadora' } });
+    expect(screen.getByText('tcc · 1')).toBeTruthy();
+    fireEvent.click(screen.getAllByRole('option')[0]);
+    expect(h.onOpenTccScreen).toHaveBeenCalledWith('orientacao', 'tt-1');
+  });
+
+  it('capítulo do tcc abre a tela do tcc na aba capítulos', () => {
+    const h = renderModal();
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'literatura' } });
+    fireEvent.click(screen.getAllByRole('option')[0]);
+    expect(h.onOpenTccScreen).toHaveBeenCalledWith('capitulos', 'ch-1');
   });
 
   it('zero resultados mostra o cecinho + sugestão clicável', () => {

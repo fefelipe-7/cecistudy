@@ -1,4 +1,4 @@
-﻿import React, { Suspense, lazy, useEffect, useMemo, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import {
   BookOpen,
   User,
@@ -72,6 +72,7 @@ import { useKnowledgeActions, useNavValue } from '@/context/shellNavContexts';
 import { useLibraryFilters } from './biblioteca/useLibraryFilters';
 import { MyMaterialsSection } from './biblioteca/MyMaterialsSection';
 import { ExploreSections, LibraryModals } from './biblioteca/ExploreSections';
+import { ViewSkeleton } from '../ui/Skeleton';
 
 // B.4 — sub-telas da biblioteca (notas/templo/famílias/abordagens) só carregam
 // quando o modo da aba as monta: cada uma vira chunk próprio sob Suspense.
@@ -148,7 +149,7 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
   const { savedBooks, readingBooks, availableTags } = filter;
   if (mode === 'notes') {
     return (
-      <Suspense fallback={null}>
+      <Suspense fallback={<ViewSkeleton rows={5} />}>
         <NotesScreen
           looseNotes={looseNotes}
           onAddNote={addLooseNote}
@@ -168,7 +169,7 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
   // Dedicated Screen View for "Templo de Conhecimento"
   if (mode === 'temple') {
     return (
-      <Suspense fallback={null}>
+      <Suspense fallback={<ViewSkeleton rows={5} />}>
         <TempleScreen />
       </Suspense>
     );
@@ -207,7 +208,7 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
   // Dedicated Screen View for "Famílias de Psicoterapias"
   if (mode === 'families') {
     return (
-      <Suspense fallback={null}>
+      <Suspense fallback={<ViewSkeleton rows={5} />}>
         <FamiliesView />
       </Suspense>
     );

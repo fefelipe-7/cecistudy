@@ -42,3 +42,20 @@ export async function copyToClipboard(text: string): Promise<boolean> {
     return false;
   }
 }
+
+/**
+ * Lê o texto da área de transferência (camada 1 da captura, SPEC-012 §8.3).
+ * iOS 16+ pede permissão; quando negada ou indisponível devolve `null` e a
+ * sheet aceita colagem manual no campo.
+ */
+export async function readFromClipboard(): Promise<string | null> {
+  try {
+    if (navigator.clipboard?.readText) {
+      const text = await navigator.clipboard.readText();
+      return text ? text : null;
+    }
+  } catch {
+    // permissão negada / sem clipboard — a sheet resolve com colagem manual
+  }
+  return null;
+}

@@ -1,7 +1,7 @@
 /**
  * Canonical JSON v1 — serialização determinística compartilhada TS/Rust.
  *
- * Regras (ver `../../../cecistudy-desktop/contratos/dados/canonical-json-v1.md`):
+ * Regras (ver `cecistudy-rust/docs/canonical-json-v1.md`):
  * - chaves de objeto ordenadas alfabeticamente (byte-a-tempo, UTF-8);
  * - arrays preservam a ordem original (nunca ordenar);
  * - strings normalizadas NFC;

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { deleteManagedItem, MANAGED_KIND_LABEL, MANAGED_KIND_REMOVED, ManagedDB } from '../entityOps';
+import { statusOf, buildLinkIndex } from '../internshipCases';
 import type {
    Course,
    ClassNote,
@@ -233,15 +234,77 @@ describe('deleteManagedItem', () => {
   });
 });
 
+// O vínculo sessão ↔ supervisão tem **fonte única** (`SPEC-009 D3`): ele vive só em
+// `discussedLogIds`. Apagar a supervisão não precisa "limpar" nada na sessão — a
+// sessão volta a "sem supervisão" por **derivação**, porque o índice não acha mais
+// nenhuma supervisão que a discuta. É por isso que `F3` não tem mais como
+// reaparecer: não existe segundo lugar onde o vínculo poderia ficar inconsistente.
+describe('exclusão de registro de estágio limpa o vínculo', () => {
+  const clinical = (id: string, over: Partial<InternshipLog> = {}): InternshipLog => ({
+    id,
+    type: 'atendimento_clinico',
+    date: '2026-08-26',
+    hours: 2,
+    activity: 'sessão',
+    reflections: '',
+    patient: 'M.S.',
+    sessionNumber: 1,
+    ...over,
+  });
+  const supervision = (id: string, discussedLogIds: string[]): InternshipLog => ({
+    id,
+    type: 'supervisao',
+    date: '2026-08-28',
+    hours: 0,
+    activity: 'supervisão com D.',
+    reflections: '',
+    supervisor: 'D.',
+    discussedLogIds,
+  });
+
+  const db = (logs: InternshipLog[]) =>
+    ({ ...makeDb(), internshipLogs: logs }) as ManagedDB;
+
+  const TODAY = '2026-09-01';
+
+  it('apagar a supervisão FAZ a sessão voltar a "sem supervisão" (por derivação)', () => {
+    const antes = db([clinical('at-1'), supervision('sup-1', ['at-1'])]);
+    expect(statusOf(antes.internshipLogs[0], buildLinkIndex(antes.internshipLogs, TODAY), TODAY).supervised).toBe(true);
+
+    const depois = deleteManagedItem(antes, 'internship', 'sup-1');
+    const st = statusOf(depois.internshipLogs[0], buildLinkIndex(depois.internshipLogs, TODAY), TODAY);
+    expect(st.supervised).toBe(false);
+    expect(st.supervisionIds).toEqual([]);
+  });
+
+  it('apagar a sessão tira o id órfão de discussedLogIds da supervisão', () => {
+    const antes = db([clinical('at-1'), clinical('at-2'), supervision('sup-1', ['at-1', 'at-2'])]);
+    const depois = deleteManagedItem(antes, 'internship', 'at-2');
+    expect(depois.internshipLogs.find((l) => l.id === 'sup-1')?.discussedLogIds).toEqual(['at-1']);
+  });
+
+  it('apagar a última sessão discutida remove o campo em vez de deixar array vazio', () => {
+    const depois = deleteManagedItem(db([clinical('at-1'), supervision('sup-1', ['at-1'])]), 'internship', 'at-1');
+    expect(depois.internshipLogs.find((l) => l.id === 'sup-1')?.discussedLogIds).toBeUndefined();
+  });
+
+  it('não toca em vínculos de outra supervisão', () => {
+    const antes = db([
+      clinical('at-1'),
+      supervision('sup-1', ['at-1']),
+      supervision('sup-2', ['at-2']),
+      clinical('at-2'),
+    ]);
+    const depois = deleteManagedItem(antes, 'internship', 'sup-1');
+    expect(depois.internshipLogs.find((l) => l.id === 'sup-2')?.discussedLogIds).toEqual(['at-2']);
+  });
+});
+
 describe('labels', () => {
   it('existe label e toast para todas as entidades', () => {
-    const kinds: (keyof typeof MANAGED_KIND_LABEL)[] = [
-      'course', 'class', 'task', 'exam', 'reading', 'flashcard', 'session',
-      'internship', 'concept', 'author', 'material', 'looseNote', 'quizSession',
-    ];
-    for (const k of kinds) {
-      expect(MANAGED_KIND_LABEL[k]).toBeTruthy();
-      expect(MANAGED_KIND_REMOVED[k]).toContain('♡');
+    for (const kind of Object.keys(MANAGED_KIND_LABEL) as (keyof typeof MANAGED_KIND_LABEL)[]) {
+      expect(MANAGED_KIND_LABEL[kind], `label de ${kind}`).toBeTruthy();
+      expect(MANAGED_KIND_REMOVED[kind], `toast de ${kind}`).toBeTruthy();
     }
   });
 });

@@ -13,9 +13,13 @@ import {
    Flashcard,
    FlashcardDeck,
    MaterialItem,
-   ClinicalProjection,
    InternshipLog,
-   TccData,
+   ThesisProject,
+   ThesisChapter,
+   ThesisReference,
+   ThesisMeeting,
+   ThesisTask,
+   ThesisWritingLog,
    Sticker,
    StudySession,
    Technique,
@@ -25,6 +29,9 @@ import {
   StreakData,
   SyncIndex,
   AcademicTerm,
+  ReadingSession,
+  ReadingHighlight,
+  ReadingBookmark,
  } from '../types';
 import type {
   Workspace,
@@ -42,7 +49,7 @@ import {
   emptyOnboarding,
   emptyDatabase,
 } from '../data/empty';
-import { DEFAULT_WORKSPACE_ID, SCHEMA_VERSION, ensureActiveTerm } from '../data/schema';
+import { DEFAULT_WORKSPACE_ID, SCHEMA_VERSION, ensureActiveTerm, migrateDatabase } from '../data/schema';
 import { assertTermIntegrity, enforceSingleActiveTerm, resolveActiveTerm } from '../core/domain';
 import { ROLLOVER_UNDO_WINDOW_MS, TOAST_DEFAULT_MS } from '../lib/termUndoWindow';
 import type { ToastState } from '../components/ui/Toast';
@@ -138,6 +145,16 @@ export interface DataClientStudySlice {
   academicTerms: AcademicTerm[];
   setAcademicTerms: React.Dispatch<React.SetStateAction<AcademicTerm[]>>;
   setAcademicTermsRaw: React.Dispatch<React.SetStateAction<AcademicTerm[]>>;
+  /** Leitura (SPEC-M-014): sessões, destaques e marcadores. */
+  readingSessions: ReadingSession[];
+  setReadingSessions: React.Dispatch<React.SetStateAction<ReadingSession[]>>;
+  setReadingSessionsRaw: React.Dispatch<React.SetStateAction<ReadingSession[]>>;
+  readingHighlights: ReadingHighlight[];
+  setReadingHighlights: React.Dispatch<React.SetStateAction<ReadingHighlight[]>>;
+  setReadingHighlightsRaw: React.Dispatch<React.SetStateAction<ReadingHighlight[]>>;
+  readingBookmarks: ReadingBookmark[];
+  setReadingBookmarks: React.Dispatch<React.SetStateAction<ReadingBookmark[]>>;
+  setReadingBookmarksRaw: React.Dispatch<React.SetStateAction<ReadingBookmark[]>>;
   techniques: Technique[];
   setTechniques: React.Dispatch<React.SetStateAction<Technique[]>>;
   setTechniquesRaw: React.Dispatch<React.SetStateAction<Technique[]>>;
@@ -177,13 +194,25 @@ export interface DataClientAppSlice {
   internshipLogs: InternshipLog[];
   setInternshipLogs: React.Dispatch<React.SetStateAction<InternshipLog[]>>;
   setInternshipLogsRaw: React.Dispatch<React.SetStateAction<InternshipLog[]>>;
-  /** A projeção clínica — `SPEC-M-013` `D1`. Cinco campos, somente leitura no app. */
-  internshipClinical: ClinicalProjection[];
-  setInternshipClinical: React.Dispatch<React.SetStateAction<ClinicalProjection[]>>;
-  setInternshipClinicalRaw: React.Dispatch<React.SetStateAction<ClinicalProjection[]>>;
-  tcc: TccData;
-  setTcc: React.Dispatch<React.SetStateAction<TccData>>;
-  setTccRaw: React.Dispatch<React.SetStateAction<TccData>>;
+  tcc: ThesisProject;
+  setTcc: React.Dispatch<React.SetStateAction<ThesisProject>>;
+  setTccRaw: React.Dispatch<React.SetStateAction<ThesisProject>>;
+  /** TCC (SPEC-012) — coleções com id estável, LWW por registro. */
+  thesisChapters: ThesisChapter[];
+  setThesisChapters: React.Dispatch<React.SetStateAction<ThesisChapter[]>>;
+  setThesisChaptersRaw: React.Dispatch<React.SetStateAction<ThesisChapter[]>>;
+  thesisReferences: ThesisReference[];
+  setThesisReferences: React.Dispatch<React.SetStateAction<ThesisReference[]>>;
+  setThesisReferencesRaw: React.Dispatch<React.SetStateAction<ThesisReference[]>>;
+  thesisMeetings: ThesisMeeting[];
+  setThesisMeetings: React.Dispatch<React.SetStateAction<ThesisMeeting[]>>;
+  setThesisMeetingsRaw: React.Dispatch<React.SetStateAction<ThesisMeeting[]>>;
+  thesisTasks: ThesisTask[];
+  setThesisTasks: React.Dispatch<React.SetStateAction<ThesisTask[]>>;
+  setThesisTasksRaw: React.Dispatch<React.SetStateAction<ThesisTask[]>>;
+  thesisWritingLogs: ThesisWritingLog[];
+  setThesisWritingLogs: React.Dispatch<React.SetStateAction<ThesisWritingLog[]>>;
+  setThesisWritingLogsRaw: React.Dispatch<React.SetStateAction<ThesisWritingLog[]>>;
   stickers: Sticker[];
   setStickers: React.Dispatch<React.SetStateAction<Sticker[]>>;
   setStickersRaw: React.Dispatch<React.SetStateAction<Sticker[]>>;
@@ -303,13 +332,25 @@ export interface DataClientValue {
 internshipLogs: InternshipLog[];
    setInternshipLogs: React.Dispatch<React.SetStateAction<InternshipLog[]>>;
    setInternshipLogsRaw: React.Dispatch<React.SetStateAction<InternshipLog[]>>;
-  /** Projeção clínica — `SPEC-M-013` `D1`. Cinco campos, somente leitura no app. */
-  internshipClinical: ClinicalProjection[];
-  setInternshipClinical: React.Dispatch<React.SetStateAction<ClinicalProjection[]>>;
-  setInternshipClinicalRaw: React.Dispatch<React.SetStateAction<ClinicalProjection[]>>;
-  tcc: TccData;
-  setTcc: React.Dispatch<React.SetStateAction<TccData>>;
-  setTccRaw: React.Dispatch<React.SetStateAction<TccData>>;
+  tcc: ThesisProject;
+  setTcc: React.Dispatch<React.SetStateAction<ThesisProject>>;
+  setTccRaw: React.Dispatch<React.SetStateAction<ThesisProject>>;
+  /** TCC (SPEC-012) — coleções com id estável, LWW por registro. */
+  thesisChapters: ThesisChapter[];
+  setThesisChapters: React.Dispatch<React.SetStateAction<ThesisChapter[]>>;
+  setThesisChaptersRaw: React.Dispatch<React.SetStateAction<ThesisChapter[]>>;
+  thesisReferences: ThesisReference[];
+  setThesisReferences: React.Dispatch<React.SetStateAction<ThesisReference[]>>;
+  setThesisReferencesRaw: React.Dispatch<React.SetStateAction<ThesisReference[]>>;
+  thesisMeetings: ThesisMeeting[];
+  setThesisMeetings: React.Dispatch<React.SetStateAction<ThesisMeeting[]>>;
+  setThesisMeetingsRaw: React.Dispatch<React.SetStateAction<ThesisMeeting[]>>;
+  thesisTasks: ThesisTask[];
+  setThesisTasks: React.Dispatch<React.SetStateAction<ThesisTask[]>>;
+  setThesisTasksRaw: React.Dispatch<React.SetStateAction<ThesisTask[]>>;
+  thesisWritingLogs: ThesisWritingLog[];
+  setThesisWritingLogs: React.Dispatch<React.SetStateAction<ThesisWritingLog[]>>;
+  setThesisWritingLogsRaw: React.Dispatch<React.SetStateAction<ThesisWritingLog[]>>;
   stickers: Sticker[];
   setStickers: React.Dispatch<React.SetStateAction<Sticker[]>>;
   setStickersRaw: React.Dispatch<React.SetStateAction<Sticker[]>>;
@@ -325,6 +366,15 @@ setTechniquesRaw: React.Dispatch<React.SetStateAction<Technique[]>>;
   academicTerms: AcademicTerm[];
   setAcademicTerms: React.Dispatch<React.SetStateAction<AcademicTerm[]>>;
   setAcademicTermsRaw: React.Dispatch<React.SetStateAction<AcademicTerm[]>>;
+  readingSessions: ReadingSession[];
+  setReadingSessions: React.Dispatch<React.SetStateAction<ReadingSession[]>>;
+  setReadingSessionsRaw: React.Dispatch<React.SetStateAction<ReadingSession[]>>;
+  readingHighlights: ReadingHighlight[];
+  setReadingHighlights: React.Dispatch<React.SetStateAction<ReadingHighlight[]>>;
+  setReadingHighlightsRaw: React.Dispatch<React.SetStateAction<ReadingHighlight[]>>;
+  readingBookmarks: ReadingBookmark[];
+  setReadingBookmarks: React.Dispatch<React.SetStateAction<ReadingBookmark[]>>;
+  setReadingBookmarksRaw: React.Dispatch<React.SetStateAction<ReadingBookmark[]>>;
 questions: StudyQuestion[];
     setQuestions: React.Dispatch<React.SetStateAction<StudyQuestion[]>>;
     streakData: StreakData;
@@ -462,9 +512,99 @@ export function useDataClient(): DataClientValue {
   const { value: flashcards, set: setFlashcards, setRaw: setFlashcardsRaw } = useStampedState<Flashcard[]>('flashcards', [], syncIndex, setSyncIndex);
   const { value: decks, set: setDecks, setRaw: setDecksRaw } = useStampedState<FlashcardDeck[]>('decks', [], syncIndex, setSyncIndex);
   const { value: materials, set: setMaterials, setRaw: setMaterialsRaw } = useStampedState<MaterialItem[]>('materials', [], syncIndex, setSyncIndex);
-  const { value: internshipLogs, set: setInternshipLogs, setRaw: setInternshipLogsRaw } = useStampedState<InternshipLog[]>('internship', [], syncIndex, setSyncIndex);
-  const { value: internshipClinical, set: setInternshipClinical, setRaw: setInternshipClinicalRaw } = useStampedState<ClinicalProjection[]>('internshipClinical', [], syncIndex, setSyncIndex);
-  const { value: tcc, set: setTcc, setRaw: setTccRaw } = useStampedState<TccData>('tcc', emptyTcc, syncIndex, setSyncIndex);
+  // `F14`: a chave era `'internship'`, que **não é chave de registry**
+  // (`collections.ts:105` declara `'internshipLogs'`). Consequência: no nativo,
+  // `isUserCollectionKey('internship')` era `false`, então os logs nunca chegavam
+  // à tabela SQLite `internship` — caíam em Preferences sob `'internship'`, enquanto
+  // o import legado escrevia a tabela a partir de `'internshipLogs'`. Três chaves
+  // para uma entidade, e o import escrevia numa tabela que o hook nunca lia.
+  //
+  // Corrigir a chave **sem** drenar o lugar antigo órfã o dado de quem já usa o
+  // app, então a drenagem acontece logo abaixo, no mesmo PR.
+  const { value: internshipLogs, set: setInternshipLogs, setRaw: setInternshipLogsRaw } = useStampedState<InternshipLog[]>('internshipLogs', [], syncIndex, setSyncIndex);
+  const { value: tcc, set: setTcc, setRaw: setTccRaw } = useStampedState<ThesisProject>('tcc', emptyTcc, syncIndex, setSyncIndex);
+  // TCC (SPEC-012): capítulos, referências, reuniões, pendências e escrita.
+  // Coleções no registry (`packages/data/src/collections.ts`), LWW por registro.
+  const { value: thesisChapters, set: setThesisChapters, setRaw: setThesisChaptersRaw } = useStampedState<ThesisChapter[]>('thesisChapters', [], syncIndex, setSyncIndex);
+  const { value: thesisReferences, set: setThesisReferences, setRaw: setThesisReferencesRaw } = useStampedState<ThesisReference[]>('thesisReferences', [], syncIndex, setSyncIndex);
+  const { value: thesisMeetings, set: setThesisMeetings, setRaw: setThesisMeetingsRaw } = useStampedState<ThesisMeeting[]>('thesisMeetings', [], syncIndex, setSyncIndex);
+  const { value: thesisTasks, set: setThesisTasks, setRaw: setThesisTasksRaw } = useStampedState<ThesisTask[]>('thesisTasks', [], syncIndex, setSyncIndex);
+  const { value: thesisWritingLogs, set: setThesisWritingLogs, setRaw: setThesisWritingLogsRaw } = useStampedState<ThesisWritingLog[]>('thesisWritingLogs', [], syncIndex, setSyncIndex);
+
+  // Dreno da MIGRATIONS[22] no boot (SPEC-012 §17.2 A1). O `migrateDatabase` tem
+  // **um** chamador no repositório (`exportImport.ts:110` — import de backup);
+  // nem a hidratação web (localStorage síncrono) nem a nativa (`data_json`)
+  // passam por ela. Sem este dreno, o `tcc` hidrata com a forma antiga
+  // (`chapters` dentro), `thesisChapters` nasce `[]`, e os capítulos somem da
+  // tela — sem erro e sem aviso.
+  //
+  // Design (molde: `ensureActiveTerm` acima, mesmo problema de hidratação
+  // assíncrona):
+  // - Efeito com dependência em `tcc`: roda no mount (web, hidratação síncrona)
+  //   e de novo quando a hidratação nativa traz o `tcc` legado.
+  // - Guarda: `tcc.chapters` presente = forma legada. O `tcc` reescrito **sem**
+  //   `chapters` (última escrita do dreno) é o marcador de "dreno completo" e
+  //   desarma a guarda — idempotente por construção.
+  // - Reusa `migrateDatabase(21, …)` sobre o snapshot inteiro: o **mesmo código
+  //   testado** do import, uma regra um lugar. Aplica com `setRaw` (dreno é
+  //   hidratação, não carimba — mesmo critério do import).
+  // - Corrida do primeiro boot nativo: a hidratação de `thesisChapters` pode
+  //   resolver `[]` (tabela recém-criada vazia) DEPOIS do dreno ter escrito, e
+  //   zerá-lo. O efeito em `thesisChapters` abaixo restaura do `ref` enquanto o
+  //   `tcc` ainda é legado; depois que o `tcc` vira novo, o write-through já
+  //   persistiu e a hidratação não roda de novo (só no boot).
+  const drainedThesis = useRef<{
+    chapters: ThesisChapter[];
+    references: ThesisReference[];
+    meetings: ThesisMeeting[];
+    tasks: ThesisTask[];
+    writingLogs: ThesisWritingLog[];
+  } | null>(null);
+  useEffect(() => {
+    const legacy = tcc as unknown as { chapters?: unknown };
+    if (!Array.isArray(legacy.chapters)) return;
+    const migrated = migrateDatabase(SCHEMA_VERSION - 1, {
+      profile,
+      readings,
+      tcc: tcc as unknown as Record<string, unknown>,
+    } as Record<string, unknown>);
+    if (!migrated) return;
+    const nextChapters = (migrated.thesisChapters ?? []) as ThesisChapter[];
+    const nextReferences = (migrated.thesisReferences ?? []) as ThesisReference[];
+    drainedThesis.current = {
+      chapters: nextChapters,
+      references: nextReferences,
+      meetings: [],
+      tasks: [],
+      writingLogs: [],
+    };
+    // Coleções primeiro; o `tcc` novo (sem `chapters`) por último desarma a guarda.
+    setThesisChaptersRaw(nextChapters);
+    setThesisReferencesRaw(nextReferences);
+    // A migração devolve `readings` sempre novo (spread); só escreve quando a
+    // referência legada criou `ReadingItem` de verdade.
+    const nextReadings = Array.isArray(migrated.readings) ? (migrated.readings as ReadingItem[]) : [];
+    if (nextReadings.length !== readings.length) {
+      setReadingsRaw(nextReadings);
+    }
+    setTccRaw(migrated.tcc as ThesisProject);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tcc]);
+  useEffect(() => {
+    const drained = drainedThesis.current;
+    if (!drained) return;
+    // Restaura só se a hidratação zerou o que o dreno acabou de escrever e o
+    // `tcc` ainda é legado (dreno em andamento na mesma sessão de boot).
+    const stillLegacy = (tcc as unknown as { chapters?: unknown }).chapters !== undefined;
+    if (!stillLegacy) return;
+    if (thesisChapters.length === 0 && drained.chapters.length > 0) {
+      setThesisChaptersRaw(drained.chapters);
+    }
+    if (thesisReferences.length === 0 && drained.references.length > 0) {
+      setThesisReferencesRaw(drained.references);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [thesisChapters, thesisReferences, tcc]);
   const { value: stickers, set: setStickers, setRaw: setStickersRaw } = useStampedState<Sticker[]>('stickers', lockedStickerCatalog(), syncIndex, setSyncIndex);
   const { value: sessions, set: setSessions, setRaw: setSessionsRaw } = useStampedState<StudySession[]>('sessions', [], syncIndex, setSyncIndex);
   const { value: techniques, set: setTechniques, setRaw: setTechniquesRaw } = useStampedState<Technique[]>('techniques', [], syncIndex, setSyncIndex);
@@ -474,6 +614,11 @@ export function useDataClient(): DataClientValue {
   // `[]`; o guaranteeing do período ativo é o efeito abaixo, para que os dois
   // caminhos de entrada (import antigo e boot) produzam o mesmo termo.
   const { value: academicTerms, set: setAcademicTerms, setRaw: setAcademicTermsRaw } = useStampedState<AcademicTerm[]>('academicTerms', [], syncIndex, setSyncIndex);
+  // Leitura (SPEC-M-014): sessões de leitura, destaques e marcadores. Coleções
+  // novas no registry (`packages/data/src/collections.ts`), LWW por registro.
+  const { value: readingSessions, set: setReadingSessions, setRaw: setReadingSessionsRaw } = useStampedState<ReadingSession[]>('readingSessions', [], syncIndex, setSyncIndex);
+  const { value: readingHighlights, set: setReadingHighlights, setRaw: setReadingHighlightsRaw } = useStampedState<ReadingHighlight[]>('readingHighlights', [], syncIndex, setSyncIndex);
+  const { value: readingBookmarks, set: setReadingBookmarks, setRaw: setReadingBookmarksRaw } = useStampedState<ReadingBookmark[]>('readingBookmarks', [], syncIndex, setSyncIndex);
 
   // Garante um período ativo no boot (SPEC-005 §D4) e repara a integridade
   // (SPEC-006 D6). `ensureActiveTerm` é idempotente por construção: devolve
@@ -673,12 +818,30 @@ export function useDataClient(): DataClientValue {
 
   /** Aplica um banco completo (empty/demo/import/sincronizado) sem carimbar o SyncIndex. */
   const applyDatabase = (db: ReturnType<typeof emptyDatabase>) => {
-    // Migração one-shot (Fase 3): caderno de supervisão legado → InternshipLog.
-    // O `supervisionNotebook` não é mais um estado persistido; convertemos em
-    // registros de `type: 'supervisao'` na primeira aplicação.
-    const legacyNotebook = (db as unknown as { supervisionNotebook?: SupervisionNotebook[] }).supervisionNotebook ?? [];
+    // Migração one-shot (SPEC-009 §6.2): caderno de supervisão legado →
+    // `InternshipLog`.
+    //
+    // `F8`: esta função lia `db.supervisionNotebook`, mas a chave **contratual é
+    // `supervision`** — declarada de forma independente em `schema.ts:226`,
+    // `schema.ts:269`, `collections.ts:106`, `backupSchema.ts:311` e
+    // `normalize.ts:529`. Como nada jamais escrevia `supervisionNotebook`, a
+    // migração era **no-op em toda execução real**. As duas chaves são lidas agora,
+    // por tolerância, e as duas são removidas depois de migrar.
+    const legacySource = db as unknown as {
+      supervision?: SupervisionNotebook[];
+      supervisionNotebook?: SupervisionNotebook[];
+    };
+    const legacyNotebook = [
+      ...(legacySource.supervision ?? []),
+      ...(legacySource.supervisionNotebook ?? []),
+    ];
     const migratedLogs = migrateSupervisionNotebook(db.internshipLogs, legacyNotebook);
-    const nextDb = { ...db, internshipLogs: migratedLogs, supervisionNotebook: undefined };
+    const nextDb = {
+      ...db,
+      internshipLogs: migratedLogs,
+      supervision: [],
+      supervisionNotebook: undefined,
+    };
     applyDatabaseToSetters(
       nextDb as any,
       {
@@ -699,6 +862,14 @@ export function useDataClient(): DataClientValue {
         techniques: setTechniquesRaw,
         quizSessions: setQuizSessionsRaw,
         academicTerms: setAcademicTermsRaw,
+        readingSessions: setReadingSessionsRaw,
+        readingHighlights: setReadingHighlightsRaw,
+        readingBookmarks: setReadingBookmarksRaw,
+        thesisChapters: setThesisChaptersRaw,
+        thesisReferences: setThesisReferencesRaw,
+        thesisMeetings: setThesisMeetingsRaw,
+        thesisTasks: setThesisTasksRaw,
+        thesisWritingLogs: setThesisWritingLogsRaw,
         streakData: setStreakDataRaw,
         reminder: setReminderSettings,
         looseNotes: setLooseNotesRaw,
@@ -750,7 +921,9 @@ export function useDataClient(): DataClientValue {
       readings, flashcards, decks, materials, internshipLogs, tcc, stickers, sessions,
       streakData, reminder: reminderSettings, looseNotes, savedBookIds,
       bookmarkedCourseIds, readingProgress, questions, techniques, quizSessions,
-      academicTerms, onboarding, syncIndex,
+      academicTerms, readingSessions, readingHighlights, readingBookmarks,
+      thesisChapters, thesisReferences, thesisMeetings, thesisTasks, thesisWritingLogs,
+      onboarding, syncIndex,
     }));
     await exportAppDatabase(payload);
   };
@@ -775,14 +948,18 @@ export function useDataClient(): DataClientValue {
       readings, flashcards, decks, materials, internshipLogs, tcc, stickers, sessions,
       streakData, reminder: reminderSettings, looseNotes, savedBookIds,
       bookmarkedCourseIds, readingProgress, questions, techniques, quizSessions,
-      academicTerms, onboarding, syncIndex,
+      academicTerms, readingSessions, readingHighlights, readingBookmarks,
+      thesisChapters, thesisReferences, thesisMeetings, thesisTasks, thesisWritingLogs,
+      onboarding, syncIndex,
     }));
     return JSON.stringify(payload);
   }, [profile, courses, classes, tasks, exams, authors, concepts, approaches,
     readings, flashcards, decks, materials, internshipLogs, tcc, stickers, sessions,
     streakData, reminderSettings, looseNotes, savedBookIds,
     bookmarkedCourseIds, readingProgress, questions, techniques, quizSessions,
-    academicTerms, onboarding, syncIndex]);
+    academicTerms, readingSessions, readingHighlights, readingBookmarks,
+    thesisChapters, thesisReferences, thesisMeetings, thesisTasks, thesisWritingLogs,
+    onboarding, syncIndex]);
 
   /** Aplica o banco mesclado pela sincronização (mesmo caminho do import). */
   const applySyncedDatabase = useCallback((db: ReturnType<typeof emptyDatabase>) => {
@@ -977,6 +1154,15 @@ export function useDataClient(): DataClientValue {
       academicTerms,
       setAcademicTerms,
       setAcademicTermsRaw,
+      readingSessions,
+      setReadingSessions,
+      setReadingSessionsRaw,
+      readingHighlights,
+      setReadingHighlights,
+      setReadingHighlightsRaw,
+      readingBookmarks,
+      setReadingBookmarks,
+      setReadingBookmarksRaw,
       techniques,
       setTechniques,
       setTechniquesRaw,
@@ -990,6 +1176,9 @@ export function useDataClient(): DataClientValue {
       streakData, setStreakData, setStreakDataRaw,
       quizSessions, setQuizSessions, setQuizSessionsRaw,
       academicTerms, setAcademicTerms, setAcademicTermsRaw,
+      readingSessions, setReadingSessions, setReadingSessionsRaw,
+      readingHighlights, setReadingHighlights, setReadingHighlightsRaw,
+      readingBookmarks, setReadingBookmarks, setReadingBookmarksRaw,
       techniques, setTechniques, setTechniquesRaw,
       questions, setQuestions,
     ]
@@ -1036,12 +1225,24 @@ export function useDataClient(): DataClientValue {
       internshipLogs,
       setInternshipLogs,
       setInternshipLogsRaw,
-      internshipClinical,
-      setInternshipClinical,
-      setInternshipClinicalRaw,
       tcc,
       setTcc,
       setTccRaw,
+      thesisChapters,
+      setThesisChapters,
+      setThesisChaptersRaw,
+      thesisReferences,
+      setThesisReferences,
+      setThesisReferencesRaw,
+      thesisMeetings,
+      setThesisMeetings,
+      setThesisMeetingsRaw,
+      thesisTasks,
+      setThesisTasks,
+      setThesisTasksRaw,
+      thesisWritingLogs,
+      setThesisWritingLogs,
+      setThesisWritingLogsRaw,
       stickers,
       setStickers,
       setStickersRaw,
@@ -1100,6 +1301,11 @@ export function useDataClient(): DataClientValue {
       academicTerms, setAcademicTerms, setAcademicTermsRaw,
       internshipLogs, setInternshipLogs, setInternshipLogsRaw,
       tcc, setTcc, setTccRaw,
+      thesisChapters, setThesisChapters,
+      thesisReferences, setThesisReferences,
+      thesisMeetings, setThesisMeetings,
+      thesisTasks, setThesisTasks,
+      thesisWritingLogs, setThesisWritingLogs,
       stickers, setStickers, setStickersRaw,
       reminderSettings, setReminderSettings,
       gcalEnabled, setGcalEnabledState, gcalMap, setGcalMap,
@@ -1164,19 +1370,31 @@ export function useDataClient(): DataClientValue {
       materials,
      setMaterials,
      setMaterialsRaw,
-     internshipLogs,
-     setInternshipLogs,
-     setInternshipLogsRaw,
-     internshipClinical,
-     setInternshipClinical,
-     setInternshipClinicalRaw,
-     tcc,
-     setTcc,
-     setTccRaw,
-     stickers,
-     setStickers,
-     setStickersRaw,
-     sessions,
+      internshipLogs,
+      setInternshipLogs,
+      setInternshipLogsRaw,
+      tcc,
+      setTcc,
+      setTccRaw,
+      thesisChapters,
+      setThesisChapters,
+      setThesisChaptersRaw,
+      thesisReferences,
+      setThesisReferences,
+      setThesisReferencesRaw,
+      thesisMeetings,
+      setThesisMeetings,
+      setThesisMeetingsRaw,
+      thesisTasks,
+      setThesisTasks,
+      setThesisTasksRaw,
+      thesisWritingLogs,
+      setThesisWritingLogs,
+      setThesisWritingLogsRaw,
+      stickers,
+      setStickers,
+      setStickersRaw,
+      sessions,
      setSessions,
      setSessionsRaw,
      techniques,
@@ -1185,9 +1403,18 @@ export function useDataClient(): DataClientValue {
       quizSessions,
      setQuizSessions,
      setQuizSessionsRaw,
-     academicTerms,
-     setAcademicTerms,
-     setAcademicTermsRaw,
+      academicTerms,
+      setAcademicTerms,
+      setAcademicTermsRaw,
+      readingSessions,
+      setReadingSessions,
+      setReadingSessionsRaw,
+      readingHighlights,
+      setReadingHighlights,
+      setReadingHighlightsRaw,
+      readingBookmarks,
+      setReadingBookmarks,
+      setReadingBookmarksRaw,
 questions,
       setQuestions,
       streakData,

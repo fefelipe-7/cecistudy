@@ -1,6 +1,7 @@
 import { parseLegacySchedule } from '@/lib/schedule';
 import { hoursFromClasses, migrateLegacyAttendance } from '@/lib/attendance';
 import type { AcademicTerm } from '@/types';
+import { legacyNotebookToLog, THESIS_ID, emptyThesisReminderPrefs } from '@cecistudy/domain';
 
 /**
  * Versão do esquema de dados persistido.
@@ -9,28 +10,10 @@ import type { AcademicTerm } from '@/types';
  * incremente esta versão e registre a migração correspondente em `MIGRATIONS`.
  * O export/import carrega a versão junto; o app recusa/avisa dados de versão desconhecida.
  */
-export const SCHEMA_VERSION = 20;
+export const SCHEMA_VERSION = 22;
 
-/**
- * Versão de schema da base da usuária (`cecistudy_user`, SQLite nativo).
- *
- * **Débito C2, fechado.** Esta constante e `USER_SCHEMA_VERSION` em
- * `src/lib/db/migrations/user.ts` eram duas declarações independentes com
- * valores diferentes (1 e 3). O valor daqui é o que `exportImport.ts` carimba em
- * `userSchemaVersion` no envelope de backup; o valor de lá é o que o runner de
- * migração realmente aplica. Divergindo, **um backup declara v1 quando a base
- * está em v3**, e na restauração o app não sabe que precisa migrar.
- *
- * A fonte única é esta, em `packages/data`, porque `packages/*` é a biblioteca
- * canônica e `src/*` são stubs de compat que reexportam dela — a dependência
- * nunca pode ser invertida (ver `ADR-007` e o débito C9).
- *
- * Invariante, verificada por gate: este valor tem que ser igual a
- * `LATEST_USER_VERSION` em `src/lib/db/migrations.ts`, que é
- * `MIGRATIONS[MIGRATIONS.length - 1].version`. Ao acrescentar um passo de
- * migração, suba os dois — o gate falha se você esquecer.
- */
-export const USER_SCHEMA_VERSION = 3;
+/** Versão de schema da base da usuária (antigo scaffold SQLite, hoje mantida por compatibilidade de import). */
+export const USER_SCHEMA_VERSION = 1;
 
 /** Chave persistida que guarda a versão do schema em uso. */
 export const SCHEMA_VERSION_KEY = 'schemaVersion';
@@ -360,9 +343,14 @@ export const MIGRATIONS: Record<number, Migration> = {
       const stability = Math.max(0.1, (easeFactor - 1) * 1.5);
       const difficulty = Math.max(0.01, Math.min(10, (2.5 - easeFactor) * -2 + 5));
       const state = timesReviewed > 0 ? 'review' : 'new';
-      const due = lastReviewed
-        ? lastReviewed
-        : new Date().toISOString().slice(0,10);
+      // `F15`: este `new Date()` tornava a migração **não determinística** — reimportar
+      // o mesmo backup duas vezes produzia payloads diferentes, e o próprio arquivo
+      // declara em `MIGRATIONS[18]` que migração tem de ser determinística. O
+      // fallback agora sai do **dado**: sem `lastReviewed`, o flashcard entra como
+      // `state: 'new'` e o app o trata como "para hoje". Reescrever para uma data
+      // fixa exigiria inventar um passado que não está no backup — e um campo
+      // `createdAt`, quando existir, é a data honesta.
+      const due = lastReviewed ?? ((f.createdAt as string | undefined) ?? undefined);
       return {
         ...f,
         deckId: undefined,
@@ -461,85 +449,224 @@ export const MIGRATIONS: Record<number, Migration> = {
   // corrigiria o caso real, que é estar no 6º com o total errado. O Perfil deixa
   // reassinar o total depois (clamp `1..12`), então o custo de errar aqui é
   // baixo e o custo de não corrigir era um progresso de;formatura sempre furado.
-19: (data) => {
+  19: (data) => {
     const profile = { ...(data.profile as Record<string, unknown> ?? {}) };
     if (profile.totalSemesters === DEFAULT_TOTAL_SEMESTERS_LEGACY) {
       profile.totalSemesters = DEFAULT_TOTAL_SEMESTERS;
     }
     return { ...data, profile };
   },
-  // 19 → 20: a camada clínica do Estágio sai do mobile (SPEC-M-013 `D4`).
+  // 19 → 20: o vínculo sessão ↔ supervisão passa a ter **fonte única**
+  // (SPEC-009 §6 · `D3`), e o caderno de supervisão legado é drenado.
   //
-  // ## O que esta migração faz, e por que ela é irreversível
+  // Três coisas acontecem aqui, e as três corrigem bug real:
   //
-  // Converte cada `internshipLogs` com `type === 'atendimento_clinico'` numa
-  // **projeção** de cinco campos, e **descarta o resto**. Os campos
-  // descartados são `patient`, `patientAge`, `sessionNumber`, `theme`,
-  // `approach`, `interventionNotes`, `observations`, `supervisionLogId` e
-  // `discussedLogIds` — nove campos de dado de paciente real.
+  // 1. **`supervisionLogId` → `discussedLogIds`.** O vínculo era gravado nos **dois
+  //    lados** e nada limpava nenhum dos dois ao apagar (`F3`). Agora ele vive só
+  //    na supervisão e "supervisionada" é derivado — uma classe inteira de bug
+  //    some por construção.
+  // 2. **Dreno do caderno legado.** `F8`: `applyDatabase` lia `db.supervisionNotebook`,
+  //    mas a chave contratual é **`supervision`** (`collections.ts:106`) — declarada
+  //    de forma independente em 5 lugares. Como nada escrevia `supervisionNotebook`,
+  //    a migração era **no-op em toda execução real**: código morto com teste verde.
+  //    Aqui as duas chaves são lidas, por tolerância.
+  // 3. **`workspaceId` no log migrado.** `migrateSupervisionNotebook` montava 15
+  //    campos e `workspaceId` não era um deles, então o log entrava no estado fora
+  //    do escopo de workspace. A conversão agora é `legacyNotebookToLog`, que é a
+  //    **mesma função** do drain no boot — uma regra, um lugar.
   //
-  // ## Por que descartar em vez de migrar
-  //
-  // Não há como cumprir `SPEC-M-013` `D1` e manter o dado: se o conteúdo clínico
-  // continuar na base, ele continua no aparelho, e a próxima exportação o leva.
-  // A escolha real era entre apagar do aparelho agora ou apagar quando alguém
-  // descobrir. A lista de campos que **sobrevive** é a de §4.8 linha 472 da spec
-  // referencial: iniciais, data, duração e "Para levar" — o único texto que a
-  // usuária escolhe levar, e que ela pode ter deixado vazio.
-  //
-  // ## Por que isto precisa de confirmação da dona antes de produção
-  //
-  // A consequência é visível: a usuária que registrou atendimento no celular
-  // **perde o texto**. A decisão não está aberta — §4.8 linha 471 é `[D]` e diz
-  // "Só desktop" — mas a consequência é dela, e ninguém deve descobrir por conta
-  // própria. Ver `SPEC-M-013` `## 10`.
-  //
-  // ## Idempotência
-  //
-  // Rodar duas vezes não faz nada: a segunda passagem não encontra
-  // `atendimento_clinico` em `internshipLogs`, porque a primeira já removeu. E a
-  // coleção `internshipClinical` é criada só se ainda não existir, para uma
-  // projeção antiga não ser duplicada.
+  // Idempotente: rodar duas vezes dá o mesmo resultado (o `byId.has(nb.id)` impede
+  //    duplicar o caderno, e o `uniq` limpa a lista de discutidas). Determinística:
+  //    nenhum `Date` aqui.
   20: (data) => {
-    const logs = Array.isArray(data.internshipLogs)
-      ? (data.internshipLogs as Record<string, unknown>[])
-      : [];
+    const logs = ((data.internshipLogs as Record<string, unknown>[]) ?? []).map((l) => ({ ...l }));
+    const byId = new Map<string, Record<string, unknown>>();
+    for (const l of logs) byId.set(l.id as string, l);
 
-    const academicos: Record<string, unknown>[] = [];
-    const projecoes: Record<string, unknown>[] = [];
+    // 1. `type` obrigatório (invariante `I7`) — dado antigo sem tipo vira estágio.
+    for (const l of logs) if (!l.type) l.type = 'estagio';
 
-    for (const log of logs) {
-      if (log.type !== 'atendimento_clinico') {
-        academicos.push(log);
-        continue;
-      }
-
-      // Só os cinco campos de §4.8 linha 472. `paraLevar` ausente vira string
-      // vazia porque **ausente é escolha válida**: "não levei nada" é informação,
-      // e `undefined` no payload seria ambíguo entre "não escolheu" e "não tinha".
-      projecoes.push({
-        id: typeof log.id === 'string' ? log.id : '',
-        iniciais: typeof log.patient === 'string' && log.patient.trim() ? log.patient.trim() : '—',
-        data: typeof log.date === 'string' ? log.date : '',
-        duracaoMin: typeof log.hours === 'number' && Number.isFinite(log.hours)
-          ? Math.round(log.hours * 60)
-          : 0,
-        paraLevar: typeof log.paraLevar === 'string' ? log.paraLevar : '',
-      });
+    // 2. Dreno do caderno legado. `supervision` é a chave contratual;
+    //    `supervisionNotebook` é lida por tolerância, porque foi o nome que o
+    //    código leu por engano (`F8`) e algum backup pode ter vindo com ele.
+    const legacy = [
+      ...(((data.supervision as unknown[]) ?? []) as never[]),
+      ...(((data.supervisionNotebook as unknown[]) ?? []) as never[]),
+    ];
+    for (const nb of legacy) {
+      const id = (nb as { id?: string }).id;
+      if (!id || byId.has(id)) continue; // idempotência
+      const log = legacyNotebookToLog(nb as Parameters<typeof legacyNotebookToLog>[0]);
+      byId.set(id, log as unknown as Record<string, unknown>);
+      logs.push(log as unknown as Record<string, unknown>);
     }
 
-    const jaExistentes = Array.isArray(data.internshipClinical)
-      ? (data.internshipClinical as Record<string, unknown>[])
-      : [];
-    const idsConhecidos = new Set(jaExistentes.map((p) => p.id));
+    // 3. `supervisionLogId` → `discussedLogIds` (fonte única, `D3`).
+    for (const l of logs) {
+      const pointer = l.supervisionLogId as string | undefined;
+      if (pointer === undefined) continue;
+      const sup = byId.get(pointer);
+      if (
+        sup &&
+        (sup.type === 'supervisao' || sup.type === 'intervisao') &&
+        l.type === 'atendimento_clinico'
+      ) {
+        const current = (sup.discussedLogIds as string[] | undefined) ?? [];
+        if (!current.includes(l.id as string)) sup.discussedLogIds = [...current, l.id as string];
+      }
+      // Vínculo órfão (apontando para supervisão que não existe) é descartado.
+      delete l.supervisionLogId;
+    }
+
+    // 4. Higiene de `discussedLogIds` (`I1`–`I3`) e de `selfAssessment` (`I8`).
+    for (const l of logs) {
+      if (l.type === 'supervisao' || l.type === 'intervisao') {
+        const ids = [
+          ...new Set(
+            ((l.discussedLogIds as string[] | undefined) ?? []).filter(
+              (id) => id !== l.id && byId.get(id)?.type === 'atendimento_clinico'
+            )
+          ),
+        ];
+        if (ids.length) l.discussedLogIds = ids;
+        else delete l.discussedLogIds;
+      } else {
+        delete l.discussedLogIds;
+      }
+      const sa = l.selfAssessment as Record<string, unknown> | undefined;
+      if (sa && !Object.values(sa).some((v) => typeof v === 'string' && v.trim() !== '')) {
+        delete l.selfAssessment;
+      }
+    }
+
+    // A chave `supervision` continua existindo **vazia**: `backupDataSchema`
+    // (`backupSchema.ts:311`) declara o array, e removê-lo reprova a validação.
+    return { ...data, internshipLogs: logs, supervision: [] };
+  },
+  // 20 → 21: leitura unificada com sessões, highlights e bookmarks (SPEC-M-014)
+  21: (data) => {
+    const readings = (data.readings ?? []) as Record<string, unknown>[];
+    const normalized = readings.map((r) => ({
+      ...r,
+      catalogId: r.catalogId ?? undefined,
+      sourceKind: r.sourceKind ?? undefined,
+      contentRef: r.contentRef ?? undefined,
+      position: r.position ?? undefined,
+      furthestPercent: r.furthestPercent ?? undefined,
+      lastReadAt: r.lastReadAt ?? undefined,
+      coverColor: r.coverColor ?? undefined,
+    }));
+    return {
+      ...data,
+      readings: normalized,
+      readingSessions: data.readingSessions ?? [],
+      readingHighlights: data.readingHighlights ?? [],
+      readingBookmarks: data.readingBookmarks ?? [],
+    };
+  },
+  // 21 → 22: TCC vira painel de gestão (SPEC-012). Capítulos e referências saem
+  // do singleton e viram coleções com id estável (resolve F2: id por índice; e
+  // F13: sync por objeto inteiro). Pela ADR-010, a referência legada (string
+  // solta) vira `ReadingItem` com `rawCitation` — o dado bibliográfico é da
+  // Biblioteca; o `ThesisReference` guarda só o ato de citar.
+  //
+  // Determinística e idempotente: **nenhum `Date` dentro** (F15 da SPEC-009) —
+  // os timestamps legados recebem a época fixa, nunca "agora"; os ids são
+  // `thc-N`/`thr-N` por posição de origem, estáveis entre execuções.
+  22: (data) => {
+    // Idempotência: já migrado (dreno pode rodar mais de uma vez).
+    if (Array.isArray(data.thesisChapters) && Array.isArray(data.thesisReferences)) {
+      return data;
+    }
+    const tcc = (data.tcc ?? {}) as Record<string, unknown>;
+    const oldChapters = Array.isArray(tcc.chapters) ? tcc.chapters : [];
+    const oldReferences = Array.isArray(tcc.references) ? tcc.references : [];
+    const str = (v: unknown): string => (typeof v === 'string' ? v : '');
+    const DATE_KEY = /^\d{4}-\d{2}-\d{2}$/;
+    const EPOCH = '1970-01-01T00:00:00.000Z';
+
+    const thesisChapters = oldChapters
+      .map((ch, i) => {
+        const rec = (ch ?? {}) as Record<string, unknown>;
+        const dueDate = str(rec.dueDate);
+        return {
+          id: `thc-${i + 1}`,
+          workspaceId: DEFAULT_WORKSPACE_ID,
+          thesisId: THESIS_ID,
+          position: i,
+          title: str(rec.title),
+          kind: 'capitulo',
+          requiredness: 'obrigatorio',
+          stage: rec.completed === true ? 'pronto' : 'a_fazer',
+          ...(DATE_KEY.test(dueDate) ? { dueDate } : {}),
+          createdAt: EPOCH,
+          updatedAt: EPOCH,
+        };
+      })
+      .filter((ch) => ch.title !== '');
+
+    // Referência legada: um `ReadingItem` (a obra, com o texto original intacto
+    // em `rawCitation` — `formatAbnt` respeita) + um `ThesisReference` fino.
+    // Nada muda na lista que ela já montou: a prévia ABNT continua mostrando a
+    // string dela, byte a byte.
+    const readings = (data.readings ?? []) as Record<string, unknown>[];
+    const legacyReadings: Record<string, unknown>[] = [];
+    const thesisReferences: Record<string, unknown>[] = [];
+    oldReferences.forEach((r, i) => {
+      if (typeof r !== 'string' || r.trim() === '') return;
+      const readingId = `r-legacy-tcc-${i + 1}`;
+      legacyReadings.push({
+        id: readingId,
+        workspaceId: DEFAULT_WORKSPACE_ID,
+        title: r.slice(0, 200),
+        author: 'autor não informado',
+        type: 'artigo',
+        status: 'nao_iniciado',
+        sourceKind: 'custom',
+        rawCitation: r,
+      });
+      thesisReferences.push({
+        id: `thr-${i + 1}`,
+        workspaceId: DEFAULT_WORKSPACE_ID,
+        thesisId: THESIS_ID,
+        readingId,
+        status: 'citada',
+        createdAt: EPOCH,
+        updatedAt: EPOCH,
+      });
+    });
+
+    // O singleton perde `chapters`/`references` e ganha `id` + preferências de
+    // lembrete (§6.4). `tcc` sem `chapters` é o marcador de "dreno completo"
+    // para o efeito de boot — a chave removida desarma a guarda.
+    const { chapters: _c, references: _r, ...tccRest } = tcc;
+    const migratedTcc: Record<string, unknown> = {
+      ...tccRest,
+      id: THESIS_ID,
+      reminderPrefs: emptyThesisReminderPrefs(),
+    };
+
+    // Prazo fora de `YYYY-MM-DD` é descartado (nunca adivinhado) e listado.
+    const discarded = oldChapters
+      .map((ch, i) => ({ rec: (ch ?? {}) as Record<string, unknown>, i }))
+      .filter(({ rec }) => str(rec.dueDate) !== '' && !DATE_KEY.test(str(rec.dueDate)))
+      .map(
+        ({ rec, i }) =>
+          `migracao-22: prazo do capítulo ${i + 1} (${str(rec.dueDate)}) fora de YYYY-MM-DD — descartado`
+      );
 
     return {
       ...data,
-      internshipLogs: academicos,
-      internshipClinical: [
-        ...jaExistentes,
-        ...projecoes.filter((p) => p.id && !idsConhecidos.has(p.id)),
-      ],
+      tcc: migratedTcc,
+      readings: [...readings, ...legacyReadings],
+      thesisChapters,
+      thesisReferences,
+      thesisMeetings: data.thesisMeetings ?? [],
+      thesisTasks: data.thesisTasks ?? [],
+      thesisWritingLogs: data.thesisWritingLogs ?? [],
+      ...(discarded.length
+        ? { migrationNotes: [...((data.migrationNotes as string[]) ?? []), ...discarded] }
+        : {}),
     };
   },
 };
@@ -547,6 +674,11 @@ export const MIGRATIONS: Record<number, Migration> = {
 /**
  * Aplica as migrações de `fromVersion` (exclusive) até `SCHEMA_VERSION`.
  * Se a versão de origem for desconhecida/maior, devolve `null` (import deve recusar).
+ *
+ * `F17`: versão **faltante** é erro, não um `continue` silencioso. Antes um buraco
+ * na numeração era engolido e a cadeia seguia — o que transforma um erro de
+ * digitação em perda de dado silenciosa. Hoje 2..20 é contíguo; se deixar de ser,
+ * o import falha e diz por quê.
  */
 export function migrateDatabase(
   fromVersion: number,
@@ -554,11 +686,21 @@ export function migrateDatabase(
 ): Record<string, unknown> | null {
   if (fromVersion > SCHEMA_VERSION) return null;
   if (fromVersion < 1) return null;
+  const missing: number[] = [];
   let next = data;
   for (let v = fromVersion + 1; v <= SCHEMA_VERSION; v++) {
     const migration = MIGRATIONS[v];
-    if (!migration) continue;
+    if (!migration) {
+      missing.push(v);
+      continue;
+    }
     next = migration(next);
+  }
+  if (missing.length) {
+    throw new Error(
+      `migrateDatabase: MIGRATIONS está com buraco na versão ${missing.join(', ')}. ` +
+        `A cadeia não pode pular versão — import recusado para não gravar dado incompleto.`
+    );
   }
   return next;
 }

@@ -121,34 +121,14 @@ const materialSchema = passthrough({
   addedAt: z.string(),
 });
 
-/**
- * A coleção clínica, com schema **estrito**.
- *
- * `SPEC-M-013` `D3`. Este é o único schema de `backupSchema.ts` que **não** usa
- * `passthrough()`, e a assimetria é deliberada: `passthrough()` existe por um
- * motivo bom e escrito — não travar import de backup antigo com campo legado. Isso
- * justifica um campo decorativo e **não** justifica dado de paciente, que foi
- * exatamente por onde entrou: nove campos sem checagem nenhuma.
- *
- * `.strict()` faz o campo a mais virar erro de validação, com o nome no erro. É a
- * diferença entre "chegar ao banco" e "ser recusado antes de gravar" — e
- * §4.8 linha 545 diz que a exclusão é "regra fixa, não configuração".
- */
-const clinicalProjectionSchema = z
-  .object({
-    /** Identificador da projeção. Aponta para o registro no desktop, e é o que
-     *  `discussedClinicalIds` referencia — sem ele a supervisão não liga em nada. */
-    id: z.string().min(1),
-    /** §4.8 linha 466 — iniciais ou código, nunca nome completo. */
-    iniciais: z.string().min(1),
-    /** ISO 8601 de data local. */
-    data: z.string().min(1),
-    /** Duração em minutos. */
-    duracaoMin: z.number().int().nonnegative(),
-    /** §4.8 linha 472 — o único texto que ela escolhe levar. Vazio é escolha. */
-    paraLevar: z.string(),
-  })
-  .strict();
+const internshipLogSchema = passthrough({
+  id: z.string(),
+  type: z.string(),
+  date: z.string(),
+  hours: z.number(),
+  activity: z.string(),
+  reflections: z.string(),
+});
 
 const supervisionNotebookSchema = passthrough({
   id: z.string(),
@@ -170,20 +150,28 @@ const supervisionNotebookSchema = passthrough({
   afterNotes: z.string().optional(),
 });
 
-const tccChapterSchema = passthrough({
-  title: z.string(),
-  completed: z.boolean(),
-});
-
+// SPEC-012: o TCC emagrecece. `chapters`/`references` eram obrigatórios aqui —
+// sem removê-los, o `tcc` migrado (que não os tem mais) reprovaria o import e o
+// "backup restaurado" sumiria sem erro. Os campos novos entram como obrigatórios
+// porque toda carga em ≥22 passa pela `MIGRATIONS[22]`, que os semeia.
 const tccSchema = passthrough({
+  id: z.string(),
   title: z.string(),
   advisor: z.string(),
   field: z.string(),
   problemStatement: z.string(),
   objectives: stringArray,
   status: z.enum(['em_andamento', 'revisao', 'concluido']),
-  chapters: z.array(tccChapterSchema),
-  references: stringArray,
+  reminderPrefs: z
+    .object({
+      enabled: z.boolean(),
+      chapterDaysBefore: z.array(z.number()),
+      milestoneDaysBefore: z.array(z.number()),
+      time: z.string(),
+      meetingEve: z.boolean(),
+      meetingMinutesBefore: z.array(z.number()),
+    })
+    .passthrough(),
 });
 
 const stickerSchema = passthrough({
@@ -311,6 +299,119 @@ const quizSessionSchema = passthrough({
 });
 
 // ---------------------------------------------------------------------------
+// Leitura — sessões, destaques e marcadores (SPEC-M-014)
+// ---------------------------------------------------------------------------
+
+const readingSessionSchema = passthrough({
+  id: z.string(),
+  workspaceId: z.string().optional(),
+  readingId: z.string(),
+  kind: z.enum(['session', 'baseline']),
+  date: z.string(),
+  unit: z.enum(['pages', 'position', 'time']),
+  fromPage: z.number().optional(),
+  toPage: z.number().optional(),
+  fromPercent: z.number().optional(),
+  toPercent: z.number().optional(),
+  fromBlockId: z.string().optional(),
+  toBlockId: z.string().optional(),
+  minutes: z.number().optional(),
+  note: z.string().optional(),
+  createdAt: z.string(),
+  updatedAt: z.string().optional(),
+});
+
+const readingHighlightSchema = passthrough({
+  id: z.string(),
+  workspaceId: z.string().optional(),
+  readingId: z.string(),
+  kind: z.enum(['text', 'manual']),
+  anchor: z
+    .object({
+      sectionId: z.string(),
+      blockId: z.string(),
+      start: z.number(),
+      end: z.number(),
+    })
+    .optional(),
+  quote: z.string(),
+  page: z.number().optional(),
+  color: z.enum(['idea', 'doubt', 'quote', 'review']),
+  note: z.string().optional(),
+  conceptIds: z.array(z.string()).optional(),
+  authorIds: z.array(z.string()).optional(),
+  flashcardId: z.string().optional(),
+  looseNoteId: z.string().optional(),
+  contentVersion: z.number().optional(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+const readingBookmarkSchema = passthrough({
+  id: z.string(),
+  workspaceId: z.string().optional(),
+  readingId: z.string(),
+  sectionId: z.string(),
+  blockId: z.string(),
+  label: z.string().optional(),
+  createdAt: z.string(),
+});
+
+// ---------------------------------------------------------------------------
+// TCC (SPEC-012) — capítulos, referências, reuniões, pendências e escrita
+// ---------------------------------------------------------------------------
+
+const thesisChapterSchema = passthrough({
+  id: z.string(),
+  thesisId: z.string(),
+  position: z.number(),
+  title: z.string(),
+  kind: z.string(),
+  requiredness: z.string(),
+  stage: z.enum(['a_fazer', 'escrevendo', 'em_revisao', 'pronto']),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+const thesisReferenceSchema = passthrough({
+  id: z.string(),
+  thesisId: z.string(),
+  readingId: z.string(),
+  status: z.enum(['candidata', 'lida', 'citada', 'descartada']),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+const thesisMeetingSchema = passthrough({
+  id: z.string(),
+  thesisId: z.string(),
+  date: z.string(),
+  mode: z.string(),
+  status: z.enum(['agendada', 'realizada', 'cancelada']),
+  decisions: stringArray,
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+const thesisTaskSchema = passthrough({
+  id: z.string(),
+  thesisId: z.string(),
+  title: z.string(),
+  origin: z.enum(['orientadora', 'minha']),
+  status: z.enum(['aberta', 'em_andamento', 'resolvida', 'arquivada']),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+const thesisWritingLogSchema = passthrough({
+  id: z.string(),
+  thesisId: z.string(),
+  date: z.string(),
+  words: z.number(),
+  createdAt: z.string(),
+});
+
+// ---------------------------------------------------------------------------
 // Banco completo (coleções opcionais — ausência recebe default; presença valida)
 // ---------------------------------------------------------------------------
 
@@ -327,21 +428,7 @@ export const backupDataSchema = z
     readings: z.array(readingItemSchema),
     flashcards: z.array(flashcardSchema),
     materials: z.array(materialSchema),
-    // `internshipLogs` é validada por forma mínima e `passthrough()` de propósito:
-    // a coleção **acadêmica** é onde compatibilidade de backup antigo é legítima,
-    // e §4.8 linha 472 já tirou o registro clínico de fora dela. Ver
-    // `SPEC-M-013` `D3` para por que a assimetria é o ponto.
-    internshipLogs: z.array(
-      passthrough({
-        id: z.string(),
-        type: z.enum(['estagio', 'supervisao', 'intervisao', 'outro']),
-        date: z.string(),
-        hours: z.number(),
-        activity: z.string(),
-        reflections: z.string(),
-      }),
-    ),
-    internshipClinical: z.array(clinicalProjectionSchema),
+    internshipLogs: z.array(internshipLogSchema),
     supervision: z.array(supervisionNotebookSchema),
     tcc: tccSchema,
     stickers: z.array(stickerSchema),
@@ -355,6 +442,14 @@ export const backupDataSchema = z
     techniques: z.array(techniqueSchema),
     quizSessions: z.array(quizSessionSchema),
     academicTerms: z.array(academicTermSchema),
+    readingSessions: z.array(readingSessionSchema),
+    readingHighlights: z.array(readingHighlightSchema),
+    readingBookmarks: z.array(readingBookmarkSchema),
+    thesisChapters: z.array(thesisChapterSchema),
+    thesisReferences: z.array(thesisReferenceSchema),
+    thesisMeetings: z.array(thesisMeetingSchema),
+    thesisTasks: z.array(thesisTaskSchema),
+    thesisWritingLogs: z.array(thesisWritingLogSchema),
     onboarding: onboardingSchema,
     syncIndex: syncIndexSchema.optional(),
   })

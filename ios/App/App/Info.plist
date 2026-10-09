@@ -78,5 +78,16 @@
 	<string>anotar aulas, provas e estudos na sua agenda.</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>usar a agenda para organizar seus compromissos de estudo.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>ceci.study.app</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>cecistudy</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
