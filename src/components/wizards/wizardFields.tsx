@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from '../../lib/utils';
+import { daysBetween, localDateKey, todayKeyLocal } from '../../lib/dateBR';
 
 /** Rótulo de campo discreto dos wizards (o destaque é o headline do passo). */
 export const FieldLabel: React.FC<{ children: React.ReactNode; htmlFor?: string }> = ({
@@ -123,6 +124,96 @@ export const NumberInput: React.FC<React.InputHTMLAttributes<HTMLInputElement>> 
     className={cn(inputClass, 'text-sm', props.className)}
   />
 );
+
+/**
+ * Campo de **prazo** — diferente do `DateField`.
+ *
+ * O `DateField` faz pergunta de calendário ("hoje?", "amanhã?"), que é a
+ * pergunta certa quando se marca algo que acontece amanhã e a errada quando se
+ * marca *entrega final* e *banca*: ninguém entrega o TCC amanhã, e um atalho
+ * chamado "amanhã" ali só empurra a data para o lugar errado com um toque.
+ * Aqui os atalhos são horizontais — "1 mês", "3 meses", "6 meses", "ano que
+ * vem" — e a data volta em linguagem natural, porque "faltam 40 dias" é o que
+ * a pessoa quer saber, não "14/11/2026".
+ */
+export const DeadlineField: React.FC<{
+  label?: string;
+  id?: string;
+  value: string;
+  onChange: (value: string) => void;
+}> = ({ label, id, value, onChange }) => {
+  const chipBase =
+    'px-3 py-1.5 rounded-full border text-[11px] font-semibold tap-interactive cursor-pointer transition active:scale-95';
+  const today = todayKeyLocal();
+
+  const preset = (months: number) => {
+    const d = new Date();
+    d.setMonth(d.getMonth() + months);
+    return localDateKey(d);
+  };
+  const nextYear = () => {
+    const d = new Date();
+    d.setFullYear(d.getFullYear() + 1);
+    return localDateKey(d);
+  };
+
+  const presets = [
+    { label: '1 mês', key: () => preset(1) },
+    { label: '3 meses', key: () => preset(3) },
+    { label: '6 meses', key: () => preset(6) },
+    { label: 'ano que vem', key: nextYear },
+  ];
+
+  // Eco do prazo: passado vira alerta, hoje vira "hoje", o resto conta os dias.
+  let echo: { text: string; cls: string } | null = null;
+  if (value) {
+    const days = daysBetween(today, value);
+    if (days < 0) {
+      echo = { text: `passou há ${Math.abs(days)} dias`, cls: 'text-status-danger-strong' };
+    } else if (days === 0) {
+      echo = { text: 'é hoje', cls: 'text-status-warning-strong' };
+    } else {
+      echo = { text: `faltam ${days} dias`, cls: 'text-ceci-secondary' };
+    }
+  }
+
+  return (
+    <div>
+      {label && <FieldLabel htmlFor={id}>{label}</FieldLabel>}
+      <DateInput id={id} value={value} onChange={(e) => onChange(e.target.value)} />
+      <div className="flex flex-wrap gap-1.5 mt-1.5">
+        {presets.map((p) => {
+          const k = p.key();
+          return (
+            <button
+              key={p.label}
+              type="button"
+              onClick={() => onChange(k)}
+              className={cn(
+                chipBase,
+                value === k
+                  ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
+                  : 'bg-surface-default border-ceci-border-default text-ceci-secondary hover:bg-surface-muted',
+              )}
+            >
+              {p.label}
+            </button>
+          );
+        })}
+        {value && (
+          <button
+            type="button"
+            onClick={() => onChange('')}
+            className={cn(chipBase, 'bg-surface-default border-ceci-border-default text-status-danger-strong hover:bg-surface-rose')}
+          >
+            sem data
+          </button>
+        )}
+      </div>
+      {echo && <p className={cn('text-[11px] mt-1.5 font-medium', echo.cls)}>{echo.text}</p>}
+    </div>
+  );
+};
 
 interface ReviewCardProps {
   rows: { label: string; value: string }[];

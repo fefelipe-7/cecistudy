@@ -6,15 +6,23 @@ interface StepProgressProps {
 }
 
 /**
- * Linha simples de progresso do wizard.
+ * Mapa de passos do wizard: uma linha contínua com o quanto já andou, e uma
+ * pastilha com o nome do passo.
  *
- * As bolinhas numeradas viveram aqui um dia; quem fez o walkthrough dos
- * wizards viu dois contadores ao mesmo tempo (o "N de M" do header + as
- * bolinhas) e pediu para tirar as bolinhas: o header já tem a barra fina que
- * anda conforme os passos completam (`WizardScaffoldHeader`). A `aria-current`
- * dos passos também ficou no header, na `ol` sr-only (SPEC-008 F4.7).
+ * Aqui já houve três versões. As bolinhas numeradas saíram porque eram um
+ * terceiro contador de "onde estou" ao lado do "N de M" e da lista `aria-current`
+ * do header. A linha segui segmentada — mas da uma leitura de "botão", e a
+ * linha do texto repetia o que a pastilha já diz.
+ *
+ * Agora a linha é **contínua**: um trilho claro com o preenchimento rosa por
+ * cima, o que importa é *quanto* já andou e não em qual botão. O nome do passo
+ * vai na pastilha, encostado na ponta da barra — o olho vai lá primeiro, e o
+ * "N de M" do header segue sendo o contador (a `aria-current` dos passos também
+ * mora no header, na `ol` sr-only — SPEC-008 F4.7).
  */
 export const StepProgress: React.FC<StepProgressProps> = ({ steps, current }) => {
+  const ratio = (current / Math.max(steps.length - 1, 1)) * 100;
+
   return (
     <div
       className="w-full"
@@ -24,15 +32,17 @@ export const StepProgress: React.FC<StepProgressProps> = ({ steps, current }) =>
       aria-valuenow={current + 1}
       aria-label={`passo ${current + 1} de ${steps.length}: ${steps[current]}`}
     >
-      <div className="flex items-center gap-2">
-        {steps.map((_, i) => (
+      <div className="flex items-center gap-3">
+        <div className="relative h-[3px] flex-1 rounded-full bg-ceci-border-subtle overflow-hidden">
           <div
-            key={i}
-            className={`h-[2px] flex-1 ${i < current ? 'bg-status-success' : 'bg-ceci-border-subtle'}`}
+            className="absolute inset-y-0 left-0 rounded-full bg-ceci-brand transition-[width] duration-500 ease-out"
+            style={{ width: `${ratio}%` }}
           />
-        ))}
+        </div>
+        <span className="shrink-0 rounded-full bg-surface-rose border border-ceci-border-brand px-2.5 py-1 text-[11px] font-semibold text-ceci-brand-strong">
+          {steps[current]}
+        </span>
       </div>
-      <p className="text-[11px] text-ceci-secondary mt-2">{steps[current]}</p>
     </div>
   );
 };

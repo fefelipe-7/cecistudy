@@ -438,7 +438,7 @@ describe('TccWizard — concluir com capítulo pendente (SPEC-012 F0.3 / D4)', (
     fireEvent.change(screen.getByLabelText('banca'), { target: { value: bancaKey } });
     fireEvent.change(screen.getByLabelText('meta total de palavras'), { target: { value: '20000' } });
     fireEvent.change(screen.getByLabelText('meta semanal'), { target: { value: '500' } });
-    fireEvent.click(screen.getByLabelText('lembretes de prazos (capítulos, reuniões, entrega e banca)'));
+    fireEvent.click(screen.getByLabelText('lembretes de prazo'));
     avancarPassos(2);
     fireEvent.click(screen.getByRole('button', { name: 'guardar tcc ♡' }));
 

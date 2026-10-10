@@ -1,13 +1,15 @@
 import React, { useMemo, useState } from 'react';
-import { GraduationCap, Plus, Trash2 } from 'lucide-react';
+import { Bell, GraduationCap, Lightbulb, Plus, Trash2 } from 'lucide-react';
 import { Modal } from '../ui/Modal';
-import { SegmentedControl } from '../ui/SegmentedControl';
+import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
+import { StatusChip, type StatusTone } from '../ui/StatusChip';
+import { ToggleRow } from '../ui/ToggleRow';
 import { emptyThesisReminderPrefs, type ThesisChapter, type ThesisProject } from '../../types';
 import { useMobileApp } from '../../context/mobileApp';
 import { useWizardForm } from '../../lib/useWizardForm';
 import { formatDateBR } from '../../lib/dateBR';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
-import { DateField, Field, NumberInput, ReviewCard, TextArea, TextInput } from './wizardFields';
+import { DeadlineField, Field, FieldHint, FieldLabel, NumberInput, ReviewCard, TextArea, TextInput } from './wizardFields';
 
 /**
  * Wizard de dados do TCC (SPEC-012).
@@ -33,23 +35,29 @@ interface TccFormValues {
   remindersEnabled: boolean;
 }
 
-const STATUS_OPTIONS: { value: ThesisProject['status']; label: string }[] = [
-  { value: 'em_andamento', label: 'em andamento' },
-  { value: 'revisao', label: 'em revisão' },
-  { value: 'concluido', label: 'concluído' },
+const STATUS_OPTIONS: { value: ThesisProject['status']; label: string; emoji: string; caption: string }[] = [
+  { value: 'em_andamento', label: 'em andamento', emoji: '✍️', caption: 'a escrita está rolando' },
+  { value: 'revisao', label: 'em revisão', emoji: '🔍', caption: 'revisando com a orientadora' },
+  { value: 'concluido', label: 'concluído', emoji: '🎓', caption: 'entregue e defendendo' },
 ];
 
-/** Meta de palavras: inteiro ≥ 0 ou `undefined` (vazio = não informado, ≠ 0). */
-const parseGoal = (raw: string): number | undefined => {
-  const n = Number(raw);
-  if (raw.trim() === '' || !Number.isInteger(n) || n < 0) return undefined;
-  return n;
+const STATUS_TONE: Record<ThesisProject['status'], StatusTone> = {
+  em_andamento: 'info',
+  revisao: 'warning',
+  concluido: 'success',
 };
 
 const STATUS_LABEL: Record<ThesisProject['status'], string> = {
   em_andamento: 'em andamento',
   revisao: 'em revisão',
   concluido: 'concluído',
+};
+
+/** Meta de palavras: inteiro ≥ 0 ou `undefined` (vazio = não informado, ≠ 0). */
+const parseGoal = (raw: string): number | undefined => {
+  const n = Number(raw);
+  if (raw.trim() === '' || !Number.isInteger(n) || n < 0) return undefined;
+  return n;
 };
 
 const seedFromTcc = (tcc: ThesisProject): TccFormValues => ({
@@ -66,8 +74,14 @@ const seedFromTcc = (tcc: ThesisProject): TccFormValues => ({
   remindersEnabled: tcc.reminderPrefs?.enabled ?? false,
 });
 
+/**
+ * Uma expressão por passo: a mesma mascote nas quatro telas diz que o wizard
+ * não olha para onde você está. O índice acompanha `steps`.
+ */
+const STEP_MASCOTES = ['field-prepare', 'research-tcc', 'writing-flow', 'review-card'] as const;
+
 export const TccWizard: React.FC = () => {
-  const { tcc, thesisChapters, handleUpdateTcc, closeWizard } = useMobileApp();
+  const { tcc, thesisChapters, handleUpdateTcc, closeWizard, showToast } = useMobileApp();
   const [confirmingConclusion, setConfirmingConclusion] = useState(false);
 
   const { values, patch, step, setStep } = useWizardForm<TccFormValues>({
@@ -82,6 +96,25 @@ export const TccWizard: React.FC = () => {
 
   const updateObjective = (index: number, value: string) =>
     patch({ objectives: values.objectives.map((o, i) => (i === index ? value : o)) });
+
+  /**
+   * Eco das metas: os dois números viram um plano legível. "6000 palavras" é
+   * abstração; "≈ 12 semanas no seu ritmo" é a informação que ela esconde. E
+   * cada meta traz o que dá pra tirar dela — o total sozinho não diz o quanto
+   * por semana, e a semanal sozinha não diz em quanto tempo você entrega.
+   */
+  const totalGoal = parseGoal(values.wordGoalTotal);
+  const weeklyGoal = parseGoal(values.weeklyWordGoal);
+  const weekEcho =
+    totalGoal !== undefined && weeklyGoal && weeklyGoal > 0
+      ? `≈ ${Math.round(totalGoal / weeklyGoal)} semanas no seu ritmo`
+      : null;
+  const totalEcho =
+    totalGoal !== undefined && totalGoal > 0
+      ? weeklyGoal && weeklyGoal > 0
+        ? `≈ ${Math.round(totalGoal / weeklyGoal)} palavras por semana`
+        : 'defina a meta semanal para ela virar plano'
+      : null;
 
   const buildDraft = (): ThesisProject => ({
     ...tcc,
@@ -104,6 +137,9 @@ export const TccWizard: React.FC = () => {
   const doSave = () => {
     setConfirmingConclusion(false);
     handleUpdateTcc(buildDraft());
+    // A ação se chama "guardar tcc ♡" no botão, então o aviso se chama igual —
+    // é assim que a pessoa aprende o vocabulário do app.
+    showToast('tcc guardado ♡');
     closeWizard();
   };
 
@@ -117,22 +153,47 @@ export const TccWizard: React.FC = () => {
     doSave();
   };
 
+  /**
+   * Revisão: o que a pessoa escreveu acima, em **palavras dela** — a linha em
+   * branco vira "ainda não definido" (e é clique para o passo que falta), não um
+   * travessão. Um "—" não diz o que fazer; "ainda não definido" diz que dá para
+   * deixar assim.
+   */
+  const notSet = 'ainda não definido';
   const reviewRows = useMemo(
     () => [
-      { label: 'título', value: values.title.trim() },
-      { label: 'orientador(a)', value: values.advisor.trim() },
-      { label: 'área', value: values.field.trim() },
-      { label: 'situação', value: STATUS_LABEL[values.status] },
-      { label: 'entrega final', value: values.deliveryDate ? formatDateBR(values.deliveryDate) : '—' },
-      { label: 'banca', value: values.defenseDate ? formatDateBR(values.defenseDate) : '—' },
-      { label: 'meta total de palavras', value: values.wordGoalTotal.trim() || '—' },
-      { label: 'meta semanal', value: values.weeklyWordGoal.trim() || '—' },
-      { label: 'lembretes', value: values.remindersEnabled ? 'ligados' : 'desligados' },
-      { label: 'problema de pesquisa', value: values.problemStatement.trim() || '—' },
-      { label: 'objetivos', value: values.objectives.map((o) => o.trim()).filter(Boolean).join(' · ') || '—' },
+      { label: 'título', value: values.title.trim() || notSet },
+      { label: 'orientador(a)', value: values.advisor.trim() || notSet },
+      { label: 'área', value: values.field.trim() || notSet },
+      { label: 'entrega final', value: values.deliveryDate ? formatDateBR(values.deliveryDate) : notSet },
+      { label: 'banca', value: values.defenseDate ? formatDateBR(values.defenseDate) : notSet },
+      {
+        label: 'meta de palavras',
+        value: [
+          values.wordGoalTotal.trim() ? `${values.wordGoalTotal.trim()} no total` : null,
+          values.weeklyWordGoal.trim() ? `${values.weeklyWordGoal.trim()}/semana` : null,
+        ]
+          .filter(Boolean)
+          .join(' • ') || notSet,
+      },
+      { label: 'problema de pesquisa', value: values.problemStatement.trim() || notSet },
+      {
+        label: 'objetivos',
+        value:
+          values.objectives
+            .map((o) => o.trim())
+            .filter(Boolean)
+            .join(' · ') || notSet,
+      },
     ],
     [values],
   );
+
+  /** O que ainda falta, em uma frase — e não como bloqueio. */
+  const faltando = [
+    values.deliveryDate.trim() ? null : 'entrega final',
+    values.weeklyWordGoal.trim() || values.wordGoalTotal.trim() ? null : 'meta de palavras',
+  ].filter(Boolean) as string[];
 
   const steps: WizardStep[] = [
     {
@@ -141,25 +202,30 @@ export const TccWizard: React.FC = () => {
       headline: 'qual é o tema do seu tcc?',
       subtitle: 'comece como dá — o resto a gente ajusta no caminho.',
       content: (
-        <div className="space-y-4">
-          <Field label="título do trabalho">
+        <div className="space-y-5">
+          <Field label="título do trabalho" htmlFor="tcc-titulo">
             <TextInput
+              id="tcc-titulo"
               value={values.title}
               onChange={(e) => patch({ title: e.target.value })}
               placeholder="ex: a reestruturação cognitiva na ansiedade acadêmica"
+              autoFocus
             />
+            <FieldHint>o título é o começo — dá pra ajustar depois.</FieldHint>
           </Field>
 
           <div className="grid grid-cols-2 gap-3">
-            <Field label="orientador(a)">
+            <Field label="orientador(a)" htmlFor="tcc-orientador">
               <TextInput
+                id="tcc-orientador"
                 value={values.advisor}
                 onChange={(e) => patch({ advisor: e.target.value })}
                 placeholder="ex: profa. camilla"
               />
             </Field>
-            <Field label="área">
+            <Field label="área" htmlFor="tcc-area">
               <TextInput
+                id="tcc-area"
                 value={values.field}
                 onChange={(e) => patch({ field: e.target.value })}
                 placeholder="ex: psicologia clínica"
@@ -167,16 +233,13 @@ export const TccWizard: React.FC = () => {
             </Field>
           </div>
 
-          <Field label="situação">
-            <SegmentedControl
-              variant="rose"
-              ariaLabel="situação do tcc"
-              className="w-full [&>button]:flex-1"
-              value={values.status}
-              onChange={(v) => patch({ status: v })}
-              options={STATUS_OPTIONS}
-            />
-          </Field>
+          <ChoiceCardGrid
+            label="situação"
+            options={STATUS_OPTIONS}
+            value={values.status}
+            onChange={(v) => patch({ status: v })}
+            columns={1}
+          />
         </div>
       ),
     },
@@ -186,15 +249,15 @@ export const TccWizard: React.FC = () => {
       headline: 'quando você quer chegar lá?',
       subtitle: 'tudo opcional — datas e metas ajudam o tcc virar plano, não fantasia.',
       content: (
-        <div className="space-y-4">
+        <div className="space-y-5">
           <div className="grid grid-cols-2 gap-3">
-            <DateField
+            <DeadlineField
               id="tcc-entrega"
               label="entrega final"
               value={values.deliveryDate}
               onChange={(v) => patch({ deliveryDate: v })}
             />
-            <DateField
+            <DeadlineField
               id="tcc-banca"
               label="banca"
               value={values.defenseDate}
@@ -212,6 +275,7 @@ export const TccWizard: React.FC = () => {
                 onChange={(e) => patch({ wordGoalTotal: e.target.value })}
                 placeholder="opcional"
               />
+              {totalEcho && <FieldHint>{totalEcho}</FieldHint>}
             </Field>
             <Field label="meta semanal" htmlFor="tcc-meta-semanal">
               <NumberInput
@@ -222,24 +286,22 @@ export const TccWizard: React.FC = () => {
                 onChange={(e) => patch({ weeklyWordGoal: e.target.value })}
                 placeholder="opcional"
               />
+              {weekEcho && <FieldHint>{weekEcho}</FieldHint>}
             </Field>
           </div>
 
           {/* F4.6: o interruptor dos lembretes (§6.4). Desligado é o default —
-              ligar pede permissão na hora de agendar. */}
-          <label
-            htmlFor="tcc-lembretes"
-            className="flex items-center gap-2 text-xs text-ceci-secondary cursor-pointer"
-          >
-            <input
-              id="tcc-lembretes"
-              type="checkbox"
-              checked={values.remindersEnabled}
-              onChange={(e) => patch({ remindersEnabled: e.target.checked })}
-              className="accent-ceci-brand w-4 h-4"
-            />
-            lembretes de prazos (capítulos, reuniões, entrega e banca)
-          </label>
+              ligar pede permissão na hora de agendar (`ensureNotificationPermission`,
+              o adaptador cuida; recusa não é erro). */}
+          <ToggleRow
+            label="lembretes de prazo"
+            description="o app avisa de capítulos, reuniões, entrega e banca — no ritmo que você escolher depois"
+            icon={<Bell className="w-4 h-4" />}
+            iconClassName="bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong"
+            checked={values.remindersEnabled}
+            onChange={() => patch({ remindersEnabled: !values.remindersEnabled })}
+            className="rounded-2xl border border-ceci-border-default bg-surface-default p-4"
+          />
         </div>
       ),
     },
@@ -249,30 +311,43 @@ export const TccWizard: React.FC = () => {
       headline: 'o que o seu tcc quer responder?',
       subtitle: 'um bom problema de pesquisa guia o texto inteiro.',
       content: (
-        <div className="space-y-4">
-          <Field label="problema de pesquisa">
+        <div className="space-y-5">
+          <Field label="problema de pesquisa" htmlFor="tcc-problema">
             <TextArea
+              id="tcc-problema"
               rows={3}
               value={values.problemStatement}
               onChange={(e) => patch({ problemStatement: e.target.value })}
               placeholder="qual pergunta seu tcc quer responder?"
             />
+            <FieldHint>
+              um problema de pesquisa bom é o que guia cada capítulo — dá pra deixar
+              em branco e voltar depois.
+            </FieldHint>
           </Field>
 
-          <Field label="objetivos">
+          <div>
+            <FieldLabel>objetivos</FieldLabel>
             <div className="space-y-2">
               {values.objectives.map((obj, idx) => (
-                <div key={idx} className="flex items-center gap-2">
+                <div
+                  key={idx}
+                  className="group flex items-center gap-2"
+                >
+                  <span className="w-6 h-6 shrink-0 rounded-full bg-surface-rose border border-ceci-border-brand text-[11px] font-semibold text-ceci-brand-strong flex items-center justify-center">
+                    {idx + 1}
+                  </span>
                   <TextInput
                     value={obj}
                     onChange={(e) => updateObjective(idx, e.target.value)}
                     placeholder={`objetivo ${idx + 1}`}
+                    aria-label={`objetivo ${idx + 1}`}
                   />
                   <button
                     type="button"
                     onClick={() => patch({ objectives: values.objectives.filter((_, i) => i !== idx) })}
-                    className="w-9 h-9 rounded-xl border border-ceci-border-default text-ceci-tertiary hover:text-status-danger-strong hover:border-status-danger flex items-center justify-center shrink-0 cursor-pointer transition-colors"
-                    aria-label="remover objetivo"
+                    className="w-9 h-9 rounded-xl border border-ceci-border-default text-ceci-tertiary hover:text-status-danger-strong hover:border-status-danger flex items-center justify-center shrink-0 cursor-pointer transition-colors focus-visible:opacity-100 opacity-60 md:opacity-0 md:group-hover:opacity-100"
+                    aria-label={`remover objetivo ${idx + 1}`}
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -281,12 +356,17 @@ export const TccWizard: React.FC = () => {
               <button
                 type="button"
                 onClick={() => patch({ objectives: [...values.objectives, ''] })}
-                className="flex items-center gap-1.5 text-xs font-medium text-ceci-brand-strong hover:text-ceci-brand px-2 py-1.5 rounded-lg cursor-pointer transition-colors"
+                className="flex items-center gap-1.5 text-xs font-semibold text-ceci-brand-strong hover:text-ceci-brand px-3 py-2.5 rounded-xl bg-surface-rose border border-ceci-border-brand cursor-pointer transition-colors active:scale-[0.98]"
               >
                 <Plus className="w-3.5 h-3.5" /> adicionar objetivo
               </button>
+              {values.objectives.every((o) => !o.trim()) && (
+                <FieldHint>
+                  opcional — objetivo é o que você quer mostrar ter conquistado.
+                </FieldHint>
+              )}
             </div>
-          </Field>
+          </div>
         </div>
       ),
     },
@@ -295,7 +375,31 @@ export const TccWizard: React.FC = () => {
       title: 'revisão',
       headline: 'olha só como ficou',
       subtitle: 'confere antes de guardar — depois dá pra mudar na tela do tcc.',
-      content: <ReviewCard rows={reviewRows} />,
+      content: (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-[11px] font-semibold text-ceci-tertiary uppercase tracking-wider">
+              situação
+            </span>
+            <StatusChip tone={STATUS_TONE[values.status]} label={STATUS_LABEL[values.status]} />
+          </div>
+
+          <ReviewCard rows={reviewRows} />
+
+          {/* Faltou algo? A revisão é um convite, não uma cobrança — por isso
+              o aviso é informação e não bloqueio: dá pra guardar assim mesmo. */}
+          {faltando.length > 0 && (
+            <p className="flex items-start gap-2 rounded-2xl bg-surface-muted border border-ceci-border-subtle px-4 py-3 text-[11px] leading-relaxed text-ceci-secondary">
+              <Lightbulb className="w-4 h-4 shrink-0 mt-0.5 text-ceci-brand-strong" />
+              <span>
+                dá pra guardar assim — só que {faltando.join(' e ')}{' '}
+                {faltando.length === 1 ? 'fica' : 'ficam'} em branco, e são eles
+                que a aba de escrita usa pra te chamar.
+              </span>
+            </p>
+          )}
+        </div>
+      ),
     },
   ];
 
@@ -303,9 +407,9 @@ export const TccWizard: React.FC = () => {
     <>
       <WizardScaffold
         title="meu tcc"
-        icon={<GraduationCap className="w-5 h-5" />}
+        icon={<GraduationCap className="w-3.5 h-3.5" />}
         iconClass="bg-surface-rose border-ceci-border-brand text-ceci-brand-strong"
-        mascote="writing-flow"
+        mascote={STEP_MASCOTES[step] ?? 'writing-flow'}
         steps={steps}
         step={step}
         onStepChange={setStep}
