@@ -7,7 +7,6 @@ import { UnderlineTabBar } from '../ui/UnderlineTabBar';
 import { ProgressBar } from '../ui/ProgressBar';
 import { CompletionToggle } from '../ui/CompletionToggle';
 import { EmptyState } from '../ui/EmptyState';
-import { Mascote } from '../ui/Mascote';
 import { StatusChip } from '../ui/StatusChip';
 import { SectionTitle } from '../ui/SectionTitle';
 import { TagChip } from '../ui/TagChip';
@@ -239,21 +238,42 @@ export const TccView: React.FC = () => {
   // Cartão "esta semana" (F5.1/F5.3): palavras vs. meta semanal, sequência de
   // escrita e o atalho para definir metas quando não há nenhuma. Nenhum valor de
   // meta é pré-preenchido (Q8) — sem meta, o texto é o convite.
+  //
+  // Bater a meta é a única coisa boa que acontece no TCC — e a tela mostrava
+  // "1000/500" como se fosse um número neutro. Agora ela celebra: selo
+  // "meta batida ♡" e cartão em tom de sucesso.
+  const metaBatida = weeklyGoal != null && wordsThisWeek >= weeklyGoal;
+
   const renderWeekCard = () => (
-    <div className="rounded-2xl p-4 bg-surface-default border border-ceci-border-default shadow-sm space-y-2">
-      <div className="flex items-center justify-between">
+    <div
+      className={`rounded-2xl p-4 border shadow-sm space-y-2 ${
+        metaBatida
+          ? 'bg-status-success-surface border-status-success-border'
+          : 'bg-surface-default border-ceci-border-default'
+      }`}
+    >
+      <div className="flex items-center justify-between gap-2">
         <p className="text-[11px] font-semibold text-ceci-secondary">esta semana</p>
-        {weeklyGoal != null && (
+        {metaBatida ? (
+          <span className="text-[11px] font-bold text-status-success-strong">meta batida ♡</span>
+        ) : weeklyGoal != null ? (
           <p className="text-xs font-bold text-ceci-primary">
             {wordsThisWeek}/{weeklyGoal}
           </p>
-        )}
+        ) : null}
       </div>
       {weeklyGoal != null ? (
-        <ProgressBar
-          value={Math.min(100, Math.round((wordsThisWeek / weeklyGoal) * 100))}
-          valueText={`${wordsThisWeek} de ${weeklyGoal} palavras esta semana`}
-        />
+        <>
+          <ProgressBar
+            value={Math.min(100, Math.round((wordsThisWeek / weeklyGoal) * 100))}
+            valueText={`${wordsThisWeek} de ${weeklyGoal} palavras esta semana`}
+          />
+          {metaBatida && wordsThisWeek > weeklyGoal && (
+            <p className="text-[11px] text-status-success-strong font-medium">
+              {wordsThisWeek - weeklyGoal} palavras acima da meta — bem acima do combinado ♡
+            </p>
+          )}
+        </>
       ) : (
         <p className="text-xs text-ceci-secondary leading-relaxed">
           metas são opcionais — defina quando quiser
@@ -296,9 +316,20 @@ export const TccView: React.FC = () => {
         </p>
       </div>
 
-      {/* próximo prazo (F3.9 — conteúdo real da visão geral) */}
+      {/* próximo prazo (F3.9 — conteúdo real da visão geral). É o card que pede
+          ação: quando o prazo aperta (atrasado ou em até 7 dias), ele ganha o
+          tom de alerta para competir com os outros quatro cards cinzas — o olho
+          precisa parar nele primeiro. */}
       {deadline && (
-        <div className="rounded-2xl p-4 bg-surface-default border border-ceci-border-default shadow-sm flex items-center justify-between gap-3">
+        <div
+          className={`rounded-2xl p-4 border shadow-sm flex items-center justify-between gap-3 ${
+            deadline.overdue
+              ? 'bg-status-danger-surface border-status-danger-border'
+              : daysToDeadline <= 7
+                ? 'bg-status-warning-surface border-status-warning-border'
+                : 'bg-surface-default border-ceci-border-default'
+          }`}
+        >
           <div className="min-w-0">
             <p className="text-[11px] font-semibold text-ceci-secondary">próximo prazo</p>
             <p className="text-sm font-bold font-display text-ceci-primary truncate">{deadline.title}</p>
@@ -331,19 +362,31 @@ export const TccView: React.FC = () => {
 
       {/* problema e objetivos (o conteúdo que já existia) */}
       {(tcc.problemStatement || tcc.objectives.length > 0) && (
-        <div className="rounded-2xl p-4 bg-surface-muted border border-ceci-border-subtle space-y-3 text-xs">
+        <div className="rounded-2xl p-4 bg-surface-default border border-ceci-border-default shadow-sm space-y-3">
           {tcc.problemStatement && (
             <div>
-              <p className="font-semibold text-ceci-primary mb-1">problema de pesquisa:</p>
-              <p className="text-ceci-secondary leading-relaxed">{tcc.problemStatement}</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-ceci-tertiary mb-1">
+                problema de pesquisa
+              </p>
+              <p className="text-sm text-ceci-primary leading-relaxed">{tcc.problemStatement}</p>
             </div>
           )}
           {tcc.objectives.length > 0 && (
             <div>
-              <p className="font-semibold text-ceci-primary mb-1">objetivos:</p>
-              <ul className="list-disc pl-4 space-y-1 text-ceci-secondary">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-ceci-tertiary mb-2">
+                objetivos
+              </p>
+              {/* Numeração em pastilha, não bullet do navegador: é o mesmo
+                  tratamento que o objetivo ganha no wizard, e a lista deixa de
+                  parecer texto colado. */}
+              <ul className="space-y-1.5">
                 {tcc.objectives.map((obj, idx) => (
-                  <li key={idx}>{obj}</li>
+                  <li key={idx} className="flex items-start gap-2.5">
+                    <span className="w-5 h-5 shrink-0 mt-0.5 rounded-full bg-surface-rose border border-ceci-border-brand text-[10px] font-bold text-ceci-brand-strong flex items-center justify-center">
+                      {idx + 1}
+                    </span>
+                    <span className="text-sm text-ceci-secondary leading-snug">{obj}</span>
+                  </li>
                 ))}
               </ul>
             </div>
@@ -432,7 +475,7 @@ export const TccView: React.FC = () => {
         <button
           type="button"
           onClick={() => setEditingChapter('new')}
-          className="flex items-center gap-1.5 text-xs font-medium text-ceci-brand-strong hover:text-ceci-brand px-2 py-1.5 rounded-lg cursor-pointer transition-colors"
+          className="w-full flex items-center justify-center gap-1.5 min-h-[44px] text-xs font-semibold text-ceci-brand-strong border border-dashed border-ceci-border-brand bg-surface-rose/50 hover:bg-surface-rose rounded-xl cursor-pointer transition-colors active:scale-[0.99]"
         >
           <Plus className="w-3.5 h-3.5" /> adicionar capítulo
         </button>
@@ -1009,30 +1052,48 @@ export const TccView: React.FC = () => {
         />
       ) : (
         <div className="rounded-2xl p-4 bg-surface-default border border-ceci-border-default shadow-sm space-y-3">
-          <h3 className="font-display font-bold text-base text-ceci-primary">sessões recentes</h3>
+          <div className="flex items-baseline justify-between gap-2">
+            <h3 className="font-display font-bold text-base text-ceci-primary">sessões recentes</h3>
+            <span className="text-[11px] text-ceci-tertiary">
+              {recentWriting.length === 1 ? '1 registrada' : `${recentWriting.length} registradas`}
+            </span>
+          </div>
           <div className="space-y-2">
             {recentWriting.slice(0, 5).map((log) => {
               const chapter = log.chapterId
                 ? thesisChapters.find((c) => c.id === log.chapterId)
                 : undefined;
+              // A data relativa ("hoje", "ontem") responde a pergunta que a
+              // pessoa faz ao abrir a tela; a data por extenso fica para o
+              // registro antigo, onde a distância já não importa.
+              const days = daysBetween(log.date, today);
+              const quando =
+                days === 0 ? 'hoje' : days === 1 ? 'ontem' : formatDateBR(log.date);
               return (
                 <div
                   key={log.id}
-                  className="bg-surface-muted rounded-xl p-2.5 border border-ceci-border-default"
+                  className="flex items-start gap-3 bg-surface-muted rounded-xl p-3 border border-ceci-border-default"
                 >
-                  <p className="text-xs font-medium text-ceci-primary">
-                    {log.words} {log.words === 1 ? 'palavra' : 'palavras'}
-                    {log.minutes != null && (
-                      <span className="text-ceci-secondary"> · {log.minutes} min</span>
+                  <span className="shrink-0 flex flex-col items-center justify-center w-12 min-h-[44px] rounded-lg bg-surface-default border border-ceci-border-subtle">
+                    <span className="font-display font-bold text-sm leading-none text-ceci-primary">
+                      {log.words}
+                    </span>
+                    <span className="text-[9px] text-ceci-tertiary leading-none mt-0.5">palavras</span>
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[11px] text-ceci-secondary">
+                      {quando}
+                      {log.minutes != null && ` · ${log.minutes} min`}
+                      {chapter ? ` · ${chapter.title}` : ''}
+                    </p>
+                    {log.note ? (
+                      <p className="text-xs text-ceci-primary leading-snug mt-0.5 line-clamp-2">
+                        {log.note}
+                      </p>
+                    ) : (
+                      <p className="text-[11px] text-ceci-faded mt-0.5">sem anotação</p>
                     )}
-                  </p>
-                  <p className="text-[11px] text-ceci-secondary truncate">
-                    {formatDateBR(log.date)}
-                    {chapter ? ` · ${chapter.title}` : ''}
-                  </p>
-                  {log.note && (
-                    <p className="text-[11px] text-ceci-tertiary mt-0.5 line-clamp-2">{log.note}</p>
-                  )}
+                  </div>
                 </div>
               );
             })}
@@ -1072,13 +1133,12 @@ export const TccView: React.FC = () => {
       />
 
       {!hasTcc ? (
-        <div className="bg-surface-muted border border-ceci-border-subtle rounded-2xl p-6 text-center space-y-3">
-          <Mascote expression="research-tcc" className="w-16 h-16 mx-auto" decorative />
-          <p className="text-xs text-ceci-secondary leading-relaxed max-w-xs mx-auto">
-            comece pelos dados do trabalho — o botão do cartão acima abre a ficha
-            com título, orientadora e a pergunta que o seu tcc quer responder.
-          </p>
-        </div>
+        <EmptyState
+          mascote="research-tcc"
+          description="comece pelo que dá identidade ao trabalho: um título, quem orienta e a pergunta que ele quer responder. o resto você preenche no caminho ♡"
+          actionLabel="começar meu tcc"
+          onAction={() => openWizard('tcc')}
+        />
       ) : (
         <>
           <UnderlineTabBar

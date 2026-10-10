@@ -572,7 +572,10 @@ describe('TccView — aba escrita (SPEC-012 F5)', () => {
     renderTcc(capitulos(), { tab: 'escrita', tcc: { ...tccBase(), weeklyWordGoal: 500 }, logs: logs() });
 
     expect(screen.getByText('300/500')).toBeInTheDocument();
-    expect(screen.getByText(/300 palavras/)).toBeInTheDocument();
+    // A palavra da sessão aparece na pastilha (número em destaque) e a nota
+    // abaixo dela — o desenho é "300" grande + rótulo "palavras".
+    expect(screen.getByText('300')).toBeInTheDocument();
+    expect(screen.getByText('palavras')).toBeInTheDocument();
     expect(screen.getByText('travei na conclusão')).toBeInTheDocument();
   });
 
