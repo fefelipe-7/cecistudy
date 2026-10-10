@@ -107,7 +107,7 @@ export const TccView: React.FC = () => {
     setThesisTasks,
     thesisTab,
     openTccScreen,
-    openEditTcc,
+    openWizard,
     showToast,
   } = useMobileApp();
 
@@ -269,7 +269,7 @@ export const TccView: React.FC = () => {
       {weeklyGoal == null && (
         <button
           type="button"
-          onClick={openEditTcc}
+          onClick={() => openWizard('tcc')}
           className="min-h-[44px] px-4 rounded-full text-xs font-semibold text-ceci-brand-strong border border-ceci-border-brand bg-surface-rose cursor-pointer tap-interactive"
         >
           definir metas
@@ -1067,7 +1067,7 @@ export const TccView: React.FC = () => {
                 onClick: () => setWritingOpen(true),
                 ariaLabel: 'registrar escrita',
               }
-            : { label: 'bora começar?', onClick: openEditTcc, ariaLabel: 'criar tcc' }
+            : { label: 'bora começar?', onClick: () => openWizard('tcc'), ariaLabel: 'criar tcc' }
         }
       />
 

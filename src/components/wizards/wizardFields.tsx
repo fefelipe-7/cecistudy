@@ -2,8 +2,13 @@ import React from 'react';
 import { cn } from '../../lib/utils';
 
 /** Rótulo de campo discreto dos wizards (o destaque é o headline do passo). */
-export const FieldLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <label className="block text-[11px] font-semibold text-ceci-tertiary mb-1.5 uppercase tracking-wider">{children}</label>
+export const FieldLabel: React.FC<{ children: React.ReactNode; htmlFor?: string }> = ({
+  children,
+  htmlFor,
+}) => (
+  <label htmlFor={htmlFor} className="block text-[11px] font-semibold text-ceci-tertiary mb-1.5 uppercase tracking-wider">
+    {children}
+  </label>
 );
 
 /** Microlinha de ajuda abaixo de um campo: explica o que colocar ali. */
@@ -14,11 +19,12 @@ export const FieldHint: React.FC<{ children: React.ReactNode; className?: string
 /** Campo completo dos wizards: rótulo + controle + hint explicativo opcional. */
 export const Field: React.FC<{
   label?: string;
+  htmlFor?: string;
   hint?: React.ReactNode;
   children: React.ReactNode;
-}> = ({ label, hint, children }) => (
+}> = ({ label, htmlFor, hint, children }) => (
   <div>
-    {label && <FieldLabel>{label}</FieldLabel>}
+    {label && <FieldLabel htmlFor={htmlFor}>{label}</FieldLabel>}
     {children}
     {hint && <FieldHint>{hint}</FieldHint>}
   </div>
@@ -58,16 +64,17 @@ const isoDay = (offsetDays: number): string => {
  */
 export const DateField: React.FC<{
   label?: string;
+  id?: string;
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
-}> = ({ label, value, onChange, placeholder }) => {
+}> = ({ label, id, value, onChange, placeholder }) => {
   const chipBase =
     'px-3 py-1.5 rounded-full border text-[11px] font-semibold tap-interactive cursor-pointer transition active:scale-95';
   return (
     <div>
-      {label && <FieldLabel>{label}</FieldLabel>}
-      <DateInput value={value} onChange={(e) => onChange(e.target.value)} />
+      {label && <FieldLabel htmlFor={id}>{label}</FieldLabel>}
+      <DateInput id={id} value={value} onChange={(e) => onChange(e.target.value)} />
       <div className="flex flex-wrap gap-1.5 mt-1.5">
         <button
           type="button"

@@ -273,9 +273,6 @@ export interface NavigationValue {
   editCourseId: string | null;
   openEditCourse: (courseId?: string) => void;
   closeEditCourse: () => void;
-  isEditTccOpen: boolean;
-  openEditTcc: () => void;
-  closeEditTcc: () => void;
   isCreatingLooseNote: boolean;
   setIsCreatingLooseNote: (v: boolean) => void;
 
@@ -407,7 +404,6 @@ export function useNavigationEngine(
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isEditCourseOpen, setIsEditCourseOpen] = useState(false);
-  const [isEditTccOpen, setIsEditTccOpen] = useState(false);
   const [isCreatingLooseNote, setIsCreatingLooseNote] = useState(false);
 
   // Menu universal de editar/excluir (aberto por long-press no card)
@@ -709,10 +705,6 @@ export function useNavigationEngine(
       setIsEditCourseOpen(false);
       return true;
     }
-    if (isEditTccOpen) {
-      setIsEditTccOpen(false);
-      return true;
-    }
     if (isDetailPromptOpen) {
       setIsDetailPromptOpen(false);
       return true;
@@ -726,7 +718,6 @@ export function useNavigationEngine(
     isQuickAddOpen,
     isSearchOpen,
     isEditCourseOpen,
-    isEditTccOpen,
     isDetailPromptOpen,
     navigationStack,
     goBack,
@@ -1337,13 +1328,6 @@ export function useNavigationEngine(
     setEditCourseId(null);
   }, []);
 
-  const openEditTcc = useCallback(() => {
-    setIsEditTccOpen(true);
-  }, []);
-  const closeEditTcc = useCallback(() => {
-    setIsEditTccOpen(false);
-  }, []);
-
   const openQuickAdd = useCallback(() => {
     setIsQuickAddOpen(true);
   }, []);
@@ -1577,7 +1561,6 @@ export function useNavigationEngine(
       openWizard,
       openCompose,
       openEditCourse,
-      openEditTcc,
       toggleBookmarkCourse,
       setIsCreatingLooseNote,
       editManagedItem,
@@ -1595,7 +1578,6 @@ export function useNavigationEngine(
     openWizard,
     openEditCourse,
     toggleBookmarkCourse,
-    openEditTcc,
     tcc.title,
     questions.length,
     currentQuizPlayState,
@@ -1757,9 +1739,6 @@ export function useNavigationEngine(
     editCourseId,
     openEditCourse,
     closeEditCourse,
-    isEditTccOpen,
-    openEditTcc,
-    closeEditTcc,
     isCreatingLooseNote,
     setIsCreatingLooseNote,
     isSearchOpen,
@@ -1778,7 +1757,7 @@ export function useNavigationEngine(
     [
       activeTab, canGoBack, closeAllNoteScreens, closeAllQuizScreens, closeApproach,
       closeComparison, closeCompose, closeComposeDetails, closeCourseDetail, closeDetailPrompt,
-      closeClassNoteDetail, closeEditCourse, closeEditTcc, closeFamilies, closeFamily, closeInternshipDiary,
+      closeClassNoteDetail, closeEditCourse, closeFamilies, closeFamily, closeInternshipDiary,
       closeManageItem, closeNoteDetail, closeNoteTransform, closeNotesScreen, closeQuickAdd,
       closeQuizCategory, closeQuizDetail, closeQuizLoading, closeQuizPlay, closeQuizResult,
       closeRepertorioItem, closeSearch, closeStickersScreen, closeStreak, closeStudy, closeSyncScreen, closeTccScreen,
@@ -1793,7 +1772,7 @@ export function useNavigationEngine(
       focusedRepertorioItemId, focusedStudyScreen,
       focusedTempleSection, focusedTermId, handleNavigate, handleSystemBack, headerConfig,
       isBottomNavVisible, isClassNoteDetailOpen, isComposeDetailsOpen, isComposeScreenOpen, isCreatingLooseNote,
-      isDetailPromptOpen, isEditCourseOpen, isEditTccOpen, isFamiliesScreenOpen,
+      isDetailPromptOpen, isEditCourseOpen, isFamiliesScreenOpen,
       isInternshipDiaryOpen,
     isInternshipCaseOpen,
     internshipTab,
@@ -1803,7 +1782,7 @@ export function useNavigationEngine(
       isQuizPlayOpen, isQuizResultOpen, isRepertorioItemOpen, isSearchOpen, isStickersScreenOpen, isStreakScreenOpen,
       isSyncScreenOpen, isTccScreenOpen, thesisTab, thesisFocusId, isTempleScreenOpen, isTermHistoryOpen, isWizardOpen, managedItem,
       navDirection, navigationStack, newQuizFromResult, openApproach, openComparison, openCompose,
-      openComposeDetails, openCourseDetail, openDetailPrompt, openEditCourse, openEditTcc,
+      openComposeDetails, openCourseDetail, openDetailPrompt, openEditCourse,
       openClassNoteDetail, openFamilies, openFamily, openInternshipDiary, openManageItem, openNoteDetail,
       openNoteTransform, openNotesScreen, openQuickAdd, openQuizCategory, openQuizGroupDetail,
       openQuizLoading, openQuizPlay, openQuizResult, openRepertorioItem, openSearch, openStickersScreen, openStreak,

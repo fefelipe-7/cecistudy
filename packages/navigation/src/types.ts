@@ -124,6 +124,9 @@ export type WizardFlow =
   | 'author'
   | 'concept'
   | 'material'
+  /** Registro do TCC (SPEC-012): o trabalho é um singleton, então o wizard
+   *  edita os dados da ficha do mesmo jeito que os outros registros salvam. */
+  | 'tcc'
   /** Virada de semestre (SPEC-005). Não é "criar registro": é uma transição
    *  de estado com revisão e desfazer, então mora em `#/perfil/semestre`. */
   | 'semester';

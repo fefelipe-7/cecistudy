@@ -13,6 +13,7 @@ import { ConceptWizard } from './ConceptWizard';
 import { MaterialWizard } from './MaterialWizard';
 import { CourseWizard } from './CourseWizard';
 import { SemesterWizard } from './SemesterWizard';
+import { TccWizard } from './TccWizard';
 
 export const WIZARD_REGISTRY: Record<WizardFlow, (editing: ManagedItem | null) => ReactNode> = {
   task: (editing) => <TaskExamWizard preset="task" editing={editing} />,
@@ -28,4 +29,6 @@ export const WIZARD_REGISTRY: Record<WizardFlow, (editing: ManagedItem | null) =
   material: (editing) => <MaterialWizard editing={editing} />,
   // SPEC-005: virada de semestre. Não aceita edição (não é um cadastro).
   semester: () => <SemesterWizard />,
+  // SPEC-012: dados do trabalho do TCC. Singleton (D1): sempre "edita" a ficha.
+  tcc: () => <TccWizard />,
 };

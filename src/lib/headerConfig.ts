@@ -65,7 +65,6 @@ export interface HeaderConfigActions {
   openWizard: (flow: WizardFlow, courseId?: string) => void;
   openCompose: (courseId?: string) => void;
   openEditCourse: () => void;
-  openEditTcc: () => void;
   toggleBookmarkCourse: (id: string) => void;
   setIsCreatingLooseNote: (value: boolean) => void;
   editManagedItem: (kind: 'class' | 'task' | 'exam', id: string) => void;
@@ -114,7 +113,6 @@ export function buildHeaderConfig(input: HeaderConfigInput): DynamicHeaderConfig
     openWizard,
     openCompose,
     openEditCourse,
-    openEditTcc,
     toggleBookmarkCourse,
     setIsCreatingLooseNote,
     editManagedItem,
@@ -153,7 +151,7 @@ export function buildHeaderConfig(input: HeaderConfigInput): DynamicHeaderConfig
       color: '#D85F79',
       onBack,
       actions: [
-        { label: 'editar tcc', Icon: FileText, onClick: () => openEditTcc() },
+        { label: 'editar tcc', Icon: FileText, onClick: () => openWizard('tcc') },
       ],
     };
   } else if (currentScreen.kind === 'stickers') {

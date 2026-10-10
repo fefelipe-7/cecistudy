@@ -19,7 +19,6 @@ const baseInput: HeaderConfigInput = {
   openWizard: () => undefined,
   openCompose: () => undefined,
   openEditCourse: () => undefined,
-  openEditTcc: () => undefined,
   toggleBookmarkCourse: () => undefined,
   setIsCreatingLooseNote: () => undefined,
   editManagedItem: () => undefined,

@@ -19,9 +19,14 @@ describe('contrato D6 (I3/I4)', () => {
     expect(bar).toHaveAttribute('aria-valuemax', '3');
   });
 
-  it('passo atual tem aria-current="step"', () => {
+  it('linha simples: mostra o passo atual por extenso, sem bolinha numerada', () => {
     const { container } = render(<StepProgress steps={['a', 'b']} current={0} />);
-    expect(container.querySelector('[aria-current="step"]')?.textContent).toBe('1');
+    // o label abaixo da linha diz em que passo a usuária está
+    expect(screen.getByText('a')).toBeInTheDocument();
+    // sem a bolinha com o número: nada além do label descreve o passo como '1'
+    expect(container.textContent).not.toContain('1');
+    // o `aria-current` dos passos pertence à lista sr-only do header (SPEC-008 F4.7)
+    expect(container.querySelector('[aria-current]')).toBeNull();
   });
 
   it('I3: rótulos de próximos passos duplicados não disparam chave duplicada', () => {

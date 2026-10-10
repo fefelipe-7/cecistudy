@@ -147,6 +147,7 @@ const WIZARD_SLUGS: Record<string, WizardFlow> = {
   autor: 'author',
   conceito: 'concept',
   material: 'material',
+  tcc: 'tcc',
   // O wizard de semestre **não** é `#/novo/semestre`: ele tem rota própria
   // (`#/perfil/semestre`) porque é uma transição de estado, não um cadastro.
   // Mantido aqui só para a pilha não ter tratamento especial no wizard genérico.
@@ -164,6 +165,7 @@ const WIZARD_SLUG_TO_TYPE: Record<WizardFlow, string> = {
   author: 'autor',
   concept: 'conceito',
   material: 'material',
+  tcc: 'tcc',
   semester: 'semestre',
 };
 

@@ -377,9 +377,6 @@ export interface AppContextValue {
   editCourseId: string | null;
   openEditCourse: (courseId?: string) => void;
   closeEditCourse: () => void;
-  isEditTccOpen: boolean;
-  openEditTcc: () => void;
-  closeEditTcc: () => void;
   isCreatingLooseNote: boolean;
   setIsCreatingLooseNote: (v: boolean) => void;
   isSearchOpen: boolean;

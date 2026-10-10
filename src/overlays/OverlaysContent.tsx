@@ -12,13 +12,11 @@ import { Toast } from '@/components/ui/Toast';
 const loadQuickAddModal = () => import('@/components/QuickAddModal').then((m) => ({ default: m.QuickAddModal }));
 const loadGlobalSearchModal = () => import('@/components/GlobalSearchModal').then((m) => ({ default: m.GlobalSearchModal }));
 const loadEditCourseModal = () => import('@/components/courses/EditCourseModal').then((m) => ({ default: m.EditCourseModal }));
-const loadEditTccModal = () => import('@/components/tcc/EditTccModal').then((m) => ({ default: m.EditTccModal }));
 const loadManageDataModal = () => import('@/components/ui/ManageDataModal').then((m) => ({ default: m.ManageDataModal }));
 const loadOtaUpdateModal = () => import('@/components/ui/OtaUpdateModal').then((m) => ({ default: m.OtaUpdateModal }));
 const QuickAddModal = lazy(loadQuickAddModal);
 const GlobalSearchModal = lazy(loadGlobalSearchModal);
 const EditCourseModal = lazy(loadEditCourseModal);
-const EditTccModal = lazy(loadEditTccModal);
 const ManageDataModal = lazy(loadManageDataModal);
 const OtaUpdateModal = lazy(loadOtaUpdateModal);
 
@@ -160,14 +158,6 @@ export const OverlaysContent: React.FC<{ app: AppContextValue }> = ({ app }) => 
       />
 
       <ManageDataModal />
-
-      <EditTccModal
-        isOpen={app.isEditTccOpen}
-        tcc={app.tcc}
-        chapters={app.thesisChapters}
-        onClose={app.closeEditTcc}
-        onSave={app.handleUpdateTcc}
-      />
 
       <DetailPromptModal
         open={app.isDetailPromptOpen}

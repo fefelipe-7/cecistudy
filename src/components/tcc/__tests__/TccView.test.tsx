@@ -6,7 +6,7 @@ import { useMobileApp } from '../../../context/mobileApp';
 import { ThesisChapter, ThesisMeeting, ThesisProject, ThesisReference, ThesisTask, ThesisWritingLog } from '../../../types';
 import { addDaysKey, dateKeyOrdinal, formatDateBR, formatDateShortBR, todayKeyLocal } from '../../../lib/dateBR';
 import type { ThesisTab } from '../../../../packages/navigation/src/types';
-import { EditTccModal } from '../EditTccModal';
+import { TccWizard } from '../../wizards/TccWizard';
 import { ChapterSheet } from '../ChapterSheet';
 import { TccView } from '../../views/TccView';
 
@@ -352,34 +352,21 @@ describe('TccView — prazo do capítulo (SPEC-012 F0.2)', () => {
   });
 });
 
-describe('EditTccModal — concluir com capítulo pendente (SPEC-012 F0.3 / D4)', () => {
-  const ModalHost = ({ tcc, chapters }: { tcc: ThesisProject; chapters: ThesisChapter[] }) => {
-    const { handleUpdateTcc } = useMobileApp();
-    const [open, setOpen] = useState(false);
-    return (
-      <div>
-        <button type="button" onClick={() => setOpen(true)}>
-          abrir
-        </button>
-        <EditTccModal
-          isOpen={open}
-          tcc={tcc}
-          chapters={chapters}
-          onClose={() => setOpen(false)}
-          onSave={(updated) => handleUpdateTcc(updated)}
-        />
-      </div>
-    );
-  };
-
-  const renderModal = (tcc: ThesisProject, chapters: ThesisChapter[]) =>
-    render(
+describe('TccWizard — concluir com capítulo pendente (SPEC-012 F0.3 / D4)', () => {
+  const renderWizard = (tcc: ThesisProject, chapters: ThesisChapter[]) => {
+    // O wizard semeia **no mount**, a partir do singleton que o provider já
+    // tinha carregado do storage (`useStampedState('tcc', ...)`). Para o teste
+    // não depender do que um teste anterior deixou em `localStorage`, grava a
+    // ficha antes de montar — mesmo caminho do dreno do boot (SPEC-012 §17.2).
+    localStorage.setItem('cecistudy_tcc', JSON.stringify(tcc));
+    return render(
       <MobileAppProvider>
         <Seed tcc={tcc} chapters={chapters} tab="capitulos" />
-        <ModalHost tcc={tcc} chapters={chapters} />
+        <TccWizard />
         <TccView />
       </MobileAppProvider>,
     );
+  };
 
   const marcarConcluido = () => {
     // `SegmentedControl` é `radiogroup`/`radio` sem `aria-label` por opção
@@ -388,11 +375,18 @@ describe('EditTccModal — concluir com capítulo pendente (SPEC-012 F0.3 / D4)'
     fireEvent.click(screen.getByText('concluído'));
   };
 
-  it('pede confirmação ao concluir com capítulo pendente e não salva antes', () => {
-    renderModal(tccBase(), capitulos());
-    fireEvent.click(screen.getByRole('button', { name: 'abrir' }));
+  // O wizard tem 4 passos (identificação → prazos → pergunta → revisar) e o
+  // botão "continuar" avança um passo por vez.
+  const avancarPassos = (n: number) => {
+    for (let i = 0; i < n; i++) {
+      fireEvent.click(screen.getByRole('button', { name: 'continuar' }));
+    }
+  };
 
+  it('pede confirmação ao concluir com capítulo pendente e não salva antes', () => {
+    renderWizard(tccBase(), capitulos());
     marcarConcluido();
+    avancarPassos(3);
     fireEvent.click(screen.getByRole('button', { name: 'guardar tcc ♡' }));
 
     expect(screen.getByText(/ainda tem 2 capítulos sem pronto/)).toBeInTheDocument();
@@ -400,9 +394,9 @@ describe('EditTccModal — concluir com capítulo pendente (SPEC-012 F0.3 / D4)'
   });
 
   it('salva quando confirma a conclusão', async () => {
-    renderModal(tccBase(), capitulos());
-    fireEvent.click(screen.getByRole('button', { name: 'abrir' }));
+    renderWizard(tccBase(), capitulos());
     marcarConcluido();
+    avancarPassos(3);
     fireEvent.click(screen.getByRole('button', { name: 'guardar tcc ♡' }));
     fireEvent.click(screen.getByRole('button', { name: 'concluir mesmo assim' }));
 
@@ -413,17 +407,17 @@ describe('EditTccModal — concluir com capítulo pendente (SPEC-012 F0.3 / D4)'
 
   it('não pede confirmação quando todos os capítulos estão prontos', () => {
     const prontos = capitulos().map((c) => ({ ...c, stage: 'pronto' as const }));
-    renderModal(tccBase(), prontos);
-    fireEvent.click(screen.getByRole('button', { name: 'abrir' }));
+    renderWizard(tccBase(), prontos);
     marcarConcluido();
+    avancarPassos(3);
     fireEvent.click(screen.getByRole('button', { name: 'guardar tcc ♡' }));
 
     expect(screen.queryByText(/ainda tem/)).not.toBeInTheDocument();
   });
 
   it('não pede confirmação quando a situação não é concluído', () => {
-    renderModal(tccBase(), capitulos());
-    fireEvent.click(screen.getByRole('button', { name: 'abrir' }));
+    renderWizard(tccBase(), capitulos());
+    avancarPassos(3);
     fireEvent.click(screen.getByRole('button', { name: 'guardar tcc ♡' }));
 
     expect(screen.queryByText(/ainda tem/)).not.toBeInTheDocument();
@@ -436,14 +430,16 @@ describe('EditTccModal — concluir com capítulo pendente (SPEC-012 F0.3 / D4)'
     const bancaKey = addDaysKey(hoje, 40);
     const entregaKey = addDaysKey(hoje, 54);
     const semPrazo = capitulos().map((c) => ({ ...c, stage: 'pronto' as const, dueDate: undefined }));
-    renderModal(tccBase(), semPrazo);
-    fireEvent.click(screen.getByRole('button', { name: 'abrir' }));
+    renderWizard(tccBase(), semPrazo);
 
+    // passo 2 (prazos & metas)
+    avancarPassos(1);
     fireEvent.change(screen.getByLabelText('entrega final'), { target: { value: entregaKey } });
     fireEvent.change(screen.getByLabelText('banca'), { target: { value: bancaKey } });
     fireEvent.change(screen.getByLabelText('meta total de palavras'), { target: { value: '20000' } });
     fireEvent.change(screen.getByLabelText('meta semanal'), { target: { value: '500' } });
     fireEvent.click(screen.getByLabelText('lembretes de prazos (capítulos, reuniões, entrega e banca)'));
+    avancarPassos(2);
     fireEvent.click(screen.getByRole('button', { name: 'guardar tcc ♡' }));
 
     expect(
