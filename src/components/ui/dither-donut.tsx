@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useCanvasSetup } from '@/lib/useCanvasSetup';
+import { useCanvasSetup, useDitherLoop } from '@/lib/useCanvasSetup';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import {
   smoothstep,
@@ -33,7 +33,8 @@ export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
   formatValue = formatCount,
 }) => {
   const [periodIndex, setPeriodIndex] = useState(0);
-  const { canvasRef, rect, isVisible, reducedMotion } = useCanvasSetup();
+  const setup = useCanvasSetup();
+  const { canvasRef, ctxRef, rect, reducedMotion } = setup;
 
   const usingPeriods = periods !== undefined || dataProp === undefined;
   const activePeriod = (periods ?? buildDemoDonutPeriods())[periodIndex];
@@ -57,46 +58,26 @@ export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
 
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const hoverRef = useRef(hoverIndex);
-  useEffect(() => {
-    hoverRef.current = hoverIndex;
-  }, [hoverIndex]);
-
   const timeRef = useRef(0);
-  const requestRef = useRef<number | undefined>(undefined);
   const morphStartTimeRef = useRef<number>(0);
   const fromSharesRef = useRef<number[]>([]);
   const targetSharesRef = useRef<number[]>([]);
   const dispSharesRef = useRef<number[]>([]);
 
-  useEffect(() => {
-    if (dispSharesRef.current.length === 0) {
-      dispSharesRef.current = [...shares];
-      fromSharesRef.current = [...shares];
-      targetSharesRef.current = [...shares];
-    } else {
-      fromSharesRef.current = [...dispSharesRef.current];
-      targetSharesRef.current = [...shares];
-      morphStartTimeRef.current = performance.now();
-    }
-  }, [shares]);
+  const morphActive = () =>
+    !reducedMotion &&
+    morphStartTimeRef.current > 0 &&
+    performance.now() - morphStartTimeRef.current < 500;
 
-  useEffect(() => {
-    const draw = () => {
-      if (!isVisible.current) {
-        requestRef.current = requestAnimationFrame(draw);
-        return;
-      }
-
+  const { scheduleFrame } = useDitherLoop(
+    () => {
       const canvas = canvasRef.current;
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      if (!canvas) return false;
+      const ctx = ctxRef.current ?? (ctxRef.current = canvas.getContext('2d'));
+      if (!ctx) return false;
 
       const { width: logW, height: logH } = rect.current;
-      if (logW === 0 || logH === 0) {
-        requestRef.current = requestAnimationFrame(draw);
-        return;
-      }
+      if (logW === 0 || logH === 0) return true; // aguardando o ResizeObserver medir
 
       timeRef.current += reducedMotion ? 0 : 0.02;
 
@@ -214,14 +195,31 @@ export const DitherDonutChart: React.FC<DitherDonutChartProps> = ({
       }
 
       ctx.restore();
-      requestRef.current = requestAnimationFrame(draw);
-    };
+      // needsAnimation (spec §5.2): só o morph — hover/redesenho é um frame,
+      // dado estável congela o shimmer (sem loop ornamental infinito).
+      return morphActive();
+    },
+    setup,
+  );
 
-    requestRef.current = requestAnimationFrame(draw);
-    return () => {
-      if (requestRef.current) cancelAnimationFrame(requestRef.current);
-    };
-  }, [theme, reducedMotion, segments]);
+  useEffect(() => {
+    hoverRef.current = hoverIndex;
+    // Hover muda o desenho (fatia destacada): um frame basta.
+    scheduleFrame();
+  }, [hoverIndex, scheduleFrame]);
+
+  useEffect(() => {
+    if (dispSharesRef.current.length === 0) {
+      dispSharesRef.current = [...shares];
+      fromSharesRef.current = [...shares];
+      targetSharesRef.current = [...shares];
+    } else {
+      fromSharesRef.current = [...dispSharesRef.current];
+      targetSharesRef.current = [...shares];
+      morphStartTimeRef.current = performance.now();
+    }
+    scheduleFrame();
+  }, [shares, scheduleFrame]);
 
   if (compact) {
     return (

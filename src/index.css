@@ -460,27 +460,19 @@
 
 
 /* ============================================================ */
-/* LIQUID GLASS — efeito "vidro líquido" morphing (Apple-like) */
-/* Aplicado nas barras de navegação (HeaderNav + BottomNav).     */
-/* Combinado com SVG filters feDisplacementMap (inline no App).  */
+/* LIQUID GLASS — "vidro líquido" = blur + saturação sobre fundo   */
+/* translúcido. Aplicado nas barras de navegação (HeaderNav,       */
+/* BottomNav, ContextualBar).                                     */
+/*                                                                  */
+/* NÃO há filtro SVG (feDisplacementMap/feImage) aqui, e não deve  */
+/* haver sem spec própria: o bloco abaixo é a receita, e ela é      */
+/* `backdrop-filter`. Ver SPEC-M-018 D3.                           */
+/* ---------------------------------------------------------------- */
+/* O plano que previa o morph morfológico está em                  */
+/* `.context/docs/liquid-glass-nav.md` e NÃO foi executado: os      */
+/* keyframes `scaleToggle*` que ele trazia foram removidos em        */
+/* 2026-10-16 por terem zero consumidores.                          */
 /* ============================================================ */
-
-/* Keyframes de scale p/ sincronizar morph com troca de seleção */
-@keyframes scaleToggle {
-  0% { scale: 1 1; }
-  50% { scale: 1.1 1; }
-  100% { scale: 1 1; }
-}
-@keyframes scaleToggle2 {
-  0% { scale: 1 1; }
-  50% { scale: 1.2 1; }
-  100% { scale: 1 1; }
-}
-@keyframes scaleToggle3 {
-  0% { scale: 1 1; }
-  50% { scale: 1.1 1; }
-  100% { scale: 1 1; }
-}
 
 /* Container glass — usado no <header> e no <nav> do bottom nav.
    `color-mix` = Canvas 75% + transparente; borda branca translúcida;

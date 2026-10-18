@@ -7,3 +7,4 @@ export * from './temple';
 export * from './hash';
 export * from './stack';
 export * from './derive';
+export * from './contextualBar';

@@ -6,7 +6,7 @@
  *   2. As tabelas dos DOIS bancos lógicos existem (cecistudy_user + catalog).
  *   3. A versão de schema no header do .sql bate com `packages/data/src/schema.ts`.
  *
- * Uso: `node cecistudy-rust/contracts/verify-schema.mjs`
+ * Uso: `node contracts/verify-schema.mjs`
  * Em falha → exit 1. Em sucesso → exit 0.
  */
 import { readFileSync } from 'node:fs';
@@ -15,7 +15,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const ROOT = resolve(HERE, '../..');
+const ROOT = resolve(HERE, '..');
 const require = createRequire(import.meta.url);
 
 // node:sqlite (Node 22+ experimental) — usa só se disponível; senão o Node sqlite3.

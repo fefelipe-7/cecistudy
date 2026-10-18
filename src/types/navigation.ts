@@ -24,9 +24,26 @@ import type { CourseIconName } from '../../packages/navigation/src/types';
 import type { ComponentType, ReactNode } from 'react';
 
 export interface HeaderAction {
+  /**
+   * Identificador estável (SPEC-M-018 D9). É o que torna a seleção um dado e não
+   * um índice: a usuária escolhe "nova prova" e a escolha sobrevive a reordenar a
+   * lista. **Nenhum `onClick` sem `id`.**
+   */
+  id: string;
   label: string;
+  /** Rótulo acessível quando o verbo do rótulo visual não basta (SPEC-M-018 §10.1). */
+  ariaLabel?: string;
+  /**
+   * Papel na barra contextual (SPEC-M-018 A3). `secondary` é o padrão: enquanto
+   * A3 estiver aberta **toda** ação declarada é secundária, e a barra renderiza
+   * `[⋯] [‹]` sem cápsula. Marcar uma ação como `primary` liga a cápsula — sem
+   * tocar na barra.
+   */
+  role?: 'primary' | 'secondary';
   Icon?: ComponentType<{ className?: string }>;
   onClick: () => void;
+  /** Ação destrutiva: pede confirmação antes de executar. */
+  destructive?: boolean;
 }
 
 export interface DynamicHeaderConfig {

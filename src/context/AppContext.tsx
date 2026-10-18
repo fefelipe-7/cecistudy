@@ -207,6 +207,8 @@ export interface AppContextValue {
   openRepertorioItem: (itemId: string, courseId: string) => void;
   closeRepertorioItem: () => void;
   isBottomNavVisible: boolean;
+  /** Topo da pilha de navegação. A barra contextual deriva dele (SPEC-M-018 D1). */
+  currentScreen: NavScreen;
   /** Se existe algo para voltar (cadeia do back do Android / gesto de borda). */
   canGoBack: boolean;
   isNotesScreenOpen: boolean;

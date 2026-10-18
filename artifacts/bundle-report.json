@@ -1,0 +1,909 @@
+{
+  "version": 2,
+  "generatedAt": "2026-10-18T05:48:51.664Z",
+  "generator": "scripts/bundle-report.mjs (npm run bundle:report)",
+  "totals": {
+    "js": {
+      "files": 119,
+      "bytes": 17049159
+    },
+    "css": {
+      "files": 2,
+      "bytes": 175307
+    },
+    "fonts": {
+      "files": 51,
+      "bytes": 631724
+    }
+  },
+  "critical": {
+    "chunks": [
+      {
+        "file": "assets/index-CYCxfBPS.js",
+        "base": "index.js",
+        "bytes": 389038,
+        "gzip": 117945,
+        "classification": "critical"
+      },
+      {
+        "file": "assets/vendor-react-DENrKhsk.js",
+        "base": "vendor-react.js",
+        "bytes": 223639,
+        "gzip": 69253,
+        "classification": "critical"
+      },
+      {
+        "file": "assets/vendor-motion-CL2k_cSx.js",
+        "base": "vendor-motion.js",
+        "bytes": 152830,
+        "gzip": 50760,
+        "classification": "critical"
+      },
+      {
+        "file": "assets/index-B-W9_hpz.css",
+        "base": "index-B-W9_hpz.css",
+        "bytes": 145405,
+        "gzip": 30874,
+        "classification": "critical"
+      },
+      {
+        "file": "assets/vendor-icons-h8FDs0sU.js",
+        "base": "vendor-icons.js",
+        "bytes": 51819,
+        "gzip": 10600,
+        "classification": "critical"
+      }
+    ],
+    "totalBytesEntry": 962731,
+    "totalGzipEntry": 279432
+  },
+  "chunks": [
+    {
+      "file": "assets/bancoQuestoes-CCdRHTP9.js",
+      "base": "bancoQuestoes.js",
+      "bytes": 4599145,
+      "gzip": 747485,
+      "classification": "route"
+    },
+    {
+      "file": "assets/authors-D3b0doxh.js",
+      "base": "authors.js",
+      "bytes": 2208901,
+      "gzip": 542439,
+      "classification": "deferred"
+    },
+    {
+      "file": "assets/comparisons-DYpsgzEI.js",
+      "base": "comparisons.js",
+      "bytes": 2089713,
+      "gzip": 144858,
+      "classification": "deferred"
+    },
+    {
+      "file": "assets/psicoterapiaApproaches-CPAW4x-o.js",
+      "base": "psicoterapiaApproaches-CPAW4x-o.js",
+      "bytes": 1065513,
+      "gzip": 179294,
+      "classification": "deferred"
+    },
+    {
+      "file": "assets/ThreeDPaper-CWdV4mYj.js",
+      "base": "ThreeDPaper.js",
+      "bytes": 716423,
+      "gzip": 168073,
+      "classification": "route"
+    },
+    {
+      "file": "assets/techniques-Chu5w8V4.js",
+      "base": "techniques.js",
+      "bytes": 702189,
+      "gzip": 31508,
+      "classification": "deferred"
+    },
+    {
+      "file": "assets/domain-10-processos-psicodinamicos-e-inconscientes-BTRgLEzs.js",
+      "base": "domain-10-processos-psicodinamicos-e-inconscientes.js",
+      "bytes": 546187,
+      "gzip": 154660,
+      "classification": "deferred"
+    },
+    {
+      "file": "assets/domain-11-processos-de-psicoterapia-e-mudanca-D46oBwPz.js",
+      "base": "domain-11-processos-de-psicoterapia-e-mudanca.js",
+      "bytes": 457619,
+      "gzip": 132073,
+      "classification": "deferred"
+    },
+    {
+      "file": "assets/domain-09-psicopatologia-e-sofrimento-psicologico-Vitvfp2o.js",
+      "base": "domain-09-psicopatologia-e-sofrimento-psicologico.js",
+      "bytes": 413490,
+      "gzip": 118714,
+      "classification": "deferred"
+    },
+    {
+      "file": "assets/index-BTjqp60X.js",
+      "base": "index.js",
+      "bytes": 412418,
+      "gzip": 103883,
+      "classification": "route"
+    },
+    {
+      "file": "assets/index-CYCxfBPS.js",
+      "base": "index.js",
+      "bytes": 389038,
+      "gzip": 117945,
+      "classification": "critical"
+    },
+    {
+      "file": "assets/domain-08-processos-sociais-culturais-e-contextuais-BtmNg-VY.js",
+      "base": "domain-08-processos-sociais-culturais-e-contextuais-BtmNg-VY.js",
+      "bytes": 360011,
+      "gzip": 101239,
+      "classification": "deferred"
+    },
+    {
+      "file": "assets/domain-12-existencia-significado-e-construcao-da-experiencia-BaLRSVQ1.js",
+      "base": "domain-12-existencia-significado-e-construcao-da-experiencia.js",
+      "bytes": 236486,
+      "gzip": 64241,
+      "classification": "deferred"
+    },
+    {
+      "file": "assets/domain-07-relacoes-e-processos-interpessoais-SUjrlpP9.js",
+      "base": "domain-07-relacoes-e-processos-interpessoais.js",
+      "bytes": 236000,
+      "gzip": 66558,
+      "classification": "deferred"
+    },
+    {
+      "file": "assets/vendor-react-DENrKhsk.js",
+      "base": "vendor-react.js",
+      "bytes": 223639,
+      "gzip": 69253,
+      "classification": "critical"
+    },
+    {
+      "file": "assets/domain-06-aprendizagem-e-comportamento-DUsh228e.js",
+      "base": "domain-06-aprendizagem-e-comportamento.js",
+      "bytes": 204091,
+      "gzip": 54018,
+      "classification": "deferred"
+    },
+    {
+      "file": "assets/domain-05-desenvolvimento-humano-Bi8ewejL.js",
+      "base": "domain-05-desenvolvimento-humano.js",
+      "bytes": 166242,
+      "gzip": 45728,
+      "classification": "deferred"
+    },
+    {
+      "file": "assets/vendor-motion-CL2k_cSx.js",
+      "base": "vendor-motion.js",
+      "bytes": 152830,
+      "gzip": 50760,
+      "classification": "critical"
+    },
+    {
+      "file": "assets/domain-02-cognicao-e-processos-mentais-w8VfpJc0.js",
+      "base": "domain-02-cognicao-e-processos-mentais.js",
+      "bytes": 150963,
+      "gzip": 40288,
+      "classification": "deferred"
+    },
+    {
+      "file": "assets/domain-01-fundamentos-psicologicos-BlMvoIzj.js",
+      "base": "domain-01-fundamentos-psicologicos.js",
+      "bytes": 146273,
+      "gzip": 39751,
+      "classification": "deferred"
+    },
+    {
+      "file": "assets/index-B-W9_hpz.css",
+      "base": "index-B-W9_hpz.css",
+      "bytes": 145405,
+      "gzip": 30874,
+      "classification": "critical"
+    },
+    {
+      "file": "assets/SyncScreen-CYzExRFo.js",
+      "base": "SyncScreen.js",
+      "bytes": 144322,
+      "gzip": 51099,
+      "classification": "route"
+    },
+    {
+      "file": "assets/domain-04-personalidade-self-e-identidade-zkwHns6I.js",
+      "base": "domain-04-personalidade-self-e-identidade.js",
+      "bytes": 139500,
+      "gzip": 36671,
+      "classification": "deferred"
+    },
+    {
+      "file": "assets/domain-03-emocao-afeto-e-motivacao-q6Dbrgew.js",
+      "base": "domain-03-emocao-afeto-e-motivacao.js",
+      "bytes": 132216,
+      "gzip": 34961,
+      "classification": "deferred"
+    },
+    {
+      "file": "assets/backupSchema-BqRI2Fsj.js",
+      "base": "backupSchema.js",
+      "bytes": 97364,
+      "gzip": 28034,
+      "classification": "route"
+    },
+    {
+      "file": "assets/conceptIndex-Cs1AsKDJ.js",
+      "base": "conceptIndex.js",
+      "bytes": 96666,
+      "gzip": 18576,
+      "classification": "route"
+    },
+    {
+      "file": "assets/WizardRouter-Bl_KfHqc.js",
+      "base": "WizardRouter.js",
+      "bytes": 93663,
+      "gzip": 25749,
+      "classification": "route"
+    },
+    {
+      "file": "assets/BibliotecaView-R3gl6neN.js",
+      "base": "BibliotecaView.js",
+      "bytes": 78167,
+      "gzip": 19429,
+      "classification": "route"
+    },
+    {
+      "file": "assets/TccView-BFMg0YTd.js",
+      "base": "TccView.js",
+      "bytes": 65795,
+      "gzip": 14201,
+      "classification": "route"
+    },
+    {
+      "file": "assets/FaculdadeView-CVE7gV6i.js",
+      "base": "FaculdadeView.js",
+      "bytes": 65295,
+      "gzip": 15456,
+      "classification": "route"
+    },
+    {
+      "file": "assets/vendor-icons-h8FDs0sU.js",
+      "base": "vendor-icons.js",
+      "bytes": 51819,
+      "gzip": 10600,
+      "classification": "critical"
+    },
+    {
+      "file": "assets/PerfilView-BhAF9fT6.js",
+      "base": "PerfilView.js",
+      "bytes": 47815,
+      "gzip": 11369,
+      "classification": "route"
+    },
+    {
+      "file": "assets/StudyRevisarScreen-_1dv9j9X.css",
+      "base": "StudyRevisarScreen.css",
+      "bytes": 29902,
+      "gzip": 6042,
+      "classification": "route"
+    },
+    {
+      "file": "assets/browser-DIt4vr53.js",
+      "base": "browser.js",
+      "bytes": 25783,
+      "gzip": 10125,
+      "classification": "route"
+    },
+    {
+      "file": "assets/ComparisonRouteView-DaTed3Nh.js",
+      "base": "ComparisonRouteView.js",
+      "bytes": 24591,
+      "gzip": 6726,
+      "classification": "route"
+    },
+    {
+      "file": "assets/registry-Bs2Idqcx.js",
+      "base": "registry.js",
+      "bytes": 24440,
+      "gzip": 4242,
+      "classification": "route"
+    },
+    {
+      "file": "assets/NoteTransformWizard-ljudBWs5.js",
+      "base": "NoteTransformWizard.js",
+      "bytes": 23792,
+      "gzip": 6545,
+      "classification": "route"
+    },
+    {
+      "file": "assets/HomeView-BBDiCDxx.js",
+      "base": "HomeView.js",
+      "bytes": 22391,
+      "gzip": 6953,
+      "classification": "route"
+    },
+    {
+      "file": "assets/StudyHistoricoScreen-5sZgkTEN.js",
+      "base": "StudyHistoricoScreen.js",
+      "bytes": 21603,
+      "gzip": 6636,
+      "classification": "route"
+    },
+    {
+      "file": "assets/InternshipLogCard-DOmbEd66.js",
+      "base": "InternshipLogCard.js",
+      "bytes": 20504,
+      "gzip": 6344,
+      "classification": "route"
+    },
+    {
+      "file": "assets/ManageDataModal-DNzen2yS.js",
+      "base": "ManageDataModal.js",
+      "bytes": 19814,
+      "gzip": 5756,
+      "classification": "route"
+    },
+    {
+      "file": "assets/StudyLeiturasScreen-DXBtZ3I8.js",
+      "base": "StudyLeiturasScreen.js",
+      "bytes": 16864,
+      "gzip": 4546,
+      "classification": "route"
+    },
+    {
+      "file": "assets/InternshipDiaryView-D4crLloP.js",
+      "base": "InternshipDiaryView.js",
+      "bytes": 15609,
+      "gzip": 4511,
+      "classification": "route"
+    },
+    {
+      "file": "assets/index-CNXUfO4_.js",
+      "base": "index.js",
+      "bytes": 14201,
+      "gzip": 2806,
+      "classification": "route"
+    },
+    {
+      "file": "assets/GlobalSearchModal-6MStwyY5.js",
+      "base": "GlobalSearchModal.js",
+      "bytes": 13485,
+      "gzip": 5009,
+      "classification": "route"
+    },
+    {
+      "file": "assets/ComposeNoteView-DBRtFHt-.js",
+      "base": "ComposeNoteView-DBRtFHt-.js",
+      "bytes": 11865,
+      "gzip": 4025,
+      "classification": "route"
+    },
+    {
+      "file": "assets/dither-growth-CTCRUy-K.js",
+      "base": "dither-growth-CTCRUy-K.js",
+      "bytes": 11529,
+      "gzip": 4677,
+      "classification": "route"
+    },
+    {
+      "file": "assets/PillGroupMulti-Cex9cfBp.js",
+      "base": "PillGroupMulti.js",
+      "bytes": 11205,
+      "gzip": 3689,
+      "classification": "route"
+    },
+    {
+      "file": "assets/StudyFocusScreen-Bunu9JjN.js",
+      "base": "StudyFocusScreen.js",
+      "bytes": 11040,
+      "gzip": 3500,
+      "classification": "route"
+    },
+    {
+      "file": "assets/StudyRevisarScreen-UsVT7a5T.js",
+      "base": "StudyRevisarScreen.js",
+      "bytes": 10807,
+      "gzip": 3405,
+      "classification": "route"
+    },
+    {
+      "file": "assets/confetti.module-C2jkTI5u.js",
+      "base": "confetti.module.js",
+      "bytes": 10696,
+      "gzip": 4285,
+      "classification": "route"
+    },
+    {
+      "file": "assets/NotesScreen-DU6Za2QX.js",
+      "base": "NotesScreen.js",
+      "bytes": 10532,
+      "gzip": 3047,
+      "classification": "route"
+    },
+    {
+      "file": "assets/EstudosView-CO-uqxPW.js",
+      "base": "EstudosView-CO-uqxPW.js",
+      "bytes": 10333,
+      "gzip": 3113,
+      "classification": "route"
+    },
+    {
+      "file": "assets/EditCourseModal-BYBniYWA.js",
+      "base": "EditCourseModal.js",
+      "bytes": 9801,
+      "gzip": 3065,
+      "classification": "route"
+    },
+    {
+      "file": "assets/web-Cdv7lrjd.js",
+      "base": "web.js",
+      "bytes": 9731,
+      "gzip": 1377,
+      "classification": "route"
+    },
+    {
+      "file": "assets/InternshipCaseView-BBlgyh9J.js",
+      "base": "InternshipCaseView.js",
+      "bytes": 9315,
+      "gzip": 2859,
+      "classification": "route"
+    },
+    {
+      "file": "assets/curate-dBrgxaB4.js",
+      "base": "curate.js",
+      "bytes": 9158,
+      "gzip": 2945,
+      "classification": "route"
+    },
+    {
+      "file": "assets/web-BIS3Lo14.js",
+      "base": "web.js",
+      "bytes": 8880,
+      "gzip": 3037,
+      "classification": "route"
+    },
+    {
+      "file": "assets/QuizResultScreen-Co5Yw7u0.js",
+      "base": "QuizResultScreen.js",
+      "bytes": 8729,
+      "gzip": 2401,
+      "classification": "route"
+    },
+    {
+      "file": "assets/RepertorioItemDetailScreen-BbFiXRSy.js",
+      "base": "RepertorioItemDetailScreen.js",
+      "bytes": 8545,
+      "gzip": 2743,
+      "classification": "route"
+    },
+    {
+      "file": "assets/ApproachDetailView-aIr7ZDaV.js",
+      "base": "ApproachDetailView.js",
+      "bytes": 8210,
+      "gzip": 2354,
+      "classification": "route"
+    },
+    {
+      "file": "assets/ClassNoteDetailScreen-CKBSM94M.js",
+      "base": "ClassNoteDetailScreen.js",
+      "bytes": 7123,
+      "gzip": 2220,
+      "classification": "route"
+    },
+    {
+      "file": "assets/StreakView-BxcLgE1M.js",
+      "base": "StreakView.js",
+      "bytes": 7110,
+      "gzip": 2145,
+      "classification": "route"
+    },
+    {
+      "file": "assets/templeData-DAwm6--4.js",
+      "base": "templeData-DAwm6--4.js",
+      "bytes": 6759,
+      "gzip": 1715,
+      "classification": "route"
+    },
+    {
+      "file": "assets/QuizGroupSelector-DivDMUIS.js",
+      "base": "QuizGroupSelector.js",
+      "bytes": 6612,
+      "gzip": 2742,
+      "classification": "route"
+    },
+    {
+      "file": "assets/AuthorsScreen-CEifNJA6.js",
+      "base": "AuthorsScreen.js",
+      "bytes": 6285,
+      "gzip": 2382,
+      "classification": "route"
+    },
+    {
+      "file": "assets/web-D6WSNEhJ.js",
+      "base": "web.js",
+      "bytes": 5452,
+      "gzip": 1468,
+      "classification": "route"
+    },
+    {
+      "file": "assets/NoteDetailWizard-BrKL1Jll.js",
+      "base": "NoteDetailWizard.js",
+      "bytes": 5269,
+      "gzip": 2209,
+      "classification": "route"
+    },
+    {
+      "file": "assets/Picker-C-wgF1Ig.js",
+      "base": "Picker-C-wgF1Ig.js",
+      "bytes": 5103,
+      "gzip": 1834,
+      "classification": "route"
+    },
+    {
+      "file": "assets/ReaderModeModal-CtyGU-z2.js",
+      "base": "ReaderModeModal-CtyGU-z2.js",
+      "bytes": 5049,
+      "gzip": 1740,
+      "classification": "route"
+    },
+    {
+      "file": "assets/QuizPlayer-BzGTXIDv.js",
+      "base": "QuizPlayer.js",
+      "bytes": 4988,
+      "gzip": 1945,
+      "classification": "route"
+    },
+    {
+      "file": "assets/TagField-BqJTc_I6.js",
+      "base": "TagField.js",
+      "bytes": 4949,
+      "gzip": 2134,
+      "classification": "route"
+    },
+    {
+      "file": "assets/TechniquesScreen-gMfmatjn.js",
+      "base": "TechniquesScreen.js",
+      "bytes": 4846,
+      "gzip": 2077,
+      "classification": "route"
+    },
+    {
+      "file": "assets/web-D_k8AxF0.js",
+      "base": "web.js",
+      "bytes": 4697,
+      "gzip": 1415,
+      "classification": "route"
+    },
+    {
+      "file": "assets/CourseIconPicker-CCfdyPRL.js",
+      "base": "CourseIconPicker.js",
+      "bytes": 4640,
+      "gzip": 1481,
+      "classification": "route"
+    },
+    {
+      "file": "assets/ClassNoteDetailWizard-BT3-8kmx.js",
+      "base": "ClassNoteDetailWizard-BT3-8kmx.js",
+      "bytes": 4445,
+      "gzip": 2015,
+      "classification": "route"
+    },
+    {
+      "file": "assets/ConceptsScreen-DVlmDL4-.js",
+      "base": "ConceptsScreen-DVlmDL4-.js",
+      "bytes": 4357,
+      "gzip": 1980,
+      "classification": "route"
+    },
+    {
+      "file": "assets/wizardFields-DQUoOOeF.js",
+      "base": "wizardFields.js",
+      "bytes": 4287,
+      "gzip": 1384,
+      "classification": "route"
+    },
+    {
+      "file": "assets/TempleScreen-BJc4vcys.js",
+      "base": "TempleScreen.js",
+      "bytes": 4013,
+      "gzip": 1360,
+      "classification": "route"
+    },
+    {
+      "file": "assets/CatalogMultiSelect-CqPa0Glg.js",
+      "base": "CatalogMultiSelect.js",
+      "bytes": 3983,
+      "gzip": 1557,
+      "classification": "route"
+    },
+    {
+      "file": "assets/QuizGroupDetail-V0UfAm9T.js",
+      "base": "QuizGroupDetail.js",
+      "bytes": 3983,
+      "gzip": 1482,
+      "classification": "route"
+    },
+    {
+      "file": "assets/TermHistoryScreen-BRxJj2zZ.js",
+      "base": "TermHistoryScreen.js",
+      "bytes": 3856,
+      "gzip": 1507,
+      "classification": "route"
+    },
+    {
+      "file": "assets/MarkdownBlock-BM4GdxbY.js",
+      "base": "MarkdownBlock.js",
+      "bytes": 3414,
+      "gzip": 1399,
+      "classification": "route"
+    },
+    {
+      "file": "assets/FamiliesView-CG0UvBS7.js",
+      "base": "FamiliesView.js",
+      "bytes": 3332,
+      "gzip": 1290,
+      "classification": "route"
+    },
+    {
+      "file": "assets/QuickAddModal-Bzvbh6p0.js",
+      "base": "QuickAddModal.js",
+      "bytes": 3242,
+      "gzip": 1212,
+      "classification": "route"
+    },
+    {
+      "file": "assets/FamilyDetailView-kpUTQfx-.js",
+      "base": "FamilyDetailView-kpUTQfx-.js",
+      "bytes": 2826,
+      "gzip": 1110,
+      "classification": "route"
+    },
+    {
+      "file": "assets/useCourseRepertorio-2gSP9Q2S.js",
+      "base": "useCourseRepertorio.js",
+      "bytes": 2338,
+      "gzip": 1027,
+      "classification": "route"
+    },
+    {
+      "file": "assets/useLongPress-DY0lnvvh.js",
+      "base": "useLongPress.js",
+      "bytes": 1913,
+      "gzip": 877,
+      "classification": "route"
+    },
+    {
+      "file": "assets/QuizLoadingScreen-IJTeOQSD.js",
+      "base": "QuizLoadingScreen.js",
+      "bytes": 1848,
+      "gzip": 1004,
+      "classification": "route"
+    },
+    {
+      "file": "assets/OtaUpdateModal-DINmJYhL.js",
+      "base": "OtaUpdateModal.js",
+      "bytes": 1744,
+      "gzip": 803,
+      "classification": "route"
+    },
+    {
+      "file": "assets/courseRepertorio-CRjxL66E.js",
+      "base": "courseRepertorio.js",
+      "bytes": 1678,
+      "gzip": 654,
+      "classification": "route"
+    },
+    {
+      "file": "assets/index-Boh6n0Ws.js",
+      "base": "index.js",
+      "bytes": 1624,
+      "gzip": 806,
+      "classification": "route"
+    },
+    {
+      "file": "assets/tips-Df0qsFS5.js",
+      "base": "tips.js",
+      "bytes": 1601,
+      "gzip": 816,
+      "classification": "route"
+    },
+    {
+      "file": "assets/HeroCard-DUNAMVGa.js",
+      "base": "HeroCard.js",
+      "bytes": 1574,
+      "gzip": 799,
+      "classification": "route"
+    },
+    {
+      "file": "assets/ChoiceCardGrid-BItEXqDf.js",
+      "base": "ChoiceCardGrid.js",
+      "bytes": 1535,
+      "gzip": 669,
+      "classification": "route"
+    },
+    {
+      "file": "assets/useAcervoTheory-B3qRIMqM.js",
+      "base": "useAcervoTheory.js",
+      "bytes": 1500,
+      "gzip": 787,
+      "classification": "route"
+    },
+    {
+      "file": "assets/web-BrFP8FSi.js",
+      "base": "web.js",
+      "bytes": 1351,
+      "gzip": 638,
+      "classification": "route"
+    },
+    {
+      "file": "assets/StatusChip-HW41LMPn.js",
+      "base": "StatusChip.js",
+      "bytes": 1292,
+      "gzip": 640,
+      "classification": "route"
+    },
+    {
+      "file": "assets/EmptyState-CsSgxanX.js",
+      "base": "EmptyState.js",
+      "bytes": 1267,
+      "gzip": 571,
+      "classification": "route"
+    },
+    {
+      "file": "assets/backupCrypto-CygKB_h_.js",
+      "base": "backupCrypto.js",
+      "bytes": 1072,
+      "gzip": 470,
+      "classification": "route"
+    },
+    {
+      "file": "assets/web-CzCLl1Fw.js",
+      "base": "web.js",
+      "bytes": 1048,
+      "gzip": 517,
+      "classification": "route"
+    },
+    {
+      "file": "assets/web-C219bP7D.js",
+      "base": "web.js",
+      "bytes": 1025,
+      "gzip": 284,
+      "classification": "route"
+    },
+    {
+      "file": "assets/StarRating-CXwAsoEY.js",
+      "base": "StarRating.js",
+      "bytes": 1007,
+      "gzip": 624,
+      "classification": "route"
+    },
+    {
+      "file": "assets/TagChip-BicfyaIC.js",
+      "base": "TagChip.js",
+      "bytes": 1004,
+      "gzip": 539,
+      "classification": "route"
+    },
+    {
+      "file": "assets/UnderlineTabBar-DltAckCs.js",
+      "base": "UnderlineTabBar.js",
+      "bytes": 972,
+      "gzip": 551,
+      "classification": "route"
+    },
+    {
+      "file": "assets/web-CFPI0URJ.js",
+      "base": "web.js",
+      "bytes": 948,
+      "gzip": 448,
+      "classification": "route"
+    },
+    {
+      "file": "assets/CompletionToggle-EhWzP1se.js",
+      "base": "CompletionToggle.js",
+      "bytes": 781,
+      "gzip": 482,
+      "classification": "route"
+    },
+    {
+      "file": "assets/CecinhoTip-C2S4DQFd.js",
+      "base": "CecinhoTip.js",
+      "bytes": 763,
+      "gzip": 440,
+      "classification": "route"
+    },
+    {
+      "file": "assets/CourseSelect-s9EjrGyE.js",
+      "base": "CourseSelect.js",
+      "bytes": 656,
+      "gzip": 434,
+      "classification": "route"
+    },
+    {
+      "file": "assets/index-x3Dbvuqc.js",
+      "base": "index.js",
+      "bytes": 554,
+      "gzip": 307,
+      "classification": "route"
+    },
+    {
+      "file": "assets/catalogLibrary-D5nnZe4-.js",
+      "base": "catalogLibrary-D5nnZe4-.js",
+      "bytes": 517,
+      "gzip": 323,
+      "classification": "route"
+    },
+    {
+      "file": "assets/TagList-BuJtS7Xe.js",
+      "base": "TagList.js",
+      "bytes": 496,
+      "gzip": 344,
+      "classification": "route"
+    },
+    {
+      "file": "assets/copy-qEuyeD50.js",
+      "base": "copy.js",
+      "bytes": 474,
+      "gzip": 280,
+      "classification": "route"
+    },
+    {
+      "file": "assets/noteLogic-Ba415X1F.js",
+      "base": "noteLogic.js",
+      "bytes": 468,
+      "gzip": 311,
+      "classification": "route"
+    },
+    {
+      "file": "assets/web-fHoxxgaJ.js",
+      "base": "web.js",
+      "bytes": 467,
+      "gzip": 301,
+      "classification": "route"
+    },
+    {
+      "file": "assets/SectionTitle-B8kQL0kj.js",
+      "base": "SectionTitle.js",
+      "bytes": 395,
+      "gzip": 261,
+      "classification": "route"
+    },
+    {
+      "file": "assets/AnimatedNumber-szok9gEM.js",
+      "base": "AnimatedNumber.js",
+      "bytes": 346,
+      "gzip": 269,
+      "classification": "route"
+    },
+    {
+      "file": "assets/FixedBottomBar-Bn7e1IZN.js",
+      "base": "FixedBottomBar.js",
+      "bytes": 334,
+      "gzip": 268,
+      "classification": "route"
+    },
+    {
+      "file": "assets/ManageSurface-Tu227JMZ.js",
+      "base": "ManageSurface.js",
+      "bytes": 312,
+      "gzip": 239,
+      "classification": "route"
+    },
+    {
+      "file": "assets/web-DMr0hedZ.js",
+      "base": "web.js",
+      "bytes": 225,
+      "gzip": 178,
+      "classification": "route"
+    },
+    {
+      "file": "assets/formatHours-qHZL14ma.js",
+      "base": "formatHours.js",
+      "bytes": 164,
+      "gzip": 160,
+      "classification": "route"
+    }
+  ]
+}

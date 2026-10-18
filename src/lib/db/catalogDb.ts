@@ -11,6 +11,7 @@
 import { isNativePlatform } from '../storage.ts';
 import { CATALOG_DB_NAME } from './catalogSchema.ts';
 import type { SqlDriver, SqlRow } from './driver.ts';
+import { traceAsync } from '../performance/perfMarks.ts';
 
 interface CatalogCapacitorSQLite {
   isDBExists(opts: { database: string }): Promise<{ value?: boolean }>;
@@ -122,18 +123,22 @@ function parseJsonRows(rows: SqlRow[]): unknown[] {
 
 /** Abordagens (97) — substitui o seed lazy de `psicoterapiaApproaches`. */
 export async function getCatalogApproaches<T = unknown>(): Promise<T[]> {
-  const db = await getCatalogDb();
-  if (!db) return [];
-  const rows = await db.query('SELECT data_json FROM approach ORDER BY sort_order');
-  return parseJsonRows(rows) as T[];
+  return traceAsync('catalog-request', async () => {
+    const db = await getCatalogDb();
+    if (!db) return [];
+    const rows = await db.query('SELECT data_json FROM approach ORDER BY sort_order');
+    return parseJsonRows(rows) as T[];
+  });
 }
 
 /** Questões (3.002 — MC 2.283 · C/E 719) — substitui o seed lazy de `bancoQuestoes`. */
 export async function getCatalogQuestions<T = unknown>(): Promise<T[]> {
-  const db = await getCatalogDb();
-  if (!db) return [];
-  const rows = await db.query('SELECT data_json FROM question');
-  return parseJsonRows(rows) as T[];
+  return traceAsync('catalog-request', async () => {
+    const db = await getCatalogDb();
+    if (!db) return [];
+    const rows = await db.query('SELECT data_json FROM question');
+    return parseJsonRows(rows) as T[];
+  });
 }
 
 /** Obras da biblioteca por tipo (coluna `type`: catalog | interdisciplinary | article). */

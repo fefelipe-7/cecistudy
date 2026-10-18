@@ -22,6 +22,10 @@ const baseInput: HeaderConfigInput = {
   toggleBookmarkCourse: () => undefined,
   setIsCreatingLooseNote: () => undefined,
   editManagedItem: () => undefined,
+  openSearch: () => undefined,
+  openStreak: () => undefined,
+  openTemple: () => undefined,
+  openStudy: () => undefined,
 };
 
 describe('buildHeaderConfig', () => {
@@ -86,6 +90,11 @@ describe('buildHeaderConfig', () => {
     });
     expect(cfg?.title).toBe('aula 3 • psicanálise em clips');
     expect(cfg?.subtitle).toContain('teorias clínicas');
-    expect(cfg?.actions?.[0]?.label).toBe('editar aula');
+    // Decisão de produto de 2026-10-18: na aula, a ação **principal** é anotar;
+    // editar fica como secundária. Não é mais a primeira da lista.
+    expect(cfg?.actions?.[0]?.label).toBe('nova anotação de aula');
+    expect(cfg?.actions?.[0]?.role).toBe('primary');
+    expect(cfg?.actions?.map((a) => a.label)).toContain('editar aula');
+    expect(cfg?.actions?.find((a) => a.label === 'editar aula')?.role).toBeUndefined();
   });
 });

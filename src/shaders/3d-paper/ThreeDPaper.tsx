@@ -1,9 +1,14 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
-import threeDPaperSource from "./sources/3d-paper.html?raw";
-import certificateSource from "./sources/3d-paper-certificate.html?raw";
-import japaneseSource from "./sources/3d-paper-japanese.html?raw";
-import siteOfTheYearSource from "./sources/3d-paper-site-of-the-year.html?raw";
+// F7.3 (spec-performance §4.3): o engine three.js (~608 KB) era inlined 4× —
+// uma vez por variante — no MESMO chunk (2,44 MiB). Agora ele vive UMA vez em
+// `engine.js` e cada variante carrega só o que difere (~23 KB). O srcDoc é
+// montado em runtime e o resultado é byte-idêntico ao HTML original.
+import engineSource from "./sources/engine.js?raw";
+import originalBody from "./sources/3d-paper.html?raw";
+import certificateBody from "./sources/3d-paper-certificate.html?raw";
+import japaneseBody from "./sources/3d-paper-japanese.html?raw";
+import siteOfTheYearBody from "./sources/3d-paper-site-of-the-year.html?raw";
 
 export type ThreeDPaperVariant = "original" | "site-of-the-year" | "japanese" | "certificate";
 
@@ -13,11 +18,17 @@ export type ThreeDPaperProps = {
   variant?: ThreeDPaperVariant;
 };
 
+/** Marcador que ocupa o lugar do engine dentro de cada corpo de variante. */
+export const ENGINE_MARKER = "/*__3D_PAPER_ENGINE__*/";
+
+/** Corpo de cada variante com o engine injetado (função no replace: sem `$`). */
+const withEngine = (body: string): string => body.replace(ENGINE_MARKER, () => engineSource);
+
 const sources: Record<ThreeDPaperVariant, string> = {
-  original: threeDPaperSource,
-  "site-of-the-year": siteOfTheYearSource,
-  japanese: japaneseSource,
-  certificate: certificateSource,
+  original: withEngine(originalBody),
+  "site-of-the-year": withEngine(siteOfTheYearBody),
+  japanese: withEngine(japaneseBody),
+  certificate: withEngine(certificateBody),
 };
 
 const titles: Record<ThreeDPaperVariant, string> = {

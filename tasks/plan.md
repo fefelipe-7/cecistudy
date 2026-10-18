@@ -10,7 +10,7 @@ Refatoração completa do aplicativo cecistudy em três eixos paralelos:
 - **Extração por domínio**: handlers de estado extraídos como hooks de ação (`*Actions.ts`).
 - **Tokens semânticos**: substituir todo hex em classNames por tokens do design system (`ceci-*`, `surface-*`, etc.).
 - **Facade de dados**: `useMobileApp` como porta de entrada das views (facade desktop `useDesktopApp`/`src/desktop/` removidos na limpeza do legado, 2026-09).
-- **Legado desktop removido (2026-09)**: `desktop/`, `apps/desktop/`, `src/desktop/` **não existem mais**; o desktop novo é Flutter+Rust em `cecistudy-rust/` (sem base React/JS).
+- **Legado desktop removido (2026-09, atualizado 2026-10-10)**: `desktop/`, `apps/desktop/`, `src/desktop/` **não existem mais**; a tentativa de desktop em `cecistudy-rust/` também foi removida (`ADR-008`, prosa arquivada em `../docs/arquivo-tentativa-desktop/`). O desktop do grupo é outro app: `cecistudy-desktop/` (React/Tauri, backend Rust).
 - **`ScreenLayers` removido**: transições incorporadas em cada `AppShell` específico.
 
 ## Task List

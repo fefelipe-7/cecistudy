@@ -5,14 +5,20 @@ import { ProgressBar } from './ProgressBar';
 import {
   runBootPreload,
   scheduleIdlePrefetch,
-  type BootProgress,
+  type BootState,
+  type BootStepId,
 } from '../../lib/bootPreload';
+import { mark, recordEvent, flushDevMetrics } from '../../lib/performance/perfMarks';
+import { prefersReducedMotion } from '../../lib/motion';
 
 const MIN_DISPLAY_MS = 1600;
 const MAX_DISPLAY_MS = 7000;
 const FADE_MS = 450;
 const PHRASE_INTERVAL_MS = 2200;
 const TICK_MS = 120;
+
+/** Etapas do grupo crítico — a barra mostra SÓ este progresso (spec §2.3). */
+const CRITICAL_STEPS: readonly BootStepId[] = ['theme', 'user-db', 'user-state'];
 
 type Phase = 'show' | 'fade' | 'done';
 
@@ -30,15 +36,21 @@ const BOOT_PHRASES = [
   'deixando tudo fofinho pra você ♡',
 ];
 
-const prefersReducedMotion = (): boolean =>
-  typeof window !== 'undefined' &&
-  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+/** Fração do grupo crítico (done/skipped/error contam como resolvidos). */
+function criticalFraction(state: BootState | null): number {
+  if (!state) return 0;
+  const resolved = CRITICAL_STEPS.filter((id) => state.steps[id].status !== 'pending' && state.steps[id].status !== 'running').length;
+  return resolved / CRITICAL_STEPS.length;
+}
 
 /**
- * Splash de boot com a mascote e barra de progresso REAL: cada passo da
- * pré-carga (SQLite, catálogos, chunks) alimenta a barra. Bloqueia a
- * interação até a preparação terminar — com tempo mínimo de exibição e
- * teto de segurança pra nunca prender a usuária.
+ * Splash de boot com a mascote e barra de progresso do CAMINHO CRÍTICO.
+ *
+ * Sai quando `criticalReady` (tema + banco da usuária + estado mínimo)
+ * terminar — não espera catálogo, questões ou chunks profundos (spec §2.3).
+ * O teto `MAX_DISPLAY_MS` continua como último escape, mas registra o motivo
+ * quando aciona. Em erro de etapa crítica o app é liberado em modo degradado
+ * (o caminho degradado já existe por design — a falha fica em `errors`).
  */
 export const BootSplash: React.FC = () => {
   const [phase, setPhase] = useState<Phase>('show');
@@ -46,39 +58,49 @@ export const BootSplash: React.FC = () => {
   const [phraseIdx, setPhraseIdx] = useState(
     () => Math.floor(Math.random() * BOOT_PHRASES.length)
   );
-  const preloadDoneRef = useRef(false);
+  const bootStateRef = useRef<BootState | null>(null);
   const startedAtRef = useRef(Date.now());
   const reducedMotion = useRef(prefersReducedMotion());
 
-  // Pré-carga real em background — o AppContext reaproveita estas promises.
+  // Boot progressivo em background — deduplicado (StrictMode reutiliza a
+  // mesma pipeline); o provider reaproveita as promises memoizadas.
   useEffect(() => {
     let cancelled = false;
-    const finish = () => {
-      if (!cancelled) preloadDoneRef.current = true;
-    };
-    runBootPreload((p: BootProgress) => {
+    runBootPreload((state: BootState) => {
       if (cancelled) return;
-      setFraction(Math.round(p.fraction * 100) / 100);
-      if (p.done >= p.total && p.total > 0) finish();
-    }).then(() => {
-      finish();
-      if (!cancelled) scheduleIdlePrefetch();
+      bootStateRef.current = state;
+      setFraction(Math.round(criticalFraction(state) * 100) / 100);
+    }).then((state) => {
+      if (cancelled) return;
+      bootStateRef.current = state;
+      setFraction(Math.round(criticalFraction(state) * 100) / 100);
+      scheduleIdlePrefetch();
     });
     return () => {
       cancelled = true;
     };
   }, []);
 
-  // Saída: tempo mínimo E (pré-carga concluída OU teto de segurança).
+  // Saída: tempo mínimo E caminho crítico pronto — OU teto de segurança
+  // (registrando o motivo). Deferred/opportunistic não seguram a splash.
   useEffect(() => {
     if (phase !== 'show') return;
     const timer = window.setInterval(() => {
       const elapsed = Date.now() - startedAtRef.current;
-      if (
-        elapsed >= MIN_DISPLAY_MS &&
-        (preloadDoneRef.current || elapsed >= MAX_DISPLAY_MS)
-      ) {
+      const state = bootStateRef.current;
+      if (elapsed >= MIN_DISPLAY_MS && state?.criticalReady) {
         window.clearInterval(timer);
+        setPhase('fade');
+      } else if (elapsed >= MAX_DISPLAY_MS) {
+        window.clearInterval(timer);
+        recordEvent('boot-max-display-escape', {
+          elapsed,
+          criticalReady: state?.criticalReady ?? false,
+          errors: state?.errors.map((e) => e.step) ?? [],
+        });
+        console.warn(
+          '[BootSplash] teto de segurança acionado antes do caminho crítico terminar',
+        );
         setPhase('fade');
       }
     }, TICK_MS);
@@ -87,7 +109,12 @@ export const BootSplash: React.FC = () => {
 
   useEffect(() => {
     if (phase !== 'fade') return;
-    const timer = window.setTimeout(() => setPhase('done'), FADE_MS);
+    const timer = window.setTimeout(() => {
+      // Splash removida = primeira interação possível (spec-performance, Fase 1).
+      mark('interactive-ready');
+      flushDevMetrics();
+      setPhase('done');
+    }, FADE_MS);
     return () => window.clearTimeout(timer);
   }, [phase]);
 

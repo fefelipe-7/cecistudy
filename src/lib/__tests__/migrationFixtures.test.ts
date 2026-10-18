@@ -5,19 +5,20 @@ import { canonicalize } from '../canonicalJson';
 import { MIGRATIONS, SCHEMA_VERSION, migrateDatabase } from '../../../packages/data/src/schema';
 
 /**
- * Fixtures de migração (F1.13) — paridade TS ↔ Rust.
+ * Fixtures de migração (F1.13) — o contrato de migração do mobile.
  *
- * Um payload "legado v1" representativo percorre migrações 1→13 com o próprio
+ * Um payload "legado v1" representativo percorre migrações com o próprio
  * `migrateDatabase` do TS; o resultado de cada versão vira um arquivo enumerado
- * em `cecistudy-rust/contracts/golden/migrations/`. O Rust reaplica a cadeia e
- * compara arquivo a arquivo (bloqueia divergência inclusive de *quirks* do TS).
+ * em `contracts/golden/migrations/`. Foram historicamente verificados também
+ * pelo Rust (oráculo removido pela ADR-008); hoje o contrato é do mobile
+ * (F0 0.1), e `migrateDatabase` é a única implementação sob gate.
  *
  * GERAÇÃO: `MIGRATION_WRITE=1 npm run test -- src/lib/__tests__/migrationFixtures.test.ts`
  * Nunca editar os arquivos manualmente: regenerar + revisar o diff.
  */
 const OUT = join(
   import.meta.dirname,
-  '../../../cecistudy-rust/contracts/golden/migrations'
+  '../../../contracts/golden/migrations'
 );
 const WRITE = process.env.MIGRATION_WRITE === '1';
 

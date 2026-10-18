@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Layers } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useCanvasSetup } from '@/lib/useCanvasSetup';
+import { useCanvasSetup, useDitherLoop } from '@/lib/useCanvasSetup';
 import {
   smoothstep,
   hash,
@@ -43,7 +43,8 @@ export const DitherFunnelChart: React.FC<DitherFunnelChartProps> = ({
   formatValue = formatCount,
 }) => {
   const [variantIndex, setVariantIndex] = useState(0);
-  const { canvasRef, rect, isVisible, reducedMotion } = useCanvasSetup();
+  const setup = useCanvasSetup();
+  const { canvasRef, ctxRef, rect, reducedMotion } = setup;
 
   const usingVariants = variants !== undefined || stagesProp === undefined;
   const activeVariant = (variants ?? DEMO_FUNNEL_VARIANTS)[variantIndex];
@@ -62,33 +63,25 @@ export const DitherFunnelChart: React.FC<DitherFunnelChartProps> = ({
   const targetDataRef = useRef(stages);
   const fromDataRef = useRef(stages);
   const morphStartTimeRef = useRef(0);
+  const timeRef = useRef(0);
 
-  useEffect(() => {
-    fromDataRef.current = targetDataRef.current;
-    targetDataRef.current = stages;
-    morphStartTimeRef.current = performance.now();
-  }, [stages]);
+  const morphActive = () =>
+    !reducedMotion &&
+    morphStartTimeRef.current > 0 &&
+    performance.now() - morphStartTimeRef.current < 500;
 
-  useEffect(() => {
-    let req: number;
-    let lastFrame = 0;
-    let time = 0;
-
-    const draw = (now: number) => {
-      req = requestAnimationFrame(draw);
-      if (!isVisible.current) return;
-      if (now - lastFrame < 33) return; // ~30fps — funil é quase estático
-      lastFrame = now;
-
+  const { scheduleFrame } = useDitherLoop(
+    () => {
       const canvas = canvasRef.current;
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      if (!canvas) return false;
+      const ctx = ctxRef.current ?? (ctxRef.current = canvas.getContext('2d'));
+      if (!ctx) return false;
 
       const { width: w, height: h } = rect.current;
-      if (w === 0 || h === 0) return;
+      if (w === 0 || h === 0) return true; // aguardando o ResizeObserver medir
 
-      time += reducedMotion ? 0 : 0.02;
+      timeRef.current += reducedMotion ? 0 : 0.02;
+      const time = timeRef.current;
 
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       ctx.save();
@@ -138,11 +131,19 @@ export const DitherFunnelChart: React.FC<DitherFunnelChartProps> = ({
       }
 
       ctx.restore();
-    };
+      // needsAnimation (spec §5.2): só o morph — dado estável congela o shimmer.
+      // O throttle de ~30fps saiu: a política de loop é ÚNICA (spec §5.4).
+      return morphActive();
+    },
+    setup,
+  );
 
-    req = requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(req);
-  }, [stages, reducedMotion, theme]);
+  useEffect(() => {
+    fromDataRef.current = targetDataRef.current;
+    targetDataRef.current = stages;
+    morphStartTimeRef.current = performance.now();
+    scheduleFrame();
+  }, [stages, scheduleFrame]);
 
   if (compact) {
     return (

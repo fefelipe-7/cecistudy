@@ -120,6 +120,8 @@ export interface NavigationValue {
   openRepertorioItem: (itemId: string, courseId: string) => void;
   closeRepertorioItem: () => void;
   isBottomNavVisible: boolean;
+  /** Topo da pilha. A barra contextual deriva a presença dele (SPEC-M-018 D1). */
+  currentScreen: NavScreen;
   /** Se existe algo para voltar (cadeia do back do Android / gesto de borda). */
   canGoBack: boolean;
   isNotesScreenOpen: boolean;
@@ -1564,6 +1566,12 @@ export function useNavigationEngine(
       toggleBookmarkCourse,
       setIsCreatingLooseNote,
       editManagedItem,
+      // Barra contextual (SPEC-M-018): as ações de navegação das telas de
+      // catálogo e de estudo saem daqui, do mesmo engine.
+      openSearch,
+      openStreak,
+      openTemple,
+      openStudy,
     });
   }, [
     currentScreen,
@@ -1626,6 +1634,7 @@ export function useNavigationEngine(
     openRepertorioItem,
     closeRepertorioItem,
     isBottomNavVisible,
+    currentScreen,
     canGoBack,
     isNotesScreenOpen,
     openNotesScreen,

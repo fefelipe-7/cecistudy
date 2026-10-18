@@ -1,17 +1,23 @@
 /**
  * Estado persistente tri-modal para o domínio do app:
  *
- * - Web/PWA  → localStorage síncrono (idêntico a `usePersistentState`; zero
- *   mudança de comportamento — sem flash, inicialização imediata).
+ * - Web/PWA  → localStorage síncrono (inicialização imediata, sem flash).
  * - Nativo OK → SQLite (`cecistudy_user`): hidratação assíncrona por coleção +
- *   write-through serializado em cada mudança de estado.
+ *   write-through ENFILEIRADO (writeQueue) — coalescido por versão, debounced
+ *   200 ms, serializado por chave, com flush em pagehide/visibilitychange.
  * - Nativo com SQLite indisponível → fallback transparente para Preferences
  *   (mesma semântica do `usePersistentState`).
+ *
+ * Durabilidade é da FILA (spec-performance §7 Fase 7), não do componente:
+ * unmount não descarta pendência, erro retém para retry e o último valor
+ * sempre vence. Mudança feita DURANTE a hidratação nativa não é mais perdida
+ * (nem revertida em memória): o carimbo `dirty` protege a edição da usuária
+ * e a escrita entra na fila assim que a hidratação sinaliza `hydrated`.
  *
  * `reminder`/`onboarding`/preferências pequenas continuam no
  * `usePersistentState` (Preferences) — não usar este hook para elas.
  */
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import type React from 'react';
 import { storage, isNativePlatform } from './storage.ts';
 import { getUserDb } from './db/userDb.ts';
@@ -20,16 +26,17 @@ import {
   loadCollection,
   saveCollection,
 } from './db/normalize.ts';
-
-/** Aguarda inatividade antes de escrever; flush imediato ao ocultar/fechar. */
-const WRITE_DEBOUNCE_MS = 200;
+import { enqueueWrite } from './db/writeQueue.ts';
+import { traceAsync } from './performance/perfMarks.ts';
 
 export function useSqliteState<T>(
   key: string,
   initialValue: T
 ): [T, React.Dispatch<React.SetStateAction<T>>] {
-  const hydratedRef = useRef(!isNativePlatform);
-  const [state, setState] = useState<T>(() => {
+  const [hydrated, setHydrated] = useState(!isNativePlatform);
+  /** true quando um `set` aconteceu antes de a hidratação aplicar o disco. */
+  const dirtyRef = useRef(false);
+  const [state, setStateRaw] = useState<T>(() => {
     // Web: inicialização síncrona do localStorage (sem flash).
     if (!isNativePlatform) {
       const item = storage.getSync(key);
@@ -44,6 +51,13 @@ export function useSqliteState<T>(
     return initialValue;
   });
 
+  // `set` público marca `dirty`: a hidratação não pode revertê-lo (LWW em
+  // memória — o valor do disco é ignorado se a usuária já editou).
+  const setState = useCallback((action: React.SetStateAction<T>) => {
+    dirtyRef.current = true;
+    setStateRaw(action);
+  }, []);
+
   // Hidratação assíncrona (nativo): SQLite, com fallback p/ legado.
   useEffect(() => {
     if (!isNativePlatform) return;
@@ -53,19 +67,22 @@ export function useSqliteState<T>(
       try {
         if (db && isUserCollectionKey(key)) {
           const value = await loadCollection<T>(db, key);
-          if (!cancelled && value !== undefined) setState(value);
+          if (!cancelled && value !== undefined && !dirtyRef.current) setStateRaw(value);
         } else {
           const item = await storage.get(key);
-          if (!cancelled && item != null) {
+          if (!cancelled && item != null && !dirtyRef.current) {
             try {
-              setState(JSON.parse(item) as T);
+              setStateRaw(JSON.parse(item) as T);
             } catch {
               /* mantém estado atual */
             }
           }
         }
       } finally {
-        if (!cancelled) hydratedRef.current = true;
+        // Sinaliza como ESTADO (não ref): o write-through reage e enfileira
+        // a edição feita durante a hidratação (bug da F5.4 — antes, a
+        // mudança era perdida para sempre).
+        if (!cancelled) setHydrated(true);
       }
     })();
     return () => {
@@ -73,51 +90,26 @@ export function useSqliteState<T>(
     };
   }, [key]);
 
-  // Write-through com debounce: aguarda inatividade (200ms) e faz flush
-  // imediato ao ocultar/fechar (evita perder a última mudança).
+  // Write-through: cada estado novo entra na fila (debounce 200 ms,
+  // coalescing por versão, serialização por chave — spec §7.1/§7.2).
+  // Sem cleanup de descarte: a fila é dona da pendência.
   useEffect(() => {
-    if (!hydratedRef.current) return;
-    let cancelled = false;
-
-    const write = () => {
-      if (cancelled) return;
-      void (async () => {
-        if (cancelled) return;
-        const db = await getUserDb();
-        try {
-          if (db && isUserCollectionKey(key)) {
-            if (!cancelled) await saveCollection(db, key, state);
-          } else {
-            if (!cancelled) await storage.set(key, JSON.stringify(state));
-          }
-        } catch (e) {
-          console.error(`[useSqliteState] falha ao gravar "${key}"`, e);
-        }
-      })();
-    };
-
-    const timer = window.setTimeout(write, WRITE_DEBOUNCE_MS);
-
-    const onVisibility = () => {
-      if (document.visibilityState === 'hidden') {
-        window.clearTimeout(timer);
-        write();
-      }
-    };
-    const onPageHide = () => {
-      window.clearTimeout(timer);
-      write();
-    };
-    window.addEventListener('pagehide', onPageHide);
-    document.addEventListener('visibilitychange', onVisibility);
-
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timer);
-      window.removeEventListener('pagehide', onPageHide);
-      document.removeEventListener('visibilitychange', onVisibility);
-    };
-  }, [key, state]);
+    if (!hydrated) return;
+    const snapshot = state;
+    enqueueWrite(key, () => writeSnapshot(key, snapshot));
+  }, [key, state, hydrated]);
 
   return [state, setState];
+}
+
+/** Grava um snapshot pela fila — Preferences quando não há SQLite/coleção. */
+async function writeSnapshot<T>(key: string, value: T): Promise<void> {
+  const db = await getUserDb();
+  await traceAsync('persist-write', async () => {
+    if (db && isUserCollectionKey(key)) {
+      await saveCollection(db, key, value);
+    } else {
+      await storage.set(key, JSON.stringify(value));
+    }
+  });
 }

@@ -63,6 +63,9 @@ export interface ToastOptions {
 import { useSqliteState } from '../lib/useSqliteState';
 import { useStampedState } from '../lib/useStampedState';
 import { usePersistentState } from '../lib/usePersistentState';
+import { traceAsync } from '../lib/performance/perfMarks';
+import { invalidatePendingWrites } from '../lib/db/writeQueue';
+import { useBackgroundSyncTriggers } from '../lib/sync/useBackgroundSyncTriggers';
 import { emptySyncIndex, maxStamp } from '../lib/sync/stamp';
 import { lockedStickerCatalog } from '../data/stickerCatalog';
 import { mergeCatalogWithProgress } from '../lib/stickers';
@@ -887,6 +890,9 @@ export function useDataClient(): DataClientValue {
 
   /** Limpa tudo e volta ao estado inicial (zerado) — onboarding é reaberto. */
   const resetApp = () => {
+    // Pendências pré-reset morrem ANTES do novo snapshot (spec-performance
+    // F5.5): nenhum dado velho volta a gravar depois do reset.
+    void invalidatePendingWrites();
     applyDatabase(emptyDatabase());
     // Bancos estáticos (approaches/questions) também são zerados para refletir o
     // "primeiro acesso"; o efeito de seed do DataClient re-semeia sob demanda
@@ -936,6 +942,9 @@ export function useDataClient(): DataClientValue {
         showToast('ops, esse arquivo de backup não é compatível ♡');
         return;
       }
+      // Pendências pré-import não sobrevivem ao restore (spec-performance
+      // F5.5) — invalida e aguarda o em andamento antes de aplicar.
+      await invalidatePendingWrites();
       applyDatabase(db);
       showToast('backup restaurado com carinho ♡');
     })();
@@ -999,7 +1008,7 @@ export function useDataClient(): DataClientValue {
     [applyDatabase, deviceId],
   );
 
-  const performSync = useCallback(
+  const performSyncCore = useCallback(
     async (interactive: boolean) => {
       const engine = resolveSyncEngine();
       if (!engine) {
@@ -1041,6 +1050,13 @@ export function useDataClient(): DataClientValue {
     [resolveSyncEngine, getSyncPayloadJson, syncIndex, syncCheckpoint, applyMerged],
   );
 
+  // Cada tentativa de sync vira um span `sync-cycle` (spec-performance, Fase 1) —
+  // em produção o traceAsync devolve a própria promise, sem custo.
+  const performSync = useCallback(
+    (interactive: boolean) => traceAsync('sync-cycle', () => performSyncCore(interactive)),
+    [performSyncCore],
+  );
+
   const syncNow = useCallback(() => performSync(true), [performSync]);
   const syncInBackground = useCallback(() => performSync(false), [performSync]);
 
@@ -1074,24 +1090,12 @@ export function useDataClient(): DataClientValue {
     setSyncStatus('upToDate');
   }, []);
 
-  // Gatilhos de fundo: abrir, fechar, 30 min e ao recuperar conexão.
-  useEffect(() => {
-    if (!githubSyncConfig) return;
-    const id = setInterval(() => syncInBackground(), 30 * 60 * 1000);
-    const onOnline = () => syncInBackground();
-    window.addEventListener('online', onOnline);
-    const onBeforeUnload = () => {
-      void syncInBackground();
-    };
-    window.addEventListener('beforeunload', onBeforeUnload);
-    const t = setTimeout(() => syncInBackground(), 1500);
-    return () => {
-      clearInterval(id);
-      window.removeEventListener('online', onOnline);
-      window.removeEventListener('beforeunload', onBeforeUnload);
-      clearTimeout(t);
-    };
-  }, [githubSyncConfig, syncInBackground]);
+  // Gatilhos de fundo (spec-performance §7 Fase 8): lifecycle depende SÓ da
+  // configuração; o callback vem por ref (sempre fresco); trava contra sync
+  // concorrente; `pagehide` (não `beforeunload`); o sync inicial de 1,5 s roda
+  // uma vez por ativação — não mais após cada edição (efeito colateral das
+  // deps largas, resolvido aqui).
+  useBackgroundSyncTriggers(githubSyncConfig, syncInBackground);
 
   // Stickers: reconcilia o catálogo com o progresso persistido (uma vez, ao iniciar)
   useEffect(() => {

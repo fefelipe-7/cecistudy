@@ -33,8 +33,11 @@ const KNOWN_INLINE: Record<string, number[]> = {
   'src/components/flashcards/CardBaúEnvelope.tsx': [34, 52],
   'src/components/quizzes/QuizExplanationOverlay.tsx': [23, 32],
   'src/components/quizzes/QuizGroupDetail.tsx': [64, 84],
-  'src/components/ui/dither-growth.tsx': [95, 96],
-  'src/components/ui/dither-revenue.tsx': [79, 80],
+  // spec-performance F4: os componentes migraram para o loop controlado
+  // (useDitherLoop) e os literais deslocaram — os números de linha do ratchet
+  // acompanham (os literais em si não mudaram; o gate é o mesmo).
+  'src/components/ui/dither-growth.tsx': [96, 97],
+  'src/components/ui/dither-revenue.tsx': [80, 81],
   'src/components/ui/EdgeSwipeBack.tsx': [96, 103],
   'src/components/views/CourseDetailView.tsx': [188, 189],
   'src/components/views/home/rows.tsx': [31, 80],
@@ -44,7 +47,10 @@ const KNOWN_INLINE: Record<string, number[]> = {
   'src/components/quizzes/QuizLoadingScreen.tsx': [70],
   'src/components/quizzes/QuizResultScreen.tsx': [61],
   'src/components/ui/AnimatedNumber.tsx': [12],
-  'src/components/ui/BootSplash.tsx': [121],
+  // spec-performance F2: o BootSplash foi reestruturado (saída por
+  // criticalReady) e o literal moveu para :148 — o número de linha do
+  // ratchet acompanha (o literal em si não mudou; o gate é o mesmo).
+  'src/components/ui/BootSplash.tsx': [148],
   // SPEC-012 F3.5: `aria-valuetext` entrou acima do literal — o número de linha
   // do ratchet acompanha (o literal em si não mudou; o gate é o mesmo).
   'src/components/ui/ProgressBar.tsx': [36],

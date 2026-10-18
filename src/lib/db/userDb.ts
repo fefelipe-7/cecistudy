@@ -14,6 +14,7 @@ import { createNativeSqliteDriver, type SqlDriver } from './driver.ts';
 import { runUserMigrations, USER_DB_NAME } from './migrations.ts';
 import { USER_COLLECTION_KEYS } from './normalize.ts';
 import { importLegacyCollections, hasLegacyImport } from './legacyImport.ts';
+import { traceAsync } from '../performance/perfMarks.ts';
 
 let userDbPromise: Promise<SqlDriver | null> | undefined;
 
@@ -23,7 +24,7 @@ let userDbPromise: Promise<SqlDriver | null> | undefined;
  */
 export function getUserDb(): Promise<SqlDriver | null> {
   if (!isNativePlatform) return Promise.resolve(null);
-  if (!userDbPromise) userDbPromise = bootstrapUserDb();
+  if (!userDbPromise) userDbPromise = traceAsync('sqlite-hydration', bootstrapUserDb);
   return userDbPromise;
 }
 

@@ -1,13 +1,15 @@
 # Backup v2 — spec do contrato (cecistudy)
 
 > Formato canônico **`cecistudy-user-backup`** (v2) para exportação/importação,
-> migração e sincronização entre web/mobile (TypeScript) e desktop (Rust).
-> Contrato **duro**: o payload é a fonte da verdade para o que o Rust importa/exporta.
+> migração e sincronização. Contrato **do mobile** (`ADR-009`): o payload é a
+> fonte da verdade do formato que este app exporta e aceita importar. O desktop
+> tem o formato dele, em `src-tauri/migrations/` do `cecistudy-desktop`; a
+> tradução entre os dois formatos é Rust, no desktop.
 >
 > Fonte da verdade no código: `packages/data/src/exportImport.ts` (envelope),
 > `packages/data/src/persistentData.ts` (payload), `packages/data/src/backupSchema.ts`
 > (validação Zod), `packages/data/src/schema.ts` (versões/migrações).
-> Lands: `cecistudy-rust/contracts/golden/` (fixtures). Status: **aprovada** (2026-09-10).
+> Fixtures: `contracts/golden/`. Status: **aprovada** (2026-09-10).
 
 ## 1. Envelope
 
@@ -110,9 +112,10 @@ opcional (backups antigos não o têm). Regras de merge/LWW são do pacote `sync
 
 - Arquivo persistido como **JSON compacto, UTF-8, sem BOM** (`JSON.stringify`).
 - Para **comparação/determinismo** (testes, content hash de sync) usar o
-  **Canonical JSON v1** — ver `cecistudy-rust/docs/canonical-json-v1.md`.
+  **Canonical JSON v1** — ver `contracts/canonical-json-v1.md`.
 - Golden fixtures que implementam/verificam este contrato em
-  `cecistudy-rust/contracts/golden/` (byte-a-byte iguais em TS e Rust).
+  `contracts/golden/` (byte-a-byte; o oráculo Rust que os verificava em
+  paralela é histórico, removido pela ADR-008).
 
 ## 7. Compatibilidade
 

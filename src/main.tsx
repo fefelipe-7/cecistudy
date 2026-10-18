@@ -14,9 +14,13 @@ import '@fontsource/dm-serif-display/400-italic.css';
 import '@fontsource/jetbrains-mono/400.css';
 import App from './App.tsx';
 import { initTheme } from './lib/themes';
+import { mark } from './lib/performance/perfMarks';
 import './index.css';
 
+mark('app-entry-start');
+
 initTheme();
+mark('theme-ready');
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -18,15 +18,17 @@ import { BootSplash } from '@/components/ui/BootSplash';
 import { MobileAppShell } from '@/shells/MobileAppShell';
 import { MobileOverlays } from '@/overlays/MobileOverlays';
 import { MobileAppProvider } from '../MobileAppProvider';
-import { preloadScreenChunks } from '@/shells/SharedScreenLayers';
+import { mark } from '@/lib/performance/perfMarks';
 import '@/index.css';
 
-preloadScreenChunks();
+mark('app-entry-start');
 
 /**
  * Entrypoint próprio do cliente mobile (Fase 5).
  * Renderiza `MobileAppShell` direto — sem casca desktop.
  * O estado/navegação vêm do `MobileAppProvider` (casca mobile, spec 07).
+ * Sem preload global de telas (spec-performance §7 Fase 3): o chunk da Home
+ * vem do boot e os demais por intenção/prefetch com política.
  */
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

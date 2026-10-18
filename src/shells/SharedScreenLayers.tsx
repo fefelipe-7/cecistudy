@@ -3,6 +3,7 @@ import { useMobileApp } from '@/context/mobileApp';
 import { isUnknownSlideKind } from '@/context/slideKeys';
 import type { NavScreen } from '@/types/navigation';
 import { ViewSkeleton } from '../components/ui/Skeleton';
+import { requestPrefetch, prefetchOnIntent } from '@/lib/performance/screenPrefetch';
 
 // C1: views carregadas sob demanda — cada uma vira chunk próprio; o boot fica
 // leve e a biblioteca (com o catálogo estático grande) só carrega ao ser aberta.
@@ -80,55 +81,94 @@ const TccView = lazy(loadTccView);
 /** Fallback discreto enquanto um chunk de view carrega (primeira visita à aba). */
 export const ViewFallback = () => <ViewSkeleton rows={5} />;
 
-/** Factories de todos os chunks de tela — reutilizadas pelo lazy e pelo preload. */
-const SCREEN_CHUNK_LOADERS = [
-  loadHomeView,
-  loadFaculdadeView,
-  loadEstudosView,
-  loadBibliotecaView,
-  loadPerfilView,
-  loadStreakView,
-  loadSyncScreen,
-  loadComposeNoteView,
-  loadClassNoteDetailWizard,
-  loadClassNoteDetailScreen,
-  loadRepertorioItemDetailScreen,
-  loadNoteDetailWizard,
-  loadNoteTransformWizard,
-  loadWizardRouter,
-  loadTermHistoryScreen,
-  loadQuizCategorySelector,
-  loadQuizGroupDetail,
-  loadQuizLoadingScreen,
-  loadQuizPlayer,
-  loadQuizResultScreen,
-  loadStudyFocusScreen,
-  loadStudyRevisarScreen,
-  loadStudyLeiturasScreen,
-  loadStudyHistoricoScreen,
-  loadInternshipDiaryView,
-  loadInternshipCaseView,
-  loadTccView,
-];
+/**
+ * Chaves dos chunks de tela — a política de prefetch (spec-performance §7
+ * Fase 3) só aceita lista EXPLícita destas; o preload global de todos os
+ * loaders foi removido (27 loaders varridos de uma vez, sem intenção).
+ * As chaves das 4 abas casam com o `aria-label` do BottomNav (intenção
+ * observável via pointerdown).
+ */
+export type ScreenKey =
+  | 'home'
+  | 'faculdade'
+  | 'estudos'
+  | 'biblioteca'
+  | 'perfil'
+  | 'streak'
+  | 'sync'
+  | 'composeNote'
+  | 'classNoteDetailWizard'
+  | 'classNoteDetail'
+  | 'repertorioItemDetail'
+  | 'noteDetailWizard'
+  | 'noteTransformWizard'
+  | 'wizardRouter'
+  | 'termHistory'
+  | 'quizCategorySelector'
+  | 'quizGroupDetail'
+  | 'quizLoading'
+  | 'quizPlayer'
+  | 'quizResult'
+  | 'studyFocus'
+  | 'studyRevisar'
+  | 'studyLeituras'
+  | 'studyHistorico'
+  | 'internshipDiary'
+  | 'internshipCase'
+  | 'tcc';
 
-let preloaded = false;
+/** Factories dos chunks — reutilizadas pelo lazy e pelo prefetch com política. */
+const SCREEN_CHUNK_LOADERS: Record<ScreenKey, () => Promise<unknown>> = {
+  home: loadHomeView,
+  faculdade: loadFaculdadeView,
+  estudos: loadEstudosView,
+  biblioteca: loadBibliotecaView,
+  perfil: loadPerfilView,
+  streak: loadStreakView,
+  sync: loadSyncScreen,
+  composeNote: loadComposeNoteView,
+  classNoteDetailWizard: loadClassNoteDetailWizard,
+  classNoteDetail: loadClassNoteDetailScreen,
+  repertorioItemDetail: loadRepertorioItemDetailScreen,
+  noteDetailWizard: loadNoteDetailWizard,
+  noteTransformWizard: loadNoteTransformWizard,
+  wizardRouter: loadWizardRouter,
+  termHistory: loadTermHistoryScreen,
+  quizCategorySelector: loadQuizCategorySelector,
+  quizGroupDetail: loadQuizGroupDetail,
+  quizLoading: loadQuizLoadingScreen,
+  quizPlayer: loadQuizPlayer,
+  quizResult: loadQuizResultScreen,
+  studyFocus: loadStudyFocusScreen,
+  studyRevisar: loadStudyRevisarScreen,
+  studyLeituras: loadStudyLeiturasScreen,
+  studyHistorico: loadStudyHistoricoScreen,
+  internshipDiary: loadInternshipDiaryView,
+  internshipCase: loadInternshipCaseView,
+  tcc: loadTccView,
+};
 
 /**
- * Pré-carrega os chunks das telas no primeiro idle pós-boot: a 1ª visita a uma
- * aba/tela auxiliar anima o conteúdo real em vez do skeleton. Idempotente.
+ * Compatibilidade temporária (spec §3.1): aceita **lista explícita** de
+ * chaves — nunca mais a varredura global. Delega à política do
+ * `screenPrefetch` (saveData/visibilidade/limite de concorrência/dedup).
  */
-export function preloadScreenChunks(): void {
-  if (preloaded || typeof window === 'undefined') return;
-  preloaded = true;
-  const schedule =
-    typeof window.requestIdleCallback === 'function'
-      ? (cb: () => void) => window.requestIdleCallback(() => cb(), { timeout: 3000 })
-      : (cb: () => void) => window.setTimeout(cb, 1500);
-  schedule(() => {
-    SCREEN_CHUNK_LOADERS.forEach((load) => {
-      void load().catch(() => {});
-    });
-  });
+export function preloadScreenChunks(keys: ScreenKey[]): void {
+  for (const key of keys) {
+    const load = SCREEN_CHUNK_LOADERS[key];
+    if (load) requestPrefetch(`screen:${key}`, load);
+  }
+}
+
+/**
+ * Prefetch de tela após **intenção observável** (ex.: pointerdown na aba):
+ * fura a fila de baixa prioridade porque a navegação é iminente.
+ */
+export function prefetchScreensOnIntent(keys: ScreenKey[]): void {
+  for (const key of keys) {
+    const load = SCREEN_CHUNK_LOADERS[key];
+    if (load) prefetchOnIntent(`screen:${key}`, load);
+  }
 }
 
 /**

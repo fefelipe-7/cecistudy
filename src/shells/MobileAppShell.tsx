@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { App as CapacitorApp } from '@capacitor/app';
 import { LocalNotifications } from '@capacitor/local-notifications';
@@ -6,6 +6,8 @@ import { AnimatePresence, motion, useMotionValue, useTransform } from 'framer-mo
 import { useMobileApp } from '@/context/mobileApp';
 import { useNavValue } from '@/context/shellNavContexts';
 import { setupNativeShell } from '../lib/native';
+import { mark } from '../lib/performance/perfMarks';
+import { cancelQueuedPrefetches } from '../lib/performance/screenPrefetch';
 import { EASE, overlayVariants, resolveProfile } from '../lib/motion';
 import { nativeNavigation } from '../navigation/native-navigation';
 import { routeFromNotificationExtra } from '../../packages/domain/src/core/domain/thesis';
@@ -13,6 +15,7 @@ import { routeFromNotificationExtra } from '../../packages/domain/src/core/domai
 import { HeaderNav } from '../components/HeaderNav';
 import { BottomNav } from '../components/BottomNav';
 import { EdgeSwipeBack } from '../components/ui/EdgeSwipeBack';
+import { ContextualBars } from '../components/ui/ContextualBars';
 import { OnboardingScreen } from '../components/views/OnboardingScreen';
 
 import { SlideScreen } from './SlideScreen';
@@ -20,6 +23,13 @@ import { CaptureHost } from './CaptureHost';
 import { MotionProfileProvider, useMotionProfile } from '../components/motion/MotionProfileProvider';
 import { SlideContent, OverlayContent } from './SharedScreenLayers';
 import { focusController } from '../lib/focusController';
+import {
+  buildContextualBarModel,
+  contextualBarSignature,
+  isBarModel,
+} from '../lib/contextualBar';
+import { precisaDeInert } from '../lib/chromeVisibility';
+import { useChromeVisibility } from '../lib/useChromeVisibility';
 import {
   BackExitState,
   EXIT_BACK_TOAST,
@@ -55,6 +65,7 @@ const MobileAppShellInner: React.FC = () => {
   const { activeTab, handleNavigate, openCompose, openWizard, openTaskExamWizard } = nav;
 
   useEffect(() => {
+    mark('first-screen-mounted');
     setupNativeShell();
   }, []);
 
@@ -104,6 +115,12 @@ const MobileAppShellInner: React.FC = () => {
   useEffect(() => {
     backExitRef.current = initialBackExitState();
   }, [app.canGoBack, activeTab]);
+
+  // Troca de rota descarta o prefetch oportunístico pendente (spec-performance
+  // §3.3): o que já corre, corre — mas a fila não atrapalha a nova rota.
+  useEffect(() => {
+    cancelQueuedPrefetches();
+  }, [activeTab]);
 
   // Inicializa plugin de swipe-back nativo (iOS) — sempre habilitado
   useEffect(() => {
@@ -179,6 +196,59 @@ const MobileAppShellInner: React.FC = () => {
     app.isNoteDetailOpen ||
     app.isNoteTransformOpen;
 
+  /** O chrome existe nestas telas? Header e barra compartilham a resposta. */
+  const chromeVisible = !isAuxFlow && !app.isFocusImmersiveOpen;
+
+  // Modelo da barra contextual (SPEC-M-018 D1). Calculado **uma** vez por tela e
+  // distribuído ao header e à barra — é isso que garante I11: os dois lados lêem
+  // o mesmo predicado e não podem divergir.
+  //
+  // A memoização é por **assinatura**, não por referência: `headerConfig` é
+  // reconstruído a cada render do engine, então comparar o objeto não memoizaria
+  // nada e a barra remontaria a cada tecla digitada em um formulário.
+  const barSignature = contextualBarSignature(headerConfig);
+  const barModel = useMemo(
+    () =>
+      buildContextualBarModel({
+        currentScreen: app.currentScreen,
+        canGoBack: app.canGoBack,
+        headerConfig,
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [app.currentScreen.kind, app.canGoBack, barSignature],
+  );
+  const barActive = chromeVisible && isBarModel(barModel);
+
+  // Executar uma ação do contexto é chamar o mesmo `onClick` que o `⋯` do header
+  // chamava. A barra não sabe nada do domínio: ela entrega a `HeaderAction` e o
+  // shell, que tem o app inteiro, executa (D9).
+  const runBarAction = useCallback(
+    (action: { onClick: () => void }) => {
+      action.onClick();
+    },
+    [],
+  );
+
+  // D14: o piso do `<main>` ouve **qualquer** barra inferior. Antes só a pílula de
+  // abas contava, e ela vive nas telas de aba — justamente onde a barra contextual
+  // não aparece. Sem este termo, a barra cobriria o fim do conteúdo das telas de
+  // detalhe.
+  const bottomBarVisible = app.isBottomNavVisible || barActive;
+
+  // Visibilidade das barras (SPEC-M-019). O hook é o dono do listener e do
+  // temporizador; aqui só se lê o estado e se avisa as transições de tela.
+  // Nome distinto de `chrome` (perfil de motion) para não colidir.
+  const chromeVis = useChromeVisibility({ reduced: chrome.reduced });
+  // Ajuste de estado **durante o render**, no padrão do React ("adjusting state
+  // when a prop changes"): a visibilidade vive no hook, e o sinal de "trocou de
+  // tela" é o `kind` do topo da pilha. O guarda de referência garante que o
+  // aviso acontece uma vez por troca — sem laço e sem efeito que chega tarde.
+  const lastScreenKindRef = useRef(app.currentScreen.kind);
+  if (lastScreenKindRef.current !== app.currentScreen.kind) {
+    lastScreenKindRef.current = app.currentScreen.kind;
+    chromeVis.notificarNavegou();
+  }
+
   // Primeiro acesso → onboarding em tela cheia (sem header/nav)
   if (!app.onboarding.completed) {
     return <OnboardingScreen />;
@@ -202,11 +272,12 @@ const MobileAppShellInner: React.FC = () => {
           em vez de desmontar seco; o sticky é preservado pois o motion está no
           próprio elemento header. Some também na sessão de foco imersiva. */}
       <AnimatePresence initial={false}>
-        {!isAuxFlow && !app.isFocusImmersiveOpen && (
+        {chromeVisible && (
           <HeaderNavMemo
             key="header"
             profile={profile}
             headerConfig={headerConfig}
+            hideBarControls={barActive}
             direction={app.navDirection}
             onOpenSearch={app.openSearch}
             onNavigateToPerfil={onNavigateToPerfil}
@@ -217,7 +288,7 @@ const MobileAppShellInner: React.FC = () => {
       {/* Main Screen Content (Mobile First App Frame Container) */}
       <main
         className={`flex-1 max-w-md sm:max-w-xl lg:max-w-3xl xl:max-w-4xl w-full mx-auto px-3.5 py-4 sm:px-5 lg:px-8 relative transition-[padding] duration-[220ms] ease-out ${
-          app.isBottomNavVisible
+          bottomBarVisible
             ? 'pb-[calc(5rem+env(safe-area-inset-bottom,0px))] lg:pb-10'
             : 'pb-6'
         }`}
@@ -308,6 +379,25 @@ const MobileAppShellInner: React.FC = () => {
               onOpenCompose={openCompose}
             />
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Barra contextual (SPEC-M-018). Esconde a pílula de abas onde aparece, e
+          vice-versa — os dois conjuntos de tela são disjuntos por D13. O wrapper
+          anima **só** `opacity`: um `transform` aqui viraria containing block do
+          `fixed` interno (comentário do bloco acima). */}
+      <AnimatePresence initial={false}>
+        {barActive && barModel && (
+          <ContextualBars
+            key="contextual-bar"
+            model={barModel}
+            onBack={performBack}
+            onRunAction={runBarAction}
+            visivel={chromeVis.estado.visivel}
+            inert={precisaDeInert(chromeVis.estado)}
+            onMenuChange={chromeVis.notificarMenu}
+            onFocusChange={chromeVis.notificarFoco}
+          />
         )}
       </AnimatePresence>
 

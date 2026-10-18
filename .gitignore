@@ -24,6 +24,10 @@ cecistudy/
 ota-site/
 assets/mascote_expressoes_svgs/
 
+# Cache de build do tsc (`incremental` no tsconfig.json, SPEC-C-014 D1).
+# É artefato local: apagá-lo só faz o próximo typecheck ser mais lento.
+*.tsbuildinfo
+
 # Núcleo Rust (desktop) — artefatos de build
 cecistudy-rust/target/
 

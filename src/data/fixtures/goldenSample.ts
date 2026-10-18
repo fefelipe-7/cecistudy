@@ -1,11 +1,12 @@
 /**
- * Fixtures douradas (F0.4) — banco "cheio" de referência compartilhado TS/Rust.
+ * Fixtures douradas (F0.4) — banco "cheio" de referência do contrato de dados
+ * do mobile (`ADR-009`).
  *
- * O MESMO snapshot alimenta os golden files em
- * `cecistudy-rust/contracts/golden/` (gerados/verificados por
- * `src/lib/__tests__/goldenFixtures.test.ts`) e o teste de paridade Rust
- * (`golden_parity_test.rs`, Fase 1). Dados cênicos: psicologia clínica, pt-BR,
- * sem dados identificáveis de pacientes.
+ * O MESMO snapshot alimenta os golden files em `contracts/golden/`
+ * (gerados/verificados por `src/lib/__tests__/goldenFixtures.test.ts`; o teste
+ * de paridade Rust que os verificava em paralela é histórico, removido pela
+ * ADR-008). Dados cênicos: psicologia clínica, pt-BR, sem dados identificáveis
+ * de pacientes.
  *
  * ⚠️ Alterar este arquivo muda os golden files — regenere com
  * `GOLDEN_WRITE=1 npm run test -- src/lib/__tests__/goldenFixtures.test.ts`.

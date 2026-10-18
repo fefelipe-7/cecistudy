@@ -402,7 +402,16 @@ describe('TccWizard — concluir com capítulo pendente (SPEC-012 F0.3 / D4)', (
 
     // O `Modal` sai com `AnimatePresence` + `motion`
     // (`src/components/ui/Modal.tsx:94-153`): a saída é animada, espera sair.
-    await waitFor(() => expect(screen.queryByText(/ainda tem/)).not.toBeInTheDocument());
+    //
+    // O timeout é 3 s, e não o padrão de 1 s, porque a animação de saída depende
+    // de `requestAnimationFrame` do jsdom: com a máquina ocupada, o `waitFor`
+    // padrão estourava e o teste ficava vermelho **sem** mudança no código
+    // (observado em 2026-10-18, rodando o gate com o build Rust do outro app
+    // ao mesmo tempo). Timeout maior **não** mascara regressão: se o modal não
+    // fechar, o teste continua falhando.
+    await waitFor(() => expect(screen.queryByText(/ainda tem/)).not.toBeInTheDocument(), {
+      timeout: 3_000,
+    });
   });
 
   it('não pede confirmação quando todos os capítulos estão prontos', () => {

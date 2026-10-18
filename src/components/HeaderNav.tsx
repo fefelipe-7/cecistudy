@@ -20,6 +20,15 @@ interface HeaderNavProps {
   headerConfig?: DynamicHeaderConfig | null;
   /** Direção da navegação (push=1, pop=-1, troca de tab=0) — sincroniza a troca brand↔detail. */
   direction?: number;
+  /**
+   * A barra contextual está presente nesta tela (SPEC-M-018 A1/D13). Quando é
+   * `true`, o header **cede** o voltar e o `⋯` — os dois migraram para a barra.
+   *
+   * O predicado **não** é calculado aqui: vem do shell, que chama
+   * `buildContextualBarModel` uma única vez e distribui o resultado. Se o header
+   * decidisse sozinho, os dois divergiriam e a usuária veria dois retornos (I11).
+   */
+  hideBarControls?: boolean;
 }
 
 export const HeaderNav: React.FC<HeaderNavProps> = ({
@@ -28,6 +37,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   onNavigateToPerfil,
   headerConfig,
   direction = 0,
+  hideBarControls = false,
 }) => {
   const [scrolled, setScrolled] = useState(false);
   const motionProfile = useMotionProfile();
@@ -99,9 +109,13 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             exit="exit"
             className="flex items-center justify-between w-full"
           >
-            {/* Left Section: Back Button + Icon + Title & Code */}
+            {/* Left Section: Icon + Title & Code.
+                O botão de voltar **não** aparece quando a barra contextual está
+                presente (SPEC-M-018 A1/D13): o predicado vem do shell, que é a
+                única fonte da verdade dos dois lados (I11). Nunca há dois
+                retornos na mesma tela. */}
             <div className="flex items-center gap-2.5 min-w-0 pr-2">
-              {headerConfig.onBack && (
+              {headerConfig.onBack && !hideBarControls && (
                 <button
                   onClick={headerConfig.onBack}
                   className="w-9 h-9 rounded-2xl bg-surface-default border border-ceci-border-default hover:border-ceci-border-brand flex items-center justify-center text-ceci-primary shadow-2xs hover:bg-surface-rose tap-interactive cursor-pointer shrink-0 active:scale-95"
@@ -158,8 +172,9 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               {/* Custom Right Action (e.g. Quick Add or Action button) */}
               {headerConfig.rightActions}
 
-              {/* Contextual action menu (telas auxiliares) */}
-              {headerConfig.actions && <HeaderActionMenu actions={headerConfig.actions} />}
+              {/* Menu de ações contextuais — sai daqui quando a barra está
+                  presente, pelo mesmo predicado do voltar (D13/I11). */}
+              {headerConfig.actions && !hideBarControls && <HeaderActionMenu actions={headerConfig.actions} />}
 
               {/* Quick Search */}
               <button

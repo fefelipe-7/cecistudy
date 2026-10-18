@@ -3,6 +3,7 @@ import { Home, GraduationCap, Brain, Library, FileText, BookOpen, Check, HeartHa
 import { NavTab, WizardFlow } from '../types';
 import { BottomNavBar, NavItem } from '@/components/ui/bottom-nav-bar';
 import FloatingActionMenu from '@/components/ui/floating-action-menu';
+import { prefetchScreensOnIntent, type ScreenKey } from '@/shells/SharedScreenLayers';
 
 interface BottomNavProps {
   activeTab: NavTab;
@@ -35,6 +36,15 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   onOpenCompose,
 }) => {
   const activeIndex = TABS.findIndex((t) => t.id === activeTab);
+
+  // Intenção observável (spec-performance §3.2): pointerdown numa aba inicia
+  // o chunk daquela aba ANTES do React commitar a troca. O `aria-label` dos
+  // botões da barra casa com a `ScreenKey` da aba; teclas inválidas são
+  // ignoradas (botões do FAB também disparam pointerdown aqui).
+  const handlePointerIntent = (e: React.PointerEvent<HTMLDivElement>) => {
+    const label = (e.target as HTMLElement).closest('button')?.getAttribute('aria-label');
+    if (label) prefetchScreensOnIntent([label as ScreenKey]);
+  };
 
   const menuOptions = useMemo(
     () => [
@@ -70,15 +80,17 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   return (
     <div className="fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] z-40 flex items-center justify-center gap-2 px-3 pointer-events-none">
       <div className="pointer-events-auto flex items-center gap-2">
-        <BottomNavBar
-          items={TABS}
-          activeIndex={activeIndex >= 0 ? activeIndex : 0}
-          onChange={(index) => {
-            if (TABS[index]) {
-              onChangeTab(TABS[index].id);
-            }
-          }}
-        />
+        <div onPointerDownCapture={handlePointerIntent}>
+          <BottomNavBar
+            items={TABS}
+            activeIndex={activeIndex >= 0 ? activeIndex : 0}
+            onChange={(index) => {
+              if (TABS[index]) {
+                onChangeTab(TABS[index].id);
+              }
+            }}
+          />
+        </div>
 
         <FloatingActionMenu
           className="relative bottom-0 right-0 z-50 shrink-0"

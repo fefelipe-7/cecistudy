@@ -2,6 +2,7 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { defineConfig } from 'vite';
+import { stripLegacyFontFormats } from '../../scripts/vite-plugin-strip-woff.mjs';
 
 /**
  * Build próprio do cliente mobile (Fase 5 da separação interface).
@@ -14,7 +15,7 @@ import { defineConfig } from 'vite';
  * independente.
  */
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), stripLegacyFontFormats()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, '../../src'),

@@ -1,15 +1,18 @@
 /*
  * cecistudy ♡ — canonical SQL schema
  * ============================================================================
- * Contrato compartilhado entre o banco nativo (Capacitor/SQLite, TS) e o
- * desktop Flutter+Rust. Fonte de verdade: `src/lib/db/migrations/user.ts`
- * (USER_TABLES_SQL) e `src/lib/db/catalogSchema.ts` (CATALOG_TABLES_SQL).
+ * Contrato de dados DO MOBILE (`ADR-009`): a forma da base persistida aqui —
+ * banco nativo (Capacitor/SQLite, TS) e envelope de backup. O desktop tem o
+ * contrato dele, em `src-tauri/migrations/` do `cecistudy-desktop`; a tradução
+ * entre os dois formatos é Rust, no desktop. Fonte de verdade da forma:
+ * `src/lib/db/migrations/user.ts` (USER_TABLES_SQL) e
+ * `src/lib/db/catalogSchema.ts` (CATALOG_TABLES_SQL).
  *
  * NÃO edite este arquivo manualmente sem atualizar a fonte TS e rodar o
- * verificador (`node cecistudy-rust/contracts/verify-schema.mjs`).
+ * verificador (`node contracts/verify-schema.mjs`).
  *
  * Referência de versões (ver `packages/data/src/schema.ts`):
- *   SCHEMA_VERSION      = 13   (versão do payload persistido/backup)
+ *   SCHEMA_VERSION      = 22   (versão do payload persistido/backup)
  *   USER_SCHEMA_VERSION = 1    (versão da base SQLite da usuária `cecistudy_user`)
  *   CATALOG_RELEASE     = ver `content/catalog-version.json` (catálogo estático)
  *

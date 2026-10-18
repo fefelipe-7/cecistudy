@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Guidance for OpenCode sessions in **cecistudy ♡** — personal, mobile-first, pt-BR academic organizer for Psychology (React 19 + TS + Vite 6 + Tailwind 4 + Capacitor 8; desktop novo em Flutter+Rust).
+Guidance for OpenCode sessions in **cecistudy ♡** — personal, mobile-first, pt-BR academic organizer for Psychology (React 19 + TS + Vite 6 + Tailwind 4 + Capacitor 8). O desktop é outro app, `cecistudy-desktop` (React/Tauri, backend em Rust), e mora fora deste repositório.
 
 ## Commands & Verification
 - Package manager: **npm** (no bun).
@@ -10,6 +10,8 @@ Guidance for OpenCode sessions in **cecistudy ♡** — personal, mobile-first, 
 - `npm run build` — `vite build` → `dist/`.
 - `node .github/scripts/check-boundaries.mjs` — fails if `packages/*`/shared-code boundary rules are violated. É gate obrigatório do PR (`.github/workflows/ci.yml`) e do release; rode localmente antes de tocar `packages/*`, `src/shells` ou `src/overlays`. A regra "shared UI não brancha por plataforma" (`isMobile`/`Capacitor.isNativePlatform`) vive em `src/components`, `src/shells/SharedScreenLayers.tsx` e `src/overlays/*`.
 - **Verification gate:** run `npm run lint` + `npm run test` after any code change; run the boundary check when touching `packages/*`.
+- **Gate único (desde 2026-10-10, spec-performance §8.4):** `npm run verify` roda typecheck + testes (dot reporter) + boundary check + build web + build mobile. É a entrada do CI (`.github/workflows/ci.yml`) — o CI nunca rodou a partir da máquina de dev (GitHub bloqueado), validar no primeiro PR. Aliases: `typecheck`, `test:ci`, `check:boundaries`, `build:web`, `build:mobile`.
+- **Toolchain de contrato:** Node 22 (`.nvmrc` e `engines >= 22`); npm 10.x é o par testado em CI. A máquina de dev roda Node 26 + npm 12 (warning `localStorage` experimental em workers do Vitest é ruído; `vitest.setup.ts` já trata o shadowing). Relatório de bundle: `artifacts/bundle-report.json` (regenerar ao mudar chunks — F7.6 do `tasks/todo-performance.md` torna isso script).
 - Content/catalog pipeline (only when editing temple/catalog data): `npm run content:build` → `npm run db:verify` → `npm run content:check`.
 
 ## Monorepo / Package Boundaries (read before editing `packages/*`)
@@ -30,9 +32,11 @@ Guidance for OpenCode sessions in **cecistudy ♡** — personal, mobile-first, 
   (`src/context/mobileApp.ts`), e as views pesadas consomem os sub-contextos por domínio
   (`src/context/DataClientProvider.tsx` + `shellNavContexts.ts` + `navigationEngine.ts`).
   `src/context/AppContext.tsx` é agora um módulo **só de tipos** (470 linhas: `AppContextValue`,
-  `pickDomainActions`, `buildAppContextValue`), sem provider/hook. **O desktop legado (React/Tauri)
-  foi removido (2026-09):** `desktop/`, `apps/desktop/` e `src/desktop/` não existem mais; o desktop
-  novo é Flutter+Rust sem base React/JS. Não adicione regras de negócio novas a `AppContext`; chame
+  `pickDomainActions`, `buildAppContextValue`), sem provider/hook. O **desktop é outro app**,
+  `cecistudy-desktop` (React/Tauri, backend Rust) — o cliente Tauri que existia **dentro** deste
+  repositório (`desktop/`, `apps/desktop/`, `src/desktop/`) foi removido em 2026-09, e a tentativa
+  anterior de desktop (`cecistudy-rust/`) foi removida pela `ADR-008` (prosa arquivada em
+  `../docs/arquivo-tentativa-desktop/`). Não adicione regras de negócio novas a `AppContext`; chame
   `packages/*` (domínio/data/sync/navigation) ou os use-cases.
 
 ## Architecture & Navigation
@@ -44,7 +48,15 @@ Guidance for OpenCode sessions in **cecistudy ♡** — personal, mobile-first, 
 ## Code Conventions
 - **Design tokens:** use semantic tokens from `src/index.css` `@theme` (`text-ceci-primary`, `bg-surface-rose`, `border-ceci-border-brand`); never raw hex in classNames (hex only as data values via `style={{}}`). See `.context/design-system.md`.
 - **Copy:** pt-BR, lowercase, warm ("guardar", "bora estudar?", "prontinho ♡"). Never refer to the user as "Ceci".
-- **Schema changes:** `SCHEMA_VERSION` is currently **21** (`packages/data/src/schema.ts:13`). Bump it only in `packages/data/src/schema` (re-exported at `src/data/schema.ts`) and add a `MIGRATIONS` entry — and ONLY when the persisted format in `packages/domain|data` changes. Navigation/UI changes (e.g. `NavScreen`) must never bump `SCHEMA_VERSION`. New persisted state needs a `usePersistentState` key + seed in `src/data/empty.ts`. A próxima migração é a **22** (Gestão de TCC, SPEC-012).
+- **Schema changes:** o valor atual de `SCHEMA_VERSION` mora **no código** — leia
+  `packages/data/src/schema.ts` (re-exportado em `src/data/schema.ts`); número em
+  documento envelhece e mente (foi o débito C3). Bump apenas em
+  `packages/data/src/schema` e sempre com entrada nova em `MIGRATIONS` — e SOMENTE
+  quando o formato persistido em `packages/domain|data` muda. Mudanças de
+  navegação/UI (ex.: `NavScreen`) **nunca** dão bump em `SCHEMA_VERSION`. Estado
+  novo persistido precisa de chave `usePersistentState` + seed em
+  `src/data/empty.ts`. O verificador do contrato (`npm run verify:contract`)
+  confere o header de `contracts/schema.sql` contra o código.
 - **Academic term (SPEC-005):** `academicTerms` (`AcademicTerm`) is the **source of truth** for "which semester am I in". `profile.semester` is legacy/fallback — in the UI always read `useActiveTerm(terms)?.ordinal`, never `profile.semester` directly. Scope the views with `useTermScope`/`activeCourses` (inheritance by `courseId`; `Course.termId == null` is the anti-orphan escape hatch, not a term course). `Course.status` `arquivado` removes it from the grade, **never** deletes it. `MIGRATIONS[18]` creates the bootstrap term idempotently; the native `academic_term` table is `IF NOT EXISTS` (no `USER_SCHEMA_VERSION` bump) and the course `termId` still travels inside the course `data_json` (the denormalized `course_term` is a Rust-phase follow-up). Spec: `docs/specs/SPEC-005-periodo-letivo-e-progressao-de-semestre.md` · tasks: `tasks/todo-periodo-letivo.md` · status: `.context/backlog.md` Fase 22 (implementada).
 - **Rollover entry points (SPEC-008):** the rollover button is **always available** with an active term — `canRollover(term)` gates *enablement*, `shouldNudgeRollover(...)` only decides the emphasis (SPEC-008 D1). Never gate visibility on the nudge. The semester number is capped by `MAX_TERM_ORDINAL` (12), **never** by `profile.totalSemesters`: `totalSemesters` is an editable guess, and a cap that depends on another field hides the mistake. Going past the course total is a **warning** ("além dos 8 do curso"), not a clamp (SPEC-008 D3, which **overrides** SPEC-006 D8). The term history is a **sibling** of the wizard, not a child; expanding a term is local state. With no active term the wizard collapses to a single "open my 1st semester" step (`openFirstTerm`) — never `planTermRollover` on that path. Spec: `docs/specs/SPEC-008-virada-de-semestre-entradas-e-navegacao.md` · tasks: `tasks/todo-virada-entradas-navegacao.md`.
 - **Estágio (SPEC-009):** toda a regra do Estágio vive em `packages/domain/src/core/domain/internship.ts`; `src/lib/internshipCases.ts`, `src/types/internship.ts` e `src/lib/dateBR.ts` são stubs de compat com re-export **relativo**. Três regras que não se negociam:
@@ -59,25 +71,23 @@ Guidance for OpenCode sessions in **cecistudy ♡** — personal, mobile-first, 
 ## Persistence & Native
 - **Tri-modal storage:** web = `localStorage` · native domain data = **SQLite** (`@capacitor-community/sqlite`, `cecistudy_user`) via `src/lib/db/` · small prefs (`reminder`, `onboarding`, `gcal`) = `@capacitor/preferences` (through `usePersistentState`). Static catalog (questions/approaches/works) ships in `public/assets/databases/*.db` (built by `content:build`, checked by `db:verify`); web reads it via JS facades.
 - **Native (`android/`, `ios/`):** committed. Releases OTA/mobile (APK+IPA+OTA) rodam em CI (`.github/workflows/release.yml`). Gates de PR em `.github/workflows/ci.yml` (lint+test+boundary). This Linux box has no JDK/SDK/Xcode, so you cannot compile native here.
-- **Desktop legado (`desktop/` — Tauri 2):** **removido** (2026-09). **⚠️ O desktop novo é Flutter+Rust (abaixo).**
-- **Desktop novo (`cecistudy-rust/` — Flutter + Rust, em progresso):** o plano de migração
-  Tauri→Flutter+Rust vive em `cecistudy-rust/plano-desktop-flutter-rust.md`
-  (spec macro) + `cecistudy-rust/spec/01-task-breakdown-flutter-rust.md` (fonte de verdade de status)
-  + `cecistudy-rust/spec/PLANO-CONSOLIDADO-FLUTTER-RUST.md` (consulta de planejamento; numeração
-  diferente do breakdown). O núcleo Rust (workspace em `cecistudy-rust/`) está na **Fase 1 (21/23)**:
-  crates `common/domain/data/content/sync/app` implementados e com gate verde
-  (`cargo clippy -D warnings` + `cargo fmt --check` + **162 testes**); módulos de domínio
-  `calendar/knowledge/marketing/projects/internship` portados (R2, spec-first). Regras do workspace em
-  `cecistudy-rust/AGENTS.md`. **⚠️ Decisões 2026-09-12:** o desktop novo **NÃO usa nada do React/JS
-  como base** — domínio é implementado **spec-first em Rust** a partir de `contracts/` (schema.sql +
-  golden + backup-v2-spec); os pacotes TS servem apenas como oráculo de paridade via golden files. Data
-  crate será **alinhada a entidades tipadas** (forma vinda do schema.sql). Próximos passos (ordem R0→R6 no
-  breakdown): R1 data-tipado → R2 módulos de domínio (`calendar/knowledge/marketing/projects/internship`)
-  → R3 content naming → R4 paridade full → R5 `cecistudy-ffi` (bridge flutter_rust_bridge) → R6 UI Flutter
-  (greenfield). **Não tocar os crates Rust através do `eslint`/`tsc` da raiz — o gate Rust é o `cargo`.**
-- **SPEC-005 (Fase 22, mobile):** implementada **só** no React/TS. O workspace Rust **não** foi
-  tocado (nenhum crate); os goldens TS foram regerados com aprovação explícita da usuária, porque
-  `goldenFixtures`/`migrationFixtures` são o gate que o mobile consome.
+- **Desktop:** é o **outro app** do grupo, `cecistudy-desktop/` (React 19 + Tauri v2, backend em
+  Rust — `ADR-001` canônico, `ADR-006` backend). Ele mora fora deste repositório e não se importa
+  daqui. O que **houve** aqui e não existe mais: o cliente Tauri interno (`desktop/`,
+  `apps/desktop/`, `src/desktop/`, removido 2026-09) e a tentativa anterior (`cecistudy-rust/`,
+  removida 2026-10-10 pela `ADR-008`, com a prosa arquivada em `../docs/arquivo-tentativa-desktop/`).
+  A relação entre os dois apps é o [contrato de portabilidade do
+  grupo](../AGENTS.md#contrato-de-portabilidade): compartilha-se **decisão, não código** — o
+  motor de domínio é o Rust do desktop, o mobile porta a disciplina, reimplementa e espelha a
+  decisão numerada (`D<n>`), nunca copia arquivo.
+- **Contrato de dados do mobile:** é **deste app** (`ADR-009`) e mora em `contracts/`
+  (`schema.sql`, `canonical-json-v1.md`, `backup-v2-spec.md`, `golden/`, `verify-schema.mjs`).
+  O verificador de conformidade é `npm run verify:contract` (`node contracts/verify-schema.mjs`),
+  parte do gate único `npm run verify`. O desktop tem o contrato dele, em `src-tauri/migrations/`;
+  a tradução entre os formatos é Rust, no desktop — nunca aqui.
+- **SPEC-005 (Fase 22, mobile):** implementada **só** no React/TS. Os goldens TS foram regerados
+  com aprovação explícita da usuária, porque `goldenFixtures`/`migrationFixtures` são o gate que o
+  mobile consome. (O antigo oráculo Rust de paridade foi removido com `cecistudy-rust/`.)
 
 ## Gotchas & Environment Quirks
 - **Node:** `engines >=22` / `.nvmrc` = 22. If running on Node 26, jsdom's `localStorage` is shadowed by an experimental global; handled in `vitest.setup.ts`.
@@ -120,6 +130,8 @@ função — use a skill certa na hora certa (leia o `SKILL.md` correspondente a
 - `incremental-implementation` — implementação incremental e segura; use ao planejar a remoção do código mobile compartilhado.
 - `context-engineering` — engenharia de contexto/estado; use na separação de estado/contextos.
 
-**Regra:** o desktop novo (Flutter+Rust) é planejado em `cecistudy-rust/` — specs em
-`cecistudy-rust/spec/` (workspace Rust), regras em `cecistudy-rust/AGENTS.md`. O relatório-base de
-varredura do React legado ficou em `cecistudy-rust/spec/00-relatorio-varredura.md` (arquivado).
+**Regra:** não existe desktop dentro deste repositório. O desktop é o outro app,
+`cecistudy-desktop/` (React/Tauri, backend Rust). A tentativa anterior foi removida
+(`ADR-008`); sua prosa de planejamento está arquivada em
+`../docs/arquivo-tentativa-desktop/` e é **história**, não regra — nada ali manda sobre
+o produto ou sobre este app.

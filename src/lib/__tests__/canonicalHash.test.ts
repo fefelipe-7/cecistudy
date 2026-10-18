@@ -5,17 +5,18 @@ import { canonicalize } from '../canonicalJson';
 import { canonicalSha256, canonicalPayloadHash, sha256HexUtf8 } from '../canonicalHash';
 
 /**
- * Vetores compartilhados TS ↔ Rust de Canonical JSON v1 + SHA-256 (T0.4).
+ * Vetores de Canonical JSON v1 + SHA-256 (T0.4).
  *
- * Lê o MESMO arquivo que `cecistudy-rust/crates/cecistudy-common/tests/
- * canonical_hash_vectors_test.rs`. As expectativas foram calculadas fora de TS
- * e Rust, então o teste não é tautológico: se este lado canonicalizar ou hashear
- * diferente, ele quebra — e o lado Rust quebra junto.
+ * Foram historicamente lidos também pelo teste Rust de `cecistudy-common`
+ * (oráculo removido pela ADR-008). As expectativas foram calculadas fora de TS
+ * e Rust, então o teste não é tautológico: se este lado canonicalizar ou
+ * hashear diferente, ele quebra. Hoje os vetores são o contrato do mobile
+ * (F0 0.1), em `contracts/golden/`.
  */
 
 const VECTORS_PATH = join(
   import.meta.dirname,
-  '../../../cecistudy-rust/contracts/golden/canonical_hash_vectors.json'
+  '../../../contracts/golden/canonical_hash_vectors.json'
 );
 
 interface Vector {
