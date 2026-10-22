@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import type { MaterialItem } from '../../../types';
 import { ChoiceCardGrid } from '../../ui/ChoiceCardGrid';
 import { TagField } from '../../ui/TagField';
+import { VAZIO, frase } from '../../../lib/voice';
 import { TextInput } from '../wizardFields';
 import { MATERIAL_TYPES } from './constants';
 
@@ -62,7 +63,7 @@ const MaterialForm: React.FC<MaterialFormProps> = ({
       tags={tags}
       onChange={onTagsChange}
       placeholder="tags do material"
-      emptyMessage="não precisa preencher tudo, pode deixar vazio ♡"
+      emptyMessage={frase(VAZIO, 'campoOpcional')}
     />
   </div>
 );

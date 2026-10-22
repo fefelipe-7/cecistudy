@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Plus } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
+import { CELEBRACAO, erro, frase } from '../../lib/voice';
 import {
   THESIS_ID,
   newMeetingId,
@@ -114,7 +115,7 @@ export const MeetingSheet: React.FC<MeetingSheetProps> = ({
   const saveSchedule = () => {
     if (!date) {
       hapticWarning();
-      showToast('a reunião precisa de uma data ♡');
+      showToast(erro('reuniaoSemData'));
       return;
     }
     const draft: ThesisMeeting = {
@@ -141,7 +142,7 @@ export const MeetingSheet: React.FC<MeetingSheetProps> = ({
     if (!live) return;
     upsertMeeting({ ...live, status: 'cancelada', updatedAt: now() });
     hapticTap();
-    showToast('reunião cancelada');
+    showToast(frase(CELEBRACAO, 'reuniaoCancelada'));
     onClose();
   };
 
@@ -149,7 +150,7 @@ export const MeetingSheet: React.FC<MeetingSheetProps> = ({
     if (!live) return;
     upsertMeeting({ ...live, status: 'agendada', updatedAt: now() });
     hapticTap();
-    showToast('reunião reativada ♡');
+    showToast(frase(CELEBRACAO, 'reuniaoReativada'));
     onClose();
   };
 
@@ -166,7 +167,7 @@ export const MeetingSheet: React.FC<MeetingSheetProps> = ({
   const saveRegister = () => {
     if (!date) {
       hapticWarning();
-      showToast('a reunião precisa de uma data ♡');
+      showToast(erro('reuniaoSemData'));
       return;
     }
     const wasRealizada = live?.status === 'realizada';
@@ -192,11 +193,11 @@ export const MeetingSheet: React.FC<MeetingSheetProps> = ({
     // Editar uma reunião que já era `realizada` não reabre a geração de
     // pendências (evita duplicar). Só o ato de registrar abre.
     if (wasRealizada) {
-      showToast('reunião guardada ♡');
+      showToast(frase(CELEBRACAO, 'reuniaoGuardada'));
       onClose();
       return;
     }
-    showToast('reunião registrada ♡');
+    showToast(frase(CELEBRACAO, 'reuniaoRegistrada'));
     // Todas as decisões entram marcadas por padrão; a usuária desmarca o que
     // não vira pendência.
     setSelected(new Set(decisions));

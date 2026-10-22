@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { VAZIO, CELEBRACAO, frase } from '../../lib/voice';
 import { Brain, ChevronDown } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useMobileApp } from '@/context/mobileApp';
@@ -200,14 +201,14 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
                     value={deckId}
                     onChange={(v) => patch({ deckId: v })}
                     options={deckOptions}
-                    emptyMessage="ainda não há grupos. crie um depois ♡"
+                    emptyMessage={frase(VAZIO, 'semGrupos')}
                   />
                   <Picker
                     label="conceito relacionado (opcional)"
                     value={conceptId}
                     onChange={(v) => patch({ conceptId: resolveIds([v])[0] })}
                     options={conceptOptions}
-                    emptyMessage="ainda não há conceitos no cantinho."
+                    emptyMessage={frase(VAZIO, 'semConceitosNoCantinho')}
                   />
                   <CourseSelect
                     value={courseId}
@@ -279,7 +280,7 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
       });
       hapticSuccess();
       closeWizard();
-      showToast('flashcard atualizado ♡');
+      showToast(frase(CELEBRACAO, 'flashcardAtualizado'));
       return;
     }
     // Commit síncrono (persistência imediata); o voo para o baú é decorativo.
@@ -296,7 +297,7 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
     setSavedCard({ question: newCard.question, answer: newCard.answer });
     saveTimerRef.current = window.setTimeout(() => {
       closeWizard();
-      showToast('flashcard guardado no baú ♡');
+      showToast(frase(CELEBRACAO, 'flashcardGuardadoNoBau'));
     }, 650);
   };
 

@@ -20,6 +20,7 @@ import { cn } from '../../lib/utils';
 import { PillGroup } from '../ui/PillGroup';
 import { ToggleRow } from '../ui/ToggleRow';
 import { pickProfilePhoto } from '../../lib/photo';
+import { ONBOARDING, frase } from '../../lib/voice';
 import {
   checkPermission,
   requestPermission,
@@ -36,10 +37,12 @@ const PERMISSION_CARDS: {
   description: string;
   Icon: typeof FolderOpen;
 }[] = [
-  { kind: 'files', title: 'arquivos', description: 'guardar e exportar backups do seu cantinho.', Icon: FolderOpen },
-  { kind: 'photos', title: 'fotos e mídias', description: 'usar câmera e galeria para sua foto de perfil.', Icon: Images },
-  { kind: 'calendar', title: 'agenda', description: 'anotar aulas, provas e estudos na sua agenda.', Icon: CalendarDays },
-  { kind: 'notifications', title: 'notificações', description: 'receber o lembrete diário de estudo ♡', Icon: Bell },
+  // `SPEC-C-014` D1: a dica de cada permissão vem da voz; o rótulo ("arquivos",
+  // "fotos") é camada 2 e fica.
+  { kind: 'files', title: 'arquivos', description: frase(ONBOARDING, 'permissaoFiles'), Icon: FolderOpen },
+  { kind: 'photos', title: 'fotos e mídias', description: frase(ONBOARDING, 'permissaoPhotos'), Icon: Images },
+  { kind: 'calendar', title: 'agenda', description: frase(ONBOARDING, 'permissaoCalendar'), Icon: CalendarDays },
+  { kind: 'notifications', title: 'notificações', description: frase(ONBOARDING, 'permissaoNotifications'), Icon: Bell },
 ];
 
 export const OnboardingScreen: React.FC = () => {
@@ -113,17 +116,17 @@ export const OnboardingScreen: React.FC = () => {
                 🌷
               </div>
               <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">
-                bora montar seu cantinho?
+                {frase(ONBOARDING, 'boasVindas')}
               </h1>
               <p className="text-sm text-ceci-secondary leading-relaxed max-w-xs mx-auto">
-                seu organizador de psicologia, do jeitinho que cabe em você — aulas, leituras, provas e a sua jornada até o CRP.
+                {frase(ONBOARDING, 'boasVindasDescricao')}
               </p>
               <div className="pt-4">
                 <button
                   onClick={() => setStep(1)}
                   className="inline-flex items-center gap-2 bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary px-7 py-3.5 rounded-full text-sm font-semibold shadow-xs transition-colors cursor-pointer"
                 >
-                  começar <ArrowRight className="w-4 h-4" />
+                  {frase(ONBOARDING, 'comecar')} <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </motion.div>
@@ -136,8 +139,12 @@ export const OnboardingScreen: React.FC = () => {
                   <Heart className="w-5 h-5" />
                 </span>
                 <div>
-                  <h1 className="font-display text-xl font-bold tracking-tight">quem é você?</h1>
-                  <p className="text-xs text-ceci-secondary">como devo te chamar por aqui?</p>
+                  <h1 className="font-display text-xl font-bold tracking-tight">
+                    {frase(ONBOARDING, 'quemEuChamo')}
+                  </h1>
+                  <p className="text-xs text-ceci-secondary">
+                    {frase(ONBOARDING, 'quemEuChamoDica')}
+                  </p>
                 </div>
               </div>
 
@@ -177,13 +184,19 @@ export const OnboardingScreen: React.FC = () => {
                   <GraduationCap className="w-5 h-5" />
                 </span>
                 <div>
-                  <h1 className="font-display text-xl font-bold tracking-tight">sua jornada</h1>
-                  <p className="text-xs text-ceci-secondary">em qual momento da graduação você está?</p>
+                  <h1 className="font-display text-xl font-bold tracking-tight">
+                    {frase(ONBOARDING, 'suaJornada')}
+                  </h1>
+                  <p className="text-xs text-ceci-secondary">
+                    {frase(ONBOARDING, 'suaJornadaDica')}
+                  </p>
                 </div>
               </div>
 
               <div>
-                <p className="text-xs font-semibold text-ceci-secondary mb-2">semestre atual</p>
+                <p className="text-xs font-semibold text-ceci-secondary mb-2">
+                  {frase(ONBOARDING, 'semestreAtual')}
+                </p>
                 <PillGroup
                   variant="primary"
                   options={SEMESTER_OPTIONS.map((s) => ({ value: String(s), label: `${s}º` }))}
@@ -193,7 +206,9 @@ export const OnboardingScreen: React.FC = () => {
               </div>
 
               <div>
-                <p className="text-xs font-semibold text-ceci-secondary mb-2">total de semestres do curso</p>
+                <p className="text-xs font-semibold text-ceci-secondary mb-2">
+                  {frase(ONBOARDING, 'totalDoCurso')}
+                </p>
                 <PillGroup
                   variant="academic"
                   options={SEMESTER_OPTIONS.map((s) => ({ value: String(s), label: `${s}º` }))}
@@ -226,8 +241,12 @@ export const OnboardingScreen: React.FC = () => {
                   <Sparkles className="w-5 h-5" />
                 </span>
                 <div>
-                  <h1 className="font-display text-xl font-bold tracking-tight">seu contexto</h1>
-                  <p className="text-xs text-ceci-secondary">onde e pra onde você está caminhando?</p>
+                  <h1 className="font-display text-xl font-bold tracking-tight">
+                    {frase(ONBOARDING, 'seuContexto')}
+                  </h1>
+                  <p className="text-xs text-ceci-secondary">
+                    {frase(ONBOARDING, 'seuContextoDica')}
+                  </p>
                 </div>
               </div>
 
@@ -271,8 +290,12 @@ export const OnboardingScreen: React.FC = () => {
                   <Camera className="w-5 h-5" />
                 </span>
                 <div>
-                  <h1 className="font-display text-xl font-bold tracking-tight">sua foto</h1>
-                  <p className="text-xs text-ceci-secondary">um rostinho para o cantinho te reconhecer ♡</p>
+                  <h1 className="font-display text-xl font-bold tracking-tight">
+                    {frase(ONBOARDING, 'suaFoto')}
+                  </h1>
+                  <p className="text-xs text-ceci-secondary">
+                    {frase(ONBOARDING, 'suaFotoDica')}
+                  </p>
                 </div>
               </div>
 
@@ -303,7 +326,7 @@ export const OnboardingScreen: React.FC = () => {
                     </button>
                   )}
                 </div>
-                <p className="text-[11px] text-ceci-tertiary">pode deixar pra depois, se preferir ♡</p>
+                <p className="text-[11px] text-ceci-tertiary">{frase(ONBOARDING, 'suaFotoDica')}</p>
               </div>
 
               <div className="flex gap-2 pt-2">
@@ -329,7 +352,7 @@ export const OnboardingScreen: React.FC = () => {
         </div>
 
         <p className="text-center text-[11px] text-ceci-tertiary mt-6">
-          tudo fica guardado aqui no seu dispositivo, com carinho ♡
+          {frase(ONBOARDING, 'rodape')}
         </p>
       </div>
     </div>
@@ -372,14 +395,18 @@ const PermissionsStep: React.FC<{ onFinish: () => void; onBack: () => void }> = 
           <Bell className="w-5 h-5" />
         </span>
         <div>
-          <h1 className="font-display text-xl font-bold tracking-tight">permissões do cantinho</h1>
-          <p className="text-xs text-ceci-secondary">ativando, o app pede acesso na hora ♡</p>
+          <h1 className="font-display text-xl font-bold tracking-tight">
+            {frase(ONBOARDING, 'permissoesTitulo')}
+          </h1>
+          <p className="text-xs text-ceci-secondary">
+            {frase(ONBOARDING, 'permissoesDica')}
+          </p>
         </div>
       </div>
 
       {!isNativePlatform && (
         <p className="text-[11px] text-ceci-tertiary bg-surface-muted border border-ceci-border-default rounded-xl px-3.5 py-2.5 leading-relaxed">
-          disponível no aplicativo nativo (android/ios) — por aqui nada é necessário.
+          {frase(ONBOARDING, 'permissoesWeb')}
         </p>
       )}
 
@@ -407,7 +434,7 @@ const PermissionsStep: React.FC<{ onFinish: () => void; onBack: () => void }> = 
               extra={
                 state === 'denied' ? (
                   <p className="text-[10px] text-status-danger-strong mt-1 flex items-center gap-1">
-                    <X className="w-3 h-3" /> não concedido — dá pra ativar depois nas configurações.
+                    <X className="w-3 h-3" /> {frase(ONBOARDING, 'permissaoNegada')}
                   </p>
                 ) : undefined
               }

@@ -3,6 +3,7 @@ import React from 'react';
 import type { ReactNode } from 'react';
 import { DateInput, FieldLabel, TextInput } from '../wizardFields';
 import { TagField } from '../../ui/TagField';
+import { VAZIO, frase } from '../../../lib/voice';
 
 interface ExamFormProps {
   value: string;
@@ -53,7 +54,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
       tags={topics}
       onChange={onTopicsChange}
       placeholder="tópicos da prova (ex: transtornos de ansiedade)"
-      emptyMessage="não precisa preencher tudo, pode deixar vazio ♡"
+      emptyMessage={frase(VAZIO, 'campoOpcional')}
     />
   </div>
 );

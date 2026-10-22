@@ -327,36 +327,49 @@ describe('declinadosDe / comDeclinados (SPEC-011 D11/D12)', () => {
   });
 });
 
-describe('statusPreenchimento (SPEC-011 D13)', () => {
-  it('tudo preenchido → success "tudo preenchido"', () => {
-    const st = statusPreenchimento(
-      clinical({
-        reflections: 'x',
-        theme: 'x',
-        approach: 'x',
-        interventionNotes: 'x',
-        observations: 'x',
-      })
-    );
-    expect(st).toEqual({ tone: 'success', label: 'tudo preenchido' });
+describe('statusPreenchimento (SPEC-011 D13; SPEC-M-018 D17 → dado neutro)', () => {
+  const completo = {
+    reflections: 'x',
+    theme: 'x',
+    approach: 'x',
+    interventionNotes: 'x',
+    observations: 'x',
+  };
+
+  it('tudo preenchido → success, lista vazia', () => {
+    expect(statusPreenchimento(clinical(completo))).toEqual({
+      tone: 'success',
+      faltando: [],
+    });
   });
 
-  it('um faltando → warning "falta <campo>"', () => {
-    expect(
-      statusPreenchimento(
-        clinical({ reflections: 'x', theme: 'x', approach: 'x', interventionNotes: 'x' })
-      )
-    ).toEqual({ tone: 'warning', label: 'falta impressões clínicas' });
+  it('um faltando → warning, com o campo nomeado', () => {
+    const { observations: _omitido, ...resto } = completo;
+    expect(statusPreenchimento(clinical(resto))).toEqual({
+      tone: 'warning',
+      faltando: ['impressoes'],
+    });
   });
 
-  it('dois ou mais faltando → numeral por extenso', () => {
+  it('dois ou mais faltando → warning, com todos os campos, em ordem canônica', () => {
     expect(statusPreenchimento(clinical({}))).toEqual({
       tone: 'warning',
-      label: 'ainda falta preencher cinco',
+      faltando: ['reflexoes', 'tema', 'abordagem', 'intervencoes', 'impressoes'],
     });
-    expect(
-      statusPreenchimento(clinical({ reflections: 'x', theme: 'x', approach: 'x' }))
-    ).toEqual({ tone: 'warning', label: 'ainda falta preencher dois' });
+    expect(statusPreenchimento(clinical({ reflections: 'x', theme: 'x', approach: 'x' }))).toEqual({
+      tone: 'warning',
+      faltando: ['intervencoes', 'impressoes'],
+    });
+  });
+
+  it('o domínio não devolve frase: o rótulo é da voz (D17)', () => {
+    // Esta é a garantia de `I4`: a lista de campos é dado, "ainda falta
+    // preencher cinco" é voz, e voz mora em `src/lib/voice.ts`.
+    for (const log of [clinical(completo), clinical({}), supervision({})]) {
+      const st = statusPreenchimento(log);
+      if (!st) continue;
+      expect(Object.keys(st).sort()).toEqual(['faltando', 'tone']);
+    }
   });
 
   it('supervisão não tem chip', () => {
@@ -367,7 +380,7 @@ describe('statusPreenchimento (SPEC-011 D13)', () => {
     const log = comDeclinados(clinical({}), ['reflexoes', 'tema']);
     expect(statusPreenchimento(log)).toEqual({
       tone: 'warning',
-      label: 'ainda falta preencher três',
+      faltando: ['abordagem', 'intervencoes', 'impressoes'],
     });
   });
 });

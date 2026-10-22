@@ -1,7 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  Search,
   ArrowLeft,
 } from 'lucide-react';
 import { UserProfile, DynamicHeaderConfig } from '../types';
@@ -9,13 +8,13 @@ import { CourseIcon } from './ui/CourseIcon';
 import { HeaderActionMenu } from './ui/HeaderActionMenu';
 import { BookmarkToggle } from './ui/BookmarkToggle';
 import { EASE, headerSwapVariants } from '../lib/motion';
+import { resolveScrolledState } from '../lib/headerScrollState';
 import { useMotionProfile } from '../components/motion/MotionProfileProvider';
 import { useDataClientApp } from '../context/DataClientProvider';
 import { useActiveTerm } from '../lib/termScope';
 
 interface HeaderNavProps {
   profile: UserProfile;
-  onOpenSearch: () => void;
   onNavigateToPerfil: () => void;
   headerConfig?: DynamicHeaderConfig | null;
   /** Direção da navegação (push=1, pop=-1, troca de tab=0) — sincroniza a troca brand↔detail. */
@@ -24,17 +23,21 @@ interface HeaderNavProps {
 
 export const HeaderNav: React.FC<HeaderNavProps> = ({
   profile,
-  onOpenSearch,
   onNavigateToPerfil,
   headerConfig,
   direction = 0,
 }) => {
-  const [scrolled, setScrolled] = useState(false);
+  // Estado longo ↔ curto com histerese (`headerScrollState.ts`): um limiar
+  // único fazia o header alternar entre os dois estados quando a rolagem
+  // parava perto dele — momentum fracionário e rubber-band cruzavam o
+  // limiar repetidamente com a tela parada. A zona morta entre os dois
+  // limiares garante que, parando em qualquer ponto, o estado não mude.
+  const [scrolled, setScrolled] = useState(() => resolveScrolledState(false, window.scrollY));
   const motionProfile = useMotionProfile();
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setScrolled((prev) => resolveScrolledState(prev, window.scrollY));
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -160,16 +163,6 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
 
               {/* Contextual action menu (telas auxiliares) */}
               {headerConfig.actions && <HeaderActionMenu actions={headerConfig.actions} />}
-
-              {/* Quick Search */}
-              <button
-                onClick={onOpenSearch}
-                className="w-9 h-9 rounded-2xl bg-surface-default border border-ceci-border-default hover:border-ceci-border-brand flex items-center justify-center text-ceci-primary shadow-2xs tap-interactive cursor-pointer active:scale-95"
-                title="buscar no cantinho"
-                aria-label="buscar no cantinho"
-              >
-                <Search className="w-4 h-4 text-ceci-secondary" />
-              </button>
             </div>
           </motion.div>
         ) : (
@@ -237,35 +230,6 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   </p>
                 )}
               </div>
-            </div>
-
-            {/* Center Search Trigger */}
-            <button
-              onClick={onOpenSearch}
-              className={`flex-1 max-w-sm hidden md:flex items-center gap-2 bg-[color:var(--color-glass-pill-start)] backdrop-blur-sm text-ceci-secondary px-3.5 rounded-full border border-[color:var(--color-glass-pill-border)] shadow-2xs transition-colors duration-300 cursor-pointer ${
-                scrolled ? 'py-1 text-[11px] min-h-[32px]' : 'py-2 text-xs min-h-[40px]'
-              }`}
-            >
-              <Search className="w-3.5 h-3.5 text-ceci-tertiary shrink-0" />
-              <span className="truncate">buscar conceitos, autores (freud, beck...), aulas...</span>
-              <kbd className="ml-auto text-[10px] bg-surface-muted px-1.5 py-0.5 rounded text-ceci-tertiary border border-ceci-border-default">
-                ⌘K
-              </kbd>
-            </button>
-
-            {/* Quick Actions */}
-            <div className="flex items-center gap-2">
-              {/* Mobile Search Button */}
-              <button
-                onClick={onOpenSearch}
-                className={`md:hidden rounded-full text-ceci-primary bg-surface-default border border-ceci-border-default hover:bg-surface-rose tap-interactive flex items-center justify-center cursor-pointer ${
-                  scrolled ? 'w-8 h-8' : 'w-10 h-10'
-                }`}
-                title="buscar"
-                aria-label="buscar"
-              >
-                <Search className="w-4 h-4" />
-              </button>
             </div>
           </motion.div>
         )}

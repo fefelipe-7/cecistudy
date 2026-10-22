@@ -1,4 +1,5 @@
 import React from 'react';
+import { VAZIO, CELEBRACAO, frase } from '../../lib/voice';
 import { BookOpen } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import type { MaterialItem, ManagedItem } from '../../types';
@@ -89,7 +90,7 @@ export const MaterialWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edi
             tags={tags}
             onChange={(v) => patch({ tags: v })}
             placeholder="tags do material"
-            emptyMessage="não precisa preencher tudo, pode deixar vazio ♡"
+            emptyMessage={frase(VAZIO, 'campoOpcional')}
           />
         </div>
       ),
@@ -127,13 +128,13 @@ export const MaterialWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edi
       handleUpdateMaterial({ ...editingMaterial, ...payload });
       hapticSuccess();
       closeWizard();
-      showToast('material atualizado ♡');
+      showToast(frase(CELEBRACAO, 'materialAtualizado'));
       return;
     }
     handleAddMaterial({ id: 'm-' + Date.now(), addedAt: new Date().toISOString(), ...payload });
     hapticSuccess();
     closeWizard();
-    showToast('material guardado no cantinho ♡');
+    showToast(frase(CELEBRACAO, 'materialGuardadoNoCantinho'));
   };
 
   return (

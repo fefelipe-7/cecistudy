@@ -1,4 +1,5 @@
 import React from 'react';
+import { CELEBRACAO, frase } from '../../lib/voice';
 import { Timer } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import type { ManagedItem } from '../../types';
@@ -106,7 +107,7 @@ export const SessionWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       });
       hapticSuccess();
       closeWizard();
-      showToast('sessão atualizada ♡');
+      showToast(frase(CELEBRACAO, 'sessaoAtualizada'));
       return;
     }
     handleAddSession({
@@ -118,7 +119,7 @@ export const SessionWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
     });
     hapticSuccess();
     closeWizard();
-    showToast('sessão guardada no seu histórico ♡');
+    showToast(frase(CELEBRACAO, 'sessaoGuardadaNoHistorico'));
   };
 
   return (

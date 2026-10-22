@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useMobileApp } from '@/context/mobileApp';
 import { CaptureLinkSheet } from '../components/capture/CaptureLinkSheet';
-import { CAPTURE_COPY } from '../components/capture/captureCopy';
+import { CELEBRACAO, erro, frase } from '../lib/voice';
 import { captureLink, type CaptureLinkInput } from '../../packages/domain/src/core/domain/thesis';
 import {
   readPendingShare,
@@ -33,17 +33,17 @@ export const CaptureHost: React.FC = () => {
     const current = appRef.current;
     const outcome = captureLink(input, current.readings, new Date().toISOString());
     if (outcome.outcome === 'invalida') {
-      current.showToast(CAPTURE_COPY.invalid);
+      current.showToast(erro('linkInvalido'));
       return;
     }
     if (outcome.outcome === 'duplicada') {
-      current.showToast(CAPTURE_COPY.duplicate);
+      current.showToast(frase(CELEBRACAO, 'linkDuplicado'));
       return;
     }
     current.handleAddReading(outcome.reading);
     const reference = outcome.reference;
     if (reference) current.setThesisReferences((prev) => [...prev, reference]);
-    current.showToast(CAPTURE_COPY.saved);
+    current.showToast(frase(CELEBRACAO, 'linkGuardado'));
   }, []);
 
   // Camada 2 — deep link do atalho (escolhas prontas).

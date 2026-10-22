@@ -12,6 +12,7 @@ import type { StickerState } from '../lib/stickers';
 import type { ThemeId } from '../lib/themes';
 import type { DataActions, DataActionGroups } from './dataActions';
 import type { TermRolloverPlan } from '../lib/termRollover';
+import type { TccSheet, ContextBarConfig } from '../lib/contextBarConfig';
 import type { NavigationValue } from './navigationEngine';
 import type { NavIntent } from '../lib/motion';
 import type {
@@ -303,6 +304,8 @@ export interface AppContextValue {
   internshipPatientKey: string | undefined;
   openInternshipDiary: (tab?: InternshipTab, focusLogId?: string) => void;
   openInternshipCase: (patientKey: string) => void;
+  /** Abre o wizard de sessão já com o caso do paciente preenchido (SPEC-022). */
+  openInternshipCaseSession: () => void;
   closeInternshipDiary: () => void;
   closeInternshipCase: () => void;
   isTccScreenOpen: boolean;
@@ -311,6 +314,21 @@ export interface AppContextValue {
   thesisFocusId: string | undefined;
   openTccScreen: (tab?: ThesisTab, focusId?: string) => void;
   closeTccScreen: () => void;
+  /**
+   * Folha (sheet) aberta do TCC (SPEC-022 D3) — mora no contexto porque a
+   * barra contextual e o conteúdo abrem a **mesma** folha.
+   */
+  tccSheet: TccSheet | null;
+  /** Texto já lido do clipboard para a folha de captura (D3). */
+  tccCaptureText: string;
+  openTccSheet: (sheet: TccSheet) => void;
+  closeTccSheet: () => void;
+  openTccCapture: () => Promise<void>;
+  /**
+   * Configuração da barra contextual do topo da pilha (`null` = a barra não
+   * aparece nesta tela). Montada pelo motor, consumida pela casca.
+   */
+  contextBarConfig: ContextBarConfig | null;
   isStickersScreenOpen: boolean;
   openStickersScreen: () => void;
   closeStickersScreen: () => void;

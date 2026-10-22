@@ -20,6 +20,7 @@ import {
   getTodaySchedule,
 } from '../../../lib/schedule';
 import { attendanceStats } from '../../../lib/attendance';
+import { dica } from '../../../lib/voice';
 import { Course } from '../../../types';
 
 interface CourseInfoContentProps {
@@ -97,34 +98,20 @@ export const CourseInfoContent: React.FC<CourseInfoContentProps> = ({ course, on
   );
 
   /** Dica do cecinho — sempre conversa sobre o momento real da matéria. */
+  // `SPEC-M-018 D7`: o componente só monta o **contexto**; quem escolhe e escreve
+  // a frase é o motor único de `src/lib/voice.ts`.
   const cecinhoTip = React.useMemo(() => {
-    if (pendingExams.length > 0) {
-      const next = pendingExams[0];
-      const days = daysUntil(next.date);
-      if (days < 0)
-        return `aquela prova "${next.title}" já passou — anota como foi, isso te ajuda depois ♡`;
-      if (days <= 1)
-        return `bora revisar? "${next.title}" chega ${days === 0 ? 'hoje' : 'amanhã'}.`;
-      if (days <= 7)
-        return `bora revisar? "${next.title}" chega em ${days} dias.`;
-      return `tem "${next.title}" marcada para ${formatShortDate(next.date)} — sem pressa, mas sem esquecer ♡`;
-    }
-    if (attendance && attendance.status !== 'ok')
-      return `sua frequência está em ${attendance.pct}% — respira, mas toma cuidado com as faltas ♡`;
-    if (pendingTasks.length > 0)
-      return `tem ${pendingTasks.length} ${pendingTasks.length === 1 ? 'tarefa' : 'tarefas'} aberta${pendingTasks.length === 1 ? '' : 's'} por aqui — bora tirar do papel?`;
-    if (hasClassToday) return 'hoje tem aula — anota tudo com carinho ♡';
-    if (courseSessions.length > 0)
-      return `já são ${focusMinutes >= 60 ? `${Math.floor(focusMinutes / 60)}h de foco` : `${focusMinutes}min de foco`} nessa matéria. que orgulho de você ♡`;
-    return null;
-  }, [
-    pendingExams,
-    attendance,
-    pendingTasks.length,
-    hasClassToday,
-    courseSessions.length,
-    focusMinutes,
-  ]);
+    const next = pendingExams[0];
+    return dica({
+      provasPendentes: pendingExams.length,
+      diasAteProva: next ? daysUntil(next.date) : null,
+      tituloProva: next?.title,
+      dataProvaCurta: next ? formatShortDate(next.date) : undefined,
+      frequenciaPercent: attendance && attendance.status !== 'ok' ? attendance.pct : null,
+      aulaHoje: hasClassToday,
+      minutosDeFocoNaMateria: focusMinutes,
+    });
+  }, [pendingExams, attendance, hasClassToday, focusMinutes]);
 
   return (
     <div className="space-y-4">

@@ -7,11 +7,15 @@
  *    de navegação puro e nunca importa estado/UI de outra casca.
  * 3. A shared UI (src/components, shells/overlays compartilhados) NÃO branca
  *    por plataforma (sem isMobile/Capacitor.isNativePlatform).
+ * 4. A voz do cecinho mora em `src/lib/voice.ts` (SPEC-C-014 / SPEC-M-018 D10).
+ *    Regra por **categoria** (erro, toast, confirmação, vazio, notificação), nunca
+ *    por acento — e a dívida da migração é contada em `voice-allowlist.json`.
  *
  * O desktop legado (Tauri + React desktop) foi removido; estas regras valem
  * para mobile/web + packages.
  *
  * Uso: node .github/scripts/check-boundaries.mjs
+ *      node .github/scripts/check-boundaries.mjs --voz   (mostra a contagem)
  * Saída: 0 = ok, 1 = violação encontrada.
  */
 import fs from 'node:fs';
@@ -171,6 +175,88 @@ for (const check of checks) {
       }
     }
   }
+}
+
+// ---------------------------------------------------------------------------
+// Regra 4 — voz do cecinho (SPEC-M-018 D10/D15/D16).
+// A regra em si mora em `voz-gate.mjs`, junto do gerador de allowlist: uma
+// regra, um arquivo, dois consumidores.
+// ---------------------------------------------------------------------------
+
+const { infracoesDeVoz, infracoesDeNotificacao, ISENTOS_DE_VOZ, ARQUIVO_DE_NOTIFICACAO } =
+  await import('./voz-gate.mjs');
+
+/** A allowlist: a dívida da migração da camada 1, com a contagem declarada. */
+const ALLOWLIST_VOZ = JSON.parse(
+  fs.readFileSync(path.resolve(root, '.github/scripts/voice-allowlist.json'), 'utf-8'),
+);
+
+const declaradas = new Set(Object.keys(ALLOWLIST_VOZ.porArquivo));
+let contagemReal = 0;
+
+/** A regra de notificação é exata e vale num arquivo só — ver `voz-gate.mjs`. */
+function checarNotificacao() {
+  const alvo = path.resolve(root, ARQUIVO_DE_NOTIFICACAO);
+  if (!fs.existsSync(alvo)) return 0;
+  const infracoes = infracoesDeNotificacao(fs.readFileSync(alvo, 'utf-8'));
+  for (const i of infracoes) {
+    console.error(
+      `[VOZ] notificação com texto literal em ${ARQUIVO_DE_NOTIFICACAO}:${i.linha}`,
+    );
+    console.error(`       ${i.texto}`);
+    console.error('       title/body saem de vozFrase(NOTIFICACAO, chave) (SPEC-M-018 D18).');
+    failed = true;
+  }
+  return infracoes.length;
+}
+
+for (const file of resolveTargets(['src'])) {
+  const rel = path.relative(root, file).split(path.sep).join('/');
+  if (ISENTOS_DE_VOZ.includes(rel)) continue;
+  if (/[\\/]__tests__[\\/]/.test(file) || /\.test\.tsx?$/.test(file)) continue;
+
+  const infracoes = infracoesDeVoz(fs.readFileSync(file, 'utf-8'));
+  if (!infracoes.length) continue;
+
+  contagemReal += infracoes.length;
+  if (!declaradas.has(rel)) {
+    // **Infração nova, não declarada.** É o caso que reprova na hora.
+    console.error(
+      `[VOZ] frase de voz "${infracoes[0].categoria}" escrita inline em ${rel}:${infracoes[0].linha}`,
+    );
+    console.error(`       ${infracoes[0].texto}`);
+    console.error(
+      '       A voz mora em src/lib/voice.ts. Mova a frase para uma chave da' +
+        ' categoria e chame por ela (SPEC-C-014 D7, SPEC-M-018 D16).',
+    );
+    failed = true;
+  }
+}
+
+contagemReal += checarNotificacao();
+
+/**
+ * **A allowlist não pode crescer.** Uma contagem declarada que sobe é dívida que
+ * ninguém quitou; deixá-la passar é como a D7 da `SPEC-C-013` morreu — a regra
+ * existia, não tinha mecanismo, e ninguém percebeu.
+ *
+ * Rebaixar é um comando, não uma edição:
+ *   node .github/scripts/gerar-voice-allowlist.mjs --fase "F5.x <módulo>"
+ */
+if (contagemReal > ALLOWLIST_VOZ.linhas) {
+  console.error(
+    `[VOZ] allowlist estourou: ${contagemReal} frases de voz inline, ` +
+      `mas a dívida declarada é ${ALLOWLIST_VOZ.linhas} (fase "${ALLOWLIST_VOZ.fase}").`,
+  );
+  console.error(
+    '       Ou você migra o que dá (SPEC-M-018 §11, F5), ou corrige o número' +
+      ' rodando o gerador com o motivo. Allowlist que cresce é gate desligado.',
+  );
+  failed = true;
+} else if (process.env.CI || process.argv.includes('--voz')) {
+  console.log(
+    `[VOZ] ${contagemReal} frases de voz inline (dívida "${ALLOWLIST_VOZ.fase}": ${ALLOWLIST_VOZ.linhas}).`,
+  );
 }
 
 if (failed) {

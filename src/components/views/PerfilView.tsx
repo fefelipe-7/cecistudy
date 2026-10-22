@@ -1,140 +1,46 @@
-import React, { useState, useMemo } from 'react';
+// Perfil - casca de rota (SPEC-013 D12).
+//
+// A view responde a `mode="profile"` e `mode="stickers"` (I1), derivados da pilha
+// de navegação pelo `SharedScreenLayers`. A página em si é a composição de
+// `perfil/ProfilePage.tsx`; os handlers ficam **aqui**, preservando os contratos
+// existentes (SPEC-013 D12): nada de domínio novo, nada de contexto novo — quem
+// decide continua sendo `packages/*`, quem deriva é `profileViewModel` (D2).
+//
+// O `mode` não faz early return antes dos hooks: cada rota é um componente
+// próprio, então re-renderizar o mesmo `PerfilView` com `mode` diferente nunca
+// quebra a ordem de hooks ("Rendered fewer hooks than expected" derrubaria a
+// árvore inteira atrás do ErrorBoundary).
+import React, { useState } from 'react';
+import { CELEBRACAO, frase } from '../../lib/voice';
 import {
-  Clock,
-  FileText,
-  BookOpen,
-  Brain,
-  CheckCircle2,
-  ClipboardList,
-  GraduationCap,
-  HeartHandshake,
-  ListChecks,
-  Sparkles,
-  ChevronRight,
-  Smartphone,
-  RefreshCw,
-  Layers,
-  Users,
-} from 'lucide-react';
-import { useMobileApp } from '@/context/mobileApp';
-import { useDataClientApp, useDataClientCourses, useDataClientStudy } from '@/context/DataClientProvider';
-import { useAppActions, useNavValue, useTermActions } from '@/context/shellNavContexts';
-import { DitherFunnelChart } from '../ui/dither-funnel';
-import { formatCount } from '../../lib/ditherChart';
-import { isDarkTheme } from '../../lib/themes';
-import { isReminderSupported } from '../../lib/notifications';
+  useDataClientApp,
+  useDataClientCourses,
+  useDataClientStudy,
+} from '@/context/DataClientProvider';
+import {
+  useAppActions,
+  useNavValue,
+  useStudyActions,
+  useTermActions,
+} from '@/context/shellNavContexts';
 import { isGcalConfigured } from '../../lib/gcal';
+import { isReminderSupported } from '../../lib/notifications';
 import { isNativePlatform } from '../../lib/storage';
-
 import { pickProfilePhoto } from '../../lib/photo';
-import { formatStudyTime } from '../../lib/profileMeta';
-import { degreeProgress, semestersLeft, useActiveTerm } from '../../lib/termScope';
-import {
-  applyNow,
-  checkForUpdates,
-  formatVersionLabel,
-  useOtaStatus,
-} from '../../lib/ota';
-import { StudyStatsWidget } from '../widgets/StudyStatsWidget';
-import { ProgressBar } from '../ui/ProgressBar';
+import { useProfileViewModel } from '../../lib/profileViewModel';
+import { useActiveTerm } from '../../lib/termScope';
 import { StickersView } from './StickersView';
-import { GithubSyncCard } from './GithubSyncCard';
-import ProfileHeader from './perfil/ProfileHeader';
-import JourneySummary from './perfil/JourneySummary';
-import JourneyTimeline from './perfil/JourneyTimeline';
-import StickersSection from './perfil/StickersSection';
-import PersonalizationSection from './perfil/PersonalizationSection';
-import JourneyTermCard from './perfil/JourneyTermCard';
-import DataSection from './perfil/DataSection';
-
-import { deriveCases, computeStats, computePendencies } from '../../lib/internshipCases';
-import { todayKeyLocal } from '../../lib/dateBR';
-import { totalXp, levelFor, generalTitle } from '../../lib/levels';
-
-const scrollToSection = (id: string) => {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-};
-
-/** Card de atualização OTA (auto-suficiente; renderizado só no app nativo). */
-const OtaSection: React.FC = () => {
-  const ota = useOtaStatus();
-
-  const statusText =
-    ota.status === 'checking'
-      ? 'procurando novidades…'
-      : ota.status === 'downloading'
-        ? `baixando atualização (${ota.progress}%)…`
-        : ota.status === 'ready'
-          ? `a versão ${ota.availableVersion} está pronta ♡`
-          : ota.status === 'error'
-            ? 'não consegui verificar agora — tenta de novo.'
-            : ota.availableVersion && ota.availableVersion !== ota.currentVersion
-              ? `novidade disponível: ${ota.availableVersion}`
-              : 'tudo em dia ✨';
-
-  const busy = ota.status === 'checking' || ota.status === 'downloading';
-
-  return (
-    <div className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm space-y-4">
-      <div className="flex items-center gap-2">
-        <Smartphone className="w-4 h-4 text-ceci-academic-strong" />
-        <h2 className="font-display font-bold text-xl text-ceci-primary">
-          atualização do app
-        </h2>
-      </div>
-
-      <div className="rounded-2xl p-4 border bg-surface-blue border-ceci-border-academic space-y-3">
-        <div>
-          <h3 className="font-display font-bold text-sm text-ceci-primary">
-            versão web: {formatVersionLabel(ota.currentVersion)}
-          </h3>
-          <p className="text-[11px] text-ceci-secondary leading-tight mt-0.5">
-            {statusText}
-          </p>
-        </div>
-
-        {ota.status === 'downloading' && <ProgressBar value={ota.progress} className="h-2" />}
-
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => void checkForUpdates({ manual: true })}
-            disabled={busy}
-            className="flex items-center gap-2 bg-surface-default border border-ceci-border-default text-ceci-primary px-4 py-2.5 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer hover:border-ceci-border-brand transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <RefreshCw className="w-4 h-4" />
-            verificar atualização
-          </button>
-
-          {ota.status === 'ready' && (
-            <button
-              onClick={() => void applyNow()}
-              className="flex items-center gap-2 bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary px-4 py-2.5 rounded-2xl text-xs font-semibold tap-interactive cursor-pointer transition-colors"
-            >
-              aplicar agora
-            </button>
-          )}
-        </div>
-      </div>
-
-      <p className="text-[11px] text-ceci-tertiary -mt-1">
-        mudanças de interface chegam direto pelo cantinho; mudanças nativas precisam de atualização pela loja.
-      </p>
-    </div>
-  );
-};
+import ProfilePage from './perfil/ProfilePage';
+import type { ProfileEditValues } from './perfil/ProfileEditSheet';
 
 export type PerfilViewMode = 'profile' | 'stickers';
+
 interface PerfilViewProps {
   /** Tela derivada da pilha `perfil` renderizada no lugar da página. */
   mode?: PerfilViewMode;
 }
 
 export const PerfilView: React.FC<PerfilViewProps> = ({ mode = 'profile' }) => {
-  // `stickers` sai num componente próprio, não por early return: um retorno antes
-  // dos hooks quebra a ordem de hooks quando o mesmo `PerfilView` é re-renderizado
-  // com `mode` diferente, e o React derruba a árvore inteira com
-  // "Rendered fewer hooks than expected" — que é o app em branco atrás do
-  // ErrorBoundary.
   if (mode === 'stickers') {
     return <StickersRoute />;
   }
@@ -147,9 +53,6 @@ const StickersRoute: React.FC = () => <StickersView />;
 const PerfilProfileRoute: React.FC = () => {
   const {
     profile,
-    internshipLogs,
-    tcc,
-    thesisChapters,
     stickers,
     reminderSettings,
     gcalEnabled,
@@ -158,46 +61,65 @@ const PerfilProfileRoute: React.FC = () => {
     importData,
     themePref,
     setThemePref,
+    academicTerms,
   } = useDataClientApp();
-  // Períodos letivos (SPEC-005) — vêm do data client, não do contexto de nav.
-  const { academicTerms } = useDataClientApp();
+  // Períodos letivos (SPEC-005) — a fonte de verdade do "em que semestre estou".
   const activeTerm = useActiveTerm(academicTerms);
-  const appIsDark = isDarkTheme(themePref);
   const { courses, classes, tasks, exams } = useDataClientCourses();
   const { readings, flashcards, sessions } = useDataClientStudy();
+  const { streakStats } = useStudyActions();
   const { handleUpdateProfile, showToast, updateReminder, setGcalEnabled } = useAppActions();
   const { correctTermOrdinal, setTotalSemesters } = useTermActions();
   const {
     handleNavigate,
-    openInternshipDiary,
-    openTccScreen,
     openStickersScreen,
+    openStreak,
     openWizard,
     openTermHistory,
     openSyncScreen,
   } = useNavValue();
 
-  const [name, setName] = useState(profile.name);
-  const [university, setUniversity] = useState(profile.university);
-const [dailyQuote, setDailyQuote] = useState(profile.dailyQuote);
+  const [editOpen, setEditOpen] = useState(false);
 
-const profileTotalXp = totalXp(profile);
-  const profileLevel = levelFor(profileTotalXp);
-  const profileTitle = generalTitle(profileLevel);
+  // Uma única derivação memoizada (SPEC-013 D2). `native` entra como **dado**
+  // do VM (via o wrapper `isNativePlatform` de `src/lib/storage`) e o componente
+  // nunca brancha a renderização por plataforma — quem decide o que existe é o
+  // `maintenance.native` (regra de fronteira do `check-boundaries.mjs`).
+  const vm = useProfileViewModel({
+    profile,
+    activeTerm,
+    academicTerms,
+    courses,
+    classes,
+    tasks,
+    exams,
+    readings,
+    flashcards,
+    sessions,
+    stickers,
+    streak: streakStats,
+    themePref,
+    reminderSettings,
+    reminderSupported: isReminderSupported(),
+    gcalConfigured: isGcalConfigured(),
+    gcalEnabled,
+    native: isNativePlatform,
+  });
 
-  const handleSaveProfile = (e: React.FormEvent) => {
-    e.preventDefault();
-    // `semester` não entra aqui (SPEC-006 D6): o campo é legado e quem manda é
-    // o `AcademicTerm` ativo, corrigido pelo `JourneyTermCard`. Reescrever o
-    // legado aqui fazia a migração 18 → 19 recriar o período com o número
-    // antigo na importação seguinte.
+  // Identidade — SPEC-006 D6: `semester` não entra em nenhuma escrita de perfil;
+  // quem manda é o `AcademicTerm` ativo. Reescrever o legado aqui fazia a
+  // migração 18 → 19 recriar o período com o número antigo na importação.
+  const handleEditSave = (values: ProfileEditValues) => {
     handleUpdateProfile({
-      name,
-      university,
-      dailyQuote,
-      photoUrl: profile.photoUrl
+      name: values.name,
+      university: values.university,
+      dailyQuote: values.dailyQuote,
+      photoUrl: profile.photoUrl,
+      // `SPEC-C-014 D8`: a autorização viaja com o perfil. Opcional no tipo, então
+      // não exige backfill — quem nunca mexeu continua com "você".
+      nomeAutorizado: values.nomeAutorizado,
     });
-    showToast('guardei suas configurações com carinho ♡');
+    showToast(frase(CELEBRACAO, 'configuracoesGuardadas'));
   };
 
   const handlePickPhoto = async () => {
@@ -205,7 +127,7 @@ const profileTotalXp = totalXp(profile);
       const dataUrl = await pickProfilePhoto();
       if (dataUrl) {
         handleUpdateProfile({ photoUrl: dataUrl });
-        showToast('foto de perfil atualizada ♡');
+        showToast(frase(CELEBRACAO, 'fotoAtualizada'));
       }
     } catch {
       // usuário cancelou ou erro — nada muda
@@ -214,205 +136,43 @@ const profileTotalXp = totalXp(profile);
 
   const handleRemovePhoto = () => {
     handleUpdateProfile({ photoUrl: '' });
-    showToast('foto removida — tudo bem, sem pressa ♡');
+    showToast(frase(CELEBRACAO, 'fotoRemovida'));
   };
 
-  // ---- métricas reais derivadas do estado ----
-  // Progresso vem do **período ativo** (SPEC-005 §D4); `profile.semester` é só
-  // o fallback para quem ainda não abriu o primeiro semestre.
-  const currentOrdinal = activeTerm?.ordinal ?? profile.semester;
-  const percentDegree = degreeProgress(currentOrdinal, profile.totalSemesters);
-  const leftSemesters = semestersLeft(currentOrdinal, profile.totalSemesters);
-  const studyMinutes = sessions.reduce((acc, s) => acc + s.durationMinutes, 0);
-  const pagesRead = readings.reduce((acc, r) => acc + (r.readPages || 0), 0);
-  const flashcardsReviewed = flashcards.reduce((acc, f) => acc + (f.timesReviewed || 0), 0);
-  const tasksDone = tasks.filter((t) => t.completed).length;
-  const examsPending = exams.filter((e) => !e.completed).length;
-  // Estágio: uma derivação só, do domínio (SPEC-009 §8.2). Antes eram três somas
-  // independentes do mesmo dado, cada uma com seu filtro — e as horas contavam
-  // registro agendado (`F6`), e as pendências eram por caso e sumiam para
-  // atendimento sem iniciais (`F9`).
-const today = todayKeyLocal();
-  const internshipStats = useMemo(() => computeStats(internshipLogs, today), [internshipLogs, today]);
-  const totalInternshipHours = internshipStats.doneHours;
-  const pendencies = useMemo(() => computePendencies(internshipLogs, today), [internshipLogs, today]);
-  const { cases } = useMemo(() => deriveCases(internshipLogs, today), [internshipLogs, today]);
-  const patientsCount = cases.length;
-  const pendingReflection = pendencies.noReflection.length;
-  const pendingSupervision = pendencies.noSupervision.length;
-  // SPEC-012: capítulos são coleção própria; pronto === `stage === 'pronto'`.
-  const tccChaptersDone = thesisChapters.filter((ch) => ch.stage === 'pronto').length;
-  const tccChaptersTotal = thesisChapters.length;
-  const stickersUnlocked = stickers.filter((s) => s.unlocked).length;
-
-  // ---- funil da jornada (dithered, gradiente de cor única) ----
-  const doneReadings = readings.filter((r) => r.status === 'concluido').length;
-  const journeyStages = [
-    { label: 'disciplinas', value: courses.length },
-    { label: 'aulas anotadas', value: classes.length },
-    { label: 'leituras concluídas', value: doneReadings },
-    { label: 'flashcards revisados', value: flashcardsReviewed },
-  ];
-
-  const tiles: {
-    Icon: React.ComponentType<{ className?: string }>;
-    label: string;
-    display: React.ReactNode;
-    animate?: boolean;
-    colorClass?: string;
-    onClick: () => void;
-  }[] = [
-    {
-      Icon: Clock,
-      label: 'horas estudadas',
-      display: formatStudyTime(studyMinutes),
-      onClick: () => handleNavigate('estudos', 'sessoes')
-    },
-    {
-      Icon: FileText,
-      label: 'anotações de aula',
-      display: classes.length,
-      animate: true,
-      onClick: () => handleNavigate('faculdade')
-    },
-    {
-      Icon: BookOpen,
-      label: 'páginas lidas',
-      display: pagesRead,
-      animate: true,
-      onClick: () => handleNavigate('estudos', 'leituras')
-    },
-    {
-      Icon: Brain,
-      label: 'flashcards revisados',
-      display: flashcardsReviewed,
-      animate: true,
-      onClick: () => handleNavigate('estudos', 'flashcards')
-    },
-    {
-      Icon: CheckCircle2,
-      label: 'tarefas concluídas',
-      display: `${tasksDone}/${tasks.length}`,
-      onClick: () => handleNavigate('home')
-    },
-    {
-      Icon: ClipboardList,
-      label: 'provas pendentes',
-      display: examsPending,
-      animate: true,
-      onClick: () => handleNavigate('faculdade')
-    },
-    {
-      Icon: GraduationCap,
-      label: 'disciplinas',
-      display: courses.length,
-      animate: true,
-      onClick: () => handleNavigate('faculdade')
-    },
-    {
-      Icon: HeartHandshake,
-      label: 'horas de estágio',
-      display: totalInternshipHours,
-      animate: true,
-      onClick: () => openInternshipDiary()
-    },
-    {
-      Icon: Users,
-      label: 'pacientes atendidos',
-      display: patientsCount,
-      animate: true,
-      onClick: () => openInternshipDiary()
-    },
-    {
-      Icon: ListChecks,
-      label: 'capítulos do tcc',
-      display: `${tccChaptersDone}/${tccChaptersTotal}`,
-      onClick: () => openTccScreen()
-    },
-    {
-      Icon: Sparkles,
-      label: 'stickers desbloqueados',
-      display: stickersUnlocked,
-      animate: true,
-      onClick: () => scrollToSection('perfil-stickers')
-    }
-  ];
-
   return (
-    <div className="space-y-5 pb-1">
-      <ProfileHeader
-        profile={profile}
-        percentDegree={percentDegree}
-        currentOrdinal={currentOrdinal}
-        onPickPhoto={handlePickPhoto}
-        onRemovePhoto={handleRemovePhoto}
-      />
-      {/* O período vem **logo abaixo** do header (SPEC-008 F3.7): "em que
-          semestre eu estou" e "virar o semestre" são a primeira pergunta do
-          Perfil, não um cartão depois do funil e das estatísticas. */}
-      <JourneyTermCard
-        activeTerm={activeTerm}
-        totalSemesters={profile.totalSemesters}
-        onCorrectOrdinal={correctTermOrdinal}
-        onSetTotalSemesters={setTotalSemesters}
-        onOpenSemesterWizard={() => openWizard('semester')}
-        onShowToast={showToast}
-      />
-
-      <JourneySummary tiles={tiles} semestersLeft={leftSemesters} />
-      <DitherFunnelChart
-        theme={appIsDark ? 'dark' : 'light'}
-        stages={journeyStages}
-        title="sua jornada até aqui"
-        subtitle="do começo aos revisados"
-        icon={<Layers className="w-4 h-4" />}
-        formatValue={(n) => formatCount(n)}
-      />
-
-      <StudyStatsWidget />
-
-      <JourneyTimeline
-        profile={profile}
-        percentDegree={percentDegree}
-        academicTerms={academicTerms}
-        onOpenSemesterWizard={() => openWizard('semester')}
-        onOpenTermHistory={() => openTermHistory()}
-      />
-
-      <StickersSection stickers={stickers} unlocked={stickersUnlocked} onOpen={openStickersScreen} level={profileLevel} title={profileTitle} />
-
-      <PersonalizationSection
-        reminderSettings={reminderSettings}
-        onUpdateReminder={updateReminder}
-        reminderSupported={isReminderSupported()}
-        gcalEnabled={gcalEnabled}
-        onSetGcalEnabled={setGcalEnabled}
-        gcalConfigured={isGcalConfigured()}
-        name={name}
-        onNameChange={setName}
-        university={university}
-        onUniversityChange={setUniversity}
-        dailyQuote={dailyQuote}
-        onDailyQuoteChange={setDailyQuote}
-        onSaveProfile={handleSaveProfile}
-        themePref={themePref}
-        onThemeSelect={setThemePref}
-      />
-
-      {isNativePlatform && <OtaSection />}
-
-      <DataSection
-        onOpenSync={openSyncScreen}
-        onExport={() => exportData()}
-        onImport={(json) => importData(json)}
-        onReset={resetApp}
-      />
-      {/* rodapé carinhoso */}
-      <div className="flex items-center justify-center gap-1.5 pt-1 text-[11px] text-ceci-tertiary">
-        <Sparkles className="w-3.5 h-3.5" />
-        <span>tudo aqui nasce do que você anota, com carinho ♡</span>
-        <ChevronRight className="w-3.5 h-3.5" />
-      </div>
-    </div>
+    <ProfilePage
+      vm={vm}
+      themePref={themePref}
+      editInitial={{
+        name: profile.name,
+        university: profile.university,
+        dailyQuote: profile.dailyQuote,
+        nomeAutorizado: profile.nomeAutorizado === true,
+      }}
+      editOpen={editOpen}
+      onEditOpen={() => setEditOpen(true)}
+      onEditClose={() => setEditOpen(false)}
+      onEditSave={handleEditSave}
+      onPickPhoto={handlePickPhoto}
+      onRemovePhoto={handleRemovePhoto}
+      onCorrectOrdinal={correctTermOrdinal}
+      onSetTotalSemesters={setTotalSemesters}
+      onOpenSemesterWizard={() => openWizard('semester')}
+      onOpenTermHistory={() => openTermHistory()}
+      onShowToast={showToast}
+      onOpenSessions={() => handleNavigate('estudos', 'sessoes')}
+      onOpenReadings={() => handleNavigate('estudos', 'leituras')}
+      onOpenTasks={() => handleNavigate('home')}
+      onOpenExams={() => handleNavigate('faculdade')}
+      onOpenStickers={openStickersScreen}
+      onOpenStreak={openStreak}
+      onUpdateReminder={updateReminder}
+      onSetGcalEnabled={(enabled) => void setGcalEnabled(enabled)}
+      onThemeSelect={setThemePref}
+      onOpenSync={openSyncScreen}
+      onExport={() => exportData()}
+      onImport={(json) => importData(json)}
+      onReset={resetApp}
+    />
   );
 };

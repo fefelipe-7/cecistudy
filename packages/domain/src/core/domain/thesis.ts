@@ -415,11 +415,34 @@ export const THESIS_REMINDER_CEILING = 64;
 /** Destino do toque (a aba em `NavScreen`; o adapter mapeia para `ThesisTab`). */
 export type ThesisReminderTarget = 'visao' | 'capitulos' | 'orientacao';
 
+/**
+ * O que o lembrete é. `SPEC-M-018 D17` — o domínio nomeia **o fato**, e a voz
+ * escreve a frase (`src/lib/voice.ts`, `NOTIFICACAO.tcc*`).
+ */
+export type ThesisReminderKind = 'capitulo' | 'pendencia' | 'reuniao' | 'entrega' | 'banca';
+
+/**
+ * Um lembrete planejado, **sem frase**.
+ *
+ * Antes disto carregava `title` e `body` prontos — e a marca `cecistudy ♡ tcc`
+ * vivia dentro do domínio puro (`D18`). Agora o plano devolve o fato, e quem
+ * escreve é a voz. O adaptador nativo (`src/lib/notifications.ts`) resolve o
+ * nome no **agendamento**, que é quando o perfil está carregado (`D18`).
+ */
 export interface PlannedThesisReminder {
   /** `THESIS_REMINDER_BASE + índice` — estável por ordem de data no plano. */
   id: number;
-  title: string;
-  body: string;
+  kind: ThesisReminderKind;
+  /**
+   * O **nome** do que o lembrete é sobre: título do capítulo, título da
+   * pendência, nome do orientador, ou vazio nos marcos (entrega/banca), que se
+   * nomeiam sozinhos.
+   */
+  referencia: string;
+  /** Dias até o prazo — `0` é hoje, `1` é amanhã. */
+  dias: number;
+  /** Hora local `HH:mm`, só quando a fonte a define (`reuniao`). */
+  hora?: string;
   /** Instante **local** agendado — construído das entradas, nenhum relógio lido. */
   at: Date;
   target: { tab: ThesisReminderTarget; entityId?: EntityId };
@@ -445,12 +468,16 @@ const at = (key: DateKey, time: string): Date => {
   return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), hour, minute);
 };
 
-const relativeDay = (days: number): string =>
-  days === 0 ? 'hoje' : days === 1 ? 'amanhã' : `em ${days} dias`;
+/**
+ * `SPEC-M-018 D17` — saiu daqui. O domínio nomeia o fato (`days`); a frase
+ * "hoje"/"amanhã"/"em N dias" é de `NOTIFICACAO.tccPrazo`, em `src/lib/voice.ts`.
+ */
 
 /**
  * O plano de lembretes do TCC (§6.3) — **puro**: `today` e `now` chegam por
  * parâmetro (`now` tem default explícito, o único relógio do arquivo).
+ *
+ * Devolve **fato, não frase** (`SPEC-M-018 D17`): quem escreve o texto é a voz.
  *
  * Gatilhos: capítulo 7/1/0 dias antes (às `prefs.time`), pendência 1/0 dias,
  * reunião agendada (véspera às 18:00; com hora, `meetingMinutesBefore` antes;
@@ -468,12 +495,12 @@ export const planThesisReminders = (
   const out: PlannedThesisReminder[] = [];
   const push = (
     when: Date,
-    body: string,
+    lembrete: Pick<PlannedThesisReminder, 'kind' | 'referencia' | 'dias' | 'hora'>,
     tab: ThesisReminderTarget,
     entityId?: EntityId,
   ) => {
     if (Number.isNaN(when.getTime()) || when.getTime() <= now.getTime()) return;
-    out.push({ id: 0, title: 'cecistudy ♡ tcc', body, at: when, target: { tab, entityId } });
+    out.push({ id: 0, at: when, target: { tab, entityId }, ...lembrete });
   };
 
   for (const ch of chapters) {
@@ -481,7 +508,7 @@ export const planThesisReminders = (
     for (const d of prefs.chapterDaysBefore) {
       push(
         at(addDays(ch.dueDate, -d), prefs.time),
-        `o capítulo ${ch.title} vence ${relativeDay(d)}`,
+        { kind: 'capitulo', referencia: ch.title, dias: d },
         'capitulos',
         ch.id,
       );
@@ -493,19 +520,22 @@ export const planThesisReminders = (
     for (const d of [1, 0]) {
       push(
         at(addDays(task.dueDate, -d), prefs.time),
-        `pendência da orientação: ${task.title} — ${relativeDay(d)}`,
+        { kind: 'pendencia', referencia: task.title, dias: d },
         'orientacao',
         task.id,
       );
     }
   }
 
+  const orientador = thesis.advisor || '';
   for (const meeting of meetings) {
     if (meeting.status !== 'agendada') continue;
     if (prefs.meetingEve) {
       push(
         at(addDays(meeting.date, -1), '18:00'),
-        `reunião com ${thesis.advisor || 'a orientação'} amanhã${meeting.time ? ` às ${meeting.time}` : ''}`,
+        // A hora viaja mesmo na véspera: "amanhã às 14:00" é informação que a
+        // frase precisa, e `hora` é dado, não voz.
+        { kind: 'reuniao', referencia: orientador, dias: 1, hora: meeting.time },
         'orientacao',
         meeting.id,
       );
@@ -517,7 +547,7 @@ export const planThesisReminders = (
           new Date(
             at(meeting.date, '00:00').getTime() + (hour * 60 + minute - mins) * 60_000,
           ),
-          `reunião com ${thesis.advisor || 'a orientação'} hoje às ${meeting.time}`,
+          { kind: 'reuniao', referencia: orientador, dias: 0, hora: meeting.time },
           'orientacao',
           meeting.id,
         );
@@ -525,20 +555,20 @@ export const planThesisReminders = (
     } else {
       push(
         at(meeting.date, '09:00'),
-        `reunião com ${thesis.advisor || 'a orientação'} hoje`,
+        { kind: 'reuniao', referencia: orientador, dias: 0 },
         'orientacao',
         meeting.id,
       );
     }
   }
 
-  for (const [date, label] of [
-    [thesis.deliveryDate, 'a entrega'],
-    [thesis.defenseDate, 'a banca'],
+  for (const [date, kind] of [
+    [thesis.deliveryDate, 'entrega'],
+    [thesis.defenseDate, 'banca'],
   ] as const) {
     if (!date) continue;
     for (const d of prefs.milestoneDaysBefore) {
-      push(at(addDays(date, -d), prefs.time), `faltam ${d} dias para ${label} do tcc ♡`, 'visao');
+      push(at(addDays(date, -d), prefs.time), { kind, referencia: '', dias: d }, 'visao');
     }
   }
 

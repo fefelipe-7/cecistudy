@@ -4,6 +4,7 @@ import { CalendarClock, ListChecks, BookOpen, Users, PenLine, GripVertical, Plus
 import { useMobileApp } from '@/context/mobileApp';
 import { HeroCard } from '../ui/HeroCard';
 import { UnderlineTabBar } from '../ui/UnderlineTabBar';
+import { SwipeableTabPanel, useTabPager } from '../ui/SwipeableTabPanel';
 import { ProgressBar } from '../ui/ProgressBar';
 import { CompletionToggle } from '../ui/CompletionToggle';
 import { EmptyState } from '../ui/EmptyState';
@@ -21,7 +22,7 @@ import {
 } from '../../lib/dateBR';
 import { computeStreak } from '../../lib/streak';
 import { hapticSuccess, hapticTap } from '../../lib/haptics';
-import { copyToClipboard, readFromClipboard } from '../../lib/utils';
+import { copyToClipboard } from '../../lib/utils';
 import {
   abntDataFromReading,
   commitFlatOrder,
@@ -44,6 +45,7 @@ import { TaskSheet } from '../tcc/TaskSheet';
 import { MeetingSheet } from '../tcc/MeetingSheet';
 import { ReferenceSheet } from '../tcc/ReferenceSheet';
 import { CaptureLinkSheet } from '../capture/CaptureLinkSheet';
+import { CELEBRACAO, VAZIO, erro, frase } from '../../lib/voice';
 import type { ThesisTab } from '../../../packages/navigation/src/types';
 
 type LeiturasFilter = 'todas' | 'candidatas' | 'lidas' | 'citadas';
@@ -92,6 +94,11 @@ const TABS: { id: ThesisTab; label: string; icon: React.ReactNode }[] = [
   { id: 'orientacao', label: 'orientação', icon: <Users className="w-3.5 h-3.5" /> },
   { id: 'escrita', label: 'escrita', icon: <PenLine className="w-3.5 h-3.5" /> },
 ];
+
+/** Nome legível da aba — o `aria-label` do painel mostra isto, não o id cru. */
+const TAB_LABEL: Record<ThesisTab, string> = Object.fromEntries(
+  TABS.map((t) => [t.id, t.label])
+) as Record<ThesisTab, string>;
 
 export const TccView: React.FC = () => {
   const {
@@ -146,29 +153,35 @@ export const TccView: React.FC = () => {
   // ---- aba capítulos (F4.1/F4.2): ordem de render, arrastar e sheet ----
   const ordered = useMemo(() => orderChaptersForRender(thesisChapters), [thesisChapters]);
   const [dragOrder, setDragOrder] = useState<ThesisChapter[] | null>(null);
-  const [editingChapter, setEditingChapter] = useState<string | 'new' | null>(null);
-  const [writingOpen, setWritingOpen] = useState(false);
   // ---- aba orientação (F6): pendências e reuniões ----
-  const [taskSheet, setTaskSheet] = useState<string | 'new' | null>(null);
-  const [meetingSheet, setMeetingSheet] = useState<
-    { id: string | 'new'; intent: 'agendar' | 'registrar' } | null
-  >(null);
   const [showCancelled, setShowCancelled] = useState(false);
   const [announceText, setAnnounceText] = useState('');
   // ---- aba leituras (F7.2): filtro (SPEC-010 D7) e sheet da referência ----
   const [leiturasFilter, setLeiturasFilter] = useState<LeiturasFilter>('todas');
-  const [referenceSheet, setReferenceSheet] = useState<string | 'new' | null>(null);
-  // ---- captura de link (F8.3): camada 1 dentro do TCC ----
-  const [captureOpen, setCaptureOpen] = useState(false);
-  const [captureText, setCaptureText] = useState('');
   const dragControls = useDragControls();
 
-  /** Camada 1 da captura (§8.3): lê o clipboard e abre a mesma sheet. */
-  const openCapture = async () => {
-    const text = await readFromClipboard();
-    setCaptureText(text ?? '');
-    setCaptureOpen(true);
-  };
+  /**
+   * A folha aberta **mora no contexto do app** (SPEC-022 D3), não aqui: a
+   * barra contextual e o conteúdo abrem a mesma folha — são a mesma porta, e
+   * porta não tem dois donos. Por isso não existe mais `useState` para cada
+   * sheet nesta tela.
+   */
+  const {
+    tccSheet,
+    tccCaptureText,
+    openTccSheet,
+    closeTccSheet,
+    openTccCapture,
+  } = useMobileApp();
+
+  const editingChapter = tccSheet?.type === 'chapter' ? tccSheet.id : null;
+  const writingOpen = tccSheet?.type === 'writing';
+  const taskSheet = tccSheet?.type === 'task' ? tccSheet.id : null;
+  const meetingSheet =
+    tccSheet?.type === 'meeting' ? { id: tccSheet.id, intent: tccSheet.intent } : null;
+  const referenceSheet = tccSheet?.type === 'reference' ? tccSheet.id : null;
+  const captureOpen = tccSheet?.type === 'capture';
+  const captureText = tccCaptureText;
 
   const commitDrag = () => {
     const rendered = dragOrder;
@@ -227,7 +240,7 @@ export const TccView: React.FC = () => {
     if (target.stage !== 'pronto') {
       // Desfazer devolve o snapshot inteiro (F4.1): o toast de 8s é a janela
       // de reversão — botão não some antes (`Toast.tsx:46-48`).
-      showToast('capítulo guardado ♡', {
+      showToast(frase(CELEBRACAO, 'capituloGuardado'), {
         action: { label: 'desfazer', onClick: () => setThesisChapters(prev) },
       });
     }
@@ -402,9 +415,9 @@ export const TccView: React.FC = () => {
       // sem modelo pronto, sem estrutura padrão. A usuária monta a dela.
       return (
         <EmptyState
-          description="a lista nasce vazia: monte os capítulos do jeito que fizer sentido pro seu trabalho ♡"
+          description={frase(VAZIO, 'capitulosVazio')}
           actionLabel="adicionar o primeiro capítulo"
-          onAction={() => setEditingChapter('new')}
+          onAction={() => openTccSheet({ type: 'chapter', id: 'new' })}
           mascote="writing-flow"
         />
       );
@@ -430,7 +443,7 @@ export const TccView: React.FC = () => {
                 className="list-none"
               >
                 <div
-                  onClick={() => setEditingChapter(ch.id)}
+                  onClick={() => openTccSheet({ type: 'chapter', id: ch.id })}
                   className={`flex items-center gap-2 p-3 rounded-2xl border cursor-pointer tap-interactive ${
                     done
                       ? 'bg-surface-blue/60 border-ceci-border-academic'
@@ -474,7 +487,7 @@ export const TccView: React.FC = () => {
         </Reorder.Group>
         <button
           type="button"
-          onClick={() => setEditingChapter('new')}
+          onClick={() => openTccSheet({ type: 'chapter', id: 'new' })}
           className="w-full flex items-center justify-center gap-1.5 min-h-[44px] text-xs font-semibold text-ceci-brand-strong border border-dashed border-ceci-border-brand bg-surface-rose/50 hover:bg-surface-rose rounded-xl cursor-pointer transition-colors active:scale-[0.99]"
         >
           <Plus className="w-3.5 h-3.5" /> adicionar capítulo
@@ -516,13 +529,13 @@ export const TccView: React.FC = () => {
         .join('\n\n');
       if (!text) {
         hapticSuccess();
-        showToast('ainda não tem referência pra copiar ♡');
+        showToast(erro('semReferenciaPraCopiar'));
         return;
       }
       const ok = await copyToClipboard(text);
       if (ok) {
         hapticSuccess();
-        showToast('lista copiada ♡');
+        showToast(frase(CELEBRACAO, 'listaCopiada'));
       }
     };
 
@@ -530,14 +543,14 @@ export const TccView: React.FC = () => {
       return (
         <div className="space-y-3">
           <EmptyState
-            description="artigos e livros que você guardar e citar no tcc aparecem aqui, já no formato abnt ♡"
+            description={frase(VAZIO, 'referenciasVazio')}
             actionLabel="nova referência"
-            onAction={() => setReferenceSheet('new')}
+            onAction={() => openTccSheet({ type: 'reference', id: 'new' })}
             mascote="reading-curious"
           />
           <button
             type="button"
-            onClick={() => void openCapture()}
+            onClick={() => void openTccCapture()}
             aria-label="guardar link"
             className="w-full flex items-center justify-center gap-2 min-h-[44px] px-4 rounded-full bg-surface-default border border-ceci-border-default text-ceci-secondary text-xs font-semibold cursor-pointer active:scale-[0.98] transition-transform"
           >
@@ -556,7 +569,7 @@ export const TccView: React.FC = () => {
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => void openCapture()}
+                  onClick={() => void openTccCapture()}
                   aria-label="guardar link"
                   className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-[11px] text-ceci-secondary hover:bg-surface-muted hover:text-ceci-primary transition-colors min-h-[44px] cursor-pointer"
                 >
@@ -572,7 +585,7 @@ export const TccView: React.FC = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setReferenceSheet('new')}
+                  onClick={() => openTccSheet({ type: 'reference', id: 'new' })}
                   aria-label="nova referência"
                   className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong text-[11px] font-semibold transition-transform active:scale-95 min-h-[44px] cursor-pointer"
                 >
@@ -626,11 +639,11 @@ export const TccView: React.FC = () => {
                     <div
                       role="button"
                       tabIndex={0}
-                      onClick={() => setReferenceSheet(ref.id)}
+                      onClick={() => openTccSheet({ type: 'reference', id: ref.id })}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
-                          setReferenceSheet(ref.id);
+                          openTccSheet({ type: 'reference', id: ref.id });
                         }
                       }}
                       aria-label={`referência: ${citation}`}
@@ -661,7 +674,7 @@ export const TccView: React.FC = () => {
                               void copyToClipboard(citation).then((ok) => {
                                 if (ok) {
                                   hapticSuccess();
-                                  showToast('referência copiada ♡');
+                                  showToast(frase(CELEBRACAO, 'referenciaCopiada'));
                                 }
                               });
                             }}
@@ -760,8 +773,10 @@ export const TccView: React.FC = () => {
 
   const openRegistrar = () => {
     const nearest = agendadas[0];
-    setMeetingSheet(
-      nearest ? { id: nearest.id, intent: 'registrar' } : { id: 'new', intent: 'registrar' },
+    openTccSheet(
+      nearest
+        ? { type: 'meeting', id: nearest.id, intent: 'registrar' }
+        : { type: 'meeting', id: 'new', intent: 'registrar' },
     );
   };
 
@@ -819,7 +834,7 @@ export const TccView: React.FC = () => {
         />
         <button
           type="button"
-          onClick={() => setTaskSheet(t.id)}
+          onClick={() => openTccSheet({ type: 'task', id: t.id })}
           className="min-w-0 flex-1 text-left cursor-pointer tap-interactive rounded-xl"
         >
           <p
@@ -870,11 +885,11 @@ export const TccView: React.FC = () => {
       return (
         <EmptyState
           mascote="research-tcc"
-          description="as conversas com a orientação e o que fica pendente vivem aqui — e cada decisão da reunião pode virar uma pendência sua ♡"
+          description={frase(VAZIO, 'orientacaoVazio')}
           actionLabel="agendar reunião"
-          onAction={() => setMeetingSheet({ id: 'new', intent: 'agendar' })}
+          onAction={() => openTccSheet({ type: 'meeting', id: 'new', intent: 'agendar' })}
           secondaryActionLabel="adicionar pendência"
-          onSecondaryAction={() => setTaskSheet('new')}
+          onSecondaryAction={() => openTccSheet({ type: 'task', id: 'new' })}
         />
       );
     }
@@ -888,7 +903,7 @@ export const TccView: React.FC = () => {
             action={
               <button
                 type="button"
-                onClick={() => setTaskSheet('new')}
+                onClick={() => openTccSheet({ type: 'task', id: 'new' })}
                 className="flex items-center gap-1 text-[11px] font-semibold text-ceci-brand-strong hover:text-ceci-brand px-2 py-1.5 rounded-full cursor-pointer tap-interactive"
               >
                 <Plus className="w-3.5 h-3.5" /> adicionar
@@ -918,7 +933,7 @@ export const TccView: React.FC = () => {
           <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
-              onClick={() => setMeetingSheet({ id: 'new', intent: 'agendar' })}
+              onClick={() => openTccSheet({ type: 'meeting', id: 'new', intent: 'agendar' })}
               className={softActionClass}
             >
               agendar reunião
@@ -946,7 +961,7 @@ export const TccView: React.FC = () => {
                   <button
                     key={m.id}
                     type="button"
-                    onClick={() => setMeetingSheet({ id: m.id, intent: 'agendar' })}
+                    onClick={() => openTccSheet({ type: 'meeting', id: m.id, intent: 'agendar' })}
                     className="w-full flex items-center gap-3 p-2.5 rounded-2xl border border-ceci-border-default bg-surface-default hover:border-ceci-border-brand text-left cursor-pointer card-lift press-card tap-interactive"
                   >
                     {meetingDayTile(m.date, overdue ? 'muted' : 'brand')}
@@ -977,7 +992,7 @@ export const TccView: React.FC = () => {
                 <button
                   key={m.id}
                   type="button"
-                  onClick={() => setMeetingSheet({ id: m.id, intent: 'registrar' })}
+                  onClick={() => openTccSheet({ type: 'meeting', id: m.id, intent: 'registrar' })}
                   className="w-full flex items-center gap-3 p-2.5 rounded-2xl border border-ceci-border-default bg-surface-default hover:border-ceci-border-brand text-left cursor-pointer card-lift press-card tap-interactive"
                 >
                   {meetingDayTile(m.date, 'muted')}
@@ -1016,7 +1031,7 @@ export const TccView: React.FC = () => {
                         <button
                           key={m.id}
                           type="button"
-                          onClick={() => setMeetingSheet({ id: m.id, intent: 'agendar' })}
+                          onClick={() => openTccSheet({ type: 'meeting', id: m.id, intent: 'agendar' })}
                           className="w-full flex items-center gap-3 p-2.5 rounded-2xl border border-ceci-border-subtle bg-surface-muted text-left cursor-pointer tap-interactive"
                         >
                           {meetingDayTile(m.date, 'muted')}
@@ -1045,9 +1060,9 @@ export const TccView: React.FC = () => {
       {renderWeekCard()}
       {thesisWritingLogs.length === 0 ? (
         <EmptyState
-          description="registre suas sessões de escrita e acompanhe o ritmo até a entrega ♡"
+          description={frase(VAZIO, 'escritaVazio')}
           actionLabel="registrar escrita"
-          onAction={() => setWritingOpen(true)}
+          onAction={() => openTccSheet({ type: 'writing' })}
           mascote="writing-flow"
         />
       ) : (
@@ -1103,6 +1118,14 @@ export const TccView: React.FC = () => {
     </div>
   );
 
+  // Arraste horizontal troca de aba, como no detalhe da disciplina (SPEC-015).
+  // A aba continua morando no NavScreen — o pager só calcula a direção.
+  const pager = useTabPager<ThesisTab>({
+    tabIds: TABS.map((t) => t.id),
+    active: tab,
+    onChange: (next) => openTccScreen(next),
+  });
+
   const tabContent =
     tab === 'capitulos'
       ? renderCapitulos()
@@ -1122,20 +1145,26 @@ export const TccView: React.FC = () => {
         summary={heroSummary}
         expression="research-tcc"
         action={
-          hasTcc
-            ? {
-                label: 'registrar escrita',
-                onClick: () => setWritingOpen(true),
-                ariaLabel: 'registrar escrita',
-              }
-            : { label: 'bora começar?', onClick: () => openWizard('tcc'), ariaLabel: 'criar tcc' }
+          // A primária tem **um dono visível** (SPEC-022 D2): na visão geral
+          // é o herói; nas outras quatro abas é a barra contextual. O herói
+          // não repete a ação da aba — antes ele oferecia "registrar escrita"
+          // nas cinco abas, o que mentia em quatro delas.
+          !hasTcc
+            ? { label: 'bora começar?', onClick: () => openWizard('tcc'), ariaLabel: 'criar tcc' }
+            : tab === 'visao'
+              ? {
+                  label: 'registrar escrita',
+                  onClick: () => openTccSheet({ type: 'writing' }),
+                  ariaLabel: 'registrar escrita',
+                }
+              : undefined
         }
       />
 
       {!hasTcc ? (
         <EmptyState
           mascote="research-tcc"
-          description="comece pelo que dá identidade ao trabalho: um título, quem orienta e a pergunta que ele quer responder. o resto você preenche no caminho ♡"
+          description={frase(VAZIO, 'tccComecar')}
           actionLabel="começar meu tcc"
           onAction={() => openWizard('tcc')}
         />
@@ -1144,9 +1173,14 @@ export const TccView: React.FC = () => {
           <UnderlineTabBar
             tabs={TABS.map((t) => ({ id: t.id, label: t.label, icon: t.icon }))}
             active={tab}
-            onChange={(next) => openTccScreen(next)}
+            onChange={(next) => pager.goTo(next)}
           />
-          {tabContent}
+          {/* O painel arrasta junto com o dedo (SPEC-015). A aba mora no
+              NavScreen (`openTccScreen`), e o pager respeita isso: ele só
+              calcula direção e chama `onChange`. */}
+          <SwipeableTabPanel active={tab} pager={pager} label={TAB_LABEL[tab]}>
+            {tabContent}
+          </SwipeableTabPanel>
         </>
       )}
 
@@ -1154,17 +1188,17 @@ export const TccView: React.FC = () => {
       <ChapterSheet
         open={editingChapter !== null}
         chapterId={editingChapter ?? 'new'}
-        onClose={() => setEditingChapter(null)}
+        onClose={() => closeTccSheet()}
       />
 
       {/* Sheet "registrar escrita" (F5.2): ação primária do hero e da aba. */}
-      <WritingLogSheet open={writingOpen} onClose={() => setWritingOpen(false)} />
+      <WritingLogSheet open={writingOpen} onClose={() => closeTccSheet()} />
 
       {/* Sheet da pendência (F6.1): uma entidade, uma escrita por ação. */}
       <TaskSheet
         open={taskSheet !== null}
         taskId={taskSheet ?? 'new'}
-        onClose={() => setTaskSheet(null)}
+        onClose={() => closeTccSheet()}
       />
 
       {/* Sheet da reunião (F6.2/F6.4): agendar ou registrar o que foi conversado. */}
@@ -1172,7 +1206,7 @@ export const TccView: React.FC = () => {
         open={meetingSheet !== null}
         meetingId={meetingSheet?.id ?? 'new'}
         intent={meetingSheet?.intent ?? 'agendar'}
-        onClose={() => setMeetingSheet(null)}
+        onClose={() => closeTccSheet()}
       />
 
       {/* Sheet da referência (F7.3/ADR-010): a obra mora na estante; aqui se
@@ -1180,7 +1214,7 @@ export const TccView: React.FC = () => {
       <ReferenceSheet
         open={referenceSheet !== null}
         referenceId={referenceSheet}
-        onClose={() => setReferenceSheet(null)}
+        onClose={() => closeTccSheet()}
       />
 
       {/* Captura de link (F8.2/F8.3): mesma sheet do hub de leitura. */}
@@ -1188,7 +1222,7 @@ export const TccView: React.FC = () => {
         <CaptureLinkSheet
           open
           initialText={captureText}
-          onClose={() => setCaptureOpen(false)}
+          onClose={() => closeTccSheet()}
         />
       )}
     </div>

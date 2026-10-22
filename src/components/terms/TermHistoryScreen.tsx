@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BookOpen, Sparkles } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
+import { CELEBRACAO, frase } from '../../lib/voice';
 import { useTermActions } from '@/context/shellNavContexts';
 import { sortedTerms, degreeProgress, useActiveTerm } from '@/lib/termScope';
 import type { AcademicTerm } from '@/types';
@@ -37,7 +38,7 @@ export const TermHistoryScreen: React.FC = () => {
 
   const handleReopen = (term: AcademicTerm) => {
     reopenTermById(term.id);
-    showToast(`${term.label} voltou a ser o seu semestre atual ♡`);
+    showToast(frase(CELEBRACAO, 'semestreRestaurado', { label: term.label }));
   };
 
   if (terms.length === 0) {

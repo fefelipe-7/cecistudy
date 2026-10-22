@@ -3,6 +3,8 @@ import { Home, GraduationCap, Brain, Library, FileText, BookOpen, Check, HeartHa
 import { NavTab, WizardFlow } from '../types';
 import { BottomNavBar, NavItem } from '@/components/ui/bottom-nav-bar';
 import FloatingActionMenu from '@/components/ui/floating-action-menu';
+import { prefetchScreensOnIntent, type ScreenKey } from '@/shells/SharedScreenLayers';
+import { TAB_LABELS } from '@/lib/motion';
 
 interface BottomNavProps {
   activeTab: NavTab;
@@ -10,14 +12,17 @@ interface BottomNavProps {
   onOpenWizard?: (type: WizardFlow) => void;
   onOpenTaskExamWizard?: () => void;
   onOpenCompose?: () => void;
+  /** Abre a busca global — acionada ao **segurar** o FAB (long-press). */
+  onOpenSearch: () => void;
 }
 
 // Config estática das abas (ícones importados no módulo = referências estáveis).
+// Os rótulos vêm de `TAB_LABELS` (fonte única com a região viva do shell).
 const TABS: (NavItem & { id: NavTab })[] = [
-  { id: 'home', label: 'home', icon: Home },
-  { id: 'faculdade', label: 'faculdade', icon: GraduationCap },
-  { id: 'estudos', label: 'estudos', icon: Brain },
-  { id: 'biblioteca', label: 'biblioteca', icon: Library },
+  { id: 'home', label: TAB_LABELS.home, icon: Home },
+  { id: 'faculdade', label: TAB_LABELS.faculdade, icon: GraduationCap },
+  { id: 'estudos', label: TAB_LABELS.estudos, icon: Brain },
+  { id: 'biblioteca', label: TAB_LABELS.biblioteca, icon: Library },
 ];
 
 // Ícones dos itens do menu FAB (JSX estático no módulo).
@@ -33,8 +38,18 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   onOpenWizard,
   onOpenTaskExamWizard,
   onOpenCompose,
+  onOpenSearch,
 }) => {
   const activeIndex = TABS.findIndex((t) => t.id === activeTab);
+
+  // Intenção observável (spec-performance §3.2): pointerdown numa aba inicia
+  // o chunk daquela aba ANTES do React commitar a troca. O `aria-label` dos
+  // botões da barra casa com a `ScreenKey` da aba; teclas inválidas são
+  // ignoradas (botões do FAB também disparam pointerdown aqui).
+  const handlePointerIntent = (e: React.PointerEvent<HTMLDivElement>) => {
+    const label = (e.target as HTMLElement).closest('button')?.getAttribute('aria-label');
+    if (label) prefetchScreensOnIntent([label as ScreenKey]);
+  };
 
   const menuOptions = useMemo(
     () => [
@@ -70,19 +85,22 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   return (
     <div className="fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] z-40 flex items-center justify-center gap-2 px-3 pointer-events-none">
       <div className="pointer-events-auto flex items-center gap-2">
-        <BottomNavBar
-          items={TABS}
-          activeIndex={activeIndex >= 0 ? activeIndex : 0}
-          onChange={(index) => {
-            if (TABS[index]) {
-              onChangeTab(TABS[index].id);
-            }
-          }}
-        />
+        <div onPointerDownCapture={handlePointerIntent}>
+          <BottomNavBar
+            items={TABS}
+            activeIndex={activeIndex >= 0 ? activeIndex : 0}
+            onChange={(index) => {
+              if (TABS[index]) {
+                onChangeTab(TABS[index].id);
+              }
+            }}
+          />
+        </div>
 
         <FloatingActionMenu
           className="relative bottom-0 right-0 z-50 shrink-0"
           options={menuOptions}
+          onLongPress={onOpenSearch}
         />
       </div>
     </div>

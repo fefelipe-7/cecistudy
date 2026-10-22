@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, useSpring, useTransform } from 'framer-motion';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useCanvasSetup } from '@/lib/useCanvasSetup';
+import { useCanvasSetup, useDitherLoop } from '@/lib/useCanvasSetup';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import {
   clamp,
@@ -64,7 +64,8 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
   accentColor,
 }) => {
   const [rangeIndex, setRangeIndex] = useState(0);
-  const { canvasRef, rect, isVisible, reducedMotion } = useCanvasSetup();
+  const setup = useCanvasSetup();
+  const { canvasRef, ctxRef, rect, reducedMotion } = setup;
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const usingRanges = ranges !== undefined || dataProp === undefined;
@@ -96,7 +97,6 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
   const targetY = useSpring(0, { stiffness: 650, damping: 42, mass: 0.5 });
 
   const timeRef = useRef(0);
-  const requestRef = useRef<number | undefined>(undefined);
   const pointerPosRef = useRef({ x: -100, y: -100 });
   const pointerActiveRef = useRef(false);
 
@@ -105,46 +105,23 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
   const targetDataRef = useRef(data);
   const targetMaxRef = useRef(maxVal);
   const morphStartTimeRef = useRef(0);
+  /** Buffer reutilizado a cada frame — sem alocação por frame (spec §5.3). */
+  const curDataRef = useRef<number[]>([]);
 
-  useEffect(() => {
-    fromDataRef.current = targetDataRef.current.map((_, i) => targetDataRef.current[i]);
-    fromMaxRef.current = targetMaxRef.current;
+  const morphActive = () =>
+    !reducedMotion &&
+    morphStartTimeRef.current > 0 &&
+    performance.now() - morphStartTimeRef.current < 460;
 
-    targetDataRef.current = data;
-    targetMaxRef.current = maxVal;
-
-    if (fromDataRef.current.length !== targetDataRef.current.length) {
-      const len = targetDataRef.current.length;
-      const old = fromDataRef.current;
-      fromDataRef.current = Array(len)
-        .fill(0)
-        .map((_, i) => {
-          const t = len > 1 ? i / (len - 1) : 0;
-          const oldIdx = Math.round(t * (old.length - 1));
-          return old[oldIdx];
-        });
-    }
-
-    morphStartTimeRef.current = performance.now();
-  }, [data, maxVal]);
-
-  useEffect(() => {
-    const draw = () => {
-      if (!isVisible.current) {
-        requestRef.current = requestAnimationFrame(draw);
-        return;
-      }
-
+  const { scheduleFrame } = useDitherLoop(
+    () => {
       const canvas = canvasRef.current;
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      if (!canvas) return false;
+      const ctx = ctxRef.current ?? (ctxRef.current = canvas.getContext('2d'));
+      if (!ctx) return false;
 
       const { width: w, height: h } = rect.current;
-      if (w === 0 || h === 0) {
-        requestRef.current = requestAnimationFrame(draw);
-        return;
-      }
+      if (w === 0 || h === 0) return true; // aguardando o ResizeObserver medir
 
       timeRef.current += reducedMotion ? 0 : 0.03;
 
@@ -166,7 +143,15 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
       }
 
       const curMax = fromMaxRef.current + (targetMaxRef.current - fromMaxRef.current) * prog;
-      const curData = targetDataRef.current.map((v, i) => fromDataRef.current[i] + (v - fromDataRef.current[i]) * prog);
+      // Buffer in-place: mesmo tamanho do alvo, mutado por índice (sem .map/frame).
+      const buf = curDataRef.current;
+      const target = targetDataRef.current;
+      const from = fromDataRef.current;
+      if (buf.length !== target.length) buf.length = target.length;
+      for (let i = 0; i < target.length; i++) {
+        buf[i] = from[i] + (target[i] - from[i]) * prog;
+      }
+      const curData = buf;
 
       const px = pointerPosRef.current.x;
       const py = pointerPosRef.current.y;
@@ -242,14 +227,35 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
       });
 
       ctx.restore();
-      requestRef.current = requestAnimationFrame(draw);
-    };
+      // needsAnimation (spec §5.2): morph em curso ou interação de ponteiro —
+      // dado estável sem toque congela o shimmer (sem loop ornamental infinito).
+      return morphActive() || isActive;
+    },
+    setup,
+  );
 
-    requestRef.current = requestAnimationFrame(draw);
-    return () => {
-      if (requestRef.current) cancelAnimationFrame(requestRef.current);
-    };
-  }, [theme, reducedMotion, dotColor, gridColor, gridLineColor, areaFill]);
+  useEffect(() => {
+    fromDataRef.current = targetDataRef.current.map((_, i) => targetDataRef.current[i]);
+    fromMaxRef.current = targetMaxRef.current;
+
+    targetDataRef.current = data;
+    targetMaxRef.current = maxVal;
+
+    if (fromDataRef.current.length !== targetDataRef.current.length) {
+      const len = targetDataRef.current.length;
+      const old = fromDataRef.current;
+      fromDataRef.current = Array(len)
+        .fill(0)
+        .map((_, i) => {
+          const t = len > 1 ? i / (len - 1) : 0;
+          const oldIdx = Math.round(t * (old.length - 1));
+          return old[oldIdx];
+        });
+    }
+
+    morphStartTimeRef.current = performance.now();
+    scheduleFrame();
+  }, [data, maxVal, scheduleFrame]);
 
   const handlePointer = (e: React.MouseEvent | React.PointerEvent) => {
     const wrapper = wrapperRef.current;
@@ -260,6 +266,7 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
 
     pointerPosRef.current = { x, y };
     pointerActiveRef.current = true;
+    scheduleFrame();
 
     const { width: w, height: h } = rect.current;
 
@@ -279,6 +286,8 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
   const handlePointerLeave = () => {
     pointerActiveRef.current = false;
     setScrubIndex(null);
+    // Um frame de acomodação (glow desliga) e o loop congela (spec §5.2).
+    scheduleFrame();
   };
 
   const xPos = useTransform(targetX, (x) => `${x}px`);

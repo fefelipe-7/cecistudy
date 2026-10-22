@@ -9,7 +9,13 @@ import {
   shouldIgnoreTarget,
   supportsEdgeSwipe,
 } from '@/lib/swipe';
-import { gesturePopIntent, prefersReducedMotion, setMotionIntent } from '@/lib/motion';
+import {
+  BASE_T,
+  gesturePopIntent,
+  prefersReducedMotion,
+  setMotionIntent,
+} from '@/lib/motion';
+import { useMotionProfile } from '@/components/motion/MotionProfileProvider';
 
 export type EdgeSwipeBackProps = {
   /** Valor de transform `x` da camada de slide (o gesto anima ele). */
@@ -31,13 +37,21 @@ export type EdgeSwipeBackProps = {
  * Interativos (botões, inputs, áreas com scroll horizontal, `[data-no-swipe]`)
  * são ignorados — o gesto nunca rouba o toque de um botão.
  *
- * Sem toque (desktop) o componente é um no-op.
+ * Sem toque (desktop) o componente é um no-op, e sob Reduzir Movimento
+ * (perfil reduzido) os listeners nem são registrados.
  */
 export function EdgeSwipeBack({ swipeX, onBack, canGoBack }: EdgeSwipeBackProps) {
   const stateRef = useRef({ onBack, canGoBack });
   stateRef.current = { onBack, canGoBack };
+  const { gesturesEnabled } = useMotionProfile();
 
   useEffect(() => {
+    // Sob Reduzir Movimento o gesto é **desligado**, não apenas encurtado
+    // (SPEC-007 D8 / WCAG 2.3.3): arrastar é o movimento. Voltar continua pela
+    // seta do header e, no Android, pelo botão do sistema — o mesmo contrato
+    // que o plugin nativo aplica lendo `isReduceMotionEnabled`.
+    if (!gesturesEnabled) return;
+
     const coarsePointer = window.matchMedia?.('(pointer: coarse)').matches ?? true;
     if (!coarsePointer) return;
 
@@ -92,15 +106,16 @@ export function EdgeSwipeBack({ swipeX, onBack, canGoBack }: EdgeSwipeBackProps)
         if (!handled) setMotionIntent(gesturePopIntent(0, prefersReducedMotion()));
         return;
       }
-      // Cancelado: spring devolve a tela ao lugar.
-      animate(swipeX, 0, { type: 'spring', stiffness: 500, damping: 42 });
+      // Cancelado: spring devolve a tela ao lugar. `BASE_T.gesture` é o token
+      // dono deste gesto — antes era um spring literal escrito aqui.
+      animate(swipeX, 0, BASE_T.gesture);
     };
 
     const onPointerCancel = () => {
       if (!active) return;
       active = false;
       engaged = false;
-      animate(swipeX, 0, { type: 'spring', stiffness: 500, damping: 42 });
+      animate(swipeX, 0, BASE_T.gesture);
     };
 
     window.addEventListener('pointerdown', onPointerDown, { passive: true });
@@ -113,7 +128,7 @@ export function EdgeSwipeBack({ swipeX, onBack, canGoBack }: EdgeSwipeBackProps)
       window.removeEventListener('pointerup', onPointerUp);
       window.removeEventListener('pointercancel', onPointerCancel);
     };
-  }, [swipeX]);
+  }, [swipeX, gesturesEnabled]);
 
   return null;
 }

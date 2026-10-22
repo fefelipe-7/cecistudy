@@ -10,7 +10,10 @@
 > os `motion.*`/`AnimatePresence` do app) cruzada com pesquisa de padrões atuais de
 > transição em framer-motion 13 / WebView iOS.
 >
-> **Status: proposta para implementação. Slices A→F.**
+> **Status: Slices A–E implementadas. Slice F pendente.**
+> Slice D (tokens) e Slice E (acessibilidade) fechadas em 2026-10-16, com o plano
+> externo de motion (`capacitor-mobile-motion-system`) como **auditoria de entrada** —
+> reconciliado em §17, não copiado.
 >
 > **Relação com SPEC-002** (`docs/specs/SPEC-002-motion-navegacao-e-espacamento.md`):
 > aquela spec entregou o espaçamento vertical (Slice A), a estabilidade da base em
@@ -240,6 +243,87 @@ seria errado (passo é curto e local; tela é longa e espacial).
 | `step` | sub-tab de curso, passo de wizard, questão de quiz | `±40px` | 0.24 / 0.16 |
 | `tab` | troca de aba (pares) | nenhum (fade) | 0.14 |
 | `chrome` | header, bottom-nav, FAB | y/opacity | spring |
+
+⚠️ **Armadilha de módulo que violava o D6 (corrigida 2026-10-16).** `src/lib/motion.ts`
+fazia `export * from './motion/index'` **e** declarava `overlayVariants` localmente. Em
+ESM, `export *` ignora os nomes que o próprio módulo já exporta — então quem importava
+`overlayVariants` de `@/lib/motion` recebia a variante **legada** de `motion.ts`, não a
+canônica de `variants.ts`. Dois donos, e o errado ganhando. O shim agora **não declara
+nenhum símbolo próprio**: existe só para o `export *` do caminho antigo continuar
+resolvendo. Se algum dia ele ganhar um `export const`, é bug.
+
+### D7 — O gesto nativo do iOS é ouvido pelo **plugin**, nunca por `window`
+
+**Bug de produção, não melhoria de estética.** O Swift emite
+`notifyListeners("swipeBackCompleted", …)`
+(`ios/App/App/NativeNavigation/NativeNavigationPlugin.swift`), que no iOS atravessa a
+ponte do plugin e só chega a um listener registrado via `Plugin.addListener(...)`. O JS
+escutava `window.addEventListener('swipeBackCompleted', …)` — **sistema de eventos
+diferente**. Resultado na tela: arrastava da borda, a webView acompanhava o dedo, soltava
+acima do limiar, a webView completava o slide para fora e **voltava sozinha** para a
+posição original (linhas 89-93 do Swift) — **sem pop nenhum**. Com
+`retainUntilConsumed: false`, o evento era descartado.
+
+**Alternativa rejeitada:** unificar o iOS no `EdgeSwipeBack` JS (remover o plugin). É mais
+simples e daria paridade visual iOS/web de graça, mas foi rejeitado nesta rodada porque
+o feedback de webView nativa (sombra de borda, spring) é uma sensação que ainda não foi
+avaliada em aparelho. Fica para a reconciliação de dono, com dado de QA.
+
+**Consequência:** o listener é registrado **antes** de `enable()`, para que um gesto não
+seja perdido na janela entre os dois. O wrapper `onSwipeBack` encapsula a corrida entre
+o `cleanup` do efeito e a resolução da promessa do handle — o sintoma seria um listener
+vazado a cada remontagem.
+
+### D8 — Sob Reduzir Movimento o gesto de borda é **desligado**, não encurtado
+
+O `MotionProfile` já expunha `gesturesEnabled: false` no perfil reduzido
+(`profile.ts`), documentado como WCAG 2.3.3 — mas **ninguém consultava**. Arrastar é o
+movimento; um gesto que não desloca é um gesto morto com feedback no escuro. Agora a
+regra é a mesma nos dois donos:
+
+| Plataforma | Como desliga |
+|---|---|
+| web/PWA | `EdgeSwipeBack` não registra os listeners quando `!profile.gesturesEnabled` |
+| iOS nativo | `gestureRecognizerShouldBegin` devolve `false` |
+
+O Swift lê `UIAccessibility.isReduceMotionEnabled` **no momento em que o gesto iria
+começar**, não em `load()`: a preferência pode mudar em Ajustes com o app aberto, e um
+valor cacheado só se corrigiria no próximo cold start.
+
+**Alternativa rejeitada:** manter o gesto mas sem deslocamento (só commit no soltar). Faz
+o iOS divergir da web, cria um gesto invisível com feedback apenas no fim, e é pior que
+não existir.
+
+**Consequência — a que importa:** voltar precisa continuar acessível. É verdade porque
+`buildHeaderConfig` monta `onBack: goBack` **centralmente** para todo tipo de tela que
+tenha header (`navigationEngine.ts:1560`) — não é cada tela que fornece o botão. No Android
+o botão do sistema cobre o resto. **Se um dia uma tela empilhada aparecer sem header
+dinâmico, ela precisa ter o próprio voltar** — é a condição para esta decisão continuar
+valendo.
+
+### D9 — A troca de tela é **anunciada** por uma região viva, com foco no container
+
+A pilha desliza e quem navega por leitor de tela não recebia nenhuma palavra: o foco
+ficava onde estava, muitas vezes num botão que a tela que saiu acabou de remover do DOM.
+
+Duas metades, porque são duas coisas diferentes:
+
+- **Foco** no container da tela nova (`tabIndex={-1}` + `focus({ preventScroll: true })`),
+  com três guardas: só quando `intent.kind !== 'none'` (na abertura do app não há
+  navegação), `preventScroll` (a pilha preserva scroll por tela) e **não steals se algum
+  filho já tiver o foco** — efeito de filho roda antes do do pai, então uma tela com
+  `autofocus` perderia o campo para o container.
+- **Anúncio** por uma região `role="status" aria-live="polite"` **fixa** no shell (só o
+  texto muda — é isso que faz um leitor tratar a diferença como anúncio em vez de entrada
+  de conteúdo novo), alimentada por `screenAnnouncement(tab, headerConfig.title)`.
+
+**Alternativa rejeitada:** `aria-live` no próprio container da tela. Anunciaria o conteúdo
+inteiro da tela, não a troca.
+
+**Consequência:** o rótulo é o **título que a interface já mostra**. Os nomes das abas
+passaram a morar em `TAB_LABELS` (`motion/screenAnnounce.ts`), que o `BottomNav` consome
+— uma fonte só para o nome falado e o botão desenhado. Sem título e sem aba, a função
+devolve `null` e a região fica vazia: anunciar string vazia é pior que não anunciar.
 
 ---
 
@@ -584,16 +668,19 @@ de `ceci-secondary` na área coberta.
 
 ### Slice E — Acessibilidade
 
-- `inert={!isPresent || !isTop}` + `aria-hidden` nas camadas não-topo/saindo
-  (a de saída hoje é focalizável por ~180 ms).
-- Foco no container da tela nova (`tabIndex={-1}` + `focus({ preventScroll: true })`)
-  em `useLayoutEffect` chaveado no topo — **nunca** em `onAnimationComplete`
-  (atrasa o leitor de tela).
-- Gesto de borda e drag-to-dismiss **desabilitados** sob `reduced`
-  (WCAG 2.3.3 — movimento por interação).
-- `shouldIgnoreTarget` (`swipe.ts:52-56`) guaranteeing WCAG 2.5.8 (24px): o gesto não
+- ✅ `inert={!isPresent}` + `aria-hidden` nas camadas saindo
+  (`SlideScreen.tsx:95-96`) — a de saída deixa de ser focalizável no mesmo quadro.
+- ✅ Foco no container da tela nova (`tabIndex={-1}` + `focus({ preventScroll: true })`),
+  chaveado no `intent.kind`, com guarda de contenção para não arrancar o foco de um
+  `autofocus` de filho. **D9.**
+- ✅ Gesto de borda **desabilitado** sob `reduced` nos dois donos (WCAG 2.3.3 — movimento
+  por interação). Web: `EdgeSwipeBack` não registra listeners. iOS:
+  `gestureRecognizerShouldBegin` lê `UIAccessibility.isReduceMotionEnabled`. **D8.**
+- ✅ `shouldIgnoreTarget` (`swipe.ts:52-56`) garantindo WCAG 2.5.8 (24px): o gesto não
   dispara quando o toque começou em controle interativo.
-- `aria-live` no container novo para anunciar a troca de tela.
+- ✅ `aria-live` (`role="status"`) no shell, alimentado por `screenAnnouncement`. **D9.**
+- ⬜ `inert` também nas camadas **não-topo** (hoje só na que está saindo). Sem efeito
+  hoje porque a pilha monta uma camada por tela; fica para o Slice G, se ele acontecer.
 
 ### Slice F — Toggle de movimento no Perfil + docs
 
@@ -738,21 +825,81 @@ ser o primeiro. E QA manual no device com a matriz do §13.
 | `knowledge-graph` / `projects` / `inbox` declarados e sem UI | `packages/navigation/src/types.ts:73-78` | Código morto de desktop. Remover ou implementar (decisão de produto). |
 | Preload engole falha de chunk | `SharedScreenLayers.tsx:124` | Skeleton infinito sem UI de erro. Corrigir no mesmo PR do Q14, se sair. |
 | `NotesScreen.tsx:20` importa `motion`/`AnimatePresence` sem usar | import morto | Remover no Slice D. |
+| **`backdrop-filter: blur(16px)` sempre montado** no header e na bottom-nav | `src/index.css:491-492` (`.liquid-glass-nav`), `:519-520` (`.liquid-glass-fab`) | Viola a própria seção de performance desta spec: blur de tela cheia, permanente, nas duas barras. **Não foi reduzido em 2026-10-16** — mudar o blur às cegas afeta legibilidade do texto sobre o conteúdo, e isso é decisão de design com medição em aparelho. Medir com Safari Web Inspector durante push/pop antes de tocar. Atenção: `MobileAppShell.tsx:292-296` documenta que `transform` em wrapper de `fixed` quebra o containing block — blur + stacking + slide interagem. |
+| Sem virtualização de lista | — | Confirmado em `SPEC-007:104`. `docs/performance/perf-baseline.md` é o lugar do dado. |
+| `will-change` ausente na camada de slide | `MobileAppShell.tsx:257-260` | Saiu de uso de propósito em algum momento, **sem registro**. Ou se documenta a remoção, ou se mede antes de voltar. |
 | Doc drift (`VIEW_PULINHO`, `popLayout`, `motion@12`) | `AGENTS.md`, `.context/architecture.md`, `.context/animations.md` | Slice F. |
 
 ## 16. Sucesso
 
-- [ ] Um contrato (`NavIntent`) e uma fábrica (`createScreenVariants`); `motion.ts`
-      antigo só re-exporta.
-- [ ] **B1–B4 corrigidos**, cada um com teste de regressão.
-- [ ] `termHistory`, `classNote`, `repertorioItem` com `slideKey` próprio.
-- [ ] Zero `duration`/`ease`/`spring` inline fora de `src/lib/motion/*` (gate de grep).
-- [ ] Camadas fora do topo com `inert`; foco no `useLayoutEffect`.
-- [ ] Toggle de movimento no Perfil funcionando nas duas pontas (variantes + CSS).
+- [x] Um contrato (`NavIntent`) e uma fábrica (`createScreenVariants`); `motion.ts`
+      antigo só re-exporta — **e não declara nenhum símbolo próprio** (D6, 2026-10-16).
+- [x] **B1–B5 corrigidos**, cada um com teste de regressão.
+- [x] `termHistory`, `classNote`, `repertorioItem` com `slideKey` próprio.
+- [ ] Zero `duration`/`ease`/`spring` inline fora de `src/lib/motion/*` — o gate de
+      ratchet **pega** a dívida nova, mas sobram entradas pré-existentes
+      (`floating-action-menu`, `bottom-nav-bar`, `rows`, `StreakView`, `Card3D`, …).
+      Lista em `noInlineTokens.test.ts:KNOWN_INLINE`.
+- [ ] `inert` nas camadas não-topo (hoje só na que está saindo) — só com o Slice G.
+- [x] Foco na troca de tela + região viva anunciando o nome da tela (**D9**).
+- [x] Gesto de borda desligado sob Reduzir Movimento nos dois donos (**D8**).
+- [x] Gesto nativo do iOS fecha o pop (**D7**).
+- [ ] Toggle de movimento no Perfil funcionando nas duas pontas (variantes + CSS) — Slice F.
 - [ ] Q1–Q14 verdes em QA manual (web + iOS).
 - [ ] `npm run lint` + `npm run test` + `npm run build` +
       `node .github/scripts/check-boundaries.mjs` verdes ao fim de cada slice.
 - [ ] SPEC-002 marcada como concluída; docs de `.context/` sem drift.
+
+---
+
+## 17. Reconciliação com o plano externo `capacitor-mobile-motion-system`
+
+Plano recebido em 2026-10-16 como JSON de contrato de implementação para "apps
+Capacitor". **Não virou spec nova**: seria duas fontes de status para o mesmo assunto
+(débito C12 do grupo). Ele foi lido como **auditoria externa** e cada item foi julgado
+contra o código.
+
+**Por que o plano não serve como plano de execução aqui.** Ele foi escrito para um app
+Capacitor **com roteador de framework**. O cecistudy **não tem roteador**: a navegação é
+uma pilha de estado (`NavScreen[]`, `navigationEngine.ts:332`) e `location.hash` é só
+espelho. Logo "ciclo de vida de rota", `popstate`, "cache de rota do framework" e "API de
+transição do framework" não têm contraparte. O plano chega tarde para a maior parte do
+que cobre — e chega **errado** em três pontos que valem registro:
+
+| Item do plano | Realidade | Por quê |
+|---|---|---|
+| `navigation_push` 320 ms, `pop` 300 ms | `screenEnter` 0.26 / `screenExit` 0.18 | O exit é **deliberadamente** mais curto que o enter (`tokens.ts:31-36`): encurta a janela em que a camada que sai fica montada, que é onde mora a família de bugs "filhos presos no DOM". Trocar piora. |
+| `push_outgoing_parallax` 8% | `PARALLAX = 0.28` (28%) | O plano **subestima**. O iOS real usa ~30%; o app está mais perto do que o plano propõe. |
+| Curva `ios_standard = cubic-bezier(0.32, 0.72, 0, 1)` | `EASE.enter = [0.16, 1, 0.3, 1]`, `standard = [0.4, 0, 0.2, 1]` | Duas famílias de curva, ambas válidas. A curva do plano já existia aqui como `IOS_EASE`, e estava **duplicada como literal** em `bottom-nav-bar.tsx:37` — corrigido. |
+
+### O que o plano acertou e virou trabalho (2026-10-16)
+
+| ACH do plano | Achado real no código | Decisão |
+|---|---|---|
+| `AC-02` — o gesto de borda "confirma exatamente um pop" | **Não confirmava.** Ponte Swift→JS inexistente (`notifyListeners` ≠ `window`) | **D7** |
+| `accessibility.respect_reduced_motion` + `isReduceMotionEnabled` | O perfil tinha `gesturesEnabled` desde antes; **ninguém consultava** | **D8** |
+| `AC-09` — foco e ordem de leitura na troca de tela | `SlideScreen` não movia foco nem tinha região viva | **D9** |
+| `single_owner_per_transition` | `motion.ts` sombreava `overlayVariants` — o legado ganhava | Nota em **D6** |
+| `motion_tokens` — fonte única | `IOS_EASE`/`IOS_EASE_OUT`/`OVERLAY_FADE`/`sheetVariants`/`headerSwapVariants` fora de `src/lib/motion/`; `fadeSlide` duplicava `toastVariants` | **Slice D** |
+
+### O que foi julgado e **não** implementado
+
+| Item do plano | Decisão |
+|---|---|
+| `content.shared_element_zoom` (P2) | **Fora de escopo.** O próprio plano marca P2 e manda fazer depois da navegação básica estar fluida. Num app de estudo, zoom de capa→detalhe não paga o custo. |
+| `performance.visual_effects` (sem blur de tela cheia) | **Dívida, não mudança** — §15. Reduzir blur às cegas mexe em legibilidade; é decisão de design com medição em aparelho. |
+| ProMotion / 120 Hz / view controllers nativos | O próprio plano põe em `out_of_scope`. O app é uma única WKWebView. |
+| `react_vue_angular_or_other_if_detected` | Não se aplica: **não há** framework de roteamento. Não introduzir `react-router` nem segunda lib de animação. |
+| `implementation_workflow` fases 1–2 | Já feitas (auditoria + sistema central). |
+
+### Pendência que o plano **cria** e ainda não foi resolvida
+
+O `motion_plan` pressupõe que "próximo dos padrões nativos de iOS" é objetivo do produto.
+**O referencial não diz isso.** `spec-referencial-workspace-academico.md` não menciona
+motion, transição nem origem nativa em nenhum ponto. Pela ADR-005, isso é decisão da dona
+do produto e **não é fechada por agente** — fica como pergunta para ela, e não como
+obrigação técnica. Enquanto não for `[D]`, estas decisões são engenharia de qualidade de
+motion, não promessa de produto.
 
 ---
 

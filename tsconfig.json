@@ -25,5 +25,5 @@
     "allowImportingTsExtensions": true,
     "noEmit": true
   },
-  "exclude": ["node_modules", "dist", "android", "ios", "docs/archive"]
+  "exclude": ["node_modules", "dist", "android", "ios", "docs/archive", "apps/rn-expo"]
 }

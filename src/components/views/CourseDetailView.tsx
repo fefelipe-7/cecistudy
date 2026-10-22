@@ -1,16 +1,10 @@
 ﻿import React, { useState } from 'react';
-import { motion, AnimatePresence, useDragControls } from 'framer-motion';
-import { getTransition, prefersReducedMotion, stepVariants } from '@/lib/motion';
 import { CalendarClock, GraduationCap, MapPin } from 'lucide-react';
 import { CourseIcon } from '../ui/CourseIcon';
 import { UnderlineTabBar } from '../ui/UnderlineTabBar';
+import { SwipeableTabPanel, useTabPager } from '../ui/SwipeableTabPanel';
 import { useDataClientCourses } from '@/context/DataClientProvider';
 import { formatCourseSchedule, formatShortDate, getTodaySchedule } from '../../lib/schedule';
-import {
-  canStartTabSwipe,
-  shouldIgnorePanTarget,
-  swipeTabDelta,
-} from '../../lib/swipe';
 import { Course } from '../../types';
 import { CourseCreateMenu } from '../courses/detail/CourseCreateMenu';
 import { CourseInfoContent } from '../courses/detail/CourseInfoContent';
@@ -25,6 +19,13 @@ type DetailTab = 'info' | 'aulas' | 'repertorio';
 
 const TAB_ORDER: DetailTab[] = ['info', 'aulas', 'repertorio'];
 
+/** Nome legível da aba — o `aria-label` do painel mostra isto, não o id cru. */
+const TAB_LABEL: Record<DetailTab, string> = {
+  info: 'informações',
+  aulas: 'aulas',
+  repertorio: 'repertório',
+};
+
 /**
  * Detalhe da disciplina (mobile): hero compacto com contexto (horário/sala),
  * botão de novo registro que expande menu e 3 sub-tabs navegáveis por toque
@@ -36,8 +37,6 @@ const TAB_ORDER: DetailTab[] = ['info', 'aulas', 'repertorio'];
  */
 export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) => {
   const [activeTab, setActiveTab] = useState<DetailTab>('info');
-  const [direction, setDirection] = useState(1);
-  const dragControls = useDragControls();
   const { classes, exams, courses } = useDataClientCourses();
 
   const courseClasses = classes.filter((c) => c.courseId === course.id);
@@ -59,33 +58,12 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
       : null;
   })();
 
-  const goToTab = (next: DetailTab, dir?: number) => {
-    if (next === activeTab) return;
-    setDirection(
-      dir ?? (TAB_ORDER.indexOf(next) > TAB_ORDER.indexOf(activeTab) ? 1 : -1)
-    );
-    setActiveTab(next);
-  };
-
-  const stepTab = (delta: -1 | 1) => {
-    const idx = TAB_ORDER.indexOf(activeTab);
-    const nextIdx = idx + delta;
-    if (nextIdx < 0 || nextIdx >= TAB_ORDER.length) return;
-    goToTab(TAB_ORDER[nextIdx], delta);
-  };
-
-  /** Engaja o drag só para toque válido (fora da borda de voltar e de campos). */
-  const handlePointerDown = (e: React.PointerEvent) => {
-    if (e.pointerType === 'mouse') return;
-    if (!canStartTabSwipe(e.clientX)) return;
-    if (shouldIgnorePanTarget(e.target)) return;
-    dragControls.start(e);
-  };
-
-  const handleDragEnd = (_e: unknown, info: { offset: { x: number }; velocity: { x: number } }) => {
-    const delta = swipeTabDelta(info.offset.x, info.velocity.x);
-    if (delta !== 0) stepTab(delta);
-  };
+  const pager = useTabPager<DetailTab>({
+    tabIds: TAB_ORDER,
+    active: activeTab,
+    onChange: setActiveTab,
+  });
+  const goToTab = pager.goTo;
 
   const contextBits = [
     formatCourseSchedule(course.schedule),
@@ -170,41 +148,15 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
       />
 
 {/* Sub-tabs + conteúdo deslizável */}
-      <motion.div
-        onPointerDownCapture={handlePointerDown}
-        style={{ touchAction: 'pan-y' }}
-        className="px-1"
-      >
-        <AnimatePresence mode="popLayout" custom={direction} initial={false}>
-          <motion.div
-            key={activeTab}
-            custom={direction}
-            variants={stepVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            transition={
-              prefersReducedMotion()
-                ? { duration: 0.08 }
-                : { type: 'spring', stiffness: 380, damping: 36 }
-            }
-            drag={prefersReducedMotion() ? false : 'x'}
-            dragListener={false}
-            dragControls={dragControls}
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={prefersReducedMotion() ? 0 : 0.14}
-            onDragEnd={handleDragEnd}
-            role="tabpanel"
-            aria-label={`aba ${activeTab}`}
-          >
-            {activeTab === 'info' && (
-              <CourseInfoContent course={course} onGoToHistory={() => goToTab('aulas')} />
-            )}
-            {activeTab === 'aulas' && <CourseAulasContent course={course} />}
-            {activeTab === 'repertorio' && <CourseRepertorioContent course={course} />}
-          </motion.div>
-        </AnimatePresence>
-      </motion.div>
+      <div className="px-1">
+        <SwipeableTabPanel active={activeTab} pager={pager} label={TAB_LABEL[activeTab]}>
+          {activeTab === 'info' && (
+            <CourseInfoContent course={course} onGoToHistory={() => goToTab('aulas')} />
+          )}
+          {activeTab === 'aulas' && <CourseAulasContent course={course} />}
+          {activeTab === 'repertorio' && <CourseRepertorioContent course={course} />}
+        </SwipeableTabPanel>
+      </div>
 
       {/* Novo registro — botão único que expande menu */}
       <CourseCreateMenu courseId={course.id} variant="floating" />

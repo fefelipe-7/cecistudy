@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ChevronUp, ChevronDown, Trash2, GripVertical } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
+import { CELEBRACAO, erro, frase } from '../../lib/voice';
 import {
   THESIS_ID,
   ThesisChapter,
@@ -90,7 +91,7 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
     const trimmed = title.trim();
     if (!trimmed) {
       hapticWarning();
-      showToast('o capítulo precisa de um título ♡');
+      showToast(erro('capituloSemTitulo'));
       return;
     }
     const now = new Date().toISOString();
@@ -126,7 +127,7 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
       return i === -1 ? [...prev, draft] : prev.map((c) => (c.id === draft.id ? draft : c));
     });
     hapticTap();
-    showToast('capítulo guardado ♡');
+    showToast(frase(CELEBRACAO, 'capituloGuardado'));
     onClose();
   };
 
@@ -142,7 +143,7 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
       ),
     );
     hapticTap();
-    showToast('capítulo removido');
+    showToast(frase(CELEBRACAO, 'capituloRemovido'));
     onClose();
   };
 

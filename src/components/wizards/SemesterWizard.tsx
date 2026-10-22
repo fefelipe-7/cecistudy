@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { CELEBRACAO, frase } from '../../lib/voice';
 import { Sparkles } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import { useWizardForm } from '../../lib/useWizardForm';
@@ -184,7 +185,7 @@ export const SemesterWizard: React.FC = () => {
   const handleOpenFirstTerm = () => {
     openFirstTerm(values.ordinal);
     clearDraft();
-    showToast(`${nextLabel} aberto ♡`);
+    showToast(frase(CELEBRACAO, 'semestreAberto', { label: nextLabel }));
     closeWizard();
   };
 
@@ -259,7 +260,7 @@ export const SemesterWizard: React.FC = () => {
     // SPEC-006 D8: a virada oferece desfazer por 8s. O toast é o lugar da
     // decisão — Some em silêncio quando some (2600ms) seria perfeito para
     // "guardado ♡" e revocável demais para fechar um semestre.
-    showToast(`semestre virado ♡ ${values.ordinal}º aberto`, {
+    showToast(frase(CELEBRACAO, 'semestreVirado', { ordinal: values.ordinal }), {
       action: { label: 'desfazer', onClick: undoLastRollover },
     });
     closeWizard();

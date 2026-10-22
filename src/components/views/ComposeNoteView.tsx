@@ -1,5 +1,6 @@
 ﻿import React, { useMemo, useRef, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
+import { CELEBRACAO, frase } from '../../lib/voice';
 import { useMobileApp } from '@/context/mobileApp';
 import { hapticSuccess } from '../../lib/haptics';
 import { usePersistentState } from '../../lib/usePersistentState';
@@ -148,7 +149,7 @@ export const ComposeNoteView: React.FC = () => {
       setConfirmDiscard(false);
       setDraft(emptyDraft());
       closeCompose();
-      showToast('nota salva nas notas avulsas ♡');
+      showToast(frase(CELEBRACAO, 'notaAvulsaSalva'));
     }
   };
 

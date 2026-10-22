@@ -4,9 +4,11 @@ import {
   THESIS_REMINDER_BASE,
   THESIS_REMINDER_RANGE,
   planThesisReminders,
+  type ThesisReminderKind,
   type ThesisReminderPrefs,
   type ThesisReminderState,
 } from '../../packages/domain/src/core/domain/thesis';
+import { NOTIFICACAO, frase as vozFrase } from './voice';
 
 /** id fixo do lembrete diário (para cancelar/substituir com segurança) */
 const DAILY_REMINDER_ID = 1001;
@@ -48,7 +50,9 @@ export async function scheduleDailyReminder(time: string): Promise<boolean> {
 
   const { hour, minute } = parseTime(time);
   const now = new Date();
-  const body = now.getHours() < 12 ? 'uma pausinha para revisar o dia? com leveza e foco! ♡' : 'hora de fechar o dia com uma sessão leve de estudos ♡';
+  // `SPEC-M-018 D18`: o turno é decidido **no agendamento** — é aqui que o
+  // perfil está carregado, e é aqui que o tratamento por nome pode entrar.
+  const body = vozFrase(NOTIFICACAO, 'diario', { turno: now.getHours() < 12 ? 'manha' : 'tarde' });
 
   try {
     // cancela a versão antiga (se houver) para não duplicar
@@ -57,7 +61,7 @@ export async function scheduleDailyReminder(time: string): Promise<boolean> {
       notifications: [
         {
           id: DAILY_REMINDER_ID,
-          title: 'cecistudy ♡ lembrete de estudo',
+          title: vozFrase(NOTIFICACAO, 'diarioTitulo'),
           body,
           schedule: { on: { hour, minute } },
           smallIcon: 'ic_stat_cecistudy',
@@ -111,13 +115,17 @@ export async function syncClassReminders(courses: ClassReminderInput[]): Promise
       for (const slot of c.schedule) {
         if (idx >= CLASS_REMINDER_RANGE) break;
         const [h, m] = slot.start.split(':').map(Number);
-        const label = `aula de ${c.name}`;
+        const label = vozFrase(NOTIFICACAO, 'aula', { nome: c.name });
         await LocalNotifications.schedule({
           notifications: [
             {
               id: CLASS_REMINDER_BASE + idx,
-              title: `cecistudy ♡ ${label}`,
-              body: `começa às ${slot.start}${slot.end ? `–${slot.end}` : ''}${c.room ? ` • ${c.room}` : ''}`,
+              title: `${vozFrase(NOTIFICACAO, 'marca')} ${label}`,
+              body: vozFrase(NOTIFICACAO, 'aulaHorario', {
+                inicio: slot.start,
+                fim: slot.end,
+                sala: c.room,
+              }),
               schedule: { on: { weekday: slot.day + 1 }, allowWhileIdle: true },
               smallIcon: 'ic_stat_cecistudy',
             },
@@ -173,11 +181,28 @@ export async function syncThesisReminders(
     if (!granted) return false;
     const plan = planThesisReminders(state, today, prefs);
     if (plan.length === 0) return true;
+    // `SPEC-M-018 D17/D18`: o plano é puro e devolve **fato**; a frase é da voz,
+    // montada aqui — no agendamento, que é quando o perfil está carregado.
+    const titulo = vozFrase(NOTIFICACAO, 'tccTitulo');
+    // `Record<ThesisReminderKind, string>` de propósito: se um `kind` novo
+    // nascer no domínio, o TypeScript **quebra a compilação** aqui. É mais forte
+    // que um `??` que cairia na frase errada em silêncio.
+    const CHAVE_POR_KIND: Record<ThesisReminderKind, string> = {
+      capitulo: 'tccCapitulo',
+      pendencia: 'tccPendencia',
+      reuniao: 'tccReuniao',
+      entrega: 'tccEntrega',
+      banca: 'tccBanca',
+    };
     await LocalNotifications.schedule({
       notifications: plan.map((p) => ({
         id: p.id,
-        title: p.title,
-        body: p.body,
+        title: titulo,
+        body: vozFrase(NOTIFICACAO, CHAVE_POR_KIND[p.kind], {
+          referencia: p.referencia,
+          dias: p.dias,
+          hora: p.hora,
+        }),
         schedule: { at: p.at, allowWhileIdle: true },
         smallIcon: 'ic_stat_cecistudy',
         // Q10: o toque roteia para a aba certa via `routeFromNotificationExtra`

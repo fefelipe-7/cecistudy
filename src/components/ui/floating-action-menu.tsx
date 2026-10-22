@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { IOS_EASE } from "@/lib/motion";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { usePressGesture } from "@/lib/usePressGesture";
+import { hapticTap } from "@/lib/haptics";
 
 export type FloatingActionMenuProps = {
   options: {
@@ -14,11 +16,14 @@ export type FloatingActionMenuProps = {
     Icon?: React.ReactNode;
   }[];
   className?: string;
+  /** Ação do pressionamento prolongado (ex.: abrir a busca global). */
+  onLongPress?: () => void;
 };
 
 const FloatingActionMenu = ({
   options,
   className,
+  onLongPress,
 }: FloatingActionMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -26,13 +31,27 @@ const FloatingActionMenu = ({
     setIsOpen(!isOpen);
   };
 
+  // Toque curto abre o menu de atalhos; segurar dispara a ação alternativa.
+  // A máquina de estados garante "um gesto físico, no máximo um resultado":
+  // o click que o navegador sintetiza depois do pressed longo é engolido,
+  // então a busca não abre junto com o menu.
+  const { phase, handlers } = usePressGesture({
+    onPress: toggleMenu,
+    onLongPress: () => {
+      setIsOpen(false);
+      hapticTap();
+      onLongPress?.();
+    },
+  });
+
   return (
     <div className={cn("fixed bottom-8 right-8 z-50", className)}>
       <Button
-        onClick={toggleMenu}
-        aria-label={isOpen ? 'fechar menu de atalhos' : 'abrir menu de atalhos'}
+        {...handlers}
+        data-phase={phase}
+        aria-label={isOpen ? 'fechar menu de atalhos' : 'abrir menu de atalhos (segure para buscar)'}
         aria-expanded={isOpen}
-        className="liquid-glass-fab w-11 h-11 rounded-full hover:brightness-110 active:scale-95 shadow-brand tap-interactive cursor-pointer border transition-[filter,transform] duration-200"
+        className="liquid-glass-fab w-11 h-11 rounded-full hover:brightness-110 active:scale-95 data-[phase=pressing]:scale-90 shadow-brand tap-interactive cursor-pointer border transition-[filter,transform] duration-200"
       >
         <motion.div
           animate={{ rotate: isOpen ? 45 : 0 }}

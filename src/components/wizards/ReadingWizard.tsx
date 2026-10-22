@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { BookOpen, Library } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
+import { VAZIO, CELEBRACAO, frase } from '../../lib/voice';
 import type { ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
-import { TOAST } from '../../lib/copy';
+import { useWizardForm } from '../../lib/useWizardForm';
 import {
   buildAuthorSuggestions,
   findCatalogMatches,
@@ -126,7 +127,7 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       keyConcepts: [],
       majorWorks: [],
     });
-    showToast(TOAST.authorSaved);
+    showToast(frase(CELEBRACAO, 'autorGuardado'));
   };
 
   const adoptMyReading = (readingId: string) => {
@@ -139,7 +140,7 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
     setCourseId(match.courseId ?? courseId);
     setStatus(match.status);
     hapticSuccess();
-    showToast('preenchemos com os dados da sua estante ♡');
+    showToast(frase(CELEBRACAO, 'preenchemosDaEstante'));
   };
 
   const adoptCatalogWork = (workId: string) => {
@@ -148,7 +149,7 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
     setTitle(match.title);
     setAuthor((prev) => prev || match.author);
     hapticSuccess();
-    showToast('dados do acervo preenchidos ♡');
+    showToast(frase(CELEBRACAO, 'dadosDoAcervoPreenchidos'));
   };
 
   const courseName = courses.find((c) => c.id === courseId)?.name ?? '';
@@ -307,7 +308,7 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       });
       hapticSuccess();
       closeWizard();
-      showToast('leitura atualizada ♡');
+      showToast(frase(CELEBRACAO, 'leituraAtualizada'));
       return;
     }
     handleAddReading({
@@ -325,7 +326,7 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
     });
     hapticSuccess();
     closeWizard();
-    showToast('leitura guardada na estante ♡');
+    showToast(frase(CELEBRACAO, 'leituraGuardadaNaEstante'));
   };
 
   return (

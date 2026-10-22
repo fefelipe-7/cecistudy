@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { FileText } from 'lucide-react';
+import { CELEBRACAO, frase } from '../../lib/voice';
 import { useMobileApp } from '@/context/mobileApp';
 import type { LooseNote } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
@@ -248,7 +249,7 @@ export const NoteDetailWizard: React.FC = () => {
     persistEdits();
     hapticSuccess();
     closeNoteDetail();
-    showToast('nota guardada com carinho ♡');
+    showToast(frase(CELEBRACAO, 'notaGuardada'));
   };
 
   return (

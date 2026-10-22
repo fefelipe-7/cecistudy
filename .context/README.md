@@ -16,11 +16,12 @@ Ele é carregado pelo opencode via `instructions` em `opencode.json`.
 | [`design-system.md`](./design-system.md) | Tokens (cores, fontes, radius, sombras), classes helper, padrões de UI |
 | [`components.md`](./components.md) | Inventário por arquivo: propósito, props, dependências, status usado/morto |
 | [`data-model.md`](./data-model.md) | Entidades de `types.ts`, relações, prefixos de id, chaves localStorage, seeds |
-| [`copy-and-voice.md`](./copy-and-voice.md) | Voz/tom pt-BR, lowercase, branding `cecistudy ♡`, emojis |
+| [`copy-and-voice.md`](./copy-and-voice.md) | O **porquê** da voz (persona, dois nomes do cecinho, duas frases do erro). A **frase** mora em `src/lib/voice.ts` |
 | [`backlog.md`](./backlog.md) | Pontos de melhoria e débito técnico priorizados |
 | [`specs/`](../specs/) | **Specs de refatoração** — modularização, hardcoded, mobile/desktop |
 | [`animations.md`](./animations.md) | Plano de animações/transições iOS-like, celebrações (confete), diagnóstico e progresso |
 | [`themes.md`](./themes.md) | Arquitetura do sistema de temas (tipos, applyTheme, ordem de implementação) |
+| [`docs/barra-inferior-contextual.md`](./docs/barra-inferior-contextual.md) | Barra contextual das telas auxiliares: ações por contexto, gesto de voltar/compactar, decisões |
 | [`themes/README.md`](./themes/README.md) | Catálogo dos 10 temas com ficha completa de cada um |
 | [`themes/01-rosa-claro.md`](./themes/01-rosa-claro.md) ~ [`themes/10-neon.md`](./themes/10-neon.md) | Fichas individuais: paleta, sombras, mapeamento, WCAG, comportamento especial |
 

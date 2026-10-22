@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Copy, Trash2, ExternalLink, Plus } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
+import { CELEBRACAO, frase } from '../../lib/voice';
 import { Modal } from '../ui/Modal';
 import { SegmentedControl } from '../ui/SegmentedControl';
 import { StatusChip } from '../ui/StatusChip';
@@ -209,7 +210,7 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
     const ok = await copyToClipboard(plain);
     if (ok) {
       hapticSuccess();
-      showToast('referência copiada ♡');
+      showToast(frase(CELEBRACAO, 'referenciaCopiada'));
     }
   };
 
@@ -266,7 +267,7 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
       ),
     );
     hapticTap();
-    showToast('referência guardada ♡');
+    showToast(frase(CELEBRACAO, 'referenciaGuardada'));
     onClose();
   };
 
@@ -274,7 +275,7 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
     if (!live) return;
     setThesisReferences((prev) => prev.filter((r) => r.id !== live.id));
     hapticTap();
-    showToast('referência removida');
+    showToast(frase(CELEBRACAO, 'referenciaRemovida'));
     onClose();
   };
 
@@ -292,7 +293,7 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
       },
     ]);
     hapticTap();
-    showToast('referência adicionada ♡');
+    showToast(frase(CELEBRACAO, 'referenciaAdicionada'));
     onClose();
   };
 

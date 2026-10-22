@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { CELEBRACAO, frase } from '../lib/voice';
 import type { Exam, Sticker, Task } from '../types';
 import { resolveActiveTerm, type Workspace } from '../core/domain';
 import { DEFAULT_WORKSPACE_ID } from '../data/schema';
@@ -264,7 +265,7 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
         } else if (generalAfter > generalBefore) {
           celebrate('level-up');
           hapticSuccess();
-          showToast(`nível geral ${generalAfter} alcançado: ${generalTitle(generalAfter)} 🎉`);
+          showToast(frase(CELEBRACAO, 'nivelAlcancado', { numero: generalAfter, titulo: generalTitle(generalAfter) }));
         }
       }
     }
@@ -357,7 +358,7 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
         const ok = await connectGcal();
         setGcalEnabledState(ok);
         if (!ok) {
-          showToast('configura o client id do google para usar a agenda ♡');
+          showToast(frase(CELEBRACAO, 'clientIdFaltando'));
         }
         return ok;
       }

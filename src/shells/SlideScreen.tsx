@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { motion, usePresence } from 'framer-motion';
 import { createScreenVariants, type NavIntent } from '../lib/motion';
 import { useMotionProfile } from '../components/motion/MotionProfileProvider';
@@ -71,6 +71,26 @@ export const SlideScreen: React.FC<SlideScreenProps> = ({ intent, children }) =>
   // pixels em que a usuária o via. overflow-hidden corta o resto.
   const frozenTop = docTopRef.current - getFrozenExitScrollY();
 
+  // Foco na troca de tela (SPEC-007 §E). Sem isto, quem navega por leitor de
+  // tela fica com o foco na posição antiga — frequentemente num elemento que a
+  // tela que saiu acabou de remover do DOM.
+  //
+  // Três condições, todas necessárias:
+  // - `intent.kind !== 'none'` — na primeira montagem não há navegação, e roubar
+  //   o foco na abertura do app é pior que não mover;
+  // - `preventScroll` — o container pode estar fora da viewport já que a pilha
+  //   preserva scroll por tela; focar sem isso salta a rolagem para o topo;
+  // - guarda de contenção — efeito de filho roda **antes** do do pai, então uma
+  //   tela com `autofocus` já colocou o foco no campo. Sem esta guarda, este
+  //   efeito o arrancaria de volta para o container.
+  useEffect(() => {
+    if (intent.kind === 'none') return;
+    const node = ref.current;
+    if (!node) return;
+    if (node.contains(document.activeElement)) return;
+    node.focus({ preventScroll: true });
+  }, [intent.kind]);
+
   return (
     <motion.div
       ref={ref}
@@ -79,6 +99,7 @@ export const SlideScreen: React.FC<SlideScreenProps> = ({ intent, children }) =>
       initial="initial"
       animate="animate"
       exit="exit"
+      tabIndex={isPresent ? -1 : undefined}
       onAnimationComplete={() => {
         // `usePresence` exige que o componente sinalize quando a animação de
         // saída terminou; sem isso cada tela antiga permanece no DOM invisível.
@@ -86,7 +107,10 @@ export const SlideScreen: React.FC<SlideScreenProps> = ({ intent, children }) =>
       }}
       className={
         isPresent
-          ? 'relative'
+          ? // `focus:outline-none`: o container recebe o foco para o leitor de tela
+            // recomeçar a leitura no topo da tela nova, mas não é um controle — um
+            // anel de foco desenhado em volta da tela inteira seria ruído visual.
+            'relative focus:outline-none'
           : 'fixed inset-x-0 bottom-0 z-0 overflow-hidden pointer-events-none lg:pl-60'
       }
       style={isPresent ? undefined : { top: frozenTop }}

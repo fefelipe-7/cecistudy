@@ -55,12 +55,22 @@ export type SyncProviderErrorKind =
   | 'NOT_FOUND'
   | 'UNKNOWN';
 
+/**
+ * O tipo de falha do sync — **código de máquina**, não frase.
+ *
+ * `SPEC-M-018 D17`: o pacote de sync já estava a meio caminho de `D6` — o `kind`
+ * existe e é ele que decide. O que era frase (`message`) sai daqui; a voz
+ * compõe a partir do `kind` (`ERRO.syncAuth`, …, em `src/lib/voice.ts`).
+ * `detalheTecnico` continua existindo, mas é **diagnóstico**, e a tela o mostra
+ * só na expansão (`SPEC-C-014` D5).
+ */
 export class SyncProviderError extends Error {
   constructor(
     public readonly kind: SyncProviderErrorKind,
-    message?: string,
+    /** Diagnóstico técnico — nunca a frase que a usuária lê. */
+    public readonly detalheTecnico?: string,
   ) {
-    super(message ?? kind);
+    super(detalheTecnico ?? kind);
     this.name = 'SyncProviderError';
   }
 }

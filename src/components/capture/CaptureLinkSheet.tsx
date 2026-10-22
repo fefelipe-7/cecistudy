@@ -11,7 +11,8 @@ import {
   isValidUrl,
   type CaptureKind,
 } from '../../types';
-import { CAPTURE_COPY } from './captureCopy';
+import { CAPTURE_LABELS } from './captureCopy';
+import { CELEBRACAO, ERRO, VAZIO, erro, frase } from '../../lib/voice';
 
 interface CaptureLinkSheetProps {
   open: boolean;
@@ -25,8 +26,8 @@ const inputClass =
 const labelClass = 'block text-xs font-medium text-ceci-secondary mb-1';
 
 const KIND_OPTIONS: { value: CaptureKind; label: string }[] = [
-  { value: 'artigo', label: CAPTURE_COPY.kindArticle },
-  { value: 'leitura', label: CAPTURE_COPY.kindReading },
+  { value: 'artigo', label: CAPTURE_LABELS.kindArticle },
+  { value: 'leitura', label: CAPTURE_LABELS.kindReading },
 ];
 
 const hostOf = (url: string): string => {
@@ -68,11 +69,11 @@ export const CaptureLinkSheet: React.FC<CaptureLinkSheetProps> = ({
     const outcome = captureLink({ url, kind, thesis }, readings, new Date().toISOString());
     if (outcome.outcome === 'invalida') {
       hapticWarning();
-      showToast(CAPTURE_COPY.invalid);
+      showToast(erro('linkInvalido'));
       return;
     }
     if (outcome.outcome === 'duplicada') {
-      showToast(CAPTURE_COPY.duplicate);
+      showToast(frase(CELEBRACAO, 'linkDuplicado'));
       onClose();
       return;
     }
@@ -80,7 +81,7 @@ export const CaptureLinkSheet: React.FC<CaptureLinkSheetProps> = ({
     const reference = outcome.reference;
     if (reference) setThesisReferences((prev) => [...prev, reference]);
     hapticSuccess();
-    showToast(reference ? CAPTURE_COPY.savedToThesis : CAPTURE_COPY.saved);
+    showToast(reference ? frase(CELEBRACAO, 'linkGuardadoNoTcc') : frase(CELEBRACAO, 'linkGuardado'));
     onClose();
     void minimizeAfterCapture();
   };
@@ -98,7 +99,7 @@ export const CaptureLinkSheet: React.FC<CaptureLinkSheetProps> = ({
           id="capture-link-title"
           className="font-display font-bold text-base text-ceci-primary"
         >
-          {CAPTURE_COPY.title}
+          {CAPTURE_LABELS.title}
         </h3>
 
         {valid ? (
@@ -114,7 +115,7 @@ export const CaptureLinkSheet: React.FC<CaptureLinkSheetProps> = ({
         ) : (
           <div>
             <label htmlFor="capture-link-input" className={labelClass}>
-              {CAPTURE_COPY.fieldLabel}
+              {CAPTURE_LABELS.fieldLabel}
             </label>
             <input
               id="capture-link-input"
@@ -122,42 +123,42 @@ export const CaptureLinkSheet: React.FC<CaptureLinkSheetProps> = ({
               value={text}
               onChange={(e) => setText(e.target.value)}
               className={inputClass}
-              placeholder={CAPTURE_COPY.placeholder}
+              placeholder={CAPTURE_LABELS.placeholder}
               autoComplete="off"
               autoCapitalize="none"
             />
             {text.trim().length > 0 && (
               <p role="status" className="text-[11px] text-status-warning-strong mt-1">
-                {CAPTURE_COPY.invalidHint}
+                {frase(VAZIO, 'linkDica')}
               </p>
             )}
           </div>
         )}
 
         <div>
-          <label className={labelClass}>{CAPTURE_COPY.kindLabel}</label>
+          <label className={labelClass}>{CAPTURE_LABELS.kindLabel}</label>
           <SegmentedControl<CaptureKind>
             variant="rose"
-            ariaLabel={CAPTURE_COPY.kindLabel}
+            ariaLabel={CAPTURE_LABELS.kindLabel}
             className="w-full [&>button]:flex-1"
             value={kind}
             onChange={setKind}
             options={KIND_OPTIONS}
           />
-          <p className="text-[10px] text-ceci-tertiary mt-1">{CAPTURE_COPY.kindReadingHint}</p>
+          <p className="text-[10px] text-ceci-tertiary mt-1">livro pra ler</p>
         </div>
 
         <div>
-          <label className={labelClass}>{CAPTURE_COPY.thesisLabel}</label>
+          <label className={labelClass}>{CAPTURE_LABELS.thesisLabel}</label>
           <SegmentedControl<'sim' | 'nao'>
             variant="primary"
-            ariaLabel={CAPTURE_COPY.thesisLabel}
+            ariaLabel={CAPTURE_LABELS.thesisLabel}
             className="w-full [&>button]:flex-1"
             value={thesis ? 'sim' : 'nao'}
             onChange={(v) => setThesis(v === 'sim')}
             options={[
-              { value: 'sim', label: CAPTURE_COPY.thesisYes },
-              { value: 'nao', label: CAPTURE_COPY.thesisNo },
+              { value: 'sim', label: 'sim' },
+              { value: 'nao', label: 'não' },
             ]}
           />
         </div>
@@ -169,7 +170,7 @@ export const CaptureLinkSheet: React.FC<CaptureLinkSheetProps> = ({
           aria-label="guardar link"
           className="w-full flex items-center justify-center gap-2 min-h-[44px] px-4 rounded-full bg-ceci-brand text-ceci-on-brand text-xs font-bold transition-transform active:scale-[0.98] disabled:opacity-40 disabled:active:scale-100 cursor-pointer disabled:cursor-not-allowed"
         >
-          {CAPTURE_COPY.save}
+          guardar ♡
         </button>
       </div>
     </Modal>

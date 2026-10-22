@@ -3,6 +3,7 @@ import React from 'react';
 import type { ReactNode } from 'react';
 import { Picker } from '../../ui/Picker';
 import { FieldLabel, TextArea, TextInput } from '../wizardFields';
+import { VAZIO, frase } from '../../../lib/voice';
 
 interface FlashcardFormProps {
   question: string;
@@ -48,7 +49,7 @@ const FlashcardForm: React.FC<FlashcardFormProps> = ({
       onChange={(v) => onConceptIdChange(v)}
       options={conceptOptions}
       placeholder="sem conceito"
-      emptyMessage="ainda não há conceitos no cantinho."
+      emptyMessage={frase(VAZIO, 'semConceitosNoCantinho')}
     />
   </div>
 );

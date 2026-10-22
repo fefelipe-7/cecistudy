@@ -48,6 +48,14 @@ import {
   stackAfterNewQuizFromResult,
 } from '../lib/quizStack';
 import { buildHeaderConfig } from '../lib/headerConfig';
+import {
+  buildContextBarConfig,
+  type ContextBarConfig,
+  type TccSheet,
+} from '../lib/contextBarConfig';
+import { readFromClipboard } from '../lib/utils';
+import { deriveCases, nextSessionNumber } from '../lib/internshipCases';
+import { todayKeyLocal } from '../lib/dateBR';
 import { isCardDue } from '../lib/fsrs';
 import { deleteManagedItem as applyDelete, MANAGED_KIND_REMOVED, ManagedDB } from '../lib/entityOps';
 import type { DataClientValue } from './DataClientProvider';
@@ -188,6 +196,8 @@ export interface NavigationValue {
   internshipPatientKey: string | undefined;
   openInternshipDiary: (tab?: InternshipTab, focusLogId?: string) => void;
   openInternshipCase: (patientKey: string) => void;
+  /** Abre o wizard de sessão já com o caso do paciente preenchido (SPEC-022). */
+  openInternshipCaseSession: () => void;
   closeInternshipDiary: () => void;
   closeInternshipCase: () => void;
   isTccScreenOpen: boolean;
@@ -196,6 +206,12 @@ export interface NavigationValue {
   thesisFocusId: string | undefined;
   openTccScreen: (tab?: ThesisTab, focusId?: string) => void;
   closeTccScreen: () => void;
+  /** Folha (sheet) aberta do TCC (SPEC-022 D3). */
+  tccSheet: TccSheet | null;
+  tccCaptureText: string;
+  openTccSheet: (sheet: TccSheet) => void;
+  closeTccSheet: () => void;
+  openTccCapture: () => Promise<void>;
   isStickersScreenOpen: boolean;
   openStickersScreen: () => void;
   closeStickersScreen: () => void;
@@ -285,6 +301,13 @@ export interface NavigationValue {
 
   // header dinâmico
   headerConfig: DynamicHeaderConfig | null;
+
+  /**
+   * Barra inferior contextual das telas **auxiliares** (`null` quando ela não
+   * aparece). Eveno com o header: o header descreve a tela, a barra dá a ação.
+   * A casca decide onde ela é renderizada.
+   */
+  contextBarConfig: ContextBarConfig | null;
 }
 
 export function useNavigationEngine(
@@ -405,6 +428,39 @@ export function useNavigationEngine(
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isEditCourseOpen, setIsEditCourseOpen] = useState(false);
   const [isCreatingLooseNote, setIsCreatingLooseNote] = useState(false);
+
+  /**
+   * Folha (sheet) aberta da tela do TCC (SPEC-022 D3).
+   *
+   * Mora aqui, e não na view, porque a **barra contextual** e o **conteúdo**
+   * abrem a mesma folha: são a mesma porta, e porta não tem dois donos. É
+   * estado efêmero de UI — nada disso é persistido, e `SCHEMA_VERSION` não
+   * se mexe por causa disso.
+   */
+  const [tccSheet, setTccSheet] = useState<TccSheet | null>(null);
+  /** Texto já lido do clipboard para a folha de captura (D3). */
+  const [tccCaptureText, setTccCaptureText] = useState('');
+
+  /** Abre a folha do TCC (SPEC-022 D3) — a mesma porta para a barra e o conteúdo. */
+  const openTccSheet = useCallback((sheet: TccSheet) => {
+    setTccSheet(sheet);
+  }, []);
+
+  /** Fecha a folha do TCC e limpa o texto de captura. */
+  const closeTccSheet = useCallback(() => {
+    setTccSheet(null);
+    setTccCaptureText('');
+  }, []);
+
+  /**
+   * Camada 1 da captura dentro do TCC (SPEC-012 §8.3): lê o clipboard e abre
+   * a mesma folha de captura, já com o texto.
+   */
+  const openTccCapture = useCallback(async () => {
+    const text = await readFromClipboard();
+    setTccCaptureText(text ?? '');
+    setTccSheet({ type: 'capture' });
+  }, []);
 
   // Menu universal de editar/excluir (aberto por long-press no card)
   const [managedItem, setManagedItem] = useState<ManagedItem | null>(null);
@@ -693,6 +749,13 @@ export function useNavigationEngine(
   const canGoBack = navigationStack.length > 1;
 
   const handleSystemBack = useCallback((): boolean => {
+    // A folha do TCC fecha **antes** de sair da tela (SPEC-022 D13): ela é
+    // sobreposição, não tela — e o que a usuária digitou nela não pode sumir
+    // junto com a volta.
+    if (tccSheet) {
+      closeTccSheet();
+      return true;
+    }
     if (isQuickAddOpen) {
       setIsQuickAddOpen(false);
       return true;
@@ -715,6 +778,8 @@ export function useNavigationEngine(
     }
     return false;
   }, [
+    tccSheet,
+    closeTccSheet,
     isQuickAddOpen,
     isSearchOpen,
     isEditCourseOpen,
@@ -1048,6 +1113,8 @@ export function useNavigationEngine(
 
   const openTccScreen = useCallback(
     (tab?: ThesisTab, focusId?: string) => {
+      // Trocar de aba fecha a folha: a folha pertence à aba (SPEC-022 D3).
+      closeTccSheet();
       const top = navigationStack[navigationStack.length - 1];
       // Já na tela do TCC: troca a aba (deep-link de notificação/busca) em
       // vez de empilhar de novo — mesmo comportamento do `openInternshipDiary`
@@ -1063,7 +1130,10 @@ export function useNavigationEngine(
     [navigationStack, setStack, syncHash]
   );
 
-  const closeTccScreen = useCallback(() => goBack(), [goBack]);
+  const closeTccScreen = useCallback(() => {
+    closeTccSheet();
+    goBack();
+  }, [closeTccSheet, goBack]);
 
   const openStickersScreen = useCallback(() => {
     const top = navigationStack[navigationStack.length - 1];
@@ -1373,6 +1443,32 @@ export function useNavigationEngine(
     [openWizard]
   );
 
+  /**
+   * "Nova sessão" do caso do paciente (SPEC-022 D1).
+   *
+   * Mora aqui porque quem sabe do caso (derivado dos logs) é o motor: a barra
+   * contextual e a tela chamam **esta** função, então as duas abrem a mesma
+   * coisa — com o paciente, o número da sessão, a idade e a abordagem
+   * preenchidos. A barra sozinha semeava a *chave* normalizada do paciente
+   * (`"ms"` em vez de `"M. S."`), que é o defeito que a D1 elimina.
+   */
+  const openInternshipCaseSession = useCallback(() => {
+    if (!internshipPatientKey) {
+      openInternshipWizard({ kind: 'atendimento_clinico' });
+      return;
+    }
+    const derived = deriveCases(internshipLogs, todayKeyLocal());
+    const caso = derived.cases.find((c) => c.patientKey === internshipPatientKey);
+    openInternshipWizard({
+      kind: 'atendimento_clinico',
+      patient: caso?.patientLabel,
+      sessionNumber: caso ? nextSessionNumber(caso) : undefined,
+      patientAge: caso?.latestAge,
+      approach: caso?.latestApproach,
+      date: todayKeyLocal(),
+    });
+  }, [internshipPatientKey, internshipLogs, openInternshipWizard]);
+
   const closeWizard = useCallback(() => {
     setWizardCourseId(undefined);
     // O seed morre com o wizard: se sobreviver, o próximo `openWizard` sem seed
@@ -1587,6 +1683,46 @@ export function useNavigationEngine(
     dueCardsCount,
   ]);
 
+  // Barra contextual (memoizada pela mesma razão do header: as ações são
+  // closures de `useCallback`, então a identidade só muda quando a tela muda).
+  const contextBarConfig = useMemo<ContextBarConfig | null>(() => {
+    return buildContextBarConfig({
+      currentScreen,
+      screenKey,
+      focusedCourse,
+      bookmarkedCourseIds,
+      openWizard,
+      openCompose,
+      openEditCourse,
+      toggleBookmarkCourse,
+      setIsCreatingLooseNote,
+      openSearch,
+      openStudy,
+      openInternshipWizard,
+      openTccSheet,
+      openTccCapture,
+      openInternshipCaseSession,
+      handleNavigate,
+    });
+  }, [
+    currentScreen,
+    screenKey,
+    focusedCourse,
+    bookmarkedCourseIds,
+    openCompose,
+    openEditCourse,
+    openSearch,
+    openWizard,
+    openStudy,
+    openInternshipWizard,
+    openTccSheet,
+    openTccCapture,
+    openInternshipCaseSession,
+    handleNavigate,
+    setIsCreatingLooseNote,
+    toggleBookmarkCourse,
+  ]);
+
   return useMemo(
     () => ({
       activeTab,
@@ -1688,6 +1824,11 @@ export function useNavigationEngine(
     thesisFocusId,
     openTccScreen,
     closeTccScreen,
+    tccSheet,
+    tccCaptureText,
+    openTccSheet,
+    closeTccSheet,
+    openTccCapture,
     isStickersScreenOpen,
     openStickersScreen,
     closeStickersScreen,
@@ -1727,6 +1868,7 @@ export function useNavigationEngine(
     wizardSeed,
     openWizard,
     openInternshipWizard,
+    openInternshipCaseSession,
     openTaskExamWizard,
     closeWizard,
     managedItem,
@@ -1753,6 +1895,7 @@ export function useNavigationEngine(
     currentQuizResultTotalCount,
     currentQuizResultPool,
     headerConfig,
+    contextBarConfig,
     }),
     [
       activeTab, canGoBack, closeAllNoteScreens, closeAllQuizScreens, closeApproach,
@@ -1761,6 +1904,7 @@ export function useNavigationEngine(
       closeManageItem, closeNoteDetail, closeNoteTransform, closeNotesScreen, closeQuickAdd,
       closeQuizCategory, closeQuizDetail, closeQuizLoading, closeQuizPlay, closeQuizResult,
       closeRepertorioItem, closeSearch, closeStickersScreen, closeStreak, closeStudy, closeSyncScreen, closeTccScreen,
+      closeTccSheet,
       closeTemple, closeTempleSection, closeWizard, composeCourseId, currentQuizGroup,
       currentQuizLoadingConfig, currentQuizPlayState, currentQuizResultAnswers,
       currentQuizResultConfig, currentQuizResultCorrectCount, currentQuizResultPool,
@@ -1771,6 +1915,7 @@ export function useNavigationEngine(
       focusedFamily, focusedFamilyId, focusedNote, focusedNoteId, focusedRepertorioItemCourseId,
       focusedRepertorioItemId, focusedStudyScreen,
       focusedTempleSection, focusedTermId, handleNavigate, handleSystemBack, headerConfig,
+      contextBarConfig,
       isBottomNavVisible, isClassNoteDetailOpen, isComposeDetailsOpen, isComposeScreenOpen, isCreatingLooseNote,
       isDetailPromptOpen, isEditCourseOpen, isFamiliesScreenOpen,
       isInternshipDiaryOpen,
@@ -1783,14 +1928,14 @@ export function useNavigationEngine(
       isSyncScreenOpen, isTccScreenOpen, thesisTab, thesisFocusId, isTempleScreenOpen, isTermHistoryOpen, isWizardOpen, managedItem,
       navDirection, navigationStack, newQuizFromResult, openApproach, openComparison, openCompose,
       openComposeDetails, openCourseDetail, openDetailPrompt, openEditCourse,
-      openClassNoteDetail, openFamilies, openFamily, openInternshipDiary, openManageItem, openNoteDetail,
+      openClassNoteDetail, openFamilies, openFamily, openInternshipCaseSession, openInternshipDiary, openManageItem, openNoteDetail,
       openNoteTransform, openNotesScreen, openQuickAdd, openQuizCategory, openQuizGroupDetail,
       openQuizLoading, openQuizPlay, openQuizResult, openRepertorioItem, openSearch, openStickersScreen, openStreak,
-      openStudy, openSyncScreen, openTaskExamWizard, openTccScreen, openTemple, openTempleSection,
+      openStudy, openSyncScreen, openTaskExamWizard, openTccCapture, openTccScreen, openTccSheet, openTemple, openTempleSection,
       openTermHistory,
       openWizard, overlayKey, screenKey, setActiveTab, setFocusedCourseId, setIsCreatingLooseNote,
       setStack, setSubTabBiblioteca, setSubTabFaculdade, setTargetId, slideKey,
-      subTabBiblioteca, subTabFaculdade, syncHash, targetId, updateQuizPlayState,
+      subTabBiblioteca, subTabFaculdade, syncHash, targetId, tccCaptureText, tccSheet, updateQuizPlayState,
       wizardCourseId, wizardEdit, wizardNoteId,
     ]
   );

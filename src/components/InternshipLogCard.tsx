@@ -20,6 +20,7 @@ import {
 import { CompleteLogModal } from './internship/CompleteLogModal';
 import { LogTypeBadge, typeMeta } from './internship/LogTypeBadge';
 import { StatusChip } from './internship/StatusChip';
+import { VAZIO, frase } from '../lib/voice';
 import {
   FieldBlock,
   FieldList,
@@ -201,7 +202,12 @@ export const InternshipLogCard: React.FC<InternshipLogCardProps> = ({
       {/* Chips recolhidos */}
       <div className="flex flex-wrap items-center gap-1.5">
         {!scheduled && preenchimento && (
-          <StatusChip tone={preenchimento.tone} label={preenchimento.label} />
+          <StatusChip
+            tone={preenchimento.tone}
+            label={frase(VAZIO, 'preenchimento', {
+              faltando: preenchimento.faltando.map((c) => CAMPO_REFERENCIA_LABEL[c]),
+            })}
+          />
         )}
         {!scheduled && type === 'atendimento_clinico' &&
           (status.supervised ? (

@@ -1,6 +1,7 @@
 ﻿import React, { useCallback, useEffect, useState } from 'react';
 import { CheckCircle2, Timer } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
+import { CELEBRACAO, frase } from '../../lib/voice';
 import { celebrate } from '../../lib/celebrate';
 import { hapticSuccess } from '../../lib/haptics';
 import { focusController } from '../../lib/focusController';
@@ -94,7 +95,7 @@ export const StudyFocusScreen: React.FC = () => {
       durationMinutes: timer.presetMin,
     });
     hapticSuccess();
-    showToast('sessão de estudo registrada com carinho ♡');
+    showToast(frase(CELEBRACAO, 'sessaoDeEstudoRegistrada'));
     clearSessionFields();
     setShowSaveSession(false);
     timer.reset();
@@ -110,7 +111,7 @@ export const StudyFocusScreen: React.FC = () => {
       durationMinutes: Math.max(1, timer.partial),
     });
     hapticSuccess();
-    showToast(`${Math.max(1, timer.partial)} min registrados com carinho ♡`);
+    showToast(frase(CELEBRACAO, 'sessaoDeFocoGuardada', { minutos: Math.max(1, timer.partial) }));
     clearSessionFields();
     setPendingReset(false);
     setPendingExit(false);

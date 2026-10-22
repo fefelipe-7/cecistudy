@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mascote } from '../ui/Mascote';
+import { erro } from '../../lib/voice';
 import { useMobileApp } from '@/context/mobileApp';
 import { buildQuizPool } from '../../lib/quizLogic';
 import type { QuizConfig, StudyQuestion } from '../../types';
@@ -26,7 +27,7 @@ export const QuizLoadingScreen: React.FC<QuizLoadingScreenProps> = ({ config, on
         const pool = buildQuizPool(bank, config);
         if (pool.length === 0) {
           if (!cancelled) {
-            showToast('nenhuma questão com esses filtros ♡');
+            showToast(erro('quizSemQuestoes'));
             onCancel();
           }
           return;
@@ -36,7 +37,7 @@ export const QuizLoadingScreen: React.FC<QuizLoadingScreenProps> = ({ config, on
         if (!cancelled) onReady(pool, config);
       } catch {
         if (!cancelled) {
-          showToast('não consegui preparar o quiz, tenta de novo ♡');
+          showToast(erro('quizNaoMontou'));
           onCancel();
         }
       }

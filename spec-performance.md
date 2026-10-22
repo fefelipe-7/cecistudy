@@ -43,24 +43,34 @@ Nenhuma tela poderá assumir que o catálogo, banco de questões ou chunks secun
 
 ## 3. Baseline conhecido
 
-A auditoria identificou os seguintes pontos de partida:
+> **Re-medido em 2026-10-10** (varredura de código + gates; detalhe e comandos em
+> [`tasks/todo-performance.md`](./tasks/todo-performance.md)). Dois números da
+> versão 1.0 (08/10) **não se reproduzem** no ambiente atual e foram corrigidos:
+> erros TypeScript (eram 96 em 21 arquivos — o `tsc --noEmit` está verde) e
+> testes (eram 115 — hoje são 1455 em 122 arquivos, todos passando). O baseline
+> original veio de um ZIP com `node_modules` corrompido; no checkout atual o
+> `npm ci` resolve as dependências opcionais do Rollup normalmente.
 
-| Item | Situação observada |
+| Item | Situação observada (2026-10-10) |
 |---|---:|
-| Erros TypeScript | 96 em 21 arquivos |
+| Erros TypeScript | **0** (`tsc --noEmit` verde, 1069 arquivos) |
 | Boundary check | Passou |
-| JS/CSS no `dist` analisado | ~18,07 MiB |
+| Testes | 1455 passando, 122 arquivos (`npm run test`) |
+| JS no `dist` (build web) | ~18,0 MiB (120 arquivos) |
+| Entrada crítica (4 chunks do `index.html`) | ~799 KB raw / ~253 KB gzip |
 | Banco `cecistudy_catalog.db` | ~20,9 MB |
-| Maior chunk observado | banco de questões, ~4,4 MB |
-| Chunk Three.js/3D | ~2,5 MB |
+| Maior chunk observado | banco de questões, ~4,4 MB (importado no boot frio) |
+| Chunk 3D | ~2,44 MiB (`ThreeDPaper` — engine three.js inlined 4× em HTMLs) |
+| Fontes | 103 arquivos, ~1,37 MiB (woff+woff2 duplicados) |
 | Splash mínima | 1.600 ms |
 | Teto da splash | 7.000 ms |
 | Debounce de persistência | 200 ms |
-| Intervalo de sync em background | 30 minutos |
+| Intervalo de sync em background | 30 minutos (+ sync ~1,5 s após cada edição) |
 | Loaders de telas pré-carregados | 27 |
-| Testes encontrados | 115 |
 
-Esses valores são baseline de auditoria. Antes de comparar resultados, o time deverá gerar um baseline reproduzível com build limpo, pois o ZIP original tinha permissões de execução incorretas em `node_modules/.bin` e dependências opcionais ausentes do Rollup.
+Antes de comparar resultados de otimização, gerar baseline reproduzível com build
+limpo (`npm run build:web` após remover `dist`) e registrar em
+`artifacts/bundle-report.json`.
 
 ---
 
@@ -850,11 +860,12 @@ Scripts recomendados no `package.json`:
   "build:web": "vite build",
   "build:mobile": "npm run build --workspace=apps/mobile",
   "check:boundaries": "node .github/scripts/check-boundaries.mjs",
-  "verify": "npm run typecheck && npm run test:ci && npm run check:boundaries && npm run build:web && npm run build:mobile"
+  "verify:contract": "node contracts/verify-schema.mjs",
+  "verify": "npm run typecheck && npm run test:ci && npm run check:boundaries && npm run verify:contract && npm run build:web && npm run build:mobile"
 }
 ```
 
-O nome final dos scripts pode seguir a convenção existente, mas o CI deverá possuir uma única entrada equivalente a `verify`.
+O nome final dos scripts pode seguir a convenção existente, mas o CI deverá possuir uma única entrada equivalente a `verify`. O `verify:contract` é o gate de conformidade do contrato de dados do app (`ADR-009`: cada app prova que a base dele está conforme o contrato dele) — movido para `contracts/` em F0 0.1.
 
 ---
 

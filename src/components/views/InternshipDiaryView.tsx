@@ -7,7 +7,9 @@ import { HeroCard } from '../ui/HeroCard';
 import { Mascote } from '../ui/Mascote';
 import { EmptyState } from '../ui/EmptyState';
 import { DitherGrowthChart } from '../ui/dither-growth';
-import { UnderlineTabBar } from '../ui/UnderlineTabBar';
+import { UnderlineTabBar, type UnderlineTab } from '../ui/UnderlineTabBar';
+import { SwipeableTabPanel, useTabPager } from '../ui/SwipeableTabPanel';
+import { VAZIO, erro, frase } from '../../lib/voice';
 import { PillGroup } from '../ui/PillGroup';
 import { ProgressBar } from '../ui/ProgressBar';
 import { StatusChip } from '../internship/StatusChip';
@@ -26,6 +28,30 @@ import type { InternshipLog } from '../../types';
 import type { LogGroupId } from '../../types';
 
 export type InternshipTab = 'diario' | 'pacientes' | 'supervisao';
+
+/** Ordem das abas do diário — define para onde o arrasto avança (SPEC-015). */
+const DIARIO_TAB_ORDER: readonly InternshipTab[] = ['diario', 'pacientes', 'supervisao'];
+
+/** Nome legível da aba — o `aria-label` do painel mostra isto, não o id cru. */
+const DIARIO_TAB_LABEL: Record<InternshipTab, string> = {
+  diario: 'diário',
+  pacientes: 'pacientes',
+  supervisao: 'supervisão',
+};
+
+/** As abas do diário com o badge de pendência que cada uma mostra. */
+const DIARIO_TABS = (
+  pend: { noReflection: string[]; noSupervision: string[] }
+): UnderlineTab<InternshipTab>[] => [
+  { id: 'diario', label: 'diário', icon: <HeartHandshake className="w-4 h-4" />, badge: pend.noReflection.length },
+  { id: 'pacientes', label: 'pacientes', icon: <Users className="w-4 h-4" /> },
+  {
+    id: 'supervisao',
+    label: 'supervisão',
+    icon: <Compass className="w-4 h-4" />,
+    badge: pend.noSupervision.length,
+  },
+];
 
 type Filter = 'todos' | 'campo' | 'clinico' | 'supervisao';
 type PendingFilter = 'reflexao' | 'supervisao' | null;
@@ -66,6 +92,18 @@ export const InternshipDiaryView: React.FC = () => {
   const [pending, setPending] = useState<PendingFilter>(null);
   const [extraWeeks, setExtraWeeks] = useState(0);
 
+  // Arraste horizontal troca de aba (SPEC-015). Trocar de aba limpa o filtro de
+  // pendência — vale para o toque na tab bar e para o arrasto, pelos dois
+  // caminhos passando pelo `onChange` do pager.
+  const pager = useTabPager<InternshipTab>({
+    tabIds: DIARIO_TAB_ORDER,
+    active: tab,
+    onChange: (next) => {
+      setTab(next);
+      setPending(null);
+    },
+  });
+
   const today = todayKeyLocal();
 
   // A única derivação da tela. Tudo abaixo lê daqui.
@@ -104,12 +142,6 @@ export const InternshipDiaryView: React.FC = () => {
     setPending((p) => (p === which ? null : which));
   };
 
-  const openWizardForTab = () => {
-    if (tab === 'pacientes') openInternshipWizard({ kind: 'atendimento_clinico' });
-    else if (tab === 'supervisao') openInternshipWizard({ kind: 'supervisao' });
-    else openWizard('internship');
-  };
-
   // Hero único, acima da barra de abas (SPEC-010 D1/D3): o conteúdo muda com a
   // aba, a identidade não — trocar de aba não pula o topo da tela.
   const encontros = internshipLogs.filter(
@@ -129,7 +161,6 @@ export const InternshipDiaryView: React.FC = () => {
               ? `${pluralPt(stats.clinicalDoneCount, 'sessão clínica feita', 'sessões clínicas feitas')} · ${pluralPt(orphans.length, 'sem iniciais', 'sem iniciais')}`
               : pluralPt(stats.clinicalDoneCount, 'sessão clínica feita', 'sessões clínicas feitas'),
           expression: 'connection-link' as const,
-          actionLabel: 'anotar atendimento',
         }
       : tab === 'supervisao'
         ? {
@@ -138,48 +169,36 @@ export const InternshipDiaryView: React.FC = () => {
               ? `${pluralPt(pend.noSupervision.length, 'sessão esperando supervisão', 'sessões esperando supervisão')}`
               : pendenciasSummary,
             expression: 'supervision-reflect' as const,
-            actionLabel: 'anotar supervisão',
           }
         : {
             title: `${formatHours(stats.doneHours)} h de campo`,
             summary: `${goal ? `meta ${formatHours(goal)} h` : 'sem meta ainda'} · ${pendenciasSummary}`,
             expression: 'field-prepare' as const,
-            actionLabel: 'anotar',
           };
 
   return (
     <div className="space-y-4 pb-1">
-      {/* Hero (SPEC-010 D1) — acima da barra de abas */}
+      {/* Hero (SPEC-010 D1) — acima da barra de abas.
+          A primária **não** é do herói desde 2026-10-19 (SPEC-022 D2-ii): o
+          herói do Estágio cedeu a ação para a barra contextual, que a
+          executa com a mesma semente (`openInternshipWizard` com o `kind` da
+          aba). O herói fica com identidade e resumo. */}
       <HeroCard
         eyebrow="estágio"
         title={hero.title}
         summary={hero.summary}
         expression={hero.expression}
-        action={{
-          label: hero.actionLabel,
-          onClick: openWizardForTab,
-          ariaLabel: `${hero.actionLabel} no estágio`,
-        }}
       />
 
       {/* Abas com badge de pendência */}
       <UnderlineTabBar<InternshipTab>
         active={tab}
-        onChange={(t) => {
-          setTab(t);
-          setPending(null);
-        }}
-        tabs={[
-          { id: 'diario', label: 'diário', icon: <HeartHandshake className="w-4 h-4" />, badge: pend.noReflection.length },
-          { id: 'pacientes', label: 'pacientes', icon: <Users className="w-4 h-4" /> },
-          {
-            id: 'supervisao',
-            label: 'supervisão',
-            icon: <Compass className="w-4 h-4" />,
-            badge: pend.noSupervision.length,
-          },
-        ]}
+        onChange={(t) => pager.goTo(t)}
+        tabs={DIARIO_TABS(pend)}
       />
+
+      {/* Conteúdo das abas: o painel arrasta junto com o dedo (SPEC-015) */}
+      <SwipeableTabPanel active={tab} pager={pager} label={DIARIO_TAB_LABEL[tab]}>
 
       {tab === 'supervisao' ? (
         <SupervisionView today={today} cases={cases} pendingIds={pend.noSupervision} />
@@ -193,7 +212,7 @@ export const InternshipDiaryView: React.FC = () => {
           )}
           {cases.length === 0 && orphans.length === 0 ? (
             <EmptyState
-              description="nenhum paciente por aqui ainda — anote um atendimento clínico e ele aparece aqui ♡"
+              description={frase(VAZIO, 'semPaciente')}
               actionLabel="anotar atendimento"
               onAction={() => openInternshipWizard({ kind: 'atendimento_clinico' })}
             />
@@ -338,13 +357,13 @@ export const InternshipDiaryView: React.FC = () => {
           {/* f) Lista agrupada por semana */}
           {internshipLogs.length === 0 ? (
             <EmptyState
-              description="ainda não tem registro de estágio — que tal anotar o primeiro? ♡"
+              description={frase(VAZIO, 'semRegistroEstagio')}
               actionLabel="anotar"
               onAction={() => openWizard('internship')}
             />
           ) : filtered.length === 0 ? (
             <EmptyState
-              description="nada por aqui com esse filtro"
+              description={frase(VAZIO, 'semResultadoFiltro')}
               actionLabel="limpar filtros"
               onAction={() => { setFilter('todos'); setPending(null); }}
             />
@@ -387,6 +406,7 @@ export const InternshipDiaryView: React.FC = () => {
           )}
         </>
       )}
+      </SwipeableTabPanel>
     </div>
   );
 };
@@ -410,7 +430,7 @@ const GoalCta: React.FC<{ onSet: (hours: number) => void }> = ({ onSet }) => {
   const submit = () => {
     const n = Number(value.replace(',', '.'));
     if (!Number.isInteger(n) || n < 1 || n > 5000) {
-      setError('coloque um número entre 1 e 5000');
+      setError(erro('metaDeHoras'));
       return;
     }
     onSet(n);

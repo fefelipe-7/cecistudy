@@ -26,10 +26,10 @@ beforeEach(() => {
 });
 
 describe('THEMES — inventário', () => {
-  it('tem exatamente 6 temas: 3 claros + 3 escuros', () => {
+  it('tem exatamente 7 temas: 4 claros + 3 escuros', () => {
     const all = Object.values(THEMES);
-    expect(all).toHaveLength(6);
-    expect(all.filter((t) => !t.isDark)).toHaveLength(3);
+    expect(all).toHaveLength(7);
+    expect(all.filter((t) => !t.isDark)).toHaveLength(4);
     expect(all.filter((t) => t.isDark)).toHaveLength(3);
   });
 
@@ -38,6 +38,23 @@ describe('THEMES — inventário', () => {
     expect(new Set(ids).size).toBe(ids.length);
     expect(THEME_ORDER).toEqual(ids);
     expect(THEME_ORDER.filter((id) => THEMES[id].isDark).length).toBe(3);
+  });
+
+  it('o campinho existe, é claro e é verde (a identidade do tema novo)', () => {
+    const t = THEMES['campinho'];
+    expect(t).toBeDefined();
+    expect(t.isDark).toBe(false);
+    expect(THEME_ORDER).toContain('campinho');
+    // O canvas é o verde do campo: o canal verde domina os outros dois.
+    const [r, g, b] = [1, 3, 5].map((i) => parseInt(t.tokens['canvas'].slice(i, i + 2), 16));
+    expect(g).toBeGreaterThan(r);
+    expect(g).toBeGreaterThan(b);
+  });
+
+  it('o céu do hero é invariante ao tema (não está em TOKEN_KEYS)', () => {
+    // O céu é da arte, não do tema: o vídeo é o mesmo em todos os temas.
+    // Se `hero-ceu` entrar em TOKEN_KEYS, o céu passa a depender do tema.
+    expect(TOKEN_KEYS).not.toContain('hero-ceu');
   });
 
   it('cada tema tem todas as chaves do contrato de tokens', () => {
@@ -160,7 +177,7 @@ describe('contraste WCAG (E.1)', () => {
     expect(contrastRatio('#000000', '#000000')).toBe(1);
   });
 
-  it('os 6 temas passam os pares WCAG AA principais (≥ 4.5:1)', () => {
+  it('os 7 temas passam os pares WCAG AA principais (≥ 4.5:1)', () => {
     for (const theme of Object.values(THEMES)) {
       const fail = firstWcagFail(theme);
       expect(fail, `${theme.id}: ${fail?.label} = ${fail?.ratio?.toFixed(2)}`).toBeNull();
@@ -176,7 +193,7 @@ describe('contraste WCAG (E.1)', () => {
     expect(labels).toHaveLength(12);
   });
 
-  it('os tokens de status existem nos 6 temas', () => {
+  it('os tokens de status existem nos 7 temas', () => {
     for (const theme of Object.values(THEMES)) {
       for (const key of [
         'status-success',

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Clock } from 'lucide-react';
+import { VAZIO, frase } from '../../lib/voice';
 import { useMobileApp } from '@/context/mobileApp';
 import { InternshipLogCard } from '../InternshipLogCard';
 import { EmptyState } from '../ui/EmptyState';
@@ -98,7 +99,7 @@ export const SupervisionView: React.FC<{
 
       {logs.length === 0 ? (
         <EmptyState
-          description="ainda não tem supervisão anotada — que tal registrar a próxima? ♡"
+          description={frase(VAZIO, 'semSupervisao')}
           actionLabel="anotar supervisão"
           onAction={() => abrirWizard()}
         />

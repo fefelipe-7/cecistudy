@@ -10,6 +10,7 @@ import { StatusChip } from '../internship/StatusChip';
 import { todayKeyLocal, formatDateShortBR } from '../../lib/dateBR';
 import { formatHours } from '../../lib/formatHours';
 import { pluralPt } from '../../lib/pluralPt';
+import { VAZIO, frase } from '../../lib/voice';
 import { deriveCases, normalizePatientKey, nextSessionNumber } from '../../lib/internshipCases';
 
 type FiltroCaso = 'todas' | 'sem reflexao' | 'sem supervisao';
@@ -30,6 +31,7 @@ export const InternshipCaseView: React.FC = () => {
   const {
     internshipLogs,
     openInternshipWizard,
+    openInternshipCaseSession,
     handleRenamePatient,
     handleSetPatient,
     closeInternshipCase,
@@ -48,7 +50,7 @@ export const InternshipCaseView: React.FC = () => {
   // O caso sumiu (última sessão apagada, ou iniciais corrigidas para outro caso).
   if (patientKey !== '' && !caso) {
     React.useEffect(() => {
-      showToast('esse paciente não tem mais sessões');
+      showToast(frase(VAZIO, 'pacienteSemSessoes'));
       closeInternshipCase();
     }, []);
     return null;
@@ -70,15 +72,13 @@ export const InternshipCaseView: React.FC = () => {
 
   const pendentesDoCaso = caso?.doneLogs.filter((l) => !l.reflections?.trim()).map((l) => l.id) ?? [];
 
-  const novaSessao = () =>
-    openInternshipWizard({
-      kind: 'atendimento_clinico',
-      patient: caso?.patientLabel,
-      sessionNumber: caso ? nextSessionNumber(caso) : undefined,
-      patientAge: caso?.latestAge,
-      approach: caso?.latestApproach,
-      date: today,
-    });
+  /**
+   * "Nova sessão" do caso (SPEC-022 D1/D2-ii): a **mesma** função que a
+   * barra contextual chama — quem monta a semente é o motor
+   * (`openInternshipCaseSession`), que conhece o caso derivado. A tela e a
+   * barra abrem a mesma coisa, com o paciente e o número preenchidos.
+   */
+  const novaSessao = () => openInternshipCaseSession();
 
   // Resumo do hero (SPEC-010 D3): o que a usuária precisa saber sobre a
   // pessoa numa linha — sessões, horas, última, contexto clínico e pendências.
@@ -98,18 +98,14 @@ export const InternshipCaseView: React.FC = () => {
 
   return (
     <div className="space-y-4 pb-1">
-        {/* Hero (SPEC-010 D1/D3) — ação primária aqui, secundárias embaixo */}
+        {/* Hero (SPEC-010 D1/D3) — a primária é da barra contextual desde
+            2026-10-19 (SPEC-022 D2-ii); o herói fica com identidade e resumo. */}
         <HeroCard
           accent="blue"
           eyebrow="paciente"
           title={label}
           summary={resumo.length ? resumo.join(' · ') : 'nenhuma sessão ainda ♡'}
           expression="connection-link"
-          action={{
-            label: 'nova sessão',
-            onClick: novaSessao,
-            ariaLabel: patientKey === '' ? 'nova sessão' : `nova sessão com ${label}`,
-          }}
         />
 
         {caso && (
@@ -163,16 +159,7 @@ export const InternshipCaseView: React.FC = () => {
           <EmptyState
             description={filtro === 'todas' ? 'nenhuma sessão ainda por aqui ♡' : 'nada pendente nesse filtro ♡'}
             actionLabel="nova sessão"
-            onAction={() =>
-              openInternshipWizard({
-                kind: 'atendimento_clinico',
-                patient: caso?.patientLabel,
-                sessionNumber: caso ? nextSessionNumber(caso) : undefined,
-                patientAge: caso?.latestAge,
-                approach: caso?.latestApproach,
-                date: today,
-              })
-            }
+            onAction={novaSessao}
           />
         ) : (
           <ol className="space-y-3 border-l border-ceci-border-subtle pl-4 ml-3">

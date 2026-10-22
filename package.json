@@ -5,7 +5,8 @@
   "type": "module",
   "workspaces": [
     "packages/*",
-    "apps/*"
+    "apps/*",
+    "!apps/rn-expo"
   ],
   "engines": {
     "node": ">=22"
@@ -16,9 +17,21 @@
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "assets": "node scripts/generate-assets.mjs",
+    "assets:hero": "node scripts/generate-hero-video.mjs",
     "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:ci": "vitest run --reporter=dot",
     "test:watch": "vitest",
+    "check:boundaries": "node .github/scripts/check-boundaries.mjs",
+    "check:voz": "node .github/scripts/check-boundaries.mjs --voz",
+    "test:voz": "node .github/scripts/voz-fixture.mjs",
+    "voz:baseline": "node .github/scripts/gerar-voice-allowlist.mjs --fase \"rebaixar: descreva o módulo migrado\"",
+    "verify:contract": "node contracts/verify-schema.mjs",
+    "bundle:report": "node scripts/bundle-report.mjs",
+    "build:web": "vite build",
+    "build:mobile": "npm run build --workspace=apps/mobile",
+    "verify": "npm run typecheck && npm run test:ci && npm run check:boundaries && npm run test:voz && npm run verify:contract && npm run build:web && npm run bundle:report && npm run build:mobile",
     "content:build": "tsx content/build-catalog.mjs",
     "content:check": "tsx content/check-content.mjs",
     "content:report": "tsx content/report-content.mjs",

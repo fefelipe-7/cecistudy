@@ -3,6 +3,7 @@ import React from 'react';
 import type { PsychologyApproach } from '../../../types';
 import { Picker } from '../../ui/Picker';
 import { TagField } from '../../ui/TagField';
+import { VAZIO, frase } from '../../../lib/voice';
 import { FieldLabel, TextArea, TextInput } from '../wizardFields';
 
 interface AuthorFormProps {
@@ -54,19 +55,19 @@ const AuthorForm: React.FC<AuthorFormProps> = ({
       onChange={onApproachIdChange}
       options={approaches.map((x) => ({ value: x.id, label: x.shortName || x.name }))}
       placeholder="sem abordagem"
-      emptyMessage="ainda não há abordagens registradas."
+      emptyMessage={frase(VAZIO, 'semAbordagensRegistradas')}
     />
     <TagField
       tags={keyConcepts}
       onChange={onKeyConceptsChange}
       placeholder="conceitos-chave"
-      emptyMessage="não precisa preencher tudo, pode deixar vazio ♡"
+      emptyMessage={frase(VAZIO, 'campoOpcional')}
     />
     <TagField
       tags={majorWorks}
       onChange={onMajorWorksChange}
       placeholder="obras principais"
-      emptyMessage="não precisa preencher tudo, pode deixar vazio ♡"
+      emptyMessage={frase(VAZIO, 'campoOpcional')}
     />
   </div>
 );

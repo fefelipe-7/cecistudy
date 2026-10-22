@@ -8,6 +8,7 @@ import { useDataClientCourses } from '@/context/DataClientProvider';
 import { useCoursesActions, useNavValue } from '@/context/shellNavContexts';
 import { SectionTitle } from '../../ui/SectionTitle';
 import { TaskRow, ExamRow } from './rows';
+import { TaskSheet } from './TaskSheet';
 
 export type AttentionItem = { kind: 'task' | 'exam'; id: string };
 
@@ -20,23 +21,7 @@ const AttentionSection: React.FC<AttentionSectionProps> = ({ items, remainingCou
   const { tasks } = useDataClientCourses();
   const { handleAddTask } = useCoursesActions();
   const { handleNavigate } = useNavValue();
-  const [newTaskTitle, setNewTaskTitle] = useState('');
-
-  const handleAddNewTask = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newTaskTitle.trim()) return;
-
-    const newTask: Task = {
-      id: 'task_' + Date.now(),
-      title: newTaskTitle.trim(),
-      completed: false,
-      priority: 'media',
-      category: 'outro'
-    };
-
-    handleAddTask(newTask);
-    setNewTaskTitle('');
-  };
+  const [openTaskSheet, setOpenTaskSheet] = useState(false);
 
   return (
     <section className="space-y-3 px-0.5">
@@ -85,25 +70,18 @@ const AttentionSection: React.FC<AttentionSectionProps> = ({ items, remainingCou
         </div>
       )}
 
-      {/* Captura rápida de tarefa */}
-      <form onSubmit={handleAddNewTask} className="flex gap-2 pt-1">
-        <input
-          type="text"
-          value={newTaskTitle}
-          onChange={(e) => setNewTaskTitle(e.target.value)}
-          placeholder="adicionar uma tarefa para hoje..."
-          className="flex-1 text-sm px-4 py-3 rounded-full border border-ceci-border-default bg-surface-default focus:outline-none focus:border-ceci-brand text-ceci-primary placeholder-ceci-faded shadow-2xs"
-        />
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          type="submit"
-          aria-label="adicionar tarefa"
-          className="bg-ceci-brand hover:bg-ceci-brand text-ceci-on-brand px-4 py-3 rounded-full text-sm font-semibold tap-interactive flex items-center gap-1 shrink-0 cursor-pointer"
-        >
-          <Plus className="w-4 h-4" />
-          <span>adicionar</span>
-        </motion.button>
-      </form>
+      {/* Captura de tarefa com steps — abre um sheet de fundo para preencher tudo */}
+      <motion.button
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setOpenTaskSheet(true)}
+        aria-label="adicionar tarefa"
+        className="flex w-full items-center gap-2 bg-ceci-brand hover:bg-ceci-brand text-ceci-on-brand px-4 py-3 rounded-full text-sm font-semibold tap-interactive cursor-pointer"
+      >
+        <Plus className="w-4 h-4" />
+        <span>adicionar tarefa</span>
+      </motion.button>
+
+      <TaskSheet open={openTaskSheet} onClose={() => setOpenTaskSheet(false)} />
     </section>
   );
 };

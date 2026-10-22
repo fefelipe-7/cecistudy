@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { InternshipLogCard } from '../InternshipLogCard';
+import { VAZIO, frase } from '../../lib/voice';
 import type { InternshipLog } from '../../types';
 
 // SPEC-011 §8.1/D1: o botão contextual do card — aparece só com pendência,
@@ -145,31 +146,38 @@ describe('InternshipLogCard — botão de completar (SPEC-011 §8.1, D1)', () =>
   });
 });
 
-describe('InternshipLogCard — chip de preenchimento (SPEC-011 D13)', () => {
+describe('InternshipLogCard — chip de preenchimento (SPEC-011 D13 · SPEC-M-018 D11)', () => {
+  // `D11`: o teste consulta a **chave**, não a palavra. O conteúdo de
+  // "tudo preenchido" é garantido uma vez, em `voice.test.ts`; o que se garante
+  // aqui é que o card pede a chave certa para o contexto certo — e que a frase
+  // renderizada é a que a voz devolve para aquele contexto.
+  const textoDe = (params: Record<string, unknown>) =>
+    frase(VAZIO, 'preenchimento', params as Parameters<typeof frase>[2]);
   it('registro vazio mostra "ainda falta preencher cinco" sem clique', () => {
     renderCard({ log: clinicoVazio });
-    expect(screen.getByText('ainda falta preencher cinco')).toBeInTheDocument();
+    expect(screen.getByText(textoDe({ faltando: ['reflexoes', 'tema', 'abordagem', 'intervencoes', 'impressoes'] }))).toBeInTheDocument();
   });
 
-  it('registro completo mostra "tudo preenchido"', () => {
+  it('registro completo mostra o chip de sucesso da voz', () => {
     renderCard({ log: clinicoCompleto });
-    expect(screen.getByText('tudo preenchido')).toBeInTheDocument();
+    expect(screen.getByText(textoDe({ faltando: [] }))).toBeInTheDocument();
   });
 
-  it('só falta um campo mostra "falta reflexões"', () => {
+  it('só falta um campo mostra o campo nomeado pela voz', () => {
     renderCard({
       log: {
         ...clinicoCompleto,
         reflections: '',
       },
     });
-    expect(screen.getByText('falta reflexões')).toBeInTheDocument();
+    expect(screen.getByText(textoDe({ faltando: ['reflexões'] }))).toBeInTheDocument();
   });
 
   it('supervisão nunca mostra chip de preenchimento (I4)', () => {
     renderCard({ log: supervisao, allLogs: [supervisao] });
+    expect(screen.queryByText(new RegExp(textoDe({ faltando: [] })))).not.toBeInTheDocument();
     expect(
-      screen.queryByText(/^tudo preenchido$|^falta|^ainda falta/)
+      screen.queryByText(new RegExp(`^${textoDe({ faltando: ['tema'] }).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`)),
     ).not.toBeInTheDocument();
   });
 });

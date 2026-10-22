@@ -4,6 +4,7 @@ import type { PsychologyApproach, PsychologyAuthor, Course } from '../../../type
 import { Picker } from '../../ui/Picker';
 import { PillGroupMulti } from '../../ui/PillGroupMulti';
 import { TagField } from '../../ui/TagField';
+import { VAZIO, frase } from '../../../lib/voice';
 import { FieldLabel, TextArea, TextInput } from '../wizardFields';
 
 interface ConceptFormProps {
@@ -63,7 +64,7 @@ const ConceptForm: React.FC<ConceptFormProps> = ({
       onChange={onApproachIdChange}
       options={approaches.map((x) => ({ value: x.id, label: x.shortName || x.name }))}
       placeholder="sem abordagem"
-      emptyMessage="ainda não há abordagens registradas."
+      emptyMessage={frase(VAZIO, 'semAbordagensRegistradas')}
     />
     <PillGroupMulti
       variant="rose"
@@ -83,7 +84,7 @@ const ConceptForm: React.FC<ConceptFormProps> = ({
       tags={tags}
       onChange={onTagsChange}
       placeholder="tags do conceito (ex: ansiedade)"
-      emptyMessage="não precisa preencher tudo, pode deixar vazio ♡"
+      emptyMessage={frase(VAZIO, 'campoOpcional')}
     />
   </div>
 );

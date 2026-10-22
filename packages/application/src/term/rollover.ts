@@ -94,6 +94,19 @@ function loggedHoursOf(courses: (TermScopedCourse & { attendance?: TermAttendanc
  * Frases do resumo, no tom do app (minúsculo, acolhedor, sem jargão).
  * Derivadas **só** das métricas — nada de "finalizado com sucesso".
  */
+/**
+ * As linhas do resumo do período.
+ *
+ * `SPEC-M-018 D6` — **é dado persistido, não voz.** `TermSummary.highlights` é
+ * `stringArray` no envelope de backup (`packages/data/src/backupSchema.ts:242`) e
+ * entra em `AcademicTerm.summary` na hora da virada. Uma vez gravada, a frase é
+ * dado: mudar a voz **não** mudaria o que já foi escrito, e fingir o contrário
+ * seria pior do que assumir a exceção. Por isso a lista de valores zero fica aqui.
+ *
+ * A função volta a existir com a frase porque **o dado exige a frase**; o que
+ * `SPEC-M-018 D17` proíbe é o domínio *escolher* o tom, e ele não escolhe — ele
+ * só conta.
+ */
 export function buildHighlights(s: Omit<TermSummary, 'highlights'>): string[] {
   const out: string[] = [];
 

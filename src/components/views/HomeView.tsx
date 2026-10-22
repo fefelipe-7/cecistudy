@@ -1,8 +1,9 @@
 ﻿import React, { useMemo } from 'react';
 import { useDataClientApp, useDataClientCourses, useDataClientStudy } from '@/context/DataClientProvider';
 import { useNavValue, useStudyActions } from '@/context/shellNavContexts';
-import { getGreeting, getDailyGoalMessage, ATTENTION_LIMIT } from '../../lib/homeMeta';
-import { pickTip } from '../../lib/tips';
+import { ATTENTION_LIMIT } from '../../lib/homeMeta';
+import { resumoDoDia, saudacao, dica } from '../../lib/voice';
+import { daysUntil } from '../../lib/diasAte';
 import { getTodaySchedule } from '../../lib/schedule';
 import { isCardDue } from '../../lib/fsrs';
 import HeroSection from './home/HeroSection';
@@ -19,7 +20,7 @@ export const HomeView: React.FC = () => {
   const { streakStats, currentWeekProgress } = useStudyActions();
   const { handleNavigate, openStreak, openStudy } = useNavValue();
 
-  const greeting = getGreeting();
+  const greeting = saudacao();
 
   const formattedDate = new Date().toLocaleDateString('pt-BR', {
     weekday: 'long',
@@ -52,7 +53,7 @@ export const HomeView: React.FC = () => {
   // Frase do dia — conteúdo real derivado das pendências
   const dayMessage = useMemo(() => {
     const pendingTasks = tasks.filter((t) => !t.completed).length;
-    return getDailyGoalMessage({ pendingTasks, pendingExams: pendingExamsIn14Days.length });
+    return resumoDoDia({ tarefasPendentes: pendingTasks, provasPendentes: pendingExamsIn14Days.length });
   }, [tasks, pendingExamsIn14Days]);
 
   /**
@@ -84,20 +85,46 @@ export const HomeView: React.FC = () => {
   );
 
   // Dica contextual do cecinho (derivada do estado real do dia)
-  const cecinhoTip = useMemo(
-    () =>
-      pickTip({
-        dueCards: dueCardsCount,
-        pendingTasks: tasks.filter((t) => !t.completed).length,
-        nextExamDate:
-          [...pendingExamsIn14Days].sort((a, b) => a.date.localeCompare(b.date))[0]?.date ?? null,
-        streakDays: streakStats.current,
-      }),
-    [dueCardsCount, tasks, pendingExamsIn14Days, streakStats.current]
-  );
+  // `SPEC-M-018 D7`: o componente monta o contexto; quem escreve é a voz.
+  const cecinhoTip = useMemo(() => {
+    const proximaProva =
+      [...pendingExamsIn14Days].sort((a, b) => a.date.localeCompare(b.date))[0]?.date ?? null;
+    return dica({
+      cartoesVencidos: dueCardsCount,
+      tarefasPendentes: tasks.filter((t) => !t.completed).length,
+      provasPendentes: pendingExamsIn14Days.length,
+      diasAteProva: proximaProva ? daysUntil(proximaProva) : null,
+      tituloProva: proximaProva,
+      diasDeSequencia: streakStats.current,
+    });
+  }, [dueCardsCount, tasks, pendingExamsIn14Days, streakStats.current]);
 
   return (
-    <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-6 pb-1">
+    <div className="relative">
+      {/*
+        O céu — a faixa azul que fica **acima** do card do hero.
+
+        A arte do vídeo tem dois mundos: o céu azul no topo e a grama verde
+        onde a cecinho senta. O card do hero é fino demais para caber os
+        dois, então o card mostra a grama e o tema pinta o céu aqui em cima
+        — e o verde do tema é o campo embaixo. É o que faz a Home ser
+        diferente das outras telas: nas outras, é só o campo.
+
+        A faixa é `hero-ceu`, que é **invariante ao tema** (como os tokens
+        da capa e do leitor, TEM-001 B.5): o céu é da arte, não do tema — o
+        vídeo é o mesmo em todos os temas.
+
+        O `-top-4` cancela o padding vertical do shell (`py-4`), para o céu
+        começar logo abaixo do cabeçalho, sem uma faixa de canvas entre os
+        dois. E o `-mx` lateral tira a faixa da coluna: o céu ocupa a tela
+        inteira, o card não.
+      */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-4 -left-3.5 -right-3.5 sm:-left-5 sm:-right-5 lg:-left-8 lg:-right-8 h-[260px] bg-gradient-to-b from-hero-ceu via-hero-ceu/55 to-transparent"
+      />
+
+      <div className="relative max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-6 pb-1 pt-8">
 
       {/* 1. HERO — saudação + data + frase do dia */}
       <HeroSection
@@ -146,6 +173,7 @@ export const HomeView: React.FC = () => {
 
       </div>
 
+      </div>
     </div>
   );
 };

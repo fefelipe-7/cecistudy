@@ -1,7 +1,7 @@
 import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CheckCircle2 } from 'lucide-react';
-import { fadeSlide } from '../../lib/motion';
+import { toastVariants } from '../../lib/motion';
 
 /**
  * Ação opcional do toast (ex.: "desfazer" na virada de semestre).
@@ -34,7 +34,7 @@ export const Toast: React.FC<ToastProps> = ({ toast }) => {
             // diferentes (ex.: "guardado ♡" e "virado ♡ · desfazer") precisam
             // re-animar em vez de reaproveitar a pílula anterior
             key={`${toast.message}|${action?.label ?? ''}`}
-            variants={fadeSlide}
+            variants={toastVariants}
             initial="initial"
             animate="animate"
             exit="exit"

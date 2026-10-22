@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { BookOpen, Plus, Sparkles, UserCheck } from 'lucide-react';
+import { VAZIO, frase } from '../../../lib/voice';
 import { Mascote } from '../../ui/Mascote';
 import { TagList } from '../../ui/TagList';
 import { ManageSurface } from '../../ui/ManageSurface';
@@ -245,7 +246,7 @@ export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = (
         options={conceptOptions}
         value={course.conceptIds ?? []}
         onChange={(v) => patchLinks({ conceptIds: resolveIds(v) })}
-        emptyMessage="ainda não tem conceito parecido por aqui ♡"
+        emptyMessage={frase(VAZIO, 'semConceitoParecido')}
       />
       <CatalogMultiSelect
         open={sheet === 'autores'}
@@ -254,7 +255,7 @@ export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = (
         options={authorOptions}
         value={course.authorIds ?? []}
         onChange={(v) => patchLinks({ authorIds: resolveIds(v) })}
-        emptyMessage="ainda não tem autor parecido por aqui ♡"
+        emptyMessage={frase(VAZIO, 'semAutorParecido')}
       />
       <CatalogMultiSelect
         open={sheet === 'bibliografia'}
@@ -263,7 +264,7 @@ export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = (
         options={bibliographyOptions}
         value={course.bibliographyIds ?? []}
         onChange={(v) => patchLinks({ bibliographyIds: v })}
-        emptyMessage="ainda não tem leitura parecida por aqui ♡"
+        emptyMessage={frase(VAZIO, 'semLeituraParecida')}
       />
     </div>
   );

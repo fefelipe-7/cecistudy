@@ -3,7 +3,7 @@
 import React from 'react';
 import { Activity, ArrowRight, Flame } from 'lucide-react';
 import { AnimatedNumber } from '../../ui/AnimatedNumber';
-import { WEEK_CELL_STYLE } from '../../../lib/copy';
+import { WEEK_CELL_STYLE } from '../../../lib/homeMeta';
 import type { WeekDayCell } from '../../../lib/streak';
 
 interface WeekRhythmCardProps {

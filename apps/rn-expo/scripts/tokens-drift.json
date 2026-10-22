@@ -1,0 +1,4 @@
+{
+  "_comentario": "Tokens que divergem do src/index.css de proposito, com o motivo. Vazio = ponte intacta. Este arquivo NAO pode crescer sem justificativa (SPEC-015 D1).",
+  "declarados": []
+}

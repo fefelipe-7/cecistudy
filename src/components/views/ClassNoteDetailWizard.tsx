@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { FileText } from 'lucide-react';
+import { CELEBRACAO, VAZIO, frase } from '../../lib/voice';
 import { useMobileApp } from '@/context/mobileApp';
 import { hapticSuccess } from '../../lib/haptics';
 import { StarRating } from '../ui/StarRating';
@@ -159,7 +160,7 @@ export const ClassNoteDetailWizard: React.FC = () => {
 
           <ToggleRow
             label="ficou com dúvidas?"
-            description="marca aqui para revisar depois"
+            description={frase(VAZIO, 'marcarParaRevisar')}
             checked={hasQuestions}
             onChange={() => setHasQuestions(!hasQuestions)}
             className="bg-surface-default rounded-2xl border border-ceci-border-default px-4 py-3 shadow-2xs"
@@ -190,7 +191,7 @@ export const ClassNoteDetailWizard: React.FC = () => {
       rating: rating || undefined,
     });
     closeComposeDetails();
-    showToast('aula completa no diário ♡');
+    showToast(frase(CELEBRACAO, 'aulaCompleta'));
   };
 
   return (

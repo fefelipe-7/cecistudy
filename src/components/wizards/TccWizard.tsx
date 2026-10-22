@@ -8,6 +8,7 @@ import { emptyThesisReminderPrefs, type ThesisChapter, type ThesisProject } from
 import { useMobileApp } from '../../context/mobileApp';
 import { useWizardForm } from '../../lib/useWizardForm';
 import { formatDateBR } from '../../lib/dateBR';
+import { CELEBRACAO, VAZIO, frase } from '../../lib/voice';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import { DeadlineField, Field, FieldHint, FieldLabel, NumberInput, ReviewCard, TextArea, TextInput } from './wizardFields';
 
@@ -139,7 +140,7 @@ export const TccWizard: React.FC = () => {
     handleUpdateTcc(buildDraft());
     // A ação se chama "guardar tcc ♡" no botão, então o aviso se chama igual —
     // é assim que a pessoa aprende o vocabulário do app.
-    showToast('tcc guardado ♡');
+    showToast(frase(CELEBRACAO, 'tccGuardado'));
     closeWizard();
   };
 
@@ -295,7 +296,7 @@ export const TccWizard: React.FC = () => {
               o adaptador cuida; recusa não é erro). */}
           <ToggleRow
             label="lembretes de prazo"
-            description="o app avisa de capítulos, reuniões, entrega e banca — no ritmo que você escolher depois"
+            description={frase(VAZIO, 'tccLembretes')}
             icon={<Bell className="w-4 h-4" />}
             iconClassName="bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong"
             checked={values.remindersEnabled}

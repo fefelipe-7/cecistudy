@@ -1,14 +1,15 @@
 /**
- * SHA-256 sobre Canonical JSON v1 (T0.4) — paridade byte a byte com
- * `cecistudy-rust/crates/cecistudy-common/src/hash.rs`.
+ * SHA-256 sobre Canonical JSON v1 (T0.4) — contrato de dados do mobile
+ * (`ADR-009`). A implementação Rust que existia em paralela (`hash.rs`) é
+ * histórica, removida pela ADR-008.
  *
  * O `payloadHash` do envelope de sync é o SHA-256 dos bytes do Canonical JSON
  * v1 do snapshot. Hashar um `JSON.stringify` qualquer faria o mesmo dado
- * produzir hashes diferentes nos dois lados, e o push seria rejeitado sem
- * motivo — por isso a entrada é sempre `canonicalize()`.
+ * produzir hashes diferentes entre exportação e verificação, e o push seria
+ * rejeitado sem motivo — por isso a entrada é sempre `canonicalize()`.
  *
- * Os vetores compartilhados ficam em
- * `cecistudy-rust/contracts/golden/canonical_hash_vectors.json`.
+ * Os vetores do contrato ficam em
+ * `contracts/golden/canonical_hash_vectors.json`.
  */
 import { canonicalize } from './canonical-json';
 

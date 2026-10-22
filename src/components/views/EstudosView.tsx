@@ -16,8 +16,8 @@ import { useDataClientApp, useDataClientCourses, useDataClientStudy } from '@/co
 import { useNavValue, useStudyActions } from '@/context/shellNavContexts';
 import { isCardDue, nextDueLabel } from '../../lib/fsrs';
 import { toDateKey } from '../../lib/streak';
-import { pickTip } from '../../lib/tips';
-import { WEEK_CELL_STYLE } from '../../lib/copy';
+import { WEEK_CELL_STYLE } from '../../lib/homeMeta';
+import { dica } from '../../lib/voice';
 import { Mascote } from '../ui/Mascote';
 import { SectionTitle } from '../ui/SectionTitle';
 
@@ -61,11 +61,11 @@ export const EstudosView: React.FC = () => {
   // Dica contextual do cecinho (derivada do estado real do dia)
   const cecinhoTip = useMemo(
     () =>
-      pickTip({
-        dueCards: dueCards.length,
-        readingInProgress: !!readingInProgress,
-        focusMinutesToday: todayFocusMinutes,
-        streakDays: streakStats.current,
+      dica({
+        cartoesVencidos: dueCards.length,
+        leituraEmAndamento: !!readingInProgress,
+        minutosDeFocoHoje: todayFocusMinutes,
+        diasDeSequencia: streakStats.current,
       }),
     [dueCards.length, readingInProgress, todayFocusMinutes, streakStats.current]
   );

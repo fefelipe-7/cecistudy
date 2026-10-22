@@ -24,7 +24,8 @@
 import type { TargetAndTransition, Variants } from 'framer-motion';
 import { consumeMotionIntent, type NavIntent } from './intent';
 import type { MotionProfile } from './profile';
-import { BASE_D, EASE, PARALLAX, SHADE_MAX_OPACITY } from './tokens';
+import { prefersReducedMotion } from './reduced';
+import { BASE_D, BASE_T, EASE, PARALLAX, SHADE_MAX_OPACITY } from './tokens';
 
 export interface ScreenTargets {
   front: TargetAndTransition;
@@ -252,3 +253,72 @@ export const staggerFor = (index: number): { delayChildren: number } => ({
 
 /** Opacidade do dim sobre a camada coberta (orçamento de contraste WCAG 1.4.3). */
 export const SHADE_OPACITY = SHADE_MAX_OPACITY;
+
+/**
+ * `sheet` — painéis de modal por posição (`Modal.tsx`). Comporta a folha
+ * inferior arrastável, então o preset `bottom` anima `y` em `100%` e deixa a
+ * decisão de commit para o `onDragEnd` do componente.
+ *
+ * Migrado de `src/lib/motion.ts`. O `iOS_SPRING` legado (`stiffness: 320`) foi
+ * trocado pelo token `BASE_T.sheet` (`stiffness: 420`): mesma família, um dono.
+ *
+ * ⚠️ Este preset **não** passa pelo perfil reduzido — é um componente de UI
+ * compartilhada, não uma camada da pilha. Ele lê `prefersReducedMotion()`
+ * diretamente, como fazia antes da migração.
+ */
+export const sheetVariants: Record<'center' | 'top' | 'bottom', Variants> = {
+  center: {
+    initial: () =>
+      prefersReducedMotion() ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 10 },
+    animate: () =>
+      prefersReducedMotion()
+        ? { opacity: 1, transition: { duration: BASE_D.replace, ease: EASE.standard } }
+        : { opacity: 1, scale: 1, y: 0, transition: BASE_T.sheet },
+    exit: () =>
+      prefersReducedMotion()
+        ? { opacity: 0, transition: { duration: BASE_D.replace, ease: EASE.exit } }
+        : { opacity: 0, scale: 0.97, y: 8, transition: { duration: BASE_D.replace, ease: EASE.exit } },
+  },
+  top: {
+    initial: () => (prefersReducedMotion() ? { opacity: 0 } : { opacity: 0, y: -28 }),
+    animate: () =>
+      prefersReducedMotion()
+        ? { opacity: 1, transition: { duration: BASE_D.replace, ease: EASE.standard } }
+        : { opacity: 1, y: 0, transition: BASE_T.sheet },
+    exit: () =>
+      prefersReducedMotion()
+        ? { opacity: 0, transition: { duration: BASE_D.replace, ease: EASE.exit } }
+        : { opacity: 0, y: -20, transition: { duration: BASE_D.replace, ease: EASE.exit } },
+  },
+  bottom: {
+    initial: () =>
+      prefersReducedMotion() ? { y: '100%', opacity: 0 } : { y: '100%' },
+    animate: () =>
+      prefersReducedMotion()
+        ? { y: 0, transition: { duration: BASE_D.sheet, ease: EASE.standard } }
+        : { y: 0, transition: BASE_T.sheet },
+    exit: () => ({
+      y: '100%',
+      transition: { duration: BASE_D.sheet, ease: EASE.exit },
+    }),
+  },
+};
+
+/**
+ * `headerSwap` — troca de modo do header (brand ↔ detalhe).
+ *
+ * **Crossfade curto e propositalmente mais rápido que o slide da tela** (SPEC-007
+ * anti-padrão 11: header e tela não devem animar a mesma coisa). O slide da tela
+ * é de tela cheia (`screenEnter` = 0.26s); se o header fizesse um crossfade do
+ * mesmo tamanho, os dois sinais se sobrepõem e vira um borrão. Com
+ * `BASE_D.replace`, o header lê como "o conteúdo trocou" e o movimento fica sendo
+ * o da tela.
+ *
+ * O `custom` (direction) é aceito e ignorado — mantém a API compatível com quem
+ * passa `direction` para o `HeaderNav`.
+ */
+export const headerSwapVariants: Variants = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { duration: BASE_D.replace, ease: EASE.standard } },
+  exit: { opacity: 0, transition: { duration: BASE_D.replace, ease: EASE.exit } },
+};

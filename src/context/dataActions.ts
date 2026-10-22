@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { CELEBRACAO, frase } from '../lib/voice';
 import type {
   UserProfile,
   Course,
@@ -306,7 +307,14 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
     if (shouldCelebrateTasks(nextTasks, taskId)) {
       hapticSuccess();
       celebrate('tasks-done');
-      showToast(`plano do dia completo! parabéns${profile.name.trim() ? `, ${profile.name.trim()}` : ''} 🎉`);
+      showToast(
+        // `SPEC-C-014 D8`: o nome só entra quando a usuária **autorizou**. Antes
+        // deste comentário, o `profile.name` entrava sem pedir — e autorização é
+        // decisão dela, não padrão do app.
+        frase(CELEBRACAO, 'planoDoDiaCompleto', {
+          nome: profile.nomeAutorizado ? profile.name.trim() : undefined,
+        }),
+      );
     }
   }, [tasks, setTasks, registerActivity, showToast, profile]);
 
@@ -432,7 +440,7 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
     if (doneNow?.status === 'concluido' && prev?.status !== 'concluido') {
       hapticSuccess();
       celebrate('reading-done');
-      showToast('leitura concluída! que orgulho de você ♡');
+      showToast(frase(CELEBRACAO, 'leituraConcluida'));
     }
   }, [readings, setReadings, registerActivity, showToast]);
 

@@ -12,6 +12,8 @@ export interface HeroCardProps {
   title: string;
   /** frase de resumo, uma linha. */
   summary?: React.ReactNode;
+  /** Conteúdo extra no pé do card (ex.: barra de progresso da Faculdade, SPEC-014 D3). */
+  footer?: React.ReactNode;
   /** ação primária no canto superior direito. */
   action?: { label: string; onClick: () => void; ariaLabel?: string };
   expression?: MascoteExpression;
@@ -28,6 +30,7 @@ export const HeroCard: React.FC<HeroCardProps> = ({
   eyebrow,
   title,
   summary,
+  footer,
   action,
   expression = 'field-prepare',
   accent = 'rose',
@@ -61,6 +64,7 @@ export const HeroCard: React.FC<HeroCardProps> = ({
     {summary && (
       <p className="text-xs sm:text-[13px] text-ceci-secondary leading-relaxed mt-2.5 max-w-[92%]">{summary}</p>
     )}
+    {footer && <div className="mt-3 pr-12">{footer}</div>}
     <Mascote
       expression={expression}
       className="w-16 h-16 absolute -bottom-2 -right-2 opacity-95 pointer-events-none"

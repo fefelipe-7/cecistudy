@@ -242,11 +242,13 @@ describe('planThesisReminders (F4.6)', () => {
       prefs,
       now,
     );
-    const comHora = plan.filter((r) => r.body.includes('14:00'));
+    const comHora = plan.filter((r) => r.hora === '14:00');
     expect(comHora).toHaveLength(2); // véspera (menciona às 14:00) + 1h antes (hoje às 14:00)
-    const semHora = plan.filter((r) => !r.body.includes('14:00'));
+    const semHora = plan.filter((r) => r.hora === undefined);
     expect(semHora).toHaveLength(2);
     expect(semHora.some((r) => r.at.getHours() === 9)).toBe(true); // 09:00 do dia
+    expect(plan.every((r) => r.kind === 'reuniao')).toBe(true);
+    expect(plan.every((r) => r.referencia === 'Helena')).toBe(true);
     expect(plan.every((r) => r.target.tab === 'orientacao')).toBe(true);
   });
 
@@ -267,8 +269,30 @@ describe('planThesisReminders (F4.6)', () => {
     // 4 da banca + os da entrega que ainda são futuro a partir de 08/10.
     expect(plan.length).toBeGreaterThan(4);
     expect(plan.every((r) => r.target.tab === 'visao')).toBe(true);
-    expect(plan.some((r) => r.body.includes('a entrega'))).toBe(true);
-    expect(plan.some((r) => r.body.includes('a banca'))).toBe(true);
+    expect(plan.some((r) => r.kind === 'entrega')).toBe(true);
+    expect(plan.some((r) => r.kind === 'banca')).toBe(true);
+  });
+
+  it('o plano devolve FATO, não frase — a voz escreve (SPEC-M-018 D17)', () => {
+    const thesis = { ...emptyThesis(), advisor: 'Helena', deliveryDate: '2026-12-01' };
+    const chapters = [chapter({ title: 'metodologia', dueDate: '2026-10-15', stage: 'a_fazer' })];
+    const plan = planThesisReminders({ thesis, chapters, tasks: [], meetings: [] }, today, prefs, now);
+
+    // Nenhuma chave de frase sobrevive — `title`/`body` saíram do domínio, e a
+    // marca `cecistudy ♡` saiu com elas.
+    for (const lembrete of plan) {
+      expect(Object.keys(lembrete).sort()).toEqual([
+        'at',
+        'dias',
+        'id',
+        'kind',
+        'referencia',
+        'target',
+      ]);
+    }
+    expect(plan.some((r) => JSON.stringify(r).includes('cecistudy'))).toBe(false);
+    // E o fato está lá: o título do capítulo viaja como dado.
+    expect(plan.find((r) => r.kind === 'capitulo')?.referencia).toBe('metodologia');
   });
 
   it('ordena por data, corta no teto de 64 e numera ids na faixa do TCC', () => {

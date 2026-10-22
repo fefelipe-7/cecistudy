@@ -78,7 +78,7 @@ export class SyncEngine {
   /** Baixa o remoto, funde com o local e devolve o JSON mesclado + preview. */
   async pullAndMerge(localJson: string): Promise<PullResult> {
     const remote = await this.provider.downloadPackage();
-    if (!remote) throw new SyncProviderError('NOT_FOUND', 'sem pacote remoto');
+    if (!remote) throw new SyncProviderError('NOT_FOUND');
     const [localDb, remoteDb] = await Promise.all([
       this.deps.parseBackup(localJson),
       this.deps.parseBackup(JSON.stringify(remote.package.snapshot)),

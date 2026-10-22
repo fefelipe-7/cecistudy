@@ -23,6 +23,17 @@ public class NativeNavigationPlugin: CAPPlugin, CAPBridgedPlugin {
     private var edgePanGesture: UIScreenEdgePanGestureRecognizer?
     private var isEnabled = false
     private var canGoBack = false
+
+    // MARK: - Reduzir Movimento (SPEC-007 D8)
+
+    /// Preferência **nativa** de Reduzir Movimento.
+    ///
+    /// Lida no momento em que o gesto iria começar, não em `load()`: a usuária
+    /// pode ligar/desligar em Ajustes com o app aberto, e um valor cacheado
+    /// passaria a desatualizado até o próximo cold start.
+    private var reduceMotion: Bool {
+        UIAccessibility.isReduceMotionEnabled
+    }
     
     // Visual feedback during gesture
     private var originalTransform: CGAffineTransform = .identity
@@ -45,7 +56,10 @@ public class NativeNavigationPlugin: CAPPlugin, CAPBridgedPlugin {
     
     @objc func handleEdgePan(_ gesture: UIScreenEdgePanGestureRecognizer) {
         guard let webView = self.bridge?.webView,
-              isEnabled else { return }
+              isEnabled,
+              // Rede de segurança: `shouldBegin` já barra, mas o `handle` não
+              // pode confiar num recognizer para não mover a webView.
+              !reduceMotion else { return }
         
         let translation = gesture.translation(in: webView)
         let velocity = gesture.velocity(in: webView)
@@ -146,7 +160,13 @@ public class NativeNavigationPlugin: CAPPlugin, CAPBridgedPlugin {
               gesture === edgePanGesture else {
             return super.gestureRecognizerShouldBegin(gestureRecognizer)
         }
-        // Only allow if there's space to drag (prevent if already at edge)
+        // Sob Reduzir Movimento o gesto **não existe**: `false` aqui devolve o
+        // toque para a webView em vez de consumir, então scroll e carrossel na
+        // faixa da borda continuam funcionando (SPEC-007 D8).
+        //
+        // Voltar continua acessível pela seta do header (`headerConfig.onBack`,
+        // ligado centralmente em `navigationEngine.ts:1560`).
+        guard isEnabled, !reduceMotion else { return false }
         return true
     }
 }

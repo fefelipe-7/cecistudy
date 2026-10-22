@@ -8,6 +8,8 @@
  * https://developer.apple.com/design/human-interface-guidelines/motion
  */
 
+import type { Transition } from 'framer-motion';
+
 /**
  * Razão de parallax de uma camada coberta, como fração da largura do palco.
  *
@@ -22,6 +24,24 @@ export const PARALLAX = 0.28;
  * enquanto coberta — quem está lendo com leitor de tela não perde contraste.
  */
 export const SHADE_MAX_OPACITY = 0.14;
+
+/**
+ * Curvas de easing que **não** cabiam em `EASE` porque não são a curva padrão de
+ * entrada/saída do sistema.
+ *
+ * `IOS_EASE` e `IOS_EASE_OUT` viviam em `src/lib/motion.ts` (shim) e a curva do
+ * `IOS_EASE` estava **duplicada como literal** em `bottom-nav-bar.tsx` — dois
+ * donos para a mesma curva. Movidas para cá: o shim não ganha símbolo novo.
+ *
+ * ⚠️ São aproximações de sensação, não curvas oficiais da Apple. Ver
+ * `research_basis.value_status` da especificação de motion.
+ */
+
+/** Curva de timing "iOS-like" (push, pílula da bottom-nav): suave, sem overshoot. */
+export const IOS_EASE: [number, number, number, number] = [0.32, 0.72, 0, 1];
+
+/** Ease de saída curto (desaceleração). */
+export const IOS_EASE_OUT: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 /** Durações-base (segundos). `resolveProfile` escala isso em `0.75` no perfil reduzido. */
 export const BASE_D = {
@@ -62,6 +82,25 @@ export const BASE_D = {
   toast: 0.2,
   /** Micro-interação (toggle, checkbox) — o que a usuária repete o dia inteiro. */
   micro: 0.12,
+  /* --- Barra contextual (barra inferior de tela auxiliar) ---------------- */
+  /** Entrada no estado pressionado — tem de parecer instantânea (≤100ms). */
+  pressIn: 0.08,
+  /** Saída do estado pressionado — um fio mais longa que a entrada. */
+  pressOut: 0.12,
+  /** Rótulo/ícone que entra ou sai junto com a geometria da barra. */
+  contentFade: 0.14,
+  /** Troca do ícone da ação principal (entra/sai, sem morphing). */
+  iconSwap: 0.18,
+  /** Confirmação visual de uma seleção no menu. */
+  selection: 0.18,
+  /** Expandir ↔ compactar a barra (geometria). */
+  contextBar: 0.28,
+  /** Menu contextual: abrir. */
+  contextMenu: 0.24,
+  /** Menu contextual: fechar (sempre mais curto que a abertura). */
+  contextMenuClose: 0.18,
+  /** Passo de stagger entre itens do menu (o teto é `listStaggerCap`). */
+  contextStagger: 0.03,
 } as const;
 
 /** Nomes das durações. */
@@ -105,3 +144,12 @@ export const BASE_T = {
 
 /** Tolerância para comparar "está parado" — usada no dev-assert de camada travada. */
 export const STUCK_EPSILON_PX = 1;
+
+/**
+ * Fade do fundo por trás de um modal (`Modal.tsx`).
+ *
+ * Fica **depois** de `BASE_D`/`EASE` de propósito: um `const` que lê outro `const`
+ * do mesmo módulo tem de vir depois dele, senão o `const` de baixo lê um binding
+ * ainda no TDZ no primeiro import.
+ */
+export const OVERLAY_FADE: Transition = { duration: BASE_D.overlay, ease: EASE.standard };

@@ -63,6 +63,10 @@ export interface ToastOptions {
 import { useSqliteState } from '../lib/useSqliteState';
 import { useStampedState } from '../lib/useStampedState';
 import { usePersistentState } from '../lib/usePersistentState';
+import { traceAsync } from '../lib/performance/perfMarks';
+import { erroDeSync, CELEBRACAO, frase } from '../lib/voice';
+import { invalidatePendingWrites } from '../lib/db/writeQueue';
+import { useBackgroundSyncTriggers } from '../lib/sync/useBackgroundSyncTriggers';
 import { emptySyncIndex, maxStamp } from '../lib/sync/stamp';
 import { lockedStickerCatalog } from '../data/stickerCatalog';
 import { mergeCatalogWithProgress } from '../lib/stickers';
@@ -887,6 +891,9 @@ export function useDataClient(): DataClientValue {
 
   /** Limpa tudo e volta ao estado inicial (zerado) — onboarding é reaberto. */
   const resetApp = () => {
+    // Pendências pré-reset morrem ANTES do novo snapshot (spec-performance
+    // F5.5): nenhum dado velho volta a gravar depois do reset.
+    void invalidatePendingWrites();
     applyDatabase(emptyDatabase());
     // Bancos estáticos (approaches/questions) também são zerados para refletir o
     // "primeiro acesso"; o efeito de seed do DataClient re-semeia sob demanda
@@ -903,7 +910,7 @@ export function useDataClient(): DataClientValue {
         console.error('[resetApp] falha ao limpar SQLite', e);
       }
     })();
-    showToast('cantinho resetado — vamos começar de novo? ♡');
+    showToast(frase(CELEBRACAO, 'cantinhoResetado'));
   };
 
   /** Conclui o onboarding: grava o perfil e parte do cantinho vazio (zero). */
@@ -911,7 +918,7 @@ export function useDataClient(): DataClientValue {
     applyDatabase(emptyDatabase());
     setProfile((prev) => ({ ...prev, ...profileUpdate }));
     setOnboarding({ completed: true, completedAt: new Date().toISOString() });
-    showToast('cantinho pronto — bora começar? ♡');
+    showToast(frase(CELEBRACAO, 'cantinhoPronto'));
   };
 
   /** Coleta todos os estados persistidos num payload versionado (backup). */
@@ -933,11 +940,14 @@ export function useDataClient(): DataClientValue {
     void (async () => {
       const db = await importAppDatabase(json);
       if (!db) {
-        showToast('ops, esse arquivo de backup não é compatível ♡');
+        showToast(frase(CELEBRACAO, 'backupIncompativel'));
         return;
       }
+      // Pendências pré-import não sobrevivem ao restore (spec-performance
+      // F5.5) — invalida e aguarda o em andamento antes de aplicar.
+      await invalidatePendingWrites();
       applyDatabase(db);
-      showToast('backup restaurado com carinho ♡');
+      showToast(frase(CELEBRACAO, 'backupRestaurado'));
     })();
   };
 
@@ -999,7 +1009,7 @@ export function useDataClient(): DataClientValue {
     [applyDatabase, deviceId],
   );
 
-  const performSync = useCallback(
+  const performSyncCore = useCallback(
     async (interactive: boolean) => {
       const engine = resolveSyncEngine();
       if (!engine) {
@@ -1023,22 +1033,32 @@ export function useDataClient(): DataClientValue {
             return;
           }
           await applyMerged(mergedJson, remoteManifest, remoteSha);
-          showToast('sincronizado com carinho ♡');
+          showToast(frase(CELEBRACAO, 'sincronizado'));
           setSyncStatus('synced');
         } else if (engine.needsUpload(cp, localStamp) || !hasRemote) {
           const res = await engine.push(localJson, cp);
           setSyncCheckpoint(res.checkpoint);
-          showToast('dados enviados para a nuvem ♡');
+          showToast(frase(CELEBRACAO, 'dadosEnviados'));
           setSyncStatus('synced');
         } else {
           setSyncStatus('upToDate');
         }
       } catch (e) {
-        setSyncErrorMessage((e as Error).message);
+        // `SPEC-M-018 D17`: o pacote entrega **código de máquina** e a voz
+        // escreve a frase. Antes era `(e as Error).message`, que expunha o texto
+        // do pacote como se fosse linguagem do produto (`SPEC-C-014` D5).
+        setSyncErrorMessage(erroDeSync(e));
         setSyncStatus('error');
       }
     },
     [resolveSyncEngine, getSyncPayloadJson, syncIndex, syncCheckpoint, applyMerged],
+  );
+
+  // Cada tentativa de sync vira um span `sync-cycle` (spec-performance, Fase 1) —
+  // em produção o traceAsync devolve a própria promise, sem custo.
+  const performSync = useCallback(
+    (interactive: boolean) => traceAsync('sync-cycle', () => performSyncCore(interactive)),
+    [performSyncCore],
   );
 
   const syncNow = useCallback(() => performSync(true), [performSync]);
@@ -1065,7 +1085,7 @@ export function useDataClient(): DataClientValue {
         pendingSyncPreview.remoteSha,
       );
       setPendingSyncPreview(null);
-      showToast('sincronizado com carinho ♡');
+      showToast(frase(CELEBRACAO, 'sincronizado'));
       setSyncStatus('synced');
     })();
   }, [pendingSyncPreview, applyMerged]);
@@ -1074,24 +1094,12 @@ export function useDataClient(): DataClientValue {
     setSyncStatus('upToDate');
   }, []);
 
-  // Gatilhos de fundo: abrir, fechar, 30 min e ao recuperar conexão.
-  useEffect(() => {
-    if (!githubSyncConfig) return;
-    const id = setInterval(() => syncInBackground(), 30 * 60 * 1000);
-    const onOnline = () => syncInBackground();
-    window.addEventListener('online', onOnline);
-    const onBeforeUnload = () => {
-      void syncInBackground();
-    };
-    window.addEventListener('beforeunload', onBeforeUnload);
-    const t = setTimeout(() => syncInBackground(), 1500);
-    return () => {
-      clearInterval(id);
-      window.removeEventListener('online', onOnline);
-      window.removeEventListener('beforeunload', onBeforeUnload);
-      clearTimeout(t);
-    };
-  }, [githubSyncConfig, syncInBackground]);
+  // Gatilhos de fundo (spec-performance §7 Fase 8): lifecycle depende SÓ da
+  // configuração; o callback vem por ref (sempre fresco); trava contra sync
+  // concorrente; `pagehide` (não `beforeunload`); o sync inicial de 1,5 s roda
+  // uma vez por ativação — não mais após cada edição (efeito colateral das
+  // deps largas, resolvido aqui).
+  useBackgroundSyncTriggers(githubSyncConfig, syncInBackground);
 
   // Stickers: reconcilia o catálogo com o progresso persistido (uma vez, ao iniciar)
   useEffect(() => {

@@ -20,6 +20,7 @@ import {
   qrPayloadFor,
 } from '../../lib/sync/pairing';
 import { scanQrPayload } from '../../lib/sync/scanQr';
+import { erro as vozErro, CELEBRACAO, frase } from '../../lib/voice';
 import {
   resolveSyncTransport,
   SyncPreview,
@@ -135,7 +136,7 @@ export const SyncScreen: React.FC = () => {
         setPhase('preview');
       } catch {
         setPhase('error');
-        setErrorMsg('não deu para conectar agora — confira a internet nos dois dispositivos e tente de novo ♡');
+        setErrorMsg(vozErro('syncRede'));
       }
     },
     []
@@ -144,14 +145,14 @@ export const SyncScreen: React.FC = () => {
   const beginJoinWithTimeout = useCallback(() => {
     const clean = normalizePairCode(inputCode);
     if (!isValidPairCode(clean)) {
-      showToast('digita o código de 6 letras que aparece no outro dispositivo ♡');
+      showToast(frase(CELEBRACAO, 'codigoDePareamento'));
       return;
     }
     if (timeoutRef.current !== null) window.clearTimeout(timeoutRef.current);
     timeoutRef.current = window.setTimeout(() => {
       resolveSyncTransport()?.close();
       setPhase('error');
-      setErrorMsg('o outro dispositivo não apareceu — confirme que o código é o mesmo e tente de novo ♡');
+      setErrorMsg(vozErro('syncPar'));
     }, CONNECT_TIMEOUT_MS);
     void handleConnect(clean);
   }, [inputCode, handleConnect, showToast]);
@@ -163,7 +164,7 @@ export const SyncScreen: React.FC = () => {
       if (!payload) return; // cancelou / sem QR
       const parsed = parseQrPayload(payload);
       if (!parsed) {
-        showToast('esse QR não é de sincronização do cantinho ♡');
+        showToast(frase(CELEBRACAO, 'qrErrado'));
         return;
       }
       setInputCode(formatPairCode(parsed));
@@ -171,7 +172,7 @@ export const SyncScreen: React.FC = () => {
       timeoutRef.current = window.setTimeout(() => {
         resolveSyncTransport()?.close();
         setPhase('error');
-        setErrorMsg('a conexão demorou demais — tente de novo ♡');
+        setErrorMsg(vozErro('syncTimeout'));
       }, CONNECT_TIMEOUT_MS);
       await handleConnect(parsed);
     } catch {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useMobileApp } from '@/context/mobileApp';
+import { CELEBRACAO, erro, frase } from '../../lib/voice';
 import {
   THESIS_ID,
   newWritingLogId,
@@ -68,7 +69,7 @@ export const WritingLogSheet: React.FC<WritingLogSheetProps> = ({
     if (parsedWords === undefined) {
       // Vazio não vira 0 (seria inventar dado); "só revisei" se registra com 0.
       hapticWarning();
-      showToast('quantas palavras você escreveu? pode ser 0 ♡');
+      showToast(erro('escritaSemPalavras'));
       return;
     }
     const now = new Date().toISOString();
@@ -98,7 +99,7 @@ export const WritingLogSheet: React.FC<WritingLogSheetProps> = ({
     }
 
     hapticTap();
-    showToast('sessão guardada ♡');
+    showToast(frase(CELEBRACAO, 'sessaoDeEscritaGuardada'));
     onClose();
   };
 

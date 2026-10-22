@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { CheckCircle2, Wand2 } from 'lucide-react';
+import { CELEBRACAO, frase } from '../../lib/voice';
 import { useMobileApp } from '@/context/mobileApp';
 import type { NoteTargetType } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
@@ -242,7 +243,7 @@ export const NoteTransformWizard: React.FC = () => {
     deleteLooseNote(focusedNote.id);
     hapticSuccess();
     setCreated({ label, onOpen });
-    showToast(`nota transformada em ${label} ♡`);
+    showToast(frase(CELEBRACAO, 'notaTransformada', { label }));
   };
 
   // ---- tela final de sucesso: "prontinho ♡ abrir item criado" ----

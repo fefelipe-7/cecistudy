@@ -1,14 +1,26 @@
 /**
- * Pré-carga do boot — alimenta a splash com progresso REAL.
+ * Boot progressivo — spec-performance.md §6.1 (camadas de prontidão) e §7 Fase 2.
  *
- * Cada passo pesado do arranque (SQLite da usuária, catálogo, abordagens,
- * questões, chunks das telas) vira um passo nomeado com
- * promise memoizada: a splash acompanha o progresso e o resto do app (ex.:
- * seed effects do AppContext) reaproveita as MESMAS promises — sem carga dupla.
+ * Três grupos com dependências reais entre si:
  *
- * Cache quente: se a última carga completa foi há menos de WARM_TTL_MS, os
- * passos pesados são pulados (fontes já em cache local/browser) e a splash
- * sai rápido. Depois do TTL, a otimização completa roda de novo.
+ * - `critical`   → tema, abertura do banco da usuária, estado mínimo da rota.
+ *                  Único que a splash espera (criticalReady).
+ * - `deferred`   → catálogo core (nativo) + chunk da primeira rota. Corre após
+ *                  o shell estar interativo; falha não bloqueia nada.
+ * - `opportunistic` → abordagens e questões (payloads grandes). Só corre no
+ *                  boot frio (fora da janela quente de 30 min) e nada na UI
+ *                  depende disso: as telas pedem o próprio recurso
+ *                  (`ensureApproaches`/`ensureQuestions` reaproveitam as MESMAS
+ *                  promises memoizadas — sem carga dupla).
+ *
+ * O contrato devolve um `BootState` com status por etapa — não uma Promise
+ * cega (spec §2.1): a UI sai da barreira por `criticalReady`, nunca por
+ * `allReady`. A execução é deduplicada: chamadas concorrentes (StrictMode)
+ * reutilizam a mesma pipeline (spec §2.4 — "não existem duas execuções
+ * concorrentes de boot").
+ *
+ * Cache quente: se a última carga completa foi há menos de `WARM_TTL_MS`, os
+ * passos pesados ficam `skipped` e a splash sai rápido.
  */
 import { isNativePlatform, storage } from './storage';
 import { getUserDb } from './db/userDb';
@@ -17,6 +29,8 @@ import {
   getCatalogQuestions,
   getCatalogDb,
 } from './db/catalogDb';
+import { mark, measure, traceAsync } from './performance/perfMarks';
+import { requestPrefetch } from './performance/screenPrefetch';
 
 /** Janela do cache quente: dentro dela o boot é "morno" (sem passos pesados). */
 export const WARM_TTL_MS = 30 * 60 * 1000;
@@ -24,28 +38,64 @@ export const WARM_TTL_MS = 30 * 60 * 1000;
 /** Chave (prefixada pelo storage) com o timestamp da última carga completa. */
 export const LAST_FULL_PRELOAD_KEY = 'lastFullPreloadAt';
 
+// ---------------------------------------------------------------------------
+// Contrato (spec §6.1) — o BootStepId é o da spec, sem renomear por plataforma
+// ---------------------------------------------------------------------------
+
 export type BootStepId =
-  | 'userDb'
-  | 'catalog'
-  | 'approaches'
-  | 'questions'
-  | 'views';
+  | 'theme'
+  | 'user-db'
+  | 'user-state'
+  | 'catalog-core'
+  | 'catalog-approaches'
+  | 'catalog-questions'
+  | 'route-prefetch';
 
-export interface BootStep {
+export type BootStepStatus = 'pending' | 'running' | 'done' | 'skipped' | 'error';
+
+export type BootStepGroup = 'critical' | 'deferred' | 'opportunistic';
+
+export interface BootStepResult {
   id: BootStepId;
-  /** Frase curta (lowercase) mostrada junto ao progresso. */
-  label: string;
+  status: BootStepStatus;
+  startedAt?: number;
+  endedAt?: number;
+  error?: unknown;
 }
 
-export interface BootProgress {
-  done: number;
-  total: number;
-  /** 0..1 — fração real concluída. */
-  fraction: number;
-  label: string;
+export interface BootState {
+  criticalReady: boolean;
+  deferredReady: boolean;
+  opportunisticReady: boolean;
+  steps: Record<BootStepId, BootStepResult>;
+  errors: Array<{ step: BootStepId; error: unknown }>;
 }
 
-export type OnBootProgress = (progress: BootProgress) => void;
+export type OnBootProgress = (state: BootState) => void;
+
+export interface BootOptions {
+  signal?: AbortSignal;
+}
+
+const ALL_STEP_IDS: readonly BootStepId[] = [
+  'theme',
+  'user-db',
+  'user-state',
+  'catalog-core',
+  'route-prefetch',
+  'catalog-approaches',
+  'catalog-questions',
+];
+
+const STEP_GROUP: Record<BootStepId, BootStepGroup> = {
+  theme: 'critical',
+  'user-db': 'critical',
+  'user-state': 'critical',
+  'catalog-core': 'deferred',
+  'catalog-approaches': 'opportunistic',
+  'catalog-questions': 'opportunistic',
+  'route-prefetch': 'deferred',
+};
 
 // ---------------------------------------------------------------------------
 // Passos — cada um resolve uma única vez (memoização por sessão)
@@ -76,19 +126,6 @@ const stepImpls: StepImpls = {
 let approachesPromise: Promise<unknown> | undefined;
 let questionsPromise: Promise<unknown> | undefined;
 
-const stepRunners: Record<BootStepId, () => Promise<unknown>> = {
-  /** Nativo: abre/migra o SQLite da usuária (singleton; no-op na web). */
-  userDb: () => getUserDb(),
-  /** Nativo: copia/abre o catálogo somente-leitura (no-op na web). */
-  catalog: () => getCatalogDb(),
-  /** Abordagens (~97): SQLite no nativo, módulo embutido na web. */
-  approaches: () => memoize('approaches'),
-  /** Questões (745): mesmo tratamento das abordagens. */
-  questions: () => memoize('questions'),
-  /** Chunk da tela inicial — primeira aba instantânea ao sair da splash. */
-  views: () => import('../components/views/HomeView'),
-};
-
 function memoize(kind: 'approaches' | 'questions'): Promise<unknown> {
   if (kind === 'approaches') {
     if (!approachesPromise) {
@@ -108,14 +145,14 @@ function memoize(kind: 'approaches' | 'questions'): Promise<unknown> {
   return questionsPromise;
 }
 
-/** Abordagens do catálogo — mesma promise usada pela splash e pelo AppContext. */
+/** Abordagens do catálogo — mesma promise usada pela splash e pelo provider. */
 export function ensureApproaches<T = unknown>(): Promise<T[]> {
-  return stepRunners.approaches() as Promise<T[]>;
+  return memoize('approaches') as Promise<T[]>;
 }
 
-/** Questões do banco — mesma promise usada pela splash e pelo AppContext. */
+/** Questões do banco — mesma promise usada pela splash e pelo provider. */
 export function ensureQuestions<T = unknown>(): Promise<T[]> {
-  return stepRunners.questions() as Promise<T[]>;
+  return memoize('questions') as Promise<T[]>;
 }
 
 // ---------------------------------------------------------------------------
@@ -138,62 +175,233 @@ export function isWithinWarmTtl(lastAt: number, now: number, ttl = WARM_TTL_MS):
 }
 
 // ---------------------------------------------------------------------------
-// Pipeline do boot
+// Planejamento — puro, testável
 // ---------------------------------------------------------------------------
 
-/** Monta a lista de passos do arranque conforme plataforma e cache quente. */
-export function planBootSteps(warm: boolean, native: boolean): BootStep[] {
-  const steps: BootStep[] = [];
-  if (native) steps.push({ id: 'userDb', label: 'abrindo o cantinho' });
-  if (!warm) {
-    if (native) steps.push({ id: 'catalog', label: 'folheando o acervo' });
-    steps.push(
-      { id: 'approaches', label: 'organizando as abordagens' },
-      { id: 'questions', label: 'contando as questõezinhas' }
-    );
-  }
-  steps.push({ id: 'views', label: 'arrumando a mesinha' });
-  return steps;
+export interface PlannedBootStep {
+  id: BootStepId;
+  group: BootStepGroup;
+  /** Presente quando o passo não se aplica (plataforma ou cache quente). */
+  skipReason?: string;
 }
 
 /**
- * Executa o arranque com progresso real. Passos que falham são registrados e
- * o pipeline segue (o app degrada graciosamente como já fazia).
+ * Monta o plano do arranque conforme plataforma e cache quente. O passo
+ * `user-state` é sempre `skipped`: a hidratação das coleções é pós-mount por
+ * design (persistência tri-modal, um hook por coleção) — a splash não espera
+ * estado hidratado, e o provider já reage à chegada tardia com efeitos de
+ * reparo. No cliente mobile o `theme` também é `skipped`: o tema aplicado no
+ * boot vem do efeito de hidratação do provider, não de um initTheme pré-React.
  */
-export async function runBootPreload(onProgress?: OnBootProgress): Promise<void> {
-  const lastAt = await getLastFullPreloadAt();
-  const warm = isWithinWarmTtl(lastAt, Date.now());
-  const steps = planBootSteps(warm, isNativePlatform);
-
-  let done = 0;
-  const emit = (label: string) => {
-    onProgress?.({
-      done,
-      total: steps.length,
-      fraction: steps.length === 0 ? 1 : done / steps.length,
-      label,
-    });
-  };
-  emit('');
-
-  for (const step of steps) {
-    try {
-      await stepRunners[step.id]();
-    } catch (e) {
-      console.warn(`[bootPreload] passo "${step.id}" falhou — seguindo`, e);
+export function planBootSteps(warm: boolean, native: boolean): PlannedBootStep[] {
+  return ALL_STEP_IDS.map((id) => {
+    switch (id) {
+      case 'theme':
+        return {
+          id,
+          group: STEP_GROUP[id],
+          ...(native ? { skipReason: 'tema aplica via efeito do provider (mobile)' } : {}),
+        };
+      case 'user-db':
+        return {
+          id,
+          group: STEP_GROUP[id],
+          ...(native ? {} : { skipReason: 'web usa localStorage síncrono' }),
+        };
+      case 'user-state':
+        return {
+          id,
+          group: STEP_GROUP[id],
+          skipReason: 'hidratação por coleção é pós-mount por design (tri-modal)',
+        };
+      case 'catalog-core':
+        return {
+          id,
+          group: STEP_GROUP[id],
+          ...(native ? {} : { skipReason: 'catálogo na web vem dos facades JS' }),
+        };
+      case 'route-prefetch':
+        return { id, group: STEP_GROUP[id] };
+      case 'catalog-approaches':
+      case 'catalog-questions':
+        return {
+          id,
+          group: STEP_GROUP[id],
+          ...(warm ? { skipReason: 'cache quente (<30 min)' } : {}),
+        };
     }
-    done += 1;
-    emit(step.label);
-  }
-
-  // A janela quente só é renovada quando a carga completa de fato aconteceu.
-  if (!warm && steps.length > 0) {
-    await storage.set(LAST_FULL_PRELOAD_KEY, String(Date.now()));
-  }
+  });
 }
 
 // ---------------------------------------------------------------------------
-// Pós-boot: prefetch em idle das demais abas (navegação instantânea depois)
+// Pipeline do boot — grupos paralelos com allSettled por etapa
+// ---------------------------------------------------------------------------
+
+function buildInitialSteps(): Record<BootStepId, BootStepResult> {
+  const steps = {} as Record<BootStepId, BootStepResult>;
+  for (const id of ALL_STEP_IDS) steps[id] = { id, status: 'pending' };
+  return steps;
+}
+
+const TERMINAL: readonly BootStepStatus[] = ['done', 'skipped', 'error'];
+
+function buildState(steps: Record<BootStepId, BootStepResult>): BootState {
+  const groupReady = (group: BootStepGroup) =>
+    ALL_STEP_IDS.filter((id) => STEP_GROUP[id] === group).every((id) =>
+      TERMINAL.includes(steps[id].status),
+    );
+  const errors = ALL_STEP_IDS.filter((id) => steps[id].status === 'error').map(
+    (id): { step: BootStepId; error: unknown } => ({
+      step: id,
+      error: steps[id].error,
+    }),
+  );
+  return {
+    criticalReady: groupReady('critical'),
+    deferredReady: groupReady('deferred'),
+    opportunisticReady: groupReady('opportunistic'),
+    steps: { ...steps },
+    errors,
+  };
+}
+
+/** Runner padrão de cada passo, conforme plano (`skipReason` = null). */
+function defaultRunner(
+  id: BootStepId,
+): (() => Promise<unknown>) | null {
+  switch (id) {
+    case 'theme':
+      // initTheme() já rodou em main.tsx antes do React montar — o passo só
+      // registra esse fato no estado do boot.
+      return async () => undefined;
+    case 'user-db':
+      return () => getUserDb();
+    case 'user-state':
+      return null;
+    case 'catalog-core':
+      return () => getCatalogDb();
+    case 'route-prefetch':
+      return () =>
+        traceAsync('first-route-chunk', () => import('../components/views/HomeView'));
+    case 'catalog-approaches':
+      return () => memoize('approaches');
+    case 'catalog-questions':
+      return () => memoize('questions');
+  }
+}
+
+let progressListener: OnBootProgress | undefined;
+const runnerOverrides = new Map<BootStepId, () => Promise<unknown>>();
+
+async function executeBoot(options?: BootOptions): Promise<BootState> {
+  const lastAt = await getLastFullPreloadAt();
+  const warm = isWithinWarmTtl(lastAt, Date.now());
+  const plan = planBootSteps(warm, isNativePlatform);
+  const steps = buildInitialSteps();
+  const emit = () => progressListener?.(buildState(steps));
+  emit();
+
+  const runStep = async (step: PlannedBootStep): Promise<void> => {
+    const override = runnerOverrides.get(step.id);
+    const run = override ?? (step.skipReason ? null : defaultRunner(step.id));
+    if (!run) {
+      steps[step.id] = { id: step.id, status: 'skipped', endedAt: Date.now() };
+      emit();
+      return;
+    }
+    steps[step.id] = { id: step.id, status: 'running', startedAt: Date.now() };
+    emit();
+    try {
+      await run();
+      steps[step.id] = {
+        id: step.id,
+        status: 'done',
+        startedAt: steps[step.id].startedAt,
+        endedAt: Date.now(),
+      };
+    } catch (e) {
+      // Falha de etapa não derruba o grupo (spec §2.2): registra, segue, e o
+      // erro fica visível no `errors` do BootState — nada de console mudo.
+      console.warn(`[bootPreload] passo "${step.id}" falhou — seguindo`, e);
+      steps[step.id] = {
+        id: step.id,
+        status: 'error',
+        startedAt: steps[step.id].startedAt,
+        endedAt: Date.now(),
+        error: e,
+      };
+    }
+    emit();
+  };
+
+  const runGroup = async (group: BootStepGroup, spanName: string): Promise<void> => {
+    const groupSteps = plan.filter((s) => s.group === group);
+    if (groupSteps.length === 0) return;
+    mark(`${spanName}-start`);
+    try {
+      // allSettled: `runStep` nunca rejeita, mas a intenção (spec §2.2) é que
+      // UMA falha opcional não derrube o conjunto.
+      await Promise.allSettled(groupSteps.map(runStep));
+    } finally {
+      mark(`${spanName}-end`);
+      measure(
+        group === 'critical' ? 'critical-boot-duration' : `${spanName}-duration`,
+        `${spanName}-start`,
+        `${spanName}-end`,
+      );
+    }
+  };
+
+  const abortPending = (): void => {
+    for (const id of ALL_STEP_IDS) {
+      if (steps[id].status === 'pending') {
+        steps[id] = { id, status: 'skipped', endedAt: Date.now() };
+      }
+    }
+    emit();
+  };
+
+  await runGroup('critical', 'boot-critical');
+  if (options?.signal?.aborted) {
+    abortPending();
+    return buildState(steps);
+  }
+  await runGroup('deferred', 'boot-deferred');
+  if (options?.signal?.aborted) {
+    abortPending();
+    return buildState(steps);
+  }
+  await runGroup('opportunistic', 'boot-opportunistic');
+
+  // A janela quente só é renovada quando a carga completa de fato aconteceu.
+  if (!warm) {
+    await storage.set(LAST_FULL_PRELOAD_KEY, String(Date.now()));
+  }
+
+  return buildState(steps);
+}
+
+let bootRun: Promise<BootState> | undefined;
+
+/**
+ * Executa (ou reaproveita) o boot progressivo. A Promise resolve com o estado
+ * final — mas a UI **não pode** depender dela para montar a primeira tela
+ * (spec §2.1): quem libera a splash é `criticalReady` via `onProgress`.
+ * Chamadas concorrentes (StrictMode) deduplicam na mesma pipeline.
+ */
+export function runBootPreload(
+  onProgress?: OnBootProgress,
+  options?: BootOptions,
+): Promise<BootState> {
+  if (onProgress) progressListener = onProgress;
+  if (!bootRun) bootRun = executeBoot(options);
+  return bootRun;
+}
+
+// ---------------------------------------------------------------------------
+// Pós-boot: prefetch em idle das abas prováveis — SOB a política do
+// screenPrefetch (saveData/visibilidade/limite/dedup, spec §7 Fase 3).
+// As chaves casam com as de `SharedScreenLayers` (`screen:<key>`).
 // ---------------------------------------------------------------------------
 
 let idlePrefetchScheduled = false;
@@ -208,35 +416,39 @@ export function scheduleIdlePrefetch(timeoutMs = 4000): void {
   if (!ric) return;
   idlePrefetchScheduled = true;
   ric(() => {
-    void import('../components/views/BibliotecaView').catch(() => {});
-    void import('../components/views/EstudosView').catch(() => {});
+    requestPrefetch('screen:biblioteca', () =>
+      import('../components/views/BibliotecaView'),
+    );
+    requestPrefetch('screen:estudos', () =>
+      import('../components/views/EstudosView'),
+    );
   }, { timeout: timeoutMs });
 }
 
 /** Uso interno de testes: substitui a fonte de qualquer passo. */
 export function setStepImplForTests(
   id: BootStepId,
-  impl: () => Promise<unknown>
+  impl: () => Promise<unknown>,
 ): void {
-  if (id === 'approaches') {
+  if (id === 'catalog-approaches') {
     stepImpls.approachesImpl = impl;
     return;
   }
-  if (id === 'questions') {
+  if (id === 'catalog-questions') {
     stepImpls.questionsImpl = impl;
     return;
   }
-  stepRunners[id] = impl;
+  runnerOverrides.set(id, impl);
 }
 
-const defaultRunners: Record<BootStepId, () => Promise<unknown>> = { ...stepRunners };
-
-/** Uso interno de testes: descarta memos e flags da sessão. */
+/** Uso interno de testes: descarta memos, overrides e flags da sessão. */
 export function resetBootPreloadForTests(): void {
   approachesPromise = undefined;
   questionsPromise = undefined;
   idlePrefetchScheduled = false;
+  bootRun = undefined;
+  progressListener = undefined;
+  runnerOverrides.clear();
   stepImpls.approachesImpl = defaultApproachesImpl;
   stepImpls.questionsImpl = defaultQuestionsImpl;
-  Object.assign(stepRunners, defaultRunners);
 }

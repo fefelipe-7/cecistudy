@@ -12,6 +12,7 @@ import { PillGroup } from '../ui/PillGroup';
 import { ToggleRow } from '../ui/ToggleRow';
 import { formatDateBR, formatDateShortBR } from '../../lib/dateBR';
 import { pluralPt } from '../../lib/pluralPt';
+import { CELEBRACAO, VAZIO, frase } from '../../lib/voice';
 import { formatHours } from '../../lib/formatHours';
 import {
   suggestTitle,
@@ -732,7 +733,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
               tags={topics}
               onChange={(v) => patch({ topics: v })}
               placeholder="ex: caso de ansiedade"
-              emptyMessage="toque em + para adicionar os temas"
+              emptyMessage={frase(VAZIO, 'toqueParaAdicionarTemas')}
             />
           </div>
           <div>
@@ -806,7 +807,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
               tags={nextSteps}
               onChange={(v) => patch({ nextSteps: v })}
               placeholder="ex: revisar capítulo de TCC, tentar nova técnica..."
-              emptyMessage="toque em + para adicionar"
+              emptyMessage={frase(VAZIO, 'toqueParaAdicionar')}
             />
           </div>
         </div>
@@ -966,15 +967,15 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
     hapticSuccess();
     finish();
     const discusses = discussedLogIds.length;
-    if (isFuture) showToast('agendado ♡');
-    else if (seedTarget) showToast('registro atualizado ♡');
+    if (isFuture) showToast(frase(CELEBRACAO, 'registroAgendado'));
+    else if (seedTarget) showToast(frase(CELEBRACAO, 'registroAtualizado'));
     else if (kind === 'supervisao' || kind === 'intervisao')
       showToast(
         discusses
           ? `supervisão guardada · ${pluralPt(discusses, 'sessão ligada', 'sessões ligadas')} ♡`
           : 'supervisão guardada ♡'
       );
-    else showToast('registro guardado ♡');
+    else showToast(frase(CELEBRACAO, 'registroGuardado'));
   };
 
   const onSaveMinimal = () => {

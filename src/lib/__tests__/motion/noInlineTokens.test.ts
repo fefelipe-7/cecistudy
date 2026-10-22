@@ -26,31 +26,50 @@ const EXEMPT_DIRS = ['src/lib/motion/'];
  * Gerado por `audit-inline-tokens.mjs` (SPEC-007 Slice D).
  */
 const KNOWN_INLINE: Record<string, number[]> = {
-  'src/components/ui/floating-action-menu.tsx': [40, 41, 43, 44, 57, 68],
-  'src/components/ui/bottom-nav-bar.tsx': [36, 66, 89, 90],
+  // Long-press no FAB (2026-10): prop `onLongPress`, `usePressGesture` e
+  // `data-phase` entraram acima dos literais — os números de linha do
+  // ratchet acompanham (os literais em si não mudaram; o gate é o mesmo).
+  'src/components/ui/floating-action-menu.tsx': [59, 60, 62, 63, 76, 87],
+  // A curva do `ease` foi tokenizada (`IOS_EASE`): o `duration` continua
+  // literal porque 0.18s não é `BASE_D.navBar` (0.24) nem `BASE_D.micro`
+  // (0.12) — trocar de token aqui mudaria a entrada da barra sem medição.
+  'src/components/ui/bottom-nav-bar.tsx': [37, 67, 90, 91],
   'src/components/courses/detail/CourseCreateMenu.tsx': [68, 107],
   'src/components/flashcards/Card3D.tsx': [8, 95],
   'src/components/flashcards/CardBaúEnvelope.tsx': [34, 52],
   'src/components/quizzes/QuizExplanationOverlay.tsx': [23, 32],
   'src/components/quizzes/QuizGroupDetail.tsx': [64, 84],
-  'src/components/ui/dither-growth.tsx': [95, 96],
-  'src/components/ui/dither-revenue.tsx': [79, 80],
-  'src/components/ui/EdgeSwipeBack.tsx': [96, 103],
-  'src/components/views/CourseDetailView.tsx': [188, 189],
+  // spec-performance F4: os componentes migraram para o loop controlado
+  // (useDitherLoop) e os literais deslocaram — os números de linha do ratchet
+  // acompanham (os literais em si não mudaram; o gate é o mesmo).
+  'src/components/ui/dither-growth.tsx': [96, 97],
+  'src/components/ui/dither-revenue.tsx': [80, 81],
+  // `EdgeSwipeBack` saiu do ratchet: os dois springs literais do cancelamento
+  // viraram `BASE_T.gesture`, o token dono do gesto de borda (SPEC-007 D8).
+  // Ratchet só encolhe.
+  // SPEC-015: o pager de abas migrou para `ui/SwipeableTabPanel.tsx`, que usa
+  // os tokens do sistema — as duas entradas do `CourseDetailView` saíram do
+  // ratchet porque o literal deixou de existir lá (ratchet só encolhe).
   'src/components/views/home/rows.tsx': [31, 80],
   'src/components/views/StreakView.tsx': [36, 124],
   'src/components/quizzes/QuizCategorySelector.tsx': [98],
   'src/components/quizzes/QuizGroupSelector.tsx': [89],
-  'src/components/quizzes/QuizLoadingScreen.tsx': [70],
+  // SPEC-018 F5: os imports da voz entraram no topo do arquivo e os literais
+  // deslocaram uma linha — os números do ratchet acompanham (os literais em si
+  // não mudaram; o gate é o mesmo).
+  'src/components/quizzes/QuizLoadingScreen.tsx': [71],
   'src/components/quizzes/QuizResultScreen.tsx': [61],
   'src/components/ui/AnimatedNumber.tsx': [12],
-  'src/components/ui/BootSplash.tsx': [121],
+  // spec-performance F2: o BootSplash foi reestruturado (saída por
+  // criticalReady) e o literal moveu para :148 — o número de linha do
+  // ratchet acompanha (o literal em si não mudou; o gate é o mesmo).
+  'src/components/ui/BootSplash.tsx': [148],
   // SPEC-012 F3.5: `aria-valuetext` entrou acima do literal — o número de linha
   // do ratchet acompanha (o literal em si não mudou; o gate é o mesmo).
   'src/components/ui/ProgressBar.tsx': [36],
   'src/components/ui/SegmentedControl.tsx': [67],
-  'src/components/views/NoteTransformWizard.tsx': [45],
-  'src/components/wizards/FlashcardWizard.tsx': [194],
+  'src/components/views/NoteTransformWizard.tsx': [46],
+  'src/components/wizards/FlashcardWizard.tsx': [195],
   'src/components/wizards/note/fieldsFor.tsx': [175],
 };
 

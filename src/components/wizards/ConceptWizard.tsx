@@ -1,4 +1,5 @@
 import React from 'react';
+import { VAZIO, CELEBRACAO, frase } from '../../lib/voice';
 import { Sparkles } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import type { ManagedItem } from '../../types';
@@ -90,7 +91,7 @@ export const ConceptWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
             onChange={(v) => patch({ approachId: v })}
             options={approaches.map((x) => ({ value: x.id, label: x.shortName || x.name }))}
             placeholder="sem abordagem"
-            emptyMessage="ainda não há abordagens registradas."
+            emptyMessage={frase(VAZIO, 'semAbordagensRegistradas')}
           />
           <PillGroupMulti
             label="autores relacionados"
@@ -110,7 +111,7 @@ export const ConceptWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
             tags={tags}
             onChange={(v) => patch({ tags: v })}
             placeholder="tags do conceito (ex: ansiedade)"
-            emptyMessage="não precisa preencher tudo, pode deixar vazio ♡"
+            emptyMessage={frase(VAZIO, 'campoOpcional')}
           />
         </div>
       ),
@@ -148,13 +149,13 @@ export const ConceptWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       handleUpdateConcept({ ...editingConcept, ...payload });
       hapticSuccess();
       closeWizard();
-      showToast('conceito atualizado ♡');
+      showToast(frase(CELEBRACAO, 'conceitoAtualizado'));
       return;
     }
     handleAddConcept({ id: 'con-' + Date.now(), ...payload });
     hapticSuccess();
     closeWizard();
-    showToast('conceito guardado no cantinho ♡');
+    showToast(frase(CELEBRACAO, 'conceitoGuardadoNoCantinho'));
   };
 
   return (

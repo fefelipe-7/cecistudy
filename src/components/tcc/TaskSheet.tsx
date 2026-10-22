@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Trash2 } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
+import { CELEBRACAO, erro, frase } from '../../lib/voice';
 import {
   THESIS_ID,
   newTaskId,
@@ -81,7 +82,7 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, taskId, onClose }) =
     const trimmed = title.trim();
     if (!trimmed) {
       hapticWarning();
-      showToast('a pendência precisa de um título ♡');
+      showToast(erro('pendenciaSemTitulo'));
       return;
     }
     const now = new Date().toISOString();
@@ -107,7 +108,7 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, taskId, onClose }) =
       return i === -1 ? [...prev, draft] : prev.map((t) => (t.id === draft.id ? draft : t));
     });
     hapticTap();
-    showToast('pendência guardada ♡');
+    showToast(frase(CELEBRACAO, 'pendenciaGuardada'));
     onClose();
   };
 
@@ -115,7 +116,7 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, taskId, onClose }) =
     if (!live) return;
     setThesisTasks((prev) => prev.filter((t) => t.id !== live.id));
     hapticTap();
-    showToast('pendência removida');
+    showToast(frase(CELEBRACAO, 'pendenciaRemovida'));
     onClose();
   };
 

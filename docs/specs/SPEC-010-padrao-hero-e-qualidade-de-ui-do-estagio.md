@@ -4,9 +4,10 @@
 > Status: entregue (2026-10-07)
 > App afetado: mobile
 > Origem: `spec-referencial-workspace-academico.md` §3.2 (módulo Estágio no mobile)
-> Decisões: D1..D7 — todas `[D]` (aprovadas pela dona do produto em 2026-10-05)
+> Decisões: D1..D7 — todas `[D]` (aprovadas pela dona do produto em 2026-10-05) — **D1 e D3 superadas para o Estágio pela SPEC-022** (2026-10-19): a primária do Estágio deixa de ser do herói e passa a ser da barra contextual
 > Supersede: —
 > Depende de: SPEC-009 (domínio e fluxos do Estágio)
+> Superada por: SPEC-022 (`docs/specs/SPEC-022-barra-contextual-acoes-da-tela-e-comportamento-estavel.md`) — **D1 e D3, só quanto ao dono da primária no Estágio**; o molde do herói, a escala, a identidade dos cards, o contrato dos componentes e o filtro único continuam válidos aqui. Reconciliação: SPEC-022 §12
 > Data: 2026-10-05
 
 > Uma spec sem alternativa rejeitada nas decisões, ou sem critério de aceite

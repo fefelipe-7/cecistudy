@@ -1,9 +1,9 @@
 import React from 'react';
+import { VAZIO, CELEBRACAO, frase } from '../../lib/voice';
 import { UserCheck } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import type { ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
-import { TOAST } from '../../lib/copy';
 import { useWizardForm } from '../../lib/useWizardForm';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import {
@@ -84,7 +84,7 @@ export const AuthorWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editi
             value={approachId}
             onChange={(v) => patch({ approachId: v })}
             options={approaches.map((a) => ({ value: a.id, label: a.name }))}
-            emptyMessage="ainda não há abordagens registradas."
+            emptyMessage={frase(VAZIO, 'semAbordagensRegistradas')}
           />
         </div>
       ),
@@ -101,7 +101,7 @@ export const AuthorWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editi
             tags={majorWorks}
             onChange={(v) => patch({ majorWorks: v })}
             placeholder="ex: terapia cognitiva da depressão"
-            emptyMessage="não precisa preencher tudo ♡"
+            emptyMessage={frase(VAZIO, 'campoOpcionalCurto')}
           />
           <TagField
             label="conceitos-chave"
@@ -145,7 +145,7 @@ export const AuthorWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editi
       });
       hapticSuccess();
       closeWizard();
-      showToast('autor atualizado ♡');
+      showToast(frase(CELEBRACAO, 'autorAtualizado'));
       return;
     }
     handleAddAuthor({
@@ -159,7 +159,7 @@ export const AuthorWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editi
     });
     hapticSuccess();
     closeWizard();
-    showToast(TOAST.authorSaved);
+    showToast(frase(CELEBRACAO, 'autorGuardado'));
   };
 
   return (

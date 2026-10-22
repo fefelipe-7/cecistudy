@@ -12,9 +12,9 @@ vi.mock('../../../../lib/haptics', () => ({
 const optionLabel = (id: (typeof THEME_ORDER)[number]) => `${THEMES[id].emoji} ${THEMES[id].label}`;
 
 describe('ThemePickerCard', () => {
-  it('renderiza as 6 opções de tema', () => {
+  it('renderiza as 7 opções de tema', () => {
     render(<ThemePickerCard currentTheme="rosa-claro" onSelect={() => {}} />);
-    expect(THEME_ORDER).toHaveLength(6);
+    expect(THEME_ORDER).toHaveLength(7);
     const select = screen.getByRole('combobox', { name: 'selecionar tema' });
     for (const id of THEME_ORDER) {
       const option = select.querySelector(`option[value="${id}"]`);

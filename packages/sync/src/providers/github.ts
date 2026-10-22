@@ -73,11 +73,13 @@ export class GitHubSyncProvider implements SyncProvider {
   }
 
   private mapError(status: number, message?: string): SyncProviderError {
+    // `SPEC-M-018 D17`: só o código de máquina. A frase é da voz; o detalhe
+    // técnico é diagnóstico e a tela o mostra na expansão (`SPEC-C-014` D5).
     if (status === 401 || status === 403) {
-      return new SyncProviderError('AUTH', message ?? 'token inválido ou sem acesso');
+      return new SyncProviderError('AUTH', message);
     }
     if (status === 409) {
-      return new SyncProviderError('REMOTE_CHANGED', 'o remoto mudou desde a última leitura');
+      return new SyncProviderError('REMOTE_CHANGED', message);
     }
     return new SyncProviderError('UNKNOWN', message ?? `github ${status}`);
   }

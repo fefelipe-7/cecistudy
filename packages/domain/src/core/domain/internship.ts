@@ -312,7 +312,14 @@ export const CAMPOS_DE_REFERENCIA: readonly CampoPendencia[] = [
   'impressoes',
 ];
 
-/** Rótulo de cada campo para a copy ("falta tema"). */
+/**
+ * Rótulo de cada campo (`SPEC-M-018 D17`).
+ *
+ * É dado neutro — o domínio nomeia o campo, e **quem fala é a voz**
+ * (`src/lib/voice.ts`, `VAZIO.preenchimento`). "impressões clínicas" sobrevive
+ * porque é o **nome do campo**; "falta impressões clínicas" não sobrevive, porque
+ * é uma frase.
+ */
 export const CAMPO_REFERENCIA_LABEL: Record<CampoPendencia, string> = {
   reflexoes: 'reflexões',
   tema: 'tema',
@@ -321,7 +328,12 @@ export const CAMPO_REFERENCIA_LABEL: Record<CampoPendencia, string> = {
   impressoes: 'impressões clínicas',
 };
 
-/** Descrição de cada campo para os switches (wizard e modal). */
+/**
+ * Descrição de cada campo, para os switches do wizard e do modal.
+ *
+ * `SPEC-M-018 D17`: é dado neutro — o campo explica a si mesmo, e não é frase de
+ * voz. Fica no domínio porque viaja junto do tipo.
+ */
 export const CAMPO_REFERENCIA_DESCRICAO: Record<CampoPendencia, string> = {
   reflexoes: 'o que você sentiu, pensou ou notou',
   tema: 'queixa, demanda ou foco da sessão',
@@ -342,7 +354,14 @@ const CAMPO_REFERENCIA_CHAVE: Record<
   impressoes: 'observations',
 };
 
-/** Texto automático do "não vou responder" (`SPEC-011 D12`). */
+/**
+ * Texto automático do "não vou responder" (`SPEC-011 D12`).
+ *
+ * `SPEC-M-018 D6` — **é dado persistido, não voz**: o texto é gravado no
+ * `InternshipLog` e volta em leitura, sincronização e backup. Reescrevê-lo pela
+ * voz quebraria o dado já gravado; por isso ele fica aqui, e a allowlist de `I4`
+ * o declara como exceção.
+ */
 export const TEXTO_NAO_RESPONDER: Record<CampoPendencia, string> = {
   reflexoes: 'não precisou escrever as reflexões',
   tema: 'não precisou listar o tema',
@@ -392,26 +411,22 @@ export const comDeclinados = (log: InternshipLog, declinados: CampoPendencia[]):
   return next;
 };
 
-/** Numeral por extenso para o chip "ainda falta preencher N" (`D13`). */
-const NUMEROS_POR_EXTENSO = ['', '', 'dois', 'três', 'quatro', 'cinco'] as const;
-
 /**
  * Status do chip de preenchimento do card (`SPEC-011 D13`) — informativo, sem
  * clique. `null` quando o tipo não tem chip (supervisão).
+ *
+ * `SPEC-M-018 D17` — devolve **dado neutro**, nunca frase. O numeral por extenso
+ * e o rótulo são da camada de voz (`src/lib/voice.ts`, `VAZIO.preenchimento`),
+ * que compõe a partir de `faltando`. O `tone` fica aqui porque é apresentação
+ * derivada do dado, não linguagem.
  */
 export const statusPreenchimento = (
   log: InternshipLog
-): { tone: 'success' | 'warning'; label: string } | null => {
+): { tone: 'success' | 'warning'; faltando: CampoPendencia[] } | null => {
   const campos = camposDeReferencia(log.type);
   if (!campos.length) return null;
   const faltando = campos.filter((c) => vazio(valorCampoReferencia(log, c)));
-  if (faltando.length === 0) return { tone: 'success', label: 'tudo preenchido' };
-  if (faltando.length === 1)
-    return { tone: 'warning', label: `falta ${CAMPO_REFERENCIA_LABEL[faltando[0]]}` };
-  return {
-    tone: 'warning',
-    label: `ainda falta preencher ${NUMEROS_POR_EXTENSO[faltando.length] ?? faltando.length}`,
-  };
+  return { tone: faltando.length === 0 ? 'success' : 'warning', faltando };
 };
 
 /**

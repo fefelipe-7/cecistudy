@@ -15,6 +15,15 @@ export interface UserProfile {
   /** Foto de perfil (data URL). Vazia quando não definida. */
   photoUrl?: string;
   /**
+   * Autorização para a voz tratar a usuária **pelo nome** (`SPEC-C-014` D8).
+   *
+   * Padrão fechado: `undefined`/`false` = a voz fala com "você". Opcional de
+   * propósito — não exige backfill nem bump de `SCHEMA_VERSION`, porque
+   * `userProfileSchema` do backup é `passthrough`. O interruptor mora na tela de
+   * Perfil.
+   */
+  nomeAutorizado?: boolean;
+  /**
    * Meta total de horas de estágio (`SPEC-009 D2`).
    *
    * Inteiro de 1 a 5000. **Ausente = sem meta**, e é assim que a tela trata:

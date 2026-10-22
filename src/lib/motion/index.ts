@@ -31,8 +31,8 @@ export {
   DEFAULT_FALLBACK_REDUCED,
 } from './profile';
 
-// Sinal de reduz-motion (reativo, para o provider).
-export { prefersReducedMotion, usePrefersReducedMotion, getTransition } from '../motion';
+// Sinal de reduz-motion (reativo, para o provider e para as variantes locais).
+export { prefersReducedMotion, usePrefersReducedMotion, getTransition } from './reduced';
 
 export {
   PARALLAX,
@@ -41,6 +41,9 @@ export {
   BASE_D,
   EASE,
   BASE_T,
+  IOS_EASE,
+  IOS_EASE_OUT,
+  OVERLAY_FADE,
 } from './tokens';
 export type { Durations, DurationKey } from './tokens';
 
@@ -52,6 +55,8 @@ export {
   stepVariants,
   tabContent,
   overlayVariants,
+  sheetVariants,
+  headerSwapVariants,
   chromeFade,
   toastVariants,
   listItemVariants,
@@ -59,6 +64,9 @@ export {
   SHADE_OPACITY,
 } from './variants';
 
-// ⚠️ `IOS_EASE`, `iOS_SPRING`, `sheetVariants`, `screenVariants`, `fadeSlide` e
-// `headerSwapVariants` AINDA vivem em `src/lib/motion.ts` e são re-exportados
-// por aquele shim. Migram para cá no Slice C (telas) e Slice D (chrome/modais).
+export { TAB_LABELS, tabLabel, screenAnnouncement } from './screenAnnounce';
+
+// `fadeSlide`, `screenVariants`, `iOS_SPRING`, `PUSH_DURATION`,
+// `PUSH_EXIT_DURATION`, `TAB_DURATION` e `setNavMotionContext` foram removidos
+// (2026-10-16, Slice D): sem consumidor, ou já substituídos por
+// `toastVariants`/`createScreenVariants`/`BASE_T`/`BASE_D`/`NavIntent`.

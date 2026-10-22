@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { BookOpen, ChevronLeft, Clock3, NotebookPen, Timer } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
+import { CELEBRACAO, VAZIO, frase } from '../../lib/voice';
 import { SectionTitle } from '../ui/SectionTitle';
 import { ProgressBar } from '../ui/ProgressBar';
 import { EmptyState } from '../ui/EmptyState';
@@ -83,7 +84,7 @@ export const ReadingTrackerScreen: React.FC<Props> = ({ reading, onBack, onOpenR
     });
     if (target > readPages) handleUpdateReadingPages(reading.id, target);
     hapticSuccess();
-    showToast('sessão de leitura guardada com carinho ♡');
+    showToast(frase(CELEBRACAO, 'sessaoDeLeituraGuardada'));
     setOpenSession(false);
     setMinutes('');
     setNote('');
@@ -184,7 +185,7 @@ export const ReadingTrackerScreen: React.FC<Props> = ({ reading, onBack, onOpenR
         {sessions.length === 0 ? (
           <EmptyState
             title="nenhuma sessão ainda"
-            description="abre o leitor e registra de onde saiu — o acompanhamento nasce daqui ♡"
+            description={frase(VAZIO, 'leitorSemRegistro')}
             actionLabel="abrir leitor"
             onAction={onOpenReader}
             secondaryActionLabel="registrar manual"

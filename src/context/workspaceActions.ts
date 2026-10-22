@@ -1,3 +1,4 @@
+import { CELEBRACAO, frase } from '../lib/voice';
 import type {
   Workspace,
   Relation,
@@ -179,7 +180,7 @@ export function useWorkspaceActions(deps: WorkspaceActionsDeps): WorkspaceAction
         projects
       );
       setProjects((prev) => [...prev, p]);
-      showToast(`projeto "${p.title}" criado ♡`);
+      showToast(frase(CELEBRACAO, 'projetoCriado', { titulo: p.title }));
       return p;
     } catch (err) {
       const msg = (err as Error).message;

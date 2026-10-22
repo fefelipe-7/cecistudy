@@ -2,6 +2,7 @@
 // Abre ao tocar/long-press num record do histórico: muda o status ou apaga.
 import React from 'react';
 import { Trash2 } from 'lucide-react';
+import { CELEBRACAO, frase } from '../../lib/voice';
 import { Modal } from '../ui/Modal';
 import { useMobileApp } from '@/context/mobileApp';
 import { hapticTap } from '../../lib/haptics';
@@ -48,7 +49,7 @@ const RecordEditSheet: React.FC<RecordEditSheetProps> = ({ open, course, record,
     if (!record) return;
     hapticTap();
     updateAttendanceRecord(course.id, record.id, { status });
-    showToast('registro atualizado ♡');
+    showToast(frase(CELEBRACAO, 'registroAtualizado'));
     onClose();
   };
 
@@ -56,7 +57,7 @@ const RecordEditSheet: React.FC<RecordEditSheetProps> = ({ open, course, record,
     if (!record) return;
     hapticTap();
     removeAttendanceRecord(course.id, record.id);
-    showToast('registro apagado ♡');
+    showToast(frase(CELEBRACAO, 'registroApagado'));
     onClose();
   };
 

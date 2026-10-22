@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { VAZIO, CELEBRACAO, frase } from '../../lib/voice';
 import { BookOpen } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import type { Course, CourseScheduleSlot } from '../../types';
@@ -231,7 +232,7 @@ export const CourseWizard: React.FC = () => {
             options={conceptOptions}
             value={values.conceptIds}
             onChange={(v) => patch({ conceptIds: resolveIds(v) })}
-            emptyMessage="ainda não tem conceito parecido por aqui ♡"
+            emptyMessage={frase(VAZIO, 'semConceitoParecido')}
           />
           <button type="button" onClick={() => setSheetOpen('conceitos')} className="w-full bg-surface-input rounded-2xl px-4 py-4 text-sm text-left text-ceci-primary border border-transparent focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 focus:border-ceci-brand cursor-pointer transition-colors">
             {values.conceptIds.length
@@ -246,7 +247,7 @@ export const CourseWizard: React.FC = () => {
             options={authorOptions}
             value={values.authorIds}
             onChange={(v) => patch({ authorIds: resolveIds(v) })}
-            emptyMessage="ainda não tem autor parecido por aqui ♡"
+            emptyMessage={frase(VAZIO, 'semAutorParecido')}
           />
           <button type="button" onClick={() => setSheetOpen('autores')} className="w-full bg-surface-input rounded-2xl px-4 py-4 text-sm text-left text-ceci-primary border border-transparent focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 focus:border-ceci-brand cursor-pointer transition-colors">
             {values.authorIds.length
@@ -261,7 +262,7 @@ export const CourseWizard: React.FC = () => {
             options={bibliographyOptions}
             value={values.bibliographyIds}
             onChange={(v) => patch({ bibliographyIds: v })}
-            emptyMessage="ainda não tem leitura parecida por aqui ♡"
+            emptyMessage={frase(VAZIO, 'semLeituraParecida')}
           />
           <button type="button" onClick={() => setSheetOpen('bibliografia')} className="w-full bg-surface-input rounded-2xl px-4 py-4 text-sm text-left text-ceci-primary border border-transparent focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 focus:border-ceci-brand cursor-pointer transition-colors">
             {values.bibliographyIds.length
@@ -340,7 +341,7 @@ export const CourseWizard: React.FC = () => {
       authorIds: values.authorIds,
       bibliographyIds: values.bibliographyIds,
     });
-    showToast('matéria adicionada ao seu cantinho ♡');
+    showToast(frase(CELEBRACAO, 'materiaAdicionada'));
     closeWizard();
   };
 

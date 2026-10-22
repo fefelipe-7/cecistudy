@@ -1,6 +1,6 @@
 import React from 'react';
+import { VAZIO, CELEBRACAO, frase } from '@/lib/voice';
 import { useMobileApp } from '@/context/mobileApp';
-import { TOAST } from '@/lib/copy';
 import { Picker } from '../ui/Picker';
 
 interface CourseSelectProps {
@@ -29,12 +29,12 @@ export const CourseSelect: React.FC<CourseSelectProps> = ({
   optional = false,
   placeholder,
   clearable = false,
-  emptyMessage = 'ainda não há disciplinas cadastradas. que tal criar a primeira?',
+  emptyMessage = frase(VAZIO, 'semDisciplinas'),
 }) => {
   const { courses, openEditCourse, showToast } = useMobileApp();
 
   const createCourseInline = () => {
-    showToast(TOAST.courseRegistered);
+    showToast(frase(CELEBRACAO, 'materiaPrecisaCadastro'));
     openEditCourse();
   };
 

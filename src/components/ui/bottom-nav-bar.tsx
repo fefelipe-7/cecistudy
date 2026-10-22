@@ -5,6 +5,7 @@ import React from "react";
 import { motion } from "framer-motion";
 
 import { cn } from "@/lib/utils";
+import { IOS_EASE } from "@/lib/motion";
 
 export type NavItem = {
   id?: string;
@@ -33,7 +34,7 @@ export function BottomNavBar({
     <motion.nav
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
+      transition={{ duration: 0.18, ease: IOS_EASE }}
       role="navigation"
       aria-label="bottom navigation"
       className={cn(

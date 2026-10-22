@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { App as CapacitorApp } from '@capacitor/app';
 import { LocalNotifications } from '@capacitor/local-notifications';
@@ -6,12 +6,16 @@ import { AnimatePresence, motion, useMotionValue, useTransform } from 'framer-mo
 import { useMobileApp } from '@/context/mobileApp';
 import { useNavValue } from '@/context/shellNavContexts';
 import { setupNativeShell } from '../lib/native';
-import { EASE, overlayVariants, resolveProfile } from '../lib/motion';
+import { mark } from '../lib/performance/perfMarks';
+import { cancelQueuedPrefetches } from '../lib/performance/screenPrefetch';
+import { EASE, overlayVariants, resolveProfile, screenAnnouncement } from '../lib/motion';
+import { erro } from '../lib/voice';
 import { nativeNavigation } from '../navigation/native-navigation';
 import { routeFromNotificationExtra } from '../../packages/domain/src/core/domain/thesis';
 
 import { HeaderNav } from '../components/HeaderNav';
 import { BottomNav } from '../components/BottomNav';
+import { ContextualBottomBar } from '../components/ui/ContextualBottomBar';
 import { EdgeSwipeBack } from '../components/ui/EdgeSwipeBack';
 import { OnboardingScreen } from '../components/views/OnboardingScreen';
 
@@ -55,6 +59,7 @@ const MobileAppShellInner: React.FC = () => {
   const { activeTab, handleNavigate, openCompose, openWizard, openTaskExamWizard } = nav;
 
   useEffect(() => {
+    mark('first-screen-mounted');
     setupNativeShell();
   }, []);
 
@@ -105,18 +110,26 @@ const MobileAppShellInner: React.FC = () => {
     backExitRef.current = initialBackExitState();
   }, [app.canGoBack, activeTab]);
 
-  // Inicializa plugin de swipe-back nativo (iOS) — sempre habilitado
+  // Troca de rota descarta o prefetch oportunístico pendente (spec-performance
+  // §3.3): o que já corre, corre — mas a fila não atrapalha a nova rota.
+  useEffect(() => {
+    cancelQueuedPrefetches();
+  }, [activeTab]);
+
+  // Gesto de voltar nativo (iOS). O `addListener` é registrado **antes** do
+  // `enable()`: `notifyListeners` usa `retainUntilConsumed: false`, então um
+  // gesto que occurresse antes de o listener existir seria descartado.
+  //
+  // ⚠️ O listener é do **plugin**, não de `window`. `notifyListeners` no iOS não
+  // é um evento de DOM — a versão anterior escutava `window` e o gesto nunca
+  // fechava o pop (a tela voltava sozinha para o lugar). Ver SPEC-007 D7.
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
-    nativeNavigation.enable();
-    const handleSwipeBackCompleted = () => {
+    const off = nativeNavigation.onSwipeBack('swipeBackCompleted', () => {
       focusBackRef.current();
-    };
-    window.addEventListener('swipeBackCompleted', handleSwipeBackCompleted);
-    return () => {
-      window.removeEventListener('swipeBackCompleted', handleSwipeBackCompleted);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    });
+    nativeNavigation.enable();
+    return off;
   }, []);
 
   // Informa ao plugin se existem telas para voltar (apenas informativo).
@@ -170,7 +183,28 @@ const MobileAppShellInner: React.FC = () => {
     headerConfig,
   } = app;
 
+  // Região viva da troca de tela (SPEC-007 §E).
+  //
+  // O texto é a única coisa que muda: o nó fica montado o tempo todo, porque é
+  // isso que faz um leitor de tela tratar a diferença como **anúncio** em vez de
+  // entrada de conteúdo nova (um nó que entra no DOM junto com o texto
+  // normalmente não é anunciado).
+  //
+  // Começa vazio de propósito — preencher no primeiro render faria o leitor
+  // falar a tela inicial logo na abertura do app, que é ruído, não informação.
+  const announcement = screenAnnouncement(activeTab, headerConfig?.title);
+  const [announced, setAnnounced] = useState('');
+  useEffect(() => {
+    setAnnounced(announcement ?? '');
+  }, [announcement]);
+
   const onNavigateToPerfil = useCallback(() => handleNavigate('perfil'), [handleNavigate]);
+
+  /** Falha da ação da barra contextual: a voz do cecinho em duas frases
+   * (SPEC-022 D10 · `src/lib/voice.ts`). */
+  const handleContextBarError = useCallback(() => {
+    app.showToast(erro('acaoFalhou'));
+  }, [app]);
 
   const isAuxFlow =
     app.isComposeScreenOpen ||
@@ -186,6 +220,12 @@ const MobileAppShellInner: React.FC = () => {
 
   return (
     <div className="min-h-screen text-ceci-primary flex flex-col font-sans antialiased selection:bg-surface-rose selection:text-ceci-brand-strong">
+
+      {/* Nome da tela atual para o leitor de tela (SPEC-007 §E). `sr-only` tira o nó
+          da árvore visual mas o mantém no DOM — é o que o `aria-live` observa. */}
+      <div role="status" aria-live="polite" className="sr-only">
+        {announced}
+      </div>
 
       {/* Gesto de "voltar pela borda" (iOS): desliza a camada de slide e volta um nível. */}
       {Capacitor.isNativePlatform() ? (
@@ -208,7 +248,6 @@ const MobileAppShellInner: React.FC = () => {
             profile={profile}
             headerConfig={headerConfig}
             direction={app.navDirection}
-            onOpenSearch={app.openSearch}
             onNavigateToPerfil={onNavigateToPerfil}
           />
         )}
@@ -219,7 +258,11 @@ const MobileAppShellInner: React.FC = () => {
         className={`flex-1 max-w-md sm:max-w-xl lg:max-w-3xl xl:max-w-4xl w-full mx-auto px-3.5 py-4 sm:px-5 lg:px-8 relative transition-[padding] duration-[220ms] ease-out ${
           app.isBottomNavVisible
             ? 'pb-[calc(5rem+env(safe-area-inset-bottom,0px))] lg:pb-10'
-            : 'pb-6'
+            : nav.contextBarConfig
+              ? // respiro da barra contextual: a altura real da peça + a folga
+                // da base, pela mesma constante que a barra usa (SPEC-022 D7)
+                'pb-[calc(var(--contextual-bar-space)+env(safe-area-inset-bottom,0px))]'
+              : 'pb-6'
         }`}
       >
         {/* === Camada 0 (só web): peek do gesto de borda ===
@@ -306,10 +349,26 @@ const MobileAppShellInner: React.FC = () => {
               onOpenWizard={openWizard}
               onOpenTaskExamWizard={openTaskExamWizard}
               onOpenCompose={openCompose}
+              onOpenSearch={app.openSearch}
             />
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Barra contextual — o rodapé das telas AUXILIARES (empilhadas), que não
+          têm barra de abas. Fica **sempre montada** (fora do `AnimatePresence`)
+          para que o estado expandido/compacto sobreviva à navegação: quem decide
+          se ela aparece é `contextBarConfig` (`null` = nada renderizado). É uma
+          decisão explícita — voltar para uma aba e voltar para a auxiliar não
+          troca a barra de lugar.
+
+          A falha de uma ação é dita em voz alta (SPEC-022 D10): sem aviso, a
+          usuária toca e "nada acontece" — que lê como travamento. */}
+      <ContextualBottomBar
+        config={nav.contextBarConfig}
+        onBack={performBack}
+        onError={handleContextBarError}
+      />
 
       {/* Modais/toasts globais */}
 

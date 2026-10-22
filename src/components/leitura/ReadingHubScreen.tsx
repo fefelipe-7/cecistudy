@@ -1,8 +1,10 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { BookOpen, ChevronRight, Link2, Plus } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
+import { CELEBRACAO, frase } from '../../lib/voice';
 import { ManageSurface } from '../ui/ManageSurface';
 import { UnderlineTabBar, type UnderlineTab } from '../ui/UnderlineTabBar';
+import { SwipeableTabPanel, useTabPager } from '../ui/SwipeableTabPanel';
 import { EmptyState } from '../ui/EmptyState';
 import { ProgressBar } from '../ui/ProgressBar';
 import { Mascote } from '../ui/Mascote';
@@ -15,6 +17,16 @@ import type { MascoteExpression } from '../ui/Mascote';
 import type { ReadingItem } from '@/types';
 
 type Tab = 'lendo' | 'quero' | 'concluidas';
+
+/** Ordem das abas — define para onde o arrasto avança (SPEC-015). */
+const TAB_ORDER: readonly Tab[] = ['lendo', 'quero', 'concluidas'];
+
+/** Nome legível da aba — o `aria-label` do painel mostra isto, não o id cru. */
+const TAB_LABEL: Record<Tab, string> = {
+  lendo: 'lendo',
+  quero: 'quero ler',
+  concluidas: 'concluídas',
+};
 
 const STATUS_META: Record<ReadingItem['status'], { label: string; className: string }> = {
   lendo: {
@@ -99,6 +111,10 @@ export const ReadingHubScreen: React.FC = () => {
     { id: 'concluidas', label: 'concluídas', badge: counts.concluidas },
   ];
 
+  // Arraste horizontal troca de aba (SPEC-015); o estado da aba é deste
+  // componente, então o `onChange` continua sendo o `setTab` de sempre.
+  const pager = useTabPager<Tab>({ tabIds: TAB_ORDER, active: tab, onChange: setTab });
+
   const filtered = useMemo(() => {
     const wanted: ReadingItem['status'] =
       tab === 'lendo' ? 'lendo' : tab === 'quero' ? 'nao_iniciado' : 'concluido';
@@ -145,7 +161,7 @@ export const ReadingHubScreen: React.FC = () => {
       minutes,
       createdAt: new Date().toISOString(),
     });
-    showToast('sessão de leitura guardada com carinho ♡');
+    showToast(frase(CELEBRACAO, 'sessaoDeLeituraGuardada'));
   };
 
   if (tracking) {
@@ -203,7 +219,7 @@ export const ReadingHubScreen: React.FC = () => {
         />
       </section>
 
-      <UnderlineTabBar<Tab> tabs={tabs} active={tab} onChange={setTab} />
+      <UnderlineTabBar<Tab> tabs={tabs} active={tab} onChange={(id) => pager.goTo(id)} />
 
       {continueReading && tab === 'lendo' && (
         <section className="rounded-2xl bg-surface-default border border-ceci-border-subtle shadow-2xs p-4 space-y-3">
@@ -244,7 +260,8 @@ export const ReadingHubScreen: React.FC = () => {
         </section>
       )}
 
-      {filtered.length === 0 ? (
+      <SwipeableTabPanel active={tab} pager={pager} label={TAB_LABEL[tab]}>
+        {filtered.length === 0 ? (
         <EmptyState
           {...EMPTY_META[tab]}
           actionLabel="nova leitura"
@@ -325,6 +342,7 @@ export const ReadingHubScreen: React.FC = () => {
           onClose={() => setCaptureOpen(false)}
         />
       )}
+      </SwipeableTabPanel>
 
       {reader && (
         <ReaderModeModal

@@ -2,6 +2,7 @@
 // Extraído de `HomeView.tsx`. Toque no card abre o menu 2×2 de frequência.
 import React, { useState } from 'react';
 import { CalendarDays, DoorOpen, ArrowRight, Check } from 'lucide-react';
+import { CELEBRACAO, frase } from '../../../lib/voice';
 import { SectionTitle } from '../../ui/SectionTitle';
 import { ClassActionsSheet } from './ClassActionsSheet';
 import { toDateKey } from '../../../lib/streak';
@@ -15,7 +16,11 @@ interface TodayClassesProps {
   onOpenCourse: (courseId: string) => void;
 }
 
-const STATUS_TOAST: Record<Exclude<AttendanceStatus, 'presente'>, string> = {
+/**
+ * Os brindes de falta/cancelamento — exportado porque a Faculdade usa o mesmo
+ * fluxo de presença (SPEC-014 D5): mesma frase, nenhum caminho de escrita novo.
+ */
+export const STATUS_TOAST: Record<Exclude<AttendanceStatus, 'presente'>, string> = {
   falta: 'guardado como falta ♡ sem julgamento, só registro',
   cancelada: 'aula cancelada não conta como falta ♡',
 };
@@ -36,7 +41,7 @@ const TodayClasses: React.FC<TodayClassesProps> = ({ todaySchedule, onOpenCourse
         openCompose(current.course.id);
         return;
       }
-      showToast('presença registrada ♡ bora estudar?');
+      showToast(frase(CELEBRACAO, 'presencaRegistrada'));
       return;
     }
     showToast(STATUS_TOAST[status as Exclude<AttendanceStatus, 'presente'>]);

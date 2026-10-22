@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { VAZIO, frase } from '../../lib/voice';
 import { Course, CourseScheduleSlot } from '../../types';
 import { Modal } from '../ui/Modal';
 import { ColorSwatchPicker } from '../ui/ColorSwatchPicker';
@@ -286,7 +287,7 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
                 options={conceptOptions}
                 value={conceptIds}
                 onChange={(v) => setConceptIds(resolveIds(v))}
-                emptyMessage="ainda não tem conceito parecido por aqui ♡"
+                emptyMessage={frase(VAZIO, 'semConceitoParecido')}
               />
               <CatalogMultiSelect
                 open={sheetOpen === 'autores'}
@@ -295,7 +296,7 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
                 options={authorOptions}
                 value={authorIds}
                 onChange={(v) => setAuthorIds(resolveIds(v))}
-                emptyMessage="ainda não tem autor parecido por aqui ♡"
+                emptyMessage={frase(VAZIO, 'semAutorParecido')}
               />
               <CatalogMultiSelect
                 open={sheetOpen === 'bibliografia'}
@@ -304,7 +305,7 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
                 options={bibliographyOptions}
                 value={bibliographyIds}
                 onChange={(v) => setBibliographyIds(v)}
-                emptyMessage="ainda não tem leitura parecida por aqui ♡"
+                emptyMessage={frase(VAZIO, 'semLeituraParecida')}
               />
               <button type="button" onClick={() => setSheetOpen('conceitos')} className="w-full bg-surface-input rounded-xl px-3.5 py-3 text-sm text-left text-ceci-primary border border-ceci-border-default hover:border-ceci-border-brand focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 cursor-pointer transition-colors">
                 {conceptIds.length

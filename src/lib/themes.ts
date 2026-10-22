@@ -12,6 +12,7 @@ import { storage } from './storage';
 
 export type ThemeId =
   | 'rosa-claro'
+  | 'campinho'
   | 'oceano'
   | 'amanhecer'
   | 'noturno'
@@ -53,6 +54,22 @@ export interface ThemeTokens {
   'ceci-border-strong': string;
   'ceci-border-brand': string;
   'ceci-border-academic': string;
+  /**
+   * Hero sobre vídeo (SPEC-023 D4) — as cores que fazem o texto do hero
+   * ler sobre a arte do vídeo:
+   *
+   * - `hero-veu` o véu que escurece a arte **onde o texto está**. É
+   *              **sempre escuro**: um véu claro (a cor da superfície do
+   *              tema) lavava a arte — a cecinho, que é bege e clara,
+   *              sumia no fundo branco.
+   * - `hero-ink` a cor do texto do hero. Sobre um véu escuro o texto é
+   *              **sempre claro** — o hero é um cinema, não um cartão.
+   *
+   * O céu (`hero-ceu`) fica fora daqui: é invariante ao tema, porque o céu
+   * é da arte, não do tema.
+   */
+  'hero-veu': string;
+  'hero-ink': string;
   'shadow-rgb': string;
   'shadow-brand-rgb': string;
   'glass-hairline': string;
@@ -120,6 +137,8 @@ export const TOKEN_KEYS = [
   'ceci-border-strong',
   'ceci-border-brand',
   'ceci-border-academic',
+  'hero-veu',
+  'hero-ink',
   'shadow-rgb',
   'shadow-brand-rgb',
   'glass-hairline',
@@ -181,8 +200,78 @@ export const THEMES: Record<ThemeId, Theme> = {
       'ceci-border-strong': '#D8C7BA',
       'ceci-border-brand': '#FFD0DB',
       'ceci-border-academic': '#CEE7F0',
+      // O hero: o véu escurece a arte do lado do texto e o texto é claro.
+      'hero-veu': '#2A2024',
+      'hero-ink': '#FDF6EE',
       'shadow-rgb': '122, 88, 72',
       'shadow-brand-rgb': '175, 70, 95',
+      'glass-hairline': 'rgba(255,255,255,0.50)',
+      'glass-pill-start': 'rgba(255,255,255,0.90)',
+      'glass-pill-end': 'rgba(255,255,255,0.50)',
+      'glass-pill-border': 'rgba(255,255,255,0.70)',
+      'status-success': '#427E5B',
+      'status-success-strong': '#2D6A4F',
+      'status-success-on': '#FFFFFF',
+      'status-danger': '#B2554D',
+      'status-danger-strong': '#A8514B',
+      'status-danger-on': '#FFFFFF',
+      'status-warning': '#8A6524',
+      'status-warning-strong': '#725016',
+      'status-warning-on': '#FFFFFF',
+    },
+  },
+  campinho: {
+    id: 'campinho',
+    label: 'campinho',
+    emoji: '🌿',
+    description:
+      'o verde de onde a cecinho senta — grama ao entardecer, céu azul só no hero.',
+    isDark: false,
+    chartTheme: 'light',
+    themeColor: '#D8E6C8',
+    tokens: {
+      // O campinho: o verde da grama do vídeo do hero vira o pano de fundo do
+      // app inteiro. A base é um verde dessaturado e claro (a grama ao
+      // entardecer), e o texto é um verde-escuro de folha — não preto, para
+      // que o app inteiro pertença ao mesmo mundo do vídeo.
+      canvas: '#EDF2E4',
+      'surface-default': '#F8FBF2',
+      'surface-subtle': '#E7EEDC',
+      'surface-muted': '#DFE8D2',
+      'surface-rose': '#F6EAE6',
+      'surface-blue': '#E4EEF4',
+      'surface-input': '#F2F6EA',
+      'surface-warm': '#F4F0DF',
+      'canvas-glow-rose': '#F6E6E0',
+      'canvas-glow-amber': '#F0EBD2',
+      'ceci-primary': '#2E3A26',
+      'ceci-secondary': '#5A6650',
+      'ceci-tertiary': '#7B876F',
+      'ceci-muted': '#9AA592',
+      'ceci-faded': '#B2BCAA',
+      'ceci-ink': '#1F281A',
+      'ceci-primary-hover': '#242E1E',
+      'ceci-text-soft': '#44503B',
+      'ceci-on-primary': '#FFFFFF',
+      'ceci-on-brand': '#FFFFFF',
+      'ceci-on-academic': '#FFFFFF',
+      'ceci-brand': '#C06B7E',
+      'ceci-brand-strong': '#A25466',
+      'ceci-brand-soft': '#DE96A5',
+      'ceci-brand-hover': '#8C4657',
+      'ceci-academic': '#4A879F',
+      'ceci-academic-strong': '#396D82',
+      'ceci-border-subtle': '#DEE7D2',
+      'ceci-border-default': '#CFDAC1',
+      'ceci-border-strong': '#BCC9AC',
+      'ceci-border-brand': '#F2CFD8',
+      'ceci-border-academic': '#CEE7F0',
+      // O hero do campinho: o véu escurece a arte do lado do texto e o texto
+      // é claro — o hero é um cinema, não um cartão de papel.
+      'hero-veu': '#26301F',
+      'hero-ink': '#F4F8EC',
+      'shadow-rgb': '78, 96, 62',
+      'shadow-brand-rgb': '162, 84, 102',
       'glass-hairline': 'rgba(255,255,255,0.50)',
       'glass-pill-start': 'rgba(255,255,255,0.90)',
       'glass-pill-end': 'rgba(255,255,255,0.50)',
@@ -239,6 +328,9 @@ export const THEMES: Record<ThemeId, Theme> = {
       'ceci-border-strong': '#C2D4DC',
       'ceci-border-brand': 'rgba(60,142,160,0.22)',
       'ceci-border-academic': 'rgba(74,135,159,0.22)',
+      // O hero: o véu escurece a arte do lado do texto e o texto é claro.
+      'hero-veu': '#1C2A30',
+      'hero-ink': '#F2F8FA',
       'shadow-rgb': '36, 52, 64',
       'shadow-brand-rgb': '42, 117, 135',
       'glass-hairline': 'rgba(255,255,255,0.50)',
@@ -297,6 +389,9 @@ export const THEMES: Record<ThemeId, Theme> = {
       'ceci-border-strong': '#DCC8B5',
       'ceci-border-brand': 'rgba(232,120,90,0.22)',
       'ceci-border-academic': 'rgba(90,143,168,0.25)',
+      // O hero: o véu escurece a arte do lado do texto e o texto é claro.
+      'hero-veu': '#2E2018',
+      'hero-ink': '#FBF3EA',
       'shadow-rgb': '60, 46, 40',
       'shadow-brand-rgb': '184, 78, 46',
       'glass-hairline': 'rgba(255,255,255,0.50)',
@@ -355,6 +450,9 @@ export const THEMES: Record<ThemeId, Theme> = {
       'ceci-border-strong': '#4A4548',
       'ceci-border-brand': 'rgba(232,145,156,0.25)',
       'ceci-border-academic': 'rgba(143,197,212,0.25)',
+      // O hero: o véu escurece a arte do lado do texto e o texto é claro.
+      'hero-veu': '#221E20',
+      'hero-ink': '#F6ECE6',
       'shadow-rgb': '0, 0, 0',
       'shadow-brand-rgb': '212, 114, 138',
       'glass-hairline': 'rgba(255,255,255,0.06)',
@@ -413,6 +511,9 @@ export const THEMES: Record<ThemeId, Theme> = {
       'ceci-border-strong': '#3F505B',
       'ceci-border-brand': 'rgba(95,179,196,0.25)',
       'ceci-border-academic': 'rgba(127,187,208,0.25)',
+      // O hero: o véu escurece a arte do lado do texto e o texto é claro.
+      'hero-veu': '#1A242B',
+      'hero-ink': '#EDF5F8',
       'shadow-rgb': '0, 0, 0',
       'shadow-brand-rgb': '74, 156, 174',
       'glass-hairline': 'rgba(255,255,255,0.06)',
@@ -471,6 +572,9 @@ export const THEMES: Record<ThemeId, Theme> = {
       'ceci-border-strong': '#44424E',
       'ceci-border-brand': 'rgba(233,59,140,0.30)',
       'ceci-border-academic': 'rgba(0,212,170,0.25)',
+      // O hero: o véu escurece a arte do lado do texto e o texto é claro.
+      'hero-veu': '#1A1A20',
+      'hero-ink': '#F0EAF6',
       'shadow-rgb': '0, 0, 0',
       'shadow-brand-rgb': '212, 42, 124',
       'glass-hairline': 'rgba(255,255,255,0.08)',
@@ -491,7 +595,15 @@ export const THEMES: Record<ThemeId, Theme> = {
 };
 
 /** Ordem de exibição no picker (3 claras + 3 escuras). */
-export const THEME_ORDER: ThemeId[] = ['rosa-claro', 'oceano', 'amanhecer', 'noturno', 'mar-profundo', 'neon'];
+export const THEME_ORDER: ThemeId[] = [
+  'rosa-claro',
+  'campinho',
+  'oceano',
+  'amanhecer',
+  'noturno',
+  'mar-profundo',
+  'neon',
+];
 
 let activeThemeId: ThemeId = DEFAULT_THEME_ID;
 

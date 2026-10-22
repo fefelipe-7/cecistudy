@@ -12,6 +12,7 @@ import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
 import { TagField } from '../ui/TagField';
 import { CourseSelect } from './CourseSelect';
 import { PRIORITIES, TASK_CATEGORIES } from './note/constants';
+import { CELEBRACAO, VAZIO, erro, frase } from '../../lib/voice';
 
 interface TaskExamWizardProps {
   /** Quando definido, pula a escolha entre tarefa e prova (vindo do picker). */
@@ -271,7 +272,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
           tags={examTopics}
           onChange={(v) => patch({ examTopics: v })}
           placeholder="ex: pensamentos automáticos"
-          emptyMessage="não precisa preencher tudo, pode deixar vazio ♡"
+          emptyMessage={frase(VAZIO, 'campoOpcional')}
         />
       ),
     },
@@ -323,7 +324,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       });
       hapticSuccess();
       closeWizard();
-      showToast('tarefa atualizada ♡');
+      showToast(frase(CELEBRACAO, 'tarefaAtualizada'));
       return;
     }
     if (editingExam && kind === 'exam') {
@@ -337,7 +338,7 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       });
       hapticSuccess();
       closeWizard();
-      showToast('prova atualizada ♡');
+      showToast(frase(CELEBRACAO, 'provaAtualizada'));
       return;
     }
     if (kind === 'task') {
@@ -353,9 +354,9 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       if (addToAgenda && taskDueDate) {
         const ok = await createTaskCalendarEvent(taskTitle.trim(), courseName, taskDueDate);
         if (ok) {
-          showToast('tarefa salva e marcada na sua agenda ♡');
+          showToast(frase(CELEBRACAO, 'tarefaSalvaNaAgenda'));
         } else {
-          showToast('tarefa salva no app — não consegui marcar na agenda ♡');
+          showToast(erro('naoMarcouNaAgenda'));
         }
         hapticSuccess();
         closeWizard();
@@ -374,9 +375,9 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       if (addToAgenda && examDate) {
         const ok = await createExamCalendarEvent(examTitle.trim(), courseName, examDate);
         if (ok) {
-          showToast('prova salva e marcada na sua agenda ♡');
+          showToast(frase(CELEBRACAO, 'provaSalvaNaAgenda'));
         } else {
-          showToast('prova salva no app — não consegui marcar na agenda ♡');
+          showToast(erro('naoMarcouNaAgenda'));
         }
         hapticSuccess();
         closeWizard();

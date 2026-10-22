@@ -3,11 +3,15 @@ import { BookOpen, Calendar as CalendarIcon, HeartHandshake, ChevronRight, Plus 
 import { SubTabFaculdade, Course } from '../../types';
 import { CourseDetailView } from './CourseDetailView';
 import { UnderlineTabBar } from '../ui/UnderlineTabBar';
+import { SwipeableTabPanel, useTabPager } from '../ui/SwipeableTabPanel';
 import { useDataClientApp, useDataClientCourses } from '@/context/DataClientProvider';
 import { useNavValue } from '@/context/shellNavContexts';
 import { getTodaySchedule, upcomingEvents } from '../../lib/schedule';
 import type { CalendarEvent } from '../../lib/schedule';
 import { useTermScope } from '../../lib/termScope';
+import { computePendencies, computeStats } from '../../lib/internshipCases';
+import { localDateKey } from '../../lib/dateBR';
+import { DICA, frase } from '../../lib/voice';
 import { Mascote } from '../ui/Mascote';
 import HeroSection from './faculdade/HeroSection';
 import WeekGrid from './faculdade/WeekGrid';
@@ -20,6 +24,22 @@ interface FaculdadeViewProps {
   /** Disciplina em foco (pilha `course`). Quando presente, renderiza o CourseDetailView. */
   course?: Course;
 }
+
+/** Ordem das sub-tabs — é ela que define para onde o arrasto avança (SPEC-015). */
+const SUBTAB_ORDER: readonly SubTabFaculdade[] = ['disciplinas', 'calendario', 'estagio'];
+
+/** Nome legível da sub-tab: o `aria-label` do painel mostra isto, não o id. */
+const SUBTAB_LABEL: Record<SubTabFaculdade, string> = {
+  disciplinas: 'disciplinas',
+  calendario: 'calendário',
+  estagio: 'estágio',
+};
+
+const SUBTABS: Array<{ id: SubTabFaculdade; label: string; icon: React.ReactNode }> = [
+  { id: 'disciplinas', label: 'disciplinas', icon: <BookOpen className="w-3.5 h-3.5" /> },
+  { id: 'calendario', label: 'calendário', icon: <CalendarIcon className="w-3.5 h-3.5" /> },
+  { id: 'estagio', label: 'estágio', icon: <HeartHandshake className="w-3.5 h-3.5" /> },
+];
 
 export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
   const {
@@ -46,6 +66,26 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
 
   const now = useMemo(() => new Date(), []);
 
+  // Arraste horizontal troca de sub-tab, como no detalhe da disciplina. A regra
+  // mora em `ui/SwipeableTabPanel` (SPEC-015); aqui só são as três sub-tabs.
+  const pager = useTabPager<SubTabFaculdade>({
+    tabIds: SUBTAB_ORDER,
+    active: subTab,
+    onChange: setSubTab,
+  });
+
+  // Números do bloco de estágio: a regra é do domínio da SPEC-009
+  // (`computeStats`/`computePendencies`), chamada direto — o mesmo caminho que
+  // `InternshipSection.tsx` já usa. "Hoje" é data civil em fuso local.
+  const estagio = useMemo(() => {
+    const stats = computeStats(internshipLogs, localDateKey(now));
+    const pendencias = computePendencies(internshipLogs, localDateKey(now));
+    return {
+      registros: internshipLogs.length,
+      horas: stats.doneHours,
+      pendencias: pendencias.noReflection.length + pendencias.noSupervision.length,
+    };
+  }, [internshipLogs, now]);
   const examIds = useMemo(() => new Set(exams.map((e) => e.id)), [exams]);
   const taskIds = useMemo(() => new Set(tasks.map((t) => t.id)), [tasks]);
 
@@ -67,8 +107,6 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
   // Provas/tarefas herdam o período pelo `courseId` da disciplina (§D3).
   const pendingExams = exams.filter((e) => !e.completed && (!e.courseId || activeIds.has(e.courseId)));
   const pendingTasks = tasks.filter((t) => !t.completed && (!t.disciplineId || activeIds.has(t.disciplineId)));
-
-  const internshipTotalHours = allInternshipRecords.reduce((acc, r) => acc + r.hours, 0);
 
   const todaySchedule = getTodaySchedule(grade, now);
 
@@ -102,35 +140,71 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
         onOpenCalendar={() => setSubTab('calendario')}
       />
 
-      {/* Card de estágio em destaque */}
-      <button
-        onClick={() => openInternshipDiary()}
-        aria-label="abrir diário de estágio"
-        className="w-full rounded-[26px] p-5 bg-gradient-to-br from-surface-rose via-surface-default to-surface-blue border border-ceci-border-brand shadow-sm card-lift press-card cursor-pointer relative overflow-hidden group"
-      >
-        <div className="flex items-center gap-4">
-          <span className="w-14 h-14 rounded-xl bg-surface-default border border-ceci-border-brand flex items-center justify-center shadow-2xs shrink-0">
-            <HeartHandshake className="w-7 h-7 text-ceci-brand-strong" />
-          </span>
-          <div className="min-w-0 flex-1">
-            <h2 className="font-display text-lg font-bold text-ceci-primary leading-tight">diário de estágio</h2>
-            <p className="text-xs text-ceci-secondary mt-1 leading-relaxed">
-              {allInternshipRecords.length > 0
-                ? `${allInternshipRecords.length} ${allInternshipRecords.length === 1 ? 'registro' : 'registros'} · ${internshipTotalHours}h de campo — toca para entrar no diário ♡`
-                : 'campo, supervisão e entregas — tudo num lugar só ♡'}
-            </p>
+      {/* 2. DIÁRIO DE ESTÁGIO — o segundo bloco, forte em conteúdo e sem competir
+          com o hero. O gradiente é do hero: repeti-lo aqui embaixo fazia os dois
+          cards se lerem como irmãos, e nenhum dos dois sabia dizer qual era o
+          principal. Aqui é superfície rose plana, com o mesmo peso dos outros
+          blocos e o número grande em `text-xl`. */}
+      <section className="w-full rounded-3xl p-5 bg-surface-rose border border-ceci-border-brand shadow-sm relative overflow-hidden">
+        <button
+          onClick={() => openInternshipDiary()}
+          aria-label="abrir diário de estágio"
+          className="w-full text-left cursor-pointer group pr-16"
+        >
+          <div className="flex items-center gap-4">
+            <span className="w-12 h-12 rounded-2xl bg-surface-default border border-ceci-border-brand flex items-center justify-center shadow-2xs shrink-0">
+              <HeartHandshake className="w-6 h-6 text-ceci-brand-strong" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <h2 className="font-display text-lg font-bold text-ceci-primary leading-tight">
+                diário de estágio
+              </h2>
+              {estagio.registros > 0 ? (
+                <>
+                  <p className="font-display text-xl font-bold text-ceci-brand-strong leading-tight mt-1 tabular-nums">
+                    {estagio.horas}h
+                    <span className="text-xs font-semibold text-ceci-secondary ml-1.5">
+                      em campo
+                    </span>
+                  </p>
+                  <p className="text-xs text-ceci-secondary mt-1 leading-relaxed">
+                    {estagio.registros}{' '}
+                    {estagio.registros === 1 ? 'registro' : 'registros'}
+                    {estagio.pendencias > 0
+                      ? ` · ${estagio.pendencias} pedindo carinho`
+                      : ' — tudo em dia por aqui'}
+                  </p>
+                  <p className="font-serif-academic text-xs text-ceci-secondary leading-relaxed mt-2 max-w-[80%]">
+                    {frase(DICA, 'faculdadePraticaAcompanha')}
+                  </p>
+                </>
+              ) : (
+                <p className="text-xs text-ceci-secondary mt-1 leading-relaxed">
+                  campo, supervisão e entregas — tudo num lugar só ♡
+                </p>
+              )}
+            </div>
+            <ChevronRight className="w-5 h-5 text-ceci-brand-strong group-hover:translate-x-0.5 transition-transform shrink-0" />
           </div>
-          <ChevronRight className="w-5 h-5 text-ceci-brand-strong group-hover:translate-x-0.5 transition-transform shrink-0" />
-        </div>
-        <Mascote expression="field-prepare" className="w-14 h-14 absolute -bottom-2 -right-1 opacity-95 pointer-events-none" decorative />
-      </button>
+        </button>
 
-      <button
-        onClick={() => openWizard('internship')}
-        className="w-full flex items-center justify-center gap-1.5 py-3 rounded-full text-xs font-semibold bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand hover:bg-surface-rose transition-colors cursor-pointer tap-interactive"
-      >
-        <Plus className="w-4 h-4" /> anotar ou agendar um estágio
-      </button>
+        {/* O card já abre o diário (área de cima + chevron); o botão fica com a
+            única ação que o toque no card não faz — começar um registro. */}
+        <div className="mt-4 flex flex-wrap items-center gap-2 pr-16">
+          <button
+            onClick={() => openWizard('internship')}
+            className="touch-target inline-flex items-center gap-1.5 rounded-full bg-ceci-brand-strong px-4 py-2 text-xs font-semibold text-ceci-on-brand hover:bg-ceci-brand transition-colors cursor-pointer active:scale-[0.98]"
+          >
+            <Plus className="w-3.5 h-3.5" aria-hidden="true" /> anotar ou agendar um estágio
+          </button>
+        </div>
+
+        <Mascote
+          expression="field-prepare"
+          className="w-12 h-12 absolute -bottom-1 -right-1 opacity-90 pointer-events-none"
+          decorative
+        />
+      </section>
 
       {/* 2. MINHA SEMANA — grade real da semana (seg → dom) */}
       <WeekGrid courses={grade} now={now} onOpenCourse={openCourseDetail} />
@@ -143,50 +217,46 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
 
           {/* Sub-Tabs Navigation */}
           <UnderlineTabBar
-            tabs={[
-              { id: 'disciplinas', label: 'disciplinas', icon: <BookOpen className="w-3.5 h-3.5" /> },
-              { id: 'calendario', label: 'calendário', icon: <CalendarIcon className="w-3.5 h-3.5" /> },
-              { id: 'estagio', label: 'estágio', icon: <HeartHandshake className="w-3.5 h-3.5" /> },
-            ]}
+            tabs={SUBTABS}
             active={subTab}
-            onChange={(id) => setSubTab(id as SubTabFaculdade)}
+            onChange={(id) => pager.goTo(id as SubTabFaculdade)}
           />
 
-          {/* SUBTAB: DISCIPLINAS */}
-          {subTab === 'disciplinas' && (
-            <DisciplinasGrid
-              courses={grade}
-              classes={classes}
-              exams={exams}
-              onNewCourse={() => openWizard('course')}
-              onOpenCourse={openCourseDetail}
-            />
-          )}
+          {/* Conteúdo das sub-tabs: o painel arrasta junto com o dedo (SPEC-015) */}
+          <SwipeableTabPanel active={subTab} pager={pager} label={SUBTAB_LABEL[subTab]}>
+            {subTab === 'disciplinas' && (
+              <DisciplinasGrid
+                courses={grade}
+                classes={classes}
+                exams={exams}
+                onNewCourse={() => openWizard('course')}
+                onOpenCourse={openCourseDetail}
+              />
+            )}
 
-          {/* SUBTAB: CALENDÁRIO */}
-          {subTab === 'calendario' && (
-            <CalendarMonth
-              courses={courses}
-              exams={exams}
-              tasks={tasks}
-              tcc={tcc}
-              thesisChapters={thesisChapters}
-              thesisMeetings={thesisMeetings}
-              thesisTasks={thesisTasks}
-              now={now}
-              onOpenCourse={openCourseDetail}
-              onEventDestination={eventDestination}
-            />
-          )}
+            {subTab === 'calendario' && (
+              <CalendarMonth
+                courses={courses}
+                exams={exams}
+                tasks={tasks}
+                tcc={tcc}
+                thesisChapters={thesisChapters}
+                thesisMeetings={thesisMeetings}
+                thesisTasks={thesisTasks}
+                now={now}
+                onOpenCourse={openCourseDetail}
+                onEventDestination={eventDestination}
+              />
+            )}
 
-          {/* SUBTAB: ESTÁGIO */}
-          {subTab === 'estagio' && (
-            <InternshipSection
-              records={allInternshipRecords}
-              now={now}
-              onOpenDiary={openInternshipDiary}
-            />
-          )}
+            {subTab === 'estagio' && (
+              <InternshipSection
+                records={allInternshipRecords}
+                now={now}
+                onOpenDiary={openInternshipDiary}
+              />
+            )}
+          </SwipeableTabPanel>
 
         </div>
 
