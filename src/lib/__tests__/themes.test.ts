@@ -51,12 +51,6 @@ describe('THEMES — inventário', () => {
     expect(g).toBeGreaterThan(b);
   });
 
-  it('o céu do hero é invariante ao tema (não está em TOKEN_KEYS)', () => {
-    // O céu é da arte, não do tema: o vídeo é o mesmo em todos os temas.
-    // Se `hero-ceu` entrar em TOKEN_KEYS, o céu passa a depender do tema.
-    expect(TOKEN_KEYS).not.toContain('hero-ceu');
-  });
-
   it('cada tema tem todas as chaves do contrato de tokens', () => {
     for (const theme of Object.values(THEMES)) {
       for (const key of TOKEN_KEYS) {

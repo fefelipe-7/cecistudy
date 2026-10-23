@@ -211,24 +211,6 @@
    --color-focus-track: rgba(255, 255, 255, 0.14);
    --color-focus-accent: #E97891;
 
-   /* HERO SOBRE VÍDEO (SPEC-023 D3 e D4) — as cores que fazem o texto do
-      hero ler sobre a arte do vídeo, e o céu da Home:
-        - `hero-veu`  o véu que escurece a arte **onde o texto está**. É
-                      SEMPRE escuro: um véu claro (a cor da superfície do
-                      tema) lavava a arte — a cecinho, que é bege e clara,
-                      sumia no fundo branco. Escurecer preserva a cor da
-                      arte e serve para texto claro E escuro.
-        - `hero-ink`  a cor do texto do hero. Sobre um véu escuro, o texto
-                      é **sempre claro** — o hero é um cinema, não um
-                      cartão de papel.
-        - `hero-ceu`  o céu: a faixa azul que fica **acima** do card do
-                      hero, na Home. É INVARIANTE ao tema (como os tokens
-                      da capa e do leitor, TEM-001 B.5): o céu é da arte,
-                      não do tema — o vídeo é o mesmo em todos os temas. */
-   --color-hero-veu: #2A2024;
-   --color-hero-ink: #FDF6EE;
-   --color-hero-ceu: #9FC2E6;
-
    /* FONTS */
    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
    --font-display: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, sans-serif;

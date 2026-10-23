@@ -100,31 +100,7 @@ export const HomeView: React.FC = () => {
   }, [dueCardsCount, tasks, pendingExamsIn14Days, streakStats.current]);
 
   return (
-    <div className="relative">
-      {/*
-        O céu — a faixa azul que fica **acima** do card do hero.
-
-        A arte do vídeo tem dois mundos: o céu azul no topo e a grama verde
-        onde a cecinho senta. O card do hero é fino demais para caber os
-        dois, então o card mostra a grama e o tema pinta o céu aqui em cima
-        — e o verde do tema é o campo embaixo. É o que faz a Home ser
-        diferente das outras telas: nas outras, é só o campo.
-
-        A faixa é `hero-ceu`, que é **invariante ao tema** (como os tokens
-        da capa e do leitor, TEM-001 B.5): o céu é da arte, não do tema — o
-        vídeo é o mesmo em todos os temas.
-
-        O `-top-4` cancela o padding vertical do shell (`py-4`), para o céu
-        começar logo abaixo do cabeçalho, sem uma faixa de canvas entre os
-        dois. E o `-mx` lateral tira a faixa da coluna: o céu ocupa a tela
-        inteira, o card não.
-      */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-4 -left-3.5 -right-3.5 sm:-left-5 sm:-right-5 lg:-left-8 lg:-right-8 h-[260px] bg-gradient-to-b from-hero-ceu via-hero-ceu/55 to-transparent"
-      />
-
-      <div className="relative max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-6 pb-1 pt-8">
+    <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-6 pb-1">
 
       {/* 1. HERO — saudação + data + frase do dia */}
       <HeroSection
@@ -170,8 +146,6 @@ export const HomeView: React.FC = () => {
           {/* 6. DICA DA CECINHO */}
           <CecinhoTip tip={cecinhoTip} />
         </div>
-
-      </div>
 
       </div>
     </div>

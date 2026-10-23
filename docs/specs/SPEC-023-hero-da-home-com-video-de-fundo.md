@@ -1,14 +1,26 @@
 # SPEC-023 · Hero da Home com vídeo de fundo
 
 > Prefixo: `SPEC-` (local do mobile) · Onde vive: `cecistudy/docs/specs/`
-> Status: em andamento (protótipo com interruptor)
+> Status: **revertida em 2026-10-22** — o vídeo saiu, o hero voltou ao card clássico; o tema `campinho` ficou
 > App afetado: mobile
 > Origem: spec-referencial-workspace-academico.md §4.1 (Home Acadêmica) — a Home **agrega** o que os outros módulos expõem; a escolha do fundo é de apresentação
 > Decisões: D1, D2, D3, D4, D5, D6
 > Supersede: —
+> Revertida por: —
 > Depende de: SPEC-007 (sistema de movimentos), SPEC-010 (padrão hero), SPEC-M-018 (voz do cecinho no mobile), SPEC-C-013 (identidade), SPEC-C-014 (contrato de voz)
-> Data: 2026-10-20 (D1–D3 revisados em 2026-10-22)
-> Cópia de grupo: **pendente** — ver §7
+> Data: 2026-10-20 (D1–D3 revisados em 2026-10-22; **revertida em 2026-10-22**)
+> Cópia de grupo: **não haverá** — a spec foi revertida antes de subir como `SPEC-M-0xx`
+
+> **Reversão (2026-10-22, decisão da dona do produto).** O card fino com vídeo
+> em loop **não ficou bom**: em tela pequena a arte não cabia, e o véu que
+> mantinha o texto legível apagava o vídeo. Voltou o hero clássico
+> (`HeroSection.tsx`: gradiente + mascote + frase do dia), o vídeo e o
+> `hero-ceu` foram **removidos do código**, e o que sobreviveu foi o **tema
+> `campinho`** — que era o achado da rodada. O corpo abaixo fica como registro
+> do que foi tentado e por quê; **não é contrato**. Nada de `hero-veu`,
+> `hero-ink`, `hero-ceu`, `HeroVideo`, `heroVideo.config` ou `assets:hero`
+> existe mais.
+
 
 > **Marca.** Esta spec é de **apresentação** e é **visual-only**: nenhuma regra
 > de domínio, nenhum estado, nenhuma navegação e nenhum schema foi tocado. O
