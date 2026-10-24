@@ -412,22 +412,25 @@ histórico, então `git checkout <sha> -- <arquivo>` recupera.
 
 ---
 
-## Pendências reais (2026-10-23)
+## Pendências reais (2026-10-24)
 
 O que **não** foi feito, e o motivo. Nenhum item aqui é esquecimento.
 
+**Fechado nesta rodada:** push de `dev`/`staging`, default branch `dev`, os
+quatro rulesets (`dev`, `staging`, `main`, `tags-v`), settings do repo,
+segurança (secret scanning, push protection, alertas, Dependabot, CodeQL),
+`RELEASE_PLEASE_TOKEN` e o `verify` completo verde com as 155 suítes.
+
 | # | Pendência | Por que ficou | Quem fecha |
 |---|---|---|---|
-| 1 | **Push de `dev`/`staging` + settings + rulesets** | ruleset exigindo `ci-ok` antes do primeiro run verde trava todo merge; o CI está vermelho por trabalho de outra sessão (`SPEC-025`/`ReminderSettings` quebra o `typecheck`) | precisa da árvore inteira verde primeiro |
-| 2 | **`RELEASE_PLEASE_TOKEN`** + "Allow GitHub Actions to create and approve pull requests" | secret e setting só a dona cria | dona do repositório |
-| 3 | **Primeiro release real** | depende de 1 e 2 | dona |
-| 4 | **`format:check` no gate** | 18 arquivos ainda sem formatar são de **outra sessão**, que está escrevendo neles agora; os 4 JSON de dados (`src/data/questions`, `src/data/temple`) ficaram fora do Biome de propósito | quando a árvore estiver só sua: `npm run format` e ligar o passo |
-| 5 | **Lint prescritivo** | o preset `recommended` acusa **3.263** achados em `src/` (hooks, a11y, non-null, unused). Corrigir é refactor próprio, não higiene | adotar por família, uma PR por regra |
-| 6 | **`npm run lint` continua `tsc`** | trocar por Biome quebraria o `AGENTS.md`, que outra sessão está editando agora | quando o `AGENTS.md` estiver livre |
-| 7 | **Expurgar os 20 MB do `.db` do histórico** | `git filter-repo` é destrutivo e sem rollback (D11) | decisão explícita |
-| 8 | **`content:check` regrava as fachadas do templo** | rodar `npm run content:check` reescreve 15 JSON + 2 `.ts` de `src/data/temple/` (17 mil linhas de diff, conteúdo idêntico — só reimpressão). A árvore fica suja a cada verificação | ou o script para de escrever e passa a comparar, ou as fachadas saem do git e entram no `prebuild` |
-| 9 | **Mover as specs da raiz para `docs/`** (T6.3) | mover `spec-tcc.md` e `spec-performance.md` quebra 15 referências em `docs/`, `tasks/`, `scripts/` e comentários de `src/lib/performance/`; várias dessas são de outra sessão | fazer junto com a atualização das referências, numa PR só de docs |
+| 1 | **Primeiro release real** | o caminho agora é `dev → staging → main` por PR; o release nasce da tag que o release-please cria na `main` | próxima promoção |
+| 2 | **`format:check` no gate** | os 17 arquivos ainda sem formatar são de **outra sessão**, que está escrevendo neles agora; os JSON de dados (`src/data/questions`, `src/data/temple`) ficaram fora do Biome de propósito | quando a árvore estiver só sua: `npm run format` e ligar o passo |
+| 3 | **Lint prescritivo** | o preset `recommended` acusa **3.263** achados em `src/` (hooks, a11y, non-null, unused). Corrigir é refactor próprio, não higiene | adotar por família, uma PR por regra |
+| 4 | **`npm run lint` continua `tsc`** | trocar por Biome quebraria o `AGENTS.md`, que outra sessão está editando agora | quando o `AGENTS.md` estiver livre |
+| 5 | **Expurgar os 20 MB do `.db` do histórico** | `git filter-repo` é destrutivo e sem rollback (D11) | decisão explícita |
+| 6 | **`content:check` regrava as fachadas do templo** | rodar `npm run content:check` reescreve 15 JSON + 2 `.ts` de `src/data/temple/` (17 mil linhas de diff, conteúdo idêntico — só reimpressão). A árvore fica suja a cada verificação | ou o script para de escrever e passa a comparar, ou as fachadas saem do git e entram no `prebuild` |
+| 7 | **Mover as specs da raiz para `docs/`** (T6.3) | mover `spec-tcc.md` e `spec-performance.md` quebra 15 referências em `docs/`, `tasks/`, `scripts/` e comentários de `src/lib/performance/`; várias dessas são de outra sessão | fazer junto com a atualização das referências, numa PR só de docs |
 
-O `typecheck` está vermelho por `src/lib/notifications.ts` / `ReminderSettings`
-(SPEC-025 em andamento, **de outra sessão**). Não é regressão deste plano e não
-foi tocado aqui.
+O trabalho não commitado de outra sessão (SPEC-025, `ReminderSettings`, redução
+de testes) continua na árvore e **não** foi tocado; o `verify` rodou verde com
+ele presente.
