@@ -384,16 +384,17 @@ histórico, então `git checkout <sha> -- <arquivo>` recupera.
 
 | O que | Comando | Antes | Depois |
 |---|---|---|---|
-| Gate completo | `time npm run verify` | — | — |
-| Gate `dev` | `time npm run verify:domain` | — | — |
-| `test:domain` | `time npm run test:domain` | — | — |
-| `content:check` | `time npm run content:check` | — | — |
-| `db:verify` | `time npm run db:verify` | — | — |
-| `content:build` | `time npm run content:build` | — | — |
-| CI (PR) | `gh run view <id> --json jobs` | nunca rodou | — |
-| Vulnerabilidades | `npm audit --audit-level=high` | 2 altas (vite, zod) | — |
-| Tamanho do repo | `du -sh .git` · `du -sh content public/assets/databases` | — | — |
-| Arquivos sem commit | `git status --short \| wc -l` | 98 | 0 |
+| Gate completo | `time npm run verify` | — | não rodado inteiro (só `verify:fast` + `build:web`) |
+| Gate `dev` | `time npm run verify:domain` | — | typecheck ok · 450 testes · 13,4 s |
+| `test:domain` | `time npm run test:domain` | — | 450 testes · 13,4 s |
+| Suíte inteira | `time npx vitest run` | — | 1.679 testes · 155 arquivos · 115 s |
+| `content:check` | `time npm run content:check` | — | ok (regrava as fachadas — débito 8) |
+| `db:verify` | `time npm run db:verify` | — | ok · release 2026.08.24.1 |
+| `content:build` | `time npm run content:build` | — | rebuild completo 9,3 s · `content:ensure` sem rebuild 3,3 s |
+| CI (PR) | `gh run view <id> --json jobs` | nunca rodou | **nunca rodou** (sem push) |
+| Vulnerabilidades | `npm audit --audit-level=high` | 2 altas (vite, zod) | 0 |
+| Tamanho do repo | `du -sh .git` · `du -sh content public/assets/databases` | — | `.git` 64 MB (pack 47,2 MiB) · catálogo fora do git |
+| Arquivos sem commit | `git status --short \| wc -l` | 98 | 0 meus (restam os de outra sessão) |
 
 ---
 
