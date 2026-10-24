@@ -20,7 +20,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import type React from 'react';
 import { isNativePlatform } from './storage.ts';
-import { userStorage } from './storageLayers.ts';
+import { userStorage, reportStorageHealth } from './storageLayers.ts';
 import { getUserDb } from './db/userDb.ts';
 import { isUserCollectionKey, loadCollection, saveCollection } from './db/normalize.ts';
 import { enqueueWrite } from './db/writeQueue.ts';
@@ -60,26 +60,25 @@ export function useSqliteState<T>(
     if (!isNativePlatform) return;
     let cancelled = false;
     (async () => {
-      const db = await getUserDb();
       try {
+        const db = await getUserDb();
         if (db && isUserCollectionKey(key)) {
           const value = await loadCollection<T>(db, key);
           if (!cancelled && value !== undefined && !dirtyRef.current) setStateRaw(value);
         } else {
           const item = await userStorage.get(key);
-          if (!cancelled && item != null && !dirtyRef.current) {
-            try {
-              setStateRaw(JSON.parse(item) as T);
-            } catch {
-              /* mantém estado atual */
-            }
-          }
+          if (item != null && !dirtyRef.current) setStateRaw(JSON.parse(item) as T);
         }
-      } finally {
         // Sinaliza como ESTADO (não ref): o write-through reage e enfileira
         // a edição feita durante a hidratação (bug da F5.4 — antes, a
         // mudança era perdida para sempre).
         if (!cancelled) setHydrated(true);
+      } catch (e) {
+        // SPEC-M-026 D3: leitura que falha NÃO libera a escrita. Sem isto o
+        // write-through gravaria o `initialValue` por cima da coleção — e um
+        // JSON corrompido no disco também não deve ser sobrescrito.
+        reportStorageHealth(key, e);
+        console.error(`[useSqliteState] leitura de "${key}" falhou — escrita bloqueada`, e);
       }
     })();
     return () => {

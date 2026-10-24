@@ -403,9 +403,9 @@ CREATE INDEX IF NOT EXISTS idx_reading_bookmark_reading ON reading_bookmark(read
  * `CREATE`, sem perda (a verdade está no `data_json` do singleton, e o dreno do
  * boot, `DataClientProvider`, repõe os capítulos a partir dele).
  *
- * `DROP`+`CREATE` ficam num **único `exec`**: o runner não abre transação por
- * passo (`migrations.ts:55-62`), e um `exec` atômico é a garantia disponível
- * contra base sem tabela no meio do passo. Este é o primeiro `DROP TABLE` do
+ * `DROP`+`CREATE` num único passo: o runner abre transação por passo
+ * (`migrations.ts`), então uma queda no meio desfaz o `DROP` — a base continua
+ * na versão anterior, com as tabelas antigas. Este é o primeiro `DROP TABLE` do
  * projeto — comentado e testado por ser precedente.
  */
 export const THESIS_TABLES_SQL = `
