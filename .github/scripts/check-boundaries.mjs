@@ -179,6 +179,20 @@ const checks = [
     ],
     forbiddenContent: ['isMobile', 'Capacitor.isNativePlatform'],
   },
+  {
+    // SPEC-M-026 I1: nenhum caminho de boot, OTA ou migração apaga dado da
+    // usuária. O único caminho de limpeza total é `resetApp`, acionado por ela.
+    // `maxOccurrences` é o ratchet: o número só pode ficar igual ou cair.
+    name: 'boot/OTA não limpa dado da usuária (SPEC-M-026 I1)',
+    targets: ['src', 'apps/mobile/src'],
+    forbiddenContent: ['clearUserData(', 'localStorage.clear(', 'Preferences.clear('],
+    // userDb.ts define a função; DataClientProvider chama uma vez, em resetApp.
+    maxOccurrences: {
+      'src/lib/db/userDb.ts': 1,
+      'src/context/DataClientProvider.tsx': 1,
+    },
+    excludeTests: true,
+  },
 ];
 
 let failed = false;
@@ -187,6 +201,7 @@ for (const check of checks) {
   const files = resolveTargets(check.targets);
   for (const file of files) {
     if (check.excludeTests && /[\\/]__tests__[\\/]/.test(file)) continue;
+    const rel = path.relative(root, file).split(path.sep).join('/');
     const content = fs.readFileSync(file, 'utf-8');
 
     if (check.forbiddenSpecifiers) {
@@ -205,9 +220,12 @@ for (const check of checks) {
 
     if (check.forbiddenContent) {
       for (const pat of check.forbiddenContent) {
-        if (content.includes(pat)) {
+        const ocorrencias = content.split(pat).length - 1;
+        const permitidas = check.maxOccurrences?.[rel] ?? 0;
+        if (ocorrencias > permitidas) {
           console.error(
-            `[BOUNDARY] ${check.name}: "${pat}" encontrado em ${path.relative(root, file)}`,
+            `[BOUNDARY] ${check.name}: "${pat}" encontrado em ${rel}` +
+              (permitidas ? ` (${ocorrencias}x, máximo declarado ${permitidas})` : ''),
           );
           failed = true;
         }

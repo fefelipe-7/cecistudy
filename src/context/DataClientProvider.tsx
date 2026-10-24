@@ -699,7 +699,7 @@ export function useDataClient(): DataClientValue {
   const { value: streakData, set: setStreakData, setRaw: setStreakDataRaw } = useStampedState<StreakData>('streakData', emptyStreakData, syncIndex, setSyncIndex);
 
   // Lembrete diário de estudo (só efetivo no app nativo)
-  const [reminderSettings, setReminderSettings] = usePersistentState<ReminderSettings>('reminder', emptyReminder);
+  const [reminderSettings, setReminderSettings] = usePersistentState<ReminderSettings>('reminder', emptyReminder, 'user');
 
   // Integração com Google Calendar (apenas provas e tarefas; toggle próprio)
   const [gcalEnabled, setGcalEnabledState] = usePersistentState<boolean>('gcalEnabled', false);
@@ -720,7 +720,7 @@ export function useDataClient(): DataClientValue {
   }, [themePref]);
 
   // Onboarding (primeiro acesso)
-  const [onboarding, setOnboarding] = usePersistentState<import('../types').OnboardingState>('onboarding', emptyOnboarding);
+  const [onboarding, setOnboarding] = usePersistentState<import('../types').OnboardingState>('onboarding', emptyOnboarding, 'user');
   // Fase 3 — registry local de workspaces. O padrão é o Workspace Acadêmico.
   // (o estado de sessão — incluindo activeWorkspaceId — ficava no
   // DesktopSessionProvider em apps/desktop, legado removido 2026-09; aqui só o registry.)
@@ -801,12 +801,13 @@ export function useDataClient(): DataClientValue {
   const [syncCheckpoint, setSyncCheckpoint] = usePersistentState<SyncCheckpoint>(
     'syncCheckpoint',
     INITIAL_CHECKPOINT,
+    'user',
   );
   const [githubSyncConfig, setGithubSyncConfig] = usePersistentState<{
     owner: string;
     repo: string;
     token: string;
-  } | null>('githubSyncConfig', null);
+  } | null>('githubSyncConfig', null, 'user');
   const [syncStatus, setSyncStatus] = useState<
     'idle' | 'checking' | 'syncing' | 'synced' | 'upToDate' | 'error' | 'preview'
   >('idle');
@@ -911,9 +912,14 @@ export function useDataClient(): DataClientValue {
     showToast(frase(CELEBRACAO, 'cantinhoResetado'));
   };
 
-  /** Conclui o onboarding: grava o perfil e parte do cantinho vazio (zero). */
+  /** Conclui o onboarding: grava o perfil e parte do cantinho vazio (zero).
+   *
+   * SPEC-M-026 D9: nada de `applyDatabase(emptyDatabase())` aqui. O app já
+   * nasce vazio (`emptyDatabase()` é o baseline) e, numa reinstalação, o
+   * onboarding roda depois de o dado ser restaurado — zerar ali apagaria o que
+   * a usuária acabou de recuperar. O único caminho que apaga tudo é `resetApp`.
+   */
   const completeOnboarding = (profileUpdate: Partial<UserProfile>) => {
-    applyDatabase(emptyDatabase());
     setProfile((prev) => ({ ...prev, ...profileUpdate }));
     setOnboarding({ completed: true, completedAt: new Date().toISOString() });
     showToast(frase(CELEBRACAO, 'cantinhoPronto'));
