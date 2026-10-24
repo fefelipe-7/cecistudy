@@ -19,6 +19,10 @@
     "assets": "node scripts/generate-assets.mjs",
     "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "lint:code": "biome lint .",
+    "lint:code:fix": "biome lint --write .",
     "test": "vitest run",
     "test:ci": "vitest run --reporter=dot",
     "test:watch": "vitest",
@@ -90,6 +94,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.6.2",
     "@capacitor/cli": "^8.4.3",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@testing-library/jest-dom": "^7.0.1",

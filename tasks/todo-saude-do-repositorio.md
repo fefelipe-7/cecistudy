@@ -3,7 +3,9 @@
 > Criado 2026-10-23 · Spec: [`../docs/specs/SPEC-026-saude-do-repositorio-branches-ci-cd-e-readme.md`](../docs/specs/SPEC-026-saude-do-repositorio-branches-ci-cd-e-readme.md)
 > Escopo: só este repositório. Nenhuma mudança em `packages/*`, schema, dado da
 > usuária ou no desktop.
-> Status: **proposta** — nada executado. Nenhuma task marcada.
+> Status: **em andamento** — F0, F1, F2 e F4 commitados em 2026-10-23; F5 quase
+> toda (zips, catálogo, Biome instalado). O que falta está em
+> [Pendências reais](#pendências-reais), no fim do arquivo.
 
 ## Decisões fechadas (não reabrir sem a dona)
 
@@ -405,3 +407,23 @@ histórico, então `git checkout <sha> -- <arquivo>` recupera.
 | `.db` fora do git quebra clone novo | T5.3.2 + T5.3.5: `content:ensure` nos `pre*` e aviso no README |
 | Perder o trabalho de 22–23/10 | T0.1 antes de qualquer branch |
 | Reverter D2 (staging sem publicar) exige APK nova | hoje não há aparelho apontando para canal nenhum; é o momento seguro |
+
+---
+
+## Pendências reais (2026-10-23)
+
+O que **não** foi feito, e o motivo. Nenhum item aqui é esquecimento.
+
+| # | Pendência | Por que ficou | Quem fecha |
+|---|---|---|---|
+| 1 | **Push de `dev`/`staging` + settings + rulesets** | ruleset exigindo `ci-ok` antes do primeiro run verde trava todo merge; o CI está vermelho por trabalho de outra sessão (`SPEC-025`/`ReminderSettings` quebra o `typecheck`) | precisa da árvore inteira verde primeiro |
+| 2 | **`RELEASE_PLEASE_TOKEN`** + "Allow GitHub Actions to create and approve pull requests" | secret e setting só a dona cria | dona do repositório |
+| 3 | **Primeiro release real** | depende de 1 e 2 | dona |
+| 4 | **`format:check` no gate** | 18 arquivos ainda sem formatar são de **outra sessão**, que está escrevendo neles agora; os 4 JSON de dados (`src/data/questions`, `src/data/temple`) ficaram fora do Biome de propósito | quando a árvore estiver só sua: `npm run format` e ligar o passo |
+| 5 | **Lint prescritivo** | o preset `recommended` acusa **3.263** achados em `src/` (hooks, a11y, non-null, unused). Corrigir é refactor próprio, não higiene | adotar por família, uma PR por regra |
+| 6 | **`npm run lint` continua `tsc`** | trocar por Biome quebraria o `AGENTS.md`, que outra sessão está editando agora | quando o `AGENTS.md` estiver livre |
+| 7 | **Expurgar os 20 MB do `.db` do histórico** | `git filter-repo` é destrutivo e sem rollback (D11) | decisão explícita |
+
+O `typecheck` está vermelho por `src/lib/notifications.ts` / `ReminderSettings`
+(SPEC-025 em andamento, **de outra sessão**). Não é regressão deste plano e não
+foi tocado aqui.
