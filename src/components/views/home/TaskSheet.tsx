@@ -44,14 +44,12 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, onClose, defaultDate
   const [values, setValues] = useState<TaskSheetValues>(EMPTY_VALUES);
 
   // Reabrir começa do zero — sem o passo e o título do registro anterior. O dia
-  // do `+` do calendário (SPEC-024 D20) entra como prazo inicial.
+  // do `+` do calendário (SPEC-024 D20) entra como prazo inicial. Não limpar no
+  // fechamento: o conteúdo precisa ficar visível durante a animação de saída.
   useEffect(() => {
-    if (!open) {
-      setStep(0);
-      setTriedNext(false);
-      setValues(EMPTY_VALUES);
-      return;
-    }
+    if (!open) return;
+    setStep(0);
+    setTriedNext(false);
     setValues({ ...EMPTY_VALUES, taskDueDate: defaultDate ?? '' });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -113,8 +111,6 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, onClose, defaultDate
     else setStep((s) => s - 1);
   };
 
-  if (!open) return null;
-
   const current = steps[step];
 
   return (
@@ -122,25 +118,36 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, onClose, defaultDate
       open={open}
       onClose={onClose}
       position="bottom"
-      showGrabber
-      className="w-full sm:max-w-lg bg-canvas rounded-t-[28px] sm:rounded-2xl border border-ceci-border-default shadow-xl overflow-hidden text-ceci-primary"
+      labelledBy="task-sheet-title"
+      className="w-full max-w-lg"
     >
-      <div className="flex flex-col gap-3 p-4 sm:p-6">
-        {/* Cabeçalho compacto */}
-        <div className="flex items-start gap-3">
+      <div className="w-full bg-canvas rounded-t-[28px] sm:rounded-2xl border border-ceci-border-default shadow-xl overflow-hidden p-5 sm:p-6 text-ceci-primary">
+        {/* Cabeçalho — mesmo padrão dos demais sheets (título + fechar visível) */}
+        <div className="flex items-start gap-3 pb-3 mb-4 border-b border-ceci-border-subtle">
           <div className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
             <CheckCircle2 className="w-5 h-5" />
           </div>
           <div className="flex-1 min-w-0">
-            <h2 className="font-display font-bold text-lg sm:text-xl leading-snug text-ceci-primary">
+            <h2
+              id="task-sheet-title"
+              className="font-display font-bold text-lg sm:text-xl leading-snug text-ceci-primary"
+            >
               {current.title}
             </h2>
             <p className="text-[12px] text-ceci-secondary leading-relaxed mt-1">{current.hint}</p>
           </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="touch-target p-1.5 -mr-1 -mt-1 rounded-full hover:bg-surface-muted text-ceci-secondary transition-colors cursor-pointer shrink-0"
+            aria-label="fechar"
+          >
+            <span className="text-lg leading-none">✕</span>
+          </button>
         </div>
 
         {/* Conteúdo do passo */}
-        <div className="flex-1 space-y-4 overflow-y-auto max-h-[60vh]">
+        <div className="space-y-4 overflow-y-auto overscroll-contain max-h-[60dvh]">
           {step === 0 && (
             <div className="space-y-2">
               <TextInput
@@ -194,12 +201,11 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, onClose, defaultDate
         </div>
 
         {/* Rodapé com navegação entre steps */}
-        <div className="flex items-center justify-between gap-3 pt-3 border-t border-ceci-border-subtle">
+        <div className="flex items-center justify-between gap-3 pt-3 mt-4 border-t border-ceci-border-subtle">
           <button
             type="button"
             onClick={back}
-            disabled={step === 0}
-            className="text-xs font-medium text-ceci-tertiary hover:text-ceci-primary disabled:opacity-40 cursor-pointer"
+            className="flex items-center px-4 py-2.5 rounded-xl text-xs text-ceci-secondary hover:bg-surface-muted transition-colors min-h-[44px] cursor-pointer"
           >
             {step === 0 ? (
               'fechar'
@@ -212,7 +218,7 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, onClose, defaultDate
           <button
             type="button"
             onClick={isLast ? handleSave : next}
-            className="bg-ceci-brand hover:bg-ceci-brand text-ceci-on-brand px-4 py-2.5 rounded-xl text-sm font-semibold tap-interactive cursor-pointer shrink-0"
+            className="bg-ceci-brand hover:bg-ceci-brand-strong text-ceci-on-brand px-5 py-2.5 rounded-[14px] text-xs font-medium shadow-2xs transition-transform active:scale-95 min-h-[44px] cursor-pointer shrink-0"
           >
             {isLast ? 'guardar tarefa ♡' : 'continuar'}
           </button>
