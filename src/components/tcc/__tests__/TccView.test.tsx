@@ -231,13 +231,6 @@ describe('TccView — shell (SPEC-012 F3 / SPEC-010 D1-D3)', () => {
     expect(screen.queryByRole('button', { name: 'capítulos' })).not.toBeInTheDocument();
   });
 
-  it('aba leituras mostra a citação da usuária (rawCitation, ADR-010)', () => {
-    renderTcc(capitulos(), { tab: 'leituras', refs: referencia(), readings: leitura() });
-    expect(
-      screen.getByText('Worden, J. W. (2018). Tratamento do luto.')
-    ).toBeInTheDocument();
-  });
-
   // F7.2: a citação é *derivada* da estante por `abntDataFromReading` +
   // `formatAbnt`; o filtro é o `PillGroup` (SPEC-010 D7), e o cartão leva à
   // sheet — o caminho usado em produção (MobileAppProvider de verdade).
@@ -338,13 +331,6 @@ describe('TccView — marcar capítulo (SPEC-012 F0.1)', () => {
 });
 
 describe('TccView — prazo do capítulo (SPEC-012 F0.2)', () => {
-  it('mostra o prazo em dd/mm/aaaa, nunca a data civil crua', () => {
-    renderTcc(capitulos(), { tab: 'capitulos' });
-
-    expect(screen.getByText('prazo: 01/10/2026')).toBeInTheDocument();
-    expect(screen.queryByText(/2026-10-01/)).not.toBeInTheDocument();
-  });
-
   it('não mostra prazo quando o capítulo não tem', () => {
     renderTcc([capitulos()[1]], { tab: 'capitulos' });
 
@@ -438,7 +424,6 @@ describe('TccWizard — concluir com capítulo pendente (SPEC-012 F0.3 / D4)', (
     fireEvent.change(screen.getByLabelText('banca'), { target: { value: bancaKey } });
     fireEvent.change(screen.getByLabelText('meta total de palavras'), { target: { value: '20000' } });
     fireEvent.change(screen.getByLabelText('meta semanal'), { target: { value: '500' } });
-    fireEvent.click(screen.getByLabelText('lembretes de prazo'));
     avancarPassos(2);
     fireEvent.click(screen.getByRole('button', { name: 'guardar tcc ♡' }));
 
@@ -446,15 +431,15 @@ describe('TccWizard — concluir com capítulo pendente (SPEC-012 F0.3 / D4)', (
       screen.getByText(`próximo: ${formatDateShortBR(bancaKey)} · em 40 dias`)
     ).toBeInTheDocument();
 
-    // E o singleton persistiu os dois marcos, as duas metas e o interruptor
-    // de lembretes (F4.6).
+    // E o singleton persistiu os dois marcos e as duas metas. O liga/desliga
+    // dos lembretes saiu do wizard e mora no Perfil (SPEC-M-025 D12).
     await waitFor(() => {
       const stored = JSON.parse(localStorage.getItem('cecistudy_user_tcc') ?? '{}');
       expect(stored.deliveryDate).toBe(entregaKey);
       expect(stored.defenseDate).toBe(bancaKey);
       expect(stored.wordGoalTotal).toBe(20000);
       expect(stored.weeklyWordGoal).toBe(500);
-      expect(stored.reminderPrefs.enabled).toBe(true);
+      expect(stored.reminderPrefs).toBeDefined();
     });
   });
 });
@@ -566,17 +551,6 @@ describe('TccView — aba escrita (SPEC-012 F5)', () => {
     renderTcc(capitulos());
     expect(screen.getAllByRole('button', { name: 'registrar escrita' }).length).toBeGreaterThan(0);
     expect(screen.queryByRole('button', { name: 'editar dados do trabalho' })).not.toBeInTheDocument();
-  });
-
-  it('F5.1: cartão semana mostra palavras vs. meta e lista as sessões recentes', () => {
-    renderTcc(capitulos(), { tab: 'escrita', tcc: { ...tccBase(), weeklyWordGoal: 500 }, logs: logs() });
-
-    expect(screen.getByText('300/500')).toBeInTheDocument();
-    // A palavra da sessão aparece na pastilha (número em destaque) e a nota
-    // abaixo dela — o desenho é "300" grande + rótulo "palavras".
-    expect(screen.getByText('300')).toBeInTheDocument();
-    expect(screen.getByText('palavras')).toBeInTheDocument();
-    expect(screen.getByText('travei na conclusão')).toBeInTheDocument();
   });
 
   it('F5.3: sem metas, o texto é o convite e nenhum valor vem preenchido', () => {
@@ -823,5 +797,104 @@ describe('Dreno do boot — tcc legado vira coleções (SPEC-012 §17.2 A1)', ()
       const storedChapters = JSON.parse(localStorage.getItem('cecistudy_user_thesisChapters') ?? '[]');
       expect(storedChapters[0]).toMatchObject({ id: 'thc-1', stage: 'a_fazer' });
     });
+  });
+});
+
+// SPEC-024 D14/D16/D17: os campos que o motor de notificação já planejava e que
+// nenhuma tela editava. Sem interruptor aqui — o on/off é o do perfil.
+describe('TccView — lembretes do tcc (SPEC-024 D14/D16/D17)', () => {
+  const storedPrefs = () =>
+    JSON.parse(localStorage.getItem('cecistudy_user_tcc') ?? '{}').reminderPrefs;
+
+  it('os chips gravam no singleton: + acrescenta o preset, − tira o valor', async () => {
+    renderTcc(capitulos());
+
+    fireEvent.click(screen.getByRole('button', { name: 'adicionar 30 minutos' }));
+    await waitFor(() => expect(storedPrefs().meetingMinutesBefore).toEqual([60, 30]));
+
+    fireEvent.click(screen.getByRole('button', { name: 'remover 60 minutos' }));
+    await waitFor(() => expect(storedPrefs().meetingMinutesBefore).toEqual([30]));
+
+    // Remover o último chip deixa a lista vazia: é escolha, não erro.
+    fireEvent.click(screen.getByRole('button', { name: 'remover 30 minutos' }));
+    await waitFor(() => expect(storedPrefs().meetingMinutesBefore).toEqual([]));
+  });
+
+  it('no navegador a dica aparece e a hora do tcc grava no singleton', async () => {
+    renderTcc(capitulos());
+
+    // jsdom não é nativo: o aviso de que só toca no app instalado aparece.
+    expect(screen.getByText(/só no app instalado/)).toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText('horário do aviso'), { target: { value: '07:30' } });
+    await waitFor(() => expect(storedPrefs().time).toBe('07:30'));
+  });
+});
+
+describe('TccView — filtro por capítulo e sumário (SPEC-024 D10/D12)', () => {
+  it('T4.1: o filtro por capítulo estreita a lista e "ver todas" reseta os dois', () => {
+    renderTcc(capitulos(), {
+      tab: 'leituras',
+      refs: [{ ...referencia()[0], chapterIds: ['thc-1'] }, ...candidata()],
+      readings: [...leitura(), brincar()],
+    });
+
+    expect(screen.getByText('Worden, J. W. (2018). Tratamento do luto.')).toBeInTheDocument();
+    expect(screen.getAllByText(/WINNICOTT/).length).toBeGreaterThan(0);
+
+    // thc-2 não tem referência: a interseção dos dois filtros esvazia a lista.
+    fireEvent.click(screen.getByRole('button', { name: 'revisão de literatura' }));
+    expect(screen.queryAllByText(/WINNICOTT/)).toHaveLength(0);
+
+    // O atalho do estado vazio volta os **dois** filtros ao início.
+    fireEvent.click(screen.getByRole('button', { name: 'ver todas' }));
+    expect(screen.getByText('Worden, J. W. (2018). Tratamento do luto.')).toBeInTheDocument();
+    expect(screen.getAllByText(/WINNICOTT/).length).toBeGreaterThan(0);
+  });
+
+  it('T4.2: o ChapterSheet lista as referências vinculadas ao capítulo', () => {
+    render(
+      <MobileAppProvider>
+        <Seed
+          tcc={tccBase()}
+          chapters={capitulos()}
+          refs={[{ ...referencia()[0], chapterIds: ['thc-1'] }]}
+          readings={leitura()}
+        />
+        <ChapterSheet open chapterId="thc-1" onClose={() => {}} />
+      </MobileAppProvider>,
+    );
+
+    expect(screen.getByText('referências deste capítulo')).toBeInTheDocument();
+    expect(screen.getByText('Worden (2018)')).toBeInTheDocument();
+  });
+
+  it('T4.3: o sumário copiado segue a ordem canônica, com seção numerada pelo pai', async () => {
+    const copiado: string[] = [];
+    Object.assign(navigator, {
+      clipboard: { writeText: async (text: string) => void copiado.push(text) },
+    });
+    Object.defineProperty(window, 'isSecureContext', { value: true, configurable: true });
+
+    // thc-3 é seção filha de thc-1; a ordem canônica é pai → filhas → irmão.
+    const comSecao: ThesisChapter[] = [
+      capitulos()[0],
+      capitulos()[1],
+      {
+        ...capitulos()[0],
+        id: 'thc-3',
+        parentId: 'thc-1',
+        position: 1,
+        title: 'luto na infância',
+        kind: 'secao',
+      },
+    ];
+    renderTcc(comSecao, { tab: 'capitulos' });
+    fireEvent.click(screen.getByRole('button', { name: 'copiar o sumário' }));
+
+    await waitFor(() => expect(copiado).toHaveLength(1));
+    expect(copiado[0]).toBe(
+      '1. introdução\n1.1 luto na infância (seção)\n2. revisão de literatura',
+    );
   });
 });

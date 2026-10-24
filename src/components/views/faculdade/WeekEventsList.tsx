@@ -3,7 +3,7 @@
 import React from 'react';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import type { CalendarEntry } from '../../../lib/schedule';
-import type { Exam, Task } from '../../../types';
+import type { Exam } from '../../../types';
 import { SectionTitle } from '../../ui/SectionTitle';
 import { CalendarEntryRow, type EntryNav } from '../CalendarEntryRow';
 
@@ -11,10 +11,9 @@ interface WeekEventsListProps {
   entries: CalendarEntry[];
   nav: EntryNav;
   exams: Exam[];
-  tasks: Task[];
 }
 
-const WeekEventsList: React.FC<WeekEventsListProps> = ({ entries, nav, exams, tasks }) => (
+const WeekEventsList: React.FC<WeekEventsListProps> = ({ entries, nav, exams }) => (
   <section className="space-y-2.5 px-0.5 pt-6 lg:pt-0">
     <SectionTitle
       icon={<CalendarIcon className="w-4 h-4 text-ceci-brand-strong" />}
@@ -38,7 +37,6 @@ const WeekEventsList: React.FC<WeekEventsListProps> = ({ entries, nav, exams, ta
           entry={entry}
           nav={nav}
           exams={exams}
-          tasks={tasks}
           showDate
         />
       ))}

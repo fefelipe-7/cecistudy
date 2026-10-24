@@ -37,6 +37,8 @@ interface MeetingSheetProps {
   meetingId: string | 'new';
   /** Intenção inicial. Em reunião já `realizada`, sempre cai no resumo. */
   intent: 'agendar' | 'registrar';
+  /** Dia do `+` no calendário (SPEC-024 D20): a reunião nasce com a data. */
+  defaultDate?: string;
   onClose: () => void;
 }
 
@@ -52,7 +54,13 @@ const MODE_OPTIONS: { value: MeetingMode; label: string }[] = [
 
 type Mode = 'agendar' | 'registrar';
 
-export const MeetingSheet: React.FC<MeetingSheetProps> = ({ open, meetingId, intent, onClose }) => {
+export const MeetingSheet: React.FC<MeetingSheetProps> = ({
+  open,
+  meetingId,
+  intent,
+  defaultDate,
+  onClose,
+}) => {
   const { thesisMeetings, thesisTasks, setThesisMeetings, setThesisTasks, showToast } =
     useMobileApp();
 
@@ -84,7 +92,9 @@ export const MeetingSheet: React.FC<MeetingSheetProps> = ({ open, meetingId, int
     setResolvedId(live?.id ?? newMeetingId());
     setMode(live?.status === 'realizada' ? 'registrar' : intent);
     setPhase('form');
-    setDate(live?.date ?? (intent === 'registrar' ? todayKeyLocal() : ''));
+    setDate(
+      live?.date ?? defaultDate ?? (intent === 'registrar' ? todayKeyLocal() : ''),
+    );
     setTime(live?.time ?? '');
     setMeetingMode(live?.mode ?? 'presencial');
     setSummary(live?.summary ?? '');

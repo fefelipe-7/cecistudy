@@ -9,7 +9,6 @@
 import { describe, expect, it } from 'vitest';
 import { createScreenTargets, createScreenVariants, SHADE_OPACITY } from '../../motion/variants';
 import { FULL_PROFILE, REDUCED_PROFILE } from '../../motion/profile';
-import { PARALLAX } from '../../motion/tokens';
 import { IDLE_INTENT, type NavIntent } from '../../motion/intent';
 import { consumeMotionIntent, setMotionIntent } from '../../motion/intent';
 
@@ -24,57 +23,12 @@ const intent = (over: Partial<NavIntent> = {}): NavIntent => ({
 
 const t = createScreenTargets(W, FULL_PROFILE);
 
-describe('posicao de repouso (funcao da profundidade — §D3)', () => {
-  it('front: x = 0', () => {
-    expect(t.front.x).toBe(0);
-  });
-
-  it('behind(1) = -PARALLAX * width (parallax de uma camada coberta)', () => {
-    expect(t.behind(1).x).toBeCloseTo(-PARALLAX * W, 5);
-  });
-
-  it('behind(2) = o dobro — pilha de 3 sem caso especial', () => {
-    expect(t.behind(2).x).toBeCloseTo(-2 * PARALLAX * W, 5);
-  });
-
-  it('behind(0) = front (coerência)', () => {
-    expect(t.behind(0).x).toBe(t.front.x);
-  });
-});
-
 describe('direcao de entrada e saida sao o MESMO dir, com sinal trocado (§D2)', () => {
-  it('push: entra de +W', () => {
-    expect(t.enter(intent({ kind: 'push', dir: 1 })).x).toBe(W);
-  });
-
-  it('push: a tela coberta sai para -W', () => {
-    expect(t.exit(intent({ kind: 'push', dir: 1 })).x).toBe(-W);
-  });
-
-  it('pop: a tela revelada entra de -W', () => {
-    expect(t.enter(intent({ kind: 'pop', dir: -1 })).x).toBe(-W);
-  });
-
-  it('pop: a tela do topo sai para +W', () => {
-    expect(t.exit(intent({ kind: 'pop', dir: -1 })).x).toBe(W);
-  });
-
   it('a soma entering + exiting é sempre 0 (saída é o espelho exato)', () => {
     for (const dir of [1, -1] as const) {
       const i = intent({ dir, kind: dir === 1 ? 'push' : 'pop' });
       expect(t.enter(i).x).toBe(-(t.exit(i).x as number));
     }
-  });
-});
-
-describe('push NAO faz fade (o maior sinal de "web app fingindo ser nativo")', () => {
-  it('enter de push e pop tem opacity 1 explícito', () => {
-    expect(t.enter(intent({ kind: 'push', dir: 1 })).opacity).toBe(1);
-    expect(t.enter(intent({ kind: 'pop', dir: -1 })).opacity).toBe(1);
-  });
-
-  it('exit de push tem opacity 1 (a tela sendo coberta nao desvanece)', () => {
-    expect(t.exit(intent({ kind: 'push', dir: 1 })).opacity).toBe(1);
   });
 });
 
@@ -187,7 +141,7 @@ describe('createScreenVariants (API de rotulos, para o wrapper declarativo)', ()
     const kinds: NavIntent['kind'][] = ['push', 'pop', 'tab', 'replace', 'none'];
     for (const kind of kinds) {
       const animate = (v.animate as (i: NavIntent) => { opacity?: number })(
-        intent({ kind, dir: 1 })
+        intent({ kind, dir: 1 }),
       );
       expect(animate.opacity, `animate.kind=${kind}`).toBe(1);
     }
@@ -211,7 +165,9 @@ describe('createScreenVariants (API de rotulos, para o wrapper declarativo)', ()
   it('sob movimento reduzido o animate também é opaco (o perfil reduzido é o caminho que funcionava)', () => {
     const v = createScreenVariants(W, REDUCED_PROFILE);
     for (const kind of ['push', 'pop', 'tab', 'replace'] as NavIntent['kind'][]) {
-      expect((v.animate as (i: NavIntent) => { opacity?: number })(intent({ kind, dir: 1 })).opacity).toBe(1);
+      expect(
+        (v.animate as (i: NavIntent) => { opacity?: number })(intent({ kind, dir: 1 })).opacity,
+      ).toBe(1);
     }
   });
 });

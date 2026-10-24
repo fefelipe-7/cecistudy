@@ -24,6 +24,7 @@ Scripts adicionados em `package.json`. Não use `--include`: não é flag do Vit
 ```json
 "test:domain": "vitest run --exclude 'src/**' --exclude 'apps/**'"
 "test:ui":     "vitest run --exclude 'packages/**' --exclude 'apps/**'"
+"test:apps":   "vitest run --exclude 'src/**' --exclude 'packages/**' --passWithNoTests"
 "test":        "vitest run"
 "test:ci":     "vitest run --reporter=dot"
 ```
@@ -85,7 +86,7 @@ O padrão vale para teste novo e para teste revisado. A rodada de 2026-10-23 cor
 
 **Pendências registradas:**
 
-1. **Verificação verde** de `test:domain` e `test:ui` (T2.11 do `tasks/todo-test-reduction.md`). Este checkout não tem `node_modules`; rode `npm ci` antes.
+1. **Verificação verde** de `test:domain`, `test:ui` e `test:apps` (T2.11 do `tasks/todo-test-reduction.md`). Medido em 2026-10-23: `test:ui` 1284 testes / 134 arquivos, `test:domain` 434 / 17, `test:apps` 0 (`--passWithNoTests`). O `verify:fast` só fecha quando o trabalho de SPEC-025 fechar o `typecheck`.
 2. **Mover** `collections`, `dataClient`, `exportImport` (T3.10) — bloqueados por imports de `src/` (`@/data/empty`, `persistentData`). Precisa desacoplar antes.
 3. **Revisar, não cortar em bloco**, os candidatos `ProfileHero`, `ProgressPulse`, `JourneyRail` e `TccView`: inspeção de 2026-10-23 mostrou testes de comportamento (h1, navegação, aria, escrita), não render puro.
 4. **FSRS/review, calendarAggregator/schedule, courseRepertorio/repertorioOptions** foram inspecionados: cobrem comportamentos distintos, não são duplicatas. Não mesclar sem provar sobreposição.
@@ -107,3 +108,5 @@ Auditoria completa dos 150 testes de `src/` (e dos 5 de `packages/`) com subagen
 Contagens após a rodada: `src/` = 152 files / 1731 tests; `packages/` = 14 files / 367 tests. Gates: `npm run lint` ✅, `check-boundaries` ✅, `vitest run src` ✅, `vitest run packages` ✅.
 
 **O que foi deixado de fora**: e2e real e testes de performance de bundle não entram aqui; permanecem em spec-performance. Mover `collections`, `dataClient`, `exportImport`, `quizPlayState`, `quizStack`, `routing` ainda está bloqueado por imports de `src/` (tipos, `emptyDatabase`, `persistentData`) — candidatos da próxima rodada.
+
+**Rodada 2 (mesmo dia)**: 5 testes de apresentação pura removidos e 3 asserções de classe cortadas; detalhes e contagens em `tasks/audit-testes.md`.

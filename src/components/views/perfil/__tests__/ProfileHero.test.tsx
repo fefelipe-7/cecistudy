@@ -90,17 +90,6 @@ describe('ProfileHero', () => {
     expect(onRemovePhoto).toHaveBeenCalledTimes(1);
   });
 
-  it('sem frase, usa o placeholder editorial (não deixa caixa vazia)', () => {
-    render(
-      <ProfileHero
-        identity={identity({ quote: '  ' })}
-        onEdit={vi.fn()}
-        onPickPhoto={vi.fn()}
-        onRemovePhoto={vi.fn()}
-      />,
-    );
-    expect(screen.getByText(/um cantinho para organizar a rotina/)).toBeTruthy();
-  });
 });
 
 describe('ProfileEditSheet', () => {

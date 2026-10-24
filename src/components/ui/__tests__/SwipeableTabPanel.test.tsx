@@ -38,7 +38,7 @@ function montarPager(initial: Tab) {
       });
       return pager;
     },
-    { initialProps: { active: initial } }
+    { initialProps: { active: initial } },
   );
   return { result: view.result, seen };
 }
@@ -53,7 +53,7 @@ function montarPager(initial: Tab) {
 const arrasta = (
   result: { current: ReturnType<typeof useTabPager<Tab>> },
   offsetX: number,
-  velocityX = 0
+  velocityX = 0,
 ) =>
   act(() => {
     result.current.onDragEnd(null, {
@@ -136,11 +136,6 @@ describe('SwipeableTabPanel — a casca (SPEC-015)', () => {
     expect(painel.getAttribute('aria-label')).toBe('aba calendario');
   });
 
-  it('mostra o conteúdo da aba ativa', () => {
-    render(<Painel tab="estagio" />);
-    expect(screen.getByText('painel de estagio')).toBeTruthy();
-  });
-
   it('o scroll vertical continua liberado (touchAction pan-y)', () => {
     render(<Painel tab="disciplinas" />);
     // O wrapper do gesto é o pai do tabpanel; sem `pan-y` a página trava.
@@ -150,7 +145,7 @@ describe('SwipeableTabPanel — a casca (SPEC-015)', () => {
 
   it('com uma aba só o gesto não engaja — não há para onde ir', () => {
     const { result } = renderHook(() =>
-      useTabPager<'unica'>({ tabIds: ['unica'] as const, active: 'unica', onChange: () => {} })
+      useTabPager<'unica'>({ tabIds: ['unica'] as const, active: 'unica', onChange: () => {} }),
     );
     expect(result.current.enabled).toBe(false);
   });

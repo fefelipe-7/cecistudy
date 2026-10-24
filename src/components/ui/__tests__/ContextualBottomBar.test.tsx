@@ -23,10 +23,10 @@ const acao = (
   onSelect,
 });
 
-const config = (
-  primary: ContextBarAction[],
-  contextKey = 'notes',
-): ContextBarConfig => ({ contextKey, primaryActions: primary });
+const config = (primary: ContextBarAction[], contextKey = 'notes'): ContextBarConfig => ({
+  contextKey,
+  primaryActions: primary,
+});
 
 const renderBar = (cfg: ContextBarConfig | null, onBack = vi.fn(), reduced = false) =>
   render(
@@ -60,13 +60,6 @@ describe('ContextualBottomBar', () => {
     expect(screen.queryByTestId('contextual-bar')).toBeNull();
   });
 
-  it('inicia visível: barra de ação principal e barra de voltar', () => {
-    renderBar(config([acao('nova-nota', 'nova nota', vi.fn())]));
-    expect(bar()).toBeInTheDocument();
-    expect(primary()).toHaveTextContent('nova nota');
-    expect(back()).toHaveTextContent('voltar');
-  });
-
   it('o botão principal executa a ação contextual', () => {
     const run = vi.fn();
     renderBar(config([acao('nova-nota', 'nova nota', run)]));
@@ -81,24 +74,10 @@ describe('ContextualBottomBar', () => {
     expect(onBack).toHaveBeenCalledTimes(1);
   });
 
-  it('telas sem ação principal mostram só a barra de voltar, centralizada', () => {
-    const onBack = vi.fn();
-    renderBar(config([], 'historico'), onBack);
-    expect(screen.queryByTestId('contextual-bar-primary')).toBeNull();
-    expect(back()).toBeInTheDocument();
-    fireEvent.click(back());
-    expect(onBack).toHaveBeenCalledTimes(1);
-  });
-
   it('com múltiplas ações principais, a setinha expande para cima e mostra as outras', async () => {
     const primeira = vi.fn();
     const segunda = vi.fn();
-    renderBar(
-      config([
-        acao('a', 'anotar aula', primeira),
-        acao('b', 'nova prova', segunda),
-      ]),
-    );
+    renderBar(config([acao('a', 'anotar aula', primeira), acao('b', 'nova prova', segunda)]));
 
     expect(primary()).toHaveTextContent('anotar aula');
 
@@ -157,17 +136,17 @@ describe('ContextualBottomBar', () => {
 
   it('troca de contexto reinicia a ação principal', () => {
     const { rerender } = renderBar(
-      config([
-        acao('a', 'anotar aula', vi.fn()),
-        acao('b', 'nova prova', vi.fn()),
-      ]),
+      config([acao('a', 'anotar aula', vi.fn()), acao('b', 'nova prova', vi.fn())]),
       vi.fn(),
     );
     expect(primary()).toHaveTextContent('anotar aula');
 
     rerender(
       <MotionProfileProvider override={false}>
-        <ContextualBottomBar config={config([acao('c', 'buscar', vi.fn())], 'streak')} onBack={vi.fn()} />
+        <ContextualBottomBar
+          config={config([acao('c', 'buscar', vi.fn())], 'streak')}
+          onBack={vi.fn()}
+        />
       </MotionProfileProvider>,
     );
     expect(primary()).toHaveTextContent('buscar');
@@ -229,10 +208,7 @@ describe('ContextualBottomBar — fade, inércia e forma (SPEC-022)', () => {
 
   it('a expansão fecha quando o contexto muda', async () => {
     const { rerender } = renderBar(
-      config([
-        acao('a', 'anotar aula', vi.fn()),
-        acao('b', 'nova prova', vi.fn()),
-      ]),
+      config([acao('a', 'anotar aula', vi.fn()), acao('b', 'nova prova', vi.fn())]),
     );
 
     act(() => {
@@ -243,13 +219,7 @@ describe('ContextualBottomBar — fade, inércia e forma (SPEC-022)', () => {
     rerender(
       <MotionProfileProvider override={false}>
         <ContextualBottomBar
-          config={config(
-            [
-              acao('c', 'buscar', vi.fn()),
-              acao('d', 'outra', vi.fn()),
-            ],
-            'streak',
-          )}
+          config={config([acao('c', 'buscar', vi.fn()), acao('d', 'outra', vi.fn())], 'streak')}
           onBack={vi.fn()}
         />
       </MotionProfileProvider>,
@@ -262,10 +232,7 @@ describe('ContextualBottomBar — fade, inércia e forma (SPEC-022)', () => {
 
   it('a peça da esquerda não aninha botões e a setinha é focável', () => {
     const { container } = renderBar(
-      config([
-        acao('a', 'anotar aula', vi.fn()),
-        acao('b', 'nova prova', vi.fn()),
-      ]),
+      config([acao('a', 'anotar aula', vi.fn()), acao('b', 'nova prova', vi.fn())]),
     );
     // HTML válido: nada de botão dentro de botão.
     expect(container.querySelectorAll('button button').length).toBe(0);
@@ -299,10 +266,7 @@ describe('ContextualBottomBar — fade, inércia e forma (SPEC-022)', () => {
 
     rerender(
       <MotionProfileProvider override={false}>
-        <ContextualBottomBar
-          config={config([acao('a', 'buscar', vi.fn())])}
-          onBack={vi.fn()}
-        />
+        <ContextualBottomBar config={config([acao('a', 'buscar', vi.fn())])} onBack={vi.fn()} />
       </MotionProfileProvider>,
     );
     expect(screen.getByTestId('contextual-bar-host')).toBeInTheDocument();

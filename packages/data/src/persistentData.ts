@@ -9,10 +9,7 @@
  *   bancos estáticos `approaches`/`questions` NÃO são exportados — são catálogos
  *   embutidos no app e re-semeados sob demanda; incluí-los inflaria o backup em ~2MB).
  */
-import {
-  EmptyDatabase,
-  emptyDatabase,
-} from '@/data/empty';
+import { EmptyDatabase, emptyDatabase } from '@/data/empty';
 import type {
   UserProfile,
   Course,
@@ -78,10 +75,10 @@ export interface PersistedStateSnapshot {
   thesisMeetings: ThesisMeeting[];
   thesisTasks: ThesisTask[];
   thesisWritingLogs: ThesisWritingLog[];
- stickers: Sticker[];
-   sessions: StudySession[];
+  stickers: Sticker[];
+  sessions: StudySession[];
   streakData: StreakData;
-  reminder: { enabled: boolean; time: string };
+  reminder: EmptyDatabase['reminder'];
   looseNotes: LooseNote[];
   savedBookIds: string[];
   bookmarkedCourseIds: string[];
@@ -114,9 +111,9 @@ export function readDatabaseFromState(state: PersistedStateSnapshot): PersistedD
     materials: state.materials,
     internshipLogs: state.internshipLogs,
     tcc: state.tcc,
-     stickers: state.stickers,
-     sessions: state.sessions,
-     streakData: state.streakData,
+    stickers: state.stickers,
+    sessions: state.sessions,
+    streakData: state.streakData,
     reminder: state.reminder,
     looseNotes: state.looseNotes,
     savedBookIds: state.savedBookIds,

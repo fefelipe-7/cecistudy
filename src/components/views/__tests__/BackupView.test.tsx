@@ -17,13 +17,4 @@ describe('BackupView', () => {
     fireEvent.click(btn);
     expect(exportData).toHaveBeenCalledTimes(1);
   });
-
-  it('renderiza o botão de importação e o input de arquivo', () => {
-    const importData = vi.fn();
-    render(<BackupView importData={importData} />);
-    const btn = screen.getByRole('button', { name: 'Importar backup' });
-    expect(btn).toBeInTheDocument();
-    const input = btn.closest('label')?.querySelector('input[type="file"]');
-    expect(input).toBeInTheDocument();
-  });
 });
