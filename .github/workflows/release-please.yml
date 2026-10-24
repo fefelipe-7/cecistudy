@@ -1,0 +1,31 @@
+name: release-please
+
+# Mantém a versão, o CHANGELOG.md e a tag. Ao mergear o PR que ele abre, cria a
+# tag e o Release — e é o Release publicado que dispara o `release.yml`.
+#
+# Usa PAT (RELEASE_PLEASE_TOKEN) e não o GITHUB_TOKEN padrão: tag/Release criados
+# com o token padrão NÃO disparam outros workflows (anti-recursão do GitHub), e o
+# build nunca rodaria. Ver SPEC-026 D6.
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: release-please
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          # obrigatório: a branch padrão é `dev`, mas o release nasce da `main`.
+          target-branch: main

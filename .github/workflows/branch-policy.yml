@@ -1,0 +1,35 @@
+name: branch-policy
+
+# O GitHub não sabe exigir "de qual branch este PR veio". Este workflow faz isso.
+#   staging ← dev
+#   main    ← staging
+# Ambos aceitam hotfix/*. `main` aceita release-please--* (o PR automático de versão).
+
+on:
+  pull_request:
+    branches: [staging, main]
+
+permissions: {}
+
+jobs:
+  branch-policy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: valida a origem da promoção
+        env:
+          BASE: ${{ github.base_ref }}
+          HEAD: ${{ github.head_ref }}
+        run: |
+          set -euo pipefail
+          case "$BASE" in
+            staging) esperado='dev' ;;
+            main)    esperado='staging' ;;
+            *) echo "::error::base inesperada: $BASE"; exit 1 ;;
+          esac
+          if [ "$HEAD" = "$esperado" ] || [[ "$HEAD" == hotfix/* ]] || [[ "$HEAD" == release-please--* ]]; then
+            echo "ok: $HEAD → $BASE"
+          else
+            echo "::error::PR para $BASE só pode vir de $esperado, hotfix/* ou release-please--*"
+            exit 1
+          fi
