@@ -1,6 +1,10 @@
 # To-do: separação de camadas de armazenamento no dispositivo (SPEC-M-024)
 
-> Spec: [`../docs/specs/mobile/SPEC-M-024-separacao-de-camadas-de-armazenamento-no-dispositivo.md`](../docs/specs/mobile/SPEC-M-024-separacao-de-camadas-de-armazenamento-no-dispositivo.md)
+> **Substituído** por [`todo-persistencia-a-prova-de-atualizacao.md`](todo-persistencia-a-prova-de-atualizacao.md)
+> (SPEC-M-026, 2026-10-24). O texto abaixo fica como registro: F1 estava inerte
+> (a conferência de hash não olhava o bundle) e F4 não tinha gate.
+>
+> Spec: [`../../docs/specs/mobile/SPEC-M-024-separacao-de-camadas-de-armazenamento-no-dispositivo.md`](../../docs/specs/mobile/SPEC-M-024-separacao-de-camadas-de-armazenamento-no-dispositivo.md)
 > Plano com o porquê, arquivos e critérios: [`plan-armazenamento-dispositivo.md`](plan-armazenamento-dispositivo.md)
 > **Regra de ouro:** cada fase fecha com `npm run verify:fast` verde; a fase 4
 > fecha com `npm run verify`. `SCHEMA_VERSION` não sobe.
