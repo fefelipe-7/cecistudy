@@ -385,16 +385,19 @@ O que está no repositório e o que ainda depende do GitHub.
 |---|---|
 | Licença PolyForm Noncommercial 1.0.0, README, CONTRIBUTING, SECURITY, CODEOWNERS, templates, Dependabot | entregue |
 | `ci.yml` (`gate-domain`/`gate-full`/`android-debug`/`pr-title`/`ci-ok`), `branch-policy.yml` | entregue e **executado** — runs `40059531878` (`dev`) e `40059533949` (`staging`) verdes, `android-debug` incluso |
-| `release.yml` (release publicado + dispatch) e `release-please.yml` | entregue; aguarda o primeiro release para ser exercitado |
-| `package.json`: `verify:domain`, `content:ensure` em `predev`/`prebuild`/`preverify`, versão 1.0.95 | entregue |
+| `release.yml` (release publicado + dispatch) | entregue e **exercitado** — release `v1.0.99` publicado em 2026-10-24 disparou o build de APK/IPA/OTA |
+| `release-please.yml` | entregue e **executado** — abriu o PR de versão sozinho na `main` |
+| `sync-main-back.yml` | entregue — devolve versão/CHANGELOG da `main` para a `dev` por PR automático |
+| `package.json`: `verify:domain`, `content:ensure` em `predev`/`prebuild`/`preverify`, versão 1.0.99 | entregue |
 | Zips fora do git (9,4 MB) e catálogo destrackeado (20 MB) | entregue |
 | Biome 2.6.2 (`format`, `format:check`, `lint:code`) e 508 arquivos formatados | entregue |
-| Branches `dev`/`staging` e default branch `dev` | **aplicado** |
-| Rulesets `dev`, `staging`, `main`, `tags-v` | **aplicado** (`25769442`, `25769443`, `25769444`, `25769445`) |
+| Branches `dev`/`staging` e default branch **`main`** | **aplicado** — a default voltou para `main` por decisão da dona; a regra de "sempre criar branch antes do PR" mora no `AGENTS.md` |
+| Rulesets `dev`, `staging`, `main`, `tags-v` | **aplicado** (`25769442`, `25769443`, `25769444`, `25769445`); o de tag tem bypass de admin, para a dona poder apagar tag publicada errada |
 | Settings: auto-merge, delete branch on merge, update branch, Actions pode abrir PR | **aplicado** |
 | Segurança: secret scanning, push protection, alertas de vulnerabilidade, Dependabot security updates, CodeQL default | **aplicado** |
 | `RELEASE_PLEASE_TOKEN` | **aplicado** — PAT com escopos `repo` + `workflow` |
-| Primeiro release real | **pendente** — depende da promoção até `main` (§4) |
+| `CHANGELOG.md` escrito à mão, com `skip-changelog` no release-please | **aplicado** — o texto é humano; o release-please cuida só de versão e tag |
+| Primeiro release real (`v1.0.99`) | **publicado** em 2026-10-24 |
 
 O enforcement foi provado, não presumido (2026-10-24):
 
@@ -404,15 +407,33 @@ O enforcement foi provado, não presumido (2026-10-24):
 - PR de ensaio `feat/ensaio` → `main` → `branch-policy` **fail**, como o §4
   exige. PR fechado e branch apagada em seguida.
 
-Duas divergências em relação ao texto acima, ambas deliberadas:
+O caminho completo também foi exercitado de ponta a ponta, e **duas falhas
+reais** apareceram nele — as duas corrigidas na origem:
+
+1. O action procura `release-please-config.json` **sem ponto** no nome; o
+   arquivo estava como `.release-please-config.json` e o primeiro run falhou com
+   *"Missing required manifest config"*.
+2. O tag saiu como `cecistudy-v1.1.0` (componente no nome). Como o `release.yml`
+   deriva a versão com `${TAG#v}`, o bundle OTA viraria
+   `cecistudy-cecistudy-v1.1.0` e o app nunca veria a atualização. Entrou
+   `include-component-in-tag: false` **e** um guard no `release.yml` que falha
+   alto se o tag não casar `^vX.Y.Z` — o release `cecistudy-v1.1.0` foi apagado
+   sem assets.
+3. A `main` recebeu versão/CHANGELOG do release-please e a `dev` não; a promoção
+   seguinte conflitou nesses arquivos. Por isso o `sync-main-back.yml`.
+
+A publicação é automática a partir do release: publicar um Release dispara
+`release.yml` (bundle web + APK + IPA + OTA). O que continua manual é **decidir
+quando promover** `dev → staging → main` — promoção é julgamento, não relógio.
+
+Divergências em relação ao texto acima, ambas deliberadas:
 
 1. **`npm run lint` continua `tsc --noEmit`.** O §7 previa Biome no `lint`, mas
    `AGENTS.md` documenta `lint = tsc` e é o contrato que o CI e as sessões leem.
-   Biome entrou como `lint:code`; a troca fica para quando `AGENTS.md` estiver
-   livre (outra sessão o edita agora).
-2. **`format:check` não está no `verify:fast`.** Os 17 arquivos ainda fora de
-   formato pertencem a trabalho em andamento de outra sessão. Ligar o passo
-   agora deixaria o gate vermelho por motivo alheio a esta spec.
+   Biome entrou como `lint:code`.
+2. **`format:check` não está no `verify:fast`.** Os arquivos da outra sessão já
+   estão commitados, mas ainda fora do formato do Biome; ligar o passo exige
+   rodar `npm run format` antes, num commit próprio.
 
 Débito novo descoberto na execução: **`npm run content:check` regrava as fachadas
 do templo** (15 JSON + 2 `.ts` em `src/data/temple/`, ~17 mil linhas de diff,
