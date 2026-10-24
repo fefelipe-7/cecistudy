@@ -416,21 +416,24 @@ histórico, então `git checkout <sha> -- <arquivo>` recupera.
 
 O que **não** foi feito, e o motivo. Nenhum item aqui é esquecimento.
 
-**Fechado nesta rodada:** push de `dev`/`staging`, default branch `dev`, os
-quatro rulesets (`dev`, `staging`, `main`, `tags-v`), settings do repo,
-segurança (secret scanning, push protection, alertas, Dependabot, CodeQL),
-`RELEASE_PLEASE_TOKEN` e o `verify` completo verde com as 155 suítes.
+**Fechado nesta rodada:** push de `dev`/`staging`, os quatro rulesets (`dev`,
+`staging`, `main`, `tags-v`), settings do repo, segurança (secret scanning, push
+protection, alertas, Dependabot, CodeQL), `RELEASE_PLEASE_TOKEN`, o `verify`
+completo verde e o **release `v1.0.99` publicado** pelo caminho automático.
+
+A default branch voltou para **`main`** por decisão da dona; a regra de "sempre
+criar branch antes de abrir PR" mora no `AGENTS.md` (seção *Git e branches*).
 
 | # | Pendência | Por que ficou | Quem fecha |
 |---|---|---|---|
-| 1 | **Primeiro release real** | o caminho agora é `dev → staging → main` por PR; o release nasce da tag que o release-please cria na `main` | próxima promoção |
-| 2 | **`format:check` no gate** | os 17 arquivos ainda sem formatar são de **outra sessão**, que está escrevendo neles agora; os JSON de dados (`src/data/questions`, `src/data/temple`) ficaram fora do Biome de propósito | quando a árvore estiver só sua: `npm run format` e ligar o passo |
+| 1 | **Promoção automática `dev → staging → main`** | a promoção é PR manual: hoje o gate está na automação da *verificação*, não da *decisão* de promover. Automatizar muda a cadência de release (todo commit da `dev` viraria versão) | decisão da dona |
+| 2 | **`format:check` no gate** | os arquivos da outra sessão já estão commitados, mas ainda fora do formato do Biome; os JSON de dados (`src/data/questions`, `src/data/temple`) ficam fora de propósito | rodar `npm run format` num commit próprio e ligar o passo |
 | 3 | **Lint prescritivo** | o preset `recommended` acusa **3.263** achados em `src/` (hooks, a11y, non-null, unused). Corrigir é refactor próprio, não higiene | adotar por família, uma PR por regra |
-| 4 | **`npm run lint` continua `tsc`** | trocar por Biome quebraria o `AGENTS.md`, que outra sessão está editando agora | quando o `AGENTS.md` estiver livre |
+| 4 | **`npm run lint` continua `tsc`** | trocar por Biome quebraria o `AGENTS.md`; Biome entrou como `lint:code` | quando o `AGENTS.md` estabilizar |
 | 5 | **Expurgar os 20 MB do `.db` do histórico** | `git filter-repo` é destrutivo e sem rollback (D11) | decisão explícita |
 | 6 | **`content:check` regrava as fachadas do templo** | rodar `npm run content:check` reescreve 15 JSON + 2 `.ts` de `src/data/temple/` (17 mil linhas de diff, conteúdo idêntico — só reimpressão). A árvore fica suja a cada verificação | ou o script para de escrever e passa a comparar, ou as fachadas saem do git e entram no `prebuild` |
-| 7 | **Mover as specs da raiz para `docs/`** (T6.3) | mover `spec-tcc.md` e `spec-performance.md` quebra 15 referências em `docs/`, `tasks/`, `scripts/` e comentários de `src/lib/performance/`; várias dessas são de outra sessão | fazer junto com a atualização das referências, numa PR só de docs |
+| 7 | **Mover as specs da raiz para `docs/`** (T6.3) | mover `spec-tcc.md` e `spec-performance.md` quebra 15 referências em `docs/`, `tasks/`, `scripts/` e comentários de `src/lib/performance/` | fazer junto com a atualização das referências, numa PR só de docs |
 
-O trabalho não commitado de outra sessão (SPEC-025, `ReminderSettings`, redução
-de testes) continua na árvore e **não** foi tocado; o `verify` rodou verde com
-ele presente.
+O trabalho que estava sem commit das outras sessões (SPEC-025, `ReminderSettings`,
+corte de testes) **entrou** no repositório com autorização da dona, no commit
+`feat(app): notificações com categorias…`; o `verify` rodou verde com ele.
