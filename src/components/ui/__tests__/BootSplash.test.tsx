@@ -14,14 +14,8 @@ import { StrictMode } from 'react';
 import { act, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { BootSplash } from '../BootSplash';
-import {
-  resetBootPreloadForTests,
-  setStepImplForTests,
-} from '../../../lib/bootPreload';
-import {
-  readPerfForTests,
-  resetPerfForTests,
-} from '../../../lib/performance/perfMarks';
+import { resetBootPreloadForTests, setStepImplForTests } from '../../../lib/bootPreload';
+import { readPerfForTests, resetPerfForTests } from '../../../lib/performance/perfMarks';
 
 const MIN_DISPLAY_MS = 1600;
 const MAX_DISPLAY_MS = 7000;

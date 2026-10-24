@@ -67,7 +67,9 @@ describe('core/domain — term: criação', () => {
     expect(clampTermOrdinal(NaN)).toBe(1);
     expect(clampTermOrdinal('4')).toBe(4);
     expect(clampTermOrdinal(3, 2)).toBe(2);
-    expect(createAcademicTerm({ ordinal: 99, startedAt: '2026-02-01' }).ordinal).toBe(MAX_TERM_ORDINAL);
+    expect(createAcademicTerm({ ordinal: 99, startedAt: '2026-02-01' }).ordinal).toBe(
+      MAX_TERM_ORDINAL,
+    );
   });
 
   it('termLabel formata o rótulo no tom do app', () => {
@@ -207,7 +209,10 @@ describe('core/domain — term: integridade de órfãos', () => {
   });
 
   it('disciplina arquivada de outro período não é órfã', () => {
-    const { orphans } = assertTermIntegrity([term()], [{ id: 'c4', termId: 'trm-9', status: 'arquivado' }]);
+    const { orphans } = assertTermIntegrity(
+      [term()],
+      [{ id: 'c4', termId: 'trm-9', status: 'arquivado' }],
+    );
     expect(orphans).toEqual([]);
   });
 

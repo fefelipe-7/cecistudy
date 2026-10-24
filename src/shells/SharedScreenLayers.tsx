@@ -10,40 +10,85 @@ import { requestPrefetch, prefetchOnIntent } from '@/lib/performance/screenPrefe
 // leve e a biblioteca (com o catálogo estático grande) só carrega ao ser aberta.
 // As factories ficam nomeadas para o preload pós-boot (preloadScreenChunks):
 // assim a 1ª visita a uma aba já anima o conteúdo real, não o skeleton.
-const loadHomeView = () => import('../components/views/HomeView').then((m) => ({ default: m.HomeView }));
-const loadFaculdadeView = () => import('../components/views/FaculdadeView').then((m) => ({ default: m.FaculdadeView }));
-const loadEstudosView = () => import('../components/views/EstudosView').then((m) => ({ default: m.EstudosView }));
-const loadBibliotecaView = () => import('../components/views/BibliotecaView').then((m) => ({ default: m.BibliotecaView }));
-const loadPerfilView = () => import('../components/views/PerfilView').then((m) => ({ default: m.PerfilView }));
-const loadStreakView = () => import('../components/views/StreakView').then((m) => ({ default: m.StreakView }));
-const loadSyncScreen = () => import('../components/sync/SyncScreen').then((m) => ({ default: m.SyncScreen }));
-const loadComposeNoteView = () => import('../components/views/ComposeNoteView').then((m) => ({ default: m.ComposeNoteView }));
-const loadClassNoteDetailWizard = () => import('../components/views/ClassNoteDetailWizard').then((m) => ({ default: m.ClassNoteDetailWizard }));
-const loadClassNoteDetailScreen = () => import('../components/courses/ClassNoteDetailScreen').then((m) => ({ default: m.ClassNoteDetailScreen }));
-const loadRepertorioItemDetailScreen = () => import('../components/courses/RepertorioItemDetailScreen').then((m) => ({ default: m.RepertorioItemDetailScreen }));
-const loadNoteDetailWizard = () => import('../components/views/NoteDetailWizard').then((m) => ({ default: m.NoteDetailWizard }));
-const loadNoteTransformWizard = () => import('../components/views/NoteTransformWizard').then((m) => ({ default: m.NoteTransformWizard }));
-const loadWizardRouter = () => import('../components/wizards/WizardRouter').then((m) => ({ default: m.WizardRouter }));
+const loadHomeView = () =>
+  import('../components/views/HomeView').then((m) => ({ default: m.HomeView }));
+const loadFaculdadeView = () =>
+  import('../components/views/FaculdadeView').then((m) => ({ default: m.FaculdadeView }));
+const loadEstudosView = () =>
+  import('../components/views/EstudosView').then((m) => ({ default: m.EstudosView }));
+const loadBibliotecaView = () =>
+  import('../components/views/BibliotecaView').then((m) => ({ default: m.BibliotecaView }));
+const loadPerfilView = () =>
+  import('../components/views/PerfilView').then((m) => ({ default: m.PerfilView }));
+const loadStreakView = () =>
+  import('../components/views/StreakView').then((m) => ({ default: m.StreakView }));
+const loadSyncScreen = () =>
+  import('../components/sync/SyncScreen').then((m) => ({ default: m.SyncScreen }));
+const loadComposeNoteView = () =>
+  import('../components/views/ComposeNoteView').then((m) => ({ default: m.ComposeNoteView }));
+const loadClassNoteDetailWizard = () =>
+  import('../components/views/ClassNoteDetailWizard').then((m) => ({
+    default: m.ClassNoteDetailWizard,
+  }));
+const loadClassNoteDetailScreen = () =>
+  import('../components/courses/ClassNoteDetailScreen').then((m) => ({
+    default: m.ClassNoteDetailScreen,
+  }));
+const loadRepertorioItemDetailScreen = () =>
+  import('../components/courses/RepertorioItemDetailScreen').then((m) => ({
+    default: m.RepertorioItemDetailScreen,
+  }));
+const loadNoteDetailWizard = () =>
+  import('../components/views/NoteDetailWizard').then((m) => ({ default: m.NoteDetailWizard }));
+const loadNoteTransformWizard = () =>
+  import('../components/views/NoteTransformWizard').then((m) => ({
+    default: m.NoteTransformWizard,
+  }));
+const loadWizardRouter = () =>
+  import('../components/wizards/WizardRouter').then((m) => ({ default: m.WizardRouter }));
 // SPEC-005: histórico de períodos — lazy como as demais telas de fluxo profundo.
-const loadTermHistoryScreen = () => import('../components/terms/TermHistoryScreen').then((m) => ({ default: m.TermHistoryScreen }));
+const loadTermHistoryScreen = () =>
+  import('../components/terms/TermHistoryScreen').then((m) => ({ default: m.TermHistoryScreen }));
 
 // Quiz components (lazy loaded)
-const loadQuizCategorySelector = () => import('../components/quizzes/QuizGroupSelector').then((m) => ({ default: m.QuizGroupSelector }));
-const loadQuizGroupDetail = () => import('../components/quizzes/QuizGroupDetail').then((m) => ({ default: m.QuizGroupDetail }));
-const loadQuizLoadingScreen = () => import('../components/quizzes/QuizLoadingScreen').then((m) => ({ default: m.QuizLoadingScreen }));
-const loadQuizPlayer = () => import('../components/quizzes/QuizPlayer').then((m) => ({ default: m.QuizPlayer }));
-const loadQuizResultScreen = () => import('../components/quizzes/QuizResultScreen').then((m) => ({ default: m.QuizResultScreen }));
+const loadQuizCategorySelector = () =>
+  import('../components/quizzes/QuizGroupSelector').then((m) => ({ default: m.QuizGroupSelector }));
+const loadQuizGroupDetail = () =>
+  import('../components/quizzes/QuizGroupDetail').then((m) => ({ default: m.QuizGroupDetail }));
+const loadQuizLoadingScreen = () =>
+  import('../components/quizzes/QuizLoadingScreen').then((m) => ({ default: m.QuizLoadingScreen }));
+const loadQuizPlayer = () =>
+  import('../components/quizzes/QuizPlayer').then((m) => ({ default: m.QuizPlayer }));
+const loadQuizResultScreen = () =>
+  import('../components/quizzes/QuizResultScreen').then((m) => ({ default: m.QuizResultScreen }));
 
 // Study screens (telas dedicadas da aba estudos)
-const loadStudyFocusScreen = () => import('../components/estudos/StudyFocusScreen').then((m) => ({ default: m.StudyFocusScreen }));
-const loadStudyRevisarScreen = () => import('../components/estudos/StudyRevisarScreen').then((m) => ({ default: m.StudyRevisarScreen }));
-const loadStudyLeiturasScreen = () => import('../components/estudos/StudyLeiturasScreen').then((m) => ({ default: m.StudyLeiturasScreen }));
-const loadStudyHistoricoScreen = () => import('../components/estudos/StudyHistoricoScreen').then((m) => ({ default: m.StudyHistoricoScreen }));
+const loadStudyFocusScreen = () =>
+  import('../components/estudos/StudyFocusScreen').then((m) => ({ default: m.StudyFocusScreen }));
+const loadStudyRevisarScreen = () =>
+  import('../components/estudos/StudyRevisarScreen').then((m) => ({
+    default: m.StudyRevisarScreen,
+  }));
+const loadStudyLeiturasScreen = () =>
+  import('../components/estudos/StudyLeiturasScreen').then((m) => ({
+    default: m.StudyLeiturasScreen,
+  }));
+const loadStudyHistoricoScreen = () =>
+  import('../components/estudos/StudyHistoricoScreen').then((m) => ({
+    default: m.StudyHistoricoScreen,
+  }));
 
 // Telas de domínio empilhadas sobre suas abas (estágio → faculdade, TCC → estudos)
-const loadInternshipDiaryView = () => import('../components/views/InternshipDiaryView').then((m) => ({ default: m.InternshipDiaryView }));
-const loadInternshipCaseView = () => import('../components/views/InternshipCaseView').then((m) => ({ default: m.InternshipCaseView }));
-const loadTccView = () => import('../components/views/TccView').then((m) => ({ default: m.TccView }));
+const loadInternshipDiaryView = () =>
+  import('../components/views/InternshipDiaryView').then((m) => ({
+    default: m.InternshipDiaryView,
+  }));
+const loadInternshipCaseView = () =>
+  import('../components/views/InternshipCaseView').then((m) => ({ default: m.InternshipCaseView }));
+const loadTccView = () =>
+  import('../components/views/TccView').then((m) => ({ default: m.TccView }));
+const loadCalendarScreen = () =>
+  import('../components/views/CalendarScreen').then((m) => ({ default: m.CalendarScreen }));
 
 const HomeView = memo(lazy(loadHomeView));
 const FaculdadeView = memo(lazy(loadFaculdadeView));
@@ -78,6 +123,7 @@ const StudyHistoricoScreen = lazy(loadStudyHistoricoScreen);
 const InternshipDiaryView = lazy(loadInternshipDiaryView);
 const InternshipCaseView = lazy(loadInternshipCaseView);
 const TccView = lazy(loadTccView);
+const CalendarScreen = lazy(loadCalendarScreen);
 
 /** Fallback discreto enquanto um chunk de view carrega (primeira visita à aba). */
 export const ViewFallback = () => <ViewSkeleton rows={5} />;
@@ -116,7 +162,8 @@ export type ScreenKey =
   | 'studyHistorico'
   | 'internshipDiary'
   | 'internshipCase'
-  | 'tcc';
+  | 'tcc'
+  | 'calendar';
 
 /** Factories dos chunks — reutilizadas pelo lazy e pelo prefetch com política. */
 const SCREEN_CHUNK_LOADERS: Record<ScreenKey, () => Promise<unknown>> = {
@@ -147,6 +194,7 @@ const SCREEN_CHUNK_LOADERS: Record<ScreenKey, () => Promise<unknown>> = {
   internshipDiary: loadInternshipDiaryView,
   internshipCase: loadInternshipCaseView,
   tcc: loadTccView,
+  calendar: loadCalendarScreen,
 };
 
 /**
@@ -202,9 +250,7 @@ export const SlideContent: React.FC = () => {
   const app = useMobileApp();
   const activeTab = app.activeTab;
 
-  useUnknownSlideKindWarning(
-    app.navigationStack[app.navigationStack.length - 1]?.kind,
-  );
+  useUnknownSlideKindWarning(app.navigationStack[app.navigationStack.length - 1]?.kind);
 
   return (
     <>
@@ -288,7 +334,9 @@ export const SlideContent: React.FC = () => {
                 totalTimeMs: Date.now() - app.currentQuizResultStartTime!,
                 correctCount: app.currentQuizResultCorrectCount!,
                 totalCount: app.currentQuizResultTotalCount!,
-                scorePct: Math.round((app.currentQuizResultCorrectCount! / app.currentQuizResultTotalCount!) * 100),
+                scorePct: Math.round(
+                  (app.currentQuizResultCorrectCount! / app.currentQuizResultTotalCount!) * 100,
+                ),
                 createdAt: new Date().toISOString().split('T')[0],
               });
               app.closeAllQuizScreens();
@@ -316,9 +364,11 @@ export const SlideContent: React.FC = () => {
       ) : (
         <>
           <Suspense fallback={<ViewFallback />}>
-            {activeTab === 'home' && <HomeView />}
+            {activeTab === 'home' && (app.isCalendarScreenOpen ? <CalendarScreen /> : <HomeView />)}
             {activeTab === 'faculdade' &&
-              (app.isInternshipCaseOpen ? (
+              (app.isCalendarScreenOpen ? (
+                <CalendarScreen />
+              ) : app.isInternshipCaseOpen ? (
                 <InternshipCaseView />
               ) : app.isInternshipDiaryOpen ? (
                 <InternshipDiaryView />
@@ -329,8 +379,7 @@ export const SlideContent: React.FC = () => {
               ) : (
                 <FaculdadeView course={app.focusedCourse} />
               ))}
-            {activeTab === 'estudos' &&
-              (app.isTccScreenOpen ? <TccView /> : <EstudosView />)}
+            {activeTab === 'estudos' && (app.isTccScreenOpen ? <TccView /> : <EstudosView />)}
             {activeTab === 'biblioteca' && (
               <BibliotecaView
                 mode={

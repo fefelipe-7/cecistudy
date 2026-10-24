@@ -16,58 +16,101 @@ import type {
 
 const courses: Course[] = [
   {
-    id: 'c1', name: 'psicopatologia', professor: 'mariana', semester: '6º sem',
-    schedule: [], color: '#fff', icon: 'Brain',
+    id: 'c1',
+    name: 'psicopatologia',
+    professor: 'mariana',
+    semester: '6º sem',
+    schedule: [],
+    color: '#fff',
+    icon: 'Brain',
   },
 ];
 const concepts: PsychologyConcept[] = [
   {
-    id: 'con-1', name: 'tríade cognitiva', definition: 'visão negativa de si',
-    approachId: 'app-1', authorIds: ['aut-1'], courseIds: ['c1'], tags: ['tcc'],
+    id: 'con-1',
+    name: 'tríade cognitiva',
+    definition: 'visão negativa de si',
+    approachId: 'app-1',
+    authorIds: ['aut-1'],
+    courseIds: ['c1'],
+    tags: ['tcc'],
   },
 ];
 const authors: PsychologyAuthor[] = [
   {
-    id: 'aut-1', name: 'aaron beck', bio: 'pai da terapia cognitiva',
-    lifespan: '1921–2021', approachId: 'app-1', keyConcepts: ['tríade'], majorWorks: [],
+    id: 'aut-1',
+    name: 'aaron beck',
+    bio: 'pai da terapia cognitiva',
+    lifespan: '1921–2021',
+    approachId: 'app-1',
+    keyConcepts: ['tríade'],
+    majorWorks: [],
   },
 ];
 const tasks: Task[] = [
   {
-    id: 't-1', title: 'ler capítulo 4', disciplineId: 'c1',
-    completed: false, priority: 'alta', category: 'leitura',
+    id: 't-1',
+    title: 'ler capítulo 4',
+    disciplineId: 'c1',
+    completed: false,
+    priority: 'alta',
+    category: 'leitura',
   },
 ];
 const exams: Exam[] = [
   {
-    id: 'e-1', courseId: 'c1', title: 'prova teórica ii', date: '2026-10-01',
-    weight: '1,0', topics: ['ansiedade'], completed: false,
+    id: 'e-1',
+    courseId: 'c1',
+    title: 'prova teórica ii',
+    date: '2026-10-01',
+    weight: '1,0',
+    topics: ['ansiedade'],
+    completed: false,
   },
 ];
 const looseNotes: LooseNote[] = [
-  { id: 'n-1', title: '', content: 'anotação sobre análise do comportamento', category: 'estudo', date: '2026-01-01' },
+  {
+    id: 'n-1',
+    title: '',
+    content: 'anotação sobre análise do comportamento',
+    category: 'estudo',
+    date: '2026-01-01',
+  },
 ];
 const thesisChapters: ThesisChapter[] = [
   {
-    id: 'ch-1', thesisId: 'tcc-main', position: 1, title: 'revisão de literatura',
-    kind: 'capitulo', requiredness: 'obrigatorio', stage: 'escrevendo',
-    createdAt: '2026-01-01', updatedAt: '2026-01-01',
+    id: 'ch-1',
+    thesisId: 'tcc-main',
+    position: 1,
+    title: 'revisão de literatura',
+    kind: 'capitulo',
+    requiredness: 'obrigatorio',
+    stage: 'escrevendo',
+    createdAt: '2026-01-01',
+    updatedAt: '2026-01-01',
   },
 ];
 const thesisTasks: ThesisTask[] = [
   {
-    id: 'tt-1', thesisId: 'tcc-main', title: 'enviar pré-projeto pra orientadora',
-    origin: 'minha', status: 'aberta', createdAt: '2026-01-01', updatedAt: '2026-01-01',
+    id: 'tt-1',
+    thesisId: 'tcc-main',
+    title: 'enviar pré-projeto pra orientadora',
+    origin: 'minha',
+    status: 'aberta',
+    createdAt: '2026-01-01',
+    updatedAt: '2026-01-01',
   },
 ];
 
-function renderModal(over: {
-  onClose?: Mock;
-  onNavigate?: Mock;
-  onOpenNoteDetail?: Mock;
-  onOpenCourseDetail?: Mock;
-  onOpenTccScreen?: Mock;
-} = {}) {
+function renderModal(
+  over: {
+    onClose?: Mock;
+    onNavigate?: Mock;
+    onOpenNoteDetail?: Mock;
+    onOpenCourseDetail?: Mock;
+    onOpenTccScreen?: Mock;
+  } = {},
+) {
   const handlers: {
     onClose: Mock;
     onNavigate: Mock;
@@ -98,7 +141,7 @@ function renderModal(over: {
       thesisReferences={[]}
       thesisTasks={thesisTasks}
       {...handlers}
-    />
+    />,
   );
   return handlers;
 }
@@ -128,7 +171,9 @@ describe('GlobalSearchModal', () => {
     fireEvent.keyDown(screen.getByRole('combobox'), { key: 'Enter' });
     expect(h.onClose).toHaveBeenCalledOnce();
     expect(
-      h.onNavigate.mock.calls.length + h.onOpenNoteDetail.mock.calls.length + h.onOpenCourseDetail.mock.calls.length
+      h.onNavigate.mock.calls.length +
+        h.onOpenNoteDetail.mock.calls.length +
+        h.onOpenCourseDetail.mock.calls.length,
     ).toBe(1);
   });
 

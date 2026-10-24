@@ -1,9 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  EXIT_BACK_WINDOW_MS,
-  initialBackExitState,
-  resolveBackExit,
-} from '../exitBack';
+import { EXIT_BACK_WINDOW_MS, initialBackExitState, resolveBackExit } from '../exitBack';
 
 describe('resolveBackExit (double back to exit)', () => {
   it('primeiro back na raiz retorna ação toast e grava o timestamp', () => {

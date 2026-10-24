@@ -57,7 +57,10 @@ export const CourseCreateMenu: React.FC<CourseCreateMenuProps> = ({
   };
 
   return (
-    <div ref={rootRef} className={variant === 'floating' ? 'fixed bottom-6 right-5 z-40' : 'relative'}>
+    <div
+      ref={rootRef}
+      className={variant === 'floating' ? 'fixed bottom-6 right-5 z-40' : 'relative'}
+    >
       {/* Menu expansível */}
       <AnimatePresence>
         {isOpen && (
@@ -112,9 +115,7 @@ export const CourseCreateMenu: React.FC<CourseCreateMenuProps> = ({
         }
       >
         <Plus className={variant === 'floating' ? 'w-5 h-5' : 'w-3.5 h-3.5'} />
-        {variant === 'inline' && (
-          <span className="text-[11px] font-bold">novo registro</span>
-        )}
+        {variant === 'inline' && <span className="text-[11px] font-bold">novo registro</span>}
       </motion.button>
     </div>
   );

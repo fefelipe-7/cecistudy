@@ -14,10 +14,7 @@
 import { StrictMode } from 'react';
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import {
-  SYNC_INTERVAL_MS,
-  useBackgroundSyncTriggers,
-} from '../useBackgroundSyncTriggers';
+import { SYNC_INTERVAL_MS, useBackgroundSyncTriggers } from '../useBackgroundSyncTriggers';
 
 const INITIAL_DELAY_MS = 1500;
 
@@ -48,15 +45,24 @@ describe('useBackgroundSyncTriggers (spec §7 Fase 8)', () => {
     const run = () => {
       calls += 1;
     };
-    const { rerender } = renderHook(
-      ({ cfg, runner }) => useBackgroundSyncTriggers(cfg, runner),
-      { initialProps: { cfg: { owner: 'a' }, runner: run as () => void } },
-    );
+    const { rerender } = renderHook(({ cfg, runner }) => useBackgroundSyncTriggers(cfg, runner), {
+      initialProps: { cfg: { owner: 'a' }, runner: run as () => void },
+    });
 
     // Provider "muda de estado" o tempo todo: run com identidade NOVA a cada
     // render — o timer não pode ser reinstalado por isso (deps = [config]).
-    rerender({ cfg: { owner: 'a' }, runner: vi.fn(() => { calls += 1; }) });
-    rerender({ cfg: { owner: 'a' }, runner: vi.fn(() => { calls += 1; }) });
+    rerender({
+      cfg: { owner: 'a' },
+      runner: vi.fn(() => {
+        calls += 1;
+      }),
+    });
+    rerender({
+      cfg: { owner: 'a' },
+      runner: vi.fn(() => {
+        calls += 1;
+      }),
+    });
 
     await act(async () => {
       await vi.advanceTimersByTimeAsync(INITIAL_DELAY_MS + 10);
@@ -130,10 +136,9 @@ describe('useBackgroundSyncTriggers (spec §7 Fase 8)', () => {
 
   it('limpar a configuração remove timer e listeners', async () => {
     const run = vi.fn().mockResolvedValue(undefined);
-    const { rerender } = renderHook(
-      ({ cfg }) => useBackgroundSyncTriggers(cfg, run),
-      { initialProps: { cfg: { owner: 'a' } as unknown } },
-    );
+    const { rerender } = renderHook(({ cfg }) => useBackgroundSyncTriggers(cfg, run), {
+      initialProps: { cfg: { owner: 'a' } as unknown },
+    });
 
     await act(async () => {
       await vi.advanceTimersByTimeAsync(INITIAL_DELAY_MS + 10);

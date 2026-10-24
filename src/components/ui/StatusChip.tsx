@@ -15,10 +15,7 @@ import { cn } from '@/lib/utils';
  */
 export type StatusTone = 'success' | 'warning' | 'info' | 'muted';
 
-const TONE: Record<
-  StatusTone,
-  { cls: string; Icon: typeof Check; defaultLabel: string }
-> = {
+const TONE: Record<StatusTone, { cls: string; Icon: typeof Check; defaultLabel: string }> = {
   success: {
     cls: 'bg-status-success-surface border-status-success-border text-status-success-strong',
     Icon: Check,
@@ -75,16 +72,24 @@ export const StatusChip: React.FC<StatusChipProps> = ({
   const shell = cn(
     'inline-flex items-center gap-1.5 text-[12px] font-semibold px-3 py-2 rounded-full',
     // 44px de alvo: o chip é clicável, e chip pequeno é alvo pequeno.
-    onClick ? 'min-h-[44px] cursor-pointer tap-interactive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ceci-brand' : 'min-h-[36px]',
+    onClick
+      ? 'min-h-[44px] cursor-pointer tap-interactive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ceci-brand'
+      : 'min-h-[36px]',
     pressed ? 'ring-2 ring-ceci-brand' : '',
     cls,
-    className
+    className,
   );
 
   if (!onClick) return <span className={shell}>{content}</span>;
 
   return (
-    <button type="button" onClick={onClick} aria-pressed={pressed} aria-label={ariaLabel} className={shell}>
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={pressed}
+      aria-label={ariaLabel}
+      className={shell}
+    >
       {content}
     </button>
   );

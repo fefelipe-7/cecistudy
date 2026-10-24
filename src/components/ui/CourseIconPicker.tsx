@@ -40,7 +40,7 @@ export const CourseIconPicker: React.FC<CourseIconPickerProps> = ({
                   'flex items-center justify-center text-2xl leading-none rounded-xl h-11 transition cursor-pointer active:scale-95',
                   sel
                     ? 'bg-surface-rose border-2 border-ceci-border-brand scale-95'
-                    : 'border-2 border-transparent bg-surface-muted hover:bg-surface-subtle'
+                    : 'border-2 border-transparent bg-surface-muted hover:bg-surface-subtle',
                 )}
               >
                 {e}
@@ -67,7 +67,7 @@ export const CourseIconPicker: React.FC<CourseIconPickerProps> = ({
                   'flex items-center gap-1.5 justify-center rounded-xl h-11 transition cursor-pointer active:scale-95 px-2',
                   sel
                     ? 'bg-surface-rose border-2 border-ceci-border-brand text-ceci-brand-strong'
-                    : 'border-2 border-transparent bg-surface-muted text-ceci-secondary hover:bg-surface-subtle'
+                    : 'border-2 border-transparent bg-surface-muted text-ceci-secondary hover:bg-surface-subtle',
                 )}
               >
                 <CourseIcon icon={o.value as CourseIconName} className="w-4 h-4" />

@@ -58,8 +58,7 @@ const STATUS_CHIP: Record<
   presente: {
     label: 'presente',
     icon: <Check className="w-3 h-3" />,
-    className:
-      'bg-status-success-surface text-status-success-strong border-status-success-border',
+    className: 'bg-status-success-surface text-status-success-strong border-status-success-border',
   },
   falta: {
     label: 'falta',
@@ -91,8 +90,8 @@ function buildHistoryRows(records: AttendanceRecord[], classes: ClassNote[]): Hi
   }
   rows.sort((a, b) =>
     (a.kind === 'record' ? a.record.date : a.note.date).localeCompare(
-      b.kind === 'record' ? b.record.date : b.note.date
-    )
+      b.kind === 'record' ? b.record.date : b.note.date,
+    ),
   );
   return rows;
 }
@@ -131,7 +130,7 @@ export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }
   const courseTasks = tasks.filter((t) => t.disciplineId === course.id);
   const historyRows = useMemo(
     () => buildHistoryRows(sortAttendanceRecords(course.attendance?.records ?? []), courseClasses),
-    [course.attendance?.records, courseClasses]
+    [course.attendance?.records, courseClasses],
   );
 
   return (
@@ -168,7 +167,9 @@ export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }
                     <span className={`text-[10px] font-bold ${examPillClass(exam)}`}>
                       {examPillLabel(exam)}
                     </span>
-                    <span className="text-[10px] font-semibold text-ceci-secondary">{exam.weight}</span>
+                    <span className="text-[10px] font-semibold text-ceci-secondary">
+                      {exam.weight}
+                    </span>
                   </div>
 
                   <h4 className="font-display font-bold text-sm text-ceci-primary">{exam.title}</h4>
@@ -332,7 +333,10 @@ export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }
                     className="absolute -left-[5px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-surface-default border-2 shrink-0"
                     style={{ borderColor: course.color }}
                   />
-                  <ClassNoteListItem note={row.note} onClick={() => openClassNoteDetail(row.note.id)} />
+                  <ClassNoteListItem
+                    note={row.note}
+                    onClick={() => openClassNoteDetail(row.note.id)}
+                  />
                 </li>
               );
             })}
@@ -423,14 +427,12 @@ export const CourseAulasContent: React.FC<CourseAulasContentProps> = ({ course }
                 />
               </ManageSurface>
             ))}
-            {!showDoneTasks &&
-              courseTasks.length > 0 &&
-              courseTasks.every((t) => t.completed) && (
-                <p className="py-3 text-xs text-status-success-strong flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4" /> todas as tarefas desta disciplina estão
-                  concluídas ♡
-                </p>
-              )}
+            {!showDoneTasks && courseTasks.length > 0 && courseTasks.every((t) => t.completed) && (
+              <p className="py-3 text-xs text-status-success-strong flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4" /> todas as tarefas desta disciplina estão
+                concluídas ♡
+              </p>
+            )}
           </div>
         ) : (
           <p className="text-xs text-ceci-tertiary py-2 flex items-center gap-1.5">

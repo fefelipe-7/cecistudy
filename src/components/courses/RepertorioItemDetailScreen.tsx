@@ -14,7 +14,11 @@ import { TagList } from '../ui/TagList';
 import { ReaderModeModal } from '../widgets/ReaderModeModal';
 import { useMobileApp } from '@/context/mobileApp';
 import { useCourseRepertorio } from '../wizards/useCourseRepertorio';
-import { CATALOG_BOOK_PREFIX, INTERDISCIPLINARY_PREFIX, ARTICLE_PREFIX } from '../../lib/courseRepertorio';
+import {
+  CATALOG_BOOK_PREFIX,
+  INTERDISCIPLINARY_PREFIX,
+  ARTICLE_PREFIX,
+} from '../../lib/courseRepertorio';
 
 type ItemKind =
   | 'concept'
@@ -52,9 +56,10 @@ interface CatalogSource {
 function catalogWorkDetail(
   id: string,
   catalog: CatalogSource | null,
-  kind: ItemKind
+  kind: ItemKind,
 ): CatalogWorkDetail | undefined {
-  const byId = (list?: { id: string; title: string; author: string }[]) => list?.find((w) => w.id === id);
+  const byId = (list?: { id: string; title: string; author: string }[]) =>
+    list?.find((w) => w.id === id);
   if (kind === 'cat-book' || kind === 'inter-book') {
     const book = byId(catalog?.books) ?? byId(catalog?.interdisciplinary);
     if (book) {
@@ -104,22 +109,23 @@ export const RepertorioItemDetailScreen: React.FC = () => {
 
   const concept = useMemo(
     () => (kind === 'concept' ? concepts.find((c) => c.id === itemId) : undefined),
-    [kind, itemId, concepts]
+    [kind, itemId, concepts],
   );
   const author = useMemo(
     () => (kind === 'author' ? authors.find((a) => a.id === itemId) : undefined),
-    [kind, itemId, authors]
+    [kind, itemId, authors],
   );
   const reading = useMemo(
     () => (kind === 'reading' ? readings.find((r) => r.id === itemId) : undefined),
-    [kind, itemId, readings]
+    [kind, itemId, readings],
   );
   const material = useMemo(
     () => (kind === 'material' ? materials.find((m) => m.id === itemId) : undefined),
-    [kind, itemId, materials]
+    [kind, itemId, materials],
   );
-  const catalogWork =
-    isCatalogKind(kind) ? catalogWorkDetail(itemId ?? '', catalog, kind) : undefined;
+  const catalogWork = isCatalogKind(kind)
+    ? catalogWorkDetail(itemId ?? '', catalog, kind)
+    : undefined;
 
   const isCatalog = isCatalogKind(kind);
   const missing =
@@ -145,21 +151,21 @@ export const RepertorioItemDetailScreen: React.FC = () => {
   }
 
   const heroTitle = isCatalog
-    ? catalogWork?.title ?? 'obra do catálogo'
+    ? (catalogWork?.title ?? 'obra do catálogo')
     : kind === 'concept'
-      ? concept?.name ?? 'conceito'
+      ? (concept?.name ?? 'conceito')
       : kind === 'author'
-        ? author?.name ?? 'autor'
+        ? (author?.name ?? 'autor')
         : kind === 'reading'
-          ? reading?.title ?? 'leitura'
-          : material?.title ?? 'material';
+          ? (reading?.title ?? 'leitura')
+          : (material?.title ?? 'material');
 
   const heroSubtitle = isCatalog
     ? catalogWork?.author
       ? `por ${catalogWork.author}`
       : ''
     : kind === 'author'
-      ? author?.lifespan ?? ''
+      ? (author?.lifespan ?? '')
       : kind === 'reading'
         ? reading?.author
           ? `de ${reading.author}`
@@ -216,7 +222,8 @@ export const RepertorioItemDetailScreen: React.FC = () => {
           {concept.courseIds && concept.courseIds.length > 0 ? (
             <DetailSection label="aparece nas disciplinas">
               <p className="text-xs text-ceci-secondary leading-relaxed">
-                {concept.courseIds.length} disciplina{concept.courseIds.length > 1 ? 's' : ''} ligada
+                {concept.courseIds.length} disciplina{concept.courseIds.length > 1 ? 's' : ''}{' '}
+                ligada
                 {concept.courseIds.length > 1 ? 's' : ''} a este conceito.
               </p>
             </DetailSection>
@@ -311,7 +318,9 @@ export const RepertorioItemDetailScreen: React.FC = () => {
                 <BookOpen className="w-3.5 h-3.5" />
                 {catalogWork.badge}
               </span>
-              <p className="text-xs text-ceci-secondary leading-relaxed">por {catalogWork.author}</p>
+              <p className="text-xs text-ceci-secondary leading-relaxed">
+                por {catalogWork.author}
+              </p>
             </div>
           </DetailSection>
           <Tip>encontrou esta obra no catálogo — que tal adicionar aos seus materiais? ♡</Tip>
@@ -330,7 +339,10 @@ export const RepertorioItemDetailScreen: React.FC = () => {
   );
 };
 
-const DetailSection: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
+const DetailSection: React.FC<{ label: string; children: React.ReactNode }> = ({
+  label,
+  children,
+}) => (
   <section className="space-y-1.5">
     <h3 className="font-display font-bold text-xs text-ceci-primary tracking-wide">{label}</h3>
     {children}

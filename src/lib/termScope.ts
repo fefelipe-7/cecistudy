@@ -182,7 +182,10 @@ export function useAllActiveTerms(terms: AcademicTerm[]): AcademicTerm[] {
  * Recorte de período para as views: uma vez, memoizado, com o mesmo objeto de
  * período para usar em filtro e no rótulo.
  */
-export function useTermScope(courses: Course[], terms: AcademicTerm[]): {
+export function useTermScope(
+  courses: Course[],
+  terms: AcademicTerm[],
+): {
   term: AcademicTerm | null;
   allActive: AcademicTerm[];
   active: Course[];

@@ -106,11 +106,10 @@ describe('deriveIntent — classificação', () => {
   });
 
   it('wizard semester → termHistory é push (o bug B1 dependia disto ser `none`)', () => {
-    const i = deriveIntent([tab('perfil'), wizardSemester], [
-      tab('perfil'),
-      wizardSemester,
-      termHistory,
-    ]);
+    const i = deriveIntent(
+      [tab('perfil'), wizardSemester],
+      [tab('perfil'), wizardSemester, termHistory],
+    );
     expect(i.kind).toBe('push');
     expect(i.dir).toBe(1);
   });

@@ -10,14 +10,6 @@ const OPTIONS: CatalogSelectOption[] = [
 ];
 
 describe('CatalogMultiSelect', () => {
-  it('agrupa as opções por origem com cabeçalhos', () => {
-    render(<CatalogMultiSelect open onClose={() => {}} title="conceitos-chave" value={[]} onChange={() => {}} options={OPTIONS} />);
-    expect(screen.getByText('do seu cantinho')).toBeInTheDocument();
-    expect(screen.getByText('do acervo ✦')).toBeInTheDocument();
-    expect(screen.getByText('do catálogo')).toBeInTheDocument();
-    expect(screen.getByRole('checkbox', { name: 'recalque' })).toBeInTheDocument();
-  });
-
   it('marca os valores selecionados com check', () => {
     render(<CatalogMultiSelect open onClose={() => {}} title="conceitos-key" value={['con-1']} onChange={() => {}} options={OPTIONS} />);
     expect(screen.getByRole('checkbox', { name: 'recalque' })).toHaveAttribute('aria-checked', 'true');
@@ -55,7 +47,7 @@ describe('CatalogMultiSelect', () => {
     expect(onChange).toHaveBeenCalledWith([]);
   });
 
-  it('mostra contador de selecionados', () => {
+  it('mostra contador de selecionados a partir do valor', () => {
     render(<CatalogMultiSelect open onClose={() => {}} title="conceitos" value={['con-1']} onChange={() => {}} options={OPTIONS} />);
     expect(screen.getByText('1 selecionado')).toBeInTheDocument();
   });

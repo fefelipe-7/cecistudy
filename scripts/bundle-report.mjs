@@ -65,8 +65,9 @@ const chunks = jsCss.map(chunkInfo).sort((a, b) => b.bytes - a.bytes);
 
 // Entrada crítica: o que o index.html referencia direto.
 const indexHtml = fs.readFileSync(path.join(distDir, 'index.html'), 'utf8');
-const referenced = [...indexHtml.matchAll(/(?:src|href)="(\/?assets\/[^"]+\.(?:js|css))"/g)]
-  .map((m) => m[1].replace(/^\/?assets\//, ''));
+const referenced = [...indexHtml.matchAll(/(?:src|href)="(\/?assets\/[^"]+\.(?:js|css))"/g)].map(
+  (m) => m[1].replace(/^\/?assets\//, ''),
+);
 const criticalChunks = chunks.filter((c) => referenced.includes(path.basename(c.file)));
 const totalBytesEntry = criticalChunks.reduce((acc, c) => acc + c.bytes, 0);
 
@@ -88,7 +89,8 @@ const totals = {
 const classification = (base, isEntry) => {
   if (isEntry || base.startsWith('vendor-')) return 'critical';
   if (/^(bancoQuestoes|ThreeDPaper)$/.test(base)) return 'opportunistic';
-  if (/^(authors|comparisons|psicoterapiaApproaches|techniques|domain-)/.test(base)) return 'deferred';
+  if (/^(authors|comparisons|psicoterapiaApproaches|techniques|domain-)/.test(base))
+    return 'deferred';
   return 'route';
 };
 
@@ -134,7 +136,7 @@ if (fs.existsSync(reportPath) && !FORCE) {
     (prev.chunks ?? prev.topChunks ?? []).map((c) => baseName(path.basename(c.file ?? c.name))),
   );
   const known = new Set();
-  for (const c of (prev.chunks ?? prev.topChunks ?? [])) {
+  for (const c of prev.chunks ?? prev.topChunks ?? []) {
     known.add(baseName(path.basename(c.file ?? c.name)));
   }
   void prevBases;

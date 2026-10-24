@@ -33,10 +33,7 @@ export const IDLE_FOCUS: FocusTimerState = {
 
 /** Tempo decorrido de foco em ms (acumula apenas enquanto roda). */
 export function elapsedMs(state: FocusTimerState, now: number): number {
-  return (
-    state.elapsedBaseMs +
-    (state.running ? Math.max(0, now - state.phaseStartedAt) : 0)
-  );
+  return state.elapsedBaseMs + (state.running ? Math.max(0, now - state.phaseStartedAt) : 0);
 }
 
 /** Tempo decorrido em segundos inteiros. */
@@ -71,7 +68,7 @@ export function isFinished(state: FocusTimerState, now: number): boolean {
 export function startFocus(
   _state: FocusTimerState,
   now: number,
-  durationMs: number
+  durationMs: number,
 ): FocusTimerState {
   return {
     running: true,
@@ -87,7 +84,7 @@ export function startFocus(
 export function prepareFocus(
   _state: FocusTimerState,
   _now: number,
-  durationMs: number
+  durationMs: number,
 ): FocusTimerState {
   return {
     running: false,

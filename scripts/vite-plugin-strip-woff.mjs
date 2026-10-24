@@ -13,8 +13,7 @@
  * apps/mobile).
  */
 
-const WOFF_FALLBACK =
-  /,\s*url\(\s*[^)]*\.woff\s*\)\s*format\(\s*['"]woff['"]\s*\)/g;
+const WOFF_FALLBACK = /,\s*url\(\s*[^)]*\.woff\s*\)\s*format\(\s*['"]woff['"]\s*\)/g;
 
 /** @returns {import('vite').Plugin} */
 export function stripLegacyFontFormats() {

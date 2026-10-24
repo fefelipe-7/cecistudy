@@ -44,7 +44,10 @@ vi.mock('@/context/shellNavContexts', () => ({
 
 vi.mock('@/lib/termScope', async () => {
   const actual = await vi.importActual<typeof import('@/lib/termScope')>('@/lib/termScope');
-  return { ...actual, useActiveTerm: (terms: Parameters<typeof actual.activeTermOf>[0]) => actual.activeTermOf(terms) };
+  return {
+    ...actual,
+    useActiveTerm: (terms: Parameters<typeof actual.activeTermOf>[0]) => actual.activeTermOf(terms),
+  };
 });
 
 import { TermHistoryScreen } from '../TermHistoryScreen';

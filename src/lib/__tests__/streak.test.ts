@@ -120,12 +120,12 @@ describe('getWeekProgress', () => {
     const cells = getWeekProgress([TUE, FRI], FRI);
     expect(cells.map((c) => c.status)).toEqual([
       'upcoming', // seg 10
-      'done',     // ter 11
+      'done', // ter 11
       'upcoming', // qua 12
       'upcoming', // qui 13
-      'done',     // sex 14 (já ativo hoje)
-      'weekend',  // sáb 15
-      'weekend',  // dom 16
+      'done', // sex 14 (já ativo hoje)
+      'weekend', // sáb 15
+      'weekend', // dom 16
     ]);
     expect(cells.map((c) => c.label)).toEqual(['seg', 'ter', 'qua', 'qui', 'sex', 'sáb', 'dom']);
   });

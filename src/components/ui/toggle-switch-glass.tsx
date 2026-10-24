@@ -15,9 +15,39 @@ export type ToggleColorTheme =
   | 'cyan';
 
 const sizeConfig = {
-  sm: { trackWidth: 51, trackHeight: 31, knobWidth: 27, knobHeight: 21, knobMargin: 2, indicatorWidth: 2, indicatorHeight: 9, indicatorOffset: 11, circleSize: 7 },
-  md: { trackWidth: 60, trackHeight: 33, knobWidth: 35, knobHeight: 24, knobMargin: 2.5, indicatorWidth: 2, indicatorHeight: 10, indicatorOffset: 12, circleSize: 8 },
-  lg: { trackWidth: 80, trackHeight: 36, knobWidth: 47, knobHeight: 30, knobMargin: 3, indicatorWidth: 2, indicatorHeight: 13, indicatorOffset: 15.5, circleSize: 10.5 },
+  sm: {
+    trackWidth: 51,
+    trackHeight: 31,
+    knobWidth: 27,
+    knobHeight: 21,
+    knobMargin: 2,
+    indicatorWidth: 2,
+    indicatorHeight: 9,
+    indicatorOffset: 11,
+    circleSize: 7,
+  },
+  md: {
+    trackWidth: 60,
+    trackHeight: 33,
+    knobWidth: 35,
+    knobHeight: 24,
+    knobMargin: 2.5,
+    indicatorWidth: 2,
+    indicatorHeight: 10,
+    indicatorOffset: 12,
+    circleSize: 8,
+  },
+  lg: {
+    trackWidth: 80,
+    trackHeight: 36,
+    knobWidth: 47,
+    knobHeight: 30,
+    knobMargin: 3,
+    indicatorWidth: 2,
+    indicatorHeight: 13,
+    indicatorOffset: 15.5,
+    circleSize: 10.5,
+  },
 };
 
 const colorThemes = {
@@ -85,10 +115,22 @@ export default function ToggleSwitch({
   const [sweepDirection, setSweepDirection] = useState<'left' | 'right'>('right');
   const trackRef = useRef<HTMLDivElement | null>(null);
   const velocityRef = useRef(0);
+  /** O sweep é um timer de 150 ms: sem isso ele dispara depois do unmount. */
+  const sweepTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const shouldReduceMotion = useReducedMotion();
 
-  const { trackWidth, trackHeight, knobWidth, knobHeight, knobMargin, indicatorWidth, indicatorHeight, indicatorOffset, circleSize } = sizeConfig[size];
+  const {
+    trackWidth,
+    trackHeight,
+    knobWidth,
+    knobHeight,
+    knobMargin,
+    indicatorWidth,
+    indicatorHeight,
+    indicatorOffset,
+    circleSize,
+  } = sizeConfig[size];
 
   const calculateTravel = () => {
     return trackWidth - knobWidth - knobMargin * 2;
@@ -106,6 +148,13 @@ export default function ToggleSwitch({
     motionX.set(newX);
   }, [initialIsActive]);
 
+  useEffect(
+    () => () => {
+      if (sweepTimerRef.current) clearTimeout(sweepTimerRef.current);
+    },
+    [],
+  );
+
   function getBackgroundColor() {
     const theme = colorThemes[colorTheme];
     const mode = darkMode ? theme.dark : theme.light;
@@ -116,7 +165,8 @@ export default function ToggleSwitch({
     if (shouldReduceMotion) return;
     setSweepDirection(direction);
     setShowSweep(true);
-    setTimeout(() => setShowSweep(false), 150);
+    if (sweepTimerRef.current) clearTimeout(sweepTimerRef.current);
+    sweepTimerRef.current = setTimeout(() => setShowSweep(false), 150);
   }
 
   // Pointer events para toque + mouse
@@ -213,7 +263,7 @@ export default function ToggleSwitch({
       className={cn(
         'relative block cursor-pointer touch-none overflow-visible border-0 bg-transparent p-0',
         disabled && 'cursor-not-allowed opacity-50',
-        className
+        className,
       )}
       onClick={handleComponentClick}
       onPointerDown={handlePointerDown}
@@ -397,7 +447,8 @@ export default function ToggleSwitch({
           transition={{ duration: BASE_D.micro }}
           style={{
             border: '1px solid rgba(255, 255, 255, 0.35)',
-            boxShadow: 'inset 0 0 12px -2px rgba(255, 255, 255, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.4)',
+            boxShadow:
+              'inset 0 0 12px -2px rgba(255, 255, 255, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.4)',
           }}
         />
       </motion.div>

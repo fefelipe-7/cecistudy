@@ -23,7 +23,7 @@ import type { TempleSection } from './temple';
 
 export type NavTab = 'home' | 'faculdade' | 'estudos' | 'biblioteca' | 'perfil';
 
-export type SubTabFaculdade = 'disciplinas' | 'calendario' | 'estagio';
+export type SubTabFaculdade = 'disciplinas' | 'estagio';
 
 /**
  * Aba do diário de estágio (`SPEC-009 D16`).
@@ -80,6 +80,11 @@ export type NavScreen =
    * erro — item removido não pode derrubar a navegação.
    */
   | { kind: 'tcc'; tab?: ThesisTab; focusId?: string }
+  /**
+   * Calendário empilhado (SPEC-024 D1). `day` é `DateKey` (`YYYY-MM-DD`) e
+   * opcional: ausente = agenda a partir de hoje. Nunca é sexta aba.
+   */
+  | { kind: 'calendar'; day?: string }
   | { kind: 'stickers' }
   | { kind: 'compose' }
   | { kind: 'composeDetails' }
@@ -96,7 +101,15 @@ export type NavScreen =
   | { kind: 'quiz-category' }
   | { kind: 'quiz-loading'; config: QuizConfig }
   | { kind: 'quiz-play'; state: QuizPlayState }
-  | { kind: 'quiz-result'; answers: QuizAnswer[]; config: QuizConfig; startTime: number; correctCount: number; totalCount: number; pool: StudyQuestion[] }
+  | {
+      kind: 'quiz-result';
+      answers: QuizAnswer[];
+      config: QuizConfig;
+      startTime: number;
+      correctCount: number;
+      totalCount: number;
+      pool: StudyQuestion[];
+    }
   /** Sincronização entre dispositivos (pareamento P2P), empilhada sobre o perfil. */
   | { kind: 'sync' }
   /** Telas dedicadas do estudo (empurradas sobre a aba estudos pelo feed). */

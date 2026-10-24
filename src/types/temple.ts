@@ -66,7 +66,11 @@ export type TempleEntityReference = {
   papel?: 'abordagem';
 };
 
-export type TempleComparisonType = 'convergencia' | 'complementaridade' | 'divergencia' | 'perspectivas';
+export type TempleComparisonType =
+  | 'convergencia'
+  | 'complementaridade'
+  | 'divergencia'
+  | 'perspectivas';
 
 export interface TempleComparisonAxisAnswer {
   entidadeId: string;

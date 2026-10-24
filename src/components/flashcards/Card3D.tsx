@@ -78,7 +78,11 @@ export const Card3D: React.FC<Card3DProps> = ({
 
   return (
     <div
-      className={cn('relative aspect-[3/4] select-none', reduce ? '' : '[perspective:900px]', className)}
+      className={cn(
+        'relative aspect-[3/4] select-none',
+        reduce ? '' : '[perspective:900px]',
+        className,
+      )}
     >
       <motion.div
         role={interactive ? 'button' : undefined}
@@ -90,7 +94,10 @@ export const Card3D: React.FC<Card3DProps> = ({
         data-reduced={reduce ? 'true' : undefined}
         {...outerHandlers}
         onKeyDown={handleKeyDown}
-        className={cn('relative h-full w-full rounded-2xl', reduce ? '' : '[transform-style:preserve-3d]')}
+        className={cn(
+          'relative h-full w-full rounded-2xl',
+          reduce ? '' : '[transform-style:preserve-3d]',
+        )}
         animate={reduce ? { opacity: 1 } : { rotateY: flipped ? 180 : 0 }}
         transition={reduce ? { duration: 0.12 } : FLIP_SPRING}
       >
@@ -98,7 +105,7 @@ export const Card3D: React.FC<Card3DProps> = ({
           className={cn(
             'absolute inset-0 overflow-hidden rounded-2xl bg-surface-default border border-ceci-border-default [transform:translateZ(1px)] transition-opacity duration-150',
             reduce && (flipped ? 'opacity-0 pointer-events-none' : 'opacity-100'),
-            frontClassName
+            frontClassName,
           )}
         >
           {front}
@@ -108,7 +115,7 @@ export const Card3D: React.FC<Card3DProps> = ({
             'absolute inset-0 overflow-hidden rounded-2xl bg-surface-default border border-ceci-border-default transition-opacity duration-150',
             backFaceTransform,
             reduce && (flipped ? 'opacity-100' : 'opacity-0 pointer-events-none'),
-            backClassName
+            backClassName,
           )}
         >
           {back}

@@ -143,7 +143,10 @@ export function titleRanges(title: string, query: string): [number, number][] {
 }
 
 /** Fatia o título em trechos normais/destaque a partir dos ranges (code points). */
-export function splitMarked(title: string, ranges: [number, number][]): { text: string; mark: boolean }[] {
+export function splitMarked(
+  title: string,
+  ranges: [number, number][],
+): { text: string; mark: boolean }[] {
   const chars = [...title];
   const out: { text: string; mark: boolean }[] = [];
   let cursor = 0;
@@ -157,7 +160,10 @@ export function splitMarked(title: string, ranges: [number, number][]): { text: 
 }
 
 /** Pontua a entrada (0 = descarta). AND: toda palavra precisa aparecer em algum campo. */
-function scoreEntry(e: SearchEntry, tokens: string[]): { score: number; matchField: MatchField } | null {
+function scoreEntry(
+  e: SearchEntry,
+  tokens: string[],
+): { score: number; matchField: MatchField } | null {
   const titleNorm = normalize(e.title);
   const bodyNorm = normalize(e.body);
   const tagsNorm = e.tags.map(normalize);

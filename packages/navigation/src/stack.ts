@@ -2,7 +2,14 @@
 // Moveu de src/lib/quizStack.ts (dono agora: packages/navigation).
 // Funções determinísticas (recebem a pilha atual e devolvem a próxima) — a
 // aplicação (scroll/hash) e os timestamps ficam no chamador (AppContext).
-import type { NavScreen, NavTab, QuizAnswer, QuizConfig, StudyQuestion, QuestionGroup } from './types';
+import type {
+  NavScreen,
+  NavTab,
+  QuizAnswer,
+  QuizConfig,
+  StudyQuestion,
+  QuestionGroup,
+} from './types';
 
 function estudosBase(stack: NavScreen[]): NavScreen[] {
   const top = stack[stack.length - 1];
@@ -21,30 +28,30 @@ export function stackAfterOpenQuizCategory(stack: NavScreen[]): NavScreen[] {
 /** Empilha o detalhe do grupo selecionado (sobre quiz-category). */
 export function stackAfterOpenQuizGroupDetail(
   stack: NavScreen[],
-  group: QuestionGroup
+  group: QuestionGroup,
 ): NavScreen[] {
   const top = stack[stack.length - 1];
   const base = estudosBase(stack);
-  const withCategory = top.kind === 'quiz-category'
-    ? stack
-    : top.kind === 'quiz-group-detail'
+  const withCategory =
+    top.kind === 'quiz-category'
       ? stack
-      : [...base, { kind: 'quiz-category' as const }];
+      : top.kind === 'quiz-group-detail'
+        ? stack
+        : [...base, { kind: 'quiz-category' as const }];
   return withCategory.some((s) => s.kind === 'quiz-group-detail')
-    ? withCategory.map((s) => s.kind === 'quiz-group-detail' ? { kind: 'quiz-group-detail' as const, group } : s)
+    ? withCategory.map((s) =>
+        s.kind === 'quiz-group-detail' ? { kind: 'quiz-group-detail' as const, group } : s,
+      )
     : [...withCategory, { kind: 'quiz-group-detail' as const, group }];
 }
 
 /** Empilha o splash de preparação (transitório; degrada ao seletor). */
-export function stackAfterOpenQuizLoading(
-  stack: NavScreen[],
-  config: QuizConfig
-): NavScreen[] {
+export function stackAfterOpenQuizLoading(stack: NavScreen[], config: QuizConfig): NavScreen[] {
   const top = stack[stack.length - 1];
   const base = estudosBase(stack);
   // Aceita topo sendo quiz-category OU quiz-group-detail
   const quizSection = ['quiz-category', 'quiz-group-detail'] as const;
-  if (quizSection.includes(top.kind as typeof quizSection[number])) {
+  if (quizSection.includes(top.kind as (typeof quizSection)[number])) {
     return [...stack, { kind: 'quiz-loading', config }];
   }
   if (top.kind === 'quiz-loading') return stack;
@@ -56,7 +63,7 @@ export function stackAfterOpenQuizPlay(
   stack: NavScreen[],
   pool: StudyQuestion[],
   config: QuizConfig,
-  now: number
+  now: number,
 ): NavScreen[] {
   // Encontra o topo do "fluxo de escolha" — inclui loading, category e group-detail
   const quizFlow = new Set(['quiz-category', 'quiz-group-detail', 'quiz-loading']);
@@ -90,16 +97,14 @@ const QUIZ_SECTION_KINDS = new Set(['quiz-category', 'quiz-group-detail'] as con
  */
 export function stackAfterOpenQuizResult(
   stack: NavScreen[],
-  result: QuizResultPayload
+  result: QuizResultPayload,
 ): NavScreen[] {
   const playScreen = stack.find((s) => s.kind === 'quiz-play');
   const pool: StudyQuestion[] = playScreen?.kind === 'quiz-play' ? playScreen.state.pool : [];
   // Encontra a última tela de seção de quiz (category OU group-detail)
   const qi = [...stack].reverse().findIndex((s) => QUIZ_SECTION_KINDS.has(s.kind as any));
   const base =
-    qi === -1
-      ? stack.filter((s) => s.kind !== 'quiz-play')
-      : stack.slice(0, stack.length - qi);
+    qi === -1 ? stack.filter((s) => s.kind !== 'quiz-play') : stack.slice(0, stack.length - qi);
   return [...base, { kind: 'quiz-result', ...result, pool }];
 }
 

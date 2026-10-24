@@ -20,27 +20,35 @@ const ACCENTS: Record<
   academic: {
     tile: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong',
     chipActive: 'bg-surface-blue text-ceci-academic-strong border-ceci-border-academic shadow-xs',
-    chipIdle: 'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-surface-blue',
+    chipIdle:
+      'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-surface-blue',
     lead: 'bg-surface-blue border border-ceci-border-academic rounded-[18px] p-3.5',
     leadIcon: 'text-ceci-academic-strong shrink-0 mt-0.5',
-    sectionHighlight: 'rounded-xl p-4 border shadow-2xs bg-surface-blue border-ceci-border-academic',
-    sectionHighlightTitle: 'text-xs uppercase tracking-wider font-bold mb-2 text-ceci-academic-strong',
+    sectionHighlight:
+      'rounded-xl p-4 border shadow-2xs bg-surface-blue border-ceci-border-academic',
+    sectionHighlightTitle:
+      'text-xs uppercase tracking-wider font-bold mb-2 text-ceci-academic-strong',
     rowHover: 'hover:bg-surface-blue',
   },
   success: {
     tile: 'bg-status-success-surface border-status-success-border text-status-success-strong',
-    chipActive: 'bg-status-success-surface text-status-success-strong border-status-success-border shadow-xs',
-    chipIdle: 'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-status-success-surface',
+    chipActive:
+      'bg-status-success-surface text-status-success-strong border-status-success-border shadow-xs',
+    chipIdle:
+      'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-status-success-surface',
     lead: 'bg-status-success-surface border border-status-success-border rounded-[18px] p-3.5',
     leadIcon: 'text-status-success-strong shrink-0 mt-0.5',
-    sectionHighlight: 'rounded-xl p-4 border shadow-2xs bg-status-success-surface border-status-success-border',
-    sectionHighlightTitle: 'text-xs uppercase tracking-wider font-bold mb-2 text-status-success-strong',
+    sectionHighlight:
+      'rounded-xl p-4 border shadow-2xs bg-status-success-surface border-status-success-border',
+    sectionHighlightTitle:
+      'text-xs uppercase tracking-wider font-bold mb-2 text-status-success-strong',
     rowHover: 'hover:bg-status-success-surface',
   },
   brand: {
     tile: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong',
     chipActive: 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand shadow-xs',
-    chipIdle: 'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-surface-rose',
+    chipIdle:
+      'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-surface-rose',
     lead: 'bg-surface-rose border border-ceci-border-brand rounded-[18px] p-3.5',
     leadIcon: 'text-ceci-brand-strong shrink-0 mt-0.5',
     sectionHighlight: 'rounded-xl p-4 border shadow-2xs bg-surface-rose border-ceci-border-brand',
@@ -65,7 +73,9 @@ export const TempleIntroCard: React.FC<{
         {icon}
       </div>
       <div className="min-w-0">
-        <h1 className="text-lg font-bold font-display text-ceci-primary leading-tight truncate">{title}</h1>
+        <h1 className="text-lg font-bold font-display text-ceci-primary leading-tight truncate">
+          {title}
+        </h1>
         <p className="text-xs text-ceci-secondary">{subtitle}</p>
       </div>
     </div>
@@ -139,11 +149,11 @@ export const TempleNeutralBadge: React.FC<{ children: React.ReactNode }> = ({ ch
   </span>
 );
 
-export const TempleLead: React.FC<{ accent: TempleAccent; icon?: React.ReactNode; children: React.ReactNode }> = ({
-  accent,
-  icon,
-  children,
-}) => (
+export const TempleLead: React.FC<{
+  accent: TempleAccent;
+  icon?: React.ReactNode;
+  children: React.ReactNode;
+}> = ({ accent, icon, children }) => (
   <div className={`flex items-start gap-2.5 ${ACCENTS[accent].lead}`}>
     {icon && <span className={`[&_svg]:w-4 [&_svg]:h-4 ${ACCENTS[accent].leadIcon}`}>{icon}</span>}
     <div className="min-w-0 text-xs text-ceci-primary leading-relaxed">{children}</div>
@@ -163,7 +173,13 @@ export const TempleSectionCard: React.FC<{
         : 'rounded-xl p-4 border shadow-2xs bg-surface-default border-ceci-border-default'
     }
   >
-    <h2 className={highlighted ? ACCENTS[accent].sectionHighlightTitle : 'text-xs uppercase tracking-wider font-bold mb-2 text-ceci-secondary'}>
+    <h2
+      className={
+        highlighted
+          ? ACCENTS[accent].sectionHighlightTitle
+          : 'text-xs uppercase tracking-wider font-bold mb-2 text-ceci-secondary'
+      }
+    >
       {title}
     </h2>
     {children}

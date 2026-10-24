@@ -36,7 +36,7 @@ export const CompletionToggle: React.FC<CompletionToggleProps> = ({
         checked
           ? 'bg-status-success border-status-success text-status-success-on shadow-sm'
           : 'bg-surface-default border-ceci-border-strong text-transparent hover:border-status-success',
-        className
+        className,
       )}
     >
       <Check className={cn(icon, 'stroke-[3]')} />

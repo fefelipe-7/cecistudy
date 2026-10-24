@@ -7,7 +7,11 @@ import { SchedulePicker } from '../ui/SchedulePicker';
 import { CourseIconPicker } from '../ui/CourseIconPicker';
 import { EmailSlider } from '../ui/EmailSlider';
 import { formatCourseSchedule } from '../../lib/schedule';
-import { buildAttendanceFromHours, hoursFromClasses, hoursPerClassFromSchedule } from '../../lib/attendance';
+import {
+  buildAttendanceFromHours,
+  hoursFromClasses,
+  hoursPerClassFromSchedule,
+} from '../../lib/attendance';
 import { CatalogMultiSelect } from '../ui/CatalogMultiSelect';
 import { useCourseRepertorio } from '../wizards/useCourseRepertorio';
 
@@ -128,9 +132,7 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
       description: description.trim(),
       category,
       officeHours: officeHours.trim() || undefined,
-      attendance: built
-        ? { ...built, records: course.attendance?.records ?? [] }
-        : undefined,
+      attendance: built ? { ...built, records: course.attendance?.records ?? [] } : undefined,
       conceptIds,
       authorIds,
       bibliographyIds,
@@ -159,25 +161,54 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2">
               <label className={labelClass}>nome da matéria</label>
-              <input type="text" value={name} onChange={(e) => setName(e.target.value)} className={inputClass} required placeholder="ex: psicopatologia i" />
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className={inputClass}
+                required
+                placeholder="ex: psicopatologia i"
+              />
             </div>
 
             <div>
               <label className={labelClass}>código</label>
-              <input type="text" value={code} onChange={(e) => setCode(e.target.value)} className={inputClass} placeholder="ex: PSI-300" />
+              <input
+                type="text"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                className={inputClass}
+                placeholder="ex: PSI-300"
+              />
             </div>
             <div>
               <label className={labelClass}>professor(a)</label>
-              <input type="text" value={professor} onChange={(e) => setProfessor(e.target.value)} className={inputClass} placeholder="ex: profa. mariana" />
+              <input
+                type="text"
+                value={professor}
+                onChange={(e) => setProfessor(e.target.value)}
+                className={inputClass}
+                placeholder="ex: profa. mariana"
+              />
             </div>
 
             <div>
               <label className={labelClass}>semestre</label>
-              <input type="text" value={semester} onChange={(e) => setSemester(e.target.value)} className={inputClass} placeholder="ex: 6º semestre" />
+              <input
+                type="text"
+                value={semester}
+                onChange={(e) => setSemester(e.target.value)}
+                className={inputClass}
+                placeholder="ex: 6º semestre"
+              />
             </div>
             <div>
               <label className={labelClass}>categoria</label>
-              <select value={category ?? ''} onChange={(e) => setCategory(e.target.value as Course['category'])} className={inputClass}>
+              <select
+                value={category ?? ''}
+                onChange={(e) => setCategory(e.target.value as Course['category'])}
+                className={inputClass}
+              >
                 {CATEGORIES.map((c) => (
                   <option key={c} value={c}>
                     {CATEGORY_LABELS[c]}
@@ -192,7 +223,13 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
 
             <div>
               <label className={labelClass}>sala</label>
-              <input type="text" value={room} onChange={(e) => setRoom(e.target.value)} className={inputClass} placeholder="ex: bloco c" />
+              <input
+                type="text"
+                value={room}
+                onChange={(e) => setRoom(e.target.value)}
+                className={inputClass}
+                placeholder="ex: bloco c"
+              />
             </div>
             <div>
               <label className={labelClass}>média mínima (0–10)</label>
@@ -209,7 +246,13 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
 
             <div className="col-span-2">
               <label className={labelClass}>atendimento & monitoria</label>
-              <input type="text" value={officeHours} onChange={(e) => setOfficeHours(e.target.value)} className={inputClass} placeholder="ex: quartas, 14h - 15h30, sala dos professores" />
+              <input
+                type="text"
+                value={officeHours}
+                onChange={(e) => setOfficeHours(e.target.value)}
+                className={inputClass}
+                placeholder="ex: quartas, 14h - 15h30, sala dos professores"
+              />
             </div>
 
             <div className="col-span-2 space-y-4">
@@ -226,7 +269,15 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
                 />
                 {attHours && Number(attHours) > 0 && (
                   <p className="mt-1 text-[11px] text-ceci-tertiary">
-                    ≈ {Math.max(1, Math.round(Number(attHours) / hoursPerClassFromSchedule(Array.isArray(schedule) ? schedule : [])))} aulas de {hoursPerClassFromSchedule(Array.isArray(schedule) ? schedule : [])}h
+                    ≈{' '}
+                    {Math.max(
+                      1,
+                      Math.round(
+                        Number(attHours) /
+                          hoursPerClassFromSchedule(Array.isArray(schedule) ? schedule : []),
+                      ),
+                    )}{' '}
+                    aulas de {hoursPerClassFromSchedule(Array.isArray(schedule) ? schedule : [])}h
                   </p>
                 )}
               </div>
@@ -239,7 +290,12 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
                   value={attHoursDone}
                   onChange={(e) =>
                     setAttHoursDone(
-                      String(Math.min(Math.max(0, Number(e.target.value) || 0), Math.max(Number(attHours) || 1, 1)))
+                      String(
+                        Math.min(
+                          Math.max(0, Number(e.target.value) || 0),
+                          Math.max(Number(attHours) || 1, 1),
+                        ),
+                      ),
                     )
                   }
                   className={inputClass}
@@ -248,7 +304,15 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
               </div>
               <div>
                 <label className={labelClass}>mínimo de presença (%)</label>
-                <input type="number" min={0} max={100} value={attendanceMinPct} onChange={(e) => setAttendanceMinPct(e.target.value)} className={inputClass} placeholder="75" />
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={attendanceMinPct}
+                  onChange={(e) => setAttendanceMinPct(e.target.value)}
+                  className={inputClass}
+                  placeholder="75"
+                />
                 <p className="mt-1 text-[11px] text-ceci-tertiary">
                   deixe a carga horária vazia para não registrar frequência em horas.
                 </p>
@@ -307,17 +371,29 @@ export const EditCourseModal: React.FC<EditCourseModalProps> = ({
                 onChange={(v) => setBibliographyIds(v)}
                 emptyMessage={frase(VAZIO, 'semLeituraParecida')}
               />
-              <button type="button" onClick={() => setSheetOpen('conceitos')} className="w-full bg-surface-input rounded-xl px-3.5 py-3 text-sm text-left text-ceci-primary border border-ceci-border-default hover:border-ceci-border-brand focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 cursor-pointer transition-colors">
+              <button
+                type="button"
+                onClick={() => setSheetOpen('conceitos')}
+                className="w-full bg-surface-input rounded-xl px-3.5 py-3 text-sm text-left text-ceci-primary border border-ceci-border-default hover:border-ceci-border-brand focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 cursor-pointer transition-colors"
+              >
                 {conceptIds.length
                   ? `${conceptIds.length} conceito${conceptIds.length === 1 ? '' : 's'} vinculado${conceptIds.length === 1 ? '' : 's'}`
                   : 'escolher conceitos-chave...'}
               </button>
-              <button type="button" onClick={() => setSheetOpen('autores')} className="w-full bg-surface-input rounded-xl px-3.5 py-3 text-sm text-left text-ceci-primary border border-ceci-border-default hover:border-ceci-border-brand focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 cursor-pointer transition-colors">
+              <button
+                type="button"
+                onClick={() => setSheetOpen('autores')}
+                className="w-full bg-surface-input rounded-xl px-3.5 py-3 text-sm text-left text-ceci-primary border border-ceci-border-default hover:border-ceci-border-brand focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 cursor-pointer transition-colors"
+              >
                 {authorIds.length
                   ? `${authorIds.length} autor${authorIds.length === 1 ? '' : 'es'} vinculado${authorIds.length === 1 ? '' : 's'}`
                   : 'escolher autores fundamentais...'}
               </button>
-              <button type="button" onClick={() => setSheetOpen('bibliografia')} className="w-full bg-surface-input rounded-xl px-3.5 py-3 text-sm text-left text-ceci-primary border border-ceci-border-default hover:border-ceci-border-brand focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 cursor-pointer transition-colors">
+              <button
+                type="button"
+                onClick={() => setSheetOpen('bibliografia')}
+                className="w-full bg-surface-input rounded-xl px-3.5 py-3 text-sm text-left text-ceci-primary border border-ceci-border-default hover:border-ceci-border-brand focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 cursor-pointer transition-colors"
+              >
                 {bibliographyIds.length
                   ? `${bibliographyIds.length} leitura${bibliographyIds.length === 1 ? '' : 's'} vinculada${bibliographyIds.length === 1 ? '' : 's'}`
                   : 'escolher leituras e bibliografia...'}

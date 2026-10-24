@@ -66,11 +66,7 @@ export const ConceptsScreen: React.FC = () => {
   const byDomain = useMemo(() => {
     const map = new Map<string, TempleConceptIndexEntry[]>();
     for (const entry of index) {
-      if (
-        q &&
-        !entry.name.toLowerCase().includes(q) &&
-        !entry.definition.toLowerCase().includes(q)
-      )
+      if (q && !entry.name.toLowerCase().includes(q) && !entry.definition.toLowerCase().includes(q))
         continue;
       const list = map.get(entry.domainId) ?? [];
       list.push(entry);
@@ -91,7 +87,7 @@ export const ConceptsScreen: React.FC = () => {
 
   if (selected) {
     const highlightKeys = new Set(
-      SECTION_LABELS.filter(([key]) => HIGHLIGHT_SECTIONS.has(key)).map(([, label]) => label)
+      SECTION_LABELS.filter(([key]) => HIGHLIGHT_SECTIONS.has(key)).map(([, label]) => label),
     );
     return (
       <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-4 pb-1 relative">
@@ -146,7 +142,12 @@ export const ConceptsScreen: React.FC = () => {
         subtitle={`ideias-chave da psicologia em ${domains.length} domínios`}
       />
 
-      <TempleSearchInput value={query} onChange={setQuery} label="procurar conceito" placeholder="procurar conceito…" />
+      <TempleSearchInput
+        value={query}
+        onChange={setQuery}
+        label="procurar conceito"
+        placeholder="procurar conceito…"
+      />
 
       {loading && <TempleLoading label="carregando conceitos…" />}
 
@@ -182,7 +183,9 @@ export const ConceptsScreen: React.FC = () => {
                           {entry.name}
                         </h3>
                         {entry.definition && (
-                          <p className="text-xs text-ceci-secondary mt-0.5 line-clamp-2">{entry.definition}</p>
+                          <p className="text-xs text-ceci-secondary mt-0.5 line-clamp-2">
+                            {entry.definition}
+                          </p>
                         )}
                       </button>
                     ))}

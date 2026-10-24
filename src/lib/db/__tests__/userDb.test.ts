@@ -41,9 +41,7 @@ describe('migrações da base da usuária', () => {
   it('é idempotente (rodar duas vezes não duplica nada)', async () => {
     const d = await openDb();
     await runUserMigrations(d);
-    await saveCollection(d, 'courses', [
-      { id: 'c1', name: 'A', schedule: [] },
-    ]);
+    await saveCollection(d, 'courses', [{ id: 'c1', name: 'A', schedule: [] }]);
     await runUserMigrations(d);
     const courses = await loadCollection<unknown[]>(d, 'courses');
     expect(courses).toHaveLength(1);
@@ -54,11 +52,33 @@ describe('migrações da base da usuária', () => {
     await runUserMigrations(d);
     const rows = await d.query("SELECT name FROM sqlite_master WHERE type='table'");
     const tables = rows.map((r) => String(r.name));
-    for (const t of ['profile', 'course', 'course_schedule', 'task', 'assessment',
-      'study_session', 'flashcard', 'deck', 'quiz_session', 'quiz_answer', 'reading',
-      'reading_progress', 'author', 'concept', 'material', 'technique', 'note',
-      'internship', 'supervision_notebook', 'thesis_project', 'achievement',
-      'saved_catalog_item', 'streak', 'activity_event', 'legacy_import_map']) {
+    for (const t of [
+      'profile',
+      'course',
+      'course_schedule',
+      'task',
+      'assessment',
+      'study_session',
+      'flashcard',
+      'deck',
+      'quiz_session',
+      'quiz_answer',
+      'reading',
+      'reading_progress',
+      'author',
+      'concept',
+      'material',
+      'technique',
+      'note',
+      'internship',
+      'supervision_notebook',
+      'thesis_project',
+      'achievement',
+      'saved_catalog_item',
+      'streak',
+      'activity_event',
+      'legacy_import_map',
+    ]) {
       expect(tables).toContain(t);
     }
   });
@@ -89,8 +109,16 @@ describe('round-trip das coleções', () => {
 
   it('courses com horários estruturados', async () => {
     const courses = [
-      { id: 'c1', name: 'Psicopatologia I', semester: '8º Semestre', category: 'obrigatoria',
-        schedule: [{ day: 2, start: '19:00', end: '20:40' }, { day: 4, start: '19:00' }] },
+      {
+        id: 'c1',
+        name: 'Psicopatologia I',
+        semester: '8º Semestre',
+        category: 'obrigatoria',
+        schedule: [
+          { day: 2, start: '19:00', end: '20:40' },
+          { day: 4, start: '19:00' },
+        ],
+      },
       { id: 'c2', name: 'TCC', schedule: [] },
     ];
     await saveCollection(d, 'courses', courses);
@@ -99,7 +127,7 @@ describe('round-trip das coleções', () => {
     // colunas normalizadas para consulta
     const slots = await d.query(
       'SELECT day, start_time FROM course_schedule WHERE course_id = ? ORDER BY day',
-      ['c1']
+      ['c1'],
     );
     expect(slots).toEqual([
       { day: 2, start_time: '19:00' },
@@ -108,14 +136,23 @@ describe('round-trip das coleções', () => {
   });
 
   it('classes com links de conceitos/autores/abordagens/materiais', async () => {
-    const classes = [{
-      id: 'cl-1', courseId: 'c1', title: 'Aula 1', number: 1, date: '2026-08-10',
-      conceptIds: ['con-1'], authorIds: ['aut-1'], approachIds: [], materials: [],
-    }];
+    const classes = [
+      {
+        id: 'cl-1',
+        courseId: 'c1',
+        title: 'Aula 1',
+        number: 1,
+        date: '2026-08-10',
+        conceptIds: ['con-1'],
+        authorIds: ['aut-1'],
+        approachIds: [],
+        materials: [],
+      },
+    ];
     await saveCollection(d, 'classes', classes);
     expect(await loadCollection(d, 'classes')).toEqual(classes);
     const links = await d.query(
-      "SELECT kind, ref_id FROM class_note_link WHERE class_note_id = 'cl-1' ORDER BY kind"
+      "SELECT kind, ref_id FROM class_note_link WHERE class_note_id = 'cl-1' ORDER BY kind",
     );
     expect(links).toEqual([
       { kind: 'author', ref_id: 'aut-1' },
@@ -132,22 +169,30 @@ describe('round-trip das coleções', () => {
     await saveCollection(d, 'tasks', tasks);
     expect(await loadCollection(d, 'tasks')).toHaveLength(3);
     const events = await d.query(
-      "SELECT event_date FROM activity_event WHERE event_type = 'task-done'"
+      "SELECT event_date FROM activity_event WHERE event_type = 'task-done'",
     );
     expect(events).toEqual([{ event_date: '2026-08-22' }]);
   });
 
   it('exams com tópicos', async () => {
-    const exams = [{ id: 'e1', courseId: 'c1', date: '2026-09-01', topics: ['DSM-5', 'ansiedade'] }];
+    const exams = [
+      { id: 'e1', courseId: 'c1', date: '2026-09-01', topics: ['DSM-5', 'ansiedade'] },
+    ];
     await saveCollection(d, 'exams', exams);
     expect(await loadCollection(d, 'exams')).toEqual(exams);
   });
 
   it('readings com destaques', async () => {
-    const readings = [{
-      id: 'r1', type: 'livro', status: 'lendo', totalPages: 300, readPages: 120,
-      highlights: ['trecho importante', 'outro trecho'],
-    }];
+    const readings = [
+      {
+        id: 'r1',
+        type: 'livro',
+        status: 'lendo',
+        totalPages: 300,
+        readPages: 120,
+        highlights: ['trecho importante', 'outro trecho'],
+      },
+    ];
     await saveCollection(d, 'readings', readings);
     expect(await loadCollection(d, 'readings')).toEqual(readings);
   });
@@ -158,9 +203,16 @@ describe('round-trip das coleções', () => {
     // o dreno do boot (`DataClientProvider`) extrai os capítulos. O round-trip
     // tem que preservá-la byte a byte até o dreno reescrever.
     const tcc = {
-      title: 'Luto e psicoterapia', advisor: 'Profa. X', field: 'Clínica',
-      problemStatement: '', objectives: [], status: 'em_andamento',
-      chapters: [{ title: 'Intro', completed: true }, { title: 'Método', completed: false }],
+      title: 'Luto e psicoterapia',
+      advisor: 'Profa. X',
+      field: 'Clínica',
+      problemStatement: '',
+      objectives: [],
+      status: 'em_andamento',
+      chapters: [
+        { title: 'Intro', completed: true },
+        { title: 'Método', completed: false },
+      ],
       references: ['Beck (1979)', 'Freud (1917)'],
     };
     await saveCollection(d, 'tcc', tcc);
@@ -168,18 +220,55 @@ describe('round-trip das coleções', () => {
   });
 
   it('coleções do TCC gravam e leem (id + data_json, SPEC-012)', async () => {
-    const chapters = [{
-      id: 'thc-1', thesisId: 'tcc-main', position: 0, title: 'introdução',
-      kind: 'capitulo', requiredness: 'obrigatorio', stage: 'pronto',
-      createdAt: '1970-01-01T00:00:00.000Z', updatedAt: '1970-01-01T00:00:00.000Z',
-    }];
-    const refs = [{
-      id: 'thr-1', thesisId: 'tcc-main', readingId: 'r-legacy-tcc-1', status: 'citada',
-      createdAt: '1970-01-01T00:00:00.000Z', updatedAt: '1970-01-01T00:00:00.000Z',
-    }];
-    const meetings = [{ id: 'thm-1', thesisId: 'tcc-main', date: '2026-10-15', mode: 'online', status: 'agendada', decisions: [], createdAt: 'x', updatedAt: 'x' }];
-    const tasks = [{ id: 'tts-1', thesisId: 'tcc-main', title: 'ler artigo', origin: 'orientadora', status: 'aberta', createdAt: 'x', updatedAt: 'x' }];
-    const logs = [{ id: 'twl-1', thesisId: 'tcc-main', date: '2026-10-05', words: 300, createdAt: 'x' }];
+    const chapters = [
+      {
+        id: 'thc-1',
+        thesisId: 'tcc-main',
+        position: 0,
+        title: 'introdução',
+        kind: 'capitulo',
+        requiredness: 'obrigatorio',
+        stage: 'pronto',
+        createdAt: '1970-01-01T00:00:00.000Z',
+        updatedAt: '1970-01-01T00:00:00.000Z',
+      },
+    ];
+    const refs = [
+      {
+        id: 'thr-1',
+        thesisId: 'tcc-main',
+        readingId: 'r-legacy-tcc-1',
+        status: 'citada',
+        createdAt: '1970-01-01T00:00:00.000Z',
+        updatedAt: '1970-01-01T00:00:00.000Z',
+      },
+    ];
+    const meetings = [
+      {
+        id: 'thm-1',
+        thesisId: 'tcc-main',
+        date: '2026-10-15',
+        mode: 'online',
+        status: 'agendada',
+        decisions: [],
+        createdAt: 'x',
+        updatedAt: 'x',
+      },
+    ];
+    const tasks = [
+      {
+        id: 'tts-1',
+        thesisId: 'tcc-main',
+        title: 'ler artigo',
+        origin: 'orientadora',
+        status: 'aberta',
+        createdAt: 'x',
+        updatedAt: 'x',
+      },
+    ];
+    const logs = [
+      { id: 'twl-1', thesisId: 'tcc-main', date: '2026-10-05', words: 300, createdAt: 'x' },
+    ];
     await saveCollection(d, 'thesisChapters', chapters);
     await saveCollection(d, 'thesisReferences', refs);
     await saveCollection(d, 'thesisMeetings', meetings);
@@ -193,11 +282,18 @@ describe('round-trip das coleções', () => {
   });
 
   it('quizSessions com respostas', async () => {
-    const sessions = [{
-      id: 'qs-1', createdAt: '2026-08-22', startedAt: 1, finishedAt: 2,
-      scorePct: 80, correctCount: 4, totalCount: 5,
-      answers: [{ questionId: 'q1', userAnswer: 'A', correct: true, timeMs: 1000 }],
-    }];
+    const sessions = [
+      {
+        id: 'qs-1',
+        createdAt: '2026-08-22',
+        startedAt: 1,
+        finishedAt: 2,
+        scorePct: 80,
+        correctCount: 4,
+        totalCount: 5,
+        answers: [{ questionId: 'q1', userAnswer: 'A', correct: true, timeMs: 1000 }],
+      },
+    ];
     await saveCollection(d, 'quizSessions', sessions);
     expect(await loadCollection(d, 'quizSessions')).toEqual(sessions);
   });
@@ -208,7 +304,9 @@ describe('round-trip das coleções', () => {
     await saveCollection(d, 'bookmarkedCourseIds', ['c1']);
     await saveCollection(d, 'readingProgress', { 'bk-1': 42 });
 
-    expect(await loadCollection(d, 'streakData')).toEqual({ activeDays: ['2026-08-21', '2026-08-22'] });
+    expect(await loadCollection(d, 'streakData')).toEqual({
+      activeDays: ['2026-08-21', '2026-08-22'],
+    });
     expect(await loadCollection(d, 'savedBookIds')).toEqual(['bk-1', 'inter-2']);
     expect(await loadCollection(d, 'bookmarkedCourseIds')).toEqual(['c1']);
     expect(await loadCollection(d, 'readingProgress')).toEqual({ 'bk-1': 42 });
@@ -219,10 +317,17 @@ describe('round-trip das coleções', () => {
   });
 
   it('looseNotes com vínculos', async () => {
-    const notes = [{
-      id: 'n-1', title: 'ideia', content: 'texto', category: 'ideia',
-      date: '2026-08-22T10:00:00Z', conceptIds: ['con-1'], materialIds: ['m-1'],
-    }];
+    const notes = [
+      {
+        id: 'n-1',
+        title: 'ideia',
+        content: 'texto',
+        category: 'ideia',
+        date: '2026-08-22T10:00:00Z',
+        conceptIds: ['con-1'],
+        materialIds: ['m-1'],
+      },
+    ];
     await saveCollection(d, 'looseNotes', notes);
     expect(await loadCollection(d, 'looseNotes')).toEqual(notes);
   });
@@ -308,11 +413,7 @@ describe('clearUserData', () => {
     const d = await openDb();
     await runUserMigrations(d);
     await saveCollection(d, 'courses', [{ id: 'c1', schedule: [] }]);
-    await importLegacyCollections(
-      d,
-      USER_COLLECTION_KEYS,
-      sourceOf({ profile: { name: 'C' } })
-    );
+    await importLegacyCollections(d, USER_COLLECTION_KEYS, sourceOf({ profile: { name: 'C' } }));
 
     await clearUserData(d);
 
@@ -337,7 +438,13 @@ describe('clearUserData', () => {
 
     await clearUserData(d);
 
-    for (const key of ['thesisChapters', 'thesisReferences', 'thesisMeetings', 'thesisTasks', 'thesisWritingLogs'] as const) {
+    for (const key of [
+      'thesisChapters',
+      'thesisReferences',
+      'thesisMeetings',
+      'thesisTasks',
+      'thesisWritingLogs',
+    ] as const) {
       expect(await loadCollection<unknown[]>(d, key)).toEqual([]);
     }
   });
@@ -363,8 +470,12 @@ describe('SPEC-012 — passo 4: base v3 com tcc legado atualiza sem perder nada'
       ]);
     }
     const legacyTcc = {
-      title: 'luto e escuta', advisor: 'Helena', field: 'clínica',
-      problemStatement: '', objectives: [], status: 'em_andamento',
+      title: 'luto e escuta',
+      advisor: 'Helena',
+      field: 'clínica',
+      problemStatement: '',
+      objectives: [],
+      status: 'em_andamento',
       chapters: [{ title: 'introdução', completed: false, dueDate: '2026-10-01' }],
       references: ['Worden (2018)'],
     };
@@ -378,12 +489,20 @@ describe('SPEC-012 — passo 4: base v3 com tcc legado atualiza sem perder nada'
     // A fonte da verdade atravessou o DROP intacta — é dela que o dreno extrai.
     expect(await loadCollection(d, 'tcc')).toEqual(legacyTcc);
     // E as tabelas recriadas/criadas aceitam a forma nova (id + data_json).
-    const migrated = [{
-      id: 'thc-1', thesisId: 'tcc-main', position: 0, title: 'introdução',
-      kind: 'capitulo', requiredness: 'obrigatorio', stage: 'a_fazer',
-      dueDate: '2026-10-01',
-      createdAt: '1970-01-01T00:00:00.000Z', updatedAt: '1970-01-01T00:00:00.000Z',
-    }];
+    const migrated = [
+      {
+        id: 'thc-1',
+        thesisId: 'tcc-main',
+        position: 0,
+        title: 'introdução',
+        kind: 'capitulo',
+        requiredness: 'obrigatorio',
+        stage: 'a_fazer',
+        dueDate: '2026-10-01',
+        createdAt: '1970-01-01T00:00:00.000Z',
+        updatedAt: '1970-01-01T00:00:00.000Z',
+      },
+    ];
     await saveCollection(d, 'thesisChapters', migrated);
     expect(await loadCollection(d, 'thesisChapters')).toEqual(migrated);
     // Idempotente: reabrir a base não re-dropa nada (o runner pula o 4 aplicado).

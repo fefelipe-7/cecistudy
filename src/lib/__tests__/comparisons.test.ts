@@ -44,10 +44,12 @@ describe('comparações do Templo', () => {
 
   it('resolve a técnica canônica adicionada pela migração', () => {
     const comparison = comparisonsFile.comparacoes.find((item) => item.id === 'cmp-122');
-    expect(comparison?.itens).toContainEqual(expect.objectContaining({
-      tipoEntidade: 'tecnica',
-      entidadeId: 'tec-psicoeducacao',
-    }));
+    expect(comparison?.itens).toContainEqual(
+      expect.objectContaining({
+        tipoEntidade: 'tecnica',
+        entidadeId: 'tec-psicoeducacao',
+      }),
+    );
   });
 
   it('lista e abre pelo slug através do loader público', async () => {

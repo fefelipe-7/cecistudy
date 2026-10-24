@@ -64,12 +64,7 @@ interface MascoteProps {
 }
 
 /** Mascotinha do cantinho — uma expressão por situação (empty states, modais, saudação). */
-export const Mascote: React.FC<MascoteProps> = ({
-  expression,
-  className,
-  alt,
-  decorative,
-}) => (
+export const Mascote: React.FC<MascoteProps> = ({ expression, className, alt, decorative }) => (
   <img
     src={MASCOTE_EXPRESSIONS[expression]}
     alt={decorative ? '' : (alt ?? 'mascote do cantinho')}

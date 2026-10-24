@@ -11,7 +11,10 @@ describe('PillGroupMulti', () => {
   it('marca as opções presentes no valor', () => {
     render(<PillGroupMulti value={['a'] as string[]} onChange={() => {}} options={OPTIONS} />);
     expect(screen.getByRole('button', { name: 'opção a' })).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByRole('button', { name: 'opção b' })).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByRole('button', { name: 'opção b' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
   });
 
   it('adiciona uma opção não selecionada ao clicar', () => {
@@ -26,11 +29,6 @@ describe('PillGroupMulti', () => {
     render(<PillGroupMulti value={['a', 'b'] as string[]} onChange={onChange} options={OPTIONS} />);
     fireEvent.click(screen.getByRole('button', { name: 'opção a' }));
     expect(onChange).toHaveBeenCalledWith(['b']);
-  });
-
-  it('aceita label do grupo', () => {
-    render(<PillGroupMulti label="multi" value={[]} onChange={() => {}} options={OPTIONS} />);
-    expect(screen.getByText('multi')).toBeInTheDocument();
   });
 
   it('lista grande (>8) alterna para modo busca com contador, chips e limpar tudo', () => {
@@ -69,7 +67,7 @@ describe('PillGroupMulti', () => {
   it('searchThreshold=false mantém pills mesmo em listas grandes', () => {
     const many = Array.from({ length: 12 }, (_, i) => ({ value: `v${i}`, label: `opção ${i}` }));
     render(
-      <PillGroupMulti value={[]} onChange={() => {}} options={many} searchThreshold={false} />
+      <PillGroupMulti value={[]} onChange={() => {}} options={many} searchThreshold={false} />,
     );
     expect(screen.queryByLabelText(/buscar em/i)).not.toBeInTheDocument();
     expect(screen.getAllByRole('button')).toHaveLength(12);

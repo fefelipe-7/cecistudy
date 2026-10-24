@@ -11,17 +11,9 @@
  */
 import { normalizeText } from './readingMatching';
 import type { MaterialItem, ReadingItem } from '../types';
-import type {
-  CatalogWorkRef,
-  RepertorioCatalog,
-} from './courseRepertorio';
+import type { CatalogWorkRef, RepertorioCatalog } from './courseRepertorio';
 
-export type BibliographySource =
-  | 'reading'
-  | 'material'
-  | 'cat-book'
-  | 'inter-book'
-  | 'article';
+export type BibliographySource = 'reading' | 'material' | 'cat-book' | 'inter-book' | 'article';
 
 export interface BibliographyOption {
   /** id real (prefixo conforme a fonte) armazenado em `Course.bibliographyIds`. */
@@ -91,13 +83,15 @@ export function buildBibliographyOptions(input: BibliographyOptionsInput): Bibli
   const catalogueWork = (works: CatalogWorkRef[], source: 'cat-book' | 'inter-book' | 'article') =>
     works
       .filter((w) => !takenTitles.has(normalizeText(workTitle(w))))
-      .map((w): BibliographyOption => ({
-        id: w.id,
-        label: w.title,
-        hint: `por ${w.author}`,
-        source,
-        badge: SOURCE_BADGE[source],
-      }));
+      .map(
+        (w): BibliographyOption => ({
+          id: w.id,
+          label: w.title,
+          hint: `por ${w.author}`,
+          source,
+          badge: SOURCE_BADGE[source],
+        }),
+      );
 
   options.push(...catalogueWork(catalog.books, 'cat-book'));
   options.push(...catalogueWork(catalog.interdisciplinary, 'inter-book'));

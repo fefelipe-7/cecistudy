@@ -1,13 +1,12 @@
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { isNativePlatform } from './storage';
 import {
-  THESIS_REMINDER_BASE,
-  THESIS_REMINDER_RANGE,
   planThesisReminders,
   type ThesisReminderKind,
   type ThesisReminderPrefs,
   type ThesisReminderState,
 } from '../../packages/domain/src/core/domain/thesis';
+import { planExamReminders, planInternshipReminders, NOTIFICATION_RANGES, type NotificationFamily } from '../../packages/domain/src/core/domain/notifications';
 import { NOTIFICACAO, frase as vozFrase } from './voice';
 
 /** id fixo do lembrete diário (para cancelar/substituir com segurança) */
@@ -37,6 +36,23 @@ export async function ensureNotificationPermission(): Promise<boolean> {
   return false;
 }
 
+/** D6: garante permissão de alarmes exatos no Android */
+export async function ensureExactAlarmPermission(): Promise<boolean> {
+  if (!isNativePlatform) return true;
+  try {
+    const status = await LocalNotifications.checkExactNotificationSetting();
+    if (status.exact_alarm === 'granted') return true;
+    // abre as configurações de "Alarmes e lembretes"
+    await LocalNotifications.changeExactNotificationSetting();
+    // verifica novamente
+    const after = await LocalNotifications.checkExactNotificationSetting();
+    return after.exact_alarm === 'granted';
+  } catch {
+    // em versões antigas do plugin o método não existe
+    return true;
+  }
+}
+
 export interface ReminderTime {
   hour: number;
   minute: number;
@@ -47,6 +63,7 @@ export async function scheduleDailyReminder(time: string): Promise<boolean> {
   if (!isNativePlatform) return false;
   const granted = await ensureNotificationPermission();
   if (!granted) return false;
+  await ensureExactAlarmPermission();
 
   const { hour, minute } = parseTime(time);
   const now = new Date();
@@ -86,9 +103,6 @@ export async function cancelDailyReminder(): Promise<void> {
 }
 
 /** ids reservados para lembretes de aula (espaço para até 200 slots). */
-const CLASS_REMINDER_BASE = 2000;
-const CLASS_REMINDER_RANGE = 200;
-
 interface ClassReminderInput {
   name: string;
   room?: string;
@@ -96,7 +110,9 @@ interface ClassReminderInput {
 }
 
 function classReminderIds(): { id: number }[] {
-  return Array.from({ length: CLASS_REMINDER_RANGE }, (_, i) => ({ id: CLASS_REMINDER_BASE + i }));
+  const base = NOTIFICATION_RANGES.class.base;
+  const range = NOTIFICATION_RANGES.class.range;
+  return Array.from({ length: range }, (_, i) => ({ id: base + i }));
 }
 
 /**
@@ -108,25 +124,33 @@ export async function syncClassReminders(courses: ClassReminderInput[]): Promise
   if (!isNativePlatform) return false;
   const granted = await ensureNotificationPermission();
   if (!granted) return false;
+  await ensureExactAlarmPermission();
   try {
     await LocalNotifications.cancel({ notifications: classReminderIds() });
     let idx = 0;
+    const classRange = NOTIFICATION_RANGES.class;
     for (const c of courses) {
       for (const slot of c.schedule) {
-        if (idx >= CLASS_REMINDER_RANGE) break;
+        if (idx >= classRange.range) break;
         const [h, m] = slot.start.split(':').map(Number);
+        // D3: lembrete 10 min antes da aula
+        let hour = Number.isFinite(h) ? h : 9;
+        let minute = Number.isFinite(m) ? m : 0;
+        minute -= 10;
+        if (minute < 0) { minute += 60; hour -= 1; }
+        if (hour < 0) hour = 23;
         const label = vozFrase(NOTIFICACAO, 'aula', { nome: c.name });
         await LocalNotifications.schedule({
           notifications: [
             {
-              id: CLASS_REMINDER_BASE + idx,
+              id: classRange.base + idx,
               title: `${vozFrase(NOTIFICACAO, 'marca')} ${label}`,
               body: vozFrase(NOTIFICACAO, 'aulaHorario', {
                 inicio: slot.start,
                 fim: slot.end,
                 sala: c.room,
               }),
-              schedule: { on: { weekday: slot.day + 1 }, allowWhileIdle: true },
+              schedule: { on: { weekday: slot.day + 1, hour, minute }, allowWhileIdle: true },
               smallIcon: 'ic_stat_cecistudy',
             },
           ],
@@ -158,7 +182,9 @@ export async function cancelClassReminders(): Promise<void> {
 // ---------------------------------------------------------------------------
 
 function thesisReminderIds(): { id: number }[] {
-  return Array.from({ length: THESIS_REMINDER_RANGE }, (_, i) => ({ id: THESIS_REMINDER_BASE + i }));
+  const base = NOTIFICATION_RANGES.thesis.base;
+  const range = NOTIFICATION_RANGES.thesis.range;
+  return Array.from({ length: range }, (_, i) => ({ id: base + i }));
 }
 
 /**
@@ -175,18 +201,14 @@ export async function syncThesisReminders(
 ): Promise<boolean> {
   if (!isNativePlatform) return false;
   try {
-    await LocalNotifications.cancel({ notifications: thesisReminderIds() });
+    const ids = thesisReminderIds();
+    await LocalNotifications.cancel({ notifications: ids });
     if (!prefs.enabled) return true;
     const granted = await ensureNotificationPermission();
     if (!granted) return false;
+    await ensureExactAlarmPermission();
     const plan = planThesisReminders(state, today, prefs);
     if (plan.length === 0) return true;
-    // `SPEC-M-018 D17/D18`: o plano é puro e devolve **fato**; a frase é da voz,
-    // montada aqui — no agendamento, que é quando o perfil está carregado.
-    const titulo = vozFrase(NOTIFICACAO, 'tccTitulo');
-    // `Record<ThesisReminderKind, string>` de propósito: se um `kind` novo
-    // nascer no domínio, o TypeScript **quebra a compilação** aqui. É mais forte
-    // que um `??` que cairia na frase errada em silêncio.
     const CHAVE_POR_KIND: Record<ThesisReminderKind, string> = {
       capitulo: 'tccCapitulo',
       pendencia: 'tccPendencia',
@@ -194,24 +216,15 @@ export async function syncThesisReminders(
       entrega: 'tccEntrega',
       banca: 'tccBanca',
     };
-    await LocalNotifications.schedule({
-      notifications: plan.map((p) => ({
-        id: p.id,
-        title: titulo,
-        body: vozFrase(NOTIFICACAO, CHAVE_POR_KIND[p.kind], {
-          referencia: p.referencia,
-          dias: p.dias,
-          hora: p.hora,
-        }),
-        schedule: { at: p.at, allowWhileIdle: true },
-        smallIcon: 'ic_stat_cecistudy',
-        // Q10: o toque roteia para a aba certa via `routeFromNotificationExtra`
-        // (domínio, puro e defensivo). `[V]` conferir no aparelho que o
-        // `extra` sobrevive ao agendamento nativo (fallback: abre a visão geral).
-        extra: { thesis: p.target },
-      })),
-    });
-    return true;
+    const transformed = plan.map(p => ({
+      id: p.id,
+      when: p.at,
+      titleKey: 'tccTitulo',
+      bodyKey: CHAVE_POR_KIND[p.kind],
+      meta: { referencia: p.referencia, dias: p.dias, hora: p.hora },
+      target: p.target,
+    }));
+    return schedulePlannedFamily('thesis', ids, transformed, {});
   } catch (e) {
     console.error('Thesis reminder schedule error', e);
     return false;
@@ -227,3 +240,161 @@ export async function cancelThesisReminders(): Promise<void> {
     console.error('Cancel thesis reminders error', e);
   }
 }
+
+/** ids de prova */
+function examReminderIds(): { id: number }[] {
+  const base = NOTIFICATION_RANGES.exam.base;
+  const range = NOTIFICATION_RANGES.exam.range;
+  return Array.from({ length: range }, (_, i) => ({ id: base + i }));
+}
+
+/** D4: sincroniza lembretes de prova */
+export async function syncExamReminders(exams: { id: string; title: string; date: string; time?: string; completed?: boolean }[], prefs: { enabled: boolean; time: string }, today: string): Promise<boolean> {
+  if (!isNativePlatform) return false;
+  try {
+    const ids = examReminderIds();
+    await LocalNotifications.cancel({ notifications: ids });
+    if (!prefs.enabled) return true;
+    const granted = await ensureNotificationPermission();
+    if (!granted) return false;
+    await ensureExactAlarmPermission();
+    const plan = planExamReminders(exams, prefs, today);
+    if (plan.length === 0) return true;
+    return schedulePlannedFamily('exam', ids, plan, {});
+  } catch (e) {
+    console.error('Exam reminder schedule error', e);
+    return false;
+  }
+}
+
+/** cancela lembretes de prova */
+export async function cancelExamReminders(): Promise<void> {
+  if (!isNativePlatform) return;
+  try {
+    await LocalNotifications.cancel({ notifications: examReminderIds() });
+  } catch (e) {
+    console.error('Cancel exam reminders error', e);
+  }
+}
+
+/** ids de estágio */
+function internshipReminderIds(): { id: number }[] {
+  const base = NOTIFICATION_RANGES.internship.base;
+  const range = NOTIFICATION_RANGES.internship.range;
+  return Array.from({ length: range }, (_, i) => ({ id: base + i }));
+}
+
+/** D5: sincroniza lembretes de estágio (registro diário) */
+export async function syncInternshipReminders(logs: { date: string }[], prefs: { enabled: boolean; time: string }, today: string): Promise<boolean> {
+  if (!isNativePlatform) return false;
+  try {
+    const ids = internshipReminderIds();
+    await LocalNotifications.cancel({ notifications: ids });
+    if (!prefs.enabled) return true;
+    const granted = await ensureNotificationPermission();
+    if (!granted) return false;
+    await ensureExactAlarmPermission();
+    const plan = planInternshipReminders(logs, prefs, today);
+    if (plan.length === 0) return true;
+    return schedulePlannedFamily('internship', ids, plan);
+  } catch (e) {
+    console.error('Internship reminder schedule error', e);
+    return false;
+  }
+}
+
+/** cancela lembretes de estágio */
+export async function cancelInternshipReminders(): Promise<void> {
+  if (!isNativePlatform) return;
+  try {
+    await LocalNotifications.cancel({ notifications: internshipReminderIds() });
+  } catch (e) {
+    console.error('Cancel internship reminders error', e);
+  }
+}
+
+/** auditoria de notificações pendentes por faixa (SPEC-M-025 D7) */
+export async function auditPendingNotifications(): Promise<{
+  total: number;
+  byFamily: Record<string, number>;
+  unknown: number[];
+}> {
+  if (!isNativePlatform) return { total: 0, byFamily: {}, unknown: [] };
+  try {
+    const { notifications } = await LocalNotifications.getPending();
+    const byFamily: Record<string, number> = {};
+    const unknown: number[] = [];
+    for (const n of notifications) {
+      const id = n.id;
+      let family = 'unknown';
+      for (const [fam, range] of Object.entries(NOTIFICATION_RANGES)) {
+        if (id >= range.base && id < range.base + range.range) {
+          family = fam;
+          break;
+        }
+      }
+      if (id === 1001) family = 'daily';
+      if (family === 'unknown') {
+        unknown.push(id);
+      } else {
+        byFamily[family] = (byFamily[family] ?? 0) + 1;
+      }
+    }
+    return { total: notifications.length, byFamily, unknown };
+  } catch (e) {
+    console.error('Audit notifications error', e);
+    return { total: 0, byFamily: {}, unknown: [] };
+  }
+}
+
+/** despachador unificado por família (SPEC-M-025 D8) */
+export async function syncFamily(
+  family: NotificationFamily,
+  params: any,
+): Promise<boolean> {
+  switch (family) {
+    case 'thesis':
+      return syncThesisReminders(params.state, params.today, params.prefs);
+    case 'exam':
+      return syncExamReminders(params.exams, params.prefs, params.today);
+    case 'internship':
+      return syncInternshipReminders(params.logs, params.prefs, params.today);
+    case 'class':
+      return syncClassReminders(params.courses);
+    case 'daily':
+      return scheduleDailyReminder(params.time);
+    default:
+      console.warn('syncFamily: família desconhecida', family);
+      return false;
+  }
+}
+
+/** helper central para famílias planejadas com `when` (at) */
+async function schedulePlannedFamily(
+  family: NotificationFamily,
+  ids: { id: number }[],
+  plan: { id: number; when: Date; titleKey: string; bodyKey: string; meta?: Record<string, unknown>; target?: { tab: string; entityId?: string } }[],
+  titleArgs?: Record<string, unknown>,
+): Promise<boolean> {
+  if (!isNativePlatform) return false;
+  try {
+    await LocalNotifications.cancel({ notifications: ids });
+    if (plan.length === 0) return true;
+    await LocalNotifications.schedule({
+      notifications: plan.map(p => ({
+        id: p.id,
+        title: vozFrase(NOTIFICACAO, p.titleKey, titleArgs ?? {} as any),
+        body: vozFrase(NOTIFICACAO, p.bodyKey, { referencia: p.meta?.referencia, dias: p.meta?.dias, ...titleArgs } as any),
+        schedule: { at: p.when, allowWhileIdle: true },
+        smallIcon: 'ic_stat_cecistudy',
+        extra: { family, target: p.target },
+      })),
+    });
+    return true;
+  } catch (e) {
+    console.error(`Schedule ${family} error`, e);
+    return false;
+  }
+}
+
+

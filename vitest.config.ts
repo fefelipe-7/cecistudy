@@ -25,5 +25,6 @@ export default defineConfig({
       'packages/**/*.test.{ts,tsx}',
     ],
     css: false,
+    testTimeout: 5000,
   },
 });

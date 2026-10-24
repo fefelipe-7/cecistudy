@@ -17,9 +17,9 @@ import { storage } from '../lib/storage';
 import {
   cancelClassReminders,
   cancelDailyReminder,
-  scheduleDailyReminder,
-  syncClassReminders,
-  syncThesisReminders,
+  cancelExamReminders,
+  cancelInternshipReminders,
+  syncFamily,
 } from '../lib/notifications';
 import { connectGcal, disconnectGcal, syncExam, syncTask, unsyncEvent } from '../lib/gcal';
 
@@ -321,36 +321,52 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
     (settings: ReminderSettings) => {
       setReminderSettings(settings);
       if (settings.enabled) {
-        void scheduleDailyReminder(settings.time).then((scheduled) => {
+        void syncFamily('daily', { time: settings.time }).then((scheduled) => {
           if (scheduled) hapticSuccess();
         });
-        void syncClassReminders(courses);
+        void syncFamily('class', { courses });
+        void syncFamily('exam', { exams, prefs: { enabled: settings.enabled, time: settings.time }, today: todayKey });
+        void syncFamily('internship', { logs: internshipLogs, prefs: { enabled: settings.enabled, time: settings.time }, today: todayKey });
       } else {
         void cancelDailyReminder();
         void cancelClassReminders();
+        void cancelExamReminders();
+        void cancelInternshipReminders();
       }
     },
-    [courses, setReminderSettings]
+    [courses, exams, internshipLogs, todayKey, setReminderSettings]
   );
 
   // mantém os lembretes de aula em dia quando o horário das matérias muda
   useEffect(() => {
-    if (reminderSettings.enabled) void syncClassReminders(courses);
+    if (reminderSettings.enabled) void syncFamily('class', { courses });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courses]);
+
+  // mantém lembretes de prova em dia quando provas mudam
+  useEffect(() => {
+    if (reminderSettings.enabled) void syncFamily('exam', { exams, prefs: { enabled: reminderSettings.enabled, time: reminderSettings.time }, today: todayKey });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [exams, reminderSettings.enabled, reminderSettings.time, todayKey]);
 
   // Lembretes do TCC (SPEC-012 §6.3): reagenda no boot e quando qualquer
   // entidade com data muda — cancela a faixa e refaz o plano (mais próximos
   // primeiro, teto de 64 do iOS). Nativo-only; o plano é puro no domínio.
   // Preferências desligadas: só o cancelamento (nunca fica lembrete órfão).
   useEffect(() => {
-    void syncThesisReminders(
-      { thesis: tcc, chapters: thesisChapters, tasks: thesisTasks, meetings: thesisMeetings },
-      todayKey,
-      tcc.reminderPrefs,
-    );
+    void syncFamily('thesis', {
+      state: { thesis: tcc, chapters: thesisChapters, tasks: thesisTasks, meetings: thesisMeetings },
+      today: todayKey,
+      prefs: tcc.reminderPrefs,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tcc, thesisChapters, thesisTasks, thesisMeetings, todayKey]);
+
+  // Lembretes de estágio: registro diário
+  useEffect(() => {
+    if (reminderSettings.enabled) void syncFamily('internship', { logs: internshipLogs, prefs: { enabled: reminderSettings.enabled, time: reminderSettings.time }, today: todayKey });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [internshipLogs, reminderSettings.enabled, reminderSettings.time, todayKey]);
 
   const setGcalEnabled = useCallback(
     async (on: boolean) => {

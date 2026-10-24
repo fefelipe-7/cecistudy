@@ -9,19 +9,39 @@ describe('COURSE_COLORS (SPEC-004)', () => {
   });
 
   it('preserva as 7 cores históricas', () => {
-    for (const legacy of ['#E97891', '#B94862', '#609FB8', '#4A879F', '#8BC7A2', '#AD9986', '#BD913C']) {
+    for (const legacy of [
+      '#E97891',
+      '#B94862',
+      '#609FB8',
+      '#4A879F',
+      '#8BC7A2',
+      '#AD9986',
+      '#BD913C',
+    ]) {
       expect(COURSE_COLORS).toContain(legacy);
     }
   });
 
   it('espelha as escalas @theme (hex do index.css, sem alias CSS)', () => {
     const theming = [
-      '#F596AA', '#E97891', '#D85F79', '#B94862',
-      '#83BCD0', '#609FB8', '#4A879F', '#396D82',
-      '#8BC7A2', '#5A9F76', '#43805B',
-      '#E8C36D', '#BD913C',
-      '#E89189', '#D97A72', '#A8514B',
-      '#AD9986', '#756354',
+      '#F596AA',
+      '#E97891',
+      '#D85F79',
+      '#B94862',
+      '#83BCD0',
+      '#609FB8',
+      '#4A879F',
+      '#396D82',
+      '#8BC7A2',
+      '#5A9F76',
+      '#43805B',
+      '#E8C36D',
+      '#BD913C',
+      '#E89189',
+      '#D97A72',
+      '#A8514B',
+      '#AD9986',
+      '#756354',
     ];
     expect(COURSE_COLORS).toEqual(theming);
   });

@@ -3,6 +3,10 @@
  * e **não** repete o CTA de virada (que vive só em `JourneyNow`). Os estados
  * vazios (sem período ativo e com período ativo mas sem histórico) são texto,
  * nunca caixa em branco.
+ *
+ * Estados de texto ficam num único `it.each` (2026-10-23): quatro casos de
+ * presença/ausência custavam quatro `render` cada um para afirmar a mesma coisa.
+ * O que é comportamento — clicar, singular/plural por quantidade — segue em `it`.
  */
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
@@ -45,9 +49,7 @@ describe('JourneyHistory', () => {
   });
 
   it('não repete o CTA de virada (I3)', () => {
-    render(
-      <JourneyHistory journey={journey({ history: [row(5)] })} onOpenTermHistory={vi.fn()} />,
-    );
+    render(<JourneyHistory journey={journey({ history: [row(5)] })} onOpenTermHistory={vi.fn()} />);
     expect(screen.queryByRole('button', { name: /virar o semestre/ })).toBeNull();
   });
 
@@ -58,19 +60,16 @@ describe('JourneyHistory', () => {
     expect(onOpenTermHistory).toHaveBeenCalledTimes(1);
   });
 
-  it('sem histórico e com período ativo, convida em vez de mostrar caixa vazia', () => {
-    render(<JourneyHistory journey={journey()} onOpenTermHistory={vi.fn()} />);
-    expect(screen.getByText(/quando este semestre for encerrado/)).toBeTruthy();
-  });
-
-  it('sem período ativo, aponta para o primeiro semestre', () => {
-    render(
-      <JourneyHistory
-        journey={journey({ hasActiveTerm: false, activeTermId: undefined, history: [] })}
-        onOpenTermHistory={vi.fn()}
-      />,
-    );
-    expect(screen.getByText(/começa quando o primeiro semestre for encerrado/)).toBeTruthy();
+  it.each([
+    ['com período ativo, sem histórico', journey(), /quando este semestre for encerrado/],
+    [
+      'sem período ativo',
+      journey({ hasActiveTerm: false, activeTermId: undefined, history: [] }),
+      /começa quando o primeiro semestre for encerrado/,
+    ],
+  ])('estado vazio de %s é texto, não caixa branca', (_label, data, text) => {
+    render(<JourneyHistory journey={data as ProfileJourney} onOpenTermHistory={vi.fn()} />);
+    expect(screen.getByText(text as RegExp)).toBeTruthy();
   });
 
   it('usa singular quando o período fechou com uma disciplina', () => {

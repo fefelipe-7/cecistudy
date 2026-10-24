@@ -72,37 +72,79 @@ const checks = [
   {
     name: 'packages/domain toca em UI/plataforma',
     targets: ['packages/domain'],
-    forbiddenContent: ['from "react"', "from 'react'", '@capacitor/', '__TAURI__', 'window.__TAURI'],
+    forbiddenContent: [
+      'from "react"',
+      "from 'react'",
+      '@capacitor/',
+      '__TAURI__',
+      'window.__TAURI',
+    ],
   },
   {
     name: 'packages/sync toca em UI/plataforma',
     targets: ['packages/sync'],
-    forbiddenContent: ['from "react"', "from 'react'", '@capacitor/', '__TAURI__', 'window.__TAURI'],
+    forbiddenContent: [
+      'from "react"',
+      "from 'react'",
+      '@capacitor/',
+      '__TAURI__',
+      'window.__TAURI',
+    ],
   },
   {
     name: 'packages/data toca em UI/plataforma',
     targets: ['packages/data'],
-    forbiddenContent: ['from "react"', "from 'react'", '@capacitor/', '__TAURI__', 'window.__TAURI'],
+    forbiddenContent: [
+      'from "react"',
+      "from 'react'",
+      '@capacitor/',
+      '__TAURI__',
+      'window.__TAURI',
+    ],
   },
   {
     name: 'packages/application toca em UI/plataforma',
     targets: ['packages/application'],
-    forbiddenContent: ['from "react"', "from 'react'", '@capacitor/', '__TAURI__', 'window.__TAURI'],
+    forbiddenContent: [
+      'from "react"',
+      "from 'react'",
+      '@capacitor/',
+      '__TAURI__',
+      'window.__TAURI',
+    ],
   },
   {
     name: 'packages/contracts toca em UI/plataforma',
     targets: ['packages/contracts'],
-    forbiddenContent: ['from "react"', "from 'react'", '@capacitor/', '__TAURI__', 'window.__TAURI'],
+    forbiddenContent: [
+      'from "react"',
+      "from 'react'",
+      '@capacitor/',
+      '__TAURI__',
+      'window.__TAURI',
+    ],
   },
   {
     name: 'packages/design-tokens toca em UI/plataforma',
     targets: ['packages/design-tokens'],
-    forbiddenContent: ['from "react"', "from 'react'", '@capacitor/', '__TAURI__', 'window.__TAURI'],
+    forbiddenContent: [
+      'from "react"',
+      "from 'react'",
+      '@capacitor/',
+      '__TAURI__',
+      'window.__TAURI',
+    ],
   },
   {
     name: 'packages/navigation toca em UI/plataforma',
     targets: ['packages/navigation'],
-    forbiddenContent: ['from "react"', "from 'react'", '@capacitor/', '__TAURI__', 'window.__TAURI'],
+    forbiddenContent: [
+      'from "react"',
+      "from 'react'",
+      '@capacitor/',
+      '__TAURI__',
+      'window.__TAURI',
+    ],
   },
   {
     // spec 07 Phase 5 (T6a): só `packages/navigation` CONHECE (declara)
@@ -124,13 +166,8 @@ const checks = [
     // engine puro (`src/context/navigationEngine`) e nunca puxa estado/UI de
     // outra casca/provedor (mesmo via alias).
     name: 'independência do motor de navegação mobile (spec 07 T6c)',
-    targets: [
-      'apps/mobile/src/mobileNavigation.ts',
-      'src/context/navigationEngine.ts',
-    ],
-    forbiddenSpecifiers: [
-      'MobileAppProvider',
-    ],
+    targets: ['apps/mobile/src/mobileNavigation.ts', 'src/context/navigationEngine.ts'],
+    forbiddenSpecifiers: ['MobileAppProvider'],
   },
   {
     name: 'shared UI não deve branchar por plataforma (isMobile/Capacitor)',
@@ -169,7 +206,9 @@ for (const check of checks) {
     if (check.forbiddenContent) {
       for (const pat of check.forbiddenContent) {
         if (content.includes(pat)) {
-          console.error(`[BOUNDARY] ${check.name}: "${pat}" encontrado em ${path.relative(root, file)}`);
+          console.error(
+            `[BOUNDARY] ${check.name}: "${pat}" encontrado em ${path.relative(root, file)}`,
+          );
           failed = true;
         }
       }
@@ -200,9 +239,7 @@ function checarNotificacao() {
   if (!fs.existsSync(alvo)) return 0;
   const infracoes = infracoesDeNotificacao(fs.readFileSync(alvo, 'utf-8'));
   for (const i of infracoes) {
-    console.error(
-      `[VOZ] notificação com texto literal em ${ARQUIVO_DE_NOTIFICACAO}:${i.linha}`,
-    );
+    console.error(`[VOZ] notificação com texto literal em ${ARQUIVO_DE_NOTIFICACAO}:${i.linha}`);
     console.error(`       ${i.texto}`);
     console.error('       title/body saem de vozFrase(NOTIFICACAO, chave) (SPEC-M-018 D18).');
     failed = true;

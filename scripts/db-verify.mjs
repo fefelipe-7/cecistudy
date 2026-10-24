@@ -64,9 +64,10 @@ async function main() {
     process.exit(1);
   }
 
-  const tables = db.exec(
-    "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
-  )[0]?.values.map((r) => r[0]) ?? [];
+  const tables =
+    db
+      .exec("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")[0]
+      ?.values.map((r) => r[0]) ?? [];
   const missing = EXPECTED_TABLES.filter((t) => !tables.includes(t));
   if (missing.length > 0) {
     console.error(`[db:verify] tabelas ausentes: ${missing.join(', ')}`);
@@ -83,19 +84,28 @@ async function main() {
     }
   }
 
-  const structuredComparisons = Number(db.exec("SELECT COUNT(*) FROM comparison WHERE json_extract(data_json, '$.schemaVersion') = 2")[0]?.values?.[0]?.[0] ?? 0);
+  const structuredComparisons = Number(
+    db.exec(
+      "SELECT COUNT(*) FROM comparison WHERE json_extract(data_json, '$.schemaVersion') = 2",
+    )[0]?.values?.[0]?.[0] ?? 0,
+  );
   if (structuredComparisons !== counts.comparison) {
-    console.error(`[db:verify] comparações sem objeto v2 completo (${structuredComparisons}/${counts.comparison})`);
+    console.error(
+      `[db:verify] comparações sem objeto v2 completo (${structuredComparisons}/${counts.comparison})`,
+    );
     process.exit(1);
   }
-  const canonicalTechniqueComparisons = Number(db.exec("SELECT COUNT(*) FROM comparison WHERE instr(data_json, 'tec-psicoeducacao') > 0")[0]?.values?.[0]?.[0] ?? 0);
+  const canonicalTechniqueComparisons = Number(
+    db.exec("SELECT COUNT(*) FROM comparison WHERE instr(data_json, 'tec-psicoeducacao') > 0")[0]
+      ?.values?.[0]?.[0] ?? 0,
+  );
   if (canonicalTechniqueComparisons < 1) {
     console.error('[db:verify] tec-psicoeducacao ausente das comparações no SQLite');
     process.exit(1);
   }
 
   const release = db.exec(
-    'SELECT version, content_hash, built_at, source_schema_version FROM catalog_release WHERE id = 1'
+    'SELECT version, content_hash, built_at, source_schema_version FROM catalog_release WHERE id = 1',
   )[0]?.values?.[0];
   const manifest = JSON.parse(readFileSync(MANIFEST_PATH, 'utf8'));
 
@@ -117,7 +127,7 @@ async function main() {
       `${counts.question} questões · ${counts.work} obras · ` +
       `${counts.concept_domain} domínios · ${counts.concept} conceitos · ` +
       `${counts.catalog_author} autores · ${counts.technique} técnicas · ${counts.comparison} comparações · ` +
-      `${counts.question_category} categorias de questão · ${counts.topic} tópicos`
+      `${counts.question_category} categorias de questão · ${counts.topic} tópicos`,
   );
 }
 

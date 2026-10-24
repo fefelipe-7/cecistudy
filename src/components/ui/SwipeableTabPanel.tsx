@@ -86,7 +86,7 @@ export function useTabPager<T extends string>({
       setDirection(dir ?? (to > from ? 1 : -1));
       onChange(next);
     },
-    [active, onChange, tabIds]
+    [active, onChange, tabIds],
   );
 
   const onPointerDownCapture = useCallback(
@@ -100,7 +100,7 @@ export function useTabPager<T extends string>({
       if (shouldIgnorePanTarget(e.target)) return;
       dragControls.start(e);
     },
-    [draggable, dragControls]
+    [draggable, dragControls],
   );
 
   const onDragEnd = useCallback(
@@ -111,7 +111,7 @@ export function useTabPager<T extends string>({
       if (next === undefined) return;
       goTo(next, delta);
     },
-    [active, goTo, tabIds]
+    [active, goTo, tabIds],
   );
 
   return { direction, goTo, onPointerDownCapture, onDragEnd, enabled, draggable, dragControls };

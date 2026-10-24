@@ -46,13 +46,13 @@ export const ItemModal: React.FC<ItemModalProps> = ({
   const [category, setCategory] = useState<SubCategory>(editItem?.category || 'estudo');
   const [layer, setLayer] = useState<LayerType>(editItem?.layer || 'estudos');
   const [commitment, setCommitment] = useState<CommitmentLevel>(
-    editItem?.commitment || 'recomendado'
+    editItem?.commitment || 'recomendado',
   );
   const [status, setStatus] = useState<ItemStatus>(editItem?.status || 'planejado');
   const [date, setDate] = useState(editItem?.date || initialDate);
   const [startTime, setStartTime] = useState(editItem?.startTime || initialTime);
   const [endTime, setEndTime] = useState(
-    editItem?.endTime || minutesToTime(parseTimeToMinutes(initialTime) + 60)
+    editItem?.endTime || minutesToTime(parseTimeToMinutes(initialTime) + 60),
   );
   const [isAllDay, setIsAllDay] = useState(editItem?.isAllDay || false);
   const [notes, setNotes] = useState(editItem?.notes || '');
@@ -118,8 +118,8 @@ export const ItemModal: React.FC<ItemModalProps> = ({
             layer === 'tcc'
               ? 'TCC • Documento de Trabalho'
               : layer === 'faculdade'
-              ? 'Faculdade • Módulo Acadêmico'
-              : 'Estudos • Fila de Revisão',
+                ? 'Faculdade • Módulo Acadêmico'
+                : 'Estudos • Fila de Revisão',
         },
       ],
       notes: notes.trim(),
@@ -227,9 +227,7 @@ export const ItemModal: React.FC<ItemModalProps> = ({
 
           {/* Title input */}
           <div className="flex flex-col gap-1">
-            <label className="font-bold text-[#40383A] text-xs">
-              Título da Atividade *
-            </label>
+            <label className="font-bold text-[#40383A] text-xs">Título da Atividade *</label>
             <input
               type="text"
               required
@@ -279,9 +277,7 @@ export const ItemModal: React.FC<ItemModalProps> = ({
           {/* Date, Time & All Day */}
           <div className="flex flex-col gap-2.5 p-3.5 bg-[#FAF8F5] rounded-xl border border-[#E9DFDC]">
             <div className="flex items-center justify-between">
-              <label className="font-bold text-[#40383A] text-xs">
-                Data & Horário
-              </label>
+              <label className="font-bold text-[#40383A] text-xs">Data & Horário</label>
               <label className="flex items-center gap-1.5 cursor-pointer text-[#6D6366] font-medium text-xs">
                 <input
                   type="checkbox"
@@ -309,7 +305,10 @@ export const ItemModal: React.FC<ItemModalProps> = ({
                     onChange={(e) => {
                       const newStart = e.target.value;
                       setStartTime(newStart);
-                      const currentDur = Math.max(parseTimeToMinutes(endTime) - parseTimeToMinutes(startTime), 30);
+                      const currentDur = Math.max(
+                        parseTimeToMinutes(endTime) - parseTimeToMinutes(startTime),
+                        30,
+                      );
                       setEndTime(minutesToTime(parseTimeToMinutes(newStart) + currentDur));
                     }}
                     className="px-2.5 py-1.5 border border-[#E9DFDC] rounded-xl bg-white text-[#40383A] text-xs font-mono"
@@ -339,7 +338,10 @@ export const ItemModal: React.FC<ItemModalProps> = ({
                     { label: '2h (4 blocos)', mins: 120 },
                     { label: '3h (6 blocos)', mins: 180 },
                   ].map((dur) => {
-                    const currentDurationMins = Math.max(parseTimeToMinutes(endTime) - parseTimeToMinutes(startTime), 0);
+                    const currentDurationMins = Math.max(
+                      parseTimeToMinutes(endTime) - parseTimeToMinutes(startTime),
+                      0,
+                    );
                     const isSelected = currentDurationMins === dur.mins;
                     return (
                       <button
@@ -384,16 +386,14 @@ export const ItemModal: React.FC<ItemModalProps> = ({
                   >
                     {lvl}
                   </button>
-                )
+                ),
               )}
             </div>
           </div>
 
           {/* Etapas / Subtasks */}
           <div className="flex flex-col gap-1.5">
-            <label className="font-bold text-[#40383A] text-xs">
-              Etapas / Subtarefas
-            </label>
+            <label className="font-bold text-[#40383A] text-xs">Etapas / Subtarefas</label>
             <div className="flex items-center gap-2">
               <input
                 type="text"

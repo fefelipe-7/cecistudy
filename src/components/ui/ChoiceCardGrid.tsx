@@ -51,7 +51,7 @@ export const ChoiceCardGrid = <T extends string>({
                 columns === 1 ? 'w-full px-4 py-3.5' : 'px-3.5 py-3.5',
                 sel
                   ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong shadow-2xs'
-                  : 'bg-surface-default border-ceci-border-subtle text-ceci-primary hover:bg-surface-muted'
+                  : 'bg-surface-default border-ceci-border-subtle text-ceci-primary hover:bg-surface-muted',
               )}
             >
               {o.caption ? (
@@ -61,7 +61,9 @@ export const ChoiceCardGrid = <T extends string>({
                     <span className="text-xs font-semibold leading-snug">{o.label}</span>
                   </span>
                   {o.caption && (
-                    <span className="text-[11px] text-ceci-tertiary leading-snug font-normal">{o.caption}</span>
+                    <span className="text-[11px] text-ceci-tertiary leading-snug font-normal">
+                      {o.caption}
+                    </span>
                   )}
                 </span>
               ) : (

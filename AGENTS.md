@@ -6,7 +6,7 @@ Guidance for OpenCode sessions in **cecistudy ♡** — personal, mobile-first, 
 - Package manager: **npm** (no bun).
 - `npm run dev` — Vite dev server on port 3000.
 - `npm run lint` — `tsc --noEmit` (typecheck only; this is the "lint").
-- `npm run test` — Vitest (jsdom). Single file: `npm run test -- src/lib/__tests__/routing.test.ts`
+- `npm run test` — Vitest (jsdom). Single file: `npm run test -- src/lib/__tests__/routing.test.ts`. Por classe: `test:domain` (ciclo de edição) e `test:ui`.
 - `npm run build` — `vite build` → `dist/`.
 - `node .github/scripts/check-boundaries.mjs` — fails if `packages/*`/shared-code boundary rules are violated. É gate obrigatório do PR (`.github/workflows/ci.yml`) e do release; rode localmente antes de tocar `packages/*`, `src/shells` ou `src/overlays`. A regra "shared UI não brancha por plataforma" (`isMobile`/`Capacitor.isNativePlatform`) vive em `src/components`, `src/shells/SharedScreenLayers.tsx` e `src/overlays/*`.
 - **Verification gate:** run `npm run lint` + `npm run test` after any code change; run the boundary check when touching `packages/*`.
@@ -15,6 +15,21 @@ Guidance for OpenCode sessions in **cecistudy ♡** — personal, mobile-first, 
 - **Um gate por vez (`SPEC-C-014` D5):** rodar o `verify` do mobile junto com o do desktop levou o `typecheck` de 49,65 s para 328,29 s (6,6×) nesta máquina de 3,6 GB. Não orquestre um gate pelo outro.
 - **Toolchain de contrato:** Node 22 (`.nvmrc` e `engines >= 22`); npm 10.x é o par testado em CI. A máquina de dev roda Node 26 + npm 12 (warning `localStorage` experimental em workers do Vitest é ruído; `vitest.setup.ts` já trata o shadowing). Relatório de bundle: `artifacts/bundle-report.json` (regenerar ao mudar chunks — F7.6 do `tasks/todo-performance.md` torna isso script).
 - Content/catalog pipeline (only when editing temple/catalog data): `npm run content:build` → `npm run db:verify` → `npm run content:check`.
+
+## Testes: classificação e corte (obrigatório)
+
+`docs/estandares-testes.md` é a regra. Todo teste novo ou revisado declara **a classe** e **o que protege que outro gate não protege**; sem isso, não entra.
+
+| Classe | Onde | Ação |
+|---|---|---|
+| invariante de domínio | `packages/*`, sem jsdom | manter |
+| caso de uso | `packages/application`, repositório fake | manter |
+| UI comportamental | `src/**`, jsdom | manter só o que o domínio não cobre |
+| render-only / snapshot estático | qualquer | **remover** |
+| duplicata de gate existente | qualquer | **remover ou mesclar** |
+| compat stub (`src/core/*`, `src/data/*`) | — | **não testar** |
+
+**Corte:** um teste só fica se falha quando o comportamento quebra e não é coberto por outro gate. Variação de dado vira `it.each`; teste de tempo usa `vi.useFakeTimers()` (timeout 5 s); lógica pura em `src/` migra para o package dono. Scripts: `test:domain` no ciclo de edição; `test:ui` no PR; `test:ci` dentro do `verify:fast`.
 
 ## Monorepo / Package Boundaries (read before editing `packages/*`)
 - `packages/*` are npm workspaces and the **canonical** shared libraries: `domain`, `application`, `data`, `sync`, `contracts`, `design-tokens`.

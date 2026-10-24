@@ -35,7 +35,7 @@ export const ToggleRow: React.FC<ToggleRowProps> = ({
       <span
         className={cn(
           'w-10 h-10 rounded-2xl flex items-center justify-center shrink-0',
-          iconClassName ?? 'bg-surface-muted text-ceci-secondary border border-ceci-border-default'
+          iconClassName ?? 'bg-surface-muted text-ceci-secondary border border-ceci-border-default',
         )}
       >
         {icon}
@@ -43,9 +43,17 @@ export const ToggleRow: React.FC<ToggleRowProps> = ({
     )}
     <div className="flex-1 min-w-0">
       <h3 className="font-display font-bold text-sm text-ceci-primary">{label}</h3>
-      {description && <p className="text-[11px] text-ceci-secondary leading-tight mt-0.5">{description}</p>}
+      {description && (
+        <p className="text-[11px] text-ceci-secondary leading-tight mt-0.5">{description}</p>
+      )}
       {extra}
     </div>
-    <Toggle checked={checked} onChange={onChange} disabled={disabled} loading={loading} label={label} />
+    <Toggle
+      checked={checked}
+      onChange={onChange}
+      disabled={disabled}
+      loading={loading}
+      label={label}
+    />
   </div>
 );

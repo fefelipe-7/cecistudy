@@ -9,7 +9,10 @@
  * Fica em arquivo próprio porque Home, Estudos e a ficha da matéria precisam dele,
  * e nenhum deles pode puxar a voz inteira para computar um número de dias.
  */
-export function daysUntil(data: string | null | undefined, agora: Date = new Date()): number | null {
+export function daysUntil(
+  data: string | null | undefined,
+  agora: Date = new Date(),
+): number | null {
   if (!data) return null;
   const alvo = new Date(`${data}T00:00:00`);
   if (Number.isNaN(alvo.getTime())) return null;

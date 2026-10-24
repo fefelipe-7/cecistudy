@@ -16,9 +16,7 @@ const CecinhoTip: React.FC<CecinhoTipProps> = ({ tip }) => (
         <Sparkles className="w-4 h-4 text-ceci-brand-strong" />
         <span>dica do cecinho ✨</span>
       </div>
-      <p className="text-xs text-ceci-secondary mt-1 leading-relaxed font-serif-academic">
-        {tip}
-      </p>
+      <p className="text-xs text-ceci-secondary mt-1 leading-relaxed font-serif-academic">{tip}</p>
     </div>
   </div>
 );

@@ -169,9 +169,12 @@ export function getWeekProgress(activeDays: string[], reference: Date | string):
   const week = getWeekDates(reference);
 
   return week.map((dateKey) => {
-    if (!isStudyDay(dateKey)) return { dateKey, label: getWeekdayLabel(dateKey), status: 'weekend', active: false };
-    if (active.has(dateKey)) return { dateKey, label: getWeekdayLabel(dateKey), status: 'done', active: true };
-    if (dateKey === todayKey) return { dateKey, label: getWeekdayLabel(dateKey), status: 'today', active: false };
+    if (!isStudyDay(dateKey))
+      return { dateKey, label: getWeekdayLabel(dateKey), status: 'weekend', active: false };
+    if (active.has(dateKey))
+      return { dateKey, label: getWeekdayLabel(dateKey), status: 'done', active: true };
+    if (dateKey === todayKey)
+      return { dateKey, label: getWeekdayLabel(dateKey), status: 'today', active: false };
     return { dateKey, label: getWeekdayLabel(dateKey), status: 'upcoming', active: false };
   });
 }
@@ -188,11 +191,7 @@ export interface HistoryWeek {
  * de streak. Cada semana traz apenas os dias úteis (seg–sex), com flag de atividade.
  * Retorna da semana mais antiga para a mais recente (para renderizar em coluna).
  */
-export function getRecentWeeks(
-  activeDays: string[],
-  todayKey: string,
-  weeks = 8
-): HistoryWeek[] {
+export function getRecentWeeks(activeDays: string[], todayKey: string, weeks = 8): HistoryWeek[] {
   const active = new Set(activeDays);
   const currentWeekMonday = getWeekDates(todayKey)[0];
   const result: HistoryWeek[] = [];

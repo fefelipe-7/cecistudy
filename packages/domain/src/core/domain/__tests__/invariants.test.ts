@@ -41,8 +41,18 @@ describe('core/domain — conhecimento', () => {
   });
 
   it('createRelation aceita por padrão exceto semântica (vai para Inbox)', () => {
-    const manual = createRelation({ workspaceId: 'ws-1', sourceId: 'a', targetId: 'b', kind: 'explicita' });
-    const semantic = createRelation({ workspaceId: 'ws-1', sourceId: 'a', targetId: 'b', kind: 'semantica' });
+    const manual = createRelation({
+      workspaceId: 'ws-1',
+      sourceId: 'a',
+      targetId: 'b',
+      kind: 'explicita',
+    });
+    const semantic = createRelation({
+      workspaceId: 'ws-1',
+      sourceId: 'a',
+      targetId: 'b',
+      kind: 'semantica',
+    });
     expect(manual.accepted).toBe(true);
     expect(semantic.accepted).toBe(false);
   });

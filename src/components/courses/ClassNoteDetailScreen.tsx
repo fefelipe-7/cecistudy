@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  BookOpen,
-  HelpCircle,
-  Paperclip,
-  Pencil,
-  Sparkles,
-  Trash2,
-} from 'lucide-react';
+import { BookOpen, HelpCircle, Paperclip, Pencil, Sparkles, Trash2 } from 'lucide-react';
 import { Mascote } from '../ui/Mascote';
 import { StarRating, RATING_LABELS } from '../ui/StarRating';
 import { CourseIcon } from '../ui/CourseIcon';
@@ -138,8 +131,14 @@ export const ClassNoteDetailScreen: React.FC = () => {
         </div>
         <ul className="space-y-1.5">
           {REFLECTION_PROMPTS.map((prompt) => (
-            <li key={prompt} className="flex items-start gap-2 text-xs text-ceci-primary leading-relaxed">
-              <span aria-hidden className="mt-1.5 w-1.5 h-1.5 rounded-full bg-ceci-brand shrink-0" />
+            <li
+              key={prompt}
+              className="flex items-start gap-2 text-xs text-ceci-primary leading-relaxed"
+            >
+              <span
+                aria-hidden
+                className="mt-1.5 w-1.5 h-1.5 rounded-full bg-ceci-brand shrink-0"
+              />
               {prompt}
             </li>
           ))}

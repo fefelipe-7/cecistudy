@@ -1,20 +1,25 @@
 import { describe, it, expect } from 'vitest';
-import { deleteManagedItem, MANAGED_KIND_LABEL, MANAGED_KIND_REMOVED, ManagedDB } from '../entityOps';
+import {
+  deleteManagedItem,
+  MANAGED_KIND_LABEL,
+  MANAGED_KIND_REMOVED,
+  ManagedDB,
+} from '../entityOps';
 import { statusOf, buildLinkIndex } from '../internshipCases';
 import type {
-   Course,
-   ClassNote,
-   Task,
-   Exam,
-   PsychologyAuthor,
-   PsychologyConcept,
-   ReadingItem,
-   Flashcard,
-   MaterialItem,
-   InternshipLog,
-   StudySession,
-   QuizSession,
-   LooseNote,
+  Course,
+  ClassNote,
+  Task,
+  Exam,
+  PsychologyAuthor,
+  PsychologyConcept,
+  ReadingItem,
+  Flashcard,
+  MaterialItem,
+  InternshipLog,
+  StudySession,
+  QuizSession,
+  LooseNote,
 } from '../../types';
 
 const course: Course = {
@@ -147,23 +152,23 @@ const looseNote: LooseNote = {
 };
 
 function makeDb(): ManagedDB {
-   return {
-     courses: [course],
-     classes: [classNote],
-     tasks: [task],
-     exams: [exam],
-     authors: [author],
-     concepts: [concept],
-     readings: [reading],
-     flashcards: [flashcard],
-     materials: [material],
-     internshipLogs: [internshipLog],
-     sessions: [session],
-     quizSessions: [quizSession],
-     looseNotes: [looseNote],
-     bookmarkedCourseIds: ['c1'],
-   };
- }
+  return {
+    courses: [course],
+    classes: [classNote],
+    tasks: [task],
+    exams: [exam],
+    authors: [author],
+    concepts: [concept],
+    readings: [reading],
+    flashcards: [flashcard],
+    materials: [material],
+    internshipLogs: [internshipLog],
+    sessions: [session],
+    quizSessions: [quizSession],
+    looseNotes: [looseNote],
+    bookmarkedCourseIds: ['c1'],
+  };
+}
 
 describe('deleteManagedItem', () => {
   it('exclui uma tarefa simples sem tocar nos outros bancos', () => {
@@ -262,17 +267,23 @@ describe('exclusão de registro de estágio limpa o vínculo', () => {
     discussedLogIds,
   });
 
-  const db = (logs: InternshipLog[]) =>
-    ({ ...makeDb(), internshipLogs: logs }) as ManagedDB;
+  const db = (logs: InternshipLog[]) => ({ ...makeDb(), internshipLogs: logs }) as ManagedDB;
 
   const TODAY = '2026-09-01';
 
   it('apagar a supervisão FAZ a sessão voltar a "sem supervisão" (por derivação)', () => {
     const antes = db([clinical('at-1'), supervision('sup-1', ['at-1'])]);
-    expect(statusOf(antes.internshipLogs[0], buildLinkIndex(antes.internshipLogs, TODAY), TODAY).supervised).toBe(true);
+    expect(
+      statusOf(antes.internshipLogs[0], buildLinkIndex(antes.internshipLogs, TODAY), TODAY)
+        .supervised,
+    ).toBe(true);
 
     const depois = deleteManagedItem(antes, 'internship', 'sup-1');
-    const st = statusOf(depois.internshipLogs[0], buildLinkIndex(depois.internshipLogs, TODAY), TODAY);
+    const st = statusOf(
+      depois.internshipLogs[0],
+      buildLinkIndex(depois.internshipLogs, TODAY),
+      TODAY,
+    );
     expect(st.supervised).toBe(false);
     expect(st.supervisionIds).toEqual([]);
   });
@@ -284,7 +295,11 @@ describe('exclusão de registro de estágio limpa o vínculo', () => {
   });
 
   it('apagar a última sessão discutida remove o campo em vez de deixar array vazio', () => {
-    const depois = deleteManagedItem(db([clinical('at-1'), supervision('sup-1', ['at-1'])]), 'internship', 'at-1');
+    const depois = deleteManagedItem(
+      db([clinical('at-1'), supervision('sup-1', ['at-1'])]),
+      'internship',
+      'at-1',
+    );
     expect(depois.internshipLogs.find((l) => l.id === 'sup-1')?.discussedLogIds).toBeUndefined();
   });
 

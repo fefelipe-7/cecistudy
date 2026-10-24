@@ -1,7 +1,7 @@
 /**
  * Adaptador de rede do enriquecimento (SPEC-012 §7.3, F7.5).
  *
- * A regra de transformação mora em `parseCitationMeta.ts`; aqui só o **transporte**: 
+ * A regra de transformação mora em `parseCitationMeta.ts`; aqui só o **transporte**:
  * - DOI presente (`reading.doi` ou da URL `doi.org/…`) → Crossref (`GET
  *   api.crossref.org/works/<doi>`), que é o mais confiável (autores já
  *   separados — §7.3 item 0).
@@ -56,7 +56,11 @@ export interface EnrichmentPlan {
  * ordem 0 do §7.3. Sem DOI e sem URL: nada a buscar (`null`).
  */
 export const buildEnrichmentPlan = (reading: EnrichableReading): EnrichmentPlan | null => {
-  const doi = reading.doi ? normalizeDoi(reading.doi) : reading.url ? extractDoi(reading.url) : null;
+  const doi = reading.doi
+    ? normalizeDoi(reading.doi)
+    : reading.url
+      ? extractDoi(reading.url)
+      : null;
   if (doi) return { url: `${CROSSREF_BASE}${doi}`, source: 'crossref' };
   if (reading.url) return { url: reading.url, source: 'page' };
   return null;
@@ -68,8 +72,7 @@ export type EnrichResult =
   | { kind: 'offline' }
   | { kind: 'nada' };
 
-const isOffline = (): boolean =>
-  typeof navigator !== 'undefined' && navigator.onLine === false;
+const isOffline = (): boolean => typeof navigator !== 'undefined' && navigator.onLine === false;
 
 /**
  * Roda o enriquecimento de uma leitura com um transporte DADO. Sem rede não

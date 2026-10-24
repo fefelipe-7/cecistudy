@@ -11,7 +11,13 @@ import {
   TempleSearchInput,
 } from './TempleShared';
 
-export type ComparisonEntityFilter = 'todos' | 'abordagem' | 'autor' | 'conceito' | 'tecnica' | 'fenomeno';
+export type ComparisonEntityFilter =
+  | 'todos'
+  | 'abordagem'
+  | 'autor'
+  | 'conceito'
+  | 'tecnica'
+  | 'fenomeno';
 export type ComparisonKindFilter = 'todos' | TempleComparison['tipo'];
 
 const ENTITY_FILTERS: Array<{ id: ComparisonEntityFilter; label: string }> = [
@@ -128,7 +134,8 @@ export const ComparisonsScreen: React.FC<{ onOpen: (slug: string) => void }> = (
     return comparisons
       .filter((comparison) => {
         const entityMatches =
-          entityFilter === 'todos' || comparison.itens.some((item) => item.tipoEntidade === entityFilter);
+          entityFilter === 'todos' ||
+          comparison.itens.some((item) => item.tipoEntidade === entityFilter);
         const kindMatches = kindFilter === 'todos' || comparison.tipo === kindFilter;
         const textMatches =
           !normalizedQuery ||
@@ -144,9 +151,12 @@ export const ComparisonsScreen: React.FC<{ onOpen: (slug: string) => void }> = (
       });
   }, [comparisons, entityFilter, kindFilter, query]);
 
-  const featured = filtered.find((comparison) => comparison.slug === 'psicanalise-terapia-cognitiva-beck') ?? filtered[0];
+  const featured =
+    filtered.find((comparison) => comparison.slug === 'psicanalise-terapia-cognitiva-beck') ??
+    filtered[0];
   const rest = featured ? filtered.filter((comparison) => comparison.id !== featured.id) : filtered;
-  const activeFilterLabel = entityFilter === 'todos' ? 'todas as comparações' : ENTITY_LABELS[entityFilter];
+  const activeFilterLabel =
+    entityFilter === 'todos' ? 'todas as comparações' : ENTITY_LABELS[entityFilter];
 
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-5 pb-1 relative">
@@ -206,7 +216,9 @@ export const ComparisonsScreen: React.FC<{ onOpen: (slug: string) => void }> = (
             <section className="space-y-3">
               <div className="flex items-center gap-2 px-1">
                 <Sparkles className="w-4 h-4 text-status-warning-strong" />
-                <h2 className="text-sm uppercase tracking-wider font-bold text-ceci-primary">em destaque</h2>
+                <h2 className="text-sm uppercase tracking-wider font-bold text-ceci-primary">
+                  em destaque
+                </h2>
               </div>
               <ComparisonCard comparison={featured} featured onOpen={() => onOpen(featured.slug)} />
             </section>
@@ -216,9 +228,13 @@ export const ComparisonsScreen: React.FC<{ onOpen: (slug: string) => void }> = (
             <div className="flex items-center justify-between gap-3 px-1">
               <div className="flex items-center gap-2">
                 <Layers3 className="w-4 h-4 text-ceci-brand-strong" />
-                <h2 className="text-sm uppercase tracking-wider font-bold text-ceci-primary">explore</h2>
+                <h2 className="text-sm uppercase tracking-wider font-bold text-ceci-primary">
+                  explore
+                </h2>
               </div>
-              <span className="text-[11px] text-ceci-muted">{filtered.length} {activeFilterLabel}</span>
+              <span className="text-[11px] text-ceci-muted">
+                {filtered.length} {activeFilterLabel}
+              </span>
             </div>
             {rest.length > 0 ? (
               <div className="grid gap-3 sm:grid-cols-2">
@@ -239,4 +255,3 @@ export const ComparisonsScreen: React.FC<{ onOpen: (slug: string) => void }> = (
     </div>
   );
 };
-

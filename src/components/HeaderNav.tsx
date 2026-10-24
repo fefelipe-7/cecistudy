@@ -1,8 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import {
-  ArrowLeft,
-} from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { UserProfile, DynamicHeaderConfig } from '../types';
 import { CourseIcon } from './ui/CourseIcon';
 import { HeaderActionMenu } from './ui/HeaderActionMenu';
@@ -89,150 +87,152 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
         {/* Troca concorrente (popLayout): o header sai e entra JUNTOS, em tempo com o slide
             das telas — antes era mode="wait" (sequencial), que piscava fora de sincronia. */}
         <AnimatePresence mode="popLayout" initial={false} custom={direction}>
-        {isDetailMode ? (
-          /* ================================================================ */
-          /* DYNAMIC DETAIL HEADER MODE (replaces standard brand header)      */
-          /* ================================================================ */
-          <motion.div
-            key="detail"
-            custom={direction}
-            variants={headerSwapVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            className="flex items-center justify-between w-full"
-          >
-            {/* Left Section: Back Button + Icon + Title & Code */}
-            <div className="flex items-center gap-2.5 min-w-0 pr-2">
-              {headerConfig.onBack && (
-                <button
-                  onClick={headerConfig.onBack}
-                  className="w-9 h-9 rounded-2xl bg-surface-default border border-ceci-border-default hover:border-ceci-border-brand flex items-center justify-center text-ceci-primary shadow-2xs hover:bg-surface-rose tap-interactive cursor-pointer shrink-0 active:scale-95"
-                  title="voltar"
-                  aria-label="voltar"
-                >
-                  <ArrowLeft className="w-4 h-4 text-ceci-primary" />
-                </button>
-              )}
+          {isDetailMode ? (
+            /* ================================================================ */
+            /* DYNAMIC DETAIL HEADER MODE (replaces standard brand header)      */
+            /* ================================================================ */
+            <motion.div
+              key="detail"
+              custom={direction}
+              variants={headerSwapVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="flex items-center justify-between w-full"
+            >
+              {/* Left Section: Back Button + Icon + Title & Code */}
+              <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                {headerConfig.onBack && (
+                  <button
+                    onClick={headerConfig.onBack}
+                    className="w-9 h-9 rounded-2xl bg-surface-default border border-ceci-border-default hover:border-ceci-border-brand flex items-center justify-center text-ceci-primary shadow-2xs hover:bg-surface-rose tap-interactive cursor-pointer shrink-0 active:scale-95"
+                    title="voltar"
+                    aria-label="voltar"
+                  >
+                    <ArrowLeft className="w-4 h-4 text-ceci-primary" />
+                  </button>
+                )}
 
-              {headerConfig.icon && (
-                <div
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 border border-[color:var(--color-glass-pill-border)] shadow-2xs"
-                  style={{ backgroundColor: `${headerConfig.color || '#B94862'}20` }}
-                >
-                  {headerConfig.icon && <CourseIcon icon={headerConfig.icon} />}
-                </div>
-              )}
+                {headerConfig.icon && (
+                  <div
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 border border-[color:var(--color-glass-pill-border)] shadow-2xs"
+                    style={{ backgroundColor: `${headerConfig.color || '#B94862'}20` }}
+                  >
+                    {headerConfig.icon && <CourseIcon icon={headerConfig.icon} />}
+                  </div>
+                )}
 
-              <div className="min-w-0">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <h2 className="font-display font-bold text-sm sm:text-base text-ceci-primary truncate leading-tight">
-                    {headerConfig.title}
-                  </h2>
-                  {headerConfig.code && (
-                    <span className="text-[9px] font-extrabold uppercase tracking-wider bg-surface-default px-2 py-0.2 rounded-full border border-ceci-border-default text-ceci-primary shrink-0 shadow-2xs">
-                      {headerConfig.code}
-                    </span>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <h2 className="font-display font-bold text-sm sm:text-base text-ceci-primary truncate leading-tight">
+                      {headerConfig.title}
+                    </h2>
+                    {headerConfig.code && (
+                      <span className="text-[9px] font-extrabold uppercase tracking-wider bg-surface-default px-2 py-0.2 rounded-full border border-ceci-border-default text-ceci-primary shrink-0 shadow-2xs">
+                        {headerConfig.code}
+                      </span>
+                    )}
+                  </div>
+
+                  {headerConfig.subtitle && (
+                    <p className="text-[11px] text-ceci-secondary font-medium truncate leading-tight">
+                      {headerConfig.subtitle}
+                    </p>
                   )}
                 </div>
-
-                {headerConfig.subtitle && (
-                  <p className="text-[11px] text-ceci-secondary font-medium truncate leading-tight">
-                    {headerConfig.subtitle}
-                  </p>
-                )}
               </div>
-            </div>
 
-            {/* Right Section: Inline Actions (Moved directly into the Header!) */}
-            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-              {/* Bookmark Toggle */}
-              {headerConfig.onToggleBookmark && (
-                <BookmarkToggle
-                  active={headerConfig.isBookmarked}
-                  onToggle={headerConfig.onToggleBookmark}
-                  size="md"
-                  label="favoritar disciplina"
-                  activeLabel="remover dos favoritos"
-                  ariaLabel={headerConfig.isBookmarked ? 'remover dos favoritos' : 'favoritar disciplina'}
-                />
-              )}
-
-              {/* Custom Right Action (e.g. Quick Add or Action button) */}
-              {headerConfig.rightActions}
-
-              {/* Contextual action menu (telas auxiliares) */}
-              {headerConfig.actions && <HeaderActionMenu actions={headerConfig.actions} />}
-            </div>
-          </motion.div>
-        ) : (
-          /* ================================================================ */
-          /* STANDARD BRAND HEADER MODE                                        */
-          /* ================================================================ */
-          <motion.div
-            key="brand"
-            custom={direction}
-            variants={headerSwapVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            className="flex items-center justify-between w-full gap-2 sm:gap-3"
-          >
-            {/* Brand / Logo */}
-            <div className="flex items-center gap-2.5">
-              <div
-                onClick={onNavigateToPerfil}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    onNavigateToPerfil();
-                  }
-                }}
-                aria-label="ver meu espaço"
-                className={`rounded-full bg-surface-rose border-2 border-ceci-border-brand flex items-center justify-center text-ceci-primary font-display font-bold shadow-2xs cursor-pointer transition-colors duration-300 overflow-hidden ${
-                  scrolled ? 'w-7 h-7 text-xs' : 'w-10 h-10 text-lg hover:scale-105'
-                }`}
-                title="ver meu espaço"
-              >
-                {profile.photoUrl ? (
-                  <img
-                    src={profile.photoUrl}
-                    alt={`foto de ${profile.name}`}
-                    className="w-full h-full object-cover"
+              {/* Right Section: Inline Actions (Moved directly into the Header!) */}
+              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                {/* Bookmark Toggle */}
+                {headerConfig.onToggleBookmark && (
+                  <BookmarkToggle
+                    active={headerConfig.isBookmarked}
+                    onToggle={headerConfig.onToggleBookmark}
+                    size="md"
+                    label="favoritar disciplina"
+                    activeLabel="remover dos favoritos"
+                    ariaLabel={
+                      headerConfig.isBookmarked ? 'remover dos favoritos' : 'favoritar disciplina'
+                    }
                   />
-                ) : (
-                  'C'
                 )}
+
+                {/* Custom Right Action (e.g. Quick Add or Action button) */}
+                {headerConfig.rightActions}
+
+                {/* Contextual action menu (telas auxiliares) */}
+                {headerConfig.actions && <HeaderActionMenu actions={headerConfig.actions} />}
               </div>
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <span
-                    className={`font-display text-ceci-primary tracking-tight font-bold transition-colors duration-300 ${
-                      scrolled ? 'text-base sm:text-lg' : 'text-xl sm:text-2xl'
-                    }`}
-                  >
-                    cecistudy
-                  </span>
-                  <span className="text-ceci-brand text-xs sm:text-sm animate-pulse">♡</span>
-                  <span
-                    className={`bg-surface-blue text-ceci-academic-strong rounded-full font-medium border border-ceci-border-academic transition-colors duration-300 ${
-                      scrolled ? 'text-[9px] px-1.5 py-0.2' : 'text-[10px] px-2 py-0.5'
-                    }`}
-                  >
-                    {activeTermOrdinal ?? profile.semester}º sem
-                  </span>
+            </motion.div>
+          ) : (
+            /* ================================================================ */
+            /* STANDARD BRAND HEADER MODE                                        */
+            /* ================================================================ */
+            <motion.div
+              key="brand"
+              custom={direction}
+              variants={headerSwapVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="flex items-center justify-between w-full gap-2 sm:gap-3"
+            >
+              {/* Brand / Logo */}
+              <div className="flex items-center gap-2.5">
+                <div
+                  onClick={onNavigateToPerfil}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      onNavigateToPerfil();
+                    }
+                  }}
+                  aria-label="ver meu espaço"
+                  className={`rounded-full bg-surface-rose border-2 border-ceci-border-brand flex items-center justify-center text-ceci-primary font-display font-bold shadow-2xs cursor-pointer transition-colors duration-300 overflow-hidden ${
+                    scrolled ? 'w-7 h-7 text-xs' : 'w-10 h-10 text-lg hover:scale-105'
+                  }`}
+                  title="ver meu espaço"
+                >
+                  {profile.photoUrl ? (
+                    <img
+                      src={profile.photoUrl}
+                      alt={`foto de ${profile.name}`}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    'C'
+                  )}
                 </div>
-                {!scrolled && (
-                  <p className="text-xs text-ceci-secondary hidden sm:block transition-colors duration-300 mt-0.5">
-                    {formattedDate} • {profile.university}
-                  </p>
-                )}
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      className={`font-display text-ceci-primary tracking-tight font-bold transition-colors duration-300 ${
+                        scrolled ? 'text-base sm:text-lg' : 'text-xl sm:text-2xl'
+                      }`}
+                    >
+                      cecistudy
+                    </span>
+                    <span className="text-ceci-brand text-xs sm:text-sm animate-pulse">♡</span>
+                    <span
+                      className={`bg-surface-blue text-ceci-academic-strong rounded-full font-medium border border-ceci-border-academic transition-colors duration-300 ${
+                        scrolled ? 'text-[9px] px-1.5 py-0.2' : 'text-[10px] px-2 py-0.5'
+                      }`}
+                    >
+                      {activeTermOrdinal ?? profile.semester}º sem
+                    </span>
+                  </div>
+                  {!scrolled && (
+                    <p className="text-xs text-ceci-secondary hidden sm:block transition-colors duration-300 mt-0.5">
+                      {formattedDate} • {profile.university}
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-          </motion.div>
-        )}
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
     </motion.header>

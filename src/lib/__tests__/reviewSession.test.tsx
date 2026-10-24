@@ -33,7 +33,7 @@ const renderSession = (opts: HarnessOpts = {}) => {
       onGrade={onGrade}
       onRestore={onRestore}
       onManage={onManage}
-    />
+    />,
   );
   return { onGrade, onRestore, onManage };
 };

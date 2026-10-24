@@ -11,11 +11,7 @@
  *   2. JSON-LD `ScholarlyArticle`/`Article`.
  *   3. `og:title` / `<title>` (autor fica vazio).
  */
-import {
-  parseAuthorString,
-  type ReadingItem,
-  type RefAuthor,
-} from '../types';
+import { parseAuthorString, type ReadingItem, type RefAuthor } from '../types';
 
 /** Campos bibliográficos que o enriquecimento sabe preencher. */
 export interface EnrichmentFields {
@@ -70,8 +66,7 @@ export const normalizeDoi = (raw: string): string | null => {
  * DOI inválido devolve `null` — o Crossref não é consultado.
  */
 export const extractDoi = (text: string): string | null => {
-  const fromUrl =
-    /(?:doi\.org\/|dx\.doi\.org\/|doi:\s*|^|\s)(10\.\d{4,9}\/[^\s?&]+)/i.exec(text);
+  const fromUrl = /(?:doi\.org\/|dx\.doi\.org\/|doi:\s*|^|\s)(10\.\d{4,9}\/[^\s?&]+)/i.exec(text);
   return fromUrl ? normalizeDoi(fromUrl[1]) : null;
 };
 
@@ -180,7 +175,11 @@ const ldAuthors = (author?: unknown): RefAuthor[] => {
     if (!a || typeof a !== 'object') continue;
     const rec = a as { familyName?: string; givenName?: string; name?: string };
     if (rec.familyName) {
-      out.push(rec.givenName ? { family: rec.familyName, given: rec.givenName } : { family: rec.familyName });
+      out.push(
+        rec.givenName
+          ? { family: rec.familyName, given: rec.givenName }
+          : { family: rec.familyName },
+      );
     } else if (rec.name) {
       const parsed = parseAuthorString(rec.name);
       if (parsed) out.push(parsed);
@@ -237,7 +236,12 @@ const scrapeJsonLd = (html: string): EnrichmentFields => {
       if (year && !fields.year) fields.year = year;
       const part = node.isPartOf;
       if (part && typeof part === 'object') {
-        const p = part as { name?: string; volumeNumber?: string; issueNumber?: string; publisher?: unknown };
+        const p = part as {
+          name?: string;
+          volumeNumber?: string;
+          issueNumber?: string;
+          publisher?: unknown;
+        };
         if (p.name?.trim() && !fields.container) fields.container = p.name.trim();
         if (p.volumeNumber && !fields.volume) fields.volume = p.volumeNumber;
         if (p.issueNumber && !fields.issue) fields.issue = p.issueNumber;
@@ -273,11 +277,13 @@ export const parseCitationMeta = (html: string, _url: string): EnrichmentFields 
   const highwireAuthors = metaContent(html, 'citation_author');
   if (highwireTitle) fields.title = decodeHtml(highwireTitle);
   if (highwireAuthors.length) fields.authors = authorsFromNames(highwireAuthors);
-  const container = metaContent(html, 'citation_journal_title')[0]
-    ?? metaContent(html, 'citation_inbook_title')[0]
-    ?? metaContent(html, 'citation_book_title')[0];
+  const container =
+    metaContent(html, 'citation_journal_title')[0] ??
+    metaContent(html, 'citation_inbook_title')[0] ??
+    metaContent(html, 'citation_book_title')[0];
   if (container) fields.container = decodeHtml(container);
-  const date = metaContent(html, 'citation_publication_date')[0] ?? metaContent(html, 'citation_date')[0];
+  const date =
+    metaContent(html, 'citation_publication_date')[0] ?? metaContent(html, 'citation_date')[0];
   if (date) fields.year = firstYear(date);
   const volume = metaContent(html, 'citation_volume')[0];
   if (volume) fields.volume = volume;
@@ -295,7 +301,8 @@ export const parseCitationMeta = (html: string, _url: string): EnrichmentFields 
 
   // 2. JSON-LD — quando a página não usa Highwire.
   const ld = scrapeJsonLd(html);
-  if (ld.title || ld.authors?.length) return { ...ld, ...(fields.container ? { container: fields.container } : {}) };
+  if (ld.title || ld.authors?.length)
+    return { ...ld, ...(fields.container ? { container: fields.container } : {}) };
 
   // 3. Fallback: `og:title` / `<title>` (autor fica vazio — §7.3).
   const og = metaContent(html, 'og:title')[0] || metaContent(html, 'title')[0];
@@ -335,11 +342,16 @@ export const mapCrossrefWork = (json: unknown): EnrichmentFields => {
   const fields: EnrichmentFields = {};
   const title = record.title?.[0]?.trim();
   if (title) fields.title = title;
-  const authors = (record.author ?? []).map((a) => {
-    if (a.family) return a.given ? { family: a.family, given: a.given } as RefAuthor : { family: a.family } as RefAuthor;
-    const parsed = a.name ? parseAuthorString(a.name) : null;
-    return parsed ?? null;
-  }).filter((a): a is RefAuthor => a !== null);
+  const authors = (record.author ?? [])
+    .map((a) => {
+      if (a.family)
+        return a.given
+          ? ({ family: a.family, given: a.given } as RefAuthor)
+          : ({ family: a.family } as RefAuthor);
+      const parsed = a.name ? parseAuthorString(a.name) : null;
+      return parsed ?? null;
+    })
+    .filter((a): a is RefAuthor => a !== null);
   if (authors.length) fields.authors = authors;
   if (record['container-title']?.[0]) fields.container = record['container-title'][0];
   if (record.publisher) fields.publisher = record.publisher;

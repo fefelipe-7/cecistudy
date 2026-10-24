@@ -32,9 +32,7 @@ export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = ({
             {collection.books.length} obras
           </span>
         </div>
-        <p className="text-xs text-ceci-secondary leading-relaxed">
-          {collection.subtitle}
-        </p>
+        <p className="text-xs text-ceci-secondary leading-relaxed">{collection.subtitle}</p>
       </div>
 
       {/* Grade expandida de livros */}
@@ -44,9 +42,7 @@ export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = ({
           const readPages = readProgress?.[book.id];
           const isReading = (readPages ?? 0) > 0;
           const progressPercent =
-            book.totalPages && readPages
-              ? Math.round((readPages / book.totalPages) * 100)
-              : 0;
+            book.totalPages && readPages ? Math.round((readPages / book.totalPages) * 100) : 0;
 
           return (
             <ManageSurface
@@ -59,7 +55,9 @@ export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = ({
               {/* Capa grande */}
               <div
                 className="w-full h-[150px] sm:h-[165px] rounded-2xl p-3 flex flex-col justify-between relative overflow-hidden shadow-xs border border-black/5 card-lift"
-                style={{ backgroundColor: `color-mix(in srgb, ${book.coverColor} 70%, var(--color-cover-base))` }}
+                style={{
+                  backgroundColor: `color-mix(in srgb, ${book.coverColor} 70%, var(--color-cover-base))`,
+                }}
               >
                 {/* Lombada */}
                 <div className="absolute left-0 top-0 bottom-0 w-2.5 bg-black/10 border-r border-black/10" />
@@ -68,9 +66,7 @@ export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = ({
                   <span className="text-[8px] font-extrabold uppercase tracking-wider bg-cover-base/90 text-cover-ink px-1.5 py-0.5 rounded shadow-2xs line-clamp-1 max-w-[80px]">
                     {book.badge || 'Livro'}
                   </span>
-                  {isSaved && (
-                    <Bookmark className="w-3.5 h-3.5 fill-cover-ink text-cover-ink" />
-                  )}
+                  {isSaved && <Bookmark className="w-3.5 h-3.5 fill-cover-ink text-cover-ink" />}
                 </div>
 
                 <div className="pl-1.5 my-auto">
@@ -100,9 +96,7 @@ export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = ({
                 <p className="font-display font-bold text-xs text-ceci-primary line-clamp-2 leading-snug group-hover:text-ceci-brand-strong transition-colors">
                   {book.title}
                 </p>
-                <p className="text-[10px] text-ceci-tertiary line-clamp-1">
-                  {book.author}
-                </p>
+                <p className="text-[10px] text-ceci-tertiary line-clamp-1">{book.author}</p>
               </div>
             </ManageSurface>
           );

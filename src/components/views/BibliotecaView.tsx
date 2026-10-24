@@ -76,15 +76,23 @@ import { ViewSkeleton } from '../ui/Skeleton';
 
 // B.4 — sub-telas da biblioteca (notas/templo/famílias/abordagens) só carregam
 // quando o modo da aba as monta: cada uma vira chunk próprio sob Suspense.
-const loadNotesScreen = () => import('../library/NotesScreen').then((m) => ({ default: m.NotesScreen }));
-const loadTempleScreen = () => import('../library/TempleScreen').then((m) => ({ default: m.TempleScreen }));
-const loadConceptsScreen = () => import('../library/temple/ConceptsScreen').then((m) => ({ default: m.ConceptsScreen }));
-const loadAuthorsScreen = () => import('../library/temple/AuthorsScreen').then((m) => ({ default: m.AuthorsScreen }));
-const loadTechniquesScreen = () => import('../library/temple/TechniquesScreen').then((m) => ({ default: m.TechniquesScreen }));
-const loadComparisonRouteView = () => import('./biblioteca/ComparisonRouteView').then((m) => ({ default: m.ComparisonRouteView }));
+const loadNotesScreen = () =>
+  import('../library/NotesScreen').then((m) => ({ default: m.NotesScreen }));
+const loadTempleScreen = () =>
+  import('../library/TempleScreen').then((m) => ({ default: m.TempleScreen }));
+const loadConceptsScreen = () =>
+  import('../library/temple/ConceptsScreen').then((m) => ({ default: m.ConceptsScreen }));
+const loadAuthorsScreen = () =>
+  import('../library/temple/AuthorsScreen').then((m) => ({ default: m.AuthorsScreen }));
+const loadTechniquesScreen = () =>
+  import('../library/temple/TechniquesScreen').then((m) => ({ default: m.TechniquesScreen }));
+const loadComparisonRouteView = () =>
+  import('./biblioteca/ComparisonRouteView').then((m) => ({ default: m.ComparisonRouteView }));
 const loadFamiliesView = () => import('./FamiliesView').then((m) => ({ default: m.FamiliesView }));
-const loadFamilyDetailView = () => import('./FamilyDetailView').then((m) => ({ default: m.FamilyDetailView }));
-const loadApproachDetailView = () => import('./ApproachDetailView').then((m) => ({ default: m.ApproachDetailView }));
+const loadFamilyDetailView = () =>
+  import('./FamilyDetailView').then((m) => ({ default: m.FamilyDetailView }));
+const loadApproachDetailView = () =>
+  import('./ApproachDetailView').then((m) => ({ default: m.ApproachDetailView }));
 const NotesScreen = lazy(loadNotesScreen);
 const TempleScreen = lazy(loadTempleScreen);
 const ConceptsScreen = lazy(loadConceptsScreen);
@@ -112,10 +120,16 @@ interface BibliotecaViewProps {
   comparisonSlug?: string;
 }
 
-export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library', familyId, approachId, comparisonSlug }) => {
+export const BibliotecaView: React.FC<BibliotecaViewProps> = ({
+  mode = 'library',
+  familyId,
+  approachId,
+  comparisonSlug,
+}) => {
   const { looseNotes, savedBookIds, readingProgress, concepts, authors } = useDataClientKnowledge();
   const { courses } = useDataClientCourses();
-  const { addLooseNote, deleteLooseNote, toggleSaveBook, updateReadingProgress } = useKnowledgeActions();
+  const { addLooseNote, deleteLooseNote, toggleSaveBook, updateReadingProgress } =
+    useKnowledgeActions();
   const {
     openNotesScreen,
     isCreatingLooseNote,
@@ -234,7 +248,6 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
 
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-6 pb-1 relative">
-
       {/* 1. Top Header Label & Title */}
       <div className="flex items-center justify-between pt-1 px-1">
         <div>
@@ -298,7 +311,6 @@ export const BibliotecaView: React.FC<BibliotecaViewProps> = ({ mode = 'library'
         toggleSaveBook={toggleSaveBook}
         updateReadingProgress={updateReadingProgress}
       />
-
     </div>
   );
 };

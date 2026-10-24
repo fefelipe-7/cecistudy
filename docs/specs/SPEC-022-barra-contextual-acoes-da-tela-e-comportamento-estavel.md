@@ -236,6 +236,19 @@
 - **Consequência aceita.** Some o HTML inválido (nenhum `role="button"` dentro
   de `<button>`) e a setinha passa a ser alcançável por teclado. A geometria
   tem **um** lugar: as constantes.
+- **Emenda (2026-10-22) — largura é do conteúdo, não do desenho.** A peça
+  media `110px`–`220px` fixos por causa da simetria da SPEC-021: rótulo longo
+  do TCC ("adicionar pendência") saía truncado sem necessidade. As peças passam
+  a medir o próprio conteúdo; só encolhem — com o rótulo truncando — quando a
+  soma das duas não cabe na tela (`min-w-0` + `max-w-full` na linha e na peça),
+  e a peça de "voltar" não encolhe (`shrink-0`). O painel de expansão troca o
+  teto de `220px` pelo da tela (`max-w-[calc(100vw-1.5rem)]`). A altura, o gap
+  e a folga continuam vindo dos tokens `--contextual-bar-*`.
+  - **Alternativa rejeitada.** Aumentar o teto para um valor fixo maior —
+    rejeitada porque o número certo depende do rótulo e do tamanho da tela;
+    outro teto fixo só adia o truncamento.
+  - **Consequência aceita.** As duas peças deixam de ter a mesma largura; a
+    simetria fica por conta da altura e do raio.
 
 ### D6 · A expansão existe quando há duas ou mais candidatas, e a seleção reinicia quando o contexto muda
 

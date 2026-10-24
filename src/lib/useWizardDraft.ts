@@ -36,7 +36,7 @@ export function useWizardDraft<T extends object>(key: string) {
         // quota/serialização — rascunho é best-effort
       }
     },
-    [storageKey]
+    [storageKey],
   );
 
   const clear = useCallback(() => {

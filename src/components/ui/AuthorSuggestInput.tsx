@@ -34,14 +34,12 @@ export const AuthorSuggestInput: React.FC<AuthorSuggestInputProps> = ({
   const matches = useMemo(() => {
     if (!trimmed) return [];
     const t = normalizeText(trimmed);
-    return suggestions
-      .filter((s) => normalizeText(s).includes(t))
-      .slice(0, 5);
+    return suggestions.filter((s) => normalizeText(s).includes(t)).slice(0, 5);
   }, [suggestions, trimmed]);
 
   const exactExists = useMemo(
     () => suggestions.some((s) => normalizeText(s) === normalizeText(trimmed)),
-    [suggestions, trimmed]
+    [suggestions, trimmed],
   );
 
   const canCreate =
@@ -81,7 +79,7 @@ export const AuthorSuggestInput: React.FC<AuthorSuggestInputProps> = ({
               }}
               className={cn(
                 'w-full text-left px-4 py-2.5 text-xs font-medium text-ceci-primary',
-                'hover:bg-surface-muted transition-colors cursor-pointer'
+                'hover:bg-surface-muted transition-colors cursor-pointer',
               )}
             >
               {name}

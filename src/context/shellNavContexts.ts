@@ -56,31 +56,40 @@ export const NavValueContext = createContext<NavigationValue | undefined>(undefi
 
 export function useCoursesActions(): CoursesBundle {
   const ctx = useContext(CoursesActionsContext);
-  if (!ctx) throw new Error('useCoursesActions must be used within a shell provider (CoursesActionsContext)');
+  if (!ctx)
+    throw new Error(
+      'useCoursesActions must be used within a shell provider (CoursesActionsContext)',
+    );
   return ctx;
 }
 
 export function useStudyActions(): StudyBundle {
   const ctx = useContext(StudyActionsContext);
-  if (!ctx) throw new Error('useStudyActions must be used within a shell provider (StudyActionsContext)');
+  if (!ctx)
+    throw new Error('useStudyActions must be used within a shell provider (StudyActionsContext)');
   return ctx;
 }
 
 export function useKnowledgeActions(): KnowledgeBundle {
   const ctx = useContext(KnowledgeActionsContext);
-  if (!ctx) throw new Error('useKnowledgeActions must be used within a shell provider (KnowledgeActionsContext)');
+  if (!ctx)
+    throw new Error(
+      'useKnowledgeActions must be used within a shell provider (KnowledgeActionsContext)',
+    );
   return ctx;
 }
 
 export function useAppActions(): AppBundle {
   const ctx = useContext(AppActionsContext);
-  if (!ctx) throw new Error('useAppActions must be used within a shell provider (AppActionsContext)');
+  if (!ctx)
+    throw new Error('useAppActions must be used within a shell provider (AppActionsContext)');
   return ctx;
 }
 
 export function useTermActions(): TermBundle {
   const ctx = useContext(TermActionsContext);
-  if (!ctx) throw new Error('useTermActions must be used within a shell provider (TermActionsContext)');
+  if (!ctx)
+    throw new Error('useTermActions must be used within a shell provider (TermActionsContext)');
   return ctx;
 }
 

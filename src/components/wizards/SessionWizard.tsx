@@ -17,10 +17,17 @@ interface SessionValues {
 }
 
 export const SessionWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
-  const { courses, sessions, wizardCourseId, handleAddSession, handleUpdateSession, closeWizard, showToast } = useMobileApp();
-  const editingSession = editing?.kind === 'session'
-    ? sessions.find((s) => s.id === editing.id)
-    : undefined;
+  const {
+    courses,
+    sessions,
+    wizardCourseId,
+    handleAddSession,
+    handleUpdateSession,
+    closeWizard,
+    showToast,
+  } = useMobileApp();
+  const editingSession =
+    editing?.kind === 'session' ? sessions.find((s) => s.id === editing.id) : undefined;
   const { values, patch, step, setStep } = useWizardForm<SessionValues>({
     initial: {
       topic: editingSession?.topic ?? '',

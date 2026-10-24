@@ -7,7 +7,11 @@ import {
   mergeCatalogWithProgress,
   type StickerState,
 } from '../stickers';
-import { STICKER_CATALOG, stickerConditionFor, stickerDefinitionFor } from '../../data/stickerCatalog';
+import {
+  STICKER_CATALOG,
+  stickerConditionFor,
+  stickerDefinitionFor,
+} from '../../data/stickerCatalog';
 import type { Sticker, StickerCondition } from '../../types';
 
 const baseState: StickerState = {
@@ -58,38 +62,56 @@ describe('isConditionMet', () => {
       isConditionMet(cond, {
         ...baseState,
         readings: [{ status: 'concluido', readPages: 100, totalPages: 100 }],
-      })
+      }),
     ).toBe(true);
     expect(
       isConditionMet(cond, {
         ...baseState,
         readings: [{ status: 'lendo', readPages: 100, totalPages: 100 }],
-      })
+      }),
     ).toBe(true);
     expect(
       isConditionMet(cond, {
         ...baseState,
         readings: [{ status: 'lendo', readPages: 40, totalPages: 100 }],
-      })
+      }),
     ).toBe(false);
   });
 
   it('profile-set: nome preenchido', () => {
     const cond: StickerCondition = { type: 'profile-set' };
     expect(isConditionMet(cond, baseState)).toBe(false);
-    expect(isConditionMet(cond, { ...baseState, profile: { ...baseState.profile, name: 'Ceci' } })).toBe(true);
-    expect(isConditionMet(cond, { ...baseState, profile: { ...baseState.profile, name: '   ' } })).toBe(false);
+    expect(
+      isConditionMet(cond, { ...baseState, profile: { ...baseState.profile, name: 'Ceci' } }),
+    ).toBe(true);
+    expect(
+      isConditionMet(cond, { ...baseState, profile: { ...baseState.profile, name: '   ' } }),
+    ).toBe(false);
   });
 
   it('flashcards-reviewed: soma as revisões', () => {
     const cond: StickerCondition = { type: 'flashcards-reviewed', min: 10 };
-    expect(isConditionMet(cond, { ...baseState, flashcards: [{ timesReviewed: 4 }, { timesReviewed: 6 }] })).toBe(true);
-    expect(isConditionMet(cond, { ...baseState, flashcards: [{ timesReviewed: 4 }, { timesReviewed: 5 }] })).toBe(false);
+    expect(
+      isConditionMet(cond, {
+        ...baseState,
+        flashcards: [{ timesReviewed: 4 }, { timesReviewed: 6 }],
+      }),
+    ).toBe(true);
+    expect(
+      isConditionMet(cond, {
+        ...baseState,
+        flashcards: [{ timesReviewed: 4 }, { timesReviewed: 5 }],
+      }),
+    ).toBe(false);
   });
 
   it('streak: compara com a ofensiva atual', () => {
-    expect(isConditionMet({ type: 'streak', min: 5 }, { ...baseState, currentStreak: 5 })).toBe(true);
-    expect(isConditionMet({ type: 'streak', min: 14 }, { ...baseState, currentStreak: 5 })).toBe(false);
+    expect(isConditionMet({ type: 'streak', min: 5 }, { ...baseState, currentStreak: 5 })).toBe(
+      true,
+    );
+    expect(isConditionMet({ type: 'streak', min: 14 }, { ...baseState, currentStreak: 5 })).toBe(
+      false,
+    );
   });
 
   it('degree-half: a partir da metade da graduação (lê termOrdinal, não profile.semester)', () => {
@@ -112,133 +134,371 @@ describe('isConditionMet', () => {
           { authorIds: ['aut-3'] },
           { authorIds: [] },
         ],
-      })
+      }),
     ).toBe(true);
   });
 
   it('tcc-done: concluído exige status E nenhum capítulo pendente (D4)', () => {
     expect(
-      isConditionMet({ type: 'tcc-done' }, { ...baseState, tcc: { status: 'concluido', title: '' }, thesisChapters: [{ stage: 'pronto' }] })
+      isConditionMet(
+        { type: 'tcc-done' },
+        {
+          ...baseState,
+          tcc: { status: 'concluido', title: '' },
+          thesisChapters: [{ stage: 'pronto' }],
+        },
+      ),
     ).toBe(true);
     // Capítulo pendente trava a conquista mesmo com status concluído.
     expect(
-      isConditionMet({ type: 'tcc-done' }, { ...baseState, tcc: { status: 'concluido', title: '' }, thesisChapters: [{ stage: 'escrevendo' }] })
+      isConditionMet(
+        { type: 'tcc-done' },
+        {
+          ...baseState,
+          tcc: { status: 'concluido', title: '' },
+          thesisChapters: [{ stage: 'escrevendo' }],
+        },
+      ),
     ).toBe(false);
     expect(
-      isConditionMet({ type: 'tcc-done' }, { ...baseState, tcc: { status: 'revisao', title: '' } })
+      isConditionMet({ type: 'tcc-done' }, { ...baseState, tcc: { status: 'revisao', title: '' } }),
     ).toBe(false);
   });
 
   it('limiares simples (sessions, class-notes, pages-read, tasks-done, saved-books, internship-first)', () => {
-    expect(isConditionMet({ type: 'sessions', min: 5 }, { ...baseState, sessions: [{ durationMinutes: 1 }, { durationMinutes: 2 }, { durationMinutes: 3 }, { durationMinutes: 4 }, { durationMinutes: 5 }] })).toBe(true);
-    expect(isConditionMet({ type: 'class-notes', min: 10 }, { ...baseState, classes: new Array(9) })).toBe(false);
     expect(
-      isConditionMet({ type: 'pages-read', min: 500 }, { ...baseState, readings: [{ readPages: 300 }, { readPages: 250 }] })
+      isConditionMet(
+        { type: 'sessions', min: 5 },
+        {
+          ...baseState,
+          sessions: [
+            { durationMinutes: 1 },
+            { durationMinutes: 2 },
+            { durationMinutes: 3 },
+            { durationMinutes: 4 },
+            { durationMinutes: 5 },
+          ],
+        },
+      ),
     ).toBe(true);
     expect(
-      isConditionMet({ type: 'tasks-done', min: 15 }, { ...baseState, tasks: new Array(14).fill({ completed: true }) })
+      isConditionMet({ type: 'class-notes', min: 10 }, { ...baseState, classes: new Array(9) }),
     ).toBe(false);
-    expect(isConditionMet({ type: 'saved-books', min: 5 }, { ...baseState, savedBookIds: ['a', 'b', 'c', 'd', 'e'] })).toBe(true);
-    expect(isConditionMet({ type: 'internship-first' }, { ...baseState, internshipLogs: [{}] })).toBe(true);
+    expect(
+      isConditionMet(
+        { type: 'pages-read', min: 500 },
+        { ...baseState, readings: [{ readPages: 300 }, { readPages: 250 }] },
+      ),
+    ).toBe(true);
+    expect(
+      isConditionMet(
+        { type: 'tasks-done', min: 15 },
+        { ...baseState, tasks: new Array(14).fill({ completed: true }) },
+      ),
+    ).toBe(false);
+    expect(
+      isConditionMet(
+        { type: 'saved-books', min: 5 },
+        { ...baseState, savedBookIds: ['a', 'b', 'c', 'd', 'e'] },
+      ),
+    ).toBe(true);
+    expect(
+      isConditionMet({ type: 'internship-first' }, { ...baseState, internshipLogs: [{}] }),
+    ).toBe(true);
   });
 
   it('streak-week e streak-month usam condition.min (sem hardcode)', () => {
-    expect(isConditionMet({ type: 'streak-week', min: 5 }, { ...baseState, streakTotal: 5 })).toBe(true);
-    expect(isConditionMet({ type: 'streak-week', min: 5 }, { ...baseState, streakTotal: 4 })).toBe(false);
-    expect(isConditionMet({ type: 'streak-month', min: 15 }, { ...baseState, streakTotal: 15 })).toBe(true);
-    expect(isConditionMet({ type: 'streak-month', min: 15 }, { ...baseState, streakTotal: 10 })).toBe(false);
+    expect(isConditionMet({ type: 'streak-week', min: 5 }, { ...baseState, streakTotal: 5 })).toBe(
+      true,
+    );
+    expect(isConditionMet({ type: 'streak-week', min: 5 }, { ...baseState, streakTotal: 4 })).toBe(
+      false,
+    );
+    expect(
+      isConditionMet({ type: 'streak-month', min: 15 }, { ...baseState, streakTotal: 15 }),
+    ).toBe(true);
+    expect(
+      isConditionMet({ type: 'streak-month', min: 15 }, { ...baseState, streakTotal: 10 }),
+    ).toBe(false);
   });
 
   it('flashcard-streak: 14 cartões distintos revisados', () => {
-    expect(isConditionMet({ type: 'flashcard-streak' }, { ...baseState, flashcards: Array(14).fill({ timesReviewed: 1 }) })).toBe(true);
-    expect(isConditionMet({ type: 'flashcard-streak' }, { ...baseState, flashcards: Array(13).fill({ timesReviewed: 1 }) })).toBe(false);
+    expect(
+      isConditionMet(
+        { type: 'flashcard-streak' },
+        { ...baseState, flashcards: Array(14).fill({ timesReviewed: 1 }) },
+      ),
+    ).toBe(true);
+    expect(
+      isConditionMet(
+        { type: 'flashcard-streak' },
+        { ...baseState, flashcards: Array(13).fill({ timesReviewed: 1 }) },
+      ),
+    ).toBe(false);
   });
 
   it('questions-created: IDs únicos respondidos via quizSessions', () => {
     const cond: StickerCondition = { type: 'questions-created', min: 5 };
-    expect(isConditionMet(cond, { ...baseState, quizSessions: [quizSession([{ questionId: 'q1', correct: true }])] })).toBe(false);
+    expect(
+      isConditionMet(cond, {
+        ...baseState,
+        quizSessions: [quizSession([{ questionId: 'q1', correct: true }])],
+      }),
+    ).toBe(false);
     expect(
       isConditionMet(cond, {
         ...baseState,
         quizSessions: [
-          quizSession([{ questionId: 'q1', correct: true }, { questionId: 'q2', correct: false }]),
-          quizSession([{ questionId: 'q3', correct: true }, { questionId: 'q4', correct: false }]),
+          quizSession([
+            { questionId: 'q1', correct: true },
+            { questionId: 'q2', correct: false },
+          ]),
+          quizSession([
+            { questionId: 'q3', correct: true },
+            { questionId: 'q4', correct: false },
+          ]),
           quizSession([{ questionId: 'q5', correct: true }]),
         ],
-      })
+      }),
     ).toBe(true);
     // repetições da mesma questão não contam duas vezes
     expect(
       isConditionMet(cond, {
         ...baseState,
         quizSessions: [
-          quizSession([{ questionId: 'q1', correct: true }, { questionId: 'q1', correct: false }]),
-          quizSession([{ questionId: 'q2', correct: true }, { questionId: 'q3', correct: true }]),
-          quizSession([{ questionId: 'q4', correct: true }, { questionId: 'q5', correct: true }]),
+          quizSession([
+            { questionId: 'q1', correct: true },
+            { questionId: 'q1', correct: false },
+          ]),
+          quizSession([
+            { questionId: 'q2', correct: true },
+            { questionId: 'q3', correct: true },
+          ]),
+          quizSession([
+            { questionId: 'q4', correct: true },
+            { questionId: 'q5', correct: true },
+          ]),
         ],
-      })
+      }),
     ).toBe(true);
   });
 
   it('questions-mastered: IDs únicos acertados via quizSessions', () => {
     const cond: StickerCondition = { type: 'questions-mastered', min: 50 };
     expect(isConditionMet(cond, baseState)).toBe(false);
-    const answers50 = Array.from({ length: 50 }, (_, i) => ({ questionId: `q${i + 1}`, correct: true }));
-    expect(isConditionMet(cond, { ...baseState, quizSessions: [quizSession(answers50)] })).toBe(true);
-    const answers49 = Array.from({ length: 49 }, (_, i) => ({ questionId: `q${i + 1}`, correct: true }));
-    expect(isConditionMet(cond, { ...baseState, quizSessions: [quizSession(answers49)] })).toBe(false);
+    const answers50 = Array.from({ length: 50 }, (_, i) => ({
+      questionId: `q${i + 1}`,
+      correct: true,
+    }));
+    expect(isConditionMet(cond, { ...baseState, quizSessions: [quizSession(answers50)] })).toBe(
+      true,
+    );
+    const answers49 = Array.from({ length: 49 }, (_, i) => ({
+      questionId: `q${i + 1}`,
+      correct: true,
+    }));
+    expect(isConditionMet(cond, { ...baseState, quizSessions: [quizSession(answers49)] })).toBe(
+      false,
+    );
   });
 
   it('techniques-explored usa condition.min', () => {
-    expect(isConditionMet({ type: 'techniques-explored', min: 5 }, { ...baseState, techniques: Array(5).fill({}) })).toBe(true);
-    expect(isConditionMet({ type: 'techniques-explored', min: 5 }, { ...baseState, techniques: Array(4).fill({}) })).toBe(false);
+    expect(
+      isConditionMet(
+        { type: 'techniques-explored', min: 5 },
+        { ...baseState, techniques: Array(5).fill({}) },
+      ),
+    ).toBe(true);
+    expect(
+      isConditionMet(
+        { type: 'techniques-explored', min: 5 },
+        { ...baseState, techniques: Array(4).fill({}) },
+      ),
+    ).toBe(false);
   });
 
   it('condições de faculdade (exams/courses/concepts/authors/materials/tasks)', () => {
-    expect(isConditionMet({ type: 'exams-added', min: 1 }, { ...baseState, exams: [{ completed: false }] })).toBe(true);
-    expect(isConditionMet({ type: 'exams-done', min: 3 }, { ...baseState, exams: [{ completed: true }, { completed: true }, { completed: false }] })).toBe(false);
-    expect(isConditionMet({ type: 'exams-done', min: 3 }, { ...baseState, exams: [{ completed: true }, { completed: true }, { completed: true }] })).toBe(true);
-    expect(isConditionMet({ type: 'concepts-known', min: 10 }, { ...baseState, concepts: new Array(9) })).toBe(false);
-    expect(isConditionMet({ type: 'concepts-known', min: 10 }, { ...baseState, concepts: new Array(10) })).toBe(true);
-    expect(isConditionMet({ type: 'authors-known', min: 5 }, { ...baseState, authors: new Array(5) })).toBe(true);
-    expect(isConditionMet({ type: 'materials-added', min: 5 }, { ...baseState, materials: new Array(4) })).toBe(false);
-    expect(isConditionMet({ type: 'courses', min: 3 }, { ...baseState, courses: new Array(3) })).toBe(true);
+    expect(
+      isConditionMet(
+        { type: 'exams-added', min: 1 },
+        { ...baseState, exams: [{ completed: false }] },
+      ),
+    ).toBe(true);
+    expect(
+      isConditionMet(
+        { type: 'exams-done', min: 3 },
+        { ...baseState, exams: [{ completed: true }, { completed: true }, { completed: false }] },
+      ),
+    ).toBe(false);
+    expect(
+      isConditionMet(
+        { type: 'exams-done', min: 3 },
+        { ...baseState, exams: [{ completed: true }, { completed: true }, { completed: true }] },
+      ),
+    ).toBe(true);
+    expect(
+      isConditionMet({ type: 'concepts-known', min: 10 }, { ...baseState, concepts: new Array(9) }),
+    ).toBe(false);
+    expect(
+      isConditionMet(
+        { type: 'concepts-known', min: 10 },
+        { ...baseState, concepts: new Array(10) },
+      ),
+    ).toBe(true);
+    expect(
+      isConditionMet({ type: 'authors-known', min: 5 }, { ...baseState, authors: new Array(5) }),
+    ).toBe(true);
+    expect(
+      isConditionMet(
+        { type: 'materials-added', min: 5 },
+        { ...baseState, materials: new Array(4) },
+      ),
+    ).toBe(false);
+    expect(
+      isConditionMet({ type: 'courses', min: 3 }, { ...baseState, courses: new Array(3) }),
+    ).toBe(true);
   });
 
   it('condições de estudo (flashcards-count/techniques-used/study-minutes/streak-total)', () => {
-    expect(isConditionMet({ type: 'flashcards-count', min: 10 }, { ...baseState, flashcards: new Array(10) })).toBe(true);
-    expect(isConditionMet({ type: 'techniques-used', min: 3 }, { ...baseState, techniques: new Array(3) })).toBe(true);
-    expect(isConditionMet({ type: 'study-minutes', min: 120 }, { ...baseState, sessions: [{ durationMinutes: 60 }, { durationMinutes: 60 }] })).toBe(true);
-    expect(isConditionMet({ type: 'study-minutes', min: 120 }, { ...baseState, sessions: [{ durationMinutes: 60 }, { durationMinutes: 30 }] })).toBe(false);
-    expect(isConditionMet({ type: 'streak-total', min: 15 }, { ...baseState, streakTotal: 15 })).toBe(true);
-    expect(isConditionMet({ type: 'streak-total', min: 15 }, { ...baseState, streakTotal: 14 })).toBe(false);
+    expect(
+      isConditionMet(
+        { type: 'flashcards-count', min: 10 },
+        { ...baseState, flashcards: new Array(10) },
+      ),
+    ).toBe(true);
+    expect(
+      isConditionMet(
+        { type: 'techniques-used', min: 3 },
+        { ...baseState, techniques: new Array(3) },
+      ),
+    ).toBe(true);
+    expect(
+      isConditionMet(
+        { type: 'study-minutes', min: 120 },
+        { ...baseState, sessions: [{ durationMinutes: 60 }, { durationMinutes: 60 }] },
+      ),
+    ).toBe(true);
+    expect(
+      isConditionMet(
+        { type: 'study-minutes', min: 120 },
+        { ...baseState, sessions: [{ durationMinutes: 60 }, { durationMinutes: 30 }] },
+      ),
+    ).toBe(false);
+    expect(
+      isConditionMet({ type: 'streak-total', min: 15 }, { ...baseState, streakTotal: 15 }),
+    ).toBe(true);
+    expect(
+      isConditionMet({ type: 'streak-total', min: 15 }, { ...baseState, streakTotal: 14 }),
+    ).toBe(false);
   });
 
   it('condições de leitura (reading-count/reading-in-progress/loose-notes)', () => {
-    expect(isConditionMet({ type: 'reading-count', min: 5 }, { ...baseState, readings: new Array(4) })).toBe(false);
-    expect(isConditionMet({ type: 'reading-count', min: 5 }, { ...baseState, readings: new Array(5) })).toBe(true);
-    expect(isConditionMet({ type: 'reading-in-progress', min: 1 }, { ...baseState, readings: [{ status: 'nao_iniciado' }] })).toBe(false);
-    expect(isConditionMet({ type: 'reading-in-progress', min: 1 }, { ...baseState, readings: [{ status: 'lendo' }] })).toBe(true);
-    expect(isConditionMet({ type: 'loose-notes', min: 5 }, { ...baseState, looseNotes: new Array(5) })).toBe(true);
+    expect(
+      isConditionMet({ type: 'reading-count', min: 5 }, { ...baseState, readings: new Array(4) }),
+    ).toBe(false);
+    expect(
+      isConditionMet({ type: 'reading-count', min: 5 }, { ...baseState, readings: new Array(5) }),
+    ).toBe(true);
+    expect(
+      isConditionMet(
+        { type: 'reading-in-progress', min: 1 },
+        { ...baseState, readings: [{ status: 'nao_iniciado' }] },
+      ),
+    ).toBe(false);
+    expect(
+      isConditionMet(
+        { type: 'reading-in-progress', min: 1 },
+        { ...baseState, readings: [{ status: 'lendo' }] },
+      ),
+    ).toBe(true);
+    expect(
+      isConditionMet({ type: 'loose-notes', min: 5 }, { ...baseState, looseNotes: new Array(5) }),
+    ).toBe(true);
   });
 
   it('condições de jornada (internship-hours/logs, tcc, semestre, streak-longest, graduation)', () => {
-    expect(isConditionMet({ type: 'internship-hours', min: 1 }, { ...baseState, internshipLogs: [{ hours: 1 }] })).toBe(true);
-    expect(isConditionMet({ type: 'internship-hours', min: 10 }, { ...baseState, internshipLogs: [{ hours: 6 }, { hours: 4 }] })).toBe(true);
-    expect(isConditionMet({ type: 'internship-logs', min: 3 }, { ...baseState, internshipLogs: new Array(3) })).toBe(true);
-    expect(isConditionMet({ type: 'tcc-created' }, { ...baseState, tcc: { status: 'em_andamento', title: '' } })).toBe(false);
-    expect(isConditionMet({ type: 'tcc-created' }, { ...baseState, tcc: { status: 'em_andamento', title: 'meu tcc' } })).toBe(true);
-    expect(isConditionMet({ type: 'tcc-chapters-done', min: 1 }, { ...baseState, thesisChapters: [{ stage: 'a_fazer' }] })).toBe(false);
-    expect(isConditionMet({ type: 'tcc-chapters-done', min: 1 }, { ...baseState, thesisChapters: [{ stage: 'pronto' }] })).toBe(true);
+    expect(
+      isConditionMet(
+        { type: 'internship-hours', min: 1 },
+        { ...baseState, internshipLogs: [{ hours: 1 }] },
+      ),
+    ).toBe(true);
+    expect(
+      isConditionMet(
+        { type: 'internship-hours', min: 10 },
+        { ...baseState, internshipLogs: [{ hours: 6 }, { hours: 4 }] },
+      ),
+    ).toBe(true);
+    expect(
+      isConditionMet(
+        { type: 'internship-logs', min: 3 },
+        { ...baseState, internshipLogs: new Array(3) },
+      ),
+    ).toBe(true);
+    expect(
+      isConditionMet(
+        { type: 'tcc-created' },
+        { ...baseState, tcc: { status: 'em_andamento', title: '' } },
+      ),
+    ).toBe(false);
+    expect(
+      isConditionMet(
+        { type: 'tcc-created' },
+        { ...baseState, tcc: { status: 'em_andamento', title: 'meu tcc' } },
+      ),
+    ).toBe(true);
+    expect(
+      isConditionMet(
+        { type: 'tcc-chapters-done', min: 1 },
+        { ...baseState, thesisChapters: [{ stage: 'a_fazer' }] },
+      ),
+    ).toBe(false);
+    expect(
+      isConditionMet(
+        { type: 'tcc-chapters-done', min: 1 },
+        { ...baseState, thesisChapters: [{ stage: 'pronto' }] },
+      ),
+    ).toBe(true);
     // SPEC-012: condições novas (coleções de reunião, escrita e citação).
-    expect(isConditionMet({ type: 'thesis-words', min: 1000 }, { ...baseState, thesisWritingLogs: [{ words: 600 }, { words: 500 }] })).toBe(true);
-    expect(isConditionMet({ type: 'thesis-meetings', min: 2 }, { ...baseState, thesisMeetings: [{ status: 'realizada' }, { status: 'agendada' }] })).toBe(false);
-    expect(isConditionMet({ type: 'thesis-meetings', min: 2 }, { ...baseState, thesisMeetings: [{ status: 'realizada' }, { status: 'realizada' }] })).toBe(true);
-    expect(isConditionMet({ type: 'thesis-refs-cited', min: 1 }, { ...baseState, thesisReferences: [{ status: 'candidata' }] })).toBe(false);
-    expect(isConditionMet({ type: 'thesis-refs-cited', min: 1 }, { ...baseState, thesisReferences: [{ status: 'citada' }] })).toBe(true);
-    expect(isConditionMet({ type: 'penultimate-semester' }, { ...baseState, termOrdinal: 7 })).toBe(true);
-    expect(isConditionMet({ type: 'penultimate-semester' }, { ...baseState, termOrdinal: 6 })).toBe(false);
-    expect(isConditionMet({ type: 'streak-longest', min: 21 }, { ...baseState, streakLongest: 21 })).toBe(true);
+    expect(
+      isConditionMet(
+        { type: 'thesis-words', min: 1000 },
+        { ...baseState, thesisWritingLogs: [{ words: 600 }, { words: 500 }] },
+      ),
+    ).toBe(true);
+    expect(
+      isConditionMet(
+        { type: 'thesis-meetings', min: 2 },
+        { ...baseState, thesisMeetings: [{ status: 'realizada' }, { status: 'agendada' }] },
+      ),
+    ).toBe(false);
+    expect(
+      isConditionMet(
+        { type: 'thesis-meetings', min: 2 },
+        { ...baseState, thesisMeetings: [{ status: 'realizada' }, { status: 'realizada' }] },
+      ),
+    ).toBe(true);
+    expect(
+      isConditionMet(
+        { type: 'thesis-refs-cited', min: 1 },
+        { ...baseState, thesisReferences: [{ status: 'candidata' }] },
+      ),
+    ).toBe(false);
+    expect(
+      isConditionMet(
+        { type: 'thesis-refs-cited', min: 1 },
+        { ...baseState, thesisReferences: [{ status: 'citada' }] },
+      ),
+    ).toBe(true);
+    expect(isConditionMet({ type: 'penultimate-semester' }, { ...baseState, termOrdinal: 7 })).toBe(
+      true,
+    );
+    expect(isConditionMet({ type: 'penultimate-semester' }, { ...baseState, termOrdinal: 6 })).toBe(
+      false,
+    );
+    expect(
+      isConditionMet({ type: 'streak-longest', min: 21 }, { ...baseState, streakLongest: 21 }),
+    ).toBe(true);
     expect(isConditionMet({ type: 'graduation' }, { ...baseState, termOrdinal: 8 })).toBe(true);
     expect(isConditionMet({ type: 'graduation' }, { ...baseState, termOrdinal: 7 })).toBe(false);
   });
@@ -274,8 +534,14 @@ describe('currentValueFor', () => {
       internshipLogs: [{ hours: 5 }, { hours: 3 }],
       looseNotes: new Array(2),
       quizSessions: [
-        quizSession([{ questionId: 'q1', correct: true }, { questionId: 'q2', correct: false }]),
-        quizSession([{ questionId: 'q1', correct: false }, { questionId: 'q3', correct: true }]),
+        quizSession([
+          { questionId: 'q1', correct: true },
+          { questionId: 'q2', correct: false },
+        ]),
+        quizSession([
+          { questionId: 'q1', correct: false },
+          { questionId: 'q3', correct: true },
+        ]),
       ],
     };
 
@@ -352,13 +618,17 @@ describe('mergeCatalogWithProgress', () => {
 describe('applyStickerUnlocks', () => {
   it('desbloqueia conquistas conforme o estado e marca a data', () => {
     const stickers = makeStickers();
-    const { updated, newlyUnlocked } = applyStickerUnlocks(stickers, {
-      ...baseState,
-      internshipLogs: [{}],
-      currentStreak: 7,
-      tcc: { status: 'concluido', title: '' },
-      thesisChapters: [{ stage: 'pronto' }],
-    }, '2026-08-15');
+    const { updated, newlyUnlocked } = applyStickerUnlocks(
+      stickers,
+      {
+        ...baseState,
+        internshipLogs: [{}],
+        currentStreak: 7,
+        tcc: { status: 'concluido', title: '' },
+        thesisChapters: [{ stage: 'pronto' }],
+      },
+      '2026-08-15',
+    );
 
     expect(updated.find((s) => s.id === 'st-4')?.unlocked).toBe(true);
     expect(updated.find((s) => s.id === 'st-4')?.unlockedAt).toBe('2026-08-15');
@@ -449,8 +719,20 @@ describe('catálogo (T2.1)', () => {
     // Três entradas de estágio redundantes cederam lugar às condições do TCC,
     // preservando 80/20 e a curva de raridade (SPEC-012 F5.4).
     const porCondicao = (type: string) => STICKER_CATALOG.find((d) => d.condition.type === type);
-    expect(porCondicao('thesis-words')).toMatchObject({ id: 'st-36b', category: 'jornada', rarity: 'broto' });
-    expect(porCondicao('thesis-meetings')).toMatchObject({ id: 'st-37d', category: 'jornada', rarity: 'raiz' });
-    expect(porCondicao('thesis-refs-cited')).toMatchObject({ id: 'st-37e', category: 'jornada', rarity: 'copa' });
+    expect(porCondicao('thesis-words')).toMatchObject({
+      id: 'st-36b',
+      category: 'jornada',
+      rarity: 'broto',
+    });
+    expect(porCondicao('thesis-meetings')).toMatchObject({
+      id: 'st-37d',
+      category: 'jornada',
+      rarity: 'raiz',
+    });
+    expect(porCondicao('thesis-refs-cited')).toMatchObject({
+      id: 'st-37e',
+      category: 'jornada',
+      rarity: 'copa',
+    });
   });
 });

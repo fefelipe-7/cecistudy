@@ -57,7 +57,9 @@ export const InternshipCaseCard: React.FC<{
               {patientLabel}
             </span>
             {latestAge && (
-              <span className="text-[10px] text-ceci-secondary whitespace-nowrap">{latestAge} anos</span>
+              <span className="text-[10px] text-ceci-secondary whitespace-nowrap">
+                {latestAge} anos
+              </span>
             )}
             {latestApproach && (
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-surface-blue border border-ceci-border-academic text-ceci-academic-strong whitespace-nowrap">

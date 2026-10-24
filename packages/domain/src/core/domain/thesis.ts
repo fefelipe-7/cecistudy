@@ -202,14 +202,27 @@ export interface ThesisDeadline {
   overdue: boolean;
 }
 
-export const nextThesisDeadline = (
-  thesis: ThesisProject,
-  chapters: ThesisChapter[],
-  tasks: ThesisTask[],
-  meetings: ThesisMeeting[],
-  today: DateKey,
-): ThesisDeadline | null => {
+export interface ThesisDeadlineState {
+  thesis: ThesisProject;
+  chapters: ThesisChapter[];
+  tasks: ThesisTask[];
+  meetings: ThesisMeeting[];
+}
+
+/**
+ * Prazos do TCC até `to`, ordenados por data (`SPEC-024 D9`). `from` é a
+ * referência de "atrasado": prazo que já passou **entra** na lista — esconder
+ * o atrasado é justamente o que a tela não pode fazer.
+ */
+export const thesisDeadlines = (
+  state: ThesisDeadlineState,
+  from: DateKey,
+  to: DateKey,
+): ThesisDeadline[] => {
+  const { thesis, chapters, tasks, meetings } = state;
   const candidates: ThesisDeadline[] = [];
+  const today = dateKeyOrdinal(from);
+  const limit = dateKeyOrdinal(to);
 
   for (const ch of chapters) {
     if (ch.dueDate && !isChapterDone(ch)) {
@@ -218,7 +231,7 @@ export const nextThesisDeadline = (
         entityId: ch.id,
         title: ch.title,
         date: ch.dueDate,
-        overdue: dateKeyOrdinal(ch.dueDate) < dateKeyOrdinal(today),
+        overdue: dateKeyOrdinal(ch.dueDate) < today,
       });
     }
   }
@@ -230,7 +243,7 @@ export const nextThesisDeadline = (
         entityId: task.id,
         title: task.title,
         date: task.dueDate,
-        overdue: dateKeyOrdinal(task.dueDate) < dateKeyOrdinal(today),
+        overdue: dateKeyOrdinal(task.dueDate) < today,
       });
     }
   }
@@ -242,7 +255,7 @@ export const nextThesisDeadline = (
         entityId: meeting.id,
         title: 'reunião com orientação',
         date: meeting.date,
-        overdue: dateKeyOrdinal(meeting.date) < dateKeyOrdinal(today),
+        overdue: dateKeyOrdinal(meeting.date) < today,
       });
     }
   }
@@ -253,7 +266,7 @@ export const nextThesisDeadline = (
       entityId: 'delivery',
       title: 'entrega final',
       date: thesis.deliveryDate,
-      overdue: dateKeyOrdinal(thesis.deliveryDate) < dateKeyOrdinal(today),
+      overdue: dateKeyOrdinal(thesis.deliveryDate) < today,
     });
   }
 
@@ -263,15 +276,59 @@ export const nextThesisDeadline = (
       entityId: 'defense',
       title: 'banca',
       date: thesis.defenseDate,
-      overdue: dateKeyOrdinal(thesis.defenseDate) < dateKeyOrdinal(today),
+      overdue: dateKeyOrdinal(thesis.defenseDate) < today,
     });
   }
 
-  if (candidates.length === 0) return null;
-
-  candidates.sort((a, b) => dateKeyOrdinal(a.date) - dateKeyOrdinal(b.date));
-  return candidates[0];
+  return candidates
+    .filter((c) => dateKeyOrdinal(c.date) <= limit)
+    .sort((a, b) => dateKeyOrdinal(a.date) - dateKeyOrdinal(b.date));
 };
+
+export type ThesisPace = 'no_ritmo' | 'apertado' | 'nao_da';
+
+/**
+ * Ritmo de escrita contra a entrega (`SPEC-024 D11`) — informa, nunca cobra.
+ * Sem entrega ou sem log devolve `null`: a tela não estima a partir de zero.
+ */
+export const thesisPace = (
+  state: ThesisDeadlineState & { logs: ThesisWritingLog[] },
+  today: DateKey,
+): ThesisPace | null => {
+  const { thesis, chapters, logs } = state;
+  if (!thesis.deliveryDate || logs.length === 0) return null;
+
+  const weeksLeft = (dateKeyOrdinal(thesis.deliveryDate) - dateKeyOrdinal(today)) / 7;
+  if (weeksLeft <= 0) return 'nao_da';
+
+  const remaining = chapters
+    .filter((ch) => !isChapterDone(ch))
+    .reduce((sum, ch) => sum + (ch.wordGoal ?? ch.wordCount ?? 0), 0);
+  if (remaining === 0) return 'no_ritmo';
+
+  const since = dateKeyOrdinal(addDays(today, -28));
+  const recent = logs
+    .filter(
+      (log) =>
+        dateKeyOrdinal(log.date) > since && dateKeyOrdinal(log.date) <= dateKeyOrdinal(today),
+    )
+    .reduce((sum, log) => sum + log.words, 0);
+
+  const needed = remaining / weeksLeft;
+  const rate = recent / 4;
+  if (rate >= needed) return 'no_ritmo';
+  return rate * 2 >= needed ? 'apertado' : 'nao_da';
+};
+
+/** O próximo prazo é o primeiro item da lista (`SPEC-024 D9`, I5). */
+export const nextThesisDeadline = (
+  thesis: ThesisProject,
+  chapters: ThesisChapter[],
+  tasks: ThesisTask[],
+  meetings: ThesisMeeting[],
+  today: DateKey,
+): ThesisDeadline | null =>
+  thesisDeadlines({ thesis, chapters, tasks, meetings }, today, '9999-12-31')[0] ?? null;
 
 export const weekWords = (logs: ThesisWritingLog[], weekStart: DateKey): number =>
   logs
@@ -350,7 +407,9 @@ export const orderChaptersForRender = (chapters: ThesisChapter[]): ThesisChapter
   const out: ThesisChapter[] = [];
   for (const ch of topLevel) {
     out.push(ch);
-    const kids = chapters.filter((k) => k.parentId === ch.id).sort((a, b) => a.position - b.position);
+    const kids = chapters
+      .filter((k) => k.parentId === ch.id)
+      .sort((a, b) => a.position - b.position);
     out.push(...kids);
   }
   const known = new Set(out.map((ch) => ch.id));
@@ -388,7 +447,11 @@ export const commitFlatOrder = (
 };
 
 /** "Mover para cima/baixo" de um capítulo entre os irmãos (o caminho acessível do arrastar). */
-export const moveChapter = (chapters: ThesisChapter[], id: EntityId, delta: -1 | 1): ThesisChapter[] => {
+export const moveChapter = (
+  chapters: ThesisChapter[],
+  id: EntityId,
+  delta: -1 | 1,
+): ThesisChapter[] => {
   const ch = chapters.find((c) => c.id === id);
   if (!ch) return chapters;
   const siblings = chapters
@@ -544,9 +607,7 @@ export const planThesisReminders = (
       for (const mins of prefs.meetingMinutesBefore) {
         const { hour, minute } = parseHHMM(meeting.time);
         push(
-          new Date(
-            at(meeting.date, '00:00').getTime() + (hour * 60 + minute - mins) * 60_000,
-          ),
+          new Date(at(meeting.date, '00:00').getTime() + (hour * 60 + minute - mins) * 60_000),
           { kind: 'reuniao', referencia: orientador, dias: 0, hora: meeting.time },
           'orientacao',
           meeting.id,
@@ -573,7 +634,9 @@ export const planThesisReminders = (
   }
 
   out.sort((a, b) => a.at.getTime() - b.at.getTime());
-  return out.slice(0, THESIS_REMINDER_CEILING).map((r, i) => ({ ...r, id: THESIS_REMINDER_BASE + i }));
+  return out
+    .slice(0, THESIS_REMINDER_CEILING)
+    .map((r, i) => ({ ...r, id: THESIS_REMINDER_BASE + i }));
 };
 
 /**
@@ -582,9 +645,25 @@ export const planThesisReminders = (
  * desconhecida idem, `focusId` de item removido cai na aba sem erro (o
  * `NavScreen` já tolera).
  */
-export const routeFromNotificationExtra = (extra: unknown): { tab: ThesisReminderTarget; focusId?: string } | null => {
+export const routeFromNotificationExtra = (
+  extra: unknown,
+): { tab: ThesisReminderTarget; focusId?: string } | null => {
   if (typeof extra !== 'object' || extra === null) return null;
-  const thesis = (extra as Record<string, unknown>).thesis;
+  const rec = extra as Record<string, unknown>;
+  // novo formato genérico (SPEC-M-025 D8)
+  if (typeof rec.family === 'string' && typeof rec.target === 'object' && rec.target !== null) {
+    const tab = (rec.target as Record<string, unknown>).tab;
+    const entityId = (rec.target as Record<string, unknown>).entityId;
+    if (tab === 'visao' || tab === 'capitulos' || tab === 'orientacao') {
+      return {
+        tab,
+        ...(typeof entityId === 'string' && entityId !== '' ? { focusId: entityId } : {}),
+      };
+    }
+    return null;
+  }
+  // formato legado TCC
+  const thesis = rec.thesis;
   if (typeof thesis !== 'object' || thesis === null) return null;
   const { tab, entityId } = thesis as Record<string, unknown>;
   if (tab !== 'visao' && tab !== 'capitulos' && tab !== 'orientacao') return null;
@@ -679,12 +758,7 @@ export const parseAuthorString = (raw: string): RefAuthor | null => {
  * nunca por adivinhação. */
 export const abntDataFromReading = (r: ReadingAbntSource): ThesisReferenceData => {
   const fromText = r.author ? parseAuthorString(r.author) : null;
-  const authors =
-    r.authors && r.authors.length > 0
-      ? r.authors
-      : fromText
-        ? [fromText]
-        : [];
+  const authors = r.authors && r.authors.length > 0 ? r.authors : fromText ? [fromText] : [];
   return {
     type: r.refType ?? READING_TYPE_TO_REF[r.type],
     authors,
@@ -712,7 +786,20 @@ export interface AbntSegment {
   bold?: boolean;
 }
 
-const MONTHS_SHORT = ['jan.', 'fev.', 'mar.', 'abr.', 'maio', 'jun.', 'jul.', 'ago.', 'set.', 'out.', 'nov.', 'dez.'];
+const MONTHS_SHORT = [
+  'jan.',
+  'fev.',
+  'mar.',
+  'abr.',
+  'maio',
+  'jun.',
+  'jul.',
+  'ago.',
+  'set.',
+  'out.',
+  'nov.',
+  'dez.',
+];
 
 const formatAccessedOn = (key: DateKey): string => {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(key);
@@ -743,7 +830,10 @@ const formatAuthors = (authors: RefAuthor[], listAll: boolean): string => {
  * - Sobrenome em caixa alta vem do campo `family` já separado — o formatador
  *   **não adivinha** preposição nem heurística de nome.
  */
-export const formatAbnt = (ref: ThesisReferenceData, opts: { listAllAuthors?: boolean } = {}): AbntSegment[] => {
+export const formatAbnt = (
+  ref: ThesisReferenceData,
+  opts: { listAllAuthors?: boolean } = {},
+): AbntSegment[] => {
   if (ref.rawCitation) return [{ text: ref.rawCitation }];
 
   const authors = formatAuthors(ref.authors, opts.listAllAuthors ?? false);

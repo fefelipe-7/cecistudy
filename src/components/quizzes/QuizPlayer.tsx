@@ -11,17 +11,18 @@ interface QuizPlayerProps {
   state: QuizPlayState;
   onAnswer: (answer: QuizAnswer) => void;
   onAdvance: () => void;
-  onFinish: (answers: QuizAnswer[], config: QuizConfig, startTime: number, correctCount: number, totalCount: number) => void;
+  onFinish: (
+    answers: QuizAnswer[],
+    config: QuizConfig,
+    startTime: number,
+    correctCount: number,
+    totalCount: number,
+  ) => void;
 }
 
 const OPTION_LETTERS = ['A', 'B', 'C', 'D', 'E'];
 
-export const QuizPlayer: React.FC<QuizPlayerProps> = ({
-  state,
-  onAnswer,
-  onAdvance,
-  onFinish,
-}) => {
+export const QuizPlayer: React.FC<QuizPlayerProps> = ({ state, onAnswer, onAdvance, onFinish }) => {
   const { pool, config, currentIdx, questionStartTime } = state;
   const current = pool[currentIdx];
   const progress = pool.length > 0 ? ((currentIdx + 1) / pool.length) * 100 : 0;
@@ -62,37 +63,40 @@ export const QuizPlayer: React.FC<QuizPlayerProps> = ({
   const opts = current?.options ?? [];
   const correctLetter = current?.gabarito ?? 'A';
 
-  const handleOptionClick = useCallback((letter: string) => {
-    // Guarda em ref (estável): `selectedOption`/`shownExplanation` em state
-    // criam closures stale no useCallback e descartam cliques da 2ª questão em diante.
-    if (answeredRef.current) return;
-    const isCorrect = letter === correctLetter;
-    const timeMs = Date.now() - questionStartTime;
+  const handleOptionClick = useCallback(
+    (letter: string) => {
+      // Guarda em ref (estável): `selectedOption`/`shownExplanation` em state
+      // criam closures stale no useCallback e descartam cliques da 2ª questão em diante.
+      if (answeredRef.current) return;
+      const isCorrect = letter === correctLetter;
+      const timeMs = Date.now() - questionStartTime;
 
-    answeredRef.current = true;
-    setSelectedOption(letter);
-    onAnswer({
-      questionId: current.id,
-      userAnswer: letter,
-      correct: isCorrect,
-      timeMs,
-      question: current,
-    });
+      answeredRef.current = true;
+      setSelectedOption(letter);
+      onAnswer({
+        questionId: current.id,
+        userAnswer: letter,
+        correct: isCorrect,
+        timeMs,
+        question: current,
+      });
 
-    // Mostra explicação após seleção
-    revealTimerRef.current = setTimeout(() => setShowExplanation(true), 300);
-  }, [current, correctLetter, onAnswer, questionStartTime]);
+      // Mostra explicação após seleção
+      revealTimerRef.current = setTimeout(() => setShowExplanation(true), 300);
+    },
+    [current, correctLetter, onAnswer, questionStartTime],
+  );
 
-const handleNext = useCallback(() => {
-  if (currentIdx + 1 < pool.length) {
-    // Avança para próxima questão
-    onAdvance();
-  } else {
-    // Finaliza quiz
-    const answers = state.answers;
-    const correctCount = answers.filter((a) => a.correct).length;
-    onFinish(answers, config, state.startTime, correctCount, pool.length);
-  }
+  const handleNext = useCallback(() => {
+    if (currentIdx + 1 < pool.length) {
+      // Avança para próxima questão
+      onAdvance();
+    } else {
+      // Finaliza quiz
+      const answers = state.answers;
+      const correctCount = answers.filter((a) => a.correct).length;
+      onFinish(answers, config, state.startTime, correctCount, pool.length);
+    }
   }, [currentIdx, pool.length, onAdvance, onFinish, state.answers]);
 
   // Para controle do parent - expõe callbacks
@@ -107,7 +111,10 @@ const handleNext = useCallback(() => {
       <div className="pt-4">
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5">
           {/* Barra de progresso linear — scaleX (transform-only, nunca reflows o layout) */}
-          <div data-testid="quiz-progress" className="mb-4 h-1.5 rounded-full bg-ceci-border-subtle overflow-hidden">
+          <div
+            data-testid="quiz-progress"
+            className="mb-4 h-1.5 rounded-full bg-ceci-border-subtle overflow-hidden"
+          >
             <motion.div
               className="h-full rounded-full bg-ceci-brand-strong"
               style={{ transformOrigin: 'left' }}
@@ -160,18 +167,20 @@ const handleNext = useCallback(() => {
                             ? isCorrect
                               ? 'bg-status-success-surface border-status-success-border text-status-success-strong'
                               : 'bg-status-danger-surface border-status-danger-border text-status-danger-strong'
-                            : 'bg-surface-default border-ceci-border-default hover:bg-surface-rose hover:border-ceci-border-brand active:scale-[0.99]'
+                            : 'bg-surface-default border-ceci-border-default hover:bg-surface-rose hover:border-ceci-border-brand active:scale-[0.99]',
                         )}
                       >
                         <div className="flex items-center gap-3">
-                          <span className={cn(
-                            'w-8 h-8 rounded-full border flex items-center justify-center font-bold flex-shrink-0',
-                            isSelected
-                              ? isCorrect
-                                ? 'bg-status-success border-status-success text-status-success-on'
-                                : 'bg-status-danger border-status-danger text-status-danger-on'
-                              : 'border-ceci-border-default text-ceci-secondary bg-surface-default'
-                          )}>
+                          <span
+                            className={cn(
+                              'w-8 h-8 rounded-full border flex items-center justify-center font-bold flex-shrink-0',
+                              isSelected
+                                ? isCorrect
+                                  ? 'bg-status-success border-status-success text-status-success-on'
+                                  : 'bg-status-danger border-status-danger text-status-danger-on'
+                                : 'border-ceci-border-default text-ceci-secondary bg-surface-default',
+                            )}
+                          >
                             {letter}
                           </span>
                           <span className="flex-1">{opt}</span>

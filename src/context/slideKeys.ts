@@ -75,6 +75,8 @@ export function slideBaseKeyOf(screen: NavScreen, base: NavScreen | undefined): 
       return 'internshipDiary';
     case 'tcc':
       return 'tcc';
+    case 'calendar':
+      return 'calendar';
     case 'stickers':
       return 'stickers';
     case 'sync':
@@ -162,7 +164,10 @@ export function slideTopOf(stack: readonly NavScreen[]): NavScreen {
  * - `classNote`/`repertorioItem`: sem key própria, o conteúdo não mudava mas a
  *   sub-tab do curso era perdida mesmo assim (B5).
  */
-export const slideLayerChanged = (prev: readonly NavScreen[], next: readonly NavScreen[]): boolean =>
+export const slideLayerChanged = (
+  prev: readonly NavScreen[],
+  next: readonly NavScreen[],
+): boolean =>
   slideBaseKeyOf(slideTopOf(next), next[0]) !== slideBaseKeyOf(slideTopOf(prev), prev[0]);
 
 const HOME_FALLBACK: NavScreen = { kind: 'tab', tab: 'home' };

@@ -48,7 +48,9 @@ const Label: React.FC<{ label: string; description?: ReactNode }> = ({ label, de
   <span className="flex-1 min-w-0">
     <span className="block font-display font-bold text-sm text-ceci-primary">{label}</span>
     {description ? (
-      <span className="block text-[11px] leading-tight text-ceci-secondary mt-0.5">{description}</span>
+      <span className="block text-[11px] leading-tight text-ceci-secondary mt-0.5">
+        {description}
+      </span>
     ) : null}
   </span>
 );
@@ -82,7 +84,12 @@ const PreferenceRow: React.FC<PreferenceRowProps> = ({
 
   if (onClick) {
     return (
-      <button type="button" onClick={onClick} aria-label={ariaLabel ?? label} className={cn(rowClass, 'text-left')}>
+      <button
+        type="button"
+        onClick={onClick}
+        aria-label={ariaLabel ?? label}
+        className={cn(rowClass, 'text-left')}
+      >
         {body}
       </button>
     );

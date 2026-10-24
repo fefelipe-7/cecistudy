@@ -1,0 +1,31 @@
+name: Ideia
+description: Uma funcionalidade ou mudança de comportamento
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problema
+    attributes:
+      label: Qual problema isso resolve
+      description: O que você não consegue fazer hoje, e em que momento.
+    validations:
+      required: true
+  - type: textarea
+    id: proposta
+    attributes:
+      label: Como você imagina
+  - type: textarea
+    id: alternativa
+    attributes:
+      label: O que já foi considerado e por que não serve
+  - type: dropdown
+    id: modulo
+    attributes:
+      label: Módulo
+      options:
+        - Faculdade
+        - Estudo (flashcards, quiz, foco, biblioteca)
+        - Estágio
+        - TCC
+        - Calendário
+        - Perfil e jornada
+        - Outro

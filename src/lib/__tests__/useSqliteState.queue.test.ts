@@ -13,7 +13,7 @@ import { useSqliteState } from '../useSqliteState';
 import { flushWriteQueue, resetWriteQueueForTests } from '../db/writeQueue';
 
 const KEY = 'tasks';
-const PREFIXED = `cecistudy_${KEY}`;
+const PREFIXED = `cecistudy_user_${KEY}`;
 
 beforeEach(() => {
   vi.useFakeTimers();

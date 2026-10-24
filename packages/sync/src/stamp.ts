@@ -125,7 +125,7 @@ export function applyStampChange(
   key: string,
   oldValue: unknown,
   newValue: unknown,
-  now: number
+  now: number,
 ): StampChangeResult {
   const stamps = { ...prev.stamps, [key]: now };
   let records = prev.records;
@@ -186,7 +186,7 @@ export function tombstoneTs(index: SyncIndex, key: string, id: string): number {
 export function mergeIndexes(a: SyncIndex, b: SyncIndex): SyncIndex {
   const maxMap = (
     x: Record<string, number> | undefined,
-    y: Record<string, number> | undefined
+    y: Record<string, number> | undefined,
   ): Record<string, number> => {
     const out: Record<string, number> = { ...(x ?? {}) };
     for (const [k, v] of Object.entries(y ?? {})) out[k] = Math.max(out[k] ?? 0, v);
@@ -196,13 +196,13 @@ export function mergeIndexes(a: SyncIndex, b: SyncIndex): SyncIndex {
     stamps: maxMap(a.stamps, b.stamps),
     records: Object.fromEntries(
       Array.from(new Set([...Object.keys(a.records ?? {}), ...Object.keys(b.records ?? {})])).map(
-        (k) => [k, maxMap(a.records?.[k], b.records?.[k])]
-      )
+        (k) => [k, maxMap(a.records?.[k], b.records?.[k])],
+      ),
     ),
     tombstones: Object.fromEntries(
-      Array.from(new Set([...Object.keys(a.tombstones ?? {}), ...Object.keys(b.tombstones ?? {})])).map(
-        (k) => [k, maxMap(a.tombstones?.[k], b.tombstones?.[k])]
-      )
+      Array.from(
+        new Set([...Object.keys(a.tombstones ?? {}), ...Object.keys(b.tombstones ?? {})]),
+      ).map((k) => [k, maxMap(a.tombstones?.[k], b.tombstones?.[k])]),
     ),
   };
 }

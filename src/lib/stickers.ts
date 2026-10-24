@@ -1,9 +1,5 @@
 import type { Sticker, StickerCondition } from '../types';
-import {
-  STICKER_CATALOG,
-  stickerConditionFor,
-  stickerFromCatalog,
-} from '../data/stickerCatalog';
+import { STICKER_CATALOG, stickerConditionFor, stickerFromCatalog } from '../data/stickerCatalog';
 
 /**
  * Lógica pura de desbloqueio de stickers (conquistas).
@@ -79,7 +75,9 @@ export function isConditionMet(condition: StickerCondition, state: StickerState)
       return state.readings.some(
         (r) =>
           r.status === 'concluido' ||
-          ((r.readPages ?? 0) > 0 && (r.totalPages ?? 0) > 0 && (r.readPages ?? 0) >= (r.totalPages ?? 0))
+          ((r.readPages ?? 0) > 0 &&
+            (r.totalPages ?? 0) > 0 &&
+            (r.readPages ?? 0) >= (r.totalPages ?? 0)),
       );
     case 'profile-set':
       return state.profile.name.trim().length > 0;
@@ -97,8 +95,7 @@ export function isConditionMet(condition: StickerCondition, state: StickerState)
       // D4 (SPEC-012): concluído exige status E nenhum capítulo pendente —
       // marcar "concluído" com capítulo em aberto não dispara a conquista.
       return (
-        state.tcc.status === 'concluido' &&
-        state.thesisChapters.every((c) => c.stage === 'pronto')
+        state.tcc.status === 'concluido' && state.thesisChapters.every((c) => c.stage === 'pronto')
       );
     case 'sessions':
       return state.sessions.length >= condition.min;
@@ -164,17 +161,11 @@ export function isConditionMet(condition: StickerCondition, state: StickerState)
       return state.thesisChapters.filter((c) => c.stage === 'pronto').length >= condition.min;
     // SPEC-012: as condições novas da F2.2 (uso real na F5, catálogo lá).
     case 'thesis-words':
-      return (
-        state.thesisWritingLogs.reduce((acc, l) => acc + (l.words ?? 0), 0) >= condition.min
-      );
+      return state.thesisWritingLogs.reduce((acc, l) => acc + (l.words ?? 0), 0) >= condition.min;
     case 'thesis-meetings':
-      return (
-        state.thesisMeetings.filter((m) => m.status === 'realizada').length >= condition.min
-      );
+      return state.thesisMeetings.filter((m) => m.status === 'realizada').length >= condition.min;
     case 'thesis-refs-cited':
-      return (
-        state.thesisReferences.filter((r) => r.status === 'citada').length >= condition.min
-      );
+      return state.thesisReferences.filter((r) => r.status === 'citada').length >= condition.min;
     case 'penultimate-semester':
       return state.termOrdinal >= state.profile.totalSemesters - 1;
     case 'streak-longest':
@@ -283,7 +274,7 @@ export function mergeCatalogWithProgress(progress: Sticker[]): Sticker[] {
 export function applyStickerUnlocks(
   stickers: Sticker[],
   state: StickerState,
-  today: string
+  today: string,
 ): { updated: Sticker[]; newlyUnlocked: Sticker[] } {
   const updated: Sticker[] = [];
   const newlyUnlocked: Sticker[] = [];

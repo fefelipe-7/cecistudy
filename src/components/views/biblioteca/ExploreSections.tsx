@@ -4,12 +4,7 @@
 // conceitos, abordagens, multidisciplinar, artigos) + empty state + modais.
 
 import React from 'react';
-import {
-  Search,
-  SlidersHorizontal,
-  X,
-  RotateCcw,
-} from 'lucide-react';
+import { Search, SlidersHorizontal, X, RotateCcw } from 'lucide-react';
 import { CollectionBook } from '../../../data/libraryData';
 import { Article } from '../../../data/books';
 import { TagChip } from '../../ui/TagChip';
@@ -53,13 +48,35 @@ export const ExploreSections: React.FC<ExploreSectionsProps> = ({
   updateReadingProgress,
 }) => {
   const {
-    activeCategory, setActiveCategory, activeStatus, setActiveStatus, selectedTag, setSelectedTag,
-    searchTerm, setSearchTerm, isFilterModalOpen, setIsFilterModalOpen,
-    toggleSection, isOpen, hasActiveFilters, resetAllFilters,
-    filteredCollections, filteredCatalogCollections, filteredComplementaryCollections,
-    filteredTrendingBooks, filteredArticleGroups, totalFilteredArticles, filteredMixedCollections,
-    testCollections, authorCollections, multidisciplinaryCollections, conceptCollections, approachCollections,
-    availableTags, catalogBooks, psychotherapyCollections,
+    activeCategory,
+    setActiveCategory,
+    activeStatus,
+    setActiveStatus,
+    selectedTag,
+    setSelectedTag,
+    searchTerm,
+    setSearchTerm,
+    isFilterModalOpen,
+    setIsFilterModalOpen,
+    toggleSection,
+    isOpen,
+    hasActiveFilters,
+    resetAllFilters,
+    filteredCollections,
+    filteredCatalogCollections,
+    filteredComplementaryCollections,
+    filteredTrendingBooks,
+    filteredArticleGroups,
+    totalFilteredArticles,
+    filteredMixedCollections,
+    testCollections,
+    authorCollections,
+    multidisciplinaryCollections,
+    conceptCollections,
+    approachCollections,
+    availableTags,
+    catalogBooks,
+    psychotherapyCollections,
   } = filter;
 
   return (
@@ -110,12 +127,17 @@ export const ExploreSections: React.FC<ExploreSectionsProps> = ({
         {/* Active Filter Badges */}
         {hasActiveFilters && (
           <div className="flex flex-wrap items-center gap-1.5 pt-1">
-            <span className="text-[11px] font-bold text-ceci-tertiary mr-1">filtros aplicados:</span>
+            <span className="text-[11px] font-bold text-ceci-tertiary mr-1">
+              filtros aplicados:
+            </span>
 
             {activeCategory !== 'todos' && (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand rounded-full text-[11px] font-semibold">
                 categoria: {activeCategory}
-                <button onClick={() => setActiveCategory('todos')} className="hover:text-ceci-primary">
+                <button
+                  onClick={() => setActiveCategory('todos')}
+                  className="hover:text-ceci-primary"
+                >
                   <X className="w-3 h-3" />
                 </button>
               </span>
@@ -124,7 +146,10 @@ export const ExploreSections: React.FC<ExploreSectionsProps> = ({
             {activeStatus !== 'todos' && (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-surface-blue text-ceci-academic-strong border border-ceci-border-academic rounded-full text-[11px] font-semibold">
                 status: {activeStatus}
-                <button onClick={() => setActiveStatus('todos')} className="hover:text-ceci-primary">
+                <button
+                  onClick={() => setActiveStatus('todos')}
+                  className="hover:text-ceci-primary"
+                >
                   <X className="w-3 h-3" />
                 </button>
               </span>
@@ -178,22 +203,22 @@ export const ExploreSections: React.FC<ExploreSectionsProps> = ({
         filteredComplementaryCollections.length === 0 &&
         filteredMixedCollections.length === 0 &&
         filteredArticleGroups.length === 0 && (
-        <div className="py-12 text-center space-y-3 px-1 border-t border-ceci-border-default">
-          <Mascote expression="no-results" className="w-16 h-16 mx-auto" decorative />
-          <h3 className="font-display font-bold text-base text-ceci-primary">
-            nenhuma coleção ou obra encontrada
-          </h3>
-          <p className="text-xs text-ceci-secondary max-w-xs mx-auto">
-            nenhum resultado com esses filtros. que tal afrouxar um pouco?
-          </p>
-          <button
-            onClick={resetAllFilters}
-            className="px-4 py-2 bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong rounded-full text-xs font-bold cursor-pointer"
-          >
-            limpar filtros
-          </button>
-        </div>
-      )}
+          <div className="py-12 text-center space-y-3 px-1 border-t border-ceci-border-default">
+            <Mascote expression="no-results" className="w-16 h-16 mx-auto" decorative />
+            <h3 className="font-display font-bold text-base text-ceci-primary">
+              nenhuma coleção ou obra encontrada
+            </h3>
+            <p className="text-xs text-ceci-secondary max-w-xs mx-auto">
+              nenhum resultado com esses filtros. que tal afrouxar um pouco?
+            </p>
+            <button
+              onClick={resetAllFilters}
+              className="px-4 py-2 bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong rounded-full text-xs font-bold cursor-pointer"
+            >
+              limpar filtros
+            </button>
+          </div>
+        )}
     </section>
   );
 };
@@ -223,8 +248,15 @@ export const LibraryModals: React.FC<{
   updateReadingProgress,
 }) => {
   const {
-    isFilterModalOpen, activeCategory, activeStatus, selectedTag, setActiveCategory,
-    setActiveStatus, setSelectedTag, resetAllFilters, setIsFilterModalOpen,
+    isFilterModalOpen,
+    activeCategory,
+    activeStatus,
+    selectedTag,
+    setActiveCategory,
+    setActiveStatus,
+    setSelectedTag,
+    resetAllFilters,
+    setIsFilterModalOpen,
   } = filter;
   return (
     <>

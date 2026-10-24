@@ -1,0 +1,42 @@
+name: Bug
+description: Algo não funcionou como deveria
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigada por reportar ♡ Se for uma vulnerabilidade de segurança, **não use este formulário** — veja [SECURITY.md](../blob/main/SECURITY.md).
+  - type: textarea
+    id: esperado
+    attributes:
+      label: O que deveria acontecer
+    validations:
+      required: true
+  - type: textarea
+    id: aconteceu
+    attributes:
+      label: O que aconteceu
+      description: Se possível, os passos para reproduzir.
+    validations:
+      required: true
+  - type: dropdown
+    id: onde
+    attributes:
+      label: Onde aconteceu
+      options:
+        - Android (APK)
+        - iOS (IPA)
+        - Web / PWA
+        - Não sei
+    validations:
+      required: true
+  - type: input
+    id: versao
+    attributes:
+      label: Versão do app
+      description: Perfil → sobre (ou o nome do arquivo do APK/IPA).
+  - type: textarea
+    id: extra
+    attributes:
+      label: Mais contexto
+      description: Print, gravação de tela, o que você estava fazendo antes.

@@ -93,7 +93,7 @@ export function usePressGesture({
       setPhase((current) => (current === next ? current : next));
       stateRef.current.onPhaseChange?.(next);
     },
-    [clearTimer]
+    [clearTimer],
   );
 
   /** Fim do contato: libera o timer e o ponto de origem. */
@@ -136,7 +136,7 @@ export function usePressGesture({
       goTo('pressing');
       timerRef.current = window.setTimeout(recognizeLongPress, LONG_PRESS_MS);
     },
-    [goTo, recognizeLongPress]
+    [goTo, recognizeLongPress],
   );
 
   const cancelIfMoved = useCallback(
@@ -153,7 +153,7 @@ export function usePressGesture({
         goTo('cancelled');
       }
     },
-    [goTo, phase]
+    [goTo, phase],
   );
 
   const onPointerUp = useCallback(
@@ -165,7 +165,7 @@ export function usePressGesture({
       // `pressing` quando o dedo saiu.
       endGesture();
     },
-    [endGesture]
+    [endGesture],
   );
 
   const onPointerCancel = useCallback(
@@ -173,7 +173,7 @@ export function usePressGesture({
       if (startRef.current && startRef.current.id !== e.pointerId) return;
       endGesture();
     },
-    [endGesture]
+    [endGesture],
   );
 
   const onClick = useCallback((e: React.MouseEvent) => {
@@ -195,7 +195,7 @@ export function usePressGesture({
       e.preventDefault();
       recognizeLongPress();
     },
-    [recognizeLongPress]
+    [recognizeLongPress],
   );
 
   return {

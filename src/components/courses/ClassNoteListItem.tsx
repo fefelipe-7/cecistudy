@@ -48,9 +48,7 @@ export const ClassNoteListItem: React.FC<ClassNoteListItemProps> = ({
         {note.title}
       </h4>
 
-      <p className="text-xs text-ceci-secondary line-clamp-2 leading-relaxed">
-        {note.summary}
-      </p>
+      <p className="text-xs text-ceci-secondary line-clamp-2 leading-relaxed">{note.summary}</p>
 
       {showExtras && (
         <div className="flex items-center justify-between text-[11px] pt-1">

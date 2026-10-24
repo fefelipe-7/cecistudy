@@ -73,7 +73,7 @@ function renderPlayer(overrides?: Partial<QuizPlayState>) {
       onAnswer={onAnswer}
       onAdvance={onAdvance}
       onFinish={onFinish}
-    />
+    />,
   );
   return { onAnswer, onAdvance, onFinish };
 }
@@ -119,7 +119,7 @@ describe('QuizPlayer', () => {
     fireEvent.click(screen.getByText('azul').closest('button')!);
 
     expect(onAnswer).toHaveBeenCalledWith(
-      expect.objectContaining({ correct: true, userAnswer: 'B' })
+      expect.objectContaining({ correct: true, userAnswer: 'B' }),
     );
 
     await act(async () => {

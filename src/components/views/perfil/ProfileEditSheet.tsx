@@ -75,14 +75,23 @@ const ProfileEditSheet: React.FC<ProfileEditSheetProps> = ({ open, onClose, init
   };
 
   return (
-    <Modal open={open} onClose={requestClose} position="bottom" showGrabber labelledBy="perfil-edit-titulo">
+    <Modal
+      open={open}
+      onClose={requestClose}
+      position="bottom"
+      showGrabber
+      labelledBy="perfil-edit-titulo"
+    >
       <div className="w-full bg-surface-default rounded-t-3xl sm:rounded-3xl shadow-floating p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] space-y-4">
         <h2 id="perfil-edit-titulo" className="font-display font-bold text-lg text-ceci-primary">
           editar perfil
         </h2>
 
         <div>
-          <label htmlFor="perfil-edit-nome" className="block text-xs font-medium text-ceci-secondary mb-1">
+          <label
+            htmlFor="perfil-edit-nome"
+            className="block text-xs font-medium text-ceci-secondary mb-1"
+          >
             seu nome
           </label>
           <input
@@ -102,7 +111,10 @@ const ProfileEditSheet: React.FC<ProfileEditSheetProps> = ({ open, onClose, init
         </div>
 
         <div>
-          <label htmlFor="perfil-edit-universidade" className="block text-xs font-medium text-ceci-secondary mb-1">
+          <label
+            htmlFor="perfil-edit-universidade"
+            className="block text-xs font-medium text-ceci-secondary mb-1"
+          >
             universidade
           </label>
           <input
@@ -115,7 +127,10 @@ const ProfileEditSheet: React.FC<ProfileEditSheetProps> = ({ open, onClose, init
         </div>
 
         <div>
-          <label htmlFor="perfil-edit-frase" className="block text-xs font-medium text-ceci-secondary mb-1">
+          <label
+            htmlFor="perfil-edit-frase"
+            className="block text-xs font-medium text-ceci-secondary mb-1"
+          >
             frase motivacional de entrada
           </label>
           <textarea

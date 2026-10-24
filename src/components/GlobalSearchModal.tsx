@@ -91,8 +91,7 @@ const TYPE_ICON: Record<SearchType, React.ReactNode> = {
 };
 
 /** Corta com "…" só quando passa do limite (antes grudava sempre). */
-const ellipsis = (s: string, n: number) =>
-  s.length > n ? `${s.slice(0, n).trimEnd()}…` : s;
+const ellipsis = (s: string, n: number) => (s.length > n ? `${s.slice(0, n).trimEnd()}…` : s);
 
 const QUICK_TAGS: { value: string; label: string; emoji: string }[] = [
   { value: 'ansiedade', label: 'ansiedade', emoji: '💭' },
@@ -158,7 +157,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         },
         subtitle: ellipsis(c.definition, 70),
         go: () => onNavigate('biblioteca', 'conceitos', c.id),
-      })
+      }),
     );
     authors.forEach((a) =>
       list.push({
@@ -172,7 +171,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         },
         subtitle: ellipsis(a.bio, 70),
         go: () => onNavigate('biblioteca', 'autores', a.id),
-      })
+      }),
     );
     courses.forEach((co) =>
       list.push({
@@ -188,7 +187,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         },
         subtitle: `prof.ª ${co.professor} • ${co.semester}`,
         go: () => onNavigate('faculdade', 'disciplinas', co.id),
-      })
+      }),
     );
     classes.forEach((cl) =>
       list.push({
@@ -202,7 +201,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         },
         subtitle: `aula ${cl.number} • ${ellipsis(cl.summary, 60)}`,
         go: () => onOpenCourseDetail(cl.courseId),
-      })
+      }),
     );
     readings.forEach((r) =>
       list.push({
@@ -218,7 +217,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
           r.status === 'concluido' ? 'concluído' : 'em leitura'
         }`,
         go: () => onNavigate('estudos', 'leituras', r.id),
-      })
+      }),
     );
     approaches.forEach((app) =>
       list.push({
@@ -232,7 +231,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         },
         subtitle: ellipsis(app.description, 70),
         go: () => onNavigate('biblioteca', 'abordagens', app.id),
-      })
+      }),
     );
     tasks.forEach((t) =>
       list.push({
@@ -247,9 +246,8 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         subtitle: `${t.category} • ${t.dueDate ? fmtDate(t.dueDate) : 'sem prazo'}${
           t.completed ? ' • concluída' : ''
         }`,
-        go: () =>
-          t.disciplineId ? onOpenCourseDetail(t.disciplineId) : onNavigate('home'),
-      })
+        go: () => (t.disciplineId ? onOpenCourseDetail(t.disciplineId) : onNavigate('home')),
+      }),
     );
     exams.forEach((e) =>
       list.push({
@@ -264,7 +262,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         subtitle: `${e.date ? fmtDate(e.date) : 'a confirmar'} • peso ${e.weight}`,
         go: () =>
           e.courseId ? onOpenCourseDetail(e.courseId) : onNavigate('faculdade', 'disciplinas'),
-      })
+      }),
     );
     looseNotes.forEach((n) =>
       list.push({
@@ -278,7 +276,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         },
         subtitle: ellipsis(n.content, 70),
         go: () => onOpenNoteDetail(n.id),
-      })
+      }),
     );
     // SPEC-012 F4.8: TCC — capítulo (título/nota), referência e pendência.
     const STAGE_LABEL: Record<ThesisChapter['stage'], string> = {
@@ -299,7 +297,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         },
         subtitle: `tcc • ${STAGE_LABEL[ch.stage]}`,
         go: () => onOpenTccScreen('capitulos', ch.id),
-      })
+      }),
     );
     thesisReferences.forEach((ref) => {
       const reading = readings.find((r) => r.id === ref.readingId);
@@ -329,7 +327,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         },
         subtitle: `tcc • ${t.origin === 'orientadora' ? 'da orientação' : 'minha'}`,
         go: () => onOpenTccScreen('orientacao', t.id),
-      })
+      }),
     );
     return list;
   }, [
@@ -354,8 +352,12 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
   const byId = useMemo(() => new Map(items.map((it) => [it.entry.id, it])), [items]);
 
   const ranked: RankedResult[] = useMemo(
-    () => search(items.map((it) => it.entry), query),
-    [items, query]
+    () =>
+      search(
+        items.map((it) => it.entry),
+        query,
+      ),
+    [items, query],
   );
   const sections = useMemo(() => groupResults(ranked), [ranked]);
 
@@ -506,7 +508,11 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
               <p className="text-xs mb-4">mas que tal tentar uma dessas? ♡</p>
               <div className="flex flex-wrap justify-center gap-1.5">
                 {QUICK_TAGS.slice(0, 4).map((t) => (
-                  <button key={t.value} onClick={() => runSuggestion(t.value)} className="cute-badge">
+                  <button
+                    key={t.value}
+                    onClick={() => runSuggestion(t.value)}
+                    className="cute-badge"
+                  >
                     {t.emoji} {t.label}
                   </button>
                 ))}

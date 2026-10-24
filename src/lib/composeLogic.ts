@@ -6,7 +6,12 @@ import type { ClassNote, LooseNote } from '../types';
 import { noteFirstLine } from './noteLogic';
 
 /** Categorias possíveis de uma nota avulsa. */
-export const LOOSE_CATEGORIES: LooseNote['category'][] = ['reflexão', 'estudo', 'ideia', 'lembrete'];
+export const LOOSE_CATEGORIES: LooseNote['category'][] = [
+  'reflexão',
+  'estudo',
+  'ideia',
+  'lembrete',
+];
 
 /** A partir de quantos caracteres o texto parece uma nota de aula. */
 export const LOOKS_LIKE_CLASS_THRESHOLD = 40;
@@ -45,7 +50,10 @@ export function emptyDraft(): ComposeDraft {
 }
 
 /** Modo inicial (aula quando veio de um contexto de disciplina; senão a última escolha). */
-export function initialMode(composeCourseId: string | undefined, lastPrefs?: ComposePrefs): ComposeMode {
+export function initialMode(
+  composeCourseId: string | undefined,
+  lastPrefs?: ComposePrefs,
+): ComposeMode {
   if (composeCourseId) return 'aula';
   return lastPrefs?.mode ?? 'avulsa';
 }
@@ -54,7 +62,7 @@ export function initialMode(composeCourseId: string | undefined, lastPrefs?: Com
 export function initialCourseId(
   composeCourseId: string | undefined,
   lastPrefs: ComposePrefs | undefined,
-  courses: { id: string }[]
+  courses: { id: string }[],
 ): string | undefined {
   return composeCourseId ?? lastPrefs?.courseId ?? courses[0]?.id;
 }
@@ -62,7 +70,7 @@ export function initialCourseId(
 /** Próximo número de aula para uma disciplina (máximo atual + 1; 1 quando vazio). */
 export function nextClassNumber(
   classes: Pick<ClassNote, 'courseId' | 'number'>[],
-  courseId: string | undefined
+  courseId: string | undefined,
 ): number {
   if (!courseId) return 1;
   const nums = classes.filter((c) => c.courseId === courseId).map((c) => c.number || 0);
@@ -75,7 +83,11 @@ export function looksLikeClassNote(text: string, hasCourses: boolean): boolean {
 }
 
 /** Quando mostrar o nudge de conversão para aula. */
-export function shouldShowClassNudge(text: string, mode: ComposeMode, hasCourses: boolean): boolean {
+export function shouldShowClassNudge(
+  text: string,
+  mode: ComposeMode,
+  hasCourses: boolean,
+): boolean {
   return mode === 'avulsa' && looksLikeClassNote(text, hasCourses);
 }
 

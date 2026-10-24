@@ -29,9 +29,7 @@ describe('PreferenceRow — ação', () => {
   it('ativa por Enter e por Espaço (teclado nativo, sem handlers próprios)', async () => {
     const user = userEvent.setup();
     const onClick = vi.fn();
-    render(
-      <PreferenceRow icon={<span aria-hidden />} label="tema" onClick={onClick} />,
-    );
+    render(<PreferenceRow icon={<span aria-hidden />} label="tema" onClick={onClick} />);
     await user.tab();
     expect(screen.getByRole('button', { name: 'tema' })).toHaveFocus();
     await user.keyboard('{Enter}');

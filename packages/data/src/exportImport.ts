@@ -107,7 +107,8 @@ export async function importAppDatabase(json: string): Promise<EmptyDatabase | n
   let payloadData = p.payload;
   if (payloadVersion !== null) {
     if (payloadVersion > SCHEMA_VERSION) return null;
-    const migrated = payloadVersion < SCHEMA_VERSION ? migrateDatabase(payloadVersion, p.payload) : p.payload;
+    const migrated =
+      payloadVersion < SCHEMA_VERSION ? migrateDatabase(payloadVersion, p.payload) : p.payload;
     if (!migrated) return null;
     payloadData = migrated;
   }

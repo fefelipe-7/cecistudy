@@ -16,12 +16,7 @@ import rawCatalog from './catalogo_livros_portugues.json';
 import rawInterdisciplinary from './livros_interdisciplinares_100.json';
 import rawArticles from './artigos_150.json';
 import { PSYCHOTHERAPY_FAMILIES, INTERDISCIPLINARY_AREAS } from './families';
-import {
-  Article,
-  ArticleGroup,
-  CatalogBook,
-  InterdisciplinaryBook,
-} from './types';
+import { Article, ArticleGroup, CatalogBook, InterdisciplinaryBook } from './types';
 import { curateLibrary } from './curate';
 
 export type {
@@ -67,10 +62,7 @@ interface RawArticle {
 // ---------------------------------------------------------------------------
 // Helper de capa (cor determinística por família/área)
 // ---------------------------------------------------------------------------
-function metaOr<T extends { color: string; accent: string }>(
-  meta: T | undefined,
-  fallback: T
-): T {
+function metaOr<T extends { color: string; accent: string }>(meta: T | undefined, fallback: T): T {
   return (meta ?? fallback) as T;
 }
 

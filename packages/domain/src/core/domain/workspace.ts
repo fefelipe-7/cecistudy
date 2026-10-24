@@ -2,7 +2,13 @@ import type { EntityId } from '../../core/domain/common';
 import { makeId } from '../../core/domain/ids';
 
 export type WorkspaceKind = 'academico' | 'profissional' | 'pessoal';
-export type DefaultModule = 'home' | 'conhecimento' | 'calendario' | 'projetos' | 'estudos' | 'marketing';
+export type DefaultModule =
+  | 'home'
+  | 'conhecimento'
+  | 'calendario'
+  | 'projetos'
+  | 'estudos'
+  | 'marketing';
 
 export interface WorkspaceSettings {
   defaultModule: DefaultModule;

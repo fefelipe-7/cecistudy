@@ -15,41 +15,45 @@ interface UnderlineTabBarProps<T extends string> {
   className?: string;
 }
 
-export const UnderlineTabBar = <T extends string,>({
+export const UnderlineTabBar = <T extends string>({
   tabs,
   active,
   onChange,
   className,
 }: UnderlineTabBarProps<T>) => (
-  <div className={cn('overflow-x-auto scrollbar-none border-b border-ceci-border-default', className)}>
+  <div
+    className={cn('overflow-x-auto scrollbar-none border-b border-ceci-border-default', className)}
+  >
     {/* w-max + mx-auto: centraliza quando cabe na tela e rola a partir da
         esquerda quando estoura (justify-center puro cortaria as 1ªs abas) */}
     <div className="flex items-center gap-4 px-1 w-max mx-auto">
-    {tabs.map((tab) => {
-      const isActive = tab.id === active;
-      return (
-        <button
-          key={tab.id}
-          onClick={() => onChange(tab.id)}
-          aria-pressed={isActive}
-          className={cn(
-            'relative pb-3 text-xs font-semibold whitespace-nowrap tap-interactive cursor-pointer flex items-center gap-1.5',
-            isActive ? 'text-ceci-primary font-bold' : 'text-ceci-tertiary hover:text-ceci-primary'
-          )}
-        >
-          {tab.icon}
-          {tab.label}
-          {tab.badge !== undefined && tab.badge > 0 && (
-            <span className="text-[9px] font-bold bg-surface-rose text-ceci-brand-strong px-1.5 py-0.5 rounded-full border border-ceci-border-brand leading-none">
-              {tab.badge}
-            </span>
-          )}
-          {isActive && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-ceci-primary rounded-full" />
-          )}
-        </button>
-      );
-    })}
+      {tabs.map((tab) => {
+        const isActive = tab.id === active;
+        return (
+          <button
+            key={tab.id}
+            onClick={() => onChange(tab.id)}
+            aria-pressed={isActive}
+            className={cn(
+              'relative pb-3 text-xs font-semibold whitespace-nowrap tap-interactive cursor-pointer flex items-center gap-1.5',
+              isActive
+                ? 'text-ceci-primary font-bold'
+                : 'text-ceci-tertiary hover:text-ceci-primary',
+            )}
+          >
+            {tab.icon}
+            {tab.label}
+            {tab.badge !== undefined && tab.badge > 0 && (
+              <span className="text-[9px] font-bold bg-surface-rose text-ceci-brand-strong px-1.5 py-0.5 rounded-full border border-ceci-border-brand leading-none">
+                {tab.badge}
+              </span>
+            )}
+            {isActive && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-ceci-primary rounded-full" />
+            )}
+          </button>
+        );
+      })}
     </div>
   </div>
 );

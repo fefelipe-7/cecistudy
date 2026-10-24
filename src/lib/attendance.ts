@@ -47,7 +47,7 @@ function round2(n: number): number {
 }
 
 function normalizeAttendance(
-  course: Course
+  course: Course,
 ): Pick<CourseAttendance, 'total' | 'minPct' | 'records'> & { baseAttended?: number } {
   const a = course.attendance;
   return {
@@ -106,7 +106,7 @@ export function hoursPerClassFromSchedule(schedule?: CourseScheduleSlot[]): numb
   if (!slots.length) return DEFAULT_CLASS_HOURS;
   const total = slots.reduce(
     (acc, s) => acc + slotHours(String(s.start), s.end ? String(s.end) : undefined),
-    0
+    0,
   );
   return total > 0 ? round2(total / slots.length) : DEFAULT_CLASS_HOURS;
 }
@@ -169,7 +169,18 @@ export function attendanceStats(attendance?: CourseAttendance): AttendanceStats 
   else if (realized > 0 && pct < minPct) status = 'atencao';
   else status = 'ok';
 
-  return { attended, absences, cancelled, realized, total, minPct, pct, maxAbsences, margin, status };
+  return {
+    attended,
+    absences,
+    cancelled,
+    realized,
+    total,
+    minPct,
+    pct,
+    maxAbsences,
+    margin,
+    status,
+  };
 }
 
 export interface AttendanceActionInput {
@@ -182,7 +193,7 @@ export interface AttendanceActionInput {
 export function applyAttendanceAction(
   course: Course,
   action: AttendanceActionInput,
-  date: string
+  date: string,
 ): Course {
   const records = (course.attendance?.records ?? []).slice();
   const idx = records.findIndex((r) => r.date === date);
@@ -218,10 +229,10 @@ export function applyAttendanceAction(
 export function updateAttendanceRecord(
   course: Course,
   recordId: string,
-  patch: Partial<Omit<AttendanceRecord, 'id' | 'date'>>
+  patch: Partial<Omit<AttendanceRecord, 'id' | 'date'>>,
 ): Course {
   const records = (course.attendance?.records ?? []).map((r) =>
-    r.id === recordId ? { ...r, ...patch, updatedAt: iso() } : r
+    r.id === recordId ? { ...r, ...patch, updatedAt: iso() } : r,
   );
   return withAttendance(course, records);
 }
@@ -235,7 +246,7 @@ export function removeAttendanceRecord(course: Course, recordId: string): Course
 /** Vincula presença à anotação de aula (anotou = esteve presente, spec §5). */
 export function upsertPresenceForClassNote(
   course: Course,
-  note: { id: string; date: string }
+  note: { id: string; date: string },
 ): Course {
   if (!note.date) return course;
   const records = (course.attendance?.records ?? []).slice();
@@ -260,14 +271,12 @@ export function upsertPresenceForClassNote(
 
 /** Registros ordenados do mais recente para o mais antigo (estável). */
 export function sortAttendanceRecords(records: AttendanceRecord[]): AttendanceRecord[] {
-  return [...records].sort((a, b) =>
-    a.date === b.date ? 0 : a.date > b.date ? -1 : 1
-  );
+  return [...records].sort((a, b) => (a.date === b.date ? 0 : a.date > b.date ? -1 : 1));
 }
 
 /** Converte registros legados {attended,total} para o novo shape. */
 export function migrateLegacyAttendance(
-  legacy: { attended?: number; total?: number } | undefined
+  legacy: { attended?: number; total?: number } | undefined,
 ): CourseAttendance | undefined {
   if (!legacy || !legacy.total) return undefined;
   return {

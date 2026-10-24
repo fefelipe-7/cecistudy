@@ -6,15 +6,9 @@ import {
   classesForMonth,
   weekDates,
   startOfWeek,
-  thesisEventsForMonth,
+  buildCalendarEntries,
 } from '../schedule';
-import type {
-  Course,
-  ThesisProject,
-  ThesisChapter,
-  ThesisMeeting,
-  ThesisTask,
-} from '../../types';
+import type { Course, ThesisProject, ThesisChapter, ThesisMeeting, ThesisTask } from '../../types';
 import { MIGRATIONS, SCHEMA_VERSION } from '../../data/schema';
 
 const mkCourse = (id: string, schedule: Course['schedule']): Course =>
@@ -38,9 +32,7 @@ describe('parseLegacySchedule', () => {
   });
 
   it('converte horário curto "9h"', () => {
-    expect(parseLegacySchedule('seg 9h')).toEqual([
-      { day: 1, start: '09:00', end: undefined },
-    ]);
+    expect(parseLegacySchedule('seg 9h')).toEqual([{ day: 1, start: '09:00', end: undefined }]);
   });
 
   it('converte múltiplos dias separados por "e"', () => {
@@ -60,7 +52,7 @@ describe('formatCourseSchedule', () => {
       formatCourseSchedule([
         { day: 1, start: '08:00', end: '11:30' },
         { day: 3, start: '09:00' },
-      ])
+      ]),
     ).toBe('seg 08:00–11:30 · qua 09:00');
   });
 });
@@ -116,7 +108,7 @@ describe('weekDates / startOfWeek', () => {
   });
 });
 
-describe('thesisEventsForMonth (SPEC-012 F4.5)', () => {
+describe('thesisEventsForMonth (SPEC-012 F4.5) — migrado para o agregador (SPEC-024 F1.2)', () => {
   const thesis = {
     id: 'tcc-main',
     title: 'meu tcc',
@@ -136,7 +128,11 @@ describe('thesisEventsForMonth (SPEC-012 F4.5)', () => {
       meetingMinutesBefore: [],
     },
   } as ThesisProject;
-  const thesisNoDates = { ...thesis, deliveryDate: undefined, defenseDate: undefined } as ThesisProject;
+  const thesisNoDates = {
+    ...thesis,
+    deliveryDate: undefined,
+    defenseDate: undefined,
+  } as ThesisProject;
   const chapter = {
     id: 'ch-1',
     thesisId: 'tcc-main',
@@ -149,7 +145,12 @@ describe('thesisEventsForMonth (SPEC-012 F4.5)', () => {
     createdAt: '',
     updatedAt: '',
   } as ThesisChapter;
-  const doneChapter = { ...chapter, id: 'ch-2', stage: 'pronto', dueDate: '2026-08-06' } as ThesisChapter;
+  const doneChapter = {
+    ...chapter,
+    id: 'ch-2',
+    stage: 'pronto',
+    dueDate: '2026-08-06',
+  } as ThesisChapter;
   const task = {
     id: 'tt-1',
     thesisId: 'tcc-main',
@@ -173,50 +174,74 @@ describe('thesisEventsForMonth (SPEC-012 F4.5)', () => {
   } as ThesisMeeting;
   const cancelledMeeting = { ...meeting, id: 'mt-2', status: 'cancelada' } as ThesisMeeting;
 
-  it('projeta capítulo, pendência, reunião e marcos no mês', () => {
-    const byDay = thesisEventsForMonth(
+  const base = {
+    courses: [],
+    exams: [],
+    tasks: [],
+    internshipLogs: [],
+    studySessions: [],
+  };
+  const build = (
+    t: ThesisProject,
+    chapters: ThesisChapter[],
+    meetings: ThesisMeeting[],
+    thesisTasks: ThesisTask[],
+    from: string,
+    to: string,
+  ) => buildCalendarEntries({ ...base, thesis: t, chapters, meetings, thesisTasks, from, to });
+
+  it('projeta capítulo, pendência, reunião e marcos na janela', () => {
+    const entries = build(
       thesis,
       [chapter, doneChapter],
       [meeting, cancelledMeeting],
       [task, doneTask],
-      8,
-      2026
+      '2026-08-01',
+      '2026-08-31',
     );
     // capítulo em 05, pendência em 10, reunião agendada em 12, entrega em 20
-    expect([...byDay.keys()].sort((a, b) => a - b)).toEqual([5, 10, 12, 20]);
-    // marcos: entrega em agosto, banca em setembro
-    expect(thesisEventsForMonth(thesis, [], [], [], 8, 2026).get(20)?.[0].tccTab).toBe('visao');
-    expect(thesisEventsForMonth(thesis, [], [], [], 9, 2026).get(10)?.[0].id).toBe('tcc-milestone-defense');
+    expect(entries.map((e) => e.date)).toEqual([
+      '2026-08-05',
+      '2026-08-10',
+      '2026-08-12',
+      '2026-08-20',
+    ]);
+    expect(entries.find((e) => e.id === 'tcc-milestone-delivery')?.ref.kind).toBe('milestone');
+    expect(build(thesis, [], [], [], '2026-09-01', '2026-09-30')[0].id).toBe(
+      'tcc-milestone-defense',
+    );
   });
 
-  it('todo evento tem kind tcc e destino (aba + foco por entityId)', () => {
-    const byDay = thesisEventsForMonth(thesis, [chapter], [meeting], [task], 8, 2026);
-    const events = [...byDay.values()].flat();
-    expect(events.every((e) => e.kind === 'tcc')).toBe(true);
-    const ch = events.find((e) => e.id === 'tcc-chapter-ch-1');
-    expect(ch).toMatchObject({ tccTab: 'capitulos', tccFocusId: 'ch-1', completed: false });
-    const tt = events.find((e) => e.id === 'tcc-task-tt-1');
-    expect(tt).toMatchObject({ tccTab: 'orientacao', tccFocusId: 'tt-1' });
+  it('todo item é da camada tcc e aponta para a entidade (aba + foco por entityId)', () => {
+    const entries = build(thesis, [chapter], [meeting], [task], '2026-08-01', '2026-08-31');
+    expect(entries.every((e) => e.kind === 'tcc' && e.layer === 'tcc')).toBe(true);
+    expect(entries.find((e) => e.id === 'tcc-chapter-ch-1')?.ref).toEqual({
+      kind: 'chapter',
+      id: 'ch-1',
+    });
+    expect(entries.find((e) => e.id === 'tcc-task-tt-1')?.ref).toEqual({
+      kind: 'thesisTask',
+      id: 'tt-1',
+    });
   });
 
   it('não projeta pendência resolvida, reunião cancelada nem capítulo pronto', () => {
-    const byDay = thesisEventsForMonth(
+    const entries = build(
       thesisNoDates,
       [doneChapter],
       [cancelledMeeting],
       [doneTask],
-      8,
-      2026
+      '2026-08-01',
+      '2026-08-31',
     );
-    expect(byDay.size).toBe(0);
+    expect(entries).toEqual([]);
   });
 
   it('id do evento é por entityId, não por índice', () => {
     const other = { ...chapter, id: 'ch-9', dueDate: '2026-08-07' } as ThesisChapter;
-    const ids = (m: Map<number, { id: string }[]>) =>
-      [...m.values()].flat().map((e) => e.id).sort();
-    const a = thesisEventsForMonth(thesisNoDates, [chapter, other], [], [], 8, 2026);
-    const b = thesisEventsForMonth(thesisNoDates, [other, chapter], [], [], 8, 2026);
+    const ids = (list: { id: string }[]) => list.map((e) => e.id).sort();
+    const a = build(thesisNoDates, [chapter, other], [], [], '2026-08-01', '2026-08-31');
+    const b = build(thesisNoDates, [other, chapter], [], [], '2026-08-01', '2026-08-31');
     expect(ids(a)).toEqual(ids(b));
     expect(ids(a)).toEqual(['tcc-chapter-ch-1', 'tcc-chapter-ch-9']);
   });
@@ -233,8 +258,6 @@ describe('migração v9 (schedule estruturado)', () => {
       const m = MIGRATIONS[v];
       if (m) next = m(next) as typeof data;
     }
-    expect((next.courses as any[])[0].schedule).toEqual([
-      { day: 1, start: '08:00', end: '11:30' },
-    ]);
+    expect((next.courses as any[])[0].schedule).toEqual([{ day: 1, start: '08:00', end: '11:30' }]);
   });
 });

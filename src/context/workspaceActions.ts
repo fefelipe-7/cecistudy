@@ -125,7 +125,7 @@ export function useWorkspaceActions(deps: WorkspaceActionsDeps): WorkspaceAction
     const rel = addRelation(
       { ...input, workspaceId: currentWorkspaceId },
       relations,
-      associationPolicies
+      associationPolicies,
     );
     setRelations((prev) => (prev.some((r) => r.id === rel.id) ? prev : [...prev, rel]));
     return rel;
@@ -165,7 +165,7 @@ export function useWorkspaceActions(deps: WorkspaceActionsDeps): WorkspaceAction
               action,
               createdAt: new Date().toISOString(),
             },
-          ]
+          ],
     );
   };
 
@@ -175,10 +175,7 @@ export function useWorkspaceActions(deps: WorkspaceActionsDeps): WorkspaceAction
     templateId?: string;
   }): Project | null => {
     try {
-      const p = createProjectUseCase(
-        { ...input, workspaceId: currentWorkspaceId },
-        projects
-      );
+      const p = createProjectUseCase({ ...input, workspaceId: currentWorkspaceId }, projects);
       setProjects((prev) => [...prev, p]);
       showToast(frase(CELEBRACAO, 'projetoCriado', { titulo: p.title }));
       return p;
@@ -187,7 +184,7 @@ export function useWorkspaceActions(deps: WorkspaceActionsDeps): WorkspaceAction
       showToast(
         msg.includes('limite')
           ? 'você já tem 5 projetos ativos — conclui um para começar outro ♡'
-          : 'não foi possível criar o projeto'
+          : 'não foi possível criar o projeto',
       );
       return null;
     }
@@ -219,8 +216,7 @@ export function useWorkspaceActions(deps: WorkspaceActionsDeps): WorkspaceAction
   const updateOutput = (updated: Output) =>
     setOutputs((prev) => prev.map((o) => (o.id === updated.id ? o : o)));
 
-  const deleteOutput = (id: string) =>
-    setOutputs((prev) => prev.filter((o) => o.id !== id));
+  const deleteOutput = (id: string) => setOutputs((prev) => prev.filter((o) => o.id !== id));
 
   return {
     switchWorkspace,

@@ -42,8 +42,14 @@ describe('formatDueLabel', () => {
   });
 
   it('prazo atrasado sinaliza vermelho', () => {
-    expect(formatDueLabel('2026-08-21', TODAY)).toEqual({ label: 'atrasada desde ontem', urgency: 'overdue' });
-    expect(formatDueLabel('2026-08-15', TODAY)).toEqual({ label: 'atrasada há 7 dias', urgency: 'overdue' });
+    expect(formatDueLabel('2026-08-21', TODAY)).toEqual({
+      label: 'atrasada desde ontem',
+      urgency: 'overdue',
+    });
+    expect(formatDueLabel('2026-08-15', TODAY)).toEqual({
+      label: 'atrasada há 7 dias',
+      urgency: 'overdue',
+    });
   });
 
   it('data inválida cai no neutro com o valor cru', () => {

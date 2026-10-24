@@ -24,66 +24,120 @@ const OUT_FILE = path.join(ROOT, 'src', 'data', 'psicoterapiaBase.ts');
 // ---------------------------------------------------------------------------
 const CANONICAL = {
   '01_psicanalitica_psicodinamica': [
-    'Psicanálise Freudiana Clássica', 'Psicologia do Ego', 'Teoria das Relações Objetais',
-    'Psicologia do Self (Kohut)', 'Psicanálise Relacional', 'Terapia Psicodinâmica Breve',
-    'Psicologia Analítica Junguiana', 'Psicologia Individual Adleriana',
-    'Psicanálise Interpessoal (Sullivan)', 'Psicoterapia Psicodinâmica Contemporânea (integrativa)',
+    'Psicanálise Freudiana Clássica',
+    'Psicologia do Ego',
+    'Teoria das Relações Objetais',
+    'Psicologia do Self (Kohut)',
+    'Psicanálise Relacional',
+    'Terapia Psicodinâmica Breve',
+    'Psicologia Analítica Junguiana',
+    'Psicologia Individual Adleriana',
+    'Psicanálise Interpessoal (Sullivan)',
+    'Psicoterapia Psicodinâmica Contemporânea (integrativa)',
   ],
   '02_existencial_humanista': [
-    'Terapia Centrada na Pessoa (Rogers)', 'Gestalt-terapia', 'Terapia Existencial-Humanista',
-    'Terapia Focada nas Emoções', 'Logoterapia', 'Terapia Experiencial', 'Daseinsanalyse',
-    'Terapia Existencial Britânica', 'Psicologia Humanista', 'Terapia Transpessoal',
+    'Terapia Centrada na Pessoa (Rogers)',
+    'Gestalt-terapia',
+    'Terapia Existencial-Humanista',
+    'Terapia Focada nas Emoções',
+    'Logoterapia',
+    'Terapia Experiencial',
+    'Daseinsanalyse',
+    'Terapia Existencial Britânica',
+    'Psicologia Humanista',
+    'Terapia Transpessoal',
   ],
   '03_comportamental': [
-    'Behaviorismo Metodológico/Radical', 'Terapia Comportamental Clássica',
-    'Análise do Comportamento Aplicada (ABA)', 'Dessensibilização Sistemática',
-    'Terapia de Exposição', 'Terapia Comportamental Dialética (DBT)', 'Ativação Comportamental',
-    'Treinamento de Habilidades Sociais', 'Modificação de Comportamento Infantil',
+    'Behaviorismo Metodológico/Radical',
+    'Terapia Comportamental Clássica',
+    'Análise do Comportamento Aplicada (ABA)',
+    'Dessensibilização Sistemática',
+    'Terapia de Exposição',
+    'Terapia Comportamental Dialética (DBT)',
+    'Ativação Comportamental',
+    'Treinamento de Habilidades Sociais',
+    'Modificação de Comportamento Infantil',
     'Terapia Comportamental de Casais',
   ],
   '04_cognitiva_tcc': [
-    'Terapia Cognitiva (Beck)', 'Terapia Racional-Emotiva Comportamental (REBT)',
-    'TCC Integrada/Geral', 'Terapia do Esquema',
+    'Terapia Cognitiva (Beck)',
+    'Terapia Racional-Emotiva Comportamental (REBT)',
+    'TCC Integrada/Geral',
+    'Terapia do Esquema',
     'Terapia Cognitiva Baseada em Mindfulness (MBCT)',
-    'Terapia de Aceitação e Compromisso (ACT)', 'Terapia Focada na Compaixão',
-    'Terapia Metacognitiva', 'Terapia do Processamento Cognitivo',
+    'Terapia de Aceitação e Compromisso (ACT)',
+    'Terapia Focada na Compaixão',
+    'Terapia Metacognitiva',
+    'Terapia do Processamento Cognitivo',
     'Terapia Cognitivo-Comportamental Baseada em Protocolo Transdiagnóstico',
   ],
   '05_sistemica_familiar_casais': [
-    'Terapia Familiar Estrutural', 'Terapia Familiar Estratégica', 'Terapia Familiar Boweniana',
-    'Escola de Milão', 'Terapia Centrada em Soluções', 'Terapia Familiar Geral',
-    'Terapia de Casais Integrativa', 'Terapia Familiar Experiencial',
-    'Terapia Familiar Baseada em Apego', 'Terapia Multissistêmica',
+    'Terapia Familiar Estrutural',
+    'Terapia Familiar Estratégica',
+    'Terapia Familiar Boweniana',
+    'Escola de Milão',
+    'Terapia Centrada em Soluções',
+    'Terapia Familiar Geral',
+    'Terapia de Casais Integrativa',
+    'Terapia Familiar Experiencial',
+    'Terapia Familiar Baseada em Apego',
+    'Terapia Multissistêmica',
   ],
   '06_construtivista_narrativa': [
-    'Terapia Narrativa', 'Psicoterapias Construtivas', 'Terapia de Construção Pessoal',
-    'Terapia Colaborativa', 'Terapia Pós-moderna', 'Construcionismo Social',
-    'Coherence Therapy', 'Terapia Ericksoniana', 'Terapia Centrada em Soluções',
-    'Prática Baseada em Resposta', 'Terapia de Renegociação de Identidade',
+    'Terapia Narrativa',
+    'Psicoterapias Construtivas',
+    'Terapia de Construção Pessoal',
+    'Terapia Colaborativa',
+    'Terapia Pós-moderna',
+    'Construcionismo Social',
+    'Coherence Therapy',
+    'Terapia Ericksoniana',
+    'Terapia Centrada em Soluções',
+    'Prática Baseada em Resposta',
+    'Terapia de Renegociação de Identidade',
   ],
   '07_interpessoal_relacional': [
-    'Psicoterapia Interpessoal (IPT)', 'Terapia Relacional-Cultural',
-    'Psicanálise Interpessoal (Sullivan)', 'Terapia Baseada em Mentalização',
-    'Teoria dos Sistemas Intersubjetivos', 'Psicodinâmica Cíclica',
-    'Terapia de Casais Baseada em Apego', 'Método Gottman de Terapia de Casais',
+    'Psicoterapia Interpessoal (IPT)',
+    'Terapia Relacional-Cultural',
+    'Psicanálise Interpessoal (Sullivan)',
+    'Terapia Baseada em Mentalização',
+    'Teoria dos Sistemas Intersubjetivos',
+    'Psicodinâmica Cíclica',
+    'Terapia de Casais Baseada em Apego',
+    'Método Gottman de Terapia de Casais',
     'Terapia Familiar Focada nas Emoções',
   ],
   '08_integrativa_ecletica': [
-    'Psicoterapia Integrativa Geral', 'Ecletismo Técnico', 'Integração Assimilativa',
-    'Terapia Multimodal', 'Psicodinâmica Cíclica', 'Terapia de Aceitação e Compromisso (ACT)',
-    'Formulação de Caso em Psicoterapia', 'Modelo Transteórico de Mudança',
+    'Psicoterapia Integrativa Geral',
+    'Ecletismo Técnico',
+    'Integração Assimilativa',
+    'Terapia Multimodal',
+    'Psicodinâmica Cíclica',
+    'Terapia de Aceitação e Compromisso (ACT)',
+    'Formulação de Caso em Psicoterapia',
+    'Modelo Transteórico de Mudança',
     'Prática Baseada em Evidências em Psicologia',
   ],
   '09_social_cultural_genero': [
-    'Terapia Feminista', 'Terapia Multicultural', 'Terapia Afirmativa LGBTQ+',
-    'Terapia Antirracista', 'Terapia Interseccional', 'Terapia Comunitária',
-    'Abordagens Transculturais e Internacionais', 'Terapia Feminista Psicanalítica',
+    'Terapia Feminista',
+    'Terapia Multicultural',
+    'Terapia Afirmativa LGBTQ+',
+    'Terapia Antirracista',
+    'Terapia Interseccional',
+    'Terapia Comunitária',
+    'Abordagens Transculturais e Internacionais',
+    'Terapia Feminista Psicanalítica',
     'Terapia Familiar Feminista',
   ],
   '10_pragmaticos_objetivo': [
-    'Terapia Focada em Soluções', 'Entrevista Motivacional', 'Terapia da Realidade',
-    'Terapia de Resolução de Problemas', 'Terapia Breve Orientada a Metas', 'Terapia Breve',
-    'Aconselhamento de Carreira', 'Terapia Baseada em Forças',
+    'Terapia Focada em Soluções',
+    'Entrevista Motivacional',
+    'Terapia da Realidade',
+    'Terapia de Resolução de Problemas',
+    'Terapia Breve Orientada a Metas',
+    'Terapia Breve',
+    'Aconselhamento de Carreira',
+    'Terapia Baseada em Forças',
     'Terapia de Casal e Família de Curto Prazo',
   ],
 };
@@ -112,12 +166,29 @@ const CROSS_FAMILY_RELATIONS = [
 ];
 
 const FIELDS = [
-  'nome', 'name', 'descricao_curta', 'definicao', 'ideia_central', 'origem',
-  'periodo_historico', 'contexto_historico', 'visao_ser_humano', 'visao_psique',
-  'visao_desenvolvimento', 'visao_sofrimento', 'teoria_da_mudanca',
-  'apresentacao_pratica', 'papel_terapeuta', 'papel_paciente', 'relacao_terapeutica',
-  'foco_clinico', 'perspectiva_academica', 'evidencias', 'debates',
-  'criticas_limitacoes', 'leituras_fundamentais',
+  'nome',
+  'name',
+  'descricao_curta',
+  'definicao',
+  'ideia_central',
+  'origem',
+  'periodo_historico',
+  'contexto_historico',
+  'visao_ser_humano',
+  'visao_psique',
+  'visao_desenvolvimento',
+  'visao_sofrimento',
+  'teoria_da_mudanca',
+  'apresentacao_pratica',
+  'papel_terapeuta',
+  'papel_paciente',
+  'relacao_terapeutica',
+  'foco_clinico',
+  'perspectiva_academica',
+  'evidencias',
+  'debates',
+  'criticas_limitacoes',
+  'leituras_fundamentais',
 ];
 const FIELD_SET = new Set(FIELDS);
 
@@ -138,23 +209,32 @@ function aliases(name) {
   const out = new Set([n]);
   const replacements = {
     'behaviorismo metodologico radical': 'behaviorismo metodologico radical base teorica',
-    'terapia psicodinamica breve': 'terapia psicodinamica breve theories of psychotherapy brief dynamic therapy',
-    'psicologia individual adleriana': 'psicologia individual adleriana theories of psychotherapy adlerian psychotherapy',
-    'terapia centrada na pessoa': 'terapia centrada na pessoa rogers theories of psychotherapy person centered psychotherapies',
+    'terapia psicodinamica breve':
+      'terapia psicodinamica breve theories of psychotherapy brief dynamic therapy',
+    'psicologia individual adleriana':
+      'psicologia individual adleriana theories of psychotherapy adlerian psychotherapy',
+    'terapia centrada na pessoa':
+      'terapia centrada na pessoa rogers theories of psychotherapy person centered psychotherapies',
     'gestalt terapia': 'gestalt terapia theories of psychotherapy gestalt therapy',
-    'terapia focada nas emocoes': 'terapia focada nas emocoes emotion focused therapy vertente de leslie greenberg',
+    'terapia focada nas emocoes':
+      'terapia focada nas emocoes emotion focused therapy vertente de leslie greenberg',
     'terapia existencial britanica': 'terapia existencial britanica vertente clinica contemporanea',
     'psicoterapia interpessoal ipt': 'psicoterapia interpessoal ipt klerman weissman',
     'terapia baseada em mentalizacao': 'tratamento baseado em mentalizacao',
     'terapia relacional cultural': 'terapia relacional cultural relational cultural therapy rct',
     'terapia familiar focada nas emocoes': 'terapia familiar focada nas emocoes efft eft familiar',
     'psicodinamica ciclica': 'psicodinamica ciclica wachtel terapia ciclica psicodinamica',
-    'metodo gottman de terapia de casais': 'metodo gottman de terapia de casais gottman method couples therapy',
-    'terapia de aceitacao e compromisso': 'terapia de aceitacao e compromisso act como modelo integrativo contextual',
-    'pratica baseada em evidencias em psicologia': 'pratica baseada em evidencias em psicologia pbe',
+    'metodo gottman de terapia de casais':
+      'metodo gottman de terapia de casais gottman method couples therapy',
+    'terapia de aceitacao e compromisso':
+      'terapia de aceitacao e compromisso act como modelo integrativo contextual',
+    'pratica baseada em evidencias em psicologia':
+      'pratica baseada em evidencias em psicologia pbe',
     'terapia multicultural': 'aconselhamento multicultural',
-    'terapia focada em solucoes': 'terapia centrada em solucoes tcs enquadramento construtivista narrativo',
-    'terapia de casal e familia de curto prazo': 'terapia de casal e familia de curto prazo modelo mri mental research institute modelo estrategico',
+    'terapia focada em solucoes':
+      'terapia centrada em solucoes tcs enquadramento construtivista narrativo',
+    'terapia de casal e familia de curto prazo':
+      'terapia de casal e familia de curto prazo modelo mri mental research institute modelo estrategico',
   };
   if (replacements[n]) out.add(norm(replacements[n]));
   return out;
@@ -163,11 +243,15 @@ function aliases(name) {
 // ---------------------------------------------------------------------------
 // Parser dos arquivos de entregas → blocos { name, fields, file, family }.
 // ---------------------------------------------------------------------------
-const EDITORIAL = /Diferenciação|Explicação das diferenças|Qualificação das evidências|Formato de importação|Referências de pesquisa|Referencias de pesquisa|Observações finais|Observação final|Observações gerais|Nota sobre|Em resumo/i;
+const EDITORIAL =
+  /Diferenciação|Explicação das diferenças|Qualificação das evidências|Formato de importação|Referências de pesquisa|Referencias de pesquisa|Observações finais|Observação final|Observações gerais|Nota sobre|Em resumo/i;
 
 function parseFile(filePath, fileName) {
   const familyKey = Object.keys(CANONICAL).find((f) => fileName.startsWith(f)) ?? null;
-  const lines = fs.readFileSync(filePath, 'utf-8').replace(/^\uFEFF/, '').split(/\r?\n/);
+  const lines = fs
+    .readFileSync(filePath, 'utf-8')
+    .replace(/^\uFEFF/, '')
+    .split(/\r?\n/);
   const blocks = [];
   let cur = null;
   let inFamily = false;
@@ -177,7 +261,10 @@ function parseFile(filePath, fileName) {
   const flush = () => {
     if (cur) {
       if (cur.pend) {
-        cur.fields[cur.pend] = cur.valbuf.filter((l) => l.trim()).join('\n').trim();
+        cur.fields[cur.pend] = cur.valbuf
+          .filter((l) => l.trim())
+          .join('\n')
+          .trim();
         cur.pend = null;
         cur.valbuf = [];
       }
@@ -186,7 +273,14 @@ function parseFile(filePath, fileName) {
     cur = null;
   };
 
-  const newBlock = () => ({ name: null, fields: {}, file: fileName, family: familyKey, pend: null, valbuf: [] });
+  const newBlock = () => ({
+    name: null,
+    fields: {},
+    file: fileName,
+    family: familyKey,
+    pend: null,
+    valbuf: [],
+  });
 
   for (let i = 0; i < lines.length; i++) {
     const s = lines[i].trim();
@@ -213,7 +307,10 @@ function parseFile(filePath, fileName) {
     if (inFamily) {
       if (s === '---') {
         if (cur && cur.pend) {
-          cur.fields[cur.pend] = cur.valbuf.filter((l) => l.trim()).join('\n').trim();
+          cur.fields[cur.pend] = cur.valbuf
+            .filter((l) => l.trim())
+            .join('\n')
+            .trim();
           cur.pend = null;
           cur.valbuf = [];
         }
@@ -225,7 +322,10 @@ function parseFile(filePath, fileName) {
           // fim do bloco de família (campo repetido, ex.: `### nome` da 1ª abordagem):
           // encerra o bloco e abre um novo para a abordagem seguinte.
           if (cur && cur.pend) {
-            cur.fields[cur.pend] = cur.valbuf.filter((l) => l.trim()).join('\n').trim();
+            cur.fields[cur.pend] = cur.valbuf
+              .filter((l) => l.trim())
+              .join('\n')
+              .trim();
             cur.pend = null;
             cur.valbuf = [];
           }
@@ -238,7 +338,10 @@ function parseFile(filePath, fileName) {
         }
         seen.add(mf[1]);
         if (cur && cur.pend) {
-          cur.fields[cur.pend] = cur.valbuf.filter((l) => l.trim()).join('\n').trim();
+          cur.fields[cur.pend] = cur.valbuf
+            .filter((l) => l.trim())
+            .join('\n')
+            .trim();
         }
         cur.pend = mf[1];
         cur.valbuf = [];
@@ -247,7 +350,10 @@ function parseFile(filePath, fileName) {
       if (s.startsWith('### ') || s.startsWith('## ')) {
         // outra seção → fim do bloco de família; o heading segue o fluxo normal
         if (cur && cur.pend) {
-          cur.fields[cur.pend] = cur.valbuf.filter((l) => l.trim()).join('\n').trim();
+          cur.fields[cur.pend] = cur.valbuf
+            .filter((l) => l.trim())
+            .join('\n')
+            .trim();
           cur.pend = null;
           cur.valbuf = [];
         }
@@ -287,12 +393,18 @@ function parseFile(filePath, fileName) {
       }
       // Gatilho p/ blocos malformados (sem `### nome`): campo novo quando o
       // último campo do bloco atual era `leituras_fundamentais`.
-      if (!cur || (Object.keys(cur.fields).length > 0 && cur.fields._last === 'leituras_fundamentais')) {
+      if (
+        !cur ||
+        (Object.keys(cur.fields).length > 0 && cur.fields._last === 'leituras_fundamentais')
+      ) {
         flush();
         cur = newBlock();
       }
       if (cur.pend) {
-        cur.fields[cur.pend] = cur.valbuf.filter((l) => l.trim()).join('\n').trim();
+        cur.fields[cur.pend] = cur.valbuf
+          .filter((l) => l.trim())
+          .join('\n')
+          .trim();
       }
       cur.pend = f;
       cur.fields._last = f;
@@ -324,7 +436,10 @@ function parseFile(filePath, fileName) {
           cur = newBlock();
         }
         if (cur.pend) {
-          cur.fields[cur.pend] = cur.valbuf.filter((l) => l.trim()).join('\n').trim();
+          cur.fields[cur.pend] = cur.valbuf
+            .filter((l) => l.trim())
+            .join('\n')
+            .trim();
         }
         cur.fields[f] = mi[2].trim();
         cur.fields._last = f;
@@ -338,7 +453,10 @@ function parseFile(filePath, fileName) {
 
     if (s === '---') {
       if (cur && cur.pend) {
-        cur.fields[cur.pend] = cur.valbuf.filter((l) => l.trim()).join('\n').trim();
+        cur.fields[cur.pend] = cur.valbuf
+          .filter((l) => l.trim())
+          .join('\n')
+          .trim();
         cur.pend = null;
         cur.valbuf = [];
       }
@@ -387,16 +505,79 @@ function pickCanonical(blocks, familyKey, canonicalName) {
 
 // Autores fundamentais: sobrenomes conhecidos presentes no nome ou origem.
 const KNOWN_AUTHORS = [
-  'Freud', 'Klein', 'Winnicott', 'Kohut', 'Fairbairn', 'Sullivan', 'Jung', 'Adler',
-  'Beck', 'Ellis', 'Linehan', 'Wolpe', 'Skinner', 'Watson', 'Bandura', 'Meichenbaum',
-  'Minuchin', 'Haley', 'Bowen', 'Selvini', 'Palazzoli', 'Boscolo', 'Cecchin', 'Prata',
-  'Watzlawick', 'Satir', 'Whitaker', 'Minuchin', 'Ackerman', 'Johnson', 'Greenberg',
-  'Rogers', 'Perls', 'Maslow', 'Frankl', 'May', 'Yalom', 'Bugental', 'Gendlin',
-  'Binswanger', 'Boss', 'Heidegger', 'Sartre', 'Merleau-Ponty', 'Buber',
-  'White', 'Epston', 'Anderson', 'Goolishian', 'Neimeyer', 'Kelly', 'Erickson',
-  'Gottman', 'Linehan', 'Hayes', 'Segal', 'Teasdale', 'Kabat-Zinn', 'Gilbert',
-  'Wells', 'Resick', 'Klerman', 'Weissman', 'Wachtel', 'Prochaska', 'DiClemente',
-  'Lazarus', 'Norcross', 'Beutler', 'Stricker', 'Gold', 'Anchin', 'Fruzzetti',
+  'Freud',
+  'Klein',
+  'Winnicott',
+  'Kohut',
+  'Fairbairn',
+  'Sullivan',
+  'Jung',
+  'Adler',
+  'Beck',
+  'Ellis',
+  'Linehan',
+  'Wolpe',
+  'Skinner',
+  'Watson',
+  'Bandura',
+  'Meichenbaum',
+  'Minuchin',
+  'Haley',
+  'Bowen',
+  'Selvini',
+  'Palazzoli',
+  'Boscolo',
+  'Cecchin',
+  'Prata',
+  'Watzlawick',
+  'Satir',
+  'Whitaker',
+  'Minuchin',
+  'Ackerman',
+  'Johnson',
+  'Greenberg',
+  'Rogers',
+  'Perls',
+  'Maslow',
+  'Frankl',
+  'May',
+  'Yalom',
+  'Bugental',
+  'Gendlin',
+  'Binswanger',
+  'Boss',
+  'Heidegger',
+  'Sartre',
+  'Merleau-Ponty',
+  'Buber',
+  'White',
+  'Epston',
+  'Anderson',
+  'Goolishian',
+  'Neimeyer',
+  'Kelly',
+  'Erickson',
+  'Gottman',
+  'Linehan',
+  'Hayes',
+  'Segal',
+  'Teasdale',
+  'Kabat-Zinn',
+  'Gilbert',
+  'Wells',
+  'Resick',
+  'Klerman',
+  'Weissman',
+  'Wachtel',
+  'Prochaska',
+  'DiClemente',
+  'Lazarus',
+  'Norcross',
+  'Beutler',
+  'Stricker',
+  'Gold',
+  'Anchin',
+  'Fruzzetti',
 ];
 
 function extractAuthors(name, origem) {
@@ -413,7 +594,18 @@ function extractAuthors(name, origem) {
 // tags: derivadas da família + palavras-chave do nome.
 function deriveTags(name, familyName) {
   const tags = [norm(familyName)];
-  for (const kw of ['psicanalise', 'behaviorismo', 'cognitiv', 'humanista', 'existencial', 'sistemica', 'narrativa', 'interpessoal', 'integrativa', 'feminista']) {
+  for (const kw of [
+    'psicanalise',
+    'behaviorismo',
+    'cognitiv',
+    'humanista',
+    'existencial',
+    'sistemica',
+    'narrativa',
+    'interpessoal',
+    'integrativa',
+    'feminista',
+  ]) {
     if (norm(name).includes(kw)) tags.push(kw);
   }
   return tags;
@@ -454,7 +646,10 @@ function main() {
     // Bloco da família (`## Registro familia`) está no *_registros.md
     const regBlocks = blocks.filter((b) => b.file.includes('_registros') && b.family === familyKey);
     const famBlock = regBlocks.find((b) => b.fields.ordem_exibicao !== undefined);
-    const familyName = famBlock?.fields?.nome || famBlock?.fields?.name || familyKey.split('_').slice(1).join(' ').replace(/-/g, ' ');
+    const familyName =
+      famBlock?.fields?.nome ||
+      famBlock?.fields?.name ||
+      familyKey.split('_').slice(1).join(' ').replace(/-/g, ' ');
     const familyDesc = famBlock?.fields?.descricao_curta ?? '';
     const order = Number(famBlock?.fields?.ordem_exibicao ?? familyKey.slice(0, 2));
 
@@ -516,7 +711,9 @@ function main() {
   // relações cruzadas ("conversando com outras abordagens")
   const canonicalOfRow = new Map();
   for (const [fk, names] of Object.entries(CANONICAL)) {
-    names.forEach((n, idx) => canonicalOfRow.set(`psic-${fk.slice(0, 2)}-${String(idx + 1).padStart(2, '0')}`, n));
+    names.forEach((n, idx) =>
+      canonicalOfRow.set(`psic-${fk.slice(0, 2)}-${String(idx + 1).padStart(2, '0')}`, n),
+    );
   }
   for (const row of rows) {
     const canonicalName = canonicalOfRow.get(row.id);
@@ -555,7 +752,9 @@ function main() {
   fs.writeFileSync(familiesOut, familiesTs, 'utf-8');
   fs.writeFileSync(approachesOut, approachesTs, 'utf-8');
   fs.rmSync(OUT_FILE, { force: true });
-  console.log(`✅ gerado ${path.relative(ROOT, familiesOut)} e ${path.relative(ROOT, approachesOut)} — ${total} abordagens`);
+  console.log(
+    `✅ gerado ${path.relative(ROOT, familiesOut)} e ${path.relative(ROOT, approachesOut)} — ${total} abordagens`,
+  );
   for (const [f, c] of Object.entries(perFamily)) console.log(`   ${f}: ${c}`);
 }
 

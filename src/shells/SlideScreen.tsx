@@ -53,10 +53,7 @@ export const SlideScreen: React.FC<SlideScreenProps> = ({ intent, children }) =>
     return () => window.removeEventListener('resize', read);
   }, []);
 
-  const variants = useMemo(
-    () => createScreenVariants(width, profile),
-    [width, profile],
-  );
+  const variants = useMemo(() => createScreenVariants(width, profile), [width, profile]);
 
   // Enquanto presente, registra o topo do elemento em coordenadas de documento
   // (rect.top já desconta o scroll atual — somamos de volta).
@@ -123,9 +120,7 @@ export const SlideScreen: React.FC<SlideScreenProps> = ({ intent, children }) =>
             ? undefined
             : 'w-full max-w-md sm:max-w-xl lg:max-w-3xl xl:max-w-4xl mx-auto px-3.5 sm:px-5 lg:px-8'
         }
-        style={
-          isPresent ? undefined : { transform: `translateY(-${getFrozenExitScrollY()}px)` }
-        }
+        style={isPresent ? undefined : { transform: `translateY(-${getFrozenExitScrollY()}px)` }}
       >
         {children}
       </div>

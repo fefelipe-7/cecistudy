@@ -7,14 +7,22 @@ export const FieldLabel: React.FC<{ children: React.ReactNode; htmlFor?: string 
   children,
   htmlFor,
 }) => (
-  <label htmlFor={htmlFor} className="block text-[11px] font-semibold text-ceci-tertiary mb-1.5 uppercase tracking-wider">
+  <label
+    htmlFor={htmlFor}
+    className="block text-[11px] font-semibold text-ceci-tertiary mb-1.5 uppercase tracking-wider"
+  >
     {children}
   </label>
 );
 
 /** Microlinha de ajuda abaixo de um campo: explica o que colocar ali. */
-export const FieldHint: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
-  <p className={cn('text-[11px] text-ceci-tertiary leading-relaxed mt-1.5', className)}>{children}</p>
+export const FieldHint: React.FC<{ children: React.ReactNode; className?: string }> = ({
+  children,
+  className,
+}) => (
+  <p className={cn('text-[11px] text-ceci-tertiary leading-relaxed mt-1.5', className)}>
+    {children}
+  </p>
 );
 
 /** Campo completo dos wizards: rótulo + controle + hint explicativo opcional. */
@@ -118,11 +126,7 @@ export const DateField: React.FC<{
 
 /** Input numérico com teclado numérico no mobile. */
 export const NumberInput: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = (props) => (
-  <input
-    inputMode="numeric"
-    {...props}
-    className={cn(inputClass, 'text-sm', props.className)}
-  />
+  <input inputMode="numeric" {...props} className={cn(inputClass, 'text-sm', props.className)} />
 );
 
 /**
@@ -204,7 +208,10 @@ export const DeadlineField: React.FC<{
           <button
             type="button"
             onClick={() => onChange('')}
-            className={cn(chipBase, 'bg-surface-default border-ceci-border-default text-status-danger-strong hover:bg-surface-rose')}
+            className={cn(
+              chipBase,
+              'bg-surface-default border-ceci-border-default text-status-danger-strong hover:bg-surface-rose',
+            )}
           >
             sem data
           </button>

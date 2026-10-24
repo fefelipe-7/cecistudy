@@ -33,7 +33,10 @@ const AchievementsPreview: React.FC<AchievementsPreviewProps> = ({
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <Flame className="w-4 h-4 text-ceci-brand-strong" aria-hidden="true" />
-          <h2 id="perfil-conquistas-titulo" className="font-display font-bold text-xl text-ceci-primary">
+          <h2
+            id="perfil-conquistas-titulo"
+            className="font-display font-bold text-xl text-ceci-primary"
+          >
             conquistas
           </h2>
         </div>
@@ -89,7 +92,9 @@ const AchievementsPreview: React.FC<AchievementsPreviewProps> = ({
                   : 'bg-surface-muted border-ceci-border-subtle text-ceci-muted',
               )}
             >
-              <span aria-hidden="true">{sticker.unlocked ? sticker.emoji : <Lock className="w-3.5 h-3.5" />}</span>
+              <span aria-hidden="true">
+                {sticker.unlocked ? sticker.emoji : <Lock className="w-3.5 h-3.5" />}
+              </span>
               <span className="sr-only">
                 {sticker.unlocked ? `${sticker.name}, desbloqueado` : `${sticker.name}, bloqueado`}
               </span>
@@ -113,7 +118,9 @@ const AchievementsPreview: React.FC<AchievementsPreviewProps> = ({
             ofensiva de {streak.current} {streak.current === 1 ? 'dia' : 'dias'}
           </span>
           <span className="block text-[11px] text-ceci-secondary">
-            {streak.alive ? `recorde: ${streak.longest} dias` : `melhor sequência: ${streak.longest} dias`}
+            {streak.alive
+              ? `recorde: ${streak.longest} dias`
+              : `melhor sequência: ${streak.longest} dias`}
           </span>
         </span>
         <ArrowRight className="w-4 h-4 text-ceci-muted" aria-hidden="true" />

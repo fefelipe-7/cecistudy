@@ -67,7 +67,9 @@ export const CatalogMultiSelect: React.FC<CatalogMultiSelectProps> = ({
   const filtered = useMemo(() => {
     if (!term.trim()) return options;
     const t = term.trim().toLowerCase();
-    return options.filter((o) => o.label.toLowerCase().includes(t) || o.hint?.toLowerCase().includes(t));
+    return options.filter(
+      (o) => o.label.toLowerCase().includes(t) || o.hint?.toLowerCase().includes(t),
+    );
   }, [options, term]);
 
   const visibleGroups = groups.filter((g) => filtered.some((o) => o.group === g));
@@ -77,7 +79,9 @@ export const CatalogMultiSelect: React.FC<CatalogMultiSelectProps> = ({
     <Modal open={open} onClose={closeSheet} position="bottom" className="w-full max-w-md">
       <div className="bg-surface-default rounded-t-[28px] sm:rounded-2xl border border-ceci-border-default shadow-xl overflow-hidden text-ceci-primary">
         <div className="px-5 pt-4 pb-2 border-b border-ceci-border-subtle">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-ceci-tertiary">{title}</p>
+          <p className="text-[10px] font-bold uppercase tracking-wider text-ceci-tertiary">
+            {title}
+          </p>
         </div>
 
         <div className="px-5 pt-3 pb-1">
@@ -147,7 +151,9 @@ export const CatalogMultiSelect: React.FC<CatalogMultiSelectProps> = ({
                         onClick={() => toggle(o.value)}
                         className={cn(
                           'w-full flex items-center justify-between gap-2 px-5 py-3 text-sm text-left cursor-pointer transition-colors',
-                          sel ? 'bg-surface-rose text-ceci-brand-strong font-semibold' : 'hover:bg-surface-muted'
+                          sel
+                            ? 'bg-surface-rose text-ceci-brand-strong font-semibold'
+                            : 'hover:bg-surface-muted',
                         )}
                       >
                         <span className="min-w-0 flex flex-col">

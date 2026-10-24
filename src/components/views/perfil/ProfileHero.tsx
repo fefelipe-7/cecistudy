@@ -20,8 +20,7 @@ interface ProfileHeroProps {
 }
 
 /** Frase editorial para quando a usuária ainda não escreveu a dela (§7). */
-const QUOTE_PLACEHOLDER =
-  'um cantinho para organizar a rotina da faculdade com carinho ♡';
+const QUOTE_PLACEHOLDER = 'um cantinho para organizar a rotina da faculdade com carinho ♡';
 
 const ProfileHero: React.FC<ProfileHeroProps> = ({
   identity,

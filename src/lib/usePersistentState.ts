@@ -12,9 +12,9 @@ const WRITE_DEBOUNCE_MS = 200;
  * O web mantém exatamente o comportamento anterior; no nativo, os seeds aparecem
  * por um instante até a hidratação concluir.
  */
-export const usePersistentState = <T,>(
+export const usePersistentState = <T>(
   key: string,
-  initialValue: T
+  initialValue: T,
 ): [T, React.Dispatch<React.SetStateAction<T>>] => {
   const hydratedRef = useRef(!isNativePlatform);
   const [state, setState] = useState<T>(() => {

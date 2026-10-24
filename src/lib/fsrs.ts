@@ -3,7 +3,9 @@ import { todayKeyLocal, addDaysKey, daysBetween as civilDaysBetween } from './da
 
 export type FSRSQuality = 0 | 1 | 2 | 3;
 
-export const FSRS_PARAMS = [0.4,0.6,2.4,5.8,4.93,0.94,0.86,0.01,1.49,0.14,0.94,2.18,0.05,0.34,1.26,0.29,2.61];
+export const FSRS_PARAMS = [
+  0.4, 0.6, 2.4, 5.8, 4.93, 0.94, 0.86, 0.01, 1.49, 0.14, 0.94, 2.18, 0.05, 0.34, 1.26, 0.29, 2.61,
+];
 
 /**
  * Data civil local (`YYYY-MM-DD`). **Nunca** `toISOString()`: em fuso negativo
@@ -49,7 +51,7 @@ export function schedule(card: Flashcard, quality: FSRSQuality, nowIso = todayIS
   const d = clamp(card.difficulty ?? 5, 0.01, 10);
   const lastDue = card.due ?? nowIso;
   const delta = daysBetween(lastDue, nowIso);
-  const retrievability = Math.exp(-Math.log(2) / Math.max(0.01, s) * Math.max(0, delta));
+  const retrievability = Math.exp((-Math.log(2) / Math.max(0.01, s)) * Math.max(0, delta));
 
   let newStability = s;
   let newDifficulty = d;
@@ -81,12 +83,15 @@ export function schedule(card: Flashcard, quality: FSRSQuality, nowIso = todayIS
   }
 
   const desiredRetention = 0.9;
-  const interval = Math.max(1, Math.round(newStability * Math.log(desiredRetention) / Math.log(0.5)));
+  const interval = Math.max(
+    1,
+    Math.round((newStability * Math.log(desiredRetention)) / Math.log(0.5)),
+  );
   // Aritmética civil sobre `nowIso` (não `new Date()` + `toISOString()`): o
   // vencimento é `nowIso + interval` em dias civis, sem deslocamento de fuso.
   const due = addDaysKey(nowIso, interval);
 
-  const newRetrievability = Math.exp(-Math.log(2) / Math.max(0.01, newStability) * interval);
+  const newRetrievability = Math.exp((-Math.log(2) / Math.max(0.01, newStability)) * interval);
 
   return {
     ...card,

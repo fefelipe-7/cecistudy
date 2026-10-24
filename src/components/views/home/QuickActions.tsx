@@ -42,7 +42,9 @@ const QuickActions: React.FC<QuickActionsProps> = ({ dueCardsCount, onFocus, onR
           )}
         </div>
         <p className="text-[11px] text-ceci-secondary">
-          {dueCardsCount > 0 ? `${dueCardsCount} ${dueCardsCount === 1 ? 'cartão vencido' : 'cartões vencidos'}` : 'cartões em dia ♡'}
+          {dueCardsCount > 0
+            ? `${dueCardsCount} ${dueCardsCount === 1 ? 'cartão vencido' : 'cartões vencidos'}`
+            : 'cartões em dia ♡'}
         </p>
       </motion.button>
     </div>

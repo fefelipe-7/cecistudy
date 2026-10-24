@@ -30,7 +30,13 @@ export interface Project {
   updatedAt: string;
 }
 
-export type AcademicNodeKind = 'preatextual' | 'capitulo' | 'secao' | 'subsecao' | 'postextual' | 'opcional';
+export type AcademicNodeKind =
+  | 'preatextual'
+  | 'capitulo'
+  | 'secao'
+  | 'subsecao'
+  | 'postextual'
+  | 'opcional';
 export type Requiredness = 'obrigatorio' | 'recomendado' | 'opcional' | 'oculto' | 'nao_aplicavel';
 
 export interface AcademicNode {
@@ -95,10 +101,34 @@ export function createProject(input: {
   const tree: AcademicNode[] =
     input.type === 'tcc'
       ? [
-          { id: makeId('acn'), title: 'Introdução', kind: 'capitulo', requiredness: 'obrigatorio', children: [] },
-          { id: makeId('acn'), title: 'Referencial Teórico', kind: 'capitulo', requiredness: 'obrigatorio', children: [] },
-          { id: makeId('acn'), title: 'Metodologia', kind: 'capitulo', requiredness: 'obrigatorio', children: [] },
-          { id: makeId('acn'), title: 'Considerações Finais', kind: 'capitulo', requiredness: 'obrigatorio', children: [] },
+          {
+            id: makeId('acn'),
+            title: 'Introdução',
+            kind: 'capitulo',
+            requiredness: 'obrigatorio',
+            children: [],
+          },
+          {
+            id: makeId('acn'),
+            title: 'Referencial Teórico',
+            kind: 'capitulo',
+            requiredness: 'obrigatorio',
+            children: [],
+          },
+          {
+            id: makeId('acn'),
+            title: 'Metodologia',
+            kind: 'capitulo',
+            requiredness: 'obrigatorio',
+            children: [],
+          },
+          {
+            id: makeId('acn'),
+            title: 'Considerações Finais',
+            kind: 'capitulo',
+            requiredness: 'obrigatorio',
+            children: [],
+          },
         ]
       : [];
   return {

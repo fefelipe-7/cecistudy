@@ -76,7 +76,7 @@ export const WizardScaffoldFooter: React.FC<WizardScaffoldFooterProps> = ({
                   isLast
                     ? 'bg-ceci-brand hover:bg-ceci-brand-strong text-ceci-on-brand'
                     : 'bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary',
-                  (!canConfirm || saving) && 'opacity-40 cursor-not-allowed'
+                  (!canConfirm || saving) && 'opacity-40 cursor-not-allowed',
                 )}
               >
                 {saving ? (

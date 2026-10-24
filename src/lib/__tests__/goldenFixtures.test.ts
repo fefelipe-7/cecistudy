@@ -46,7 +46,7 @@ function writeIfEnabled(): void {
     for (const key of goldenCollectionKeys(payload)) {
       writeFileSync(
         join(GOLDEN_DIR, `collections/${label}/${key}.json`),
-        canonicalize(payload[key]) + '\n'
+        canonicalize(payload[key]) + '\n',
       );
     }
   }
@@ -87,12 +87,14 @@ describe('golden fixtures (F0.4)', () => {
   });
 
   it('envelope vazio bate com full_backup.empty.json', () => {
-    expect(canonicalize(goldenEnvelope(emptySnapshot()))).toBe(readGolden('full_backup.empty.json'));
+    expect(canonicalize(goldenEnvelope(emptySnapshot()))).toBe(
+      readGolden('full_backup.empty.json'),
+    );
   });
 
   it('envelope cênico bate com full_backup.sample.json', () => {
     expect(canonicalize(goldenEnvelope(sampleSnapshot()))).toBe(
-      readGolden('full_backup.sample.json')
+      readGolden('full_backup.sample.json'),
     );
   });
 
@@ -100,7 +102,7 @@ describe('golden fixtures (F0.4)', () => {
     const payload = goldenEnvelope(sampleSnapshot()).payload as Record<string, unknown>;
     for (const key of goldenCollectionKeys(payload)) {
       expect(canonicalize(payload[key]), `coleção ${key}`).toBe(
-        readGolden(`collections/sample/${key}.json`)
+        readGolden(`collections/sample/${key}.json`),
       );
     }
   });
@@ -109,7 +111,7 @@ describe('golden fixtures (F0.4)', () => {
     const payload = goldenEnvelope(emptySnapshot()).payload as Record<string, unknown>;
     for (const key of goldenCollectionKeys(payload)) {
       expect(canonicalize(payload[key]), `coleção ${key}`).toBe(
-        readGolden(`collections/empty/${key}.json`)
+        readGolden(`collections/empty/${key}.json`),
       );
     }
   });
@@ -117,7 +119,12 @@ describe('golden fixtures (F0.4)', () => {
   it('arquivos em collections/ seguem 1-por-coleção (nenhum órfão/extra)', () => {
     for (const label of ['empty', 'sample'] as const) {
       const expected = new Set(
-        goldenCollectionKeys(goldenEnvelope(label === 'empty' ? emptySnapshot() : sampleSnapshot()).payload as Record<string, unknown>)
+        goldenCollectionKeys(
+          goldenEnvelope(label === 'empty' ? emptySnapshot() : sampleSnapshot()).payload as Record<
+            string,
+            unknown
+          >,
+        ),
       );
       const files = readdirSync(join(GOLDEN_DIR, `collections/${label}`))
         .filter((f) => f.endsWith('.json'))

@@ -30,7 +30,7 @@ const draftFromContext = (
   previous: ComposeDraft | undefined,
   composeCourseId: string | undefined,
   lastPrefs: ComposePrefs | undefined,
-  courses: { id: string }[]
+  courses: { id: string }[],
 ): ComposeDraft => {
   const base = previous ?? emptyDraft();
   return {
@@ -52,11 +52,13 @@ export const ComposeNoteView: React.FC = () => {
     openDetailPrompt,
   } = useMobileApp();
 
-  const [lastPrefs, setLastPrefs] = usePersistentState<ComposePrefs>('composePrefs', { mode: 'avulsa' });
+  const [lastPrefs, setLastPrefs] = usePersistentState<ComposePrefs>('composePrefs', {
+    mode: 'avulsa',
+  });
   const [draft, setDraft] = usePersistentState<ComposeDraft>(COMPOSE_DRAFT_KEY, emptyDraft());
 
   const [initial] = useState<ComposeDraft>(() =>
-    draftFromContext(draft, composeCourseId, lastPrefs, courses)
+    draftFromContext(draft, composeCourseId, lastPrefs, courses),
   );
   const [mode, setMode] = useState<ComposeDraft['mode']>(initial.mode);
   const [courseId, setCourseId] = useState<string | undefined>(initial.courseId);
@@ -143,7 +145,7 @@ export const ComposeNoteView: React.FC = () => {
           text: content,
           category,
           courseId,
-        })
+        }),
       );
       hapticSuccess();
       setConfirmDiscard(false);
@@ -253,7 +255,10 @@ export const ComposeNoteView: React.FC = () => {
         labelledBy="compose-discard-title"
       >
         <div className="bg-surface-default rounded-[20px] border border-ceci-border-default shadow-xl p-5 max-w-sm w-full text-center">
-          <p id="compose-discard-title" className="font-display font-bold text-sm text-ceci-primary">
+          <p
+            id="compose-discard-title"
+            className="font-display font-bold text-sm text-ceci-primary"
+          >
             descartar essa nota?
           </p>
           <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">

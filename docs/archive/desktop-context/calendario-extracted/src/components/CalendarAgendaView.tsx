@@ -40,7 +40,10 @@ export const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({
   };
 
   return (
-    <div id="calendar-agenda-view" className="flex-1 flex flex-col min-w-0 bg-[#FFFCF8] overflow-y-auto p-6 select-none">
+    <div
+      id="calendar-agenda-view"
+      className="flex-1 flex flex-col min-w-0 bg-[#FFFCF8] overflow-y-auto p-6 select-none"
+    >
       <div className="max-w-4xl mx-auto w-full flex flex-col gap-6">
         <div className="flex items-center justify-between pb-2 border-b border-[#E9DFDC]">
           <div>
@@ -126,8 +129,8 @@ export const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({
                                 item.commitment === 'obrigatorio'
                                   ? 'bg-[#F3F9FC] text-[#396D82]'
                                   : item.commitment === 'importante'
-                                  ? 'bg-[#FFF5F7] text-[#B94862]'
-                                  : 'bg-[#F2FAF5] text-[#356647]'
+                                    ? 'bg-[#FFF5F7] text-[#B94862]'
+                                    : 'bg-[#F2FAF5] text-[#356647]'
                               }`}
                             >
                               {item.commitment}
@@ -136,9 +139,7 @@ export const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({
 
                           <h3
                             className={`text-sm font-bold truncate ${
-                              isCompleted
-                                ? 'text-[#ADA3A5] line-through'
-                                : 'text-[#40383A]'
+                              isCompleted ? 'text-[#ADA3A5] line-through' : 'text-[#40383A]'
                             }`}
                           >
                             {item.title}
@@ -146,7 +147,8 @@ export const CalendarAgendaView: React.FC<CalendarAgendaViewProps> = ({
 
                           {item.etapas.length > 0 && (
                             <span className="text-[11px] text-[#918689]">
-                              {item.etapas.filter((e) => e.completed).length} de {item.etapas.length} subtarefas concluídas
+                              {item.etapas.filter((e) => e.completed).length} de{' '}
+                              {item.etapas.length} subtarefas concluídas
                             </span>
                           )}
                         </div>

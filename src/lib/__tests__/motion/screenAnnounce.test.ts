@@ -7,11 +7,7 @@
  */
 import { describe, expect, it } from 'vitest';
 
-import {
-  TAB_LABELS,
-  screenAnnouncement,
-  tabLabel,
-} from '../../../lib/motion/screenAnnounce';
+import { TAB_LABELS, screenAnnouncement, tabLabel } from '../../../lib/motion/screenAnnounce';
 
 describe('tabLabel', () => {
   it('nomeia as quatro abas raiz', () => {

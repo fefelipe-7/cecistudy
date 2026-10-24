@@ -42,7 +42,9 @@ const DangerZone: React.FC<DangerZoneProps> = ({ onReset }) => {
 
       <Modal open={pendingReset} onClose={() => setPendingReset(false)} closeOnBackdrop={false}>
         <div className="w-full max-w-sm bg-surface-default rounded-2xl shadow-floating p-6">
-          <h3 className="font-display font-bold text-lg text-ceci-primary mb-2">resetar cantinho?</h3>
+          <h3 className="font-display font-bold text-lg text-ceci-primary mb-2">
+            resetar cantinho?
+          </h3>
           <p className="text-sm text-ceci-secondary leading-relaxed mb-5">
             isso apaga todo o conteúdo do cantinho e não dá para desfazer. tem certeza?
           </p>

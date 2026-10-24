@@ -51,9 +51,7 @@ describe('ThreeDPaper — engine desduplicado (spec §4.3/F7.3)', () => {
 
   it('as quatro variantes montam documentos distintos e completos', () => {
     for (const [variant] of Object.entries(BODIES)) {
-      const { getByTitle, unmount } = render(
-        <ThreeDPaper variant={variant as 'original'} />,
-      );
+      const { getByTitle, unmount } = render(<ThreeDPaper variant={variant as 'original'} />);
       const iframe = getByTitle(/3D Paper/) as HTMLIFrameElement;
       const srcDoc = iframe.getAttribute('srcdoc') ?? '';
       expect(srcDoc).not.toContain(ENGINE_MARKER);

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ChevronUp, ChevronDown, Trash2, GripVertical } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
-import { CELEBRACAO, erro, frase } from '../../lib/voice';
+import { useNavValue } from '@/context/shellNavContexts';
+import { CELEBRACAO, VAZIO, erro, frase } from '../../lib/voice';
 import {
   THESIS_ID,
   ThesisChapter,
@@ -56,15 +57,29 @@ const parseCount = (raw: string): number | undefined => {
 };
 
 export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onClose }) => {
-  const { thesisChapters, thesisReferences, setThesisChapters, setThesisReferences, showToast } =
-    useMobileApp();
+  const {
+    thesisChapters,
+    thesisReferences,
+    readings,
+    setThesisChapters,
+    setThesisReferences,
+    showToast,
+  } = useMobileApp();
+  const { openTccSheet } = useNavValue();
 
   const live = chapterId === 'new' ? undefined : thesisChapters.find((c) => c.id === chapterId);
+
+  /** Referências vinculadas a este capítulo — somente leitura (T4.2/D10). */
+  const vinculadas = useMemo(
+    () => (live ? thesisReferences.filter((r) => (r.chapterIds ?? []).includes(live.id)) : []),
+    [thesisReferences, live],
+  );
 
   const [title, setTitle] = useState('');
   const [kind, setKind] = useState<ChapterKind>('capitulo');
   const [parentId, setParentId] = useState('');
   const [stage, setStage] = useState<ChapterStage>('a_fazer');
+  const [essencial, setEssencial] = useState(true);
   const [dueDate, setDueDate] = useState('');
   const [wordGoal, setWordGoal] = useState('');
   const [wordCount, setWordCount] = useState('');
@@ -77,6 +92,7 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
     setKind(live?.kind ?? 'capitulo');
     setParentId(live?.parentId ?? '');
     setStage(live?.stage ?? 'a_fazer');
+    setEssencial((live?.requiredness ?? 'obrigatorio') === 'obrigatorio');
     setDueDate(live?.dueDate ?? '');
     setWordGoal(live?.wordGoal != null ? String(live.wordGoal) : '');
     setWordCount(live?.wordCount != null ? String(live.wordCount) : '');
@@ -112,6 +128,7 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
       }),
       title: trimmed,
       kind,
+      requiredness: essencial ? 'obrigatorio' : 'opcional',
       parentId: nextParent,
       position: live?.position ?? siblings.length,
       stage,
@@ -160,7 +177,9 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
         </h3>
 
         <div>
-          <label htmlFor="cap-titulo" className={labelClass}>título</label>
+          <label htmlFor="cap-titulo" className={labelClass}>
+            título
+          </label>
           <input
             id="cap-titulo"
             type="text"
@@ -184,7 +203,9 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
             />
           </div>
           <div>
-            <label htmlFor="cap-prazo" className={labelClass}>prazo</label>
+            <label htmlFor="cap-prazo" className={labelClass}>
+              prazo
+            </label>
             <input
               id="cap-prazo"
               type="date"
@@ -197,7 +218,9 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
 
         {kind === 'secao' && (
           <div>
-            <label htmlFor="cap-dentro" className={labelClass}>dentro de</label>
+            <label htmlFor="cap-dentro" className={labelClass}>
+              dentro de
+            </label>
             <select
               id="cap-dentro"
               value={parentId}
@@ -206,7 +229,9 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
             >
               <option value="">— escolha o capítulo —</option>
               {parents.map((c) => (
-                <option key={c.id} value={c.id}>{c.title}</option>
+                <option key={c.id} value={c.id}>
+                  {c.title}
+                </option>
               ))}
             </select>
           </div>
@@ -224,9 +249,26 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
           />
         </div>
 
+        <div>
+          <label className={labelClass}>importância</label>
+          <SegmentedControl
+            variant="rose"
+            ariaLabel="importância do capítulo"
+            className="w-full [&>button]:flex-1"
+            value={essencial ? 'essencial' : 'opcional'}
+            onChange={(v) => setEssencial(v === 'essencial')}
+            options={[
+              { value: 'essencial', label: 'essencial' },
+              { value: 'opcional', label: 'opcional' },
+            ]}
+          />
+        </div>
+
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label htmlFor="cap-meta" className={labelClass}>meta de palavras</label>
+            <label htmlFor="cap-meta" className={labelClass}>
+              meta de palavras
+            </label>
             <input
               id="cap-meta"
               type="number"
@@ -240,7 +282,9 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
             />
           </div>
           <div>
-            <label htmlFor="cap-atual" className={labelClass}>palavras até aqui</label>
+            <label htmlFor="cap-atual" className={labelClass}>
+              palavras até aqui
+            </label>
             <input
               id="cap-atual"
               type="number"
@@ -256,7 +300,9 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
         </div>
 
         <div>
-          <label htmlFor="cap-nota" className={labelClass}>nota</label>
+          <label htmlFor="cap-nota" className={labelClass}>
+            nota
+          </label>
           <textarea
             id="cap-nota"
             rows={2}
@@ -266,6 +312,32 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
             placeholder="o que falta, o que a orientadora pediu…"
           />
         </div>
+
+        {live && (
+          <div className="space-y-2">
+            <span className={labelClass}>referências deste capítulo</span>
+            {vinculadas.length === 0 ? (
+              <p className="text-[11px] text-ceci-secondary leading-relaxed">
+                {frase(VAZIO, 'capituloSemReferencia')}
+              </p>
+            ) : (
+              <ul className="space-y-1.5">
+                {vinculadas.map((r) => (
+                  <li key={r.id}>
+                    <button
+                      type="button"
+                      onClick={() => openTccSheet({ type: 'reference', id: r.id })}
+                      aria-label="abrir a referência"
+                      className="w-full text-left px-3 py-2 rounded-xl bg-surface-default border border-ceci-border-default text-xs text-ceci-primary hover:border-ceci-border-brand transition-colors min-h-[44px] cursor-pointer"
+                    >
+                      {readings.find((x) => x.id === r.readingId)?.title ?? 'referência'}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
 
         {live && (
           <div className="flex items-center gap-2">
@@ -331,8 +403,8 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
             remover “{live?.title}”?
           </h3>
           <p className="text-xs text-ceci-secondary leading-relaxed">
-            as referências que apontam pra cá continuam salvas — só perdem o
-            vínculo com este capítulo.
+            as referências que apontam pra cá continuam salvas — só perdem o vínculo com este
+            capítulo.
           </p>
           <div className="flex items-center justify-end gap-2">
             <button

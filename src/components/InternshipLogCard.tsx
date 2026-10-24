@@ -81,8 +81,14 @@ export const InternshipLogCard: React.FC<InternshipLogCardProps> = ({
   onOpenSupervision,
   highlighted,
 }) => {
-  const { openManageItem, handleAddTask, handleAddReading, handleAddSession, openWizard, handleSaveInternshipLog } =
-    useMobileApp();
+  const {
+    openManageItem,
+    handleAddTask,
+    handleAddReading,
+    handleAddSession,
+    openWizard,
+    handleSaveInternshipLog,
+  } = useMobileApp();
   const [open, setOpen] = useState(false);
   const [completarAberto, setCompletarAberto] = useState(false);
 
@@ -138,10 +144,8 @@ export const InternshipLogCard: React.FC<InternshipLogCardProps> = ({
   const pendencias = proximasPendenciasDePreenchimento(log);
   // D13: chip informativo — só nos tipos com campos de referência.
   const preenchimento = statusPreenchimento(log);
-  const podeCompletar =
-    !scheduled && camposDeReferencia(type).length > 0 && pendencias.length > 0;
-  const precisaSupervisao =
-    !scheduled && type === 'atendimento_clinico' && !status.supervised;
+  const podeCompletar = !scheduled && camposDeReferencia(type).length > 0 && pendencias.length > 0;
+  const precisaSupervisao = !scheduled && type === 'atendimento_clinico' && !status.supervised;
 
   return (
     <ManageSurface
@@ -151,8 +155,8 @@ export const InternshipLogCard: React.FC<InternshipLogCardProps> = ({
         scheduled
           ? 'bg-surface-muted border border-dashed border-ceci-border-subtle'
           : isSupervision
-          ? 'bg-surface-default border border-ceci-border-academic'
-          : 'bg-surface-default border border-ceci-border-default'
+            ? 'bg-surface-default border border-ceci-border-academic'
+            : 'bg-surface-default border border-ceci-border-default'
       } ${highlighted ? 'ring-2 ring-ceci-border-academic' : ''}`}
     >
       <button
@@ -195,7 +199,9 @@ export const InternshipLogCard: React.FC<InternshipLogCardProps> = ({
         </h3>
 
         {metaText && (
-          <p className="text-[11px] text-ceci-secondary mt-0.5 break-words line-clamp-2">{metaText}</p>
+          <p className="text-[11px] text-ceci-secondary mt-0.5 break-words line-clamp-2">
+            {metaText}
+          </p>
         )}
       </button>
 
@@ -209,17 +215,24 @@ export const InternshipLogCard: React.FC<InternshipLogCardProps> = ({
             })}
           />
         )}
-        {!scheduled && type === 'atendimento_clinico' &&
+        {!scheduled &&
+          type === 'atendimento_clinico' &&
           (status.supervised ? (
             <StatusChip tone="info" label="supervisionada" />
           ) : (
             <StatusChip tone="warning" label="sem supervisão" />
           ))}
-        {!scheduled && status.intervised && <StatusChip tone="info" label="discutida em intervisão" />}
+        {!scheduled && status.intervised && (
+          <StatusChip tone="info" label="discutida em intervisão" />
+        )}
         {isSupervision && (
           <StatusChip
             tone="info"
-            label={pluralPt(log.discussedLogIds?.length ?? 0, 'sessão discutida', 'sessões discutidas')}
+            label={pluralPt(
+              log.discussedLogIds?.length ?? 0,
+              'sessão discutida',
+              'sessões discutidas',
+            )}
           />
         )}
         {(log.topics ?? []).length > 0 && <TopicChips topics={log.topics ?? []} />}
@@ -240,7 +253,10 @@ export const InternshipLogCard: React.FC<InternshipLogCardProps> = ({
             <button
               type="button"
               onClick={() =>
-                openWizard('internship', undefined, { kind: 'supervisao', discussedLogIds: [log.id] })
+                openWizard('internship', undefined, {
+                  kind: 'supervisao',
+                  discussedLogIds: [log.id],
+                })
               }
               className="min-h-[44px] px-4 rounded-full text-xs font-semibold bg-surface-blue text-ceci-academic-strong border border-ceci-border-academic cursor-pointer tap-interactive"
             >
@@ -259,7 +275,9 @@ export const InternshipLogCard: React.FC<InternshipLogCardProps> = ({
 
       {!open ? null : scheduled ? (
         <div className="space-y-2">
-          <p className="text-xs text-ceci-secondary">ainda não aconteceu — dá pra completar depois ♡</p>
+          <p className="text-xs text-ceci-secondary">
+            ainda não aconteceu — dá pra completar depois ♡
+          </p>
           <button
             type="button"
             onClick={() => onAddReflection?.(log.id)}
@@ -270,32 +288,34 @@ export const InternshipLogCard: React.FC<InternshipLogCardProps> = ({
         </div>
       ) : (
         <div className="space-y-2.5" onClick={(e) => e.stopPropagation()}>
-          {/* D10/D13: campos de referência marcados aparecem mesmo vazios; os
+          {
+            /* D10/D13: campos de referência marcados aparecem mesmo vazios; os
               declinados ficam ocultos. */
-          camposDeReferencia(type).length > 0 && (
-            <>
-              {camposDeReferencia(type).map((c) => {
-                if (declinadosDe(log).includes(c)) return null;
-                const valor = valorCampoReferencia(log, c);
-                return (
-                  <FieldBlock key={c} label={CAMPO_REFERENCIA_LABEL[c]}>
-                    {valor.trim() ? (
-                      c === 'abordagem' ? (
-                        <StatusChip tone="info" label={valor} />
+            camposDeReferencia(type).length > 0 && (
+              <>
+                {camposDeReferencia(type).map((c) => {
+                  if (declinadosDe(log).includes(c)) return null;
+                  const valor = valorCampoReferencia(log, c);
+                  return (
+                    <FieldBlock key={c} label={CAMPO_REFERENCIA_LABEL[c]}>
+                      {valor.trim() ? (
+                        c === 'abordagem' ? (
+                          <StatusChip tone="info" label={valor} />
+                        ) : (
+                          valor
+                        )
                       ) : (
-                        valor
-                      )
-                    ) : (
-                      <span className="italic text-ceci-muted">ainda não anotado ♡</span>
-                    )}
-                  </FieldBlock>
-                );
-              })}
-              {type === 'atendimento_clinico' && (
-                <DiscussedList lines={discussedIn} onOpen={onOpenSupervision} />
-              )}
-            </>
-          )}
+                        <span className="italic text-ceci-muted">ainda não anotado ♡</span>
+                      )}
+                    </FieldBlock>
+                  );
+                })}
+                {type === 'atendimento_clinico' && (
+                  <DiscussedList lines={discussedIn} onOpen={onOpenSupervision} />
+                )}
+              </>
+            )
+          }
 
           {isSupervision && (
             <>
@@ -304,8 +324,14 @@ export const InternshipLogCard: React.FC<InternshipLogCardProps> = ({
                   <FieldList items={log.topics ?? []} dotClassName="bg-ceci-academic" />
                 </FieldBlock>
               )}
-              {log.beforeNotes && <FieldBlock label="antes da conversa">{log.beforeNotes}</FieldBlock>}
-              {log.afterNotes && <FieldBlock label="depois da conversa" tone="rose">{log.afterNotes}</FieldBlock>}
+              {log.beforeNotes && (
+                <FieldBlock label="antes da conversa">{log.beforeNotes}</FieldBlock>
+              )}
+              {log.afterNotes && (
+                <FieldBlock label="depois da conversa" tone="rose">
+                  {log.afterNotes}
+                </FieldBlock>
+              )}
               {log.orientations && <FieldBlock label="orientações">{log.orientations}</FieldBlock>}
               {log.doubts && <FieldBlock label="dúvidas">{log.doubts}</FieldBlock>}
               <SelfAssessmentBlocks value={log.selfAssessment} />
@@ -325,7 +351,9 @@ export const InternshipLogCard: React.FC<InternshipLogCardProps> = ({
                   <FieldList
                     items={(log.discussedLogIds ?? []).map((id) => {
                       const l = allLogs.find((x) => x.id === id);
-                      return l ? `${l.patient?.trim() ?? '—'} · sessão ${l.sessionNumber ?? '—'} · ${formatDateBR(l.date)}` : id;
+                      return l
+                        ? `${l.patient?.trim() ?? '—'} · sessão ${l.sessionNumber ?? '—'} · ${formatDateBR(l.date)}`
+                        : id;
                     })}
                     dotClassName="bg-ceci-academic"
                   />
@@ -341,7 +369,9 @@ export const InternshipLogCard: React.FC<InternshipLogCardProps> = ({
               <FieldList items={log.prepChecklist ?? []} dotClassName="bg-ceci-academic" />
             </FieldBlock>
           )}
-          {log.supervisionNotes && <FieldBlock label="notas da supervisão">{log.supervisionNotes}</FieldBlock>}
+          {log.supervisionNotes && (
+            <FieldBlock label="notas da supervisão">{log.supervisionNotes}</FieldBlock>
+          )}
           {log.nextSteps && type === 'outro' && (
             <FieldBlock label="próximos passos">
               <FieldList items={log.nextSteps} />

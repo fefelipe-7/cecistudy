@@ -65,7 +65,12 @@ function diffStats(before: unknown[], after: unknown[]): MergeStatsSide {
   return stats;
 }
 
-function pickLww(localValue: unknown, remoteValue: unknown, localTs: number, remoteTs: number): unknown {
+function pickLww(
+  localValue: unknown,
+  remoteValue: unknown,
+  localTs: number,
+  remoteTs: number,
+): unknown {
   if (remoteValue === undefined) return localValue;
   if (localValue === undefined) return remoteValue;
   if (remoteTs > localTs) return remoteValue;
@@ -78,7 +83,7 @@ function mergeRecordCollection(
   localItems: Array<Record<string, unknown>>,
   remoteItems: Array<Record<string, unknown>>,
   localIndex: SyncIndex,
-  remoteIndex: SyncIndex
+  remoteIndex: SyncIndex,
 ): Array<Record<string, unknown>> {
   const localById = new Map(localItems.map((i) => [i.id as string, i]));
   const remoteById = new Map(remoteItems.map((i) => [i.id as string, i]));
@@ -96,12 +101,14 @@ function mergeRecordCollection(
     if (lAlive && rAlive) {
       const lTs = recordTs(localIndex, key, id);
       const rTs = recordTs(remoteIndex, key, id);
-      winner =
-        rTs > lTs ? r : lTs > rTs ? l : (tieBreak(l, r) as Record<string, unknown>);
+      winner = rTs > lTs ? r : lTs > rTs ? l : (tieBreak(l, r) as Record<string, unknown>);
     } else {
       winner = lAlive ? l : rAlive ? r : undefined;
     }
-    if (winner !== undefined && tTs <= Math.max(recordTs(localIndex, key, id), recordTs(remoteIndex, key, id))) {
+    if (
+      winner !== undefined &&
+      tTs <= Math.max(recordTs(localIndex, key, id), recordTs(remoteIndex, key, id))
+    ) {
       merged.push(winner);
     }
   }
@@ -117,7 +124,7 @@ function mergeRecordCollection(
  */
 export function mergeSyncedDatabases(
   localDb: SyncableDatabase,
-  remoteDb: SyncableDatabase
+  remoteDb: SyncableDatabase,
 ): MergeResult {
   const base = emptyDatabase();
   const mergedRecords = {} as Record<string, Array<Record<string, unknown>>>;
@@ -146,14 +153,17 @@ export function mergeSyncedDatabases(
       localDb[key],
       remoteDb[key],
       localDb.syncIndex.stamps[key] ?? 0,
-      remoteDb.syncIndex.stamps[key] ?? 0
+      remoteDb.syncIndex.stamps[key] ?? 0,
     );
   }
 
   // Coleções-set (união).
   const sets = {} as Record<string, string[]>;
   for (const key of SET_COLLECTION_KEYS) {
-    const union = new Set<string>([...((localDb[key] ?? []) as string[]), ...((remoteDb[key] ?? []) as string[])]);
+    const union = new Set<string>([
+      ...((localDb[key] ?? []) as string[]),
+      ...((remoteDb[key] ?? []) as string[]),
+    ]);
     sets[key] = Array.from(union).sort();
   }
 
@@ -170,7 +180,7 @@ export function mergeSyncedDatabases(
   // escolher o ativo, e a ordenação por id do `mergeRecordCollection` garante que
   // os dois dispositivos escolham exatamente o mesmo vencedor.
   const academicTerms = enforceSingleActiveTerm(
-    (mergedRecords.academicTerms ?? []) as unknown as AcademicTerm[]
+    (mergedRecords.academicTerms ?? []) as unknown as AcademicTerm[],
   ) as unknown as Array<Record<string, unknown>>;
 
   const merged: SyncableDatabase = {

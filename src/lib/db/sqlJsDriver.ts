@@ -13,7 +13,12 @@ import type { SqlDriver, SqlRow, SqlValue } from './driver.ts';
 interface SqlJsDatabase {
   run(sql: string, params?: SqlValue[]): void;
   exec(sql: string): unknown;
-  prepare(sql: string): { bind(p: SqlValue[]): void; step(): boolean; getAsObject(): SqlRow; free(): void };
+  prepare(sql: string): {
+    bind(p: SqlValue[]): void;
+    step(): boolean;
+    getAsObject(): SqlRow;
+    free(): void;
+  };
   export(): Uint8Array;
   close(): void;
 }
@@ -28,7 +33,7 @@ type SqlJsStatic = {
  * os scripts chamam `createSqlJsDriver()` de forma síncrona.
  */
 export function createSqlJsDriver(
-  initialBytes?: Uint8Array
+  initialBytes?: Uint8Array,
 ): SqlDriver & { exportDb(): Promise<Uint8Array> } {
   // Estado preenchido no open(); as chamadas antes disso falham alto.
   let db: SqlJsDatabase | null = null;

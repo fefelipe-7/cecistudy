@@ -19,6 +19,8 @@ import {
   newTaskId,
   newWritingLogId,
   nextThesisDeadline,
+  thesisDeadlines,
+  thesisPace,
   normalizeUrl,
   orderChaptersForRender,
   parseAuthorString,
@@ -126,12 +128,7 @@ describe('orderChaptersForRender / commitFlatOrder / moveChapter (F4.1-F4.2)', (
   });
 
   it('renderiza topo por posição, cada um seguido das suas seções', () => {
-    const chapters = [
-      cap('c2', 1),
-      cap('s1', 0, 'c1'),
-      cap('c1', 0),
-      cap('s2', 1, 'c1'),
-    ];
+    const chapters = [cap('c2', 1), cap('s1', 0, 'c1'), cap('c1', 0), cap('s2', 1, 'c1')];
     expect(orderChaptersForRender(chapters).map((c) => c.id)).toEqual(['c1', 's1', 's2', 'c2']);
   });
 
@@ -209,8 +206,17 @@ describe('planThesisReminders (F4.6)', () => {
       chapter({ title: 'metodologia', dueDate: '2026-10-15', stage: 'a_fazer' }),
       chapter({ title: 'pronto', dueDate: '2026-10-20', stage: 'pronto' }),
     ];
-    const plan = planThesisReminders({ thesis: emptyThesis(), chapters, tasks: [], meetings: [] }, today, prefs, now);
-    expect(plan.map((r) => r.target.entityId)).toEqual([chapters[0].id, chapters[0].id, chapters[0].id]);
+    const plan = planThesisReminders(
+      { thesis: emptyThesis(), chapters, tasks: [], meetings: [] },
+      today,
+      prefs,
+      now,
+    );
+    expect(plan.map((r) => r.target.entityId)).toEqual([
+      chapters[0].id,
+      chapters[0].id,
+      chapters[0].id,
+    ]);
     // Datas: 15-7=08/10, 15-1=14/10, 15=15/10 — todas às 09:00.
     expect(plan.map((r) => r.at.getDate())).toEqual([8, 14, 15]);
     expect(plan.every((r) => r.at.getHours() === 9)).toBe(true);
@@ -220,13 +226,26 @@ describe('planThesisReminders (F4.6)', () => {
   it('só agenda futuro: gatilho de 7 dias que já passou não entra', () => {
     // Prazo amanhã: 7 dias antes seria ontem — só 1/0 dias valem.
     const chapters = [chapter({ dueDate: addDays(today, 1) })];
-    const plan = planThesisReminders({ thesis: emptyThesis(), chapters, tasks: [], meetings: [] }, today, prefs, now);
+    const plan = planThesisReminders(
+      { thesis: emptyThesis(), chapters, tasks: [], meetings: [] },
+      today,
+      prefs,
+      now,
+    );
     expect(plan).toHaveLength(2);
   });
 
   it('pendência com prazo gera 1/0 dias; resolvida não gera nada', () => {
-    const tasks = [task({ dueDate: '2026-10-10' }), task({ dueDate: '2026-10-10', status: 'resolvida' })];
-    const plan = planThesisReminders({ thesis: emptyThesis(), chapters: [], tasks, meetings: [] }, today, prefs, now);
+    const tasks = [
+      task({ dueDate: '2026-10-10' }),
+      task({ dueDate: '2026-10-10', status: 'resolvida' }),
+    ];
+    const plan = planThesisReminders(
+      { thesis: emptyThesis(), chapters: [], tasks, meetings: [] },
+      today,
+      prefs,
+      now,
+    );
     expect(plan).toHaveLength(2);
     expect(plan.every((r) => r.target.tab === 'orientacao')).toBe(true);
   });
@@ -265,7 +284,12 @@ describe('planThesisReminders (F4.6)', () => {
 
   it('entrega e banca geram 30/14/7/1 dias antes na aba visão geral', () => {
     const thesis = { ...emptyThesis(), deliveryDate: '2026-12-01', defenseDate: '2026-11-15' };
-    const plan = planThesisReminders({ thesis, chapters: [], tasks: [], meetings: [] }, today, prefs, now);
+    const plan = planThesisReminders(
+      { thesis, chapters: [], tasks: [], meetings: [] },
+      today,
+      prefs,
+      now,
+    );
     // 4 da banca + os da entrega que ainda são futuro a partir de 08/10.
     expect(plan.length).toBeGreaterThan(4);
     expect(plan.every((r) => r.target.tab === 'visao')).toBe(true);
@@ -276,7 +300,12 @@ describe('planThesisReminders (F4.6)', () => {
   it('o plano devolve FATO, não frase — a voz escreve (SPEC-M-018 D17)', () => {
     const thesis = { ...emptyThesis(), advisor: 'Helena', deliveryDate: '2026-12-01' };
     const chapters = [chapter({ title: 'metodologia', dueDate: '2026-10-15', stage: 'a_fazer' })];
-    const plan = planThesisReminders({ thesis, chapters, tasks: [], meetings: [] }, today, prefs, now);
+    const plan = planThesisReminders(
+      { thesis, chapters, tasks: [], meetings: [] },
+      today,
+      prefs,
+      now,
+    );
 
     // Nenhuma chave de frase sobrevive — `title`/`body` saíram do domínio, e a
     // marca `cecistudy ♡` saiu com elas.
@@ -301,7 +330,12 @@ describe('planThesisReminders (F4.6)', () => {
     const chapters = Array.from({ length: 40 }, (_, i) =>
       chapter({ id: `thc-${i}`, title: `cap ${i}`, dueDate: addDays(today, 5 + i) }),
     );
-    const plan = planThesisReminders({ thesis: emptyThesis(), chapters, tasks: [], meetings: [] }, today, prefs, now);
+    const plan = planThesisReminders(
+      { thesis: emptyThesis(), chapters, tasks: [], meetings: [] },
+      today,
+      prefs,
+      now,
+    );
     expect(plan.length).toBeLessThanOrEqual(64);
     expect(plan[0].id).toBe(THESIS_REMINDER_BASE);
     expect(plan[plan.length - 1].id).toBe(THESIS_REMINDER_BASE + plan.length - 1);
@@ -317,10 +351,12 @@ describe('planThesisReminders (F4.6)', () => {
 
 describe('routeFromNotificationExtra (F4.7)', () => {
   it('extra válido devolve aba e focusId', () => {
-    expect(routeFromNotificationExtra({ thesis: { tab: 'capitulos', entityId: 'thc-1' } })).toEqual({
-      tab: 'capitulos',
-      focusId: 'thc-1',
-    });
+    expect(routeFromNotificationExtra({ thesis: { tab: 'capitulos', entityId: 'thc-1' } })).toEqual(
+      {
+        tab: 'capitulos',
+        focusId: 'thc-1',
+      },
+    );
     expect(routeFromNotificationExtra({ thesis: { tab: 'visao' } })).toEqual({ tab: 'visao' });
   });
 
@@ -774,12 +810,24 @@ describe('formatAbnt', () => {
 
 describe('validateRef', () => {
   it('artigo exige autor, título, periódico e ano', () => {
-    const missing = validateRef({ type: 'artigo', authors: [], title: '', container: '', year: '' });
+    const missing = validateRef({
+      type: 'artigo',
+      authors: [],
+      title: '',
+      container: '',
+      year: '',
+    });
     expect(missing.map((m) => m.field)).toEqual(['authors', 'title', 'container', 'year']);
   });
 
   it('livro exige editora e ano', () => {
-    const missing = validateRef({ type: 'livro', authors: [{ family: 'X' }], title: 'T', publisher: '', year: '' });
+    const missing = validateRef({
+      type: 'livro',
+      authors: [{ family: 'X' }],
+      title: 'T',
+      publisher: '',
+      year: '',
+    });
     expect(missing.map((m) => m.field)).toEqual(['publisher', 'year']);
   });
 
@@ -813,9 +861,9 @@ describe('validateRef', () => {
 
 describe('normalizeUrl', () => {
   it('remove utm, fbclid, gclid e fragmento', () => {
-    expect(normalizeUrl('https://exemplo.org/artigo?utm_source=newsletter&fbclid=abc&gclid=xyz#topo')).toBe(
-      'https://exemplo.org/artigo',
-    );
+    expect(
+      normalizeUrl('https://exemplo.org/artigo?utm_source=newsletter&fbclid=abc&gclid=xyz#topo'),
+    ).toBe('https://exemplo.org/artigo');
   });
 
   it('remove barra final', () => {
@@ -823,7 +871,9 @@ describe('normalizeUrl', () => {
   });
 
   it('mantém o resto', () => {
-    expect(normalizeUrl('https://exemplo.org/artigo?page=2')).toBe('https://exemplo.org/artigo?page=2');
+    expect(normalizeUrl('https://exemplo.org/artigo?page=2')).toBe(
+      'https://exemplo.org/artigo?page=2',
+    );
   });
 
   it('devolve a entrada se não é URL válida', () => {
@@ -833,9 +883,9 @@ describe('normalizeUrl', () => {
 
 describe('extractFirstUrl', () => {
   it('extrai a primeira URL de um texto livre', () => {
-    expect(extractFirstUrl('olha esse artigo https://exemplo.org/artigo e esse outro https://outro.org')).toBe(
-      'https://exemplo.org/artigo',
-    );
+    expect(
+      extractFirstUrl('olha esse artigo https://exemplo.org/artigo e esse outro https://outro.org'),
+    ).toBe('https://exemplo.org/artigo');
   });
 
   it('só URL', () => {
@@ -912,7 +962,11 @@ describe('captureLink (F8.1)', () => {
   });
 
   it('leitura (livro) não TCC só cria a leitura, tipo livro', () => {
-    const r = captureLink({ url: 'https://loja.org/livro', kind: 'leitura', thesis: false }, [], now);
+    const r = captureLink(
+      { url: 'https://loja.org/livro', kind: 'leitura', thesis: false },
+      [],
+      now,
+    );
     if (r.outcome !== 'criada') throw new Error('esperava criada');
     expect(r.reading.type).toBe('livro');
     expect(r.reading.refType).toBe('livro');
@@ -920,7 +974,9 @@ describe('captureLink (F8.1)', () => {
   });
 
   it('URL inválida é recusada', () => {
-    expect(captureLink({ url: 'javascript:alert(1)', kind: 'artigo', thesis: true }, [], now)).toEqual({
+    expect(
+      captureLink({ url: 'javascript:alert(1)', kind: 'artigo', thesis: true }, [], now),
+    ).toEqual({
       outcome: 'invalida',
     });
   });
@@ -939,14 +995,28 @@ describe('captureLink (F8.1)', () => {
 describe('parseCaptureDeepLink (F8.4)', () => {
   it('lê u/k/t/x com URL-encoding', () => {
     const link = parseCaptureDeepLink(
-      'cecistudy://captura?u=' + encodeURIComponent('https://exemplo.org/artigo') + '&k=leitura&t=0&x=abc',
+      'cecistudy://captura?u=' +
+        encodeURIComponent('https://exemplo.org/artigo') +
+        '&k=leitura&t=0&x=abc',
     );
-    expect(link).toEqual({ url: 'https://exemplo.org/artigo', kind: 'leitura', thesis: false, id: 'abc' });
+    expect(link).toEqual({
+      url: 'https://exemplo.org/artigo',
+      kind: 'leitura',
+      thesis: false,
+      id: 'abc',
+    });
   });
 
   it('padrões: artigo e pro TCC sem parâmetros', () => {
-    const link = parseCaptureDeepLink('cecistudy://captura?u=' + encodeURIComponent('https://exemplo.org'));
-    expect(link).toEqual({ url: 'https://exemplo.org', kind: 'artigo', thesis: true, id: undefined });
+    const link = parseCaptureDeepLink(
+      'cecistudy://captura?u=' + encodeURIComponent('https://exemplo.org'),
+    );
+    expect(link).toEqual({
+      url: 'https://exemplo.org',
+      kind: 'artigo',
+      thesis: true,
+      id: undefined,
+    });
   });
 
   it('recusa esquema ou host errados', () => {
@@ -955,8 +1025,75 @@ describe('parseCaptureDeepLink (F8.4)', () => {
   });
 
   it('recusa quando a URL não é http(s)', () => {
-    expect(parseCaptureDeepLink('cecistudy://captura?u=' + encodeURIComponent('file:///etc'))).toBeNull();
+    expect(
+      parseCaptureDeepLink('cecistudy://captura?u=' + encodeURIComponent('file:///etc')),
+    ).toBeNull();
     expect(parseCaptureDeepLink('cecistudy://captura')).toBeNull();
+  });
+});
+
+describe('thesisDeadlines (SPEC-024 D9)', () => {
+  const thesis = emptyThesis();
+
+  it('inclui o atrasado e ordena por data', () => {
+    const chapters = [
+      chapter({ title: 'cap 1', dueDate: '2026-10-20' }),
+      chapter({ title: 'cap 2', dueDate: '2026-09-10' }),
+    ];
+    const list = thesisDeadlines(
+      { thesis, chapters, tasks: [], meetings: [] },
+      '2026-10-01',
+      '2026-10-31',
+    );
+    expect(list.map((d) => d.date)).toEqual(['2026-09-10', '2026-10-20']);
+    expect(list[0].overdue).toBe(true);
+    expect(list[1].overdue).toBe(false);
+  });
+
+  it('corta em `to`', () => {
+    const chapters = [chapter({ dueDate: '2026-11-15' })];
+    expect(
+      thesisDeadlines({ thesis, chapters, tasks: [], meetings: [] }, '2026-10-01', '2026-10-31'),
+    ).toEqual([]);
+  });
+});
+
+describe('thesisPace (SPEC-024 D11)', () => {
+  const today = '2026-10-01';
+  const thesis = { ...emptyThesis(), deliveryDate: '2026-10-29' }; // 4 semanas
+  const chapters = [chapter({ wordGoal: 4000 })];
+  const state = (
+    logs: ThesisWritingLog[],
+    deliveryDate: string | null = thesis.deliveryDate ?? null,
+  ) => ({
+    thesis: { ...thesis, deliveryDate: deliveryDate ?? undefined },
+    chapters,
+    tasks: [],
+    meetings: [],
+    logs,
+  });
+
+  it('sem entrega ou sem log devolve null', () => {
+    expect(thesisPace(state([log({})], null), today)).toBeNull();
+    expect(thesisPace(state([]), today)).toBeNull();
+  });
+
+  it('entrega no passado não dá para projetar', () => {
+    expect(thesisPace(state([log({ date: '2026-09-20', words: 1000 })], '2026-09-01'), today)).toBe(
+      'nao_da',
+    );
+  });
+
+  it('três faixas: no ritmo, apertado, não dá', () => {
+    // falta 1000/semana; média real = total das últimas 4 semanas / 4
+    expect(thesisPace(state([log({ date: '2026-09-20', words: 6000 })]), today)).toBe('no_ritmo');
+    expect(thesisPace(state([log({ date: '2026-09-20', words: 4000 })]), today)).toBe('no_ritmo');
+    expect(thesisPace(state([log({ date: '2026-09-20', words: 3000 })]), today)).toBe('apertado');
+    expect(thesisPace(state([log({ date: '2026-09-20', words: 1000 })]), today)).toBe('nao_da');
+  });
+
+  it('log fora das últimas 4 semanas não conta', () => {
+    expect(thesisPace(state([log({ date: '2026-08-01', words: 9000 })]), today)).toBe('nao_da');
   });
 });
 

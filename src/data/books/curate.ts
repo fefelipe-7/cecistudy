@@ -7,12 +7,7 @@
  * (nativo — ver `lib/db/catalogLibrary.ts`). Determinística: mesma entrada,
  * mesmas coleções.
  */
-import {
-  Article,
-  ArticleGroup,
-  CatalogBook,
-  InterdisciplinaryBook,
-} from './types';
+import { Article, ArticleGroup, CatalogBook, InterdisciplinaryBook } from './types';
 import { PSYCHOTHERAPY_FAMILIES, INTERDISCIPLINARY_AREAS } from './families';
 import { CollectionBook, ContextCollection } from '../libraryData';
 
@@ -45,7 +40,7 @@ function bookCard(
   author: string,
   description: string,
   quote: string,
-  meta: { color: string; accent: string; short?: string; label?: string }
+  meta: { color: string; accent: string; short?: string; label?: string },
 ): CollectionBook {
   return {
     id,
@@ -78,7 +73,10 @@ export function curateLibrary(input: {
   catalogBooks: CatalogBook[];
   interdisciplinaryBooks: InterdisciplinaryBook[];
   articles: Article[];
-}): Omit<LibraryDataset, keyof Pick<LibraryDataset, 'catalogBooks' | 'interdisciplinaryBooks' | 'articles'>> & {
+}): Omit<
+  LibraryDataset,
+  keyof Pick<LibraryDataset, 'catalogBooks' | 'interdisciplinaryBooks' | 'articles'>
+> & {
   articlesByFamily: Record<string, Article[]>;
   catalogByFamily: Record<string, CollectionBook[]>;
   complementaryByArea: Record<string, CollectionBook[]>;
@@ -86,24 +84,19 @@ export function curateLibrary(input: {
   const { catalogBooks, interdisciplinaryBooks, articles } = input;
 
   // 10 famílias de psicoterapia
-  const catalogByFamily = catalogBooks.reduce<Record<string, CollectionBook[]>>(
-    (acc, b) => {
-      (acc[b.familia] = acc[b.familia] ?? []).push(
-        bookCard(b.id, b.nome, b.autor, b.resumo, b.trecho, {
-          color: b.coverColor,
-          accent: b.accentColor,
-          short: PSYCHOTHERAPY_FAMILIES[b.familia]?.short,
-          label: PSYCHOTHERAPY_FAMILIES[b.familia]?.label,
-        })
-      );
-      return acc;
-    },
-    {}
-  );
+  const catalogByFamily = catalogBooks.reduce<Record<string, CollectionBook[]>>((acc, b) => {
+    (acc[b.familia] = acc[b.familia] ?? []).push(
+      bookCard(b.id, b.nome, b.autor, b.resumo, b.trecho, {
+        color: b.coverColor,
+        accent: b.accentColor,
+        short: PSYCHOTHERAPY_FAMILIES[b.familia]?.short,
+        label: PSYCHOTHERAPY_FAMILIES[b.familia]?.label,
+      }),
+    );
+    return acc;
+  }, {});
 
-  const psychotherapyCollections: ContextCollection[] = Object.entries(
-    PSYCHOTHERAPY_FAMILIES
-  )
+  const psychotherapyCollections: ContextCollection[] = Object.entries(PSYCHOTHERAPY_FAMILIES)
     .filter(([, meta]) => (catalogByFamily[meta.id]?.length ?? 0) > 0)
     .map(([familia, meta]) => ({
       id: `col-${familia}`,
@@ -117,32 +110,33 @@ export function curateLibrary(input: {
     }));
 
   // 10 áreas interdisciplinares (bagagem complementar)
-  const complementaryByArea = interdisciplinaryBooks.reduce<
-    Record<string, CollectionBook[]>
-  >((acc, b) => {
-    (acc[b.area] = acc[b.area] ?? []).push(
-      bookCard(b.id, b.nome, b.autor, b.resumo, b.trecho, {
-        color: b.coverColor,
-        accent: b.accentColor,
-        short: INTERDISCIPLINARY_AREAS[b.area]?.short,
-        label: INTERDISCIPLINARY_AREAS[b.area]?.label,
-      })
-    );
-    return acc;
-  }, {});
+  const complementaryByArea = interdisciplinaryBooks.reduce<Record<string, CollectionBook[]>>(
+    (acc, b) => {
+      (acc[b.area] = acc[b.area] ?? []).push(
+        bookCard(b.id, b.nome, b.autor, b.resumo, b.trecho, {
+          color: b.coverColor,
+          accent: b.accentColor,
+          short: INTERDISCIPLINARY_AREAS[b.area]?.short,
+          label: INTERDISCIPLINARY_AREAS[b.area]?.label,
+        }),
+      );
+      return acc;
+    },
+    {},
+  );
 
-  const complementaryCollections: ContextCollection[] = Object.entries(
-    INTERDISCIPLINARY_AREAS
-  ).map(([area, meta]) => ({
-    id: `col-${area}`,
-    blockType: 'complementary' as const,
-    blockCategory: 'complementar',
-    title: meta.label,
-    subtitle: meta.subtitle,
-    readersCount: complementaryByArea[area]?.length ?? 0,
-    readersAvatars: readersAvatars(meta.color, meta.accent),
-    books: complementaryByArea[area] ?? [],
-  }));
+  const complementaryCollections: ContextCollection[] = Object.entries(INTERDISCIPLINARY_AREAS).map(
+    ([area, meta]) => ({
+      id: `col-${area}`,
+      blockType: 'complementary' as const,
+      blockCategory: 'complementar',
+      title: meta.label,
+      subtitle: meta.subtitle,
+      readersCount: complementaryByArea[area]?.length ?? 0,
+      readersAvatars: readersAvatars(meta.color, meta.accent),
+      books: complementaryByArea[area] ?? [],
+    }),
+  );
 
   // Grupos de artigos por família
   const articlesByFamily = articles.reduce<Record<string, Article[]>>((acc, a) => {
@@ -157,7 +151,7 @@ export function curateLibrary(input: {
       color: meta.color,
       accent: meta.accent,
       articles: articlesByFamily[familia] ?? [],
-    })
+    }),
   );
 
   // Categorias mistas curadas

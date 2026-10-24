@@ -58,7 +58,9 @@ describe('ProfileDataMaintenance', () => {
       exportedAt: '2026-10-13',
       profile: { name: 'ceci' },
     });
-    fireEvent.change(input!, { target: { files: [new File([json], 'backup.json', { type: 'application/json' })] } });
+    fireEvent.change(input!, {
+      target: { files: [new File([json], 'backup.json', { type: 'application/json' })] },
+    });
 
     await waitFor(() => {
       expect(screen.getByText('importar backup?')).toBeTruthy();
@@ -86,11 +88,27 @@ describe('ProfileDataMaintenance', () => {
   });
 
   it('a row de atualização só existe no nativo', () => {
-    const { unmount } = render(<ProfileDataMaintenance maintenance={maintenance(false)} onOpenSync={vi.fn()} onExport={vi.fn()} onImport={vi.fn()} onReset={vi.fn()} />);
+    const { unmount } = render(
+      <ProfileDataMaintenance
+        maintenance={maintenance(false)}
+        onOpenSync={vi.fn()}
+        onExport={vi.fn()}
+        onImport={vi.fn()}
+        onReset={vi.fn()}
+      />,
+    );
     expect(screen.queryByRole('button', { name: /atualização do app/ })).toBeNull();
     unmount();
 
-    render(<ProfileDataMaintenance maintenance={maintenance(true)} onOpenSync={vi.fn()} onExport={vi.fn()} onImport={vi.fn()} onReset={vi.fn()} />);
+    render(
+      <ProfileDataMaintenance
+        maintenance={maintenance(true)}
+        onOpenSync={vi.fn()}
+        onExport={vi.fn()}
+        onImport={vi.fn()}
+        onReset={vi.fn()}
+      />,
+    );
     expect(screen.getByRole('button', { name: /atualização do app/ })).toBeTruthy();
   });
 

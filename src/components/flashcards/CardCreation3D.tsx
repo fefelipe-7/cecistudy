@@ -91,7 +91,7 @@ export const CardCreation3D: React.FC<CardCreation3DProps> = ({
           'mx-auto flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold cursor-pointer active:scale-95 transition',
           flipped
             ? 'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand'
-            : 'bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary shadow-xs'
+            : 'bg-ceci-primary hover:bg-ceci-primary-hover text-ceci-on-primary shadow-xs',
         )}
       >
         <ArrowLeftRight className="w-3.5 h-3.5" />

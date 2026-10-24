@@ -49,7 +49,7 @@ export function templeAuthorToDraft(author: TempleAuthor): AuthorDraft {
 /** Itens do acervo cujo nome normalizado ainda não existe no banco pessoal. */
 export function filterNewNames<T extends { name: string; id?: string }>(
   acervoItems: T[],
-  personalItems: { name: string }[]
+  personalItems: { name: string }[],
 ): T[] {
   const taken = new Set(personalItems.map((p) => normalizeText(p.name)));
   return acervoItems.filter((item) => {

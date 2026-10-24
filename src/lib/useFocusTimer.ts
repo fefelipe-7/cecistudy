@@ -124,7 +124,7 @@ export function useFocusTimer(durationMs: number = FOCUS_PRESET_MS): FocusTimer 
       setNow(Date.now());
       syncRunning(next);
     },
-    [syncRunning]
+    [syncRunning],
   );
 
   const running = isRunning(state);
@@ -136,7 +136,8 @@ export function useFocusTimer(durationMs: number = FOCUS_PRESET_MS): FocusTimer 
     remaining: remainingMs(state, now),
     elapsed: elapsedSeconds(state, now),
     partial: partialMinutes(state, now),
-    presetMin: state.totalMs > 0 ? Math.round(state.totalMs / 60_000) : Math.round(durationMs / 60_000),
+    presetMin:
+      state.totalMs > 0 ? Math.round(state.totalMs / 60_000) : Math.round(durationMs / 60_000),
     toggle,
     start,
     pause,

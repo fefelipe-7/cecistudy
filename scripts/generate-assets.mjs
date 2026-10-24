@@ -45,12 +45,30 @@ const MIPMAP_SIZES = {
 
 // Expressões da mascote usadas no app → sufixo do arquivo SVG em MASCOTE_DIR
 const MASCOTE_EXPRESSIONS = [
-  'welcome-wave', 'listening-hello', 'focus-ready', 'reading-curious',
-  'library-shelf', 'writing-note', 'review-card', 'quiz-ready',
-  'correct-soft', 'try-again', 'empty-invite', 'done-calm',
-  'celebrate-small', 'class-ready', 'field-prepare', 'supervision-reflect',
-  'connection-link', 'research-tcc', 'writing-flow', 'boundaries-care',
-  'sync-wait', 'loading-patient', 'no-results', 'pause-kind',
+  'welcome-wave',
+  'listening-hello',
+  'focus-ready',
+  'reading-curious',
+  'library-shelf',
+  'writing-note',
+  'review-card',
+  'quiz-ready',
+  'correct-soft',
+  'try-again',
+  'empty-invite',
+  'done-calm',
+  'celebrate-small',
+  'class-ready',
+  'field-prepare',
+  'supervision-reflect',
+  'connection-link',
+  'research-tcc',
+  'writing-flow',
+  'boundaries-care',
+  'sync-wait',
+  'loading-patient',
+  'no-results',
+  'pause-kind',
 ];
 
 const log = (...a) => console.log(...a);
@@ -61,10 +79,7 @@ function ensureDir(p) {
 
 /** Ícone do app: imagem full-bleed (o icon-n.jpeg já tem fundo próprio). */
 function renderIcon(size) {
-  return sharp(ICON_SRC)
-    .resize(size, size, { fit: 'cover' })
-    .png()
-    .toBuffer();
+  return sharp(ICON_SRC).resize(size, size, { fit: 'cover' }).png().toBuffer();
 }
 
 /** Extrai um frame do vídeo de splash (ffmpeg) e recorta o conteúdo (mascote + spinner). */
@@ -73,11 +88,18 @@ async function extractSplashContent() {
     ffmpegInstaller.path,
     [
       '-y',
-      '-ss', '0.67', // ~frame 20: mascote centralizada com spinner
-      '-i', SPLASH_VIDEO,
-      '-vf', 'scale=1080:1920:flags=lanczos',
-      '-frames:v', '1',
-      '-f', 'image2pipe', '-vcodec', 'png',
+      '-ss',
+      '0.67', // ~frame 20: mascote centralizada com spinner
+      '-i',
+      SPLASH_VIDEO,
+      '-vf',
+      'scale=1080:1920:flags=lanczos',
+      '-frames:v',
+      '1',
+      '-f',
+      'image2pipe',
+      '-vcodec',
+      'png',
       '-',
     ],
     { maxBuffer: 64 * 1024 * 1024 },
@@ -96,9 +118,12 @@ async function extractSplashContent() {
     `<svg width="${meta.width}" height="${meta.height}">` +
       `<rect x="${inset}" y="${inset}" width="${meta.width - inset * 2}" height="${meta.height - inset * 2}" ` +
       `rx="${feather}" ry="${feather}" fill="white"/>` +
-    `</svg>`,
+      `</svg>`,
   );
-  const mask = await sharp(maskSvg).blur(Math.round(feather / 3)).png().toBuffer();
+  const mask = await sharp(maskSvg)
+    .blur(Math.round(feather / 3))
+    .png()
+    .toBuffer();
 
   return sharp(trimmed)
     .ensureAlpha()
@@ -117,7 +142,9 @@ async function renderSplash(width, height, contentBuf) {
 
   return sharp({
     create: {
-      width, height, channels: 3,
+      width,
+      height,
+      channels: 3,
       background: SPLASH_BG,
     },
   })
@@ -158,10 +185,21 @@ async function generateAndroid(contentBuf) {
       .toBuffer();
     writeFileSync(join(dir, 'ic_launcher_background.png'), background);
     const iconSize = Math.round(size * 0.7);
-    const iconSmall = await sharp(ICON_SRC).resize(iconSize, iconSize, { fit: 'cover' }).png().toBuffer();
+    const iconSmall = await sharp(ICON_SRC)
+      .resize(iconSize, iconSize, { fit: 'cover' })
+      .png()
+      .toBuffer();
     const transparent = await sharp({
-      create: { width: size, height: size, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
-    }).composite([{ input: iconSmall, gravity: 'centre' }]).png().toBuffer();
+      create: {
+        width: size,
+        height: size,
+        channels: 4,
+        background: { r: 0, g: 0, b: 0, alpha: 0 },
+      },
+    })
+      .composite([{ input: iconSmall, gravity: 'centre' }])
+      .png()
+      .toBuffer();
     writeFileSync(join(dir, 'ic_launcher_foreground.png'), transparent);
   }
 
@@ -189,10 +227,7 @@ async function generateAndroid(contentBuf) {
 async function generateIos(contentBuf) {
   log('→ ios (AppIcon + splash)');
   const appIcon = await renderIcon(1024);
-  writeFileSync(
-    join(IOS_XCASSETS, 'AppIcon.appiconset', 'AppIcon-512@2x.png'),
-    appIcon,
-  );
+  writeFileSync(join(IOS_XCASSETS, 'AppIcon.appiconset', 'AppIcon-512@2x.png'), appIcon);
 
   const splashDir = join(IOS_XCASSETS, 'Splash.imageset');
   const splash = await renderSplash(2732, 2732, contentBuf);

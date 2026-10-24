@@ -4,10 +4,7 @@ import { describe, it, expect } from 'vitest';
  * Testes do facade do Templo de Conhecimento (web) — registry de abordagens,
  * chunks lazy de conceitos e sanidade dos autores curados.
  */
-import {
-  approachRegistryFile,
-  resolveApproach,
-} from '../../data/temple/registry';
+import { approachRegistryFile, resolveApproach } from '../../data/temple/registry';
 import { conceptChunkLoader, conceptDomains } from '../../data/temple/conceptChunks';
 import { conceptIndex } from '../../data/temple/conceptIndex';
 import { curatedAuthorsFile } from '../../data/temple/authors';
@@ -17,7 +14,7 @@ import { normalize } from './normalizeTestHelper';
 describe('approachRegistry (A1)', () => {
   it('resolve aliases das técnicas para abordagens editoriais', () => {
     const resolved = resolveApproach(
-      'app-psicanalitica_psicodinamica-psicanalise-freudiana-classica'
+      'app-psicanalitica_psicodinamica-psicanalise-freudiana-classica',
     );
     expect(resolved).not.toBeNull();
     expect(resolved?.id).toBe('psic-01-01');

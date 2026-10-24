@@ -22,8 +22,7 @@ const WeekGrid: React.FC<WeekGridProps> = ({ courses, now, onOpenCourse }) => {
     const d = weekDates(now);
     return [d[1], d[2], d[3], d[4], d[5], d[6], d[0]];
   }, [now]);
-  const selectedWeekDate =
-    weekDays.find((d) => d.getDay() === selectedWeekday) ?? now;
+  const selectedWeekDate = weekDays.find((d) => d.getDay() === selectedWeekday) ?? now;
   const selectedWeekSchedule = getTodaySchedule(courses, selectedWeekDate);
 
   return (
@@ -55,9 +54,7 @@ const WeekGrid: React.FC<WeekGridProps> = ({ courses, now, onOpenCourse }) => {
                 <span className="text-[10px] font-semibold uppercase tracking-wide">
                   {WEEKDAY_LABELS[dow]}
                 </span>
-                <span className="text-xs font-bold tabular-nums">
-                  {d.getDate()}
-                </span>
+                <span className="text-xs font-bold tabular-nums">{d.getDate()}</span>
                 <span className="flex items-center gap-0.5 h-1" aria-hidden="true">
                   {dayClasses.slice(0, 3).map(({ course }) => (
                     <span
@@ -77,7 +74,7 @@ const WeekGrid: React.FC<WeekGridProps> = ({ courses, now, onOpenCourse }) => {
             <p className="text-[11px] font-semibold text-ceci-tertiary px-1 flex items-center gap-1.5">
               aulas de {WEEKDAY_FULL_LABELS[selectedWeekday]} ·{' '}
               {formatShortDate(
-                `${selectedWeekDate.getFullYear()}-${String(selectedWeekDate.getMonth() + 1).padStart(2, '0')}-${String(selectedWeekDate.getDate()).padStart(2, '0')}`
+                `${selectedWeekDate.getFullYear()}-${String(selectedWeekDate.getMonth() + 1).padStart(2, '0')}-${String(selectedWeekDate.getDate()).padStart(2, '0')}`,
               )}
               {selectedWeekday === now.getDay() && (
                 <span className="text-[10px] font-bold text-ceci-brand-strong bg-surface-rose border border-ceci-border-brand px-2 py-0.5 rounded-full">
@@ -93,7 +90,8 @@ const WeekGrid: React.FC<WeekGridProps> = ({ courses, now, onOpenCourse }) => {
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <span className="text-xs font-bold text-ceci-academic-strong bg-surface-blue border border-ceci-border-academic px-2.5 py-1.5 rounded-xl shrink-0 tabular-nums">
-                    {slot.start}{slot.end ? `–${slot.end}` : ''}
+                    {slot.start}
+                    {slot.end ? `–${slot.end}` : ''}
                   </span>
                   <span
                     className="w-9 h-9 rounded-xl border flex items-center justify-center shrink-0"
@@ -122,7 +120,9 @@ const WeekGrid: React.FC<WeekGridProps> = ({ courses, now, onOpenCourse }) => {
               {' ♡ '}
               {(() => {
                 const next = weekDays.find(
-                  (d) => d.getTime() > selectedWeekDate.getTime() && getTodaySchedule(courses, d).length > 0
+                  (d) =>
+                    d.getTime() > selectedWeekDate.getTime() &&
+                    getTodaySchedule(courses, d).length > 0,
                 );
                 return next
                   ? `a próxima é ${WEEKDAY_FULL_LABELS[next.getDay()]} (${formatShortDate(`${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, '0')}-${String(next.getDate()).padStart(2, '0')}`)}).`

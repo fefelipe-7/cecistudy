@@ -40,10 +40,16 @@ const DIARIO_TAB_LABEL: Record<InternshipTab, string> = {
 };
 
 /** As abas do diário com o badge de pendência que cada uma mostra. */
-const DIARIO_TABS = (
-  pend: { noReflection: string[]; noSupervision: string[] }
-): UnderlineTab<InternshipTab>[] => [
-  { id: 'diario', label: 'diário', icon: <HeartHandshake className="w-4 h-4" />, badge: pend.noReflection.length },
+const DIARIO_TABS = (pend: {
+  noReflection: string[];
+  noSupervision: string[];
+}): UnderlineTab<InternshipTab>[] => [
+  {
+    id: 'diario',
+    label: 'diário',
+    icon: <HeartHandshake className="w-4 h-4" />,
+    badge: pend.noReflection.length,
+  },
   { id: 'pacientes', label: 'pacientes', icon: <Users className="w-4 h-4" /> },
   {
     id: 'supervisao',
@@ -145,7 +151,7 @@ export const InternshipDiaryView: React.FC = () => {
   // Hero único, acima da barra de abas (SPEC-010 D1/D3): o conteúdo muda com a
   // aba, a identidade não — trocar de aba não pula o topo da tela.
   const encontros = internshipLogs.filter(
-    (l) => l.type === 'supervisao' || l.type === 'intervisao'
+    (l) => l.type === 'supervisao' || l.type === 'intervisao',
   ).length;
   const pendencias: string[] = [];
   if (pend.noReflection.length) pendencias.push(`${pend.noReflection.length} sem reflexão`);
@@ -159,7 +165,11 @@ export const InternshipDiaryView: React.FC = () => {
           summary:
             orphans.length > 0
               ? `${pluralPt(stats.clinicalDoneCount, 'sessão clínica feita', 'sessões clínicas feitas')} · ${pluralPt(orphans.length, 'sem iniciais', 'sem iniciais')}`
-              : pluralPt(stats.clinicalDoneCount, 'sessão clínica feita', 'sessões clínicas feitas'),
+              : pluralPt(
+                  stats.clinicalDoneCount,
+                  'sessão clínica feita',
+                  'sessões clínicas feitas',
+                ),
           expression: 'connection-link' as const,
         }
       : tab === 'supervisao'
@@ -199,213 +209,226 @@ export const InternshipDiaryView: React.FC = () => {
 
       {/* Conteúdo das abas: o painel arrasta junto com o dedo (SPEC-015) */}
       <SwipeableTabPanel active={tab} pager={pager} label={DIARIO_TAB_LABEL[tab]}>
-
-      {tab === 'supervisao' ? (
-        <SupervisionView today={today} cases={cases} pendingIds={pend.noSupervision} />
-      ) : tab === 'pacientes' ? (
-        <section className="space-y-3">
-          {cases.length > 0 && (
-            <p className="text-[11px] text-ceci-tertiary">
-              {pluralPt(cases.length, 'paciente', 'pacientes')} ·{' '}
-              {pluralPt(stats.clinicalDoneCount, 'sessão feita', 'sessões feitas')}
-            </p>
-          )}
-          {cases.length === 0 && orphans.length === 0 ? (
-            <EmptyState
-              description={frase(VAZIO, 'semPaciente')}
-              actionLabel="anotar atendimento"
-              onAction={() => openInternshipWizard({ kind: 'atendimento_clinico' })}
-            />
-          ) : (
-            <div className="space-y-3">
-              {cases.map((c) => (
-                <InternshipCaseCard
-                  key={c.patientKey}
-                  caseData={c}
-                  onPress={() => openInternshipCase(c.patientKey)}
-                />
-              ))}
-              {orphans.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => openInternshipCase('')}
-                  className="w-full text-left p-4 rounded-2xl bg-surface-muted border border-status-warning-border shadow-sm cursor-pointer tap-interactive"
-                >
-                  <div className="flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 text-status-warning-strong" />
-                    <span className="text-xs font-semibold text-status-warning-strong">
-                      {pluralPt(orphans.length, 'atendimento sem iniciais', 'atendimentos sem iniciais')}
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-ceci-secondary mt-1">toque pra completar</p>
-                </button>
-              )}
-            </div>
-          )}
-        </section>
-      ) : (
-        <>
-          {/* a) Resumo */}
-          <div className="grid grid-cols-3 gap-2">
-            <div className="rounded-2xl p-3 bg-surface-default border border-ceci-border-default shadow-sm text-center">
-              <p className="font-bold text-ceci-academic-strong text-lg">{formatHours(stats.doneHours)}</p>
-              <p className="text-[12px] text-ceci-secondary">
-                {goal ? `de ${formatHours(goal)} h` : 'horas feitas'}
+        {tab === 'supervisao' ? (
+          <SupervisionView today={today} cases={cases} pendingIds={pend.noSupervision} />
+        ) : tab === 'pacientes' ? (
+          <section className="space-y-3">
+            {cases.length > 0 && (
+              <p className="text-[11px] text-ceci-tertiary">
+                {pluralPt(cases.length, 'paciente', 'pacientes')} ·{' '}
+                {pluralPt(stats.clinicalDoneCount, 'sessão feita', 'sessões feitas')}
               </p>
-            </div>
-            <div className="rounded-2xl p-3 bg-surface-default border border-ceci-border-default shadow-sm text-center">
-              <p className="font-bold text-ceci-academic-strong text-lg">{formatHours(stats.weekHours)}</p>
-              <p className="text-[12px] text-ceci-secondary">esta semana</p>
-            </div>
-            <div className="rounded-2xl p-3 bg-surface-default border border-ceci-border-default shadow-sm text-center">
-              <p className="font-bold text-ceci-academic-strong text-lg">{stats.clinicalDoneCount}</p>
-              <p className="text-[12px] text-ceci-secondary">
-                {pluralPt(stats.clinicalDoneCount, 'sessão', 'sessões')}
-              </p>
-            </div>
-          </div>
-
-          {/* Meta de horas (D2) */}
-          {goal ? (
-            <div className="space-y-1.5">
-              <ProgressBar
-                value={goalPct}
-                barClassName={goalPct >= 100 ? 'bg-status-success' : undefined}
+            )}
+            {cases.length === 0 && orphans.length === 0 ? (
+              <EmptyState
+                description={frase(VAZIO, 'semPaciente')}
+                actionLabel="anotar atendimento"
+                onAction={() => openInternshipWizard({ kind: 'atendimento_clinico' })}
               />
-              <p className="text-[11px] text-ceci-secondary">
-                {goalPct >= 100
-                  ? 'meta batida ♡'
-                  : `faltam ${formatHours(Math.max(0, goal - stats.doneHours))} h`}
-              </p>
-            </div>
-          ) : (
-            <GoalCta onSet={(h) => handleUpdateProfile({ internshipGoalHours: h })} />
-          )}
-
-          {/* c) Pendências — somem quando zeradas (D13) */}
-          {hasPending && (
-            <div className="rounded-2xl p-4 bg-surface-muted border border-status-warning-border space-y-2">
-              <div className="flex items-center gap-2 text-[13px] font-semibold text-status-warning-strong">
-                <AlertCircle className="w-4 h-4" aria-hidden />
-                pendências
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {pend.noReflection.length > 0 && (
-                  <StatusChip
-                    tone="warning"
-                    pressed={pending === 'reflexao'}
-                    onClick={() => togglePending('reflexao')}
-                    label={`${pend.noReflection.length} sem reflexão`}
+            ) : (
+              <div className="space-y-3">
+                {cases.map((c) => (
+                  <InternshipCaseCard
+                    key={c.patientKey}
+                    caseData={c}
+                    onPress={() => openInternshipCase(c.patientKey)}
                   />
-                )}
-                {pend.noSupervision.length > 0 && (
-                  <StatusChip
-                    tone="warning"
-                    pressed={pending === 'supervisao'}
-                    onClick={() => togglePending('supervisao')}
-                    label={`${pend.noSupervision.length} sem supervisão`}
-                  />
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* d) Gráfico — só com 2+ semanas de dado (U7) */}
-          {stats.weeksWithData >= 2 && (
-            <div className="rounded-2xl p-4 bg-surface-default border border-ceci-border-default shadow-sm">
-              <DitherGrowthChart
-                theme={appIsDark ? 'dark' : 'light'}
-                data={stats.weeklySeries}
-                title="horas de campo por semana"
-                unitLabel="h"
-                accentColor="#4A879F"
-                className="w-full"
-              />
-            </div>
-          )}
-
-          {/* e) Filtros */}
-          <PillGroup<Filter>
-            size="sm"
-            variant="rose"
-            value={filter}
-            onChange={setFilter}
-            options={[
-              { value: 'todos', label: 'todos' },
-              { value: 'campo', label: 'campo' },
-              { value: 'clinico', label: 'clínico' },
-              { value: 'supervisao', label: 'supervisão' },
-            ]}
-          />
-
-          {pending && (
-            <div className="rounded-2xl p-3 bg-surface-default border border-ceci-border-default flex items-center justify-between gap-2 text-[12px] text-ceci-secondary">
-              <span>
-                mostrando {pending === 'reflexao' ? pend.noReflection.length : pend.noSupervision.length}{' '}
-                {pending === 'reflexao' ? 'sem reflexão' : 'sem supervisão'}
-              </span>
-              <button
-                type="button"
-                onClick={() => setPending(null)}
-                className="min-h-[44px] px-4 rounded-full text-[12px] font-semibold bg-surface-default border border-ceci-border-default cursor-pointer tap-interactive"
-              >
-                limpar
-              </button>
-            </div>
-          )}
-
-          {/* f) Lista agrupada por semana */}
-          {internshipLogs.length === 0 ? (
-            <EmptyState
-              description={frase(VAZIO, 'semRegistroEstagio')}
-              actionLabel="anotar"
-              onAction={() => openWizard('internship')}
-            />
-          ) : filtered.length === 0 ? (
-            <EmptyState
-              description={frase(VAZIO, 'semResultadoFiltro')}
-              actionLabel="limpar filtros"
-              onAction={() => { setFilter('todos'); setPending(null); }}
-            />
-          ) : (
-            <div className="space-y-4">
-              {visibleGroups(filtered, extraWeeks).map((g) => (
-                <section key={g.id as LogGroupId}>
-                  <div className="flex items-baseline gap-1.5 mb-1.5">
-                    <h3 className="text-[11px] font-bold uppercase tracking-wider text-ceci-tertiary">
-                      {g.label}
-                    </h3>
-                    {g.hours > 0 && (
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-ceci-tertiary">
-                        · {formatHours(g.hours)} h
+                ))}
+                {orphans.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => openInternshipCase('')}
+                    className="w-full text-left p-4 rounded-2xl bg-surface-muted border border-status-warning-border shadow-sm cursor-pointer tap-interactive"
+                  >
+                    <div className="flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 text-status-warning-strong" />
+                      <span className="text-xs font-semibold text-status-warning-strong">
+                        {pluralPt(
+                          orphans.length,
+                          'atendimento sem iniciais',
+                          'atendimentos sem iniciais',
+                        )}
                       </span>
-                    )}
-                  </div>
-                  <div className="space-y-3">
-                    {g.logs.map((log) => (
-                      <InternshipLogCard
-                        key={log.id}
-                        log={log}
-                        today={today}
-                        allLogs={internshipLogs}
-                      />
-                    ))}
-                  </div>
-                </section>
-              ))}
-              {countDoneGroups(filtered) > 4 && (
+                    </div>
+                    <p className="text-[11px] text-ceci-secondary mt-1">toque pra completar</p>
+                  </button>
+                )}
+              </div>
+            )}
+          </section>
+        ) : (
+          <>
+            {/* a) Resumo */}
+            <div className="grid grid-cols-3 gap-2">
+              <div className="rounded-2xl p-3 bg-surface-default border border-ceci-border-default shadow-sm text-center">
+                <p className="font-bold text-ceci-academic-strong text-lg">
+                  {formatHours(stats.doneHours)}
+                </p>
+                <p className="text-[12px] text-ceci-secondary">
+                  {goal ? `de ${formatHours(goal)} h` : 'horas feitas'}
+                </p>
+              </div>
+              <div className="rounded-2xl p-3 bg-surface-default border border-ceci-border-default shadow-sm text-center">
+                <p className="font-bold text-ceci-academic-strong text-lg">
+                  {formatHours(stats.weekHours)}
+                </p>
+                <p className="text-[12px] text-ceci-secondary">esta semana</p>
+              </div>
+              <div className="rounded-2xl p-3 bg-surface-default border border-ceci-border-default shadow-sm text-center">
+                <p className="font-bold text-ceci-academic-strong text-lg">
+                  {stats.clinicalDoneCount}
+                </p>
+                <p className="text-[12px] text-ceci-secondary">
+                  {pluralPt(stats.clinicalDoneCount, 'sessão', 'sessões')}
+                </p>
+              </div>
+            </div>
+
+            {/* Meta de horas (D2) */}
+            {goal ? (
+              <div className="space-y-1.5">
+                <ProgressBar
+                  value={goalPct}
+                  barClassName={goalPct >= 100 ? 'bg-status-success' : undefined}
+                />
+                <p className="text-[11px] text-ceci-secondary">
+                  {goalPct >= 100
+                    ? 'meta batida ♡'
+                    : `faltam ${formatHours(Math.max(0, goal - stats.doneHours))} h`}
+                </p>
+              </div>
+            ) : (
+              <GoalCta onSet={(h) => handleUpdateProfile({ internshipGoalHours: h })} />
+            )}
+
+            {/* c) Pendências — somem quando zeradas (D13) */}
+            {hasPending && (
+              <div className="rounded-2xl p-4 bg-surface-muted border border-status-warning-border space-y-2">
+                <div className="flex items-center gap-2 text-[13px] font-semibold text-status-warning-strong">
+                  <AlertCircle className="w-4 h-4" aria-hidden />
+                  pendências
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {pend.noReflection.length > 0 && (
+                    <StatusChip
+                      tone="warning"
+                      pressed={pending === 'reflexao'}
+                      onClick={() => togglePending('reflexao')}
+                      label={`${pend.noReflection.length} sem reflexão`}
+                    />
+                  )}
+                  {pend.noSupervision.length > 0 && (
+                    <StatusChip
+                      tone="warning"
+                      pressed={pending === 'supervisao'}
+                      onClick={() => togglePending('supervisao')}
+                      label={`${pend.noSupervision.length} sem supervisão`}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* d) Gráfico — só com 2+ semanas de dado (U7) */}
+            {stats.weeksWithData >= 2 && (
+              <div className="rounded-2xl p-4 bg-surface-default border border-ceci-border-default shadow-sm">
+                <DitherGrowthChart
+                  theme={appIsDark ? 'dark' : 'light'}
+                  data={stats.weeklySeries}
+                  title="horas de campo por semana"
+                  unitLabel="h"
+                  accentColor="#4A879F"
+                  className="w-full"
+                />
+              </div>
+            )}
+
+            {/* e) Filtros */}
+            <PillGroup<Filter>
+              size="sm"
+              variant="rose"
+              value={filter}
+              onChange={setFilter}
+              options={[
+                { value: 'todos', label: 'todos' },
+                { value: 'campo', label: 'campo' },
+                { value: 'clinico', label: 'clínico' },
+                { value: 'supervisao', label: 'supervisão' },
+              ]}
+            />
+
+            {pending && (
+              <div className="rounded-2xl p-3 bg-surface-default border border-ceci-border-default flex items-center justify-between gap-2 text-[12px] text-ceci-secondary">
+                <span>
+                  mostrando{' '}
+                  {pending === 'reflexao' ? pend.noReflection.length : pend.noSupervision.length}{' '}
+                  {pending === 'reflexao' ? 'sem reflexão' : 'sem supervisão'}
+                </span>
                 <button
                   type="button"
-                  onClick={() => setExtraWeeks((n) => n + 8)}
-                  className="w-full min-h-[44px] rounded-full text-xs font-semibold bg-surface-default border border-ceci-border-default cursor-pointer tap-interactive"
+                  onClick={() => setPending(null)}
+                  className="min-h-[44px] px-4 rounded-full text-[12px] font-semibold bg-surface-default border border-ceci-border-default cursor-pointer tap-interactive"
                 >
-                  ver semanas anteriores
+                  limpar
                 </button>
-              )}
-            </div>
-          )}
-        </>
-      )}
+              </div>
+            )}
+
+            {/* f) Lista agrupada por semana */}
+            {internshipLogs.length === 0 ? (
+              <EmptyState
+                description={frase(VAZIO, 'semRegistroEstagio')}
+                actionLabel="anotar"
+                onAction={() => openWizard('internship')}
+              />
+            ) : filtered.length === 0 ? (
+              <EmptyState
+                description={frase(VAZIO, 'semResultadoFiltro')}
+                actionLabel="limpar filtros"
+                onAction={() => {
+                  setFilter('todos');
+                  setPending(null);
+                }}
+              />
+            ) : (
+              <div className="space-y-4">
+                {visibleGroups(filtered, extraWeeks).map((g) => (
+                  <section key={g.id as LogGroupId}>
+                    <div className="flex items-baseline gap-1.5 mb-1.5">
+                      <h3 className="text-[11px] font-bold uppercase tracking-wider text-ceci-tertiary">
+                        {g.label}
+                      </h3>
+                      {g.hours > 0 && (
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-ceci-tertiary">
+                          · {formatHours(g.hours)} h
+                        </span>
+                      )}
+                    </div>
+                    <div className="space-y-3">
+                      {g.logs.map((log) => (
+                        <InternshipLogCard
+                          key={log.id}
+                          log={log}
+                          today={today}
+                          allLogs={internshipLogs}
+                        />
+                      ))}
+                    </div>
+                  </section>
+                ))}
+                {countDoneGroups(filtered) > 4 && (
+                  <button
+                    type="button"
+                    onClick={() => setExtraWeeks((n) => n + 8)}
+                    className="w-full min-h-[44px] rounded-full text-xs font-semibold bg-surface-default border border-ceci-border-default cursor-pointer tap-interactive"
+                  >
+                    ver semanas anteriores
+                  </button>
+                )}
+              </div>
+            )}
+          </>
+        )}
       </SwipeableTabPanel>
     </div>
   );

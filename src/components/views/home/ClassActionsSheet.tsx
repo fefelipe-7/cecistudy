@@ -3,14 +3,7 @@
 // Opções que registram (fui/cancelou/falta) passam por um passo de confirmação
 // antes de confirmar — a "anotar alguma coisinha" segue direto pro fluxo de nota.
 import React, { useEffect, useState } from 'react';
-import {
-  CheckCircle2,
-  EyeOff,
-  PartyPopper,
-  StickyNote,
-  ArrowRight,
-  ArrowLeft,
-} from 'lucide-react';
+import { CheckCircle2, EyeOff, PartyPopper, StickyNote, ArrowRight, ArrowLeft } from 'lucide-react';
 import { Modal } from '../../ui/Modal';
 import type { AttendanceStatus } from '../../../types';
 
@@ -64,7 +57,8 @@ const OPTIONS: ClassOption[] = [
     label: 'ainda bem que cancelou',
     desc: 'não conta como falta',
     icon: <PartyPopper className="w-5 h-5" />,
-    className: 'bg-status-warning-surface border-status-warning-border hover:border-status-warning/60',
+    className:
+      'bg-status-warning-surface border-status-warning-border hover:border-status-warning/60',
     iconClass: 'text-status-warning-strong',
     confirmClass: 'bg-status-warning text-status-warning-on border-status-warning',
   },

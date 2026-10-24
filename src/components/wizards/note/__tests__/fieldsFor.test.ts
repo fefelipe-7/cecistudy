@@ -23,15 +23,31 @@ const note = (over: Partial<LooseNote> = {}): LooseNote => ({
 
 const courses: Course[] = [
   {
-    id: 'c1', name: 'psicopatologia', code: 'PSI-1', professor: 'x',
-    semester: '1', schedule: [], room: '', color: '#fff', icon: 'Brain',
+    id: 'c1',
+    name: 'psicopatologia',
+    code: 'PSI-1',
+    professor: 'x',
+    semester: '1',
+    schedule: [],
+    room: '',
+    color: '#fff',
+    icon: 'Brain',
   },
 ];
 
 const classes: ClassNote[] = [
   {
-    id: 'cl-1', courseId: 'c1', title: 'aula 1', number: 3, date: '2026-01-01',
-    summary: '', fullNotes: '', conceptIds: [], authorIds: [], materials: [], hasQuestions: false,
+    id: 'cl-1',
+    courseId: 'c1',
+    title: 'aula 1',
+    number: 3,
+    date: '2026-01-01',
+    summary: '',
+    fullNotes: '',
+    conceptIds: [],
+    authorIds: [],
+    materials: [],
+    hasQuestions: false,
   },
 ];
 
@@ -54,7 +70,11 @@ describe('hydrateTransform', () => {
   });
 
   it('usa a primeira linha quando a nota não tem título', () => {
-    const v = hydrateTransform(note({ title: '', content: 'primeira linha\nsegunda' }), courses, []);
+    const v = hydrateTransform(
+      note({ title: '', content: 'primeira linha\nsegunda' }),
+      courses,
+      [],
+    );
     expect(v.question).toBe('primeira linha');
     expect(v.classNumber).toBe(1);
   });
@@ -68,7 +88,15 @@ describe('hydrateTransform', () => {
 
 describe('FIELDS_FOR', () => {
   const targets: NoteTargetType[] = [
-    'class', 'task', 'exam', 'flashcard', 'session', 'internship', 'concept', 'author', 'material',
+    'class',
+    'task',
+    'exam',
+    'flashcard',
+    'session',
+    'internship',
+    'concept',
+    'author',
+    'material',
   ];
 
   it('cobre todos os destinos com passo, revisão e validade', () => {
@@ -86,8 +114,14 @@ describe('FIELDS_FOR', () => {
     const base = hydrateTransform(note(), courses, classes);
     const empty: TransformValues = {
       ...base,
-      title: '', content: '', question: '', sessionTopic: '', activity: '',
-      conceptName: '', authorName: '', materialTitle: '',
+      title: '',
+      content: '',
+      question: '',
+      sessionTopic: '',
+      activity: '',
+      conceptName: '',
+      authorName: '',
+      materialTitle: '',
     };
     for (const t of targets) {
       expect(FIELDS_FOR[t].valid(empty), t).toBe(false);
@@ -98,9 +132,17 @@ describe('FIELDS_FOR', () => {
   it('revisão da prova mostra "a confirmar" sem data', () => {
     const v = hydrateTransform(note(), courses, classes);
     const rows = FIELDS_FOR.exam.review({
-      v, patch: () => {}, lookups: {
-        courseSelect: null, courseName: 'psicopatologia', conceptOptions: [],
-        resolveIds: (ids) => ids, approaches: [], authors: [], courses, concepts: [],
+      v,
+      patch: () => {},
+      lookups: {
+        courseSelect: null,
+        courseName: 'psicopatologia',
+        conceptOptions: [],
+        resolveIds: (ids) => ids,
+        approaches: [],
+        authors: [],
+        courses,
+        concepts: [],
       },
     });
     expect(rows.find((r) => r.label === 'data')?.value).toBe('a confirmar');

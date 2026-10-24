@@ -52,41 +52,41 @@ describe('repositories (CRUD puro)', () => {
 });
 
 describe('applyDatabaseToSetters', () => {
-const makeSetters = (): DataClientSetters => ({
-      profile: vi.fn(),
-      academicTerms: vi.fn(),
-      courses: vi.fn(),
-      classes: vi.fn(),
-      tasks: vi.fn(),
-      exams: vi.fn(),
-      authors: vi.fn(),
-      concepts: vi.fn(),
-      readings: vi.fn(),
-      readingSessions: vi.fn(),
-      readingHighlights: vi.fn(),
-      readingBookmarks: vi.fn(),
-      thesisChapters: vi.fn(),
-      thesisReferences: vi.fn(),
-      thesisMeetings: vi.fn(),
-      thesisTasks: vi.fn(),
-      thesisWritingLogs: vi.fn(),
-      flashcards: vi.fn(),
-      materials: vi.fn(),
-      internshipLogs: vi.fn(),
-      stickers: vi.fn(),
-      sessions: vi.fn(),
-      techniques: vi.fn(),
-      quizSessions: vi.fn(),
-      streakData: vi.fn(),
-      reminder: vi.fn(),
-      looseNotes: vi.fn(),
-      savedBookIds: vi.fn(),
-      readingProgress: vi.fn(),
-      bookmarkedCourseIds: vi.fn(),
-      tcc: vi.fn(),
-      onboarding: vi.fn(),
-      syncIndex: vi.fn(),
-    });
+  const makeSetters = (): DataClientSetters => ({
+    profile: vi.fn(),
+    academicTerms: vi.fn(),
+    courses: vi.fn(),
+    classes: vi.fn(),
+    tasks: vi.fn(),
+    exams: vi.fn(),
+    authors: vi.fn(),
+    concepts: vi.fn(),
+    readings: vi.fn(),
+    readingSessions: vi.fn(),
+    readingHighlights: vi.fn(),
+    readingBookmarks: vi.fn(),
+    thesisChapters: vi.fn(),
+    thesisReferences: vi.fn(),
+    thesisMeetings: vi.fn(),
+    thesisTasks: vi.fn(),
+    thesisWritingLogs: vi.fn(),
+    flashcards: vi.fn(),
+    materials: vi.fn(),
+    internshipLogs: vi.fn(),
+    stickers: vi.fn(),
+    sessions: vi.fn(),
+    techniques: vi.fn(),
+    quizSessions: vi.fn(),
+    streakData: vi.fn(),
+    reminder: vi.fn(),
+    looseNotes: vi.fn(),
+    savedBookIds: vi.fn(),
+    readingProgress: vi.fn(),
+    bookmarkedCourseIds: vi.fn(),
+    tcc: vi.fn(),
+    onboarding: vi.fn(),
+    syncIndex: vi.fn(),
+  });
 
   it('aplica cada coleção no setter correspondente (e ignora bancos estáticos)', () => {
     const db = emptyDatabase();
@@ -104,7 +104,9 @@ const makeSetters = (): DataClientSetters => ({
     const s = makeSetters();
     applyDatabaseToSetters(db, s, { transformStickers: transform });
     expect(transform).toHaveBeenCalled();
-    expect(s.stickers).toHaveBeenCalledWith(expect.arrayContaining([expect.objectContaining({ id: 'x' })]));
+    expect(s.stickers).toHaveBeenCalledWith(
+      expect.arrayContaining([expect.objectContaining({ id: 'x' })]),
+    );
     expect(s.syncIndex).toHaveBeenCalledWith({ stamps: {}, records: {}, tombstones: {} });
   });
 });

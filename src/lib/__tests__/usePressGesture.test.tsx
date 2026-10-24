@@ -79,9 +79,7 @@ describe('usePressGesture — clique curto × pressed longo', () => {
     const onPress = vi.fn();
     const onLongPress = vi.fn();
     const phases: PressPhase[] = [];
-    render(
-      <Harness onPress={onPress} onLongPress={onLongPress} onPhase={(p) => phases.push(p)} />,
-    );
+    render(<Harness onPress={onPress} onLongPress={onLongPress} onPhase={(p) => phases.push(p)} />);
 
     contactDown();
     fireEvent.pointerMove(alvo(), { pointerId: 1, clientX: 40, clientY: 0 });

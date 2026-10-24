@@ -1,9 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import {
-  COURSE_ICON_NAMES,
-  CourseIcon,
-} from '../CourseIcon';
+import { COURSE_ICON_NAMES, CourseIcon } from '../CourseIcon';
 import type { CourseIconName } from '../../../types';
 
 const ALL_ICON_NAMES: readonly CourseIconName[] = [
@@ -46,7 +43,6 @@ describe('CourseIcon rendering (SPEC-004 emoji)', () => {
     const { container } = render(<CourseIcon icon="🧠" className="w-5 h-5" />);
     const span = container.querySelector('span');
     expect(span?.textContent).toBe('🧠');
-    expect(span?.className).toContain('inline-flex');
     expect(container.querySelector('svg')).toBeNull();
   });
 

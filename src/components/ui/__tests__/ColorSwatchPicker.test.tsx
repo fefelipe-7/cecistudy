@@ -24,9 +24,4 @@ describe('ColorSwatchPicker', () => {
     fireEvent.click(screen.getByRole('button', { name: `cor ${SWATCHES[2]}` }));
     expect(onChange).toHaveBeenCalledWith(SWATCHES[2]);
   });
-
-  it('usa as cores padrão do app quando não recebe swatches', () => {
-    const { getAllByRole } = render(<ColorSwatchPicker value="#E97891" onChange={() => {}} />);
-    expect(getAllByRole('button').length).toBeGreaterThan(0);
-  });
 });

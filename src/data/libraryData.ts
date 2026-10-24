@@ -56,8 +56,10 @@ export const initialTrendingBooks: CollectionBook[] = [
     coverColor: '#E8C98C',
     accentColor: '#8C7338',
     badge: 'bestseller',
-    description: 'Como comportamentos, emoções, vieses de ganância e medo ditam as decisões financeiras mais do que fórmulas matemáticas.',
-    quote: 'Fazer bem com o dinheiro tem pouco a ver com a sua inteligência e muito a ver com como você se comporta.',
+    description:
+      'Como comportamentos, emoções, vieses de ganância e medo ditam as decisões financeiras mais do que fórmulas matemáticas.',
+    quote:
+      'Fazer bem com o dinheiro tem pouco a ver com a sua inteligência e muito a ver com como você se comporta.',
     tags: ['Comportamento', 'Tomada de Decisão', 'Finanças'],
     courseName: 'Bagagem Complementar',
   },
@@ -68,7 +70,8 @@ export const initialTrendingBooks: CollectionBook[] = [
     coverColor: '#BFDDED',
     accentColor: '#396D82',
     badge: 'nobel de economia',
-    description: 'Exploração magistral sobre os dois sistemas da mente: o Sistema 1 (rápido e intuitivo) e o Sistema 2 (lento e deliberativo).',
+    description:
+      'Exploração magistral sobre os dois sistemas da mente: o Sistema 1 (rápido e intuitivo) e o Sistema 2 (lento e deliberativo).',
     quote: 'A ilusão de que entendemos o passado fomenta a ilusão de que podemos prever o futuro.',
     tags: ['Vieses Cognitivos', 'Sistema 1 e 2', 'Decisão'],
     courseName: 'Bagagem Complementar',
@@ -80,8 +83,10 @@ export const initialTrendingBooks: CollectionBook[] = [
     coverColor: '#E8AFC0',
     accentColor: '#B94862',
     badge: 'ux & percepção',
-    description: 'Análise essencial sobre affordances, erros humanos e psicologia da percepção aplicada ao ambiente e aos objetos cotidianos.',
-    quote: 'Quando as pessoas erram ao usar um produto, o erro raramente é delas; o design é que falhou.',
+    description:
+      'Análise essencial sobre affordances, erros humanos e psicologia da percepção aplicada ao ambiente e aos objetos cotidianos.',
+    quote:
+      'Quando as pessoas erram ao usar um produto, o erro raramente é delas; o design é que falhou.',
     tags: ['Affordance', 'Percepção', 'Design Humano'],
     courseName: 'Bagagem Complementar',
   },
@@ -92,7 +97,8 @@ export const initialTrendingBooks: CollectionBook[] = [
     coverColor: '#A8C9B0',
     accentColor: '#2D6A4F',
     badge: 'mudança de hábitos',
-    description: 'Método prático para construir pequenos hábitos diários com base na neurociência da pista, desejo, resposta e recompensa.',
+    description:
+      'Método prático para construir pequenos hábitos diários com base na neurociência da pista, desejo, resposta e recompensa.',
     quote: 'Você não se eleva ao nível dos seus objetivos. Você cai ao nível dos seus sistemas.',
     tags: ['Hábitos', 'Comportamento', 'Constância'],
     courseName: 'Bagagem Complementar',
@@ -104,7 +110,8 @@ export const initialTrendingBooks: CollectionBook[] = [
     coverColor: '#DCCBB8',
     accentColor: '#756354',
     badge: 'logoterapia',
-    description: 'O relato emocionante do psiquiatra nos campos de concentração e as bases da Logoterapia centrada no sentido da existência.',
+    description:
+      'O relato emocionante do psiquiatra nos campos de concentração e as bases da Logoterapia centrada no sentido da existência.',
     quote: 'Quem tem um porquê enfrentar qualquer como.',
     tags: ['Logoterapia', 'Existencialismo', 'Resiliência'],
     courseName: 'Bagagem Complementar',
@@ -116,7 +123,8 @@ export const initialTrendingBooks: CollectionBook[] = [
     coverColor: '#FFD3DD',
     accentColor: '#B94862',
     badge: 'clínica viva',
-    description: 'Reflexões afetuosas e lúcidas sobre a escolha da profissão, ética do atendimento, transferência e a paixão pela escuta humana.',
+    description:
+      'Reflexões afetuosas e lúcidas sobre a escolha da profissão, ética do atendimento, transferência e a paixão pela escuta humana.',
     quote: 'Ser terapeuta é ter uma curiosidade inquebrantável pela singularidade da vida alheia.',
     tags: ['Escuta Clínica', 'Ética', 'Vocação'],
     courseName: 'Estágio Básico I',
@@ -145,8 +153,10 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#E8AFC0',
         accentColor: '#B94862',
         badge: 'clássico',
-        description: 'Obra marco da TCC apresentando o modelo cognitivo da depressão, formulando os esquemas disfuncionais e técnicas sistemáticas de reestruturação.',
-        quote: 'A maneira como o indivíduo percebe suas experiências determina diretamente suas emoções e condutas.',
+        description:
+          'Obra marco da TCC apresentando o modelo cognitivo da depressão, formulando os esquemas disfuncionais e técnicas sistemáticas de reestruturação.',
+        quote:
+          'A maneira como o indivíduo percebe suas experiências determina diretamente suas emoções e condutas.',
         tags: ['TCC', 'Depressão', 'Esquemas'],
         courseName: 'Terapia Cognitivo-Comportamental',
       },
@@ -157,8 +167,10 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#DCCBB8',
         accentColor: '#756354',
         badge: 'obrigatório',
-        description: 'Guia definitivo de conceituação cognitiva de caso, registro de pensamentos disfuncionais (RPD) e planejamento de sessões.',
-        quote: 'Conceituação de caso não é um formulário estático; renova-se a cada encontro terapêutico.',
+        description:
+          'Guia definitivo de conceituação cognitiva de caso, registro de pensamentos disfuncionais (RPD) e planejamento de sessões.',
+        quote:
+          'Conceituação de caso não é um formulário estático; renova-se a cada encontro terapêutico.',
         tags: ['Conceituação', 'RPD', 'Prática Clínica'],
         courseName: 'Terapia Cognitivo-Comportamental',
       },
@@ -169,8 +181,10 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#BFDDED',
         accentColor: '#396D82',
         badge: 'essencial',
-        description: 'Abordagem minuciosa sobre a hipermotivação do sistema de ameaça, catastrofização e experimentos comportamentais.',
-        quote: 'Na ansiedade, a mente superestima o perigo e subestima a própria capacidade de enfrentamento.',
+        description:
+          'Abordagem minuciosa sobre a hipermotivação do sistema de ameaça, catastrofização e experimentos comportamentais.',
+        quote:
+          'Na ansiedade, a mente superestima o perigo e subestima a própria capacidade de enfrentamento.',
         tags: ['Ansiedade', 'Catastrofização', 'Exposição'],
         courseName: 'Psicopatologia I',
       },
@@ -181,7 +195,8 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#A8C9B0',
         accentColor: '#2D6A4F',
         badge: 'fichado',
-        description: 'Aplicação prática da reestruturação cognitiva no manejo de hábitos, tolerância à frustração e automonitoramento.',
+        description:
+          'Aplicação prática da reestruturação cognitiva no manejo de hábitos, tolerância à frustração e automonitoramento.',
         quote: 'Mudar a relação com os pensamentos de sabotagem é a chave para a constância.',
         tags: ['Hábitos', 'Automonitoramento'],
         courseName: 'Terapia Cognitivo-Comportamental',
@@ -193,7 +208,8 @@ export const initialContextCollections: ContextCollection[] = [
     blockType: 'author',
     blockCategory: 'autores',
     title: 'Sigmund Freud & A Invenção da Psicanálise',
-    subtitle: 'Processos psíquicos inconscientes, determinação das pulsões e análise da transferência.',
+    subtitle:
+      'Processos psíquicos inconscientes, determinação das pulsões e análise da transferência.',
     readersCount: 52,
     readersAvatars: [
       { name: 'Mía', bg: '#CEE7F0', text: '#396D82' },
@@ -208,7 +224,8 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#BFDDED',
         accentColor: '#396D82',
         badge: 'marco histórico',
-        description: 'Fundamentação da psicanálise postulando o sonho como a via régia para o conhecimento do inconsciente.',
+        description:
+          'Fundamentação da psicanálise postulando o sonho como a via régia para o conhecimento do inconsciente.',
         quote: 'O sonho é a realização disfarçada de um desejo reprimido.',
         tags: ['Inconsciente', 'Sonhos', 'Psicanálise'],
         courseName: 'Psicologia Dinâmica',
@@ -220,7 +237,8 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#E8C98C',
         accentColor: '#8C7338',
         badge: 'clássico',
-        description: 'Exame sobre o conflito irremediável entre a busca individual de felicidade e as renúncias exigidas pela cultura.',
+        description:
+          'Exame sobre o conflito irremediável entre a busca individual de felicidade e as renúncias exigidas pela cultura.',
         quote: 'A intenção de que o homem seja feliz não se acha no plano da Criação.',
         tags: ['Cultura', 'Pulsão', 'Sublimação'],
         courseName: 'Psicologia Social',
@@ -232,7 +250,8 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#E8AFC0',
         accentColor: '#B94862',
         badge: 'fichado',
-        description: 'Apresentação revolucionária da sexualidade infantil, fases do desenvolvimento libidinal e perversões.',
+        description:
+          'Apresentação revolucionária da sexualidade infantil, fases do desenvolvimento libidinal e perversões.',
         quote: 'A pulsão é um conceito limite entre o somático e o psíquico.',
         tags: ['Libido', 'Pulsão', 'Desenvolvimento'],
         courseName: 'Psicopatologia I',
@@ -244,7 +263,8 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#DCCBB8',
         accentColor: '#756354',
         badge: '2ª tópica',
-        description: 'Estruturação do aparelho psíquico na segunda tópica: as instâncias Id, Ego e Superego.',
+        description:
+          'Estruturação do aparelho psíquico na segunda tópica: as instâncias Id, Ego e Superego.',
         quote: 'O Ego não é mestre em sua própria casa.',
         tags: ['Aparelho Psíquico', 'Superego', 'Ego'],
         courseName: 'Psicologia Dinâmica',
@@ -256,7 +276,8 @@ export const initialContextCollections: ContextCollection[] = [
     blockType: 'author',
     blockCategory: 'autores',
     title: 'Carl Rogers & Abordagem Centrada na Pessoa',
-    subtitle: 'Tendência atualizante, empatia genuína e a transformação através do acolhimento incondicional.',
+    subtitle:
+      'Tendência atualizante, empatia genuína e a transformação através do acolhimento incondicional.',
     readersCount: 36,
     readersAvatars: [
       { name: 'Ceci', bg: '#FFD3DD', text: '#B94862' },
@@ -270,7 +291,8 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#DCCBB8',
         accentColor: '#756354',
         badge: 'favorito ♡',
-        description: 'Filosofia da relação terapêutica e a célebre atitude do terapeuta como catalisador do amadurecimento humano.',
+        description:
+          'Filosofia da relação terapêutica e a célebre atitude do terapeuta como catalisador do amadurecimento humano.',
         quote: 'O curioso paradoxo é que quando me aceito exatamente como sou, posso mudar.',
         tags: ['Humanismo', 'Empatia', 'ACP'],
         courseName: 'Estágio Básico I',
@@ -282,8 +304,10 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#A8C9B0',
         accentColor: '#2D6A4F',
         badge: 'inspiração',
-        description: 'Coletânea de ensaios sobre a aplicação da empatia e congruência na educação, comunicação e clínica.',
-        quote: 'Ser empático é ver o mundo através dos olhos do outro sem jamais perder de vista a si mesmo.',
+        description:
+          'Coletânea de ensaios sobre a aplicação da empatia e congruência na educação, comunicação e clínica.',
+        quote:
+          'Ser empático é ver o mundo através dos olhos do outro sem jamais perder de vista a si mesmo.',
         tags: ['Acolhimento', 'Educação'],
         courseName: 'Estágio Básico I',
       },
@@ -294,7 +318,8 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#BFDDED',
         accentColor: '#396D82',
         badge: 'técnica',
-        description: 'Transcrição e análise de casos clínicos reais demonstrando a eficácia da escuta não-diretiva.',
+        description:
+          'Transcrição e análise de casos clínicos reais demonstrando a eficácia da escuta não-diretiva.',
         quote: 'A mudança terapêutica ocorre quando a pessoa se sente profundamente compreendida.',
         tags: ['Não-Diretividade', 'Clínica Escola'],
         courseName: 'Avaliação Psicológica II',
@@ -320,8 +345,10 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#A8C9B0',
         accentColor: '#2D6A4F',
         badge: 'sócio-cultural',
-        description: 'O papel das ferramentas e signos no desenvolvimento das funções psíquicas superiores da criança.',
-        quote: 'O aprendizado desperta vários processos internos de desenvolvimento que só operam no intercâmbio social.',
+        description:
+          'O papel das ferramentas e signos no desenvolvimento das funções psíquicas superiores da criança.',
+        quote:
+          'O aprendizado desperta vários processos internos de desenvolvimento que só operam no intercâmbio social.',
         tags: ['ZDP', 'Mediação', 'Linguagem'],
         courseName: 'Psicologia Social',
       },
@@ -332,8 +359,10 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#E8C98C',
         accentColor: '#8C7338',
         badge: 'semiótica',
-        description: 'Análise da relação dialética entre a palavra falada, o discurso interior e o pensamento abstrato.',
-        quote: 'Uma palavra desprovida de pensamento é uma coisa morta, e um pensamento não expresso por palavras permanece uma sombra.',
+        description:
+          'Análise da relação dialética entre a palavra falada, o discurso interior e o pensamento abstrato.',
+        quote:
+          'Uma palavra desprovida de pensamento é uma coisa morta, e um pensamento não expresso por palavras permanece uma sombra.',
         tags: ['Linguagem', 'Pensamento'],
         courseName: 'Psicologia Social',
       },
@@ -344,7 +373,8 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#E8AFC0',
         accentColor: '#B94862',
         badge: 'neuropsicologia',
-        description: 'Investigação pioneira das lesões cerebrais e reabilitação cognitiva baseada no contexto social.',
+        description:
+          'Investigação pioneira das lesões cerebrais e reabilitação cognitiva baseada no contexto social.',
         quote: 'O cérebro funciona como um sistema funcional dinâmico articulado pela cultura.',
         tags: ['Cérebro', 'Memória'],
         courseName: 'Avaliação Psicológica II',
@@ -358,7 +388,8 @@ export const initialContextCollections: ContextCollection[] = [
     blockType: 'concept',
     blockCategory: 'conceitos',
     title: 'Distorções Cognitivas & Registro RPD',
-    subtitle: 'Identificação de viéses de pensamento como catastrofização, filtro mental e tudo-ou-nada.',
+    subtitle:
+      'Identificação de viéses de pensamento como catastrofização, filtro mental e tudo-ou-nada.',
     readersCount: 64,
     readersAvatars: [
       { name: 'Ceci', bg: '#FFD3DD', text: '#B94862' },
@@ -373,7 +404,8 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#E8AFC0',
         accentColor: '#B94862',
         badge: 'fichamento',
-        description: 'Tabela de 7 colunas para questionar evidências a favor e contra sentimentos disfuncionais.',
+        description:
+          'Tabela de 7 colunas para questionar evidências a favor e contra sentimentos disfuncionais.',
         quote: 'Quais são as evidências reais de que o pior cenário vai acontecer?',
         tags: ['RPD', 'Prática', 'TCC'],
         courseName: 'Terapia Cognitivo-Comportamental',
@@ -385,7 +417,8 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#BFDDED',
         accentColor: '#396D82',
         badge: 'recomendado',
-        description: 'Manual passo a passo para identificação de regras rígidas e substituição por pensamentos adaptativos.',
+        description:
+          'Manual passo a passo para identificação de regras rígidas e substituição por pensamentos adaptativos.',
         quote: 'Pensamentos não são fatos incontestáveis; são hipóteses a serem testadas.',
         tags: ['Reestruturação', 'Flexibilidade'],
         courseName: 'Terapia Cognitivo-Comportamental',
@@ -397,7 +430,8 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#DCCBB8',
         accentColor: '#756354',
         badge: 'aulas',
-        description: 'Como integrar a história infantil, eventos ativadores e estratégias compensatórias do paciente.',
+        description:
+          'Como integrar a história infantil, eventos ativadores e estratégias compensatórias do paciente.',
         quote: 'O sintoma é a ponta do iceberg das crenças centrais ativadas.',
         tags: ['Formulação', 'Estratégia'],
         courseName: 'Terapia Cognitivo-Comportamental',
@@ -409,7 +443,8 @@ export const initialContextCollections: ContextCollection[] = [
     blockType: 'concept',
     blockCategory: 'conceitos',
     title: 'Semiologia Psiquiátrica & Diagnóstico',
-    subtitle: 'Análise detalhada da consciência, afeto, pensamento, memória e instintos no DSM-5-TR.',
+    subtitle:
+      'Análise detalhada da consciência, afeto, pensamento, memória e instintos no DSM-5-TR.',
     readersCount: 51,
     readersAvatars: [
       { name: 'Lia', bg: '#CEE7F0', text: '#396D82' },
@@ -423,7 +458,8 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#BFDDED',
         accentColor: '#396D82',
         badge: 'manual guia',
-        description: 'A bíblia da semiologia psiquiátrica em língua portuguesa, detalhando o exame do estado mental.',
+        description:
+          'A bíblia da semiologia psiquiátrica em língua portuguesa, detalhando o exame do estado mental.',
         quote: 'O afeto é a tonalidade emocional que acompanha o estado psíquico.',
         tags: ['Dalgalarrondo', 'Semiologia', 'Sintomas'],
         courseName: 'Psicopatologia I',
@@ -435,7 +471,8 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#E8C98C',
         accentColor: '#8C7338',
         badge: 'DSM-5-TR',
-        description: 'Classificação oficial e critérios operacionais para diagnóstico dos transtornos mentais.',
+        description:
+          'Classificação oficial e critérios operacionais para diagnóstico dos transtornos mentais.',
         quote: 'Os critérios devem ser interpretados no contexto clínico e cultural do paciente.',
         tags: ['DSM-5', 'Diagnóstico', 'APA'],
         courseName: 'Psicopatologia I',
@@ -459,7 +496,8 @@ export const initialContextCollections: ContextCollection[] = [
     blockType: 'concept',
     blockCategory: 'conceitos',
     title: 'Avaliação Psicológica & Teste HTP',
-    subtitle: 'Aplicação do House-Tree-Person, simbolismo do traço e elaboração de laudos pareceres.',
+    subtitle:
+      'Aplicação do House-Tree-Person, simbolismo do traço e elaboração de laudos pareceres.',
     readersCount: 39,
     readersAvatars: [
       { name: 'Rafa', bg: '#D1E8D9', text: '#2D6A4F' },
@@ -486,7 +524,8 @@ export const initialContextCollections: ContextCollection[] = [
         accentColor: '#B94862',
         badge: 'aulas',
         description: 'Cruzar achados do HTP e BFP com a anamnese e observação comportamental.',
-        quote: 'Nenhum teste projetivo deve ser interpretado isoladamente fora da história de vida.',
+        quote:
+          'Nenhum teste projetivo deve ser interpretado isoladamente fora da história de vida.',
         tags: ['Laudos', 'Projeção'],
         courseName: 'Avaliação Psicológica II',
       },
@@ -500,7 +539,8 @@ export const initialContextCollections: ContextCollection[] = [
     blockCategory: 'abordagens',
     approachId: 'psic-04-01',
     title: 'Terapia Cognitivo-Comportamental (TCC)',
-    subtitle: 'A tríade pensamento, emoção e comportamento com intervenções empíricas baseadas em evidências.',
+    subtitle:
+      'A tríade pensamento, emoção e comportamento com intervenções empíricas baseadas em evidências.',
     readersCount: 72,
     readersAvatars: [
       { name: 'Ceci', bg: '#FFD3DD', text: '#B94862' },
@@ -515,7 +555,8 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#E8AFC0',
         accentColor: '#B94862',
         badge: 'bestseller',
-        description: 'O livro de exercícios de TCC mais recomendado no mundo para controle da ansiedade e depressão.',
+        description:
+          'O livro de exercícios de TCC mais recomendado no mundo para controle da ansiedade e depressão.',
         quote: 'Pequenas mudanças no pensamento geram transformações profundas na emoção.',
         tags: ['Auto-Ajuda', 'Prática', 'TCC'],
         courseName: 'Terapia Cognitivo-Comportamental',
@@ -527,8 +568,10 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#DCCBB8',
         accentColor: '#756354',
         badge: '3ª onda tcc',
-        description: 'Aprofundamento na flexibilidade psicológica, desfusão cognitiva e ações valiosas.',
-        quote: 'A dor é inevitável; o sofrimento advém do combate contínuo com os próprios sentimentos.',
+        description:
+          'Aprofundamento na flexibilidade psicológica, desfusão cognitiva e ações valiosas.',
+        quote:
+          'A dor é inevitável; o sofrimento advém do combate contínuo com os próprios sentimentos.',
         tags: ['ACT', 'Mindfulness', 'Valores'],
         courseName: 'Terapia Cognitivo-Comportamental',
       },
@@ -539,8 +582,10 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#BFDDED',
         accentColor: '#396D82',
         badge: 'esquemas',
-        description: 'Modelo integrativo para transtornos de personalidade focado em necessidades emocionais não atendidas.',
-        quote: 'Os esquemas desadaptativos remotos são os moldes pelos quais interpretamos o presente.',
+        description:
+          'Modelo integrativo para transtornos de personalidade focado em necessidades emocionais não atendidas.',
+        quote:
+          'Os esquemas desadaptativos remotos são os moldes pelos quais interpretamos o presente.',
         tags: ['Esquemas', 'Modos'],
         courseName: 'Terapia Cognitivo-Comportamental',
       },
@@ -566,7 +611,8 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#BFDDED',
         accentColor: '#396D82',
         badge: 'lacaniano',
-        description: 'O inconsciente estruturado como uma linguagem, o estádio do espelho e o objeto a.',
+        description:
+          'O inconsciente estruturado como uma linguagem, o estádio do espelho e o objeto a.',
         quote: 'O inconsciente é o discurso do Outro.',
         tags: ['Lacan', 'Linguagem', 'Desejo'],
         courseName: 'Psicologia Dinâmica',
@@ -578,8 +624,10 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#E8AFC0',
         accentColor: '#B94862',
         badge: 'essencial',
-        description: 'Conceito de objeto transicional, espaço potencial e a importância do ambiente suficientemente bom.',
-        quote: 'É no brincar, e somente no brincar, que o indivíduo pode ser criativo e utilizar sua personalidade.',
+        description:
+          'Conceito de objeto transicional, espaço potencial e a importância do ambiente suficientemente bom.',
+        quote:
+          'É no brincar, e somente no brincar, que o indivíduo pode ser criativo e utilizar sua personalidade.',
         tags: ['Winnicott', 'Brincar', 'Holding'],
         courseName: 'Psicologia do Desenvolvimento',
       },
@@ -590,7 +638,8 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#E8C98C',
         accentColor: '#8C7338',
         badge: 'relações de objeto',
-        description: 'Posição esquizo-paranóide e posição depressiva nas primeiras etapas da vida psíquica.',
+        description:
+          'Posição esquizo-paranóide e posição depressiva nas primeiras etapas da vida psíquica.',
         quote: 'A gratidão é o fator fundamental para o estabelecimento da paz interior.',
         tags: ['Klein', 'Psicanálise Infantil'],
         courseName: 'Psicologia Dinâmica',
@@ -604,7 +653,8 @@ export const initialContextCollections: ContextCollection[] = [
     blockType: 'multidisciplinary',
     blockCategory: 'multidisciplinar',
     title: 'Bagagem Multidisciplinar & Visão Expandida',
-    subtitle: 'Livros de economia comportamental, design humano, literatura e cultura que enriquecem o repertório clínico.',
+    subtitle:
+      'Livros de economia comportamental, design humano, literatura e cultura que enriquecem o repertório clínico.',
     readersCount: 85,
     readersAvatars: [
       { name: 'Ceci', bg: '#FFD3DD', text: '#B94862' },
@@ -619,7 +669,8 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#E8C98C',
         accentColor: '#8C7338',
         badge: 'finanças & mente',
-        description: 'Entenda como o relacionamento das pessoas com a segurança, o risco e as emoções moldam suas escolhas financeiras.',
+        description:
+          'Entenda como o relacionamento das pessoas com a segurança, o risco e as emoções moldam suas escolhas financeiras.',
         quote: 'Entender a mente humana vale mais do que prever o mercado.',
         tags: ['Finanças', 'Vieses', 'Comportamento'],
         courseName: 'Bagagem Complementar',
@@ -631,8 +682,10 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#BFDDED',
         accentColor: '#396D82',
         badge: 'tomada de decisão',
-        description: 'Mapeamento profundo dos atalhos heurísticos e equívocos sistemáticos que cometemos no julgamento diário.',
-        quote: 'Raramente percebemos como a substituição intuitive de perguntas difíceis nos conduz ao erro.',
+        description:
+          'Mapeamento profundo dos atalhos heurísticos e equívocos sistemáticos que cometemos no julgamento diário.',
+        quote:
+          'Raramente percebemos como a substituição intuitive de perguntas difíceis nos conduz ao erro.',
         tags: ['Cognição', 'Julgamento', 'Tomada de Decisão'],
         courseName: 'Bagagem Complementar',
       },
@@ -643,7 +696,8 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#E8AFC0',
         accentColor: '#B94862',
         badge: 'design & percepção',
-        description: 'Um olhar apurado sobre como espaços, objetos e sinalizações afetam a emoção e o comportamento do usuário.',
+        description:
+          'Um olhar apurado sobre como espaços, objetos e sinalizações afetam a emoção e o comportamento do usuário.',
         quote: 'A boa ergonomia é invisível; a má ergonomia causa frustração e culpa indevida.',
         tags: ['Ergonomia', 'Acessibilidade', 'Percepção'],
         courseName: 'Bagagem Complementar',
@@ -655,7 +709,8 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#FFD3DD',
         accentColor: '#B94862',
         badge: 'escuta humana',
-        description: 'Conselhos indispensáveis sobre amor pela complexidade da vida, neutralidade e empatia autêntica.',
+        description:
+          'Conselhos indispensáveis sobre amor pela complexidade da vida, neutralidade e empatia autêntica.',
         quote: 'Não busque consolar rápido demais; escute o silêncio da dor do paciente.',
         tags: ['Vocação', 'Escuta', 'Psicoterapia'],
         courseName: 'Estágio Básico I',
@@ -683,8 +738,10 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#A8C9B0',
         accentColor: '#2D6A4F',
         badge: 'satepsi aprovado',
-        description: 'Avaliação dos Big Five (Neuroticismo, Extroversão, Socialização, Realização e Abertura) no contexto brasileiro.',
-        quote: 'A mensuração quantitativa ganha sentido quando articulada com o contexto subjetivo do examinando.',
+        description:
+          'Avaliação dos Big Five (Neuroticismo, Extroversão, Socialização, Realização e Abertura) no contexto brasileiro.',
+        quote:
+          'A mensuração quantitativa ganha sentido quando articulada com o contexto subjetivo do examinando.',
         tags: ['BFP', 'Big Five', 'Testagem'],
         courseName: 'Avaliação Psicológica II',
       },
@@ -695,8 +752,10 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#BFDDED',
         accentColor: '#396D82',
         badge: 'qi & cognição',
-        description: 'Estimativa rápida do QI Total, QI Verbal e QI de Execução através dos subtestes de Vocabulário, Cubos, Semelhanças e Raciocínio Matricial.',
-        quote: 'Inteligência é a capacidade agregada do indivíduo de agir com propósito e pensar racionalmente.',
+        description:
+          'Estimativa rápida do QI Total, QI Verbal e QI de Execução através dos subtestes de Vocabulário, Cubos, Semelhanças e Raciocínio Matricial.',
+        quote:
+          'Inteligência é a capacidade agregada do indivíduo de agir com propósito e pensar racionalmente.',
         tags: ['WASI', 'QI', 'Cognitivo'],
         courseName: 'Avaliação Psicológica II',
       },
@@ -707,7 +766,8 @@ export const initialContextCollections: ContextCollection[] = [
         coverColor: '#E8AFC0',
         accentColor: '#B94862',
         badge: 'triagem clínica',
-        description: 'Escala autoaplicável de 21 itens para mensurar a gravidade dos sintomas depressivos em adolescentes e adultos.',
+        description:
+          'Escala autoaplicável de 21 itens para mensurar a gravidade dos sintomas depressivos em adolescentes e adultos.',
         quote: 'Escore padronizado essencial para acompanhamento da evolução do tratamento.',
         tags: ['BDI-II', 'Depressão', 'Triagem'],
         courseName: 'Psicopatologia I',

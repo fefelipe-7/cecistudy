@@ -109,7 +109,9 @@ export const WritingLogSheet: React.FC<WritingLogSheetProps> = ({
         <h3 className="font-display font-bold text-base text-ceci-primary">registrar escrita</h3>
 
         <div>
-          <label htmlFor="wl-cap" className={labelClass}>capítulo</label>
+          <label htmlFor="wl-cap" className={labelClass}>
+            capítulo
+          </label>
           <select
             id="wl-cap"
             value={chapterId}
@@ -118,14 +120,18 @@ export const WritingLogSheet: React.FC<WritingLogSheetProps> = ({
           >
             <option value="">— sem capítulo —</option>
             {chapters.map((c) => (
-              <option key={c.id} value={c.id}>{c.title}</option>
+              <option key={c.id} value={c.id}>
+                {c.title}
+              </option>
             ))}
           </select>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label htmlFor="wl-palavras" className={labelClass}>palavras escritas</label>
+            <label htmlFor="wl-palavras" className={labelClass}>
+              palavras escritas
+            </label>
             <input
               id="wl-palavras"
               type="number"
@@ -139,7 +145,9 @@ export const WritingLogSheet: React.FC<WritingLogSheetProps> = ({
             />
           </div>
           <div>
-            <label htmlFor="wl-minutos" className={labelClass}>minutos</label>
+            <label htmlFor="wl-minutos" className={labelClass}>
+              minutos
+            </label>
             <input
               id="wl-minutos"
               type="number"
@@ -155,7 +163,9 @@ export const WritingLogSheet: React.FC<WritingLogSheetProps> = ({
         </div>
 
         <div>
-          <label htmlFor="wl-nota" className={labelClass}>nota</label>
+          <label htmlFor="wl-nota" className={labelClass}>
+            nota
+          </label>
           <textarea
             id="wl-nota"
             rows={2}

@@ -58,7 +58,7 @@ async function main() {
   for (const key of USER_COLLECTION_KEYS) {
     const already = await driver.query(
       'SELECT source_key FROM legacy_import_map WHERE source_key = ?',
-      [key]
+      [key],
     );
     if (already.length > 0) {
       report.skipped.push(key);
@@ -88,7 +88,7 @@ async function main() {
       if (isUserCollectionKey(key)) await saveCollection(driver, key, parsed);
       await driver.run(
         'INSERT INTO legacy_import_map (source_key, imported_at, entity_type) VALUES (?, ?, ?)',
-        [key, new Date().toISOString(), key]
+        [key, new Date().toISOString(), key],
       );
       report.imported.push(key);
     } catch (e) {
@@ -101,7 +101,9 @@ async function main() {
   await driver.close();
 
   console.log(`[db:legacy-import] importadas: ${report.imported.join(', ') || '(nenhuma)'}`);
-  console.log(`[db:legacy-import] puladas (já importadas/ausentes): ${report.skipped.join(', ') || '(nenhuma)'}`);
+  console.log(
+    `[db:legacy-import] puladas (já importadas/ausentes): ${report.skipped.join(', ') || '(nenhuma)'}`,
+  );
   for (const e of report.errors) {
     console.error(`[db:legacy-import] erro em ${e.key}: ${e.reason}`);
   }

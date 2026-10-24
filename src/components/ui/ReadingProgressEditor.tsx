@@ -73,7 +73,7 @@ export const ReadingProgressEditor: React.FC<ReadingProgressEditorProps> = ({
             aria-label="digite a nova página lida"
             className={cn(
               'w-20 text-center bg-surface-input border rounded-2xl py-2.5 font-display font-bold text-xl text-ceci-primary tabular-nums focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 transition-shadow',
-              invalid ? 'border-status-danger' : 'border-ceci-border-default'
+              invalid ? 'border-status-danger' : 'border-ceci-border-default',
             )}
           />
 
@@ -113,7 +113,10 @@ export const ReadingProgressEditor: React.FC<ReadingProgressEditorProps> = ({
         {totalPages !== undefined && (
           <div className="w-full bg-ceci-border-default h-2 rounded-full overflow-hidden">
             <div
-              className={cn('h-full rounded-full transition-colors duration-300', (parsed ?? 0) > 0 ? 'bg-ceci-brand-strong' : '')}
+              className={cn(
+                'h-full rounded-full transition-colors duration-300',
+                (parsed ?? 0) > 0 ? 'bg-ceci-brand-strong' : '',
+              )}
               style={{ width: `${Math.round(((parsed ?? 0) / totalPages) * 100)}%` }}
             />
           </div>

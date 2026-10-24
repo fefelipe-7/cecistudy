@@ -275,7 +275,7 @@ export const statusOf = (log: InternshipLog, index: LinkIndex, today: DateKey): 
 /** Pendências por **registro** (não por caso), só de registros `done`. */
 export const computePendencies = (
   logs: InternshipLog[],
-  today: DateKey
+  today: DateKey,
 ): { noReflection: string[]; noSupervision: string[] } => {
   const index = buildLinkIndex(logs, today);
   const noReflection: string[] = [];
@@ -296,12 +296,7 @@ export const computePendencies = (
 // ---------------------------------------------------------------------------
 
 /** Campos preenchíveis pelo fluxo "completar registro". */
-export type CampoPendencia =
-  | 'reflexoes'
-  | 'tema'
-  | 'abordagem'
-  | 'intervencoes'
-  | 'impressoes';
+export type CampoPendencia = 'reflexoes' | 'tema' | 'abordagem' | 'intervencoes' | 'impressoes';
 
 /** Os cinco campos de referência, na ordem canônica (`D10`). */
 export const CAMPOS_DE_REFERENCIA: readonly CampoPendencia[] = [
@@ -398,7 +393,7 @@ export const comDeclinados = (log: InternshipLog, declinados: CampoPendencia[]):
   if (log.type === 'supervisao') return { ...log, declinedFields: undefined };
   const aplicaveis = camposDeReferencia(log.type);
   const clean = CAMPOS_DE_REFERENCIA.filter(
-    (c) => aplicaveis.includes(c) && declinados.includes(c)
+    (c) => aplicaveis.includes(c) && declinados.includes(c),
   );
   const next: InternshipLog = { ...log, declinedFields: clean.length ? clean : undefined };
   for (const campo of CAMPOS_DE_REFERENCIA) {
@@ -421,7 +416,7 @@ export const comDeclinados = (log: InternshipLog, declinados: CampoPendencia[]):
  * derivada do dado, não linguagem.
  */
 export const statusPreenchimento = (
-  log: InternshipLog
+  log: InternshipLog,
 ): { tone: 'success' | 'warning'; faltando: CampoPendencia[] } | null => {
   const campos = camposDeReferencia(log.type);
   if (!campos.length) return null;
@@ -440,7 +435,7 @@ export const statusPreenchimento = (
 export const proximasPendenciasDePreenchimento = (log: InternshipLog): CampoPendencia[] => {
   const declinados = new Set(declinadosDe(log));
   return camposDeReferencia(log.type).filter(
-    (c) => !declinados.has(c) && vazio(valorCampoReferencia(log, c))
+    (c) => !declinados.has(c) && vazio(valorCampoReferencia(log, c)),
   );
 };
 
@@ -518,8 +513,7 @@ export const normalizePatientKey = (raw?: string): string =>
     .replace(/[^a-z0-9]/g, '');
 
 /** Rótulo exibido: `trim` + colapsa espaços internos; não altera pontuação. */
-export const formatPatientLabel = (raw?: string): string =>
-  (raw ?? '').trim().replace(/\s+/g, ' ');
+export const formatPatientLabel = (raw?: string): string => (raw ?? '').trim().replace(/\s+/g, ' ');
 
 export interface DerivedCase {
   patientKey: string;
@@ -555,7 +549,7 @@ const bySessionThenDate = (a: InternshipLog, b: InternshipLog): number => {
 
 export const deriveCases = (
   logs: InternshipLog[],
-  today: DateKey
+  today: DateKey,
 ): { cases: DerivedCase[]; orphans: InternshipLog[] } => {
   const index = buildLinkIndex(logs, today);
   const groups = new Map<string, InternshipLog[]>();
@@ -578,26 +572,25 @@ export const deriveCases = (
     const doneLogs = groupLogs.filter((l) => isDone(l, today));
     const scheduledLogs = groupLogs.filter((l) => isScheduled(l, today));
     const sessionsSupervised = doneLogs.filter(
-      (l) => (index.get(l.id)?.supervisionIds.length ?? 0) > 0
+      (l) => (index.get(l.id)?.supervisionIds.length ?? 0) > 0,
     ).length;
 
     // Rótulo vem do atendimento mais recente (`D8`), por data e depois por sessão.
     const mostRecent = [...groupLogs].sort(
       (a, b) =>
         dateKeyOrdinal(b.date) - dateKeyOrdinal(a.date) ||
-        (b.sessionNumber ?? 0) - (a.sessionNumber ?? 0)
+        (b.sessionNumber ?? 0) - (a.sessionNumber ?? 0),
     )[0];
 
     let lastSessionDate: DateKey | undefined;
-    for (const l of doneLogs) if (!lastSessionDate || l.date > lastSessionDate) lastSessionDate = l.date;
+    for (const l of doneLogs)
+      if (!lastSessionDate || l.date > lastSessionDate) lastSessionDate = l.date;
     let nextScheduledDate: DateKey | undefined;
     for (const l of scheduledLogs)
       if (!nextScheduledDate || l.date < nextScheduledDate) nextScheduledDate = l.date;
 
     const latestAge = [...groupLogs].reverse().find((l) => l.patientAge?.trim())?.patientAge;
-    const latestApproach = [...groupLogs]
-      .reverse()
-      .find((l) => l.approach?.trim())?.approach;
+    const latestApproach = [...groupLogs].reverse().find((l) => l.approach?.trim())?.approach;
 
     cases.push({
       patientKey: key,
@@ -609,14 +602,10 @@ export const deriveCases = (
       sessionsDone: doneLogs.length,
       sessionsSupervised,
       progress:
-        doneLogs.length === 0
-          ? 0
-          : Math.round((sessionsSupervised / doneLogs.length) * 100),
-      pendingReflection: doneLogs.filter(
-        (l) => !(l.reflections ?? '').trim()
-      ).length,
+        doneLogs.length === 0 ? 0 : Math.round((sessionsSupervised / doneLogs.length) * 100),
+      pendingReflection: doneLogs.filter((l) => !(l.reflections ?? '').trim()).length,
       pendingSupervision: doneLogs.filter(
-        (l) => (index.get(l.id)?.supervisionIds.length ?? 0) === 0
+        (l) => (index.get(l.id)?.supervisionIds.length ?? 0) === 0,
       ).length,
       lastSessionDate,
       nextScheduledDate,
@@ -657,7 +646,9 @@ export interface LogGroup {
 }
 
 export const groupByWeek = (logs: InternshipLog[], today: DateKey): LogGroup[] => {
-  const scheduled = logs.filter((l) => isScheduled(l, today)).sort((a, b) => a.date.localeCompare(b.date));
+  const scheduled = logs
+    .filter((l) => isScheduled(l, today))
+    .sort((a, b) => a.date.localeCompare(b.date));
   const done = logs.filter((l) => isDone(l, today));
 
   const groups: LogGroup[] = [];
@@ -685,7 +676,7 @@ export const groupByWeek = (logs: InternshipLog[], today: DateKey): LogGroup[] =
       (a, b) =>
         dateKeyOrdinal(b.date) - dateKeyOrdinal(a.date) ||
         (b.sessionNumber ?? 0) - (a.sessionNumber ?? 0) ||
-        a.id.localeCompare(b.id)
+        a.id.localeCompare(b.id),
     );
     groups.push({
       id: ws,
@@ -693,8 +684,8 @@ export const groupByWeek = (logs: InternshipLog[], today: DateKey): LogGroup[] =
         ws === thisWeek
           ? 'esta semana'
           : ws === lastWeek
-          ? 'semana passada'
-          : `${formatDateShortBR(ws)} – ${formatDateShortBR(addDays(ws, 6))}`,
+            ? 'semana passada'
+            : `${formatDateShortBR(ws)} – ${formatDateShortBR(addDays(ws, 6))}`,
       hours: groupLogs.reduce((a, l) => a + (l.hours || 0), 0),
       logs: groupLogs,
     });
@@ -720,7 +711,8 @@ export const suggestTitle = (log: InternshipLog): string => {
   switch (log.type) {
     case 'atendimento_clinico': {
       const who = formatPatientLabel(log.patient);
-      if (log.sessionNumber) return who ? `sessão ${log.sessionNumber} · ${who}` : `sessão ${log.sessionNumber}`;
+      if (log.sessionNumber)
+        return who ? `sessão ${log.sessionNumber} · ${who}` : `sessão ${log.sessionNumber}`;
       return who ? `atendimento · ${who}` : 'atendimento clínico';
     }
     case 'supervisao':
@@ -759,7 +751,8 @@ export const sanitizeLog = (log: InternshipLog, all: InternshipLog[]): Internshi
   out.reflections = (log.reflections ?? '').trim(); // `I4`: limpa, não fabrica
   out.date = parts(log.date) ? log.date : todayKey(); // `I6`
 
-  if (!out.activity?.trim()) out.activity = suggestTitle(out); // `D10`
+  if (!out.activity?.trim())
+    out.activity = suggestTitle(out); // `D10`
   else out.activity = out.activity.trim();
 
   out.patient = trimOrUndefined(out.patient);
@@ -778,8 +771,8 @@ export const sanitizeLog = (log: InternshipLog, all: InternshipLog[]): Internshi
     const ids = [
       ...new Set(
         (out.discussedLogIds ?? []).filter(
-          (id) => id !== out.id && byId.get(id)?.type === 'atendimento_clinico'
-        )
+          (id) => id !== out.id && byId.get(id)?.type === 'atendimento_clinico',
+        ),
       ),
     ];
     if (ids.length) out.discussedLogIds = ids;
@@ -835,7 +828,9 @@ export const planDelete = (logs: InternshipLog[], id: string): InternshipLog[] =
     .map((l) => {
       if (!(l.discussedLogIds ?? []).includes(id)) return l;
       const discussedLogIds = l.discussedLogIds!.filter((x) => x !== id);
-      return discussedLogIds.length ? { ...l, discussedLogIds } : { ...l, discussedLogIds: undefined };
+      return discussedLogIds.length
+        ? { ...l, discussedLogIds }
+        : { ...l, discussedLogIds: undefined };
     });
 
 export interface RenamePatientResult {
@@ -854,7 +849,7 @@ export interface RenamePatientResult {
 export const planRenamePatient = (
   logs: InternshipLog[],
   fromKey: string,
-  toLabel: string
+  toLabel: string,
 ): RenamePatientResult => {
   const label = formatPatientLabel(toLabel);
   if (!label || !fromKey) return { logs, merged: false };
@@ -864,13 +859,13 @@ export const planRenamePatient = (
   // "M. S." não é juntar com ninguém: é o mesmo caso com outra grafia, e a UI não
   // pode oferecer "os dois casos viram um só" para o caso que ela está editando.
   const merged = logs.some(
-    (l) => isClinical(l) && normalizePatientKey(l.patient) === toKey && toKey !== fromKey
+    (l) => isClinical(l) && normalizePatientKey(l.patient) === toKey && toKey !== fromKey,
   );
 
   return {
     merged,
     logs: logs.map((l) =>
-      isClinical(l) && normalizePatientKey(l.patient) === fromKey ? { ...l, patient: label } : l
+      isClinical(l) && normalizePatientKey(l.patient) === fromKey ? { ...l, patient: label } : l,
     ),
   };
 };
@@ -879,7 +874,7 @@ export const planRenamePatient = (
 export const planSetPatient = (
   logs: InternshipLog[],
   ids: string[],
-  label: string
+  label: string,
 ): InternshipLog[] => {
   const clean = formatPatientLabel(label);
   if (!clean) return logs;
@@ -893,7 +888,7 @@ export const planLinkNextStep = (
   step: string,
   kind: InternshipNextStepLink['kind'],
   entityId: string,
-  nowIso: string
+  nowIso: string,
 ): InternshipLog => {
   const text = step.trim();
   const link: InternshipNextStepLink = { step: text, kind, entityId, createdAt: nowIso };
@@ -905,7 +900,7 @@ export const planLinkNextStep = (
 export const hasLiveNextStepLink = (
   log: InternshipLog,
   step: string,
-  exists: (entityId: string) => boolean
+  exists: (entityId: string) => boolean,
 ): boolean => {
   const text = step.trim();
   const link = (log.nextStepLinks ?? []).find((l) => l.step.trim() === text);
@@ -922,7 +917,7 @@ export const hasLiveNextStepLink = (
  */
 export const legacyNotebookToLog = (
   nb: SupervisionNotebook,
-  defaultWorkspaceId = 'ws-academico'
+  defaultWorkspaceId = 'ws-academico',
 ): InternshipLog => ({
   id: nb.id,
   // `F8`: o caderno legado nunca recebeu workspaceId; o default é o do domínio.

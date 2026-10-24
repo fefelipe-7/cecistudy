@@ -11,7 +11,11 @@ interface QuizGroupDetailProps {
   onStart: (group: QuestionGroup) => void;
 }
 
-function StatRow({ icon, label, value }: {
+function StatRow({
+  icon,
+  label,
+  value,
+}: {
   icon: React.ReactNode;
   label: string;
   value: string | number;
@@ -29,11 +33,7 @@ function StatRow({ icon, label, value }: {
   );
 }
 
-export const QuizGroupDetail: React.FC<QuizGroupDetailProps> = ({
-  group,
-  onBack,
-  onStart,
-}) => {
+export const QuizGroupDetail: React.FC<QuizGroupDetailProps> = ({ group, onBack, onStart }) => {
   const handleStart = useCallback(() => {
     onStart(group);
   }, [group, onStart]);
@@ -64,10 +64,14 @@ export const QuizGroupDetail: React.FC<QuizGroupDetailProps> = ({
             transition={{ duration: 0.25 }}
             className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm text-center space-y-3"
           >
-            <span className="text-4xl" aria-hidden>{group.icon}</span>
+            <span className="text-4xl" aria-hidden>
+              {group.icon}
+            </span>
             <div>
               <h3 className="font-display font-bold text-lg text-ceci-primary">{group.name}</h3>
-              <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">{group.description}</p>
+              <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
+                {group.description}
+              </p>
             </div>
             <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-surface-rose border border-ceci-border-brand">
               <BookOpen className="w-3.5 h-3.5 text-ceci-brand-strong" />
@@ -100,9 +104,10 @@ export const QuizGroupDetail: React.FC<QuizGroupDetailProps> = ({
               <StatRow
                 icon={<Users className="w-3.5 h-3.5" />}
                 label="autores envolvidos"
-                value={hasMoreAuthors
-                  ? `${authorList.join(', ')} e +${group.authors.length - 5}`
-                  : authorList.join(', ')
+                value={
+                  hasMoreAuthors
+                    ? `${authorList.join(', ')} e +${group.authors.length - 5}`
+                    : authorList.join(', ')
                 }
               />
             )}
@@ -110,9 +115,10 @@ export const QuizGroupDetail: React.FC<QuizGroupDetailProps> = ({
               <StatRow
                 icon={<Brain className="w-3.5 h-3.5" />}
                 label="conceitos"
-                value={group.concepts.length > 6
-                  ? `${group.concepts.slice(0, 5).join(', ')} e +${group.concepts.length - 5}`
-                  : group.concepts.join(', ')
+                value={
+                  group.concepts.length > 6
+                    ? `${group.concepts.slice(0, 5).join(', ')} e +${group.concepts.length - 5}`
+                    : group.concepts.join(', ')
                 }
               />
             )}
@@ -120,7 +126,7 @@ export const QuizGroupDetail: React.FC<QuizGroupDetailProps> = ({
               <StatRow
                 icon={<BarChart3 className="w-3.5 h-3.5" />}
                 label="dificuldades"
-                value={group.dificuldades.map(d => DIFF_LABEL_MAP[d] ?? d).join(', ')}
+                value={group.dificuldades.map((d) => DIFF_LABEL_MAP[d] ?? d).join(', ')}
               />
             )}
           </motion.div>
@@ -137,12 +143,12 @@ export const QuizGroupDetail: React.FC<QuizGroupDetailProps> = ({
               'w-full flex items-center justify-center gap-1.5 py-3.5 rounded-2xl text-sm font-semibold transition active:scale-[0.98] cursor-pointer',
               group.questionCount > 0
                 ? 'bg-ceci-brand hover:bg-ceci-brand-strong text-ceci-on-brand shadow-2xs'
-                : 'bg-ceci-muted text-ceci-secondary cursor-not-allowed'
+                : 'bg-ceci-muted text-ceci-secondary cursor-not-allowed',
             )}
           >
             <BookOpen className="w-4 h-4" />
             {group.questionCount > 0
-              ? `começar quiz (${Math.min(20, group.questionCount)} questões)` 
+              ? `começar quiz (${Math.min(20, group.questionCount)} questões)`
               : 'sem questões disponíveis'}
           </button>
         </div>

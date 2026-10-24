@@ -11,8 +11,14 @@ import { ReviewSession } from '../flashcards/ReviewSession';
  * `ReviewSession` (que implementa o loop Anki / 3D / undo).
  */
 export const StudyRevisarScreen: React.FC = () => {
-  const { flashcards, profile, handleReviewFlashcard, handleUpdateFlashcard, openWizard, openManageItem } =
-    useMobileApp();
+  const {
+    flashcards,
+    profile,
+    handleReviewFlashcard,
+    handleUpdateFlashcard,
+    openWizard,
+    openManageItem,
+  } = useMobileApp();
 
   const dueCards = useMemo(() => flashcards.filter((c) => isCardDue(c)), [flashcards]);
 
@@ -22,7 +28,9 @@ export const StudyRevisarScreen: React.FC = () => {
         <div className="rounded-2xl p-6 bg-surface-default border border-ceci-border-default shadow-sm text-center space-y-4">
           <Mascote expression="review-card" className="w-14 h-14 mx-auto" decorative />
           <div>
-            <h3 className="font-display font-bold text-base text-ceci-primary">ainda não tem flashcard</h3>
+            <h3 className="font-display font-bold text-base text-ceci-primary">
+              ainda não tem flashcard
+            </h3>
             <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
               bora criar o primeiro pra revisar no seu ritmo ♡
             </p>

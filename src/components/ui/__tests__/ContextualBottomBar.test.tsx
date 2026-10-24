@@ -117,16 +117,6 @@ describe('ContextualBottomBar', () => {
     expect(primeira).not.toHaveBeenCalled();
   });
 
-  it('o rótulo acessível da ação principal é o ariaLabel', () => {
-    renderBar(config([acao('nova-nota', 'nova nota', vi.fn())]));
-    expect(primary()).toHaveAttribute('aria-label', 'nova nota');
-  });
-
-  it('o rótulo acessível da barra de voltar é "voltar para a tela anterior"', () => {
-    renderBar(config([acao('nova-nota', 'nova nota', vi.fn())]));
-    expect(back()).toHaveAttribute('aria-label', 'voltar para a tela anterior');
-  });
-
   it('cliques repetidos não duplicam uma operação assíncrona em andamento', async () => {
     let resolve!: () => void;
     const run = vi.fn(

@@ -28,15 +28,69 @@ export const TARGETS: {
   Icon: IconType;
   accent: string;
 }[] = [
-  { type: 'task', label: 'tarefa', caption: 'prazo ou atividade', Icon: CheckCircle2, accent: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong' },
-  { type: 'flashcard', label: 'flashcard', caption: 'pergunta & resposta', Icon: Brain, accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong' },
-  { type: 'class', label: 'aula', caption: 'anotação de aula no diário', Icon: FileText, accent: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong' },
-  { type: 'exam', label: 'prova / avaliação', caption: 'avaliação que vale nota', Icon: ClipboardList, accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong' },
-  { type: 'session', label: 'sessão de estudo', caption: 'foco no cantinho', Icon: Timer, accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong' },
-  { type: 'internship', label: 'estágio', caption: 'registro de campo', Icon: HeartHandshake, accent: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong' },
-  { type: 'concept', label: 'conceito', caption: 'conceito psicológico', Icon: Sparkles, accent: 'bg-status-warning-surface border-status-warning-border text-status-warning-strong' },
-  { type: 'author', label: 'autor', caption: 'estudado na jornada', Icon: UserCheck, accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong' },
-  { type: 'material', label: 'material', caption: 'livro, artigo ou link', Icon: BookOpen, accent: 'bg-surface-muted border-ceci-border-default text-ceci-secondary' },
+  {
+    type: 'task',
+    label: 'tarefa',
+    caption: 'prazo ou atividade',
+    Icon: CheckCircle2,
+    accent: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong',
+  },
+  {
+    type: 'flashcard',
+    label: 'flashcard',
+    caption: 'pergunta & resposta',
+    Icon: Brain,
+    accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong',
+  },
+  {
+    type: 'class',
+    label: 'aula',
+    caption: 'anotação de aula no diário',
+    Icon: FileText,
+    accent: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong',
+  },
+  {
+    type: 'exam',
+    label: 'prova / avaliação',
+    caption: 'avaliação que vale nota',
+    Icon: ClipboardList,
+    accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong',
+  },
+  {
+    type: 'session',
+    label: 'sessão de estudo',
+    caption: 'foco no cantinho',
+    Icon: Timer,
+    accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong',
+  },
+  {
+    type: 'internship',
+    label: 'estágio',
+    caption: 'registro de campo',
+    Icon: HeartHandshake,
+    accent: 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong',
+  },
+  {
+    type: 'concept',
+    label: 'conceito',
+    caption: 'conceito psicológico',
+    Icon: Sparkles,
+    accent: 'bg-status-warning-surface border-status-warning-border text-status-warning-strong',
+  },
+  {
+    type: 'author',
+    label: 'autor',
+    caption: 'estudado na jornada',
+    Icon: UserCheck,
+    accent: 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong',
+  },
+  {
+    type: 'material',
+    label: 'material',
+    caption: 'livro, artigo ou link',
+    Icon: BookOpen,
+    accent: 'bg-surface-muted border-ceci-border-default text-ceci-secondary',
+  },
 ];
 
 export const MORE_TARGETS = TARGETS.filter((t) => !MAIN_TARGET_TYPES.includes(t.type));
@@ -73,5 +127,4 @@ export const MATERIAL_TYPES: { value: MaterialItem['type']; label: string; emoji
 
 export const today = () => new Date().toISOString().split('T')[0];
 
-export const truncate = (s: string, max = 80) =>
-  s.length > max ? `${s.slice(0, max)}…` : s;
+export const truncate = (s: string, max = 80) => (s.length > max ? `${s.slice(0, max)}…` : s);

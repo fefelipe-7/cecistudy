@@ -197,12 +197,7 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
     const q = filter.trim().toLowerCase();
     return readings
       .filter((r) => !referenced.has(r.id))
-      .filter(
-        (r) =>
-          !q ||
-          r.title.toLowerCase().includes(q) ||
-          r.author.toLowerCase().includes(q),
-      )
+      .filter((r) => !q || r.title.toLowerCase().includes(q) || r.author.toLowerCase().includes(q))
       .sort((a, b) => a.title.localeCompare(b.title, 'pt-BR'));
   }, [readings, thesisReferences, filter]);
 
@@ -215,9 +210,7 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
   };
 
   const toggleChapter = (id: string) =>
-    setChapterIds((prev) =>
-      prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id],
-    );
+    setChapterIds((prev) => (prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]));
 
   const save = () => {
     if (!reading) return;
@@ -302,15 +295,15 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
     return (
       <Modal open={open} onClose={onClose} position="bottom" className="w-full max-w-lg">
         <div className="w-full bg-canvas rounded-t-[28px] sm:rounded-2xl border border-ceci-border-default shadow-xl overflow-hidden p-5 sm:p-6 text-ceci-primary space-y-4">
-          <h3 className="font-display font-bold text-base text-ceci-primary">
-            nova referência
-          </h3>
+          <h3 className="font-display font-bold text-base text-ceci-primary">nova referência</h3>
           <p className="text-xs text-ceci-secondary leading-relaxed">
-            escolha uma leitura da sua estante que ainda não virou referência — a
-            ficha da obra já guardada vem junto (ADR-010).
+            escolha uma leitura da sua estante que ainda não virou referência — a ficha da obra já
+            guardada vem junto (ADR-010).
           </p>
           <div>
-            <label htmlFor="ref-buscar" className={labelClass}>de qual leitura?</label>
+            <label htmlFor="ref-buscar" className={labelClass}>
+              de qual leitura?
+            </label>
             <input
               id="ref-buscar"
               type="text"
@@ -323,8 +316,8 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
           <div className="max-h-[42vh] overflow-y-auto space-y-2">
             {candidates.length === 0 ? (
               <p className="text-xs text-ceci-tertiary bg-surface-muted rounded-xl p-4 border border-ceci-border-subtle">
-                nenhuma leitura sobrando por aqui — ou todas já são referência,
-                ou a estante está vazia.
+                nenhuma leitura sobrando por aqui — ou todas já são referência, ou a estante está
+                vazia.
               </p>
             ) : (
               candidates.map((r) => (
@@ -368,12 +361,7 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
       <div className="w-full bg-canvas rounded-t-[28px] sm:rounded-2xl border border-ceci-border-default shadow-xl overflow-hidden p-5 sm:p-6 text-ceci-primary space-y-4">
         <div className="flex items-center justify-between gap-2">
           <h3 className="font-display font-bold text-base text-ceci-primary">referência</h3>
-          <div
-            role="status"
-            aria-live="polite"
-            aria-label="referência copiada"
-            className="sr-only"
-          >
+          <div role="status" aria-live="polite" aria-label="referência copiada" className="sr-only">
             {''}
           </div>
           <button
@@ -391,7 +379,9 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
           <p className="font-mono text-[11px] leading-relaxed text-ceci-primary">
             {segments.map((s, i) =>
               s.bold ? (
-                <strong key={i} className="font-bold">{s.text}</strong>
+                <strong key={i} className="font-bold">
+                  {s.text}
+                </strong>
               ) : (
                 <span key={i}>{s.text}</span>
               ),
@@ -420,7 +410,9 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label htmlFor="ref-tipo" className={labelClass}>tipo abnt</label>
+            <label htmlFor="ref-tipo" className={labelClass}>
+              tipo abnt
+            </label>
             <select
               id="ref-tipo"
               value={refType}
@@ -428,12 +420,16 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
               className={inputClass}
             >
               {REF_TYPE_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>{o.label}</option>
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
               ))}
             </select>
           </div>
           <div>
-            <label htmlFor="ref-ano" className={labelClass}>ano</label>
+            <label htmlFor="ref-ano" className={labelClass}>
+              ano
+            </label>
             <input
               id="ref-ano"
               type="text"
@@ -461,7 +457,9 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
         </div>
 
         <div>
-          <label htmlFor="ref-veiculo" className={labelClass}>periódico / site / editora</label>
+          <label htmlFor="ref-veiculo" className={labelClass}>
+            periódico / site / editora
+          </label>
           <input
             id="ref-veiculo"
             type="text"
@@ -474,7 +472,9 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label htmlFor="ref-editora" className={labelClass}>editora</label>
+            <label htmlFor="ref-editora" className={labelClass}>
+              editora
+            </label>
             <input
               id="ref-editora"
               type="text"
@@ -485,7 +485,9 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
             />
           </div>
           <div>
-            <label htmlFor="ref-lugar" className={labelClass}>lugar</label>
+            <label htmlFor="ref-lugar" className={labelClass}>
+              lugar
+            </label>
             <input
               id="ref-lugar"
               type="text"
@@ -499,7 +501,9 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
 
         <div className="grid grid-cols-3 gap-3">
           <div>
-            <label htmlFor="ref-volume" className={labelClass}>volume</label>
+            <label htmlFor="ref-volume" className={labelClass}>
+              volume
+            </label>
             <input
               id="ref-volume"
               type="text"
@@ -510,7 +514,9 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
             />
           </div>
           <div>
-            <label htmlFor="ref-numero" className={labelClass}>número</label>
+            <label htmlFor="ref-numero" className={labelClass}>
+              número
+            </label>
             <input
               id="ref-numero"
               type="text"
@@ -521,7 +527,9 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
             />
           </div>
           <div>
-            <label htmlFor="ref-paginas" className={labelClass}>páginas</label>
+            <label htmlFor="ref-paginas" className={labelClass}>
+              páginas
+            </label>
             <input
               id="ref-paginas"
               type="text"
@@ -535,7 +543,9 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label htmlFor="ref-doi" className={labelClass}>doi</label>
+            <label htmlFor="ref-doi" className={labelClass}>
+              doi
+            </label>
             <input
               id="ref-doi"
               type="text"
@@ -546,7 +556,9 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
             />
           </div>
           <div>
-            <label htmlFor="ref-acesso" className={labelClass}>acesso em</label>
+            <label htmlFor="ref-acesso" className={labelClass}>
+              acesso em
+            </label>
             <input
               id="ref-acesso"
               type="date"
@@ -558,7 +570,9 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
         </div>
 
         <div>
-          <label htmlFor="ref-url" className={labelClass}>link</label>
+          <label htmlFor="ref-url" className={labelClass}>
+            link
+          </label>
           <input
             id="ref-url"
             type="text"
@@ -610,7 +624,9 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
         )}
 
         <div>
-          <label htmlFor="ref-nota" className={labelClass}>nota</label>
+          <label htmlFor="ref-nota" className={labelClass}>
+            nota
+          </label>
           <textarea
             id="ref-nota"
             rows={2}
@@ -671,8 +687,7 @@ export const ReferenceSheet: React.FC<ReferenceSheetProps> = ({ open, referenceI
             remover esta referência da lista?
           </h3>
           <p className="text-xs text-ceci-secondary leading-relaxed">
-            a leitura continua na sua estante — só deixa de contar como referência
-            do tcc.
+            a leitura continua na sua estante — só deixa de contar como referência do tcc.
           </p>
           <div className="flex items-center justify-end gap-2">
             <button

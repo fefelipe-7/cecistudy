@@ -101,7 +101,7 @@ export const Modal: React.FC<ModalProps> = ({
           transition={OVERLAY_FADE}
           className={cn(
             'fixed inset-0 z-50 flex bg-black/50 backdrop-blur-sm',
-            POSITION_CLASSES[position]
+            POSITION_CLASSES[position],
           )}
           onClick={closeOnBackdrop ? onClose : undefined}
           role="dialog"
@@ -124,7 +124,8 @@ export const Modal: React.FC<ModalProps> = ({
             onDragEnd={(_, info) => {
               if (
                 isBottom &&
-                (info.offset.y > HANDLE_DRAG_THRESHOLD || info.velocity.y > HANDLE_VELOCITY_THRESHOLD)
+                (info.offset.y > HANDLE_DRAG_THRESHOLD ||
+                  info.velocity.y > HANDLE_VELOCITY_THRESHOLD)
               ) {
                 onClose();
               }
@@ -133,7 +134,7 @@ export const Modal: React.FC<ModalProps> = ({
               'relative outline-none',
               PANEL_SCROLL_CLASSES,
               isBottom && 'w-full sm:w-auto',
-              className
+              className,
             )}
             onClick={(e) => e.stopPropagation()}
           >
@@ -151,6 +152,6 @@ export const Modal: React.FC<ModalProps> = ({
         </motion.div>
       )}
     </AnimatePresence>,
-    document.body
+    document.body,
   );
 };

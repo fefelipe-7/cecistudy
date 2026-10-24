@@ -40,7 +40,7 @@ export const HeroCard: React.FC<HeroCardProps> = ({
     data-testid={testId}
     className={cn(
       'rounded-[26px] bg-gradient-to-br border shadow-sm p-5 relative overflow-hidden',
-      ACCENTS[accent]
+      ACCENTS[accent],
     )}
   >
     <div className="flex items-start justify-between gap-3">
@@ -62,7 +62,9 @@ export const HeroCard: React.FC<HeroCardProps> = ({
       )}
     </div>
     {summary && (
-      <p className="text-xs sm:text-[13px] text-ceci-secondary leading-relaxed mt-2.5 max-w-[92%]">{summary}</p>
+      <p className="text-xs sm:text-[13px] text-ceci-secondary leading-relaxed mt-2.5 max-w-[92%]">
+        {summary}
+      </p>
     )}
     {footer && <div className="mt-3 pr-12">{footer}</div>}
     <Mascote

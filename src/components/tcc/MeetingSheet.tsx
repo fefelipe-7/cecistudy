@@ -52,12 +52,7 @@ const MODE_OPTIONS: { value: MeetingMode; label: string }[] = [
 
 type Mode = 'agendar' | 'registrar';
 
-export const MeetingSheet: React.FC<MeetingSheetProps> = ({
-  open,
-  meetingId,
-  intent,
-  onClose,
-}) => {
+export const MeetingSheet: React.FC<MeetingSheetProps> = ({ open, meetingId, intent, onClose }) => {
   const { thesisMeetings, thesisTasks, setThesisMeetings, setThesisTasks, showToast } =
     useMobileApp();
 
@@ -161,8 +156,7 @@ export const MeetingSheet: React.FC<MeetingSheetProps> = ({
     setDecisionDraft('');
   };
 
-  const removeDecision = (value: string) =>
-    setDecisions((prev) => prev.filter((d) => d !== value));
+  const removeDecision = (value: string) => setDecisions((prev) => prev.filter((d) => d !== value));
 
   const saveRegister = () => {
     if (!date) {
@@ -255,7 +249,8 @@ export const MeetingSheet: React.FC<MeetingSheetProps> = ({
 
   const title = () => {
     if (phase === 'gerar') return 'gerar pendências das decisões';
-    if (mode === 'registrar') return live?.status === 'realizada' ? 'reunião' : 'registrar o que foi conversado';
+    if (mode === 'registrar')
+      return live?.status === 'realizada' ? 'reunião' : 'registrar o que foi conversado';
     return live ? 'reunião' : 'agendar reunião';
   };
 
@@ -267,13 +262,12 @@ export const MeetingSheet: React.FC<MeetingSheetProps> = ({
         {phase === 'gerar' ? (
           <>
             <p className="text-xs text-ceci-secondary leading-relaxed">
-              marque as decisões que viram pendência. cada uma entra na lista de
-              orientação como pedido da orientadora.
+              marque as decisões que viram pendência. cada uma entra na lista de orientação como
+              pedido da orientadora.
             </p>
             {decisions.length === 0 ? (
               <p className="text-xs text-ceci-secondary bg-surface-muted rounded-xl p-3 border border-ceci-border-default">
-                nenhuma decisão registrada nesta reunião — pode seguir sem gerar
-                pendências.
+                nenhuma decisão registrada nesta reunião — pode seguir sem gerar pendências.
               </p>
             ) : (
               <div className="space-y-2">
@@ -302,12 +296,16 @@ export const MeetingSheet: React.FC<MeetingSheetProps> = ({
                   onChange={(e) => setNextEnabled(e.target.checked)}
                   className="w-4 h-4 accent-[var(--ceci-brand)]"
                 />
-                <span className="text-xs font-medium text-ceci-primary">agendar a próxima reunião</span>
+                <span className="text-xs font-medium text-ceci-primary">
+                  agendar a próxima reunião
+                </span>
               </label>
               {nextEnabled && (
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label htmlFor="next-data" className={labelClass}>data</label>
+                    <label htmlFor="next-data" className={labelClass}>
+                      data
+                    </label>
                     <input
                       id="next-data"
                       type="date"
@@ -317,7 +315,9 @@ export const MeetingSheet: React.FC<MeetingSheetProps> = ({
                     />
                   </div>
                   <div>
-                    <label htmlFor="next-hora" className={labelClass}>hora (opcional)</label>
+                    <label htmlFor="next-hora" className={labelClass}>
+                      hora (opcional)
+                    </label>
                     <input
                       id="next-hora"
                       type="time"
@@ -362,7 +362,9 @@ export const MeetingSheet: React.FC<MeetingSheetProps> = ({
           <>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label htmlFor="meeting-data" className={labelClass}>data</label>
+                <label htmlFor="meeting-data" className={labelClass}>
+                  data
+                </label>
                 <input
                   id="meeting-data"
                   type="date"
@@ -372,7 +374,9 @@ export const MeetingSheet: React.FC<MeetingSheetProps> = ({
                 />
               </div>
               <div>
-                <label htmlFor="meeting-hora" className={labelClass}>hora (opcional)</label>
+                <label htmlFor="meeting-hora" className={labelClass}>
+                  hora (opcional)
+                </label>
                 <input
                   id="meeting-hora"
                   type="time"
@@ -398,7 +402,9 @@ export const MeetingSheet: React.FC<MeetingSheetProps> = ({
             {mode === 'registrar' && (
               <>
                 <div>
-                  <label htmlFor="meeting-resumo" className={labelClass}>o que foi conversado</label>
+                  <label htmlFor="meeting-resumo" className={labelClass}>
+                    o que foi conversado
+                  </label>
                   <textarea
                     id="meeting-resumo"
                     rows={3}
@@ -410,7 +416,9 @@ export const MeetingSheet: React.FC<MeetingSheetProps> = ({
                 </div>
 
                 <div>
-                  <label htmlFor="meeting-decisao" className={labelClass}>decisões</label>
+                  <label htmlFor="meeting-decisao" className={labelClass}>
+                    decisões
+                  </label>
                   <div className="flex items-center gap-2">
                     <input
                       id="meeting-decisao"

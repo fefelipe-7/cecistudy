@@ -18,21 +18,26 @@ const MiniBookCard: React.FC<{
       aria-label={`abrir ${book.title}`}
       className="w-[130px] sm:w-[145px] text-left space-y-1 group cursor-pointer"
     >
-    <div
-      className="w-full h-[120px] rounded-2xl p-2.5 flex flex-col justify-between relative overflow-hidden shadow-xs border border-black/5 card-lift"
-      style={{ backgroundColor: book.coverColor }}
-    >
-      <div className="absolute left-0 top-0 bottom-0 w-2 bg-black/10 border-r border-black/10" />
-      <p className="pl-1.5 font-display font-bold text-[10px] text-cover-ink line-clamp-3 leading-tight my-auto">
-        {book.title}
-      </p>
-      <p className="pl-1.5 text-[8px] font-semibold text-cover-ink/80 line-clamp-1">{book.author}</p>
-    </div>
-    {progressPct !== undefined && (
-      <div className="h-1.5 rounded-full bg-surface-muted overflow-hidden">
-        <div className="h-full rounded-full bg-gradient-to-r from-ceci-brand to-ceci-brand-strong" style={{ width: `${Math.min(100, progressPct)}%` }} />
+      <div
+        className="w-full h-[120px] rounded-2xl p-2.5 flex flex-col justify-between relative overflow-hidden shadow-xs border border-black/5 card-lift"
+        style={{ backgroundColor: book.coverColor }}
+      >
+        <div className="absolute left-0 top-0 bottom-0 w-2 bg-black/10 border-r border-black/10" />
+        <p className="pl-1.5 font-display font-bold text-[10px] text-cover-ink line-clamp-3 leading-tight my-auto">
+          {book.title}
+        </p>
+        <p className="pl-1.5 text-[8px] font-semibold text-cover-ink/80 line-clamp-1">
+          {book.author}
+        </p>
       </div>
-    )}
+      {progressPct !== undefined && (
+        <div className="h-1.5 rounded-full bg-surface-muted overflow-hidden">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-ceci-brand to-ceci-brand-strong"
+            style={{ width: `${Math.min(100, progressPct)}%` }}
+          />
+        </div>
+      )}
     </button>
   </ManageSurface>
 );

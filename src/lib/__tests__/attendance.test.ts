@@ -118,8 +118,16 @@ describe('attendanceStats', () => {
       minPct: 75,
       baseAttended: 0,
       records: [
-        ...Array.from({ length: 10 }, (_, i) => ({ id: `p${i}`, date: `2026-03-${String(i + 1).padStart(2, '0')}`, status: 'presente' as const })),
-        ...Array.from({ length: 4 }, (_, i) => ({ id: `f${i}`, date: `2026-04-${String(i + 1).padStart(2, '0')}`, status: 'falta' as const })),
+        ...Array.from({ length: 10 }, (_, i) => ({
+          id: `p${i}`,
+          date: `2026-03-${String(i + 1).padStart(2, '0')}`,
+          status: 'presente' as const,
+        })),
+        ...Array.from({ length: 4 }, (_, i) => ({
+          id: `f${i}`,
+          date: `2026-04-${String(i + 1).padStart(2, '0')}`,
+          status: 'falta' as const,
+        })),
       ],
     });
     expect(stats!.realized).toBe(14);
@@ -160,7 +168,11 @@ describe('applyAttendanceAction', () => {
   });
 
   it('falta desvincula a nota vinculada', () => {
-    let c = applyAttendanceAction(baseCourse(), { status: 'presente', noteId: 'cl-9' }, '2026-09-14');
+    let c = applyAttendanceAction(
+      baseCourse(),
+      { status: 'presente', noteId: 'cl-9' },
+      '2026-09-14',
+    );
     expect(c.attendance!.records[0].noteId).toBe('cl-9');
     c = applyAttendanceAction(c, { status: 'cancelada' }, '2026-09-14');
     expect(c.attendance!.records[0].noteId).toBeUndefined();
@@ -240,7 +252,7 @@ describe('frequência em horas (SPEC-004)', () => {
         hoursPerClassFromSchedule([
           { day: 1, start: '19:00', end: '21:00' }, // 2h
           { day: 3, start: '19:00', end: '20:30' }, // 1,5h
-        ])
+        ]),
       ).toBeCloseTo(1.75);
     });
 
@@ -255,7 +267,9 @@ describe('frequência em horas (SPEC-004)', () => {
 
     it('rejeita schedule legado em string (migração crua)', () => {
       expect(
-        hoursPerClassFromSchedule('seg 19:00-21:00' as unknown as { day: number; start: string; end?: string }[])
+        hoursPerClassFromSchedule(
+          'seg 19:00-21:00' as unknown as { day: number; start: string; end?: string }[],
+        ),
       ).toBe(DEFAULT_CLASS_HOURS);
     });
   });

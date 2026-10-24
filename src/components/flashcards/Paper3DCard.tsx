@@ -46,10 +46,18 @@ export const Paper3DCard: React.FC<Paper3DCardProps> = ({
     data-flipped={flipped ? 'true' : 'false'}
   >
     {/* palco da cena Three.js (shader-frame) — o papel vira arrastando */}
-    <div className="shader-frame absolute inset-0" role="group" aria-label={ariaLabel ?? 'cartão de estudo 3D'}>
+    <div
+      className="shader-frame absolute inset-0"
+      role="group"
+      aria-label={ariaLabel ?? 'cartão de estudo 3D'}
+    >
       <Suspense
         fallback={
-          <div className="absolute inset-0" style={{ backgroundColor: '#08080a' }} aria-busy="true" />
+          <div
+            className="absolute inset-0"
+            style={{ backgroundColor: '#08080a' }}
+            aria-busy="true"
+          />
         }
       >
         <ThreeDPaper variant="original" />
@@ -61,13 +69,13 @@ export const Paper3DCard: React.FC<Paper3DCardProps> = ({
       aria-hidden={flipped || undefined}
       className={cn(
         'absolute inset-0 z-10 flex items-center justify-center p-6 pointer-events-none transition-opacity duration-200',
-        flipped ? 'opacity-0' : 'opacity-100'
+        flipped ? 'opacity-0' : 'opacity-100',
       )}
     >
       <div
         className={cn(
           'w-full max-w-[15.5rem] rounded-3xl bg-canvas/90 backdrop-blur-md border border-white/40 shadow-lg p-5 text-center',
-          frontClassName
+          frontClassName,
         )}
       >
         {front}
@@ -79,13 +87,13 @@ export const Paper3DCard: React.FC<Paper3DCardProps> = ({
       aria-hidden={!flipped || undefined}
       className={cn(
         'absolute inset-0 z-10 flex items-center justify-center p-6 pointer-events-none transition-opacity duration-200',
-        flipped ? 'opacity-100' : 'opacity-0'
+        flipped ? 'opacity-100' : 'opacity-0',
       )}
     >
       <div
         className={cn(
           'w-full max-w-[15.5rem] rounded-3xl bg-canvas/90 backdrop-blur-md border border-white/40 shadow-lg p-5 text-center',
-          backClassName
+          backClassName,
         )}
       >
         {back}

@@ -94,7 +94,10 @@ export function getWeekNumber(dateStr: string): number {
   d.setHours(0, 0, 0, 0);
   d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
   const week1 = new Date(d.getFullYear(), 0, 4);
-  return 1 + Math.round(((d.getTime() - week1.getTime()) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
+  return (
+    1 +
+    Math.round(((d.getTime() - week1.getTime()) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7)
+  );
 }
 
 export interface WeekDayItem {
@@ -108,21 +111,38 @@ export interface WeekDayItem {
 
 const WEEK_NAMES = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
 const MONTHS_PT = [
-  'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+  'Janeiro',
+  'Fevereiro',
+  'Março',
+  'Abril',
+  'Maio',
+  'Junho',
+  'Julho',
+  'Agosto',
+  'Setembro',
+  'Outubro',
+  'Novembro',
+  'Dezembro',
 ];
 const MONTHS_PT_SHORT = [
-  'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
-  'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
+  'Jan',
+  'Fev',
+  'Mar',
+  'Abr',
+  'Mai',
+  'Jun',
+  'Jul',
+  'Ago',
+  'Set',
+  'Out',
+  'Nov',
+  'Dez',
 ];
 
 /**
  * Generates Monday through Friday (or Sunday through Saturday) for ANY given date.
  */
-export function getWeekDaysForDate(
-  selectedDate: string,
-  includeWeekend = false
-): WeekDayItem[] {
+export function getWeekDaysForDate(selectedDate: string, includeWeekend = false): WeekDayItem[] {
   const currentDate = parseDateSafe(selectedDate);
   const currentDayOfWeek = currentDate.getDay(); // 0 is Sunday, 1 is Monday, ...
 
@@ -159,17 +179,53 @@ export function getWeekDaysForDate(
 }
 
 export const HOURS_LIST = [
-  '07:00', '08:00', '09:00', '10:00', '11:00', '12:00',
-  '13:00', '14:00', '15:00', '16:00', '17:00', '18:00',
-  '19:00', '20:00', '21:00'
+  '07:00',
+  '08:00',
+  '09:00',
+  '10:00',
+  '11:00',
+  '12:00',
+  '13:00',
+  '14:00',
+  '15:00',
+  '16:00',
+  '17:00',
+  '18:00',
+  '19:00',
+  '20:00',
+  '21:00',
 ];
 
 export const TIME_SLOTS_30MIN = [
-  '07:00', '07:30', '08:00', '08:30', '09:00', '09:30',
-  '10:00', '10:30', '11:00', '11:30', '12:00', '12:30',
-  '13:00', '13:30', '14:00', '14:30', '15:00', '15:30',
-  '16:00', '16:30', '17:00', '17:30', '18:00', '18:30',
-  '19:00', '19:30', '20:00', '20:30', '21:00'
+  '07:00',
+  '07:30',
+  '08:00',
+  '08:30',
+  '09:00',
+  '09:30',
+  '10:00',
+  '10:30',
+  '11:00',
+  '11:30',
+  '12:00',
+  '12:30',
+  '13:00',
+  '13:30',
+  '14:00',
+  '14:30',
+  '15:00',
+  '15:30',
+  '16:00',
+  '16:30',
+  '17:00',
+  '17:30',
+  '18:00',
+  '18:30',
+  '19:00',
+  '19:30',
+  '20:00',
+  '20:30',
+  '21:00',
 ];
 
 export interface StructuredHour {
@@ -224,7 +280,7 @@ export function hoursTo30MinBlocks(hours: number): number {
 export function formatDatePtBR(dateStr: string): string {
   const [y, m, d] = dateStr.split('-').map(Number);
   if (!y || !m || !d) return dateStr;
-  
+
   const dateObj = new Date(y, m - 1, d);
   const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
   const weekDayName = weekDays[dateObj.getDay()];
@@ -238,7 +294,10 @@ export function formatDatePtBR(dateStr: string): string {
   return `${weekDayName}, ${d} ${monthName}`;
 }
 
-export function formatHeaderTitle(viewMode: ViewMode, selectedDate: string): { title: string; subtitle: string; weekNumber: number } {
+export function formatHeaderTitle(
+  viewMode: ViewMode,
+  selectedDate: string,
+): { title: string; subtitle: string; weekNumber: number } {
   const [y, m, d] = selectedDate.split('-').map(Number);
   const dateObj = parseDateSafe(selectedDate);
   const weekDays = getWeekDaysForDate(selectedDate, false);
@@ -266,7 +325,15 @@ export function formatHeaderTitle(viewMode: ViewMode, selectedDate: string): { t
   }
 
   if (viewMode === 'dia') {
-    const fullWeekDays = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+    const fullWeekDays = [
+      'Domingo',
+      'Segunda-feira',
+      'Terça-feira',
+      'Quarta-feira',
+      'Quinta-feira',
+      'Sexta-feira',
+      'Sábado',
+    ];
     const weekDayFullName = fullWeekDays[dateObj.getDay()];
     return {
       title: `${weekDayFullName}, ${d} de ${monthName} de ${y}`,
@@ -296,7 +363,12 @@ export function getMonthCalendarGrid(year: number, monthIndex: number) {
   const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
   const startDayOfWeek = firstDayOfMonth.getDay(); // 0 is Sun
 
-  const days: { fullDate: string; dayOfMonth: number; isCurrentMonth: boolean; isToday: boolean }[] = [];
+  const days: {
+    fullDate: string;
+    dayOfMonth: number;
+    isCurrentMonth: boolean;
+    isToday: boolean;
+  }[] = [];
   const todayISO = getCurrentDateISO();
 
   // Previous month trailing days
@@ -379,11 +451,9 @@ interface MappedEventItem<T> {
  * Computes columns and widths for overlapping calendar items in a day view
  * Inspired by Google Calendar / Apple Calendar layout algorithms.
  */
-export function computeOverlappingEventLayout<T extends { startTime: string; endTime: string } = CalendarItem>(
-  items: T[],
-  startHour: number = 7,
-  hourHeight: number = 80
-): PositionedEvent<T>[] {
+export function computeOverlappingEventLayout<
+  T extends { startTime: string; endTime: string } = CalendarItem,
+>(items: T[], startHour: number = 7, hourHeight: number = 80): PositionedEvent<T>[] {
   if (!items || items.length === 0) return [];
 
   // 1. Calculate raw start/end minutes for each item

@@ -43,23 +43,24 @@ const STATUS_META: Record<ReadingItem['status'], { label: string; className: str
   },
 };
 
-const EMPTY_META: Record<Tab, { title?: string; description: string; mascote: MascoteExpression }> = {
-  lendo: {
-    description:
-      'nenhuma leitura em andamento. escolha uma da estante e continue de onde parou ♡',
-    mascote: 'library-shelf',
-  },
-  quero: {
-    title: 'fila vazia',
-    description: 'guarde aqui os textos e livros que você quer ler quando der tempo ♡',
-    mascote: 'empty-invite',
-  },
-  concluidas: {
-    title: 'ainda sem concluídas',
-    description: 'terminar a primeira leitura é mais perto do que parece — bora? ♡',
-    mascote: 'done-calm',
-  },
-};
+const EMPTY_META: Record<Tab, { title?: string; description: string; mascote: MascoteExpression }> =
+  {
+    lendo: {
+      description:
+        'nenhuma leitura em andamento. escolha uma da estante e continue de onde parou ♡',
+      mascote: 'library-shelf',
+    },
+    quero: {
+      title: 'fila vazia',
+      description: 'guarde aqui os textos e livros que você quer ler quando der tempo ♡',
+      mascote: 'empty-invite',
+    },
+    concluidas: {
+      title: 'ainda sem concluídas',
+      description: 'terminar a primeira leitura é mais perto do que parece — bora? ♡',
+      mascote: 'done-calm',
+    },
+  };
 
 const percentOf = (r: ReadingItem): number | null =>
   r.totalPages ? Math.min(100, Math.round(((r.readPages ?? 0) / r.totalPages) * 100)) : null;
@@ -102,7 +103,7 @@ export const ReadingHubScreen: React.FC = () => {
       concluidas: readings.filter((r) => r.status === 'concluido').length,
       paginas: readings.reduce((acc, r) => acc + (r.readPages ?? 0), 0),
     }),
-    [readings]
+    [readings],
   );
 
   const tabs: UnderlineTab<Tab>[] = [
@@ -127,7 +128,7 @@ export const ReadingHubScreen: React.FC = () => {
     () =>
       readings.find((r) => r.status === 'lendo' && r.lastReadAt) ??
       readings.find((r) => r.status === 'lendo' && (r.readPages ?? 0) > 0),
-    [readings]
+    [readings],
   );
 
   const tracking = trackingId ? readings.find((r) => r.id === trackingId) : undefined;
@@ -178,9 +179,7 @@ export const ReadingHubScreen: React.FC = () => {
     <div className="max-w-md mx-auto space-y-4">
       {/* Hero — leitura */}
       <section className="rounded-[26px] bg-gradient-to-br from-surface-default to-surface-rose border border-ceci-border-subtle shadow-sm p-5 relative overflow-hidden">
-        <p className="text-xs text-ceci-secondary font-medium lowercase tracking-wide">
-          leituras
-        </p>
+        <p className="text-xs text-ceci-secondary font-medium lowercase tracking-wide">leituras</p>
         <h1 className="font-serif-academic text-3xl text-ceci-primary mt-0.5 tracking-tight">
           {counts.lendo > 0 ? `${counts.lendo} em andamento` : 'sua estante'}
         </h1>
@@ -238,7 +237,8 @@ export const ReadingHubScreen: React.FC = () => {
               {continueReading.title}
             </p>
             <p className="text-[11px] text-ceci-secondary truncate mt-0.5">
-              {continueReading.author || 'autor não informado'} · {courseName(continueReading.courseId)}
+              {continueReading.author || 'autor não informado'} ·{' '}
+              {courseName(continueReading.courseId)}
             </p>
           </div>
           {percentOf(continueReading) !== null && (
@@ -262,86 +262,82 @@ export const ReadingHubScreen: React.FC = () => {
 
       <SwipeableTabPanel active={tab} pager={pager} label={TAB_LABEL[tab]}>
         {filtered.length === 0 ? (
-        <EmptyState
-          {...EMPTY_META[tab]}
-          actionLabel="nova leitura"
-          onAction={() => openWizard('reading')}
-        />
-      ) : (
-        <div className="space-y-2.5">
-          {filtered.map((r) => {
-            const pct = percentOf(r);
-            const meta = STATUS_META[r.status];
-            return (
-              <ManageSurface
-                key={r.id}
-                kind="reading"
-                id={r.id}
-                onTap={() => setTrackingId(r.id)}
-                className="rounded-2xl bg-surface-default border border-ceci-border-subtle shadow-2xs p-4 cursor-pointer active:scale-[0.99] transition-transform"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="font-display font-bold text-sm text-ceci-primary truncate">
-                      {r.title}
-                    </p>
-                    <p className="text-[11px] text-ceci-secondary truncate mt-0.5">
-                      {r.author || 'autor não informado'} · {courseName(r.courseId)}
-                    </p>
+          <EmptyState
+            {...EMPTY_META[tab]}
+            actionLabel="nova leitura"
+            onAction={() => openWizard('reading')}
+          />
+        ) : (
+          <div className="space-y-2.5">
+            {filtered.map((r) => {
+              const pct = percentOf(r);
+              const meta = STATUS_META[r.status];
+              return (
+                <ManageSurface
+                  key={r.id}
+                  kind="reading"
+                  id={r.id}
+                  onTap={() => setTrackingId(r.id)}
+                  className="rounded-2xl bg-surface-default border border-ceci-border-subtle shadow-2xs p-4 cursor-pointer active:scale-[0.99] transition-transform"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-display font-bold text-sm text-ceci-primary truncate">
+                        {r.title}
+                      </p>
+                      <p className="text-[11px] text-ceci-secondary truncate mt-0.5">
+                        {r.author || 'autor não informado'} · {courseName(r.courseId)}
+                      </p>
+                    </div>
+                    <span
+                      className={`shrink-0 text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full border ${meta.className}`}
+                    >
+                      {meta.label}
+                    </span>
                   </div>
-                  <span
-                    className={`shrink-0 text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full border ${meta.className}`}
-                  >
-                    {meta.label}
-                  </span>
-                </div>
 
-                {pct !== null && (
-                  <div className="mt-3 space-y-1.5">
-                    <ProgressBar value={pct} />
-                    <p className="text-[10px] text-ceci-tertiary">
-                      {r.readPages ?? 0} de {r.totalPages} páginas · {pct}%
-                    </p>
+                  {pct !== null && (
+                    <div className="mt-3 space-y-1.5">
+                      <ProgressBar value={pct} />
+                      <p className="text-[10px] text-ceci-tertiary">
+                        {r.readPages ?? 0} de {r.totalPages} páginas · {pct}%
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="mt-2.5 flex items-center justify-between">
+                    <span className="text-[10px] text-ceci-tertiary">
+                      {r.lastReadAt
+                        ? `em ${formatDateShortBR(r.lastReadAt.slice(0, 10))}`
+                        : 'ainda não abri'}
+                    </span>
+                    <ChevronRight className="w-4 h-4 text-ceci-tertiary" />
                   </div>
-                )}
+                </ManageSurface>
+              );
+            })}
+          </div>
+        )}
 
-                <div className="mt-2.5 flex items-center justify-between">
-                  <span className="text-[10px] text-ceci-tertiary">
-                    {r.lastReadAt
-                      ? `em ${formatDateShortBR(r.lastReadAt.slice(0, 10))}`
-                      : 'ainda não abri'}
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-ceci-tertiary" />
-                </div>
-              </ManageSurface>
-            );
-          })}
-        </div>
-      )}
+        <button
+          onClick={() => openWizard('reading')}
+          className="w-full flex items-center justify-center gap-2 min-h-[44px] px-4 rounded-full bg-ceci-primary text-ceci-on-primary text-xs font-bold cursor-pointer active:scale-[0.98] transition-transform"
+        >
+          <Plus className="w-4 h-4" />
+          nova leitura
+        </button>
 
-      <button
-        onClick={() => openWizard('reading')}
-        className="w-full flex items-center justify-center gap-2 min-h-[44px] px-4 rounded-full bg-ceci-primary text-ceci-on-primary text-xs font-bold cursor-pointer active:scale-[0.98] transition-transform"
-      >
-        <Plus className="w-4 h-4" />
-        nova leitura
-      </button>
+        <button
+          onClick={() => void openCapture()}
+          className="w-full flex items-center justify-center gap-2 min-h-[44px] px-4 rounded-full bg-surface-default border border-ceci-border-default text-ceci-secondary text-xs font-semibold cursor-pointer active:scale-[0.98] transition-transform"
+        >
+          <Link2 className="w-4 h-4" />
+          guardar link
+        </button>
 
-      <button
-        onClick={() => void openCapture()}
-        className="w-full flex items-center justify-center gap-2 min-h-[44px] px-4 rounded-full bg-surface-default border border-ceci-border-default text-ceci-secondary text-xs font-semibold cursor-pointer active:scale-[0.98] transition-transform"
-      >
-        <Link2 className="w-4 h-4" />
-        guardar link
-      </button>
-
-      {captureOpen && (
-        <CaptureLinkSheet
-          open
-          initialText={captureText}
-          onClose={() => setCaptureOpen(false)}
-        />
-      )}
+        {captureOpen && (
+          <CaptureLinkSheet open initialText={captureText} onClose={() => setCaptureOpen(false)} />
+        )}
       </SwipeableTabPanel>
 
       {reader && (

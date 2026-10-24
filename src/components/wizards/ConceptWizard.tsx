@@ -6,13 +6,7 @@ import type { ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { useWizardForm } from '../../lib/useWizardForm';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
-import {
-  FieldHint,
-  FieldLabel,
-  ReviewCard,
-  TextArea,
-  TextInput,
-} from './wizardFields';
+import { FieldHint, FieldLabel, ReviewCard, TextArea, TextInput } from './wizardFields';
 import { PillGroupMulti } from '../ui/PillGroupMulti';
 import { Picker } from '../ui/Picker';
 import { TagField } from '../ui/TagField';
@@ -28,11 +22,20 @@ interface ConceptValues {
 }
 
 export const ConceptWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
-  const { approaches, authors, courses, concepts, wizardCourseId, handleAddConcept, handleUpdateConcept, closeWizard, showToast } = useMobileApp();
+  const {
+    approaches,
+    authors,
+    courses,
+    concepts,
+    wizardCourseId,
+    handleAddConcept,
+    handleUpdateConcept,
+    closeWizard,
+    showToast,
+  } = useMobileApp();
   const { authorOptions, resolveIds } = useAcervoTheory();
-  const editingConcept = editing?.kind === 'concept'
-    ? concepts.find((c) => c.id === editing.id)
-    : undefined;
+  const editingConcept =
+    editing?.kind === 'concept' ? concepts.find((c) => c.id === editing.id) : undefined;
 
   const { values, patch, step, setStep } = useWizardForm<ConceptValues>({
     initial: {
@@ -40,7 +43,11 @@ export const ConceptWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       definition: editingConcept?.definition ?? '',
       approachId: editingConcept?.approachId ?? '',
       authorIds: editingConcept?.authorIds ?? [],
-      courseIds: editingConcept?.courseIds.length ? editingConcept.courseIds : wizardCourseId ? [wizardCourseId] : [],
+      courseIds: editingConcept?.courseIds.length
+        ? editingConcept.courseIds
+        : wizardCourseId
+          ? [wizardCourseId]
+          : [],
       tags: editingConcept?.tags ?? [],
     },
     editing: !!editingConcept,
@@ -48,8 +55,14 @@ export const ConceptWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
   const { name, definition, approachId, authorIds, courseIds, tags } = values;
 
   const approachName = approaches.find((a) => a.id === approachId)?.shortName ?? 'sem abordagem';
-  const authorsNames = authors.filter((x) => authorIds.includes(x.id)).map((x) => x.name).join(' · ');
-  const coursesNames = courses.filter((x) => courseIds.includes(x.id)).map((x) => x.name).join(' · ');
+  const authorsNames = authors
+    .filter((x) => authorIds.includes(x.id))
+    .map((x) => x.name)
+    .join(' · ');
+  const coursesNames = courses
+    .filter((x) => courseIds.includes(x.id))
+    .map((x) => x.name)
+    .join(' · ');
 
   const steps: WizardStep[] = [
     {

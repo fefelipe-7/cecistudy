@@ -50,11 +50,14 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
   const editingTask = editing?.kind === 'task' ? tasks.find((t) => t.id === editing.id) : undefined;
   const editingExam = editing?.kind === 'exam' ? exams.find((e) => e.id === editing.id) : undefined;
   const initialKind: 'task' | 'exam' | null =
-    editing?.kind === 'task' ? 'task' : editing?.kind === 'exam' ? 'exam' : preset ?? null;
+    editing?.kind === 'task' ? 'task' : editing?.kind === 'exam' ? 'exam' : (preset ?? null);
   const [kind, setKind] = useState<'task' | 'exam' | null>(initialKind);
   const { values, patch, step, setStep } = useWizardForm<TaskExamValues>({
     initial: {
-      courseId: editingTask?.disciplineId ?? editingExam?.courseId ?? (wizardCourseId || courses[0]?.id || ''),
+      courseId:
+        editingTask?.disciplineId ??
+        editingExam?.courseId ??
+        (wizardCourseId || courses[0]?.id || ''),
       taskTitle: editingTask?.title ?? '',
       taskCategory: editingTask?.category ?? 'leitura',
       taskDueDate: editingTask?.dueDate ?? '',
@@ -101,7 +104,8 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
     id: 'tipo',
     title: 'tipo',
     headline: 'o que você quer registrar agora?',
-    subtitle: 'tarefa é um compromisso com prazo; prova é avaliação que vale nota, com data e peso.',
+    subtitle:
+      'tarefa é um compromisso com prazo; prova é avaliação que vale nota, com data e peso.',
     content: (
       <div className="space-y-3">
         <button
@@ -149,7 +153,8 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       id: 'tarefa-titulo',
       title: 'tarefa',
       headline: 'o que você precisa fazer?',
-      subtitle: 'anota numa frase — disciplina, prazo e foco vêm nos próximos passos, e tudo pode ficar vazio ♡',
+      subtitle:
+        'anota numa frase — disciplina, prazo e foco vêm nos próximos passos, e tudo pode ficar vazio ♡',
       content: (
         <div className="space-y-2">
           <TextInput
@@ -212,7 +217,12 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
               { label: 'tarefa', value: taskTitle.trim() },
               { label: 'categoria', value: taskCategory },
               { label: 'disciplina', value: courseName },
-              { label: 'prazo', value: taskDueDate ? new Date(taskDueDate).toLocaleDateString('pt-BR') : 'sem prazo definido' },
+              {
+                label: 'prazo',
+                value: taskDueDate
+                  ? new Date(taskDueDate).toLocaleDateString('pt-BR')
+                  : 'sem prazo definido',
+              },
               { label: 'prioridade', value: taskPriority },
             ]}
           />
@@ -230,7 +240,10 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       subtitle: 'título e data da prova — disciplina e peso vêm no próximo passo.',
       content: (
         <div className="space-y-4">
-          <Field label="título da prova" hint="como essa avaliação aparece no seu plano — ex: prova teórica ii">
+          <Field
+            label="título da prova"
+            hint="como essa avaliação aparece no seu plano — ex: prova teórica ii"
+          >
             <TextInput
               value={examTitle}
               onChange={(e) => patch({ examTitle: e.target.value })}
@@ -238,8 +251,15 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
               autoFocus
             />
           </Field>
-          <Field label="data da prova" hint="se ainda não souber, pode confirmar depois — sem data também vale ♡">
-            <DateField value={examDate} onChange={(v) => patch({ examDate: v })} placeholder="sem data também vale ♡" />
+          <Field
+            label="data da prova"
+            hint="se ainda não souber, pode confirmar depois — sem data também vale ♡"
+          >
+            <DateField
+              value={examDate}
+              onChange={(v) => patch({ examDate: v })}
+              placeholder="sem data também vale ♡"
+            />
           </Field>
         </div>
       ),
@@ -248,7 +268,8 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       id: 'prova-contexto',
       title: 'disciplina & peso',
       headline: 'qual disciplina e quanto vale?',
-      subtitle: 'a disciplina conecta a prova ao cantinho; o peso mostra quanto ela vale na nota final.',
+      subtitle:
+        'a disciplina conecta a prova ao cantinho; o peso mostra quanto ela vale na nota final.',
       content: (
         <div className="space-y-4">
           <CourseSelect value={courseId} onChange={(v) => patch({ courseId: v })} />
@@ -266,7 +287,8 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
       id: 'prova-topicos',
       title: 'tópicos',
       headline: 'o que vai cair nessa prova?',
-      subtitle: 'lista os assuntos para preparar a revisão — pode deixar vazio e completar depois ♡',
+      subtitle:
+        'lista os assuntos para preparar a revisão — pode deixar vazio e completar depois ♡',
       content: (
         <TagField
           tags={examTopics}
@@ -287,9 +309,15 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
             rows={[
               { label: 'prova', value: examTitle.trim() },
               { label: 'disciplina', value: courseName },
-              { label: 'data', value: examDate ? new Date(examDate).toLocaleDateString('pt-BR') : 'a confirmar' },
+              {
+                label: 'data',
+                value: examDate ? new Date(examDate).toLocaleDateString('pt-BR') : 'a confirmar',
+              },
               { label: 'peso', value: examWeight.trim() || '1,0' },
-              { label: 'tópicos', value: examTopics.length ? examTopics.join(' · ') : 'ainda sem tópicos' },
+              {
+                label: 'tópicos',
+                value: examTopics.length ? examTopics.join(' · ') : 'ainda sem tópicos',
+              },
             ]}
           />
           {!editing && agendaRow}
@@ -425,7 +453,9 @@ export const TaskExamWizard: React.FC<TaskExamWizardProps> = ({ preset, editing 
           ? 'bg-surface-blue border-ceci-border-academic text-ceci-academic-strong'
           : 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
       }
-      saveLabel={editing ? 'guardar alterações ♡' : kind === 'task' ? 'guardar tarefa ♡' : 'guardar prova ♡'}
+      saveLabel={
+        editing ? 'guardar alterações ♡' : kind === 'task' ? 'guardar tarefa ♡' : 'guardar prova ♡'
+      }
     />
   );
 };

@@ -89,10 +89,30 @@ const STUDY_TITLES: Record<
   StudyScreen,
   { title: string; subtitle: string; icon: CourseIconName; color: string }
 > = {
-  focus: { title: 'sessão de foco', subtitle: 'timer em tela cheia, sem distrações', icon: 'Clock', color: '#D85F79' },
-  revisar: { title: 'para revisar', subtitle: 'cartões esperando por você', icon: 'Brain', color: '#D85F79' },
-  leituras: { title: 'leituras', subtitle: 'continue de onde você parou', icon: 'BookOpen', color: '#4A879F' },
-  historico: { title: 'histórico', subtitle: 'tudo que você já estudou por aqui', icon: 'History', color: '#B94862' },
+  focus: {
+    title: 'sessão de foco',
+    subtitle: 'timer em tela cheia, sem distrações',
+    icon: 'Clock',
+    color: '#D85F79',
+  },
+  revisar: {
+    title: 'para revisar',
+    subtitle: 'cartões esperando por você',
+    icon: 'Brain',
+    color: '#D85F79',
+  },
+  leituras: {
+    title: 'leituras',
+    subtitle: 'continue de onde você parou',
+    icon: 'BookOpen',
+    color: '#4A879F',
+  },
+  historico: {
+    title: 'histórico',
+    subtitle: 'tudo que você já estudou por aqui',
+    icon: 'History',
+    color: '#B94862',
+  },
 };
 
 /** Constrói a config do header dinâmico a partir do topo da pilha (função pura). */
@@ -150,9 +170,7 @@ export function buildHeaderConfig(input: HeaderConfigInput): DynamicHeaderConfig
       icon: 'GraduationCap',
       color: '#D85F79',
       onBack,
-      actions: [
-        { label: 'editar tcc', Icon: FileText, onClick: () => openWizard('tcc') },
-      ],
+      actions: [{ label: 'editar tcc', Icon: FileText, onClick: () => openWizard('tcc') }],
     };
   } else if (currentScreen.kind === 'stickers') {
     headerConfig = {
@@ -184,7 +202,11 @@ export function buildHeaderConfig(input: HeaderConfigInput): DynamicHeaderConfig
       color: '#D85F79',
       onBack,
       actions: [
-        { label: 'nova nota avulsa', Icon: StickyNote, onClick: () => setIsCreatingLooseNote(true) },
+        {
+          label: 'nova nota avulsa',
+          Icon: StickyNote,
+          onClick: () => setIsCreatingLooseNote(true),
+        },
       ],
     };
   } else if (currentScreen.kind === 'temple') {
@@ -332,7 +354,7 @@ export function buildHeaderConfig(input: HeaderConfigInput): DynamicHeaderConfig
       'art-': { title: 'artigo do catálogo', icon: 'FileText', color: '#B94862' },
     };
     const prefix = Object.keys(REPERTORIO_ITEM_META).find((p) =>
-      currentScreen.itemId.startsWith(p)
+      currentScreen.itemId.startsWith(p),
     );
     const meta = prefix ? REPERTORIO_ITEM_META[prefix] : REPERTORIO_ITEM_META['r-'];
     headerConfig = {
@@ -346,8 +368,16 @@ export function buildHeaderConfig(input: HeaderConfigInput): DynamicHeaderConfig
   } else if (currentScreen.kind === 'course' && focusedCourse) {
     const isBookmarked = bookmarkedCourseIds.includes(focusedCourse.id);
     const courseActions: HeaderAction[] = [
-      { label: 'nova anotação de aula', Icon: FileText, onClick: () => openCompose(focusedCourse.id) },
-      { label: 'nova prova / avaliação', Icon: CheckCircle2, onClick: () => openWizard('exam', focusedCourse.id) },
+      {
+        label: 'nova anotação de aula',
+        Icon: FileText,
+        onClick: () => openCompose(focusedCourse.id),
+      },
+      {
+        label: 'nova prova / avaliação',
+        Icon: CheckCircle2,
+        onClick: () => openWizard('exam', focusedCourse.id),
+      },
       { label: 'editar detalhes da matéria', Icon: Settings2, onClick: () => openEditCourse() },
     ];
     headerConfig = {

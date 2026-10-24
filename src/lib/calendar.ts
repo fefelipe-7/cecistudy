@@ -43,7 +43,7 @@ export async function createCalendarEvent(event: CalendarEventInput): Promise<bo
   } catch (error) {
     console.debug(
       '[calendar] createEvent falhou, abrindo editor interativo:',
-      error instanceof Error ? error.message : String(error)
+      error instanceof Error ? error.message : String(error),
     );
     try {
       await Calendar.createEventInteractively(options);
@@ -66,7 +66,7 @@ export async function createCalendarEvent(event: CalendarEventInput): Promise<bo
 export async function createTaskCalendarEvent(
   taskTitle: string,
   courseName: string,
-  dueDate: string
+  dueDate: string,
 ): Promise<boolean> {
   return createCalendarEvent({
     title: `Tarefa: ${taskTitle}`,
@@ -87,7 +87,7 @@ export async function createTaskCalendarEvent(
 export async function createExamCalendarEvent(
   examTitle: string,
   courseName: string,
-  examDate: string
+  examDate: string,
 ): Promise<boolean> {
   return createCalendarEvent({
     title: `Prova: ${examTitle}`,

@@ -21,11 +21,7 @@ interface InternshipSectionProps {
   onOpenDiary: () => void;
 }
 
-const InternshipSection: React.FC<InternshipSectionProps> = ({
-  records,
-  now,
-  onOpenDiary,
-}) => (
+const InternshipSection: React.FC<InternshipSectionProps> = ({ records, now, onOpenDiary }) => (
   <div className="space-y-4 px-1 pt-1">
     <section className="space-y-2">
       <SectionTitle icon={<HeartHandshake className="w-4 h-4 text-ceci-academic-strong" />}>
@@ -40,7 +36,7 @@ const InternshipSection: React.FC<InternshipSectionProps> = ({
           const preview = selectDiaryPreview(
             records.map((r) => ({ ...r, type: 'estagio', reflections: '', activity: r.activity })),
             now,
-            5
+            5,
           );
           return preview.length > 0 ? (
             preview.map((log) => (
@@ -50,9 +46,12 @@ const InternshipSection: React.FC<InternshipSectionProps> = ({
                 className="w-full py-2.5 flex items-center justify-between gap-3 text-left cursor-pointer group"
               >
                 <div className="min-w-0">
-                  <h3 className="font-bold text-xs text-ceci-primary line-clamp-1">{log.activity}</h3>
+                  <h3 className="font-bold text-xs text-ceci-primary line-clamp-1">
+                    {log.activity}
+                  </h3>
                   <p className="text-[11px] text-ceci-secondary mt-0.5">
-                    {log.hours ? `${log.hours}h` : ''}{log.date >= todayKey ? ' · agendado' : ''}
+                    {log.hours ? `${log.hours}h` : ''}
+                    {log.date >= todayKey ? ' · agendado' : ''}
                   </p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">

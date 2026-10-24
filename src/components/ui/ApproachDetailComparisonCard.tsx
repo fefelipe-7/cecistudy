@@ -17,18 +17,11 @@ export const ApproachDetailComparisonCard: React.FC<ApproachDetailComparisonCard
   children,
   onSelect,
 }) => {
-  const bgColor =
-    relationType === 'similar'
-      ? 'bg-surface-rose/20'
-      : 'bg-surface-blue/20';
+  const bgColor = relationType === 'similar' ? 'bg-surface-rose/20' : 'bg-surface-blue/20';
   const borderColor =
-    relationType === 'similar'
-      ? 'border-ceci-brand-strong'
-      : 'border-ceci-academic-strong';
+    relationType === 'similar' ? 'border-ceci-brand-strong' : 'border-ceci-academic-strong';
   const textColor =
-    relationType === 'similar'
-      ? 'text-ceci-brand-strong'
-      : 'text-ceci-academic-strong';
+    relationType === 'similar' ? 'text-ceci-brand-strong' : 'text-ceci-academic-strong';
 
   return (
     <button

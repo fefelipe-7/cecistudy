@@ -30,9 +30,13 @@ export function getUserDb(): Promise<SqlDriver | null> {
 
 async function bootstrapUserDb(): Promise<SqlDriver | null> {
   try {
-    const driver = await createNativeSqliteDriver(USER_DB_NAME, async (d) => {
-      await runUserMigrations(d);
-    });
+    const driver = await createNativeSqliteDriver(
+      USER_DB_NAME,
+      async (d) => {
+        await runUserMigrations(d);
+      },
+      true, // D4: banco do usuário cifrado no dispositivo
+    );
 
     // Import legado (Preferences → SQLite), uma vez por chave. Só remove as
     // chaves legadas quando TODAS as coleções conhecidas já estiverem mapeadas.

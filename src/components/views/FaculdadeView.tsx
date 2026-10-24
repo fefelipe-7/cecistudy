@@ -1,22 +1,24 @@
 ﻿import React, { useMemo } from 'react';
-import { BookOpen, Calendar as CalendarIcon, HeartHandshake, ChevronRight, Plus } from 'lucide-react';
+import { BookOpen, HeartHandshake, ChevronRight, Plus } from 'lucide-react';
 import { SubTabFaculdade, Course } from '../../types';
 import { CourseDetailView } from './CourseDetailView';
 import { UnderlineTabBar } from '../ui/UnderlineTabBar';
 import { SwipeableTabPanel, useTabPager } from '../ui/SwipeableTabPanel';
-import { useDataClientApp, useDataClientCourses } from '@/context/DataClientProvider';
+import {
+  useDataClientApp,
+  useDataClientCourses,
+  useDataClientStudy,
+} from '@/context/DataClientProvider';
 import { useNavValue } from '@/context/shellNavContexts';
-import { getTodaySchedule, upcomingEvents } from '../../lib/schedule';
-import type { CalendarEvent } from '../../lib/schedule';
+import { buildCalendarEntries, getTodaySchedule } from '../../lib/schedule';
 import { useTermScope } from '../../lib/termScope';
 import { computePendencies, computeStats } from '../../lib/internshipCases';
-import { localDateKey } from '../../lib/dateBR';
+import { addDaysKey, localDateKey, todayKeyLocal } from '../../lib/dateBR';
 import { DICA, frase } from '../../lib/voice';
 import { Mascote } from '../ui/Mascote';
 import HeroSection from './faculdade/HeroSection';
 import WeekGrid from './faculdade/WeekGrid';
 import DisciplinasGrid from './faculdade/DisciplinasGrid';
-import CalendarMonth from './faculdade/CalendarMonth';
 import InternshipSection, { InternshipRecordPreview } from './faculdade/InternshipSection';
 import WeekEventsList from './faculdade/WeekEventsList';
 
@@ -26,18 +28,16 @@ interface FaculdadeViewProps {
 }
 
 /** Ordem das sub-tabs — é ela que define para onde o arrasto avança (SPEC-015). */
-const SUBTAB_ORDER: readonly SubTabFaculdade[] = ['disciplinas', 'calendario', 'estagio'];
+const SUBTAB_ORDER: readonly SubTabFaculdade[] = ['disciplinas', 'estagio'];
 
 /** Nome legível da sub-tab: o `aria-label` do painel mostra isto, não o id. */
 const SUBTAB_LABEL: Record<SubTabFaculdade, string> = {
   disciplinas: 'disciplinas',
-  calendario: 'calendário',
   estagio: 'estágio',
 };
 
 const SUBTABS: Array<{ id: SubTabFaculdade; label: string; icon: React.ReactNode }> = [
   { id: 'disciplinas', label: 'disciplinas', icon: <BookOpen className="w-3.5 h-3.5" /> },
-  { id: 'calendario', label: 'calendário', icon: <CalendarIcon className="w-3.5 h-3.5" /> },
   { id: 'estagio', label: 'estágio', icon: <HeartHandshake className="w-3.5 h-3.5" /> },
 ];
 
@@ -52,6 +52,7 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
     thesisTasks,
   } = useDataClientApp();
   const { courses, classes, exams, tasks } = useDataClientCourses();
+  const { sessions } = useDataClientStudy();
   // Recorte do período (SPEC-005): a tela do "agora" só enxerga o semestre ativo.
   // `all` preserva a lista completa para o calendário e a busca.
   const { term, active, grade, archived, activeIds } = useTermScope(courses, academicTerms);
@@ -62,6 +63,8 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
     openInternshipDiary,
     openTccScreen,
     openWizard,
+    openCalendar,
+    openStudy,
   } = useNavValue();
 
   const now = useMemo(() => new Date(), []);
@@ -86,10 +89,6 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
       pendencias: pendencias.noReflection.length + pendencias.noSupervision.length,
     };
   }, [internshipLogs, now]);
-  const examIds = useMemo(() => new Set(exams.map((e) => e.id)), [exams]);
-  const taskIds = useMemo(() => new Set(tasks.map((t) => t.id)), [tasks]);
-
-  // Unified internship records for calendar and totals (derived from logs)
   const allInternshipRecords = useMemo<InternshipRecordPreview[]>(() => {
     const list: InternshipRecordPreview[] = [];
     internshipLogs.forEach((l) => {
@@ -105,31 +104,52 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
 
   // ---- dados reais derivados do estado ----
   // Provas/tarefas herdam o período pelo `courseId` da disciplina (§D3).
-  const pendingExams = exams.filter((e) => !e.completed && (!e.courseId || activeIds.has(e.courseId)));
-  const pendingTasks = tasks.filter((t) => !t.completed && (!t.disciplineId || activeIds.has(t.disciplineId)));
+  const pendingExams = exams.filter(
+    (e) => !e.completed && (!e.courseId || activeIds.has(e.courseId)),
+  );
+  const pendingTasks = tasks.filter(
+    (t) => !t.completed && (!t.disciplineId || activeIds.has(t.disciplineId)),
+  );
 
   const todaySchedule = getTodaySchedule(grade, now);
 
-  // Próximos eventos da semana acadêmica (derivados de provas/tarefas/estágio)
-  const weekEvents = upcomingEvents(
-    exams,
-    tasks,
-    allInternshipRecords.map((r) => ({ id: r.id, date: r.date, activity: r.activity }))
+  // Próximos compromissos da semana acadêmica — do agregador único (SPEC-024
+  // D4/D13). Só o que tem hora marcada/entrega: aula e estudo ficam na grade.
+  const weekEntries = useMemo(
+    () =>
+      buildCalendarEntries({
+        courses,
+        exams,
+        tasks,
+        thesis: tcc,
+        chapters: thesisChapters,
+        thesisTasks,
+        meetings: thesisMeetings,
+        internshipLogs,
+        studySessions: sessions,
+        from: todayKeyLocal(),
+        to: addDaysKey(todayKeyLocal(), 14),
+      })
+        .filter(
+          (e) =>
+            e.kind === 'tarefa' || e.kind === 'prova' || e.kind === 'tcc' || e.kind === 'estagio',
+        )
+        .slice(0, 5),
+    [
+      courses,
+      exams,
+      tasks,
+      tcc,
+      thesisChapters,
+      thesisTasks,
+      thesisMeetings,
+      internshipLogs,
+      sessions,
+    ],
   );
-
-  /** Linha da semana acadêmica: prova/tarefa navegam pra disciplina; estágio abre o diário. */
-  const eventDestination = (ev: CalendarEvent): (() => void) | null => {
-    // SPEC-012 F4.5: prazo do TCC abre a tela do TCC na aba certa (mesmo
-    // caminho da notificação — `openTccScreen(tab, focusId)`).
-    if (ev.kind === 'tcc') return () => openTccScreen(ev.tccTab, ev.tccFocusId);
-    if (!examIds.has(ev.id) && !taskIds.has(ev.id)) return openInternshipDiary;
-    if (ev.courseId) return () => openCourseDetail(ev.courseId as string);
-    return null;
-  };
 
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-6 pb-1">
-
       {/* 1. HERO — semestre + resumo real */}
       <HeroSection
         semester={term?.ordinal ?? profile.semester}
@@ -137,7 +157,7 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
         pendingExamsCount={pendingExams.length}
         pendingTasksCount={pendingTasks.length}
         hasClassesToday={todaySchedule.length > 0}
-        onOpenCalendar={() => setSubTab('calendario')}
+        onOpenCalendar={() => openCalendar()}
       />
 
       {/* 2. DIÁRIO DE ESTÁGIO — o segundo bloco, forte em conteúdo e sem competir
@@ -168,8 +188,7 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
                     </span>
                   </p>
                   <p className="text-xs text-ceci-secondary mt-1 leading-relaxed">
-                    {estagio.registros}{' '}
-                    {estagio.registros === 1 ? 'registro' : 'registros'}
+                    {estagio.registros} {estagio.registros === 1 ? 'registro' : 'registros'}
                     {estagio.pendencias > 0
                       ? ` · ${estagio.pendencias} pedindo carinho`
                       : ' — tudo em dia por aqui'}
@@ -211,10 +230,8 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
 
       {/* Desktop (≥ lg): grade 12 colunas — esquerda: sub-tabs · direita: semana */}
       <div className="lg:grid lg:grid-cols-12 lg:gap-6 lg:items-start">
-
         {/* coluna esquerda */}
         <div className="lg:col-span-7 space-y-6">
-
           {/* Sub-Tabs Navigation */}
           <UnderlineTabBar
             tabs={SUBTABS}
@@ -234,21 +251,6 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
               />
             )}
 
-            {subTab === 'calendario' && (
-              <CalendarMonth
-                courses={courses}
-                exams={exams}
-                tasks={tasks}
-                tcc={tcc}
-                thesisChapters={thesisChapters}
-                thesisMeetings={thesisMeetings}
-                thesisTasks={thesisTasks}
-                now={now}
-                onOpenCourse={openCourseDetail}
-                onEventDestination={eventDestination}
-              />
-            )}
-
             {subTab === 'estagio' && (
               <InternshipSection
                 records={allInternshipRecords}
@@ -257,18 +259,22 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
               />
             )}
           </SwipeableTabPanel>
-
         </div>
 
         {/* coluna direita */}
         <div className="lg:col-span-5 space-y-6">
           <WeekEventsList
-            weekEvents={weekEvents}
-            courses={grade}
-            eventDestination={eventDestination}
+            entries={weekEntries}
+            nav={{
+              openCourseDetail,
+              openTccScreen,
+              openInternshipDiary,
+              openStudy,
+            }}
+            exams={exams}
+            tasks={tasks}
           />
         </div>
-
       </div>
     </div>
   );

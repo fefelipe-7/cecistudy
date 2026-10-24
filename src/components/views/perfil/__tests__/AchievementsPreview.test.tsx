@@ -106,6 +106,7 @@ describe('AchievementsPreview', () => {
         onOpenStreak={vi.fn()}
       />,
     );
+    // A contagem não vira "0" vazio: a silhueta continua nomeando a conquista.
     expect(screen.getByText('0 de 5')).toBeTruthy();
     expect(screen.getByText('primeira leitura, bloqueado')).toBeTruthy();
   });

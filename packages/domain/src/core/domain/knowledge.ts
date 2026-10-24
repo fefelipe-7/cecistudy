@@ -94,7 +94,11 @@ export interface LearningState {
   updatedAt: string;
 }
 
-export function createDocument(input: { workspaceId: EntityId; title: string; blocks?: Block[] }): Document {
+export function createDocument(input: {
+  workspaceId: EntityId;
+  title: string;
+  blocks?: Block[];
+}): Document {
   const now = new Date().toISOString();
   return {
     id: makeId('doc'),
@@ -124,7 +128,7 @@ export function createRelation(input: {
     kind: input.kind,
     label: input.label,
     provenance: input.provenance ?? 'manual',
-    accepted: input.accepted ?? input.kind === 'semantica' ? false : true,
+    accepted: (input.accepted ?? input.kind === 'semantica') ? false : true,
     createdAt: new Date().toISOString(),
   };
 }

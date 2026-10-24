@@ -57,7 +57,11 @@ import { readFromClipboard } from '../lib/utils';
 import { deriveCases, nextSessionNumber } from '../lib/internshipCases';
 import { todayKeyLocal } from '../lib/dateBR';
 import { isCardDue } from '../lib/fsrs';
-import { deleteManagedItem as applyDelete, MANAGED_KIND_REMOVED, ManagedDB } from '../lib/entityOps';
+import {
+  deleteManagedItem as applyDelete,
+  MANAGED_KIND_REMOVED,
+  ManagedDB,
+} from '../lib/entityOps';
 import type { DataClientValue } from './DataClientProvider';
 import type { SharedAppValue } from './sharedAppValue';
 
@@ -206,6 +210,12 @@ export interface NavigationValue {
   thesisFocusId: string | undefined;
   openTccScreen: (tab?: ThesisTab, focusId?: string) => void;
   closeTccScreen: () => void;
+  /** Calendário empilhado (SPEC-024 D1): nunca sexta aba. */
+  isCalendarScreenOpen: boolean;
+  /** Dia destacado (`DateKey`); ausente = hoje. */
+  calendarDay: string | undefined;
+  openCalendar: (day?: string) => void;
+  closeCalendar: () => void;
   /** Folha (sheet) aberta do TCC (SPEC-022 D3). */
   tccSheet: TccSheet | null;
   tccCaptureText: string;
@@ -242,7 +252,7 @@ export interface NavigationValue {
     config: QuizConfig,
     startTime: number,
     correctCount: number,
-    totalCount: number
+    totalCount: number,
   ) => void;
   closeQuizResult: () => void;
   updateQuizPlayState: (updates: Partial<QuizPlayState>) => void;
@@ -388,9 +398,7 @@ export function useNavigationEngine(
     const reduced = prefersReducedMotion();
     const pendingGesture = peekMotionIntent().fromGesture;
 
-    const intent = pendingGesture
-      ? peekMotionIntent()
-      : deriveIntent(prev, next, { reduced });
+    const intent = pendingGesture ? peekMotionIntent() : deriveIntent(prev, next, { reduced });
 
     setMotionIntent(intent);
     // O `intent` também vai para o estado: a instância **presente** consegue ler
@@ -419,7 +427,7 @@ export function useNavigationEngine(
     navigationStackRef.current = next;
   }, []);
 
-  const [subTabFaculdade, setSubTabFaculdade] = useState<SubTabFaculdade>('calendario');
+  const [subTabFaculdade, setSubTabFaculdade] = useState<SubTabFaculdade>('disciplinas');
   const [subTabBiblioteca, setSubTabBiblioteca] = useState<SubTabBiblioteca>('autores');
   const [targetId, setTargetId] = useState<string | undefined>(undefined);
 
@@ -502,6 +510,8 @@ export function useNavigationEngine(
   const internshipPatientKey =
     currentScreen.kind === 'internshipCase' ? currentScreen.patientKey : undefined;
   const isTccScreenOpen = currentScreen.kind === 'tcc';
+  const isCalendarScreenOpen = currentScreen.kind === 'calendar';
+  const calendarDay = currentScreen.kind === 'calendar' ? currentScreen.day : undefined;
   /** Aba/foco ativos do TCC: moram na navegação (`SPEC-012 F3`, molde `D16`). */
   const thesisTab: ThesisTab | undefined =
     currentScreen.kind === 'tcc' ? currentScreen.tab : undefined;
@@ -544,21 +554,30 @@ export function useNavigationEngine(
   const isQuizGroupDetailOpen = currentScreen.kind === 'quiz-group-detail';
   const currentQuizGroup = currentScreen.kind === 'quiz-group-detail' ? currentScreen.group : null;
   const isQuizLoadingOpen = currentScreen.kind === 'quiz-loading';
-  const currentQuizLoadingConfig = currentScreen.kind === 'quiz-loading' ? currentScreen.config : null;
+  const currentQuizLoadingConfig =
+    currentScreen.kind === 'quiz-loading' ? currentScreen.config : null;
   const isQuizPlayOpen = currentScreen.kind === 'quiz-play';
   const isQuizResultOpen = currentScreen.kind === 'quiz-result';
-  const currentQuizPlayState = (currentScreen.kind === 'quiz-play' ? currentScreen.state : null) ?? null;
-  const currentQuizResultAnswers = (currentScreen.kind === 'quiz-result' ? currentScreen.answers : null) ?? null;
-  const currentQuizResultConfig = (currentScreen.kind === 'quiz-result' ? currentScreen.config : null) ?? null;
-  const currentQuizResultStartTime = (currentScreen.kind === 'quiz-result' ? currentScreen.startTime : null) ?? null;
-  const currentQuizResultCorrectCount = (currentScreen.kind === 'quiz-result' ? currentScreen.correctCount : null) ?? null;
-  const currentQuizResultTotalCount = (currentScreen.kind === 'quiz-result' ? currentScreen.totalCount : null) ?? null;
+  const currentQuizPlayState =
+    (currentScreen.kind === 'quiz-play' ? currentScreen.state : null) ?? null;
+  const currentQuizResultAnswers =
+    (currentScreen.kind === 'quiz-result' ? currentScreen.answers : null) ?? null;
+  const currentQuizResultConfig =
+    (currentScreen.kind === 'quiz-result' ? currentScreen.config : null) ?? null;
+  const currentQuizResultStartTime =
+    (currentScreen.kind === 'quiz-result' ? currentScreen.startTime : null) ?? null;
+  const currentQuizResultCorrectCount =
+    (currentScreen.kind === 'quiz-result' ? currentScreen.correctCount : null) ?? null;
+  const currentQuizResultTotalCount =
+    (currentScreen.kind === 'quiz-result' ? currentScreen.totalCount : null) ?? null;
   const currentQuizResultPool =
     (currentScreen.kind === 'quiz-result'
       ? currentScreen.pool
-      : (navigationStack.find(
-          (s) => s.kind === 'quiz-play'
-        ) as Extract<NavScreen, { kind: 'quiz-play' }> | undefined)?.state.pool ?? null) ?? null;
+      : ((
+          navigationStack.find((s) => s.kind === 'quiz-play') as
+            | Extract<NavScreen, { kind: 'quiz-play' }>
+            | undefined
+        )?.state.pool ?? null)) ?? null;
   const focusedCourseId =
     currentScreen.kind === 'course'
       ? currentScreen.courseId
@@ -574,14 +593,14 @@ export function useNavigationEngine(
     ? classes.find((n) => n.id === focusedClassNoteId)
     : undefined;
   const isRepertorioItemOpen = currentScreen.kind === 'repertorioItem';
-  const focusedRepertorioItemId = currentScreen.kind === 'repertorioItem' ? currentScreen.itemId : null;
+  const focusedRepertorioItemId =
+    currentScreen.kind === 'repertorioItem' ? currentScreen.itemId : null;
   const focusedRepertorioItemCourseId =
     currentScreen.kind === 'repertorioItem' ? currentScreen.courseId : null;
   const focusedStudyScreen: StudyScreen | null =
     currentScreen.kind === 'study' ? currentScreen.screen : null;
   /** Sessão de foco imersiva em tela (chrome preto + orientação landscape). */
-  const isFocusImmersiveOpen =
-    focusedStudyScreen !== null && focusedStudyScreen === 'focus';
+  const isFocusImmersiveOpen = focusedStudyScreen !== null && focusedStudyScreen === 'focus';
 
   // Flashcards vencidos (scheduler FSRS — fonte única em `src/lib/fsrs.ts`)
   const dueCardsCount = useMemo(() => flashcards.filter((c) => isCardDue(c)).length, [flashcards]);
@@ -596,37 +615,39 @@ export function useNavigationEngine(
             ? `repertorioItem-${currentScreen.itemId}`
             : currentScreen.kind === 'notes'
               ? 'notes'
-            : currentScreen.kind === 'temple'
-            ? 'temple'
-            : currentScreen.kind === 'comparison'
-              ? `comparison-${currentScreen.slug}`
-              : currentScreen.kind === 'families'
-                ? 'families'
-                : currentScreen.kind === 'family'
-                  ? `family-${currentScreen.familyId}`
-                  : currentScreen.kind === 'approach'
-                    ? `approach-${currentScreen.approachId}`
-                    : currentScreen.kind === 'compose'
-                      ? 'compose'
-                      : currentScreen.kind === 'composeDetails'
-                        ? 'composeDetails'
-                        : currentScreen.kind === 'wizard'
-                          ? `wizard-${currentScreen.type}`
-                          : currentScreen.kind === 'streak'
-                            ? 'streak'
-                            : currentScreen.kind === 'internshipDiary'
-                              ? 'internshipDiary'
-                              : currentScreen.kind === 'tcc'
-                                ? 'tcc'
-                                : currentScreen.kind === 'stickers'
-                                  ? 'stickers'
-                                  : currentScreen.kind === 'sync'
-                                    ? 'sync'
-                                    : currentScreen.kind === 'study'
-                                      ? `study-${currentScreen.screen}`
-                                      : currentScreen.kind === 'quiz-loading'
-                                        ? 'quiz-loading'
-                                        : 'tab-home';
+              : currentScreen.kind === 'temple'
+                ? 'temple'
+                : currentScreen.kind === 'comparison'
+                  ? `comparison-${currentScreen.slug}`
+                  : currentScreen.kind === 'families'
+                    ? 'families'
+                    : currentScreen.kind === 'family'
+                      ? `family-${currentScreen.familyId}`
+                      : currentScreen.kind === 'approach'
+                        ? `approach-${currentScreen.approachId}`
+                        : currentScreen.kind === 'compose'
+                          ? 'compose'
+                          : currentScreen.kind === 'composeDetails'
+                            ? 'composeDetails'
+                            : currentScreen.kind === 'wizard'
+                              ? `wizard-${currentScreen.type}`
+                              : currentScreen.kind === 'streak'
+                                ? 'streak'
+                                : currentScreen.kind === 'internshipDiary'
+                                  ? 'internshipDiary'
+                                  : currentScreen.kind === 'tcc'
+                                    ? 'tcc'
+                                    : currentScreen.kind === 'calendar'
+                                      ? 'calendar'
+                                      : currentScreen.kind === 'stickers'
+                                        ? 'stickers'
+                                        : currentScreen.kind === 'sync'
+                                          ? 'sync'
+                                          : currentScreen.kind === 'study'
+                                            ? `study-${currentScreen.screen}`
+                                            : currentScreen.kind === 'quiz-loading'
+                                              ? 'quiz-loading'
+                                              : 'tab-home';
 
   /**
    * Chave da camada de slide horizontal (pilha).
@@ -667,7 +688,7 @@ export function useNavigationEngine(
         if (t === 'faculdade') setSubTabFaculdade(route.subTab as SubTabFaculdade);
         else if (t === 'biblioteca') setSubTabBiblioteca(route.subTab as SubTabBiblioteca);
       }
-      setTargetId(route.tab === 'faculdade' ? route.focusedCourseId ?? undefined : undefined);
+      setTargetId(route.tab === 'faculdade' ? (route.focusedCourseId ?? undefined) : undefined);
       scrollToTop();
     };
     if (!location.hash) history.replaceState(null, '', '#/home');
@@ -693,7 +714,7 @@ export function useNavigationEngine(
           return undefined;
       }
     },
-    [subTabFaculdade, subTabBiblioteca]
+    [subTabFaculdade, subTabBiblioteca],
   );
 
   /** Sincroniza o `location.hash` (espelho) com a pilha, incluindo a sub-tab da aba base. */
@@ -709,7 +730,7 @@ export function useNavigationEngine(
       lastSyncedHashRef.current = h;
       if (location.hash !== h) location.hash = h;
     },
-    [currentSubTabFor]
+    [currentSubTabFor],
   );
 
   // Deep-link focado: ao navegar com targetId (busca global), rola e destaca o item
@@ -818,7 +839,7 @@ export function useNavigationEngine(
       syncHash(next);
       scrollToTop();
     },
-    [setStack, setTargetId, syncHash, setSubTabFaculdade, setSubTabBiblioteca]
+    [setStack, setTargetId, syncHash, setSubTabFaculdade, setSubTabBiblioteca],
   );
 
   const openCourseDetail = useCallback(
@@ -829,13 +850,16 @@ export function useNavigationEngine(
           ? top.courseId === courseId
             ? navigationStack
             : [...navigationStack.slice(0, -1), { kind: 'course', courseId }]
-          : [{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId }];
+          : [
+              { kind: 'tab', tab: 'faculdade' },
+              { kind: 'course', courseId },
+            ];
       setStack(next);
       setTargetId(courseId);
       syncHash(next);
       scrollToTop();
     },
-    [navigationStack, setStack, setTargetId, syncHash]
+    [navigationStack, setStack, setTargetId, syncHash],
   );
 
   const closeCourseDetail = useCallback(() => goBack(), [goBack]);
@@ -848,7 +872,7 @@ export function useNavigationEngine(
       const top = navigationStack[navigationStack.length - 1];
       if (top.kind === 'classNote' && top.classNoteId === classNoteId) return;
       const courseBelow = navigationStack.find(
-        (s): s is Extract<NavScreen, { kind: 'course' }> => s.kind === 'course'
+        (s): s is Extract<NavScreen, { kind: 'course' }> => s.kind === 'course',
       );
       const courseIdx = courseBelow ? navigationStack.indexOf(courseBelow) : -1;
       // Base sobre o curso da aula (substitui qualquer detalhe acima dele) — nunca empilha
@@ -856,7 +880,10 @@ export function useNavigationEngine(
       const base: NavScreen[] =
         courseBelow && courseBelow.courseId === note.courseId
           ? navigationStack.slice(0, courseIdx + 1)
-          : [{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: note.courseId }];
+          : [
+              { kind: 'tab', tab: 'faculdade' },
+              { kind: 'course', courseId: note.courseId },
+            ];
       const next: NavScreen[] = [
         ...base,
         { kind: 'classNote', classNoteId, courseId: note.courseId },
@@ -865,7 +892,7 @@ export function useNavigationEngine(
       syncHash(next);
       scrollToTop();
     },
-    [classes, navigationStack, setStack, syncHash]
+    [classes, navigationStack, setStack, syncHash],
   );
 
   const closeClassNoteDetail = useCallback(() => goBack(), [goBack]);
@@ -876,7 +903,7 @@ export function useNavigationEngine(
       const top = navigationStack[navigationStack.length - 1];
       if (top.kind === 'repertorioItem' && top.itemId === itemId) return;
       const courseBelow = navigationStack.find(
-        (s): s is Extract<NavScreen, { kind: 'course' }> => s.kind === 'course'
+        (s): s is Extract<NavScreen, { kind: 'course' }> => s.kind === 'course',
       );
       const courseIdx = courseBelow ? navigationStack.indexOf(courseBelow) : -1;
       // Base sobre o curso da matéria (substitui qualquer detalhe acima dele) — nunca
@@ -884,13 +911,16 @@ export function useNavigationEngine(
       const base: NavScreen[] =
         courseBelow && courseBelow.courseId === courseId
           ? navigationStack.slice(0, courseIdx + 1)
-          : [{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId }];
+          : [
+              { kind: 'tab', tab: 'faculdade' },
+              { kind: 'course', courseId },
+            ];
       const next: NavScreen[] = [...base, { kind: 'repertorioItem', courseId, itemId }];
       setStack(next);
       syncHash(next);
       scrollToTop();
     },
-    [navigationStack, setStack, syncHash]
+    [navigationStack, setStack, syncHash],
   );
 
   const closeRepertorioItem = useCallback(() => goBack(), [goBack]);
@@ -915,16 +945,12 @@ export function useNavigationEngine(
       const next: NavScreen[] =
         top.kind === 'notes'
           ? [...navigationStack, { kind: 'noteDetail', noteId }]
-          : [
-              { kind: 'tab', tab: 'biblioteca' },
-              { kind: 'notes' },
-              { kind: 'noteDetail', noteId },
-            ];
+          : [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }, { kind: 'noteDetail', noteId }];
       setStack(next);
       syncHash(next);
       scrollToTop();
     },
-    [navigationStack, setStack, syncHash]
+    [navigationStack, setStack, syncHash],
   );
 
   const closeNoteDetail = useCallback(() => goBack(), [goBack]);
@@ -944,7 +970,7 @@ export function useNavigationEngine(
       syncHash(next);
       scrollToTop();
     },
-    [navigationStack, setStack, syncHash]
+    [navigationStack, setStack, syncHash],
   );
 
   const closeNoteTransform = useCallback(() => goBack(), [goBack]);
@@ -992,7 +1018,7 @@ export function useNavigationEngine(
       syncHash(next);
       scrollToTop();
     },
-    [navigationStack, setStack, syncHash, scrollToTop]
+    [navigationStack, setStack, syncHash, scrollToTop],
   );
 
   const closeTempleSection = useCallback(() => goBack(), [goBack]);
@@ -1023,7 +1049,7 @@ export function useNavigationEngine(
       syncHash(next);
       scrollToTop();
     },
-    [navigationStack, setStack, syncHash]
+    [navigationStack, setStack, syncHash],
   );
 
   const closeFamily = useCallback(() => goBack(), [goBack]);
@@ -1039,7 +1065,7 @@ export function useNavigationEngine(
       syncHash(next);
       scrollToTop();
     },
-    [navigationStack, setStack, syncHash]
+    [navigationStack, setStack, syncHash],
   );
 
   const closeApproach = useCallback(() => goBack(), [goBack]);
@@ -1055,7 +1081,7 @@ export function useNavigationEngine(
       syncHash(next);
       scrollToTop();
     },
-    [navigationStack, setStack, syncHash, scrollToTop]
+    [navigationStack, setStack, syncHash, scrollToTop],
   );
 
   const closeComparison = useCallback(() => goBack(), [goBack]);
@@ -1077,14 +1103,17 @@ export function useNavigationEngine(
       const next: NavScreen[] =
         top.kind === 'internshipDiary'
           ? navigationStack.map((s) =>
-              s.kind === 'internshipDiary' ? { ...s, tab, focusLogId } : s
+              s.kind === 'internshipDiary' ? { ...s, tab, focusLogId } : s,
             )
-          : [{ kind: 'tab', tab: 'faculdade' as NavTab }, { kind: 'internshipDiary', tab, focusLogId }];
+          : [
+              { kind: 'tab', tab: 'faculdade' as NavTab },
+              { kind: 'internshipDiary', tab, focusLogId },
+            ];
       setStack(next);
       syncHash(next);
       scrollToTop();
     },
-    [navigationStack, setStack, syncHash]
+    [navigationStack, setStack, syncHash],
   );
 
   /**
@@ -1105,7 +1134,7 @@ export function useNavigationEngine(
       syncHash(next);
       scrollToTop();
     },
-    [setStack, syncHash]
+    [setStack, syncHash],
   );
 
   const closeInternshipDiary = useCallback(() => goBack(), [goBack]);
@@ -1127,13 +1156,36 @@ export function useNavigationEngine(
       syncHash(next);
       scrollToTop();
     },
-    [navigationStack, setStack, syncHash]
+    [navigationStack, setStack, syncHash],
   );
 
   const closeTccScreen = useCallback(() => {
     closeTccSheet();
     goBack();
   }, [closeTccSheet, goBack]);
+
+  /**
+   * Calendário empilhado (SPEC-024 D1). Já aberto: só troca o dia focado, sem
+   * empilhar de novo — o calendário pertence à aba de onde foi aberto.
+   */
+  const openCalendar = useCallback(
+    (day?: string) => {
+      const top = navigationStack[navigationStack.length - 1];
+      const next: NavScreen[] =
+        top.kind === 'calendar'
+          ? navigationStack.map((s) => (s.kind === 'calendar' ? { ...s, day } : s))
+          : [
+              navigationStack[0].kind === 'tab' ? navigationStack[0] : { kind: 'tab', tab: 'home' },
+              { kind: 'calendar', day } as const,
+            ];
+      setStack(next);
+      syncHash(next);
+      scrollToTop();
+    },
+    [navigationStack, setStack, syncHash],
+  );
+
+  const closeCalendar = useCallback(() => goBack(), [goBack]);
 
   const openStickersScreen = useCallback(() => {
     const top = navigationStack[navigationStack.length - 1];
@@ -1168,13 +1220,13 @@ export function useNavigationEngine(
       syncHash(next);
       scrollToTop();
     },
-    [navigationStack, setStack, syncHash]
+    [navigationStack, setStack, syncHash],
   );
 
   const closeQuizCategory = useCallback(() => goBack(), [goBack]);
 
   function isQuizSection(
-    s: NavScreen
+    s: NavScreen,
   ): s is Extract<NavScreen, { kind: 'quiz-category' | 'quiz-group-detail' }> {
     return s.kind === 'quiz-category' || s.kind === 'quiz-group-detail';
   }
@@ -1191,15 +1243,16 @@ export function useNavigationEngine(
       // Troca ou empilha o detalhe do grupo
       const isDetailOnTop = base.length > 0 && base[base.length - 1].kind === 'quiz-group-detail';
       const next: NavScreen[] = isDetailOnTop
-        ? base.map((s): NavScreen =>
-            s.kind === 'quiz-group-detail' ? { kind: 'quiz-group-detail', group } : s
+        ? base.map(
+            (s): NavScreen =>
+              s.kind === 'quiz-group-detail' ? { kind: 'quiz-group-detail', group } : s,
           )
         : [...base, { kind: 'quiz-group-detail', group }];
       setStack(next);
       syncHash(next);
       scrollToTop();
     },
-    [navigationStack, setStack, syncHash]
+    [navigationStack, setStack, syncHash],
   );
 
   const closeQuizDetail = useCallback(() => goBack(), [goBack]);
@@ -1212,7 +1265,7 @@ export function useNavigationEngine(
       syncHash(next);
       scrollToTop();
     },
-    [navigationStack, setStack, syncHash]
+    [navigationStack, setStack, syncHash],
   );
 
   const closeQuizLoading = useCallback(() => goBack(), [goBack]);
@@ -1251,7 +1304,7 @@ export function useNavigationEngine(
       syncHash(next);
       scrollToTop();
     },
-    [navigationStack, setStack, syncHash]
+    [navigationStack, setStack, syncHash],
   );
 
   const closeStudy = useCallback(() => goBack(), [goBack]);
@@ -1263,7 +1316,7 @@ export function useNavigationEngine(
       syncHash(next);
       scrollToTop();
     },
-    [navigationStack, setStack, syncHash]
+    [navigationStack, setStack, syncHash],
   );
 
   const closeQuizPlay = useCallback(() => goBack(), [goBack]);
@@ -1274,7 +1327,7 @@ export function useNavigationEngine(
       config: QuizConfig,
       startTime: number,
       correctCount: number,
-      totalCount: number
+      totalCount: number,
     ) => {
       const next = stackAfterOpenQuizResult(navigationStack, {
         answers,
@@ -1287,7 +1340,7 @@ export function useNavigationEngine(
       syncHash(next);
       scrollToTop();
     },
-    [navigationStack, setStack, syncHash]
+    [navigationStack, setStack, syncHash],
   );
 
   /** Volta do resultado para o seletor de assuntos (mantém quiz-category; política de back nativo). */
@@ -1308,11 +1361,11 @@ export function useNavigationEngine(
       const updatedState: QuizPlayState = { ...current, ...updates };
 
       const stack = navigationStack.map((screen) =>
-        screen.kind === 'quiz-play' ? { ...screen, state: updatedState } : screen
+        screen.kind === 'quiz-play' ? { ...screen, state: updatedState } : screen,
       );
       setStackSilent(stack);
     },
-    [navigationStack, setStackSilent]
+    [navigationStack, setStackSilent],
   );
 
   /** Volta de todas as telas de quiz para tab de estudos em um só goBack. */
@@ -1345,7 +1398,7 @@ export function useNavigationEngine(
       syncHash(next);
       scrollToTop();
     },
-    [navigationStack, setStack, syncHash, setComposeCourseId]
+    [navigationStack, setStack, syncHash, setComposeCourseId],
   );
 
   const closeCompose = useCallback(() => {
@@ -1365,7 +1418,7 @@ export function useNavigationEngine(
       syncHash(next);
       scrollToTop();
     },
-    [navigationStack, setStack, syncHash, setWizardNoteId]
+    [navigationStack, setStack, syncHash, setWizardNoteId],
   );
 
   const closeComposeDetails = useCallback(() => {
@@ -1373,26 +1426,20 @@ export function useNavigationEngine(
     goBack();
   }, [goBack, setWizardNoteId]);
 
-  const openDetailPrompt = useCallback(
-    (noteId: string) => {
-      setDetailNoteId(noteId);
-      setIsDetailPromptOpen(true);
-    },
-    []
-  );
+  const openDetailPrompt = useCallback((noteId: string) => {
+    setDetailNoteId(noteId);
+    setIsDetailPromptOpen(true);
+  }, []);
 
   const closeDetailPrompt = useCallback(() => {
     setDetailNoteId(null);
     setIsDetailPromptOpen(false);
   }, []);
 
-  const openEditCourse = useCallback(
-    (courseId?: string) => {
-      setEditCourseId(courseId ?? null);
-      setIsEditCourseOpen(true);
-    },
-    []
-  );
+  const openEditCourse = useCallback((courseId?: string) => {
+    setEditCourseId(courseId ?? null);
+    setIsEditCourseOpen(true);
+  }, []);
   const closeEditCourse = useCallback(() => {
     setIsEditCourseOpen(false);
     setEditCourseId(null);
@@ -1418,7 +1465,10 @@ export function useNavigationEngine(
         type === 'semester'
           ? top.kind === 'wizard' && top.type === 'semester'
             ? navigationStack
-            : [{ kind: 'tab', tab: 'perfil' }, { kind: 'wizard', type }]
+            : [
+                { kind: 'tab', tab: 'perfil' },
+                { kind: 'wizard', type },
+              ]
           : top.kind === 'wizard' && top.type === type
             ? navigationStack
             : [...navigationStack, { kind: 'wizard', type }];
@@ -1426,7 +1476,7 @@ export function useNavigationEngine(
       syncHash(next);
       scrollToTop();
     },
-    [navigationStack, setStack, syncHash, setWizardCourseId]
+    [navigationStack, setStack, syncHash, setWizardCourseId],
   );
 
   const openTaskExamWizard = useCallback(() => openWizard('task-exam'), [openWizard]);
@@ -1440,7 +1490,7 @@ export function useNavigationEngine(
    */
   const openInternshipWizard = useCallback(
     (seed?: InternshipWizardSeed) => openWizard('internship', undefined, seed),
-    [openWizard]
+    [openWizard],
   );
 
   /**
@@ -1565,7 +1615,7 @@ export function useNavigationEngine(
       bookmarkedCourseIds,
       setManagedItem,
       showToast,
-    ]
+    ],
   );
 
   /** Curso pré-selecionado ao abrir a edição de um item (quando aplicável). */
@@ -1590,7 +1640,7 @@ export function useNavigationEngine(
           return undefined;
       }
     },
-    [tasks, exams, readings, flashcards, sessions, concepts, materials]
+    [tasks, exams, readings, flashcards, sessions, concepts, materials],
   );
 
   /** Abre a edição correta para uma entidade (wizard, modal ou tela própria). */
@@ -1619,7 +1669,7 @@ export function useNavigationEngine(
       openWizard(type, courseId);
       setWizardEdit({ kind, id });
     },
-    [openEditCourse, openComposeDetails, openNoteDetail, openWizard, resolveManageCourseId]
+    [openEditCourse, openComposeDetails, openNoteDetail, openWizard, resolveManageCourseId],
   );
 
   const openSearch = useCallback(() => {
@@ -1635,7 +1685,7 @@ export function useNavigationEngine(
       if (id) openCourseDetail(id);
       else if (currentScreen.kind === 'course') goBack();
     },
-    [openCourseDetail, goBack, currentScreen.kind]
+    [openCourseDetail, goBack, currentScreen.kind],
   );
 
   // Header dinâmico (memoizado: não recria entre renders de dados)
@@ -1726,217 +1776,352 @@ export function useNavigationEngine(
   return useMemo(
     () => ({
       activeTab,
-    screenKey,
-    slideKey,
-    overlayKey,
-    navDirection,
-    navIntent,
-    navigationStack,
-    setStack,
-    syncHash,
-    handleSystemBack,
-    setActiveTab,
-    subTabFaculdade,
-    setSubTabFaculdade,
-    subTabBiblioteca,
-    setSubTabBiblioteca,
-    focusedStudyScreen,
-    isFocusImmersiveOpen,
-    openStudy,
-    closeStudy,
-    targetId,
-    setTargetId,
-    focusedCourseId,
-    setFocusedCourseId,
-    focusedCourse,
-    openCourseDetail,
-    closeCourseDetail,
-    isClassNoteDetailOpen,
-    focusedClassNoteId,
-    focusedClassNote,
-    openClassNoteDetail,
-    closeClassNoteDetail,
-    isRepertorioItemOpen,
-    focusedRepertorioItemId,
-    focusedRepertorioItemCourseId,
-    openRepertorioItem,
-    closeRepertorioItem,
-    isBottomNavVisible,
-    canGoBack,
-    isNotesScreenOpen,
-    openNotesScreen,
-    closeNotesScreen,
-    isTempleScreenOpen,
-    openTemple,
-    closeTemple,
-    focusedTempleSection,
-    openTempleSection,
-    closeTempleSection,
-    isFamiliesScreenOpen,
-    openFamilies,
-    closeFamilies,
-    focusedFamilyId,
-    focusedFamily,
-    openFamily,
-    closeFamily,
-    focusedApproachId,
-    focusedApproach,
-    openApproach,
-    closeApproach,
-    focusedComparisonSlug,
-    openComparison,
-    closeComparison,
-    isNoteDetailOpen,
-    isNoteTransformOpen,
-    focusedNoteId,
-    focusedNote,
-    openNoteDetail,
-    closeNoteDetail,
-    openNoteTransform,
-    closeNoteTransform,
-    closeAllNoteScreens,
-    isComposeScreenOpen,
-    composeCourseId,
-    openCompose,
-    closeCompose,
-    isComposeDetailsOpen,
-    wizardNoteId,
-    openComposeDetails,
-    closeComposeDetails,
-    isDetailPromptOpen,
-    detailNoteId,
-    openDetailPrompt,
-    closeDetailPrompt,
-    isStreakScreenOpen,
-    openStreak,
-    closeStreak,
-    isInternshipDiaryOpen,
-    isInternshipCaseOpen,
-    internshipTab,
-    internshipFocusId,
-    internshipPatientKey,
-    openInternshipDiary,
-    openInternshipCase,
-    closeInternshipDiary,
-    closeInternshipCase,
-    isTccScreenOpen,
-    thesisTab,
-    thesisFocusId,
-    openTccScreen,
-    closeTccScreen,
-    tccSheet,
-    tccCaptureText,
-    openTccSheet,
-    closeTccSheet,
-    openTccCapture,
-    isStickersScreenOpen,
-    openStickersScreen,
-    closeStickersScreen,
-    isSyncScreenOpen,
-    openSyncScreen,
-    closeSyncScreen,
-    isTermHistoryOpen,
-    focusedTermId,
-    openTermHistory,
-    isQuizCategoryOpen,
-    openQuizCategory,
-    closeQuizCategory,
-    isQuizGroupDetailOpen,
-    currentQuizGroup,
-    openQuizGroupDetail,
-    closeQuizDetail,
-    isQuizLoadingOpen,
-    currentQuizLoadingConfig,
-    openQuizLoading,
-    closeQuizLoading,
-    ensureQuestionsLoaded,
-    isQuizPlayOpen,
-    openQuizPlay,
-    closeQuizPlay,
-    isQuizResultOpen,
-    openQuizResult,
-    closeQuizResult,
-    updateQuizPlayState,
-    closeAllQuizScreens,
-    newQuizFromResult,
-    isQuickAddOpen,
-    openQuickAdd,
-    closeQuickAdd,
-    isWizardOpen,
-    currentWizardType,
-    wizardCourseId,
-    wizardSeed,
-    openWizard,
-    openInternshipWizard,
-    openInternshipCaseSession,
-    openTaskExamWizard,
-    closeWizard,
-    managedItem,
-    openManageItem,
-    closeManageItem,
-    deleteManagedItem,
-    editManagedItem,
-    wizardEdit,
-    isEditCourseOpen,
-    editCourseId,
-    openEditCourse,
-    closeEditCourse,
-    isCreatingLooseNote,
-    setIsCreatingLooseNote,
-    isSearchOpen,
-    openSearch,
-    closeSearch,
-    handleNavigate,
-    currentQuizPlayState,
-    currentQuizResultAnswers,
-    currentQuizResultConfig,
-    currentQuizResultStartTime,
-    currentQuizResultCorrectCount,
-    currentQuizResultTotalCount,
-    currentQuizResultPool,
-    headerConfig,
-    contextBarConfig,
+      screenKey,
+      slideKey,
+      overlayKey,
+      navDirection,
+      navIntent,
+      navigationStack,
+      setStack,
+      syncHash,
+      handleSystemBack,
+      setActiveTab,
+      subTabFaculdade,
+      setSubTabFaculdade,
+      subTabBiblioteca,
+      setSubTabBiblioteca,
+      focusedStudyScreen,
+      isFocusImmersiveOpen,
+      openStudy,
+      closeStudy,
+      targetId,
+      setTargetId,
+      focusedCourseId,
+      setFocusedCourseId,
+      focusedCourse,
+      openCourseDetail,
+      closeCourseDetail,
+      isClassNoteDetailOpen,
+      focusedClassNoteId,
+      focusedClassNote,
+      openClassNoteDetail,
+      closeClassNoteDetail,
+      isRepertorioItemOpen,
+      focusedRepertorioItemId,
+      focusedRepertorioItemCourseId,
+      openRepertorioItem,
+      closeRepertorioItem,
+      isBottomNavVisible,
+      canGoBack,
+      isNotesScreenOpen,
+      openNotesScreen,
+      closeNotesScreen,
+      isTempleScreenOpen,
+      openTemple,
+      closeTemple,
+      focusedTempleSection,
+      openTempleSection,
+      closeTempleSection,
+      isFamiliesScreenOpen,
+      openFamilies,
+      closeFamilies,
+      focusedFamilyId,
+      focusedFamily,
+      openFamily,
+      closeFamily,
+      focusedApproachId,
+      focusedApproach,
+      openApproach,
+      closeApproach,
+      focusedComparisonSlug,
+      openComparison,
+      closeComparison,
+      isNoteDetailOpen,
+      isNoteTransformOpen,
+      focusedNoteId,
+      focusedNote,
+      openNoteDetail,
+      closeNoteDetail,
+      openNoteTransform,
+      closeNoteTransform,
+      closeAllNoteScreens,
+      isComposeScreenOpen,
+      composeCourseId,
+      openCompose,
+      closeCompose,
+      isComposeDetailsOpen,
+      wizardNoteId,
+      openComposeDetails,
+      closeComposeDetails,
+      isDetailPromptOpen,
+      detailNoteId,
+      openDetailPrompt,
+      closeDetailPrompt,
+      isStreakScreenOpen,
+      openStreak,
+      closeStreak,
+      isInternshipDiaryOpen,
+      isInternshipCaseOpen,
+      internshipTab,
+      internshipFocusId,
+      internshipPatientKey,
+      openInternshipDiary,
+      openInternshipCase,
+      closeInternshipDiary,
+      closeInternshipCase,
+      isTccScreenOpen,
+      thesisTab,
+      thesisFocusId,
+      openTccScreen,
+      closeTccScreen,
+      isCalendarScreenOpen,
+      calendarDay,
+      openCalendar,
+      closeCalendar,
+      tccSheet,
+      tccCaptureText,
+      openTccSheet,
+      closeTccSheet,
+      openTccCapture,
+      isStickersScreenOpen,
+      openStickersScreen,
+      closeStickersScreen,
+      isSyncScreenOpen,
+      openSyncScreen,
+      closeSyncScreen,
+      isTermHistoryOpen,
+      focusedTermId,
+      openTermHistory,
+      isQuizCategoryOpen,
+      openQuizCategory,
+      closeQuizCategory,
+      isQuizGroupDetailOpen,
+      currentQuizGroup,
+      openQuizGroupDetail,
+      closeQuizDetail,
+      isQuizLoadingOpen,
+      currentQuizLoadingConfig,
+      openQuizLoading,
+      closeQuizLoading,
+      ensureQuestionsLoaded,
+      isQuizPlayOpen,
+      openQuizPlay,
+      closeQuizPlay,
+      isQuizResultOpen,
+      openQuizResult,
+      closeQuizResult,
+      updateQuizPlayState,
+      closeAllQuizScreens,
+      newQuizFromResult,
+      isQuickAddOpen,
+      openQuickAdd,
+      closeQuickAdd,
+      isWizardOpen,
+      currentWizardType,
+      wizardCourseId,
+      wizardSeed,
+      openWizard,
+      openInternshipWizard,
+      openInternshipCaseSession,
+      openTaskExamWizard,
+      closeWizard,
+      managedItem,
+      openManageItem,
+      closeManageItem,
+      deleteManagedItem,
+      editManagedItem,
+      wizardEdit,
+      isEditCourseOpen,
+      editCourseId,
+      openEditCourse,
+      closeEditCourse,
+      isCreatingLooseNote,
+      setIsCreatingLooseNote,
+      isSearchOpen,
+      openSearch,
+      closeSearch,
+      handleNavigate,
+      currentQuizPlayState,
+      currentQuizResultAnswers,
+      currentQuizResultConfig,
+      currentQuizResultStartTime,
+      currentQuizResultCorrectCount,
+      currentQuizResultTotalCount,
+      currentQuizResultPool,
+      headerConfig,
+      contextBarConfig,
     }),
     [
-      activeTab, canGoBack, closeAllNoteScreens, closeAllQuizScreens, closeApproach,
-      closeComparison, closeCompose, closeComposeDetails, closeCourseDetail, closeDetailPrompt,
-      closeClassNoteDetail, closeEditCourse, closeFamilies, closeFamily, closeInternshipDiary,
-      closeManageItem, closeNoteDetail, closeNoteTransform, closeNotesScreen, closeQuickAdd,
-      closeQuizCategory, closeQuizDetail, closeQuizLoading, closeQuizPlay, closeQuizResult,
-      closeRepertorioItem, closeSearch, closeStickersScreen, closeStreak, closeStudy, closeSyncScreen, closeTccScreen,
+      activeTab,
+      canGoBack,
+      closeAllNoteScreens,
+      closeAllQuizScreens,
+      closeApproach,
+      closeComparison,
+      closeCompose,
+      closeComposeDetails,
+      closeCourseDetail,
+      closeDetailPrompt,
+      closeClassNoteDetail,
+      closeEditCourse,
+      closeFamilies,
+      closeFamily,
+      closeInternshipDiary,
+      closeManageItem,
+      closeNoteDetail,
+      closeNoteTransform,
+      closeNotesScreen,
+      closeQuickAdd,
+      closeQuizCategory,
+      closeQuizDetail,
+      closeQuizLoading,
+      closeQuizPlay,
+      closeQuizResult,
+      closeRepertorioItem,
+      closeSearch,
+      closeStickersScreen,
+      closeStreak,
+      closeStudy,
+      closeSyncScreen,
+      closeTccScreen,
       closeTccSheet,
-      closeTemple, closeTempleSection, closeWizard, composeCourseId, currentQuizGroup,
-      currentQuizLoadingConfig, currentQuizPlayState, currentQuizResultAnswers,
-      currentQuizResultConfig, currentQuizResultCorrectCount, currentQuizResultPool,
-      currentQuizResultStartTime, currentQuizResultTotalCount, currentWizardType,
-      deleteManagedItem, detailNoteId, editCourseId, editManagedItem, ensureQuestionsLoaded,
-      focusedApproach, focusedApproachId, focusedClassNote, focusedClassNoteId,
-      focusedComparisonSlug, focusedCourse, focusedCourseId,
-      focusedFamily, focusedFamilyId, focusedNote, focusedNoteId, focusedRepertorioItemCourseId,
-      focusedRepertorioItemId, focusedStudyScreen,
-      focusedTempleSection, focusedTermId, handleNavigate, handleSystemBack, headerConfig,
+      closeTemple,
+      closeTempleSection,
+      closeWizard,
+      composeCourseId,
+      currentQuizGroup,
+      currentQuizLoadingConfig,
+      currentQuizPlayState,
+      currentQuizResultAnswers,
+      currentQuizResultConfig,
+      currentQuizResultCorrectCount,
+      currentQuizResultPool,
+      currentQuizResultStartTime,
+      currentQuizResultTotalCount,
+      currentWizardType,
+      deleteManagedItem,
+      detailNoteId,
+      editCourseId,
+      editManagedItem,
+      ensureQuestionsLoaded,
+      focusedApproach,
+      focusedApproachId,
+      focusedClassNote,
+      focusedClassNoteId,
+      focusedComparisonSlug,
+      focusedCourse,
+      focusedCourseId,
+      focusedFamily,
+      focusedFamilyId,
+      focusedNote,
+      focusedNoteId,
+      focusedRepertorioItemCourseId,
+      focusedRepertorioItemId,
+      focusedStudyScreen,
+      focusedTempleSection,
+      focusedTermId,
+      handleNavigate,
+      handleSystemBack,
+      headerConfig,
       contextBarConfig,
-      isBottomNavVisible, isClassNoteDetailOpen, isComposeDetailsOpen, isComposeScreenOpen, isCreatingLooseNote,
-      isDetailPromptOpen, isEditCourseOpen, isFamiliesScreenOpen,
+      isBottomNavVisible,
+      isClassNoteDetailOpen,
+      isComposeDetailsOpen,
+      isComposeScreenOpen,
+      isCreatingLooseNote,
+      isDetailPromptOpen,
+      isEditCourseOpen,
+      isFamiliesScreenOpen,
       isInternshipDiaryOpen,
-    isInternshipCaseOpen,
-    internshipTab,
-    internshipFocusId,
-    internshipPatientKey, isNoteDetailOpen, isNoteTransformOpen, isNotesScreenOpen,
-      isQuickAddOpen, isQuizCategoryOpen, isQuizGroupDetailOpen, isQuizLoadingOpen,
-      isQuizPlayOpen, isQuizResultOpen, isRepertorioItemOpen, isSearchOpen, isStickersScreenOpen, isStreakScreenOpen,
-      isSyncScreenOpen, isTccScreenOpen, thesisTab, thesisFocusId, isTempleScreenOpen, isTermHistoryOpen, isWizardOpen, managedItem,
-      navDirection, navigationStack, newQuizFromResult, openApproach, openComparison, openCompose,
-      openComposeDetails, openCourseDetail, openDetailPrompt, openEditCourse,
-      openClassNoteDetail, openFamilies, openFamily, openInternshipCaseSession, openInternshipDiary, openManageItem, openNoteDetail,
-      openNoteTransform, openNotesScreen, openQuickAdd, openQuizCategory, openQuizGroupDetail,
-      openQuizLoading, openQuizPlay, openQuizResult, openRepertorioItem, openSearch, openStickersScreen, openStreak,
-      openStudy, openSyncScreen, openTaskExamWizard, openTccCapture, openTccScreen, openTccSheet, openTemple, openTempleSection,
+      isInternshipCaseOpen,
+      internshipTab,
+      internshipFocusId,
+      internshipPatientKey,
+      isNoteDetailOpen,
+      isNoteTransformOpen,
+      isNotesScreenOpen,
+      isQuickAddOpen,
+      isQuizCategoryOpen,
+      isQuizGroupDetailOpen,
+      isQuizLoadingOpen,
+      isQuizPlayOpen,
+      isQuizResultOpen,
+      isRepertorioItemOpen,
+      isSearchOpen,
+      isStickersScreenOpen,
+      isStreakScreenOpen,
+      isSyncScreenOpen,
+      isTccScreenOpen,
+      thesisTab,
+      thesisFocusId,
+      isCalendarScreenOpen,
+      calendarDay,
+      openCalendar,
+      closeCalendar,
+      isTempleScreenOpen,
+      isTermHistoryOpen,
+      isWizardOpen,
+      managedItem,
+      navDirection,
+      navigationStack,
+      newQuizFromResult,
+      openApproach,
+      openComparison,
+      openCompose,
+      openComposeDetails,
+      openCourseDetail,
+      openDetailPrompt,
+      openEditCourse,
+      openClassNoteDetail,
+      openFamilies,
+      openFamily,
+      openInternshipCaseSession,
+      openInternshipDiary,
+      openManageItem,
+      openNoteDetail,
+      openNoteTransform,
+      openNotesScreen,
+      openQuickAdd,
+      openQuizCategory,
+      openQuizGroupDetail,
+      openQuizLoading,
+      openQuizPlay,
+      openQuizResult,
+      openRepertorioItem,
+      openSearch,
+      openStickersScreen,
+      openStreak,
+      openStudy,
+      openSyncScreen,
+      openTaskExamWizard,
+      openTccCapture,
+      openTccScreen,
+      openTccSheet,
+      openCalendar,
+      openTemple,
+      openTempleSection,
       openTermHistory,
-      openWizard, overlayKey, screenKey, setActiveTab, setFocusedCourseId, setIsCreatingLooseNote,
-      setStack, setSubTabBiblioteca, setSubTabFaculdade, setTargetId, slideKey,
-      subTabBiblioteca, subTabFaculdade, syncHash, targetId, tccCaptureText, tccSheet, updateQuizPlayState,
-      wizardCourseId, wizardEdit, wizardNoteId,
-    ]
+      openWizard,
+      overlayKey,
+      screenKey,
+      setActiveTab,
+      setFocusedCourseId,
+      setIsCreatingLooseNote,
+      setStack,
+      setSubTabBiblioteca,
+      setSubTabFaculdade,
+      setTargetId,
+      slideKey,
+      subTabBiblioteca,
+      subTabFaculdade,
+      syncHash,
+      targetId,
+      tccCaptureText,
+      tccSheet,
+      updateQuizPlayState,
+      wizardCourseId,
+      wizardEdit,
+      wizardNoteId,
+    ],
   );
 }

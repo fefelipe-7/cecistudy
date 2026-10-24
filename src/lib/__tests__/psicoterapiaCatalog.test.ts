@@ -9,7 +9,7 @@ describe('catálogo de psicoterapias (dados gerados)', () => {
     expect(falsy).toEqual([]);
     const validFamilyIds = new Set(PSICOTERAPIA_FAMILIES.map((f) => f.id));
     const bad = PSICOTERAPIA_APPROACHES.filter(
-      (a) => typeof a.familyId !== 'string' || !validFamilyIds.has(a.familyId)
+      (a) => typeof a.familyId !== 'string' || !validFamilyIds.has(a.familyId),
     );
     expect(bad).toEqual([]);
   });

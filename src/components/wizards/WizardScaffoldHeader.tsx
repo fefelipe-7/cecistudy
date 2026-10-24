@@ -50,13 +50,15 @@ export const WizardScaffoldHeader: React.FC<WizardScaffoldHeaderProps> = ({
         <span
           className={cn(
             'w-7 h-7 rounded-xl border flex items-center justify-center shrink-0',
-            iconClass ?? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
+            iconClass ?? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong',
           )}
         >
           {icon}
         </span>
         <div className="min-w-0 text-center">
-          <h1 className="font-display font-bold text-sm text-ceci-primary truncate leading-tight">{title}</h1>
+          <h1 className="font-display font-bold text-sm text-ceci-primary truncate leading-tight">
+            {title}
+          </h1>
           {subtitle && <p className="text-[11px] text-ceci-secondary truncate">{subtitle}</p>}
         </div>
       </div>

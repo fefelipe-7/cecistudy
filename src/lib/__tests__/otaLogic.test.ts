@@ -1,10 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  isSemver,
-  parseOtaManifest,
-  semverCompare,
-  shouldUpdate,
-} from '../otaLogic';
+import { isSemver, parseOtaManifest, semverCompare, shouldUpdate } from '../otaLogic';
 
 describe('semverCompare', () => {
   it('compara patch numéricamente (1.0.10 > 1.0.9)', () => {

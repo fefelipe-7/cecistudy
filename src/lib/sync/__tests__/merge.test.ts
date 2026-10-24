@@ -36,13 +36,25 @@ describe('mergeSyncedDatabases', () => {
     local = {
       ...local,
       courses: [{ id: 'c1', name: 'editada no local' } as never],
-      syncIndex: applyStampChange(local.syncIndex, 'courses', [{ id: 'c1', name: 'v1' }], [{ id: 'c1', name: 'editada no local' }], 100).index,
+      syncIndex: applyStampChange(
+        local.syncIndex,
+        'courses',
+        [{ id: 'c1', name: 'v1' }],
+        [{ id: 'c1', name: 'editada no local' }],
+        100,
+      ).index,
     };
     // Edição mais antiga no remoto (ts 50)
     remote = {
       ...remote,
       courses: [{ id: 'c1', name: 'editada no remoto' } as never],
-      syncIndex: applyStampChange(remote.syncIndex, 'courses', [{ id: 'c1', name: 'v1' }], [{ id: 'c1', name: 'editada no remoto' }], 50).index,
+      syncIndex: applyStampChange(
+        remote.syncIndex,
+        'courses',
+        [{ id: 'c1', name: 'v1' }],
+        [{ id: 'c1', name: 'editada no remoto' }],
+        50,
+      ).index,
     };
     const ab = mergeSyncedDatabases(local, remote);
     const ba = mergeSyncedDatabases(remote, local);
@@ -56,11 +68,18 @@ describe('mergeSyncedDatabases', () => {
     local = {
       ...local,
       tasks: [{ id: 't1', title: 'x' } as never],
-      syncIndex: applyStampChange(local.syncIndex, 'tasks', [], [{ id: 't1', title: 'x' }], 100).index,
+      syncIndex: applyStampChange(local.syncIndex, 'tasks', [], [{ id: 't1', title: 'x' }], 100)
+        .index,
     };
     let remoteBase = emptyDatabase();
     remoteBase.tasks = [{ id: 't1', title: 'x' } as never];
-    const stamped = applyStampChange(emptySyncIndex(), 'tasks', [], [{ id: 't1', title: 'x' }], 100);
+    const stamped = applyStampChange(
+      emptySyncIndex(),
+      'tasks',
+      [],
+      [{ id: 't1', title: 'x' }],
+      100,
+    );
     const deleted = applyStampChange(stamped.index, 'tasks', [{ id: 't1', title: 'x' }], [], 200);
     const remote = { ...remoteBase, syncIndex: deleted.index };
     const { merged } = mergeSyncedDatabases(local, remote);
@@ -69,19 +88,41 @@ describe('mergeSyncedDatabases', () => {
 
   it('registro editado depois da deleção do outro lado sobrevive', () => {
     // Local apagou t1 (ts 100); remoto editou t1 depois (ts 300)
-    const createdLocal = applyStampChange(emptySyncIndex(), 'tasks', [], [{ id: 't1', title: 'x' }], 50);
-    const deletedLocal = applyStampChange(createdLocal.index, 'tasks', [{ id: 't1', title: 'x' }], [], 100);
+    const createdLocal = applyStampChange(
+      emptySyncIndex(),
+      'tasks',
+      [],
+      [{ id: 't1', title: 'x' }],
+      50,
+    );
+    const deletedLocal = applyStampChange(
+      createdLocal.index,
+      'tasks',
+      [{ id: 't1', title: 'x' }],
+      [],
+      100,
+    );
     const local = { ...emptyDatabase(), tasks: [], syncIndex: deletedLocal.index };
 
-    const createdRemote = applyStampChange(emptySyncIndex(), 'tasks', [], [{ id: 't1', title: 'antiga' }], 50);
+    const createdRemote = applyStampChange(
+      emptySyncIndex(),
+      'tasks',
+      [],
+      [{ id: 't1', title: 'antiga' }],
+      50,
+    );
     const editedRemote = applyStampChange(
       createdRemote.index,
       'tasks',
       [{ id: 't1', title: 'antiga' }],
       [{ id: 't1', title: 'nova' }],
-      300
+      300,
     );
-    const remote = { ...emptyDatabase(), tasks: [{ id: 't1', title: 'nova' } as never], syncIndex: editedRemote.index };
+    const remote = {
+      ...emptyDatabase(),
+      tasks: [{ id: 't1', title: 'nova' } as never],
+      syncIndex: editedRemote.index,
+    };
 
     const { merged } = mergeSyncedDatabases(local, remote);
     expect(merged.tasks.map((t) => t.title)).toEqual(['nova']);
@@ -177,7 +218,7 @@ describe('mergeSyncedDatabases', () => {
         db.academicTerms = [term('trm-2', '2026-07-01T00:00:00.000Z')] as never;
       });
       expect(mergeSyncedDatabases(local, remote).merged).toEqual(
-        mergeSyncedDatabases(remote, local).merged
+        mergeSyncedDatabases(remote, local).merged,
       );
     });
 
@@ -187,7 +228,11 @@ describe('mergeSyncedDatabases', () => {
       });
       const remote = makeDb((db) => {
         db.academicTerms = [
-          { ...term('trm-0', '2025-08-01T00:00:00.000Z'), status: 'encerrado' as const, endedAt: '2025-12-20' },
+          {
+            ...term('trm-0', '2025-08-01T00:00:00.000Z'),
+            status: 'encerrado' as const,
+            endedAt: '2025-12-20',
+          },
         ] as never;
       });
       const { merged } = mergeSyncedDatabases(local, remote);

@@ -21,11 +21,7 @@ import {
   FileText,
 } from 'lucide-react';
 import { CalendarItem, LayerConfig, Etapa } from '../types';
-import {
-  formatDatePtBR,
-  formatDurationWithBlocks,
-  parseTimeToMinutes,
-} from '../utils/dateUtils';
+import { formatDatePtBR, formatDurationWithBlocks, parseTimeToMinutes } from '../utils/dateUtils';
 
 interface EventDetailModalProps {
   item: CalendarItem | null;
@@ -94,7 +90,7 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
   // Toggle etapa checkbox
   const handleToggleEtapa = (etapaId: string) => {
     const updatedEtapas = item.etapas.map((et) =>
-      et.id === etapaId ? { ...et, completed: !et.completed } : et
+      et.id === etapaId ? { ...et, completed: !et.completed } : et,
     );
     onUpdateItem({
       ...item,
@@ -207,7 +203,9 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
               {currentLayer.name}
             </span>
 
-            <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${statusInfo.bg}`}>
+            <span
+              className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${statusInfo.bg}`}
+            >
               {statusInfo.label}
             </span>
           </div>
@@ -264,9 +262,7 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                 <CalendarIcon size={15} />
               </div>
               <div>
-                <div className="text-xs font-bold text-[#40383A]">
-                  {formatDatePtBR(item.date)}
-                </div>
+                <div className="text-xs font-bold text-[#40383A]">{formatDatePtBR(item.date)}</div>
                 <div className="text-[11px] font-mono text-[#918689]">
                   {item.isAllDay
                     ? 'Dia inteiro (Prazo final)'
@@ -287,7 +283,10 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                     : 'text-[#6D6366] hover:bg-[#FAF8F5]'
                 }`}
               >
-                <CheckCircle2 size={13} className={item.status === 'concluido' ? 'text-[#5A9F76]' : ''} />
+                <CheckCircle2
+                  size={13}
+                  className={item.status === 'concluido' ? 'text-[#5A9F76]' : ''}
+                />
                 <span>{item.status === 'concluido' ? 'Concluído' : 'Marcar Concluído'}</span>
               </button>
             </div>
@@ -345,9 +344,7 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                     </div>
                     <span
                       className={`text-xs font-medium ${
-                        etapa.completed
-                          ? 'line-through text-[#ADA3A5]'
-                          : 'text-[#40383A]'
+                        etapa.completed ? 'line-through text-[#ADA3A5]' : 'text-[#40383A]'
                       }`}
                     >
                       {etapa.title}
@@ -436,7 +433,8 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                   item.notes
                 ) : (
                   <span className="text-[#ADA3A5] italic">
-                    Sem anotações cadastradas. Clique em editar para adicionar referências ou observações da mentoria.
+                    Sem anotações cadastradas. Clique em editar para adicionar referências ou
+                    observações da mentoria.
                   </span>
                 )}
               </div>

@@ -1,13 +1,18 @@
 import { Camera, CameraPermissionState } from '@capacitor/camera';
 import { Calendar } from '@capacitor/calendar';
-import { LocalNotifications, PermissionStatus as NotificationsPermissionStatus } from '@capacitor/local-notifications';
+import {
+  LocalNotifications,
+  PermissionStatus as NotificationsPermissionStatus,
+} from '@capacitor/local-notifications';
 import { isNativePlatform } from './storage';
 
 export type AppPermissionKind = 'files' | 'photos' | 'calendar' | 'notifications';
 
 export type AppPermissionState = 'granted' | 'denied' | 'prompt' | 'unsupported';
 
-const toState = (state: CameraPermissionState | NotificationsPermissionStatus['display']): AppPermissionState =>
+const toState = (
+  state: CameraPermissionState | NotificationsPermissionStatus['display'],
+): AppPermissionState =>
   state === 'granted' || state === 'limited' ? 'granted' : state === 'denied' ? 'denied' : 'prompt';
 
 /** Checa o estado atual de uma permissão (no web retorna 'unsupported'). */

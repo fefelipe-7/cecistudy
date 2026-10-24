@@ -12,8 +12,18 @@
  * `Date.now()`/`makeId()` dentro. Isso mantém a transição idempotente e
  * determinística (necessário para os golden files e para o undo).
  */
-import type { AcademicTerm, TermScopedCourse, TermSummary, TermStatus } from '../../../../src/core/domain';
-import { clampTermOrdinal, enforceSingleActiveTerm, termLabel, resolveActiveTerm } from '../../../../src/core/domain';
+import type {
+  AcademicTerm,
+  TermScopedCourse,
+  TermSummary,
+  TermStatus,
+} from '../../../../src/core/domain';
+import {
+  clampTermOrdinal,
+  enforceSingleActiveTerm,
+  termLabel,
+  resolveActiveTerm,
+} from '../../../../src/core/domain';
 
 /** O que a usuária decidiu para cada disciplina no passo 2 do wizard. */
 export type TermCourseDecision = 'continuar' | 'arquivar' | 'depois';
@@ -72,7 +82,9 @@ export function gradeCourses(courses: TermScopedCourse[]): TermScopedCourse[] {
 }
 
 /** Horas registradas de verdade: registros `presente` com `hours` + base. */
-function loggedHoursOf(courses: (TermScopedCourse & { attendance?: TermAttendanceInput })[]): number {
+function loggedHoursOf(
+  courses: (TermScopedCourse & { attendance?: TermAttendanceInput })[],
+): number {
   const round = (n: number) => Math.round(n * 10) / 10;
   return round(
     courses.reduce((acc, course) => {
@@ -119,7 +131,9 @@ export function buildHighlights(s: Omit<TermSummary, 'highlights'>): string[] {
   }
   if (s.classNotes > 0) {
     out.push(
-      s.classNotes === 1 ? '1 aula anotada com carinho' : `${s.classNotes} aulas anotadas com carinho`,
+      s.classNotes === 1
+        ? '1 aula anotada com carinho'
+        : `${s.classNotes} aulas anotadas com carinho`,
     );
   }
   if (s.tasksCompleted > 0) {
@@ -152,7 +166,9 @@ export function buildHighlights(s: Omit<TermSummary, 'highlights'>): string[] {
   if (s.grades.length > 0) {
     const withGrade = s.grades.filter((g) => typeof g.grade === 'number');
     if (withGrade.length > 0) {
-      out.push(`${withGrade.length} ${withGrade.length === 1 ? 'avaliação feita' : 'avaliações feitas'} ✨`);
+      out.push(
+        `${withGrade.length} ${withGrade.length === 1 ? 'avaliação feita' : 'avaliações feitas'} ✨`,
+      );
     }
   }
 
@@ -194,7 +210,11 @@ export function buildTermSummary(input: TermSummaryInput, closedAt: string): Ter
     bestStreak: Math.max(0, Math.trunc(input.bestStreak) || 0),
     grades: exams
       .filter((e) => e.completed)
-      .map((e) => ({ courseId: e.courseId, label: e.title, ...(e.grade != null ? { grade: e.grade } : {}) }))
+      .map((e) => ({
+        courseId: e.courseId,
+        label: e.title,
+        ...(e.grade != null ? { grade: e.grade } : {}),
+      }))
       .sort((a, b) => a.courseId.localeCompare(b.courseId) || a.label.localeCompare(b.label)),
   };
 
@@ -313,7 +333,9 @@ export function planTermRollover(input: {
     throw new Error('planTermRollover: não há período ativo para encerrar');
   }
 
-  const inTerm = courses.filter((c) => c.termId === activeTerm.id && (c.status ?? 'ativo') === 'ativo');
+  const inTerm = courses.filter(
+    (c) => c.termId === activeTerm.id && (c.status ?? 'ativo') === 'ativo',
+  );
   const dec = (courseId: string): TermCourseDecision => decisions[courseId] ?? 'continuar';
 
   const carriedIds = inTerm.filter((c) => dec(c.id) === 'continuar').map((c) => c.id);

@@ -3,14 +3,21 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, ArrowRight, Plus } from 'lucide-react';
-import type { Task } from '../../../types';
 import { useDataClientCourses } from '@/context/DataClientProvider';
-import { useCoursesActions, useNavValue } from '@/context/shellNavContexts';
+import { useNavValue } from '@/context/shellNavContexts';
+import type { CalendarEntry } from '../../../lib/schedule';
 import { SectionTitle } from '../../ui/SectionTitle';
-import { TaskRow, ExamRow } from './rows';
+import { TaskRow } from './rows';
 import { TaskSheet } from './TaskSheet';
+import { CalendarEntryRow } from '../CalendarEntryRow';
 
-export type AttentionItem = { kind: 'task' | 'exam'; id: string };
+/**
+ * Item da "atenção de hoje". Tarefa sem prazo mantém a linha rica (`rows.tsx`);
+ * tudo o que tem data vem do agregador e usa a linha do calendário (`D13`).
+ */
+export type AttentionItem =
+  | { kind: 'task'; id: string }
+  | { kind: 'calendar'; entry: CalendarEntry };
 
 interface AttentionSectionProps {
   items: AttentionItem[];
@@ -18,9 +25,8 @@ interface AttentionSectionProps {
 }
 
 const AttentionSection: React.FC<AttentionSectionProps> = ({ items, remainingCount }) => {
-  const { tasks } = useDataClientCourses();
-  const { handleAddTask } = useCoursesActions();
-  const { handleNavigate } = useNavValue();
+  const { tasks, exams } = useDataClientCourses();
+  const nav = useNavValue();
   const [openTaskSheet, setOpenTaskSheet] = useState(false);
 
   return (
@@ -30,7 +36,7 @@ const AttentionSection: React.FC<AttentionSectionProps> = ({ items, remainingCou
         action={
           remainingCount > 0 ? (
             <button
-              onClick={() => handleNavigate('faculdade')}
+              onClick={() => nav.openCalendar()}
               className="text-xs font-bold text-ceci-brand-strong hover:underline cursor-pointer flex items-center gap-1"
             >
               <span>ver todas</span>
@@ -45,17 +51,26 @@ const AttentionSection: React.FC<AttentionSectionProps> = ({ items, remainingCou
       {items.length > 0 ? (
         <div className="space-y-2.5">
           <AnimatePresence mode="popLayout">
-            {items.map((item) =>
-              item.kind === 'task' ? (
-                <TaskRow key={item.id} task={tasks.find((t) => t.id === item.id)!} />
-              ) : (
-                <ExamRow key={item.id} examId={item.id} />
-              )
-            )}
+            {items.map((item) => {
+              if (item.kind === 'calendar') {
+                return (
+                  <CalendarEntryRow
+                    key={item.entry.id}
+                    entry={item.entry}
+                    nav={nav}
+                    exams={exams}
+                    tasks={tasks}
+                    showDate
+                  />
+                );
+              }
+              return <TaskRow key={item.id} task={tasks.find((t) => t.id === item.id)!} />;
+            })}
           </AnimatePresence>
           {remainingCount > 0 && (
             <p className="text-[11px] text-ceci-secondary px-1">
-              + {remainingCount} {remainingCount === 1 ? 'item pendente' : 'itens pendentes'} aguardando por você ♡
+              + {remainingCount} {remainingCount === 1 ? 'item pendente' : 'itens pendentes'}{' '}
+              aguardando por você ♡
             </p>
           )}
         </div>

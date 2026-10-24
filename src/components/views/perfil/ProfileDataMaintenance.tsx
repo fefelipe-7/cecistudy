@@ -7,7 +7,7 @@
 // fronteira do `check-boundaries.mjs`). Os modais de export/import/decrypt são os
 // mesmos do `DataSection`, apenas reabrigados.
 import React, { useRef, useState } from 'react';
-import { Database, Download, RefreshCw, Smartphone, Upload } from 'lucide-react';
+import { Database, Download, RefreshCw, ShieldAlert, Smartphone, Upload } from 'lucide-react';
 import { Modal } from '../../ui/Modal';
 import { ProgressBar } from '../../ui/ProgressBar';
 import { applyNow, checkForUpdates, formatVersionLabel, useOtaStatus } from '../../../lib/ota';
@@ -15,6 +15,7 @@ import type { EncryptedBackup } from '../../../lib/backupCrypto';
 import type { ProfileMaintenance } from '../../../lib/profileViewModel';
 import DangerZone from './DangerZone';
 import PreferenceRow from './PreferenceRow';
+import { CloudBackupToggle } from '../../views/CloudBackupToggle';
 import { erro, VAZIO, frase } from '../../../lib/voice';
 
 interface ProfileDataMaintenanceProps {
@@ -41,9 +42,10 @@ const ProfileDataMaintenance: React.FC<ProfileDataMaintenanceProps> = ({
   const [exportPassword, setExportPassword] = useState('');
   const [showExportPassword, setShowExportPassword] = useState(false);
   const [importPassword, setImportPassword] = useState('');
-  const [pendingDecrypt, setPendingDecrypt] = useState<{ encrypted: EncryptedBackup; raw: string } | null>(
-    null,
-  );
+  const [pendingDecrypt, setPendingDecrypt] = useState<{
+    encrypted: EncryptedBackup;
+    raw: string;
+  } | null>(null);
   const [erroDescriptografar, setErroDescriptografar] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -162,7 +164,14 @@ const ProfileDataMaintenance: React.FC<ProfileDataMaintenanceProps> = ({
         </div>
       ) : null}
 
-      <Modal open={showExportPassword} onClose={() => setShowExportPassword(false)} closeOnBackdrop={false}>
+      {/* Backup em nuvem opcional — desligado por padrão (SPEC-M-024 D5). */}
+      <CloudBackupToggle />
+
+      <Modal
+        open={showExportPassword}
+        onClose={() => setShowExportPassword(false)}
+        closeOnBackdrop={false}
+      >
         <div className="w-full max-w-sm bg-surface-default rounded-2xl shadow-floating p-6 space-y-4">
           <h3 className="font-display font-bold text-lg text-ceci-primary">exportar backup</h3>
           <p className="text-sm text-ceci-secondary">
@@ -176,6 +185,11 @@ const ProfileDataMaintenance: React.FC<ProfileDataMaintenanceProps> = ({
             placeholder="senha opcional"
             className="w-full px-3 py-2.5 rounded-2xl border border-ceci-border-default text-xs"
           />
+          <p className="text-xs text-status-danger-strong mt-1">
+            <ShieldAlert className="w-3 h-3 shrink-0 mr-1" aria-hidden="true" />
+            se perder essa senha, não dá para recuperar o backup. guarde-a ou deixe em branco para
+            exportar sem criptografia.
+          </p>
           <div className="flex gap-2">
             <button
               type="button"
@@ -201,7 +215,9 @@ const ProfileDataMaintenance: React.FC<ProfileDataMaintenanceProps> = ({
 
       <Modal open={!!pendingImport} onClose={() => setPendingImport(null)} closeOnBackdrop={false}>
         <div className="w-full max-w-sm bg-surface-default rounded-2xl shadow-floating p-6">
-          <h3 className="font-display font-bold text-lg text-ceci-primary mb-2">importar backup?</h3>
+          <h3 className="font-display font-bold text-lg text-ceci-primary mb-2">
+            importar backup?
+          </h3>
           {pendingImport && (
             <>
               <p className="text-sm text-ceci-secondary leading-relaxed mb-4">

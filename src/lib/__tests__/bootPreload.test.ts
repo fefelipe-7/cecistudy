@@ -200,9 +200,7 @@ describe('memoização das promises compartilhadas', () => {
     let calls = 0;
     setStepImplForTests(
       'catalog-approaches',
-      vi.fn(() =>
-        ++calls === 1 ? Promise.reject(new Error('boom')) : Promise.resolve([])
-      ),
+      vi.fn(() => (++calls === 1 ? Promise.reject(new Error('boom')) : Promise.resolve([]))),
     );
 
     await expect(ensureApproaches()).rejects.toThrow('boom');

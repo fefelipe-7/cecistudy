@@ -5,12 +5,7 @@ import { Modal } from '../ui/Modal';
 import { SegmentedControl } from '../ui/SegmentedControl';
 import { hapticSuccess, hapticWarning } from '../../lib/haptics';
 import { minimizeAfterCapture } from '../../lib/captureLink';
-import {
-  captureLink,
-  extractFirstUrl,
-  isValidUrl,
-  type CaptureKind,
-} from '../../types';
+import { captureLink, extractFirstUrl, isValidUrl, type CaptureKind } from '../../types';
 import { CAPTURE_LABELS } from './captureCopy';
 import { CELEBRACAO, ERRO, VAZIO, erro, frase } from '../../lib/voice';
 
@@ -81,7 +76,9 @@ export const CaptureLinkSheet: React.FC<CaptureLinkSheetProps> = ({
     const reference = outcome.reference;
     if (reference) setThesisReferences((prev) => [...prev, reference]);
     hapticSuccess();
-    showToast(reference ? frase(CELEBRACAO, 'linkGuardadoNoTcc') : frase(CELEBRACAO, 'linkGuardado'));
+    showToast(
+      reference ? frase(CELEBRACAO, 'linkGuardadoNoTcc') : frase(CELEBRACAO, 'linkGuardado'),
+    );
     onClose();
     void minimizeAfterCapture();
   };
@@ -95,10 +92,7 @@ export const CaptureLinkSheet: React.FC<CaptureLinkSheetProps> = ({
       labelledBy="capture-link-title"
     >
       <div className="w-full bg-canvas rounded-t-[28px] sm:rounded-2xl border border-ceci-border-default shadow-xl overflow-hidden p-5 sm:p-6 text-ceci-primary space-y-4">
-        <h3
-          id="capture-link-title"
-          className="font-display font-bold text-base text-ceci-primary"
-        >
+        <h3 id="capture-link-title" className="font-display font-bold text-base text-ceci-primary">
           {CAPTURE_LABELS.title}
         </h3>
 

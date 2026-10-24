@@ -185,7 +185,13 @@ export interface ReadingItem {
   sourceKind?: 'catalog-book' | 'catalog-article' | 'custom';
   url?: string;
   contentRef?: { contentId: string; version: number };
-  position?: { sectionId: string; blockId: string; ratio: number; percent: number; updatedAt: string };
+  position?: {
+    sectionId: string;
+    blockId: string;
+    ratio: number;
+    percent: number;
+    updatedAt: string;
+  };
   furthestPercent?: number;
   lastReadAt?: string;
   coverColor?: string;
@@ -342,13 +348,13 @@ export interface PsychologyApproach {
   description: string;
   foundingAuthors: string[];
   color: string;
-  
+
   // Extended fields for detailed approach view
   family?: string; // Família da abordagem
   historicalPeriod?: string; // Período de surgimento
   tags?: string[]; // Tags para categorização
   summary?: string; // Uma frase-resumo
-  
+
   // Conteúdo detalhado conforme solicitado
   definition?: string; // O que é? (2-4 parágrafos)
   centralIdea?: string; // Ideia central (seção destacada)
@@ -357,7 +363,7 @@ export interface PsychologyApproach {
   changeMechanism?: string; // Como acontece a mudança?
   practicePresentation?: string; // Como se apresenta na prática?
   therapistObservation?: string; // O que o terapeuta procura observar?
-  
+
   // Campos para seções adicionais
   academicView?: {
     historicalPosition?: string;
@@ -366,7 +372,7 @@ export interface PsychologyApproach {
     debates?: string;
     limitations?: string;
   };
-  
+
   fundamentalBooks?: Array<{
     title: string;
     author: string;
@@ -376,7 +382,7 @@ export interface PsychologyApproach {
     centralIdeas: string;
     reasonToRead: string;
   }>;
-  
+
   criticismsAndControversies?: string;
   applications?: string; // Onde é mais utilizada
   relationsWithOtherApproaches?: {
@@ -384,7 +390,7 @@ export interface PsychologyApproach {
     influences?: string[];
     contrasts?: string[];
   };
-  
+
   // Relacionamentos existentes (manter compatibilidade)
   conceptIds?: string[];
   techniqueIds?: string[];

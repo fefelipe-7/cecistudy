@@ -34,7 +34,7 @@ export const ColorSwatchPicker: React.FC<ColorSwatchPickerProps> = ({
           className={cn(
             'rounded-full transition cursor-pointer active:scale-95',
             swatchSize,
-            value === c ? 'ring-2 ring-ceci-primary ring-offset-2 scale-105' : 'hover:scale-105'
+            value === c ? 'ring-2 ring-ceci-primary ring-offset-2 scale-105' : 'hover:scale-105',
           )}
           style={{ backgroundColor: c }}
         />

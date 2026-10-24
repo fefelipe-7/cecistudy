@@ -70,9 +70,7 @@ describe('useSqliteState — hidratação nativa (F5.4)', () => {
         resolveLoad = res;
       });
 
-    const { result } = renderHook(() =>
-      useSqliteState<Array<{ id: string }>>('tasks', []),
-    );
+    const { result } = renderHook(() => useSqliteState<Array<{ id: string }>>('tasks', []));
 
     // Deixa a hidratação chegar até o load pendurado.
     await act(async () => {});
@@ -104,9 +102,7 @@ describe('useSqliteState — hidratação nativa (F5.4)', () => {
   it('sem edição durante a hidratação, o valor do disco é aplicado normalmente', async () => {
     h.load = () => Promise.resolve([{ id: 'valor-do-disco' }]);
 
-    const { result } = renderHook(() =>
-      useSqliteState<Array<{ id: string }>>('tasks', []),
-    );
+    const { result } = renderHook(() => useSqliteState<Array<{ id: string }>>('tasks', []));
     await act(async () => {
       await vi.advanceTimersByTimeAsync(50);
     });

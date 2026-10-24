@@ -77,7 +77,7 @@ async function transaction(driver: SqlDriver, fn: () => Promise<void>): Promise<
 async function insertRows(
   driver: SqlDriver,
   sql: string,
-  rowsOf: () => SqlValue[][]
+  rowsOf: () => SqlValue[][],
 ): Promise<void> {
   for (const row of rowsOf()) {
     await driver.run(sql, row);
@@ -108,13 +108,13 @@ async function saveCourses(driver: SqlDriver, value: unknown): Promise<void> {
     const schedule = Array.isArray(c.schedule) ? c.schedule : [];
     await driver.run(
       'INSERT INTO course (id, name, semester, category, data_json) VALUES (?, ?, ?, ?, ?)',
-      [String(c.id), str(c.name), str(c.semester), str(c.category), json(c)]
+      [String(c.id), str(c.name), str(c.semester), str(c.category), json(c)],
     );
     for (const slot of schedule) {
       if (!isRec(slot)) continue;
       await driver.run(
         'INSERT INTO course_schedule (course_id, day, start_time, end_time) VALUES (?, ?, ?, ?)',
-        [String(c.id), int(slot.day), String(slot.start ?? ''), str(slot.end)]
+        [String(c.id), int(slot.day), String(slot.start ?? ''), str(slot.end)],
       );
     }
   }
@@ -126,20 +126,13 @@ async function saveClasses(driver: SqlDriver, value: unknown): Promise<void> {
   for (const cl of asArray(value)) {
     await driver.run(
       'INSERT INTO class_note (id, course_id, number, date, rating, data_json) VALUES (?, ?, ?, ?, ?, ?)',
-      [
-        String(cl.id),
-        str(cl.courseId),
-        num(cl.number),
-        str(cl.date),
-        num(cl.rating),
-        json(cl),
-      ]
+      [String(cl.id), str(cl.courseId), num(cl.number), str(cl.date), num(cl.rating), json(cl)],
     );
     for (const field of LINK_KINDS_CLASS) {
       for (const ref of refIds(cl, field)) {
         await driver.run(
           'INSERT INTO class_note_link (class_note_id, kind, ref_id) VALUES (?, ?, ?)',
-          [String(cl.id), CLASS_LINK_KIND[field], ref]
+          [String(cl.id), CLASS_LINK_KIND[field], ref],
         );
       }
     }
@@ -150,14 +143,14 @@ async function saveClasses(driver: SqlDriver, value: unknown): Promise<void> {
 async function rebuildActivityEvents(
   driver: SqlDriver,
   eventType: 'task-done' | 'session',
-  events: { date: string | null; id: string }[]
+  events: { date: string | null; id: string }[],
 ): Promise<void> {
   await driver.run('DELETE FROM activity_event WHERE event_type = ?', [eventType]);
   for (const ev of events) {
     if (!ev.date) continue;
     await driver.run(
       'INSERT OR IGNORE INTO activity_event (event_type, event_date, ref_id) VALUES (?, ?, ?)',
-      [eventType, ev.date, ev.id]
+      [eventType, ev.date, ev.id],
     );
   }
 }
@@ -179,13 +172,13 @@ async function saveTasks(driver: SqlDriver, value: unknown): Promise<void> {
         str(t.priority),
         str(t.category),
         json(t),
-      ]
+      ],
     );
   }
   await rebuildActivityEvents(
     driver,
     'task-done',
-    items.filter((t) => !!t.completed).map((t) => ({ date: str(t.dueDate), id: String(t.id) }))
+    items.filter((t) => !!t.completed).map((t) => ({ date: str(t.dueDate), id: String(t.id) })),
   );
 }
 
@@ -204,7 +197,7 @@ async function saveExams(driver: SqlDriver, value: unknown): Promise<void> {
         num(e.weightValue),
         num(e.grade),
         json(e),
-      ]
+      ],
     );
     for (const topic of refIds(e, 'topics')) {
       await driver.run('INSERT INTO assessment_topic (assessment_id, topic) VALUES (?, ?)', [
@@ -220,10 +213,12 @@ async function saveConcepts(driver: SqlDriver, value: unknown): Promise<void> {
   await driver.run('DELETE FROM concept_course');
   await driver.run('DELETE FROM concept_author');
   for (const c of asArray(value)) {
-    await driver.run(
-      'INSERT INTO concept (id, name, approach_id, data_json) VALUES (?, ?, ?, ?)',
-      [String(c.id), str(c.name), str(c.approachId), json(c)]
-    );
+    await driver.run('INSERT INTO concept (id, name, approach_id, data_json) VALUES (?, ?, ?, ?)', [
+      String(c.id),
+      str(c.name),
+      str(c.approachId),
+      json(c),
+    ]);
     for (const courseId of refIds(c, 'courseIds')) {
       await driver.run('INSERT INTO concept_course (concept_id, course_id) VALUES (?, ?)', [
         String(c.id),
@@ -254,7 +249,7 @@ async function saveReadings(driver: SqlDriver, value: unknown): Promise<void> {
         num(r.totalPages),
         num(r.readPages),
         json(r),
-      ]
+      ],
     );
     const highlights = Array.isArray(r.highlights) ? r.highlights : [];
     let position = 0;
@@ -262,7 +257,7 @@ async function saveReadings(driver: SqlDriver, value: unknown): Promise<void> {
       if (typeof h !== 'string') continue;
       await driver.run(
         'INSERT INTO reading_highlight (reading_id, position, text) VALUES (?, ?, ?)',
-        [String(r.id), position++, h]
+        [String(r.id), position++, h],
       );
     }
   }
@@ -275,7 +270,7 @@ async function saveInternshipLogs(driver: SqlDriver, value: unknown): Promise<vo
   for (const l of asArray(value)) {
     await driver.run(
       'INSERT INTO internship (id, type, phase, date, hours, data_json) VALUES (?, ?, ?, ?, ?, ?)',
-      [String(l.id), str(l.type), str(l.phase), str(l.date), num(l.hours), json(l)]
+      [String(l.id), str(l.type), str(l.phase), str(l.date), num(l.hours), json(l)],
     );
     for (const conceptId of refIds(l, 'conceptIds')) {
       await driver.run('INSERT INTO internship_concept (internship_id, concept_id) VALUES (?, ?)', [
@@ -301,7 +296,7 @@ async function saveTcc(driver: SqlDriver, value: unknown): Promise<void> {
   await driver.run('DELETE FROM thesis_project');
   await driver.run(
     'INSERT INTO thesis_project (id, title, advisor, field, status, data_json) VALUES (1, ?, ?, ?, ?, ?)',
-    [str(value.title), str(value.advisor), str(value.field), str(value.status), json(value)]
+    [str(value.title), str(value.advisor), str(value.field), str(value.status), json(value)],
   );
 }
 
@@ -311,13 +306,13 @@ async function saveSessions(driver: SqlDriver, value: unknown): Promise<void> {
   for (const s of items) {
     await driver.run(
       'INSERT INTO study_session (id, course_id, date, duration_minutes, data_json) VALUES (?, ?, ?, ?, ?)',
-      [String(s.id), str(s.courseId), str(s.date), int(s.durationMinutes), json(s)]
+      [String(s.id), str(s.courseId), str(s.date), int(s.durationMinutes), json(s)],
     );
   }
   await rebuildActivityEvents(
     driver,
     'session',
-    items.map((s) => ({ date: str(s.date), id: String(s.id) }))
+    items.map((s) => ({ date: str(s.date), id: String(s.id) })),
   );
 }
 
@@ -327,7 +322,7 @@ async function saveLooseNotes(driver: SqlDriver, value: unknown): Promise<void> 
   for (const n of asArray(value)) {
     await driver.run(
       'INSERT INTO note (id, category, date, updated_at, course_id, data_json) VALUES (?, ?, ?, ?, ?, ?)',
-      [String(n.id), str(n.category), str(n.date), str(n.updatedAt), str(n.courseId), json(n)]
+      [String(n.id), str(n.category), str(n.date), str(n.updatedAt), str(n.courseId), json(n)],
     );
     for (const [field, kind] of Object.entries(NOTE_LINK_KIND)) {
       for (const ref of refIds(n, field)) {
@@ -344,14 +339,14 @@ async function saveLooseNotes(driver: SqlDriver, value: unknown): Promise<void> 
 async function saveSavedItems(
   driver: SqlDriver,
   itemType: 'book' | 'course',
-  value: unknown
+  value: unknown,
 ): Promise<void> {
   await driver.run('DELETE FROM saved_catalog_item WHERE item_type = ?', [itemType]);
   for (const id of Array.isArray(value) ? value : []) {
     if (typeof id !== 'string') continue;
     await driver.run(
       'INSERT INTO saved_catalog_item (item_type, item_id, saved_at) VALUES (?, ?, ?)',
-      [itemType, id, new Date().toISOString()]
+      [itemType, id, new Date().toISOString()],
     );
   }
 }
@@ -373,7 +368,7 @@ async function saveQuizSessions(driver: SqlDriver, value: unknown): Promise<void
         int(q.correctCount),
         int(q.totalCount),
         json(q),
-      ]
+      ],
     );
     const answers = asArray(q.answers);
     let position = 0;
@@ -381,14 +376,7 @@ async function saveQuizSessions(driver: SqlDriver, value: unknown): Promise<void
       await driver.run(
         `INSERT INTO quiz_answer (quiz_session_id, position, question_id, correct, time_ms, data_json)
          VALUES (?, ?, ?, ?, ?, ?)`,
-        [
-          String(q.id),
-          position++,
-          str(a.questionId),
-          a.correct ? 1 : 0,
-          num(a.timeMs),
-          json(a),
-        ]
+        [String(q.id), position++, str(a.questionId), a.correct ? 1 : 0, num(a.timeMs), json(a)],
       );
     }
     void config;
@@ -402,7 +390,7 @@ async function saveQuizSessions(driver: SqlDriver, value: unknown): Promise<void
 export async function saveCollection(
   driver: SqlDriver,
   key: UserCollectionKey,
-  value: unknown
+  value: unknown,
 ): Promise<void> {
   await transaction(driver, async () => {
     switch (key) {
@@ -433,13 +421,7 @@ export async function saveCollection(
         await insertRows(
           driver,
           'INSERT INTO author (id, name, approach_id, data_json) VALUES (?, ?, ?, ?)',
-          () =>
-            asArray(value).map((a) => [
-              String(a.id),
-              str(a.name),
-              str(a.approachId),
-              json(a),
-            ])
+          () => asArray(value).map((a) => [String(a.id), str(a.name), str(a.approachId), json(a)]),
         );
         break;
       case 'concepts':
@@ -459,7 +441,7 @@ export async function saveCollection(
               str(f.lastReviewed),
               num(f.timesReviewed),
               json(f),
-            ])
+            ]),
         );
         break;
       case 'decks':
@@ -476,7 +458,7 @@ export async function saveCollection(
               str(d.createdAt),
               str(d.updatedAt),
               json(d),
-            ])
+            ]),
         );
         break;
       case 'materials':
@@ -491,7 +473,7 @@ export async function saveCollection(
               str(m.type),
               str(m.addedAt),
               json(m),
-            ])
+            ]),
         );
         break;
       case 'techniques':
@@ -499,13 +481,7 @@ export async function saveCollection(
         await insertRows(
           driver,
           'INSERT INTO technique (id, name, approach_id, data_json) VALUES (?, ?, ?, ?)',
-          () =>
-            asArray(value).map((t) => [
-              String(t.id),
-              str(t.name),
-              str(t.approachId),
-              json(t),
-            ])
+          () => asArray(value).map((t) => [String(t.id), str(t.name), str(t.approachId), json(t)]),
         );
         break;
       case 'internshipLogs':
@@ -515,13 +491,7 @@ export async function saveCollection(
         await insertRows(
           driver,
           'INSERT INTO supervision_notebook (id, date, supervisor, data_json) VALUES (?, ?, ?, ?)',
-          () =>
-            asArray(value).map((s) => [
-              String(s.id),
-              str(s.date),
-              str(s.supervisor),
-              json(s),
-            ])
+          () => asArray(value).map((s) => [String(s.id), str(s.date), str(s.supervisor), json(s)]),
         );
         break;
       case 'stickers':
@@ -536,7 +506,7 @@ export async function saveCollection(
               str(s.unlockedAt),
               str(s.category),
               json(s),
-            ])
+            ]),
         );
         break;
       case 'sessions':
@@ -574,7 +544,7 @@ export async function saveCollection(
               str(t.endedAt),
               str(t.updatedAt),
               json(t),
-            ])
+            ]),
         );
         break;
       // SPEC-M-014 — leitura. Colunas são projeção; `data_json` é a fonte.
@@ -591,7 +561,7 @@ export async function saveCollection(
               str(s.date),
               str(s.unit),
               json(s),
-            ])
+            ]),
         );
         break;
       case 'readingHighlights':
@@ -599,13 +569,7 @@ export async function saveCollection(
         await insertRows(
           driver,
           'INSERT INTO reading_highlight_entry (id, reading_id, color, data_json) VALUES (?, ?, ?, ?)',
-          () =>
-            asArray(value).map((h) => [
-              String(h.id),
-              str(h.readingId),
-              str(h.color),
-              json(h),
-            ])
+          () => asArray(value).map((h) => [String(h.id), str(h.readingId), str(h.color), json(h)]),
         );
         break;
       case 'readingBookmarks':
@@ -614,12 +578,7 @@ export async function saveCollection(
           driver,
           'INSERT INTO reading_bookmark (id, reading_id, created_at, data_json) VALUES (?, ?, ?, ?)',
           () =>
-            asArray(value).map((b) => [
-              String(b.id),
-              str(b.readingId),
-              str(b.createdAt),
-              json(b),
-            ])
+            asArray(value).map((b) => [String(b.id), str(b.readingId), str(b.createdAt), json(b)]),
         );
         break;
       // SPEC-012 — TCC. Colunas são projeção; `data_json` é a fonte, como em
@@ -639,7 +598,7 @@ export async function saveCollection(
               str(c.stage),
               str(c.dueDate),
               json(c),
-            ])
+            ]),
         );
         break;
       case 'thesisReferences':
@@ -654,7 +613,7 @@ export async function saveCollection(
               str(r.readingId),
               str(r.status),
               json(r),
-            ])
+            ]),
         );
         break;
       case 'thesisMeetings':
@@ -669,7 +628,7 @@ export async function saveCollection(
               str(m.date),
               str(m.status),
               json(m),
-            ])
+            ]),
         );
         break;
       case 'thesisTasks':
@@ -684,7 +643,7 @@ export async function saveCollection(
               str(t.dueDate),
               str(t.status),
               json(t),
-            ])
+            ]),
         );
         break;
       case 'thesisWritingLogs':
@@ -699,7 +658,7 @@ export async function saveCollection(
               str(l.date),
               int(l.words),
               json(l),
-            ])
+            ]),
         );
         break;
       default: {
@@ -728,7 +687,7 @@ async function loadSingletonJson(driver: SqlDriver): Promise<unknown> {
  */
 export async function loadCollection<T = unknown>(
   driver: SqlDriver,
-  key: UserCollectionKey
+  key: UserCollectionKey,
 ): Promise<T | undefined> {
   switch (key) {
     case 'profile':
@@ -745,13 +704,13 @@ export async function loadCollection<T = unknown>(
     }
     case 'savedBookIds': {
       const rows = await driver.query(
-        "SELECT item_id FROM saved_catalog_item WHERE item_type = 'book'"
+        "SELECT item_id FROM saved_catalog_item WHERE item_type = 'book'",
       );
       return rows.map((r) => String(r.item_id)) as T;
     }
     case 'bookmarkedCourseIds': {
       const rows = await driver.query(
-        "SELECT item_id FROM saved_catalog_item WHERE item_type = 'course'"
+        "SELECT item_id FROM saved_catalog_item WHERE item_type = 'course'",
       );
       return rows.map((r) => String(r.item_id)) as T;
     }
@@ -774,7 +733,7 @@ export async function loadCollection<T = unknown>(
 
 /** Lê todas as coleções presentes no banco (chamada única de hidratação). */
 export async function loadAllCollections(
-  driver: SqlDriver
+  driver: SqlDriver,
 ): Promise<Partial<Record<UserCollectionKey, unknown>>> {
   const out: Partial<Record<UserCollectionKey, unknown>> = {};
   for (const key of USER_COLLECTION_KEYS) {

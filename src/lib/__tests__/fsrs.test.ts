@@ -92,7 +92,9 @@ describe('fsrs', () => {
       expect(nextDueLabel({ due: '2026-10-01' } as any, '2026-09-22')).toBe('em 9 dias');
     });
     it('fallback legado sem due', () => {
-      expect(daysUntilDue({ lastReviewed: '2026-09-21', timesReviewed: 1 } as any, '2026-09-22')).toBe(2);
+      expect(
+        daysUntilDue({ lastReviewed: '2026-09-21', timesReviewed: 1 } as any, '2026-09-22'),
+      ).toBe(2);
     });
   });
 

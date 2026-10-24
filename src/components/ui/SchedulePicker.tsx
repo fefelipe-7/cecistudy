@@ -25,7 +25,10 @@ export const SchedulePicker: React.FC<SchedulePickerProps> = ({ value, onChange 
   return (
     <div className="space-y-3">
       {value.map((slot, idx) => (
-        <div key={idx} className="rounded-2xl bg-surface-muted border border-ceci-border-subtle p-3 space-y-2.5">
+        <div
+          key={idx}
+          className="rounded-2xl bg-surface-muted border border-ceci-border-subtle p-3 space-y-2.5"
+        >
           <div className="flex items-center justify-between gap-2">
             <span className="text-[10px] font-bold uppercase tracking-wider text-ceci-tertiary">
               horário {value.length > 1 ? idx + 1 : ''}
@@ -64,11 +67,15 @@ export const SchedulePicker: React.FC<SchedulePickerProps> = ({ value, onChange 
 
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <span className="block text-[10px] font-semibold text-ceci-tertiary mb-1">início</span>
+              <span className="block text-[10px] font-semibold text-ceci-tertiary mb-1">
+                início
+              </span>
               <TimeInput value={slot.start} onChange={(e) => setStart(idx, e.target.value)} />
             </div>
             <div>
-              <span className="block text-[10px] font-semibold text-ceci-tertiary mb-1">término</span>
+              <span className="block text-[10px] font-semibold text-ceci-tertiary mb-1">
+                término
+              </span>
               <TimeInput value={slot.end ?? ''} onChange={(e) => setEnd(idx, e.target.value)} />
             </div>
           </div>

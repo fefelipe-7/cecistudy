@@ -32,8 +32,8 @@ export const OtaUpdateModal: React.FC = () => {
       </div>
 
       <p className="text-xs text-ceci-secondary leading-relaxed">
-        sem pressa: ela entra sozinha na próxima abertura do cantinho. se quiser,
-        pode aplicar agora.
+        sem pressa: ela entra sozinha na próxima abertura do cantinho. se quiser, pode aplicar
+        agora.
       </p>
 
       <div className="space-y-2 pt-1">

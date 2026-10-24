@@ -75,7 +75,11 @@ export const SupervisionView: React.FC<{
         <div className="rounded-2xl p-3 bg-surface-muted border border-status-warning-border space-y-2">
           <p className="text-[11px] font-semibold text-status-warning-strong inline-flex items-center gap-1.5">
             <Clock className="w-4 h-4" aria-hidden />
-            {pluralPt(porPaciente.length, 'sessão esperando supervisão', 'sessões esperando supervisão')}
+            {pluralPt(
+              porPaciente.length,
+              'sessão esperando supervisão',
+              'sessões esperando supervisão',
+            )}
           </p>
           <div className="flex flex-wrap items-center gap-2">
             {porPaciente.slice(0, 6).map(({ log, key }) => (

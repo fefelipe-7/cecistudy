@@ -34,7 +34,9 @@ export const NextStepRow: React.FC<{
   return (
     <li className="flex items-start justify-between gap-2 py-1.5">
       <span className="w-1.5 h-1.5 rounded-full bg-ceci-brand-strong mt-1.5 shrink-0" />
-      <span className="text-xs text-ceci-secondary leading-relaxed break-words flex-1 min-w-0">{step}</span>
+      <span className="text-xs text-ceci-secondary leading-relaxed break-words flex-1 min-w-0">
+        {step}
+      </span>
       {live && link ? (
         <StatusChip tone="success" label={KIND_META[link.kind].verb} />
       ) : (

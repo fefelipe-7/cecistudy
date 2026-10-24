@@ -44,7 +44,8 @@ export const InternshipCaseView: React.FC = () => {
 
   const derived = useMemo(() => deriveCases(internshipLogs, today), [internshipLogs, today]);
 
-  const caso = patientKey === '' ? undefined : derived.cases.find((c) => c.patientKey === patientKey);
+  const caso =
+    patientKey === '' ? undefined : derived.cases.find((c) => c.patientKey === patientKey);
   const orfaos = patientKey === '' ? derived.orphans : [];
 
   // O caso sumiu (última sessão apagada, ou iniciais corrigidas para outro caso).
@@ -58,19 +59,24 @@ export const InternshipCaseView: React.FC = () => {
 
   const label = caso?.patientLabel ?? 'sem iniciais';
   const logs = caso?.logs ?? orfaos;
-  const agendados = (caso?.scheduledLogs ?? []).slice().sort((a, b) => a.date.localeCompare(b.date));
+  const agendados = (caso?.scheduledLogs ?? [])
+    .slice()
+    .sort((a, b) => a.date.localeCompare(b.date));
   const feitos = (caso?.doneLogs ?? []).slice().sort((a, b) => b.date.localeCompare(a.date));
 
   const porFiltro = (list: typeof feitos) => {
     if (filtro === 'todas') return list;
     if (filtro === 'sem reflexao') return list.filter((l) => !(l.reflections ?? '').trim());
-    return list.filter((l) => l.sessionNumber && !(l.reflections ?? '').trim() && !l.supervisionLogId);
+    return list.filter(
+      (l) => l.sessionNumber && !(l.reflections ?? '').trim() && !l.supervisionLogId,
+    );
   };
 
   const visiveis = [...porFiltro(feitos), ...(filtro === 'todas' ? agendados : [])];
   const temFiltro = (caso?.pendingReflection ?? 0) > 0 || (caso?.pendingSupervision ?? 0) > 0;
 
-  const pendentesDoCaso = caso?.doneLogs.filter((l) => !l.reflections?.trim()).map((l) => l.id) ?? [];
+  const pendentesDoCaso =
+    caso?.doneLogs.filter((l) => !l.reflections?.trim()).map((l) => l.id) ?? [];
 
   /**
    * "Nova sessão" do caso (SPEC-022 D1/D2-ii): a **mesma** função que a
@@ -98,135 +104,156 @@ export const InternshipCaseView: React.FC = () => {
 
   return (
     <div className="space-y-4 pb-1">
-        {/* Hero (SPEC-010 D1/D3) — a primária é da barra contextual desde
+      {/* Hero (SPEC-010 D1/D3) — a primária é da barra contextual desde
             2026-10-19 (SPEC-022 D2-ii); o herói fica com identidade e resumo. */}
-        <HeroCard
-          accent="blue"
-          eyebrow="paciente"
-          title={label}
-          summary={resumo.length ? resumo.join(' · ') : 'nenhuma sessão ainda ♡'}
-          expression="connection-link"
-        />
+      <HeroCard
+        accent="blue"
+        eyebrow="paciente"
+        title={label}
+        summary={resumo.length ? resumo.join(' · ') : 'nenhuma sessão ainda ♡'}
+        expression="connection-link"
+      />
 
-        {caso && (
-          <div className="rounded-2xl p-4 bg-surface-default border border-ceci-border-default shadow-sm space-y-3">
-            <div className="flex items-start justify-between gap-2">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-ceci-tertiary">
-                sessões
-              </p>
-              <RenamePatientButton caso={caso} onRename={handleRenamePatient} />
-            </div>
+      {caso && (
+        <div className="rounded-2xl p-4 bg-surface-default border border-ceci-border-default shadow-sm space-y-3">
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-ceci-tertiary">
+              sessões
+            </p>
+            <RenamePatientButton caso={caso} onRename={handleRenamePatient} />
+          </div>
 
-            {caso.sessionsDone > 0 && (
-              <>
-                <div className="grid grid-cols-3 gap-2">
-                  <MiniStat value={String(caso.sessionsDone)} label="sessões" />
-                  <MiniStat value={formatHours(caso.totalHours)} label="total" suffix="h" />
-                  <MiniStat
-                    value={`${caso.sessionsSupervised}/${caso.sessionsDone}`}
-                    label="superv."
-                  />
-                </div>
-                <ProgressBar
-                  value={caso.progress}
-                  barClassName={caso.progress >= 100 ? 'bg-status-success' : undefined}
+          {caso.sessionsDone > 0 && (
+            <>
+              <div className="grid grid-cols-3 gap-2">
+                <MiniStat value={String(caso.sessionsDone)} label="sessões" />
+                <MiniStat value={formatHours(caso.totalHours)} label="total" suffix="h" />
+                <MiniStat
+                  value={`${caso.sessionsSupervised}/${caso.sessionsDone}`}
+                  label="superv."
                 />
-              </>
-            )}
-          </div>
-        )}
-
-        {temFiltro && (
-          <PillGroup<FiltroCaso>
-            size="sm"
-            variant="rose"
-            value={filtro}
-            onChange={setFiltro}
-            options={[
-              { value: 'todas', label: 'todas' },
-              ...(caso && caso.pendingReflection > 0
-                ? [{ value: 'sem reflexao' as const, label: `sem reflexão ${caso.pendingReflection}` }]
-                : []),
-              ...(caso && caso.pendingSupervision > 0
-                ? [{ value: 'sem supervisao' as const, label: `sem superv. ${caso.pendingSupervision}` }]
-                : []),
-            ]}
-          />
-        )}
-
-        {/* Linha do tempo — mais recente primeiro */}
-        {visiveis.length === 0 ? (
-          <EmptyState
-            description={filtro === 'todas' ? 'nenhuma sessão ainda por aqui ♡' : 'nada pendente nesse filtro ♡'}
-            actionLabel="nova sessão"
-            onAction={novaSessao}
-          />
-        ) : (
-          <ol className="space-y-3 border-l border-ceci-border-subtle pl-4 ml-3">
-            {agendados.map((log) => (
-              <li key={`s-${log.id}`} className="relative">
-                <TimelineNode label="próxima" />
-                <p className="text-[11px] font-bold uppercase tracking-wider text-ceci-tertiary mb-1">
-                  próxima · {formatDateShortBR(log.date)}
-                </p>
-                <InternshipLogCard log={log} today={today} allLogs={internshipLogs} variant="inCase" />
-              </li>
-            ))}
-            {porFiltro(feitos).map((log) => (
-              <li key={log.id} className="relative">
-                <TimelineNode label={log.sessionNumber ? String(log.sessionNumber) : 'sessão'} />
-                <p className="text-[11px] text-ceci-secondary mb-1">
-                  {log.sessionNumber ? `sessão ${log.sessionNumber}` : 'sessão'} ·{' '}
-                  {formatDateShortBR(log.date)}
-                </p>
-                <InternshipLogCard log={log} today={today} allLogs={internshipLogs} variant="inCase" />
-              </li>
-            ))}
-          </ol>
-        )}
-
-        {/* Órfãos: cada registro recebe iniciais, nunca em bloco (`D9`) */}
-        {patientKey === '' && orfaos.length > 0 && (
-          <div className="rounded-2xl p-3 bg-surface-muted border border-status-warning-border">
-            <p className="text-[11px] font-semibold text-status-warning-strong inline-flex items-center gap-1.5">
-              <AlertCircle className="w-3.5 h-3.5" aria-hidden />
-              {pluralPt(orfaos.length, 'atendimento sem iniciais', 'atendimentos sem iniciais')}
-            </p>
-            <p className="text-[11px] text-ceci-secondary mt-1">
-              cada um pode ser uma pessoa diferente — por isso as iniciais são por registro.
-            </p>
-          </div>
-        )}
-
-        {/* Barra de ações — só secundárias: a primária ("nova sessão") está no hero (D3) */}
-        <div className="flex flex-col gap-2">
-          {caso && caso.pendingSupervision > 0 && (
-            <button
-              type="button"
-              onClick={() =>
-                openInternshipWizard({
-                  kind: 'supervisao',
-                  discussedLogIds: caso.doneLogs
-                    .filter((l) => !l.supervisionLogId && (l.reflections ?? '').trim())
-                    .map((l) => l.id)
-                    .length
-                    ? caso.doneLogs
-                        .filter((l) => !l.supervisionLogId && (l.reflections ?? '').trim())
-                        .map((l) => l.id)
-                    : pendentesDoCaso,
-                })
-              }
-              className="min-h-[44px] px-4 rounded-full text-xs font-semibold bg-surface-blue text-ceci-academic-strong border border-ceci-border-academic cursor-pointer tap-interactive"
-            >
-              levar pendentes pra supervisão
-            </button>
-          )}
-
-          {patientKey === '' && orfaos.length > 0 && (
-            <SetPatientButton logs={orfaos} onSet={handleSetPatient} />
+              </div>
+              <ProgressBar
+                value={caso.progress}
+                barClassName={caso.progress >= 100 ? 'bg-status-success' : undefined}
+              />
+            </>
           )}
         </div>
+      )}
+
+      {temFiltro && (
+        <PillGroup<FiltroCaso>
+          size="sm"
+          variant="rose"
+          value={filtro}
+          onChange={setFiltro}
+          options={[
+            { value: 'todas', label: 'todas' },
+            ...(caso && caso.pendingReflection > 0
+              ? [
+                  {
+                    value: 'sem reflexao' as const,
+                    label: `sem reflexão ${caso.pendingReflection}`,
+                  },
+                ]
+              : []),
+            ...(caso && caso.pendingSupervision > 0
+              ? [
+                  {
+                    value: 'sem supervisao' as const,
+                    label: `sem superv. ${caso.pendingSupervision}`,
+                  },
+                ]
+              : []),
+          ]}
+        />
+      )}
+
+      {/* Linha do tempo — mais recente primeiro */}
+      {visiveis.length === 0 ? (
+        <EmptyState
+          description={
+            filtro === 'todas' ? 'nenhuma sessão ainda por aqui ♡' : 'nada pendente nesse filtro ♡'
+          }
+          actionLabel="nova sessão"
+          onAction={novaSessao}
+        />
+      ) : (
+        <ol className="space-y-3 border-l border-ceci-border-subtle pl-4 ml-3">
+          {agendados.map((log) => (
+            <li key={`s-${log.id}`} className="relative">
+              <TimelineNode label="próxima" />
+              <p className="text-[11px] font-bold uppercase tracking-wider text-ceci-tertiary mb-1">
+                próxima · {formatDateShortBR(log.date)}
+              </p>
+              <InternshipLogCard
+                log={log}
+                today={today}
+                allLogs={internshipLogs}
+                variant="inCase"
+              />
+            </li>
+          ))}
+          {porFiltro(feitos).map((log) => (
+            <li key={log.id} className="relative">
+              <TimelineNode label={log.sessionNumber ? String(log.sessionNumber) : 'sessão'} />
+              <p className="text-[11px] text-ceci-secondary mb-1">
+                {log.sessionNumber ? `sessão ${log.sessionNumber}` : 'sessão'} ·{' '}
+                {formatDateShortBR(log.date)}
+              </p>
+              <InternshipLogCard
+                log={log}
+                today={today}
+                allLogs={internshipLogs}
+                variant="inCase"
+              />
+            </li>
+          ))}
+        </ol>
+      )}
+
+      {/* Órfãos: cada registro recebe iniciais, nunca em bloco (`D9`) */}
+      {patientKey === '' && orfaos.length > 0 && (
+        <div className="rounded-2xl p-3 bg-surface-muted border border-status-warning-border">
+          <p className="text-[11px] font-semibold text-status-warning-strong inline-flex items-center gap-1.5">
+            <AlertCircle className="w-3.5 h-3.5" aria-hidden />
+            {pluralPt(orfaos.length, 'atendimento sem iniciais', 'atendimentos sem iniciais')}
+          </p>
+          <p className="text-[11px] text-ceci-secondary mt-1">
+            cada um pode ser uma pessoa diferente — por isso as iniciais são por registro.
+          </p>
+        </div>
+      )}
+
+      {/* Barra de ações — só secundárias: a primária ("nova sessão") está no hero (D3) */}
+      <div className="flex flex-col gap-2">
+        {caso && caso.pendingSupervision > 0 && (
+          <button
+            type="button"
+            onClick={() =>
+              openInternshipWizard({
+                kind: 'supervisao',
+                discussedLogIds: caso.doneLogs
+                  .filter((l) => !l.supervisionLogId && (l.reflections ?? '').trim())
+                  .map((l) => l.id).length
+                  ? caso.doneLogs
+                      .filter((l) => !l.supervisionLogId && (l.reflections ?? '').trim())
+                      .map((l) => l.id)
+                  : pendentesDoCaso,
+              })
+            }
+            className="min-h-[44px] px-4 rounded-full text-xs font-semibold bg-surface-blue text-ceci-academic-strong border border-ceci-border-academic cursor-pointer tap-interactive"
+          >
+            levar pendentes pra supervisão
+          </button>
+        )}
+
+        {patientKey === '' && orfaos.length > 0 && (
+          <SetPatientButton logs={orfaos} onSet={handleSetPatient} />
+        )}
       </div>
+    </div>
   );
 };
 
@@ -345,7 +372,7 @@ const SetPatientButton: React.FC<{
           onClick={() => {
             onSet(
               logs.map((l) => l.id),
-              value
+              value,
             );
             setOpen(false);
             setValue('');

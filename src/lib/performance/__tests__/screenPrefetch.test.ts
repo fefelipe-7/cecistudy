@@ -84,7 +84,10 @@ describe('requestPrefetch (fila de baixa prioridade)', () => {
   it('respeita o limite de 1 simultâneo (sem 4g comprovada)', async () => {
     let resolveA!: () => void;
     const loadA = vi.fn(
-      () => new Promise<void>((res) => { resolveA = res; }),
+      () =>
+        new Promise<void>((res) => {
+          resolveA = res;
+        }),
     );
     const loadB = vi.fn().mockResolvedValue(undefined);
 
@@ -109,7 +112,12 @@ describe('requestPrefetch (fila de baixa prioridade)', () => {
 
   it('cancelQueuedPrefetches descarta a fila pendente (mudança de rota)', async () => {
     let resolveA!: () => void;
-    const loadA = vi.fn(() => new Promise<void>((res) => { resolveA = res; }));
+    const loadA = vi.fn(
+      () =>
+        new Promise<void>((res) => {
+          resolveA = res;
+        }),
+    );
     const loadB = vi.fn().mockResolvedValue(undefined);
 
     requestPrefetch('screen:a', loadA);
@@ -146,7 +154,12 @@ describe('requestPrefetch (fila de baixa prioridade)', () => {
 describe('prefetchOnIntent (intenção observável)', () => {
   it('fura o limite de concorrência — navegação iminente', async () => {
     let resolveA!: () => void;
-    const loadA = vi.fn(() => new Promise<void>((res) => { resolveA = res; }));
+    const loadA = vi.fn(
+      () =>
+        new Promise<void>((res) => {
+          resolveA = res;
+        }),
+    );
     const loadB = vi.fn().mockResolvedValue(undefined);
 
     requestPrefetch('screen:a', loadA);

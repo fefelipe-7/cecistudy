@@ -12,25 +12,26 @@ interface QuizGroupSelectorProps {
   onClose: () => void;
 }
 
-export const QuizGroupSelector: React.FC<QuizGroupSelectorProps> = ({
-  onSelectGroup,
-  onClose,
-}) => {
+export const QuizGroupSelector: React.FC<QuizGroupSelectorProps> = ({ onSelectGroup, onClose }) => {
   const [groups, setGroups] = useState<QuestionGroup[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    buildQuizGroups().then((g) => {
-      if (!cancelled) {
-        setGroups(g);
-        setLoading(false);
-      }
-    }).catch(() => {
-      if (!cancelled) setLoading(false);
-    });
-    return () => { cancelled = true; };
+    buildQuizGroups()
+      .then((g) => {
+        if (!cancelled) {
+          setGroups(g);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // Ordena: banco "all" primeiro, depois alfabética
@@ -41,12 +42,15 @@ export const QuizGroupSelector: React.FC<QuizGroupSelectorProps> = ({
         if (b.id === 'all') return 1;
         return a.name.localeCompare(b.name, 'pt-BR');
       }),
-    [groups]
+    [groups],
   );
 
-  const handleClick = useCallback((group: QuestionGroup) => {
-    if (group.questionCount > 0) onSelectGroup(group);
-  }, [onSelectGroup]);
+  const handleClick = useCallback(
+    (group: QuestionGroup) => {
+      if (group.questionCount > 0) onSelectGroup(group);
+    },
+    [onSelectGroup],
+  );
 
   if (loading) {
     return (
@@ -64,12 +68,12 @@ export const QuizGroupSelector: React.FC<QuizGroupSelectorProps> = ({
       <div className="flex-1 pt-4 overflow-y-auto">
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 space-y-3">
           {/* Card explicativo compacto */}
-          <div
-            className="rounded-xl p-4 bg-surface-default border border-ceci-border-default shadow-sm text-center space-y-2"
-          >
+          <div className="rounded-xl p-4 bg-surface-default border border-ceci-border-default shadow-sm text-center space-y-2">
             <Mascote expression="quiz-ready" className="w-10 h-10 mx-auto" decorative />
             <div>
-              <h3 className="font-display font-bold text-base text-ceci-primary">escolha um tema ♡</h3>
+              <h3 className="font-display font-bold text-base text-ceci-primary">
+                escolha um tema ♡
+              </h3>
               <p className="text-[11px] text-ceci-secondary mt-1 leading-relaxed">
                 selecione um grupo de questões para começar
               </p>
@@ -96,7 +100,7 @@ export const QuizGroupSelector: React.FC<QuizGroupSelectorProps> = ({
                         : 'bg-surface-default border-ceci-border-subtle',
                       group.questionCount > 0
                         ? 'hover:bg-surface-rose hover:border-ceci-border-brand cursor-pointer'
-                        : 'opacity-50 cursor-not-allowed'
+                        : 'opacity-50 cursor-not-allowed',
                     )}
                   >
                     <span
@@ -140,4 +144,3 @@ export const QuizGroupSelector: React.FC<QuizGroupSelectorProps> = ({
     </div>
   );
 };
-

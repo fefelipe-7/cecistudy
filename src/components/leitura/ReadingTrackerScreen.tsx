@@ -38,13 +38,8 @@ const STATUS_META: Record<ReadingItem['status'], { label: string; className: str
  * caminho principal — aqui é onde se olha o que já foi percorrido.
  */
 export const ReadingTrackerScreen: React.FC<Props> = ({ reading, onBack, onOpenReader }) => {
-  const {
-    readingSessions,
-    courses,
-    handleAddReadingSession,
-    handleUpdateReadingPages,
-    showToast,
-  } = useMobileApp();
+  const { readingSessions, courses, handleAddReadingSession, handleUpdateReadingPages, showToast } =
+    useMobileApp();
 
   const [openSession, setOpenSession] = useState(false);
   const [toPage, setToPage] = useState(String(reading.readPages ?? ''));
@@ -61,7 +56,7 @@ export const ReadingTrackerScreen: React.FC<Props> = ({ reading, onBack, onOpenR
       readingSessions
         .filter((s) => s.readingId === reading.id)
         .sort((a, b) => b.date.localeCompare(a.date)),
-    [readingSessions, reading.id]
+    [readingSessions, reading.id],
   );
 
   const totalMinutes = sessions.reduce((acc, s) => acc + (s.minutes ?? 0), 0);

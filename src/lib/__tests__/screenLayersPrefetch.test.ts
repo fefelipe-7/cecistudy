@@ -21,10 +21,7 @@ import {
   prefetchScreensOnIntent,
   type ScreenKey,
 } from '@/shells/SharedScreenLayers';
-import {
-  requestPrefetch,
-  prefetchOnIntent,
-} from '@/lib/performance/screenPrefetch';
+import { requestPrefetch, prefetchOnIntent } from '@/lib/performance/screenPrefetch';
 
 vi.mock('@/lib/performance/screenPrefetch', () => ({
   requestPrefetch: vi.fn(),

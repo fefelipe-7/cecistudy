@@ -30,11 +30,10 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
 }) => {
   const maxPages = book.totalPages ?? Infinity;
   const clamped = Math.min(Math.max(readPages, 0), maxPages);
-  const progressPercent = book.totalPages
-    ? Math.round((clamped / book.totalPages) * 100)
-    : 0;
+  const progressPercent = book.totalPages ? Math.round((clamped / book.totalPages) * 100) : 0;
 
-  const step = (delta: number) => onUpdateProgress(Math.min(Math.max(clamped + delta, 0), maxPages));
+  const step = (delta: number) =>
+    onUpdateProgress(Math.min(Math.max(clamped + delta, 0), maxPages));
 
   const stepperBtn =
     'w-11 h-11 rounded-full border border-ceci-border-default bg-surface-default text-ceci-primary flex items-center justify-center transition active:scale-90 tap-interactive cursor-pointer disabled:opacity-35 disabled:pointer-events-none';
@@ -61,7 +60,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
           <X className="w-4 h-4" />
         </button>
 
-         {/* Capa sobrepondo a fronteira com o corpo */}
+        {/* Capa sobrepondo a fronteira com o corpo */}
         <div className="relative flex justify-center">
           <div className="relative z-10 w-28 h-40 -mb-16 rounded-r-xl rounded-l-md p-3 bg-cover-base/95 shadow-lg border border-black/5 flex flex-col justify-between text-left -rotate-2 transition-transform duration-300">
             <div className="absolute left-0 top-0 bottom-0 w-2.5 bg-black/10 rounded-l-md border-r border-black/10" />
@@ -71,9 +70,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
             <p className="pl-1.5 font-display font-bold text-xs leading-tight text-cover-ink line-clamp-4">
               {book.title}
             </p>
-            <p className="pl-1.5 text-[9px] text-cover-ink/80 line-clamp-1">
-              {book.author}
-            </p>
+            <p className="pl-1.5 text-[9px] text-cover-ink/80 line-clamp-1">{book.author}</p>
           </div>
         </div>
       </div>
@@ -89,7 +86,9 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
 
         <div className="flex items-center justify-center gap-2 flex-wrap">
           <span className={chip}>{book.badge || 'livro'}</span>
-          <span className={cn(chip, 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand')}>
+          <span
+            className={cn(chip, 'bg-surface-rose text-ceci-brand-strong border-ceci-border-brand')}
+          >
             {book.courseName || 'psicologia'}
           </span>
         </div>
@@ -121,7 +120,10 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
               {book.totalPages ? (
                 <div className="w-full bg-ceci-border-default h-2 rounded-full overflow-hidden">
                   <div
-                    className={cn('h-full rounded-full transition-colors duration-300', clamped > 0 ? 'bg-ceci-brand-strong' : '')}
+                    className={cn(
+                      'h-full rounded-full transition-colors duration-300',
+                      clamped > 0 ? 'bg-ceci-brand-strong' : '',
+                    )}
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>
@@ -160,9 +162,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
         <div className="space-y-1">
           <span className="text-[11px] font-bold text-ceci-tertiary lowercase">resumo da obra</span>
           <div className="max-h-40 overflow-y-auto overscroll-contain bg-surface-muted p-3.5 rounded-2xl">
-            <p className="text-xs text-ceci-secondary leading-relaxed">
-              {book.description}
-            </p>
+            <p className="text-xs text-ceci-secondary leading-relaxed">{book.description}</p>
           </div>
         </div>
 

@@ -20,7 +20,13 @@ const catalog = {
 describe('buildBibliographyOptions', () => {
   it('ordena banco pessoal (leitura + material) antes do catálogo', () => {
     const options = buildBibliographyOptions({ readings, materials, catalog });
-    expect(options.map((o) => o.source)).toEqual(['reading', 'reading', 'material', 'cat-book', 'inter-book']);
+    expect(options.map((o) => o.source)).toEqual([
+      'reading',
+      'reading',
+      'material',
+      'cat-book',
+      'inter-book',
+    ]);
   });
 
   it('dedupe: obra do catálogo com título já presente entre leituras pessoais some', () => {

@@ -37,7 +37,9 @@ export const StreakView: React.FC = () => {
           className="flex items-center justify-center"
         >
           <span className="w-16 h-16 rounded-full bg-surface-default border border-ceci-border-brand flex items-center justify-center shadow-sm">
-            <Flame className={`w-9 h-9 ${streakStats.alive ? 'fill-ceci-brand text-ceci-brand-strong' : 'text-ceci-muted'}`} />
+            <Flame
+              className={`w-9 h-9 ${streakStats.alive ? 'fill-ceci-brand text-ceci-brand-strong' : 'text-ceci-muted'}`}
+            />
           </span>
         </motion.div>
 
@@ -69,7 +71,9 @@ export const StreakView: React.FC = () => {
         </p>
 
         <Mascote
-          expression={streakStats.alive ? 'celebrate-small' : todayPending ? 'focus-ready' : 'pause-kind'}
+          expression={
+            streakStats.alive ? 'celebrate-small' : todayPending ? 'focus-ready' : 'pause-kind'
+          }
           className="w-16 h-16 mx-auto"
           decorative
         />
@@ -130,7 +134,9 @@ export const StreakView: React.FC = () => {
                     : 'bg-surface-muted border-ceci-border-subtle text-ceci-secondary'
               }`}
             >
-              <span className="text-[10px] font-medium lowercase text-ceci-secondary">{item.label}</span>
+              <span className="text-[10px] font-medium lowercase text-ceci-secondary">
+                {item.label}
+              </span>
               <div className="my-1">
                 {item.status === 'done' ? (
                   <span className="w-6 h-6 rounded-full bg-ceci-brand-strong text-ceci-on-brand font-bold text-[10px] flex items-center justify-center shadow-2xs">
@@ -182,7 +188,9 @@ export const StreakView: React.FC = () => {
 
       {/* Como funciona */}
       <div className="rounded-2xl p-5 bg-surface-subtle border border-ceci-border-default space-y-3">
-        <h2 className="font-display font-bold text-base text-ceci-primary">como funciona a streak ♡</h2>
+        <h2 className="font-display font-bold text-base text-ceci-primary">
+          como funciona a streak ♡
+        </h2>
         <ul className="space-y-2">
           {WHAT_COUNTS.map((item) => (
             <li key={item} className="flex items-center gap-2 text-xs text-ceci-primary">
