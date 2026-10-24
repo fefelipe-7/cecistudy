@@ -384,14 +384,25 @@ O que está no repositório e o que ainda depende do GitHub.
 | Item | Estado |
 |---|---|
 | Licença PolyForm Noncommercial 1.0.0, README, CONTRIBUTING, SECURITY, CODEOWNERS, templates, Dependabot | entregue |
-| `ci.yml` (`gate-domain`/`gate-full`/`android-debug`/`pr-title`/`ci-ok`), `branch-policy.yml` | entregue, **nunca executado** |
-| `release.yml` (release publicado + dispatch) e `release-please.yml` | entregue |
+| `ci.yml` (`gate-domain`/`gate-full`/`android-debug`/`pr-title`/`ci-ok`), `branch-policy.yml` | entregue e **executado** — runs `40059531878` (`dev`) e `40059533949` (`staging`) verdes, `android-debug` incluso |
+| `release.yml` (release publicado + dispatch) e `release-please.yml` | entregue; aguarda o primeiro release para ser exercitado |
 | `package.json`: `verify:domain`, `content:ensure` em `predev`/`prebuild`/`preverify`, versão 1.0.95 | entregue |
 | Zips fora do git (9,4 MB) e catálogo destrackeado (20 MB) | entregue |
 | Biome 2.6.2 (`format`, `format:check`, `lint:code`) e 508 arquivos formatados | entregue |
-| Branches `dev`/`staging`, default branch, rulesets, settings | **pendente** — ruleset exigindo `ci-ok` antes do primeiro run verde trava todo merge |
-| `RELEASE_PLEASE_TOKEN` e "Allow GitHub Actions to create and approve pull requests" | **pendente** — só a dona |
-| Primeiro release real | **pendente** — depende dos dois acima |
+| Branches `dev`/`staging` e default branch `dev` | **aplicado** |
+| Rulesets `dev`, `staging`, `main`, `tags-v` | **aplicado** (`25769442`, `25769443`, `25769444`, `25769445`) |
+| Settings: auto-merge, delete branch on merge, update branch, Actions pode abrir PR | **aplicado** |
+| Segurança: secret scanning, push protection, alertas de vulnerabilidade, Dependabot security updates, CodeQL default | **aplicado** |
+| `RELEASE_PLEASE_TOKEN` | **aplicado** — PAT com escopos `repo` + `workflow` |
+| Primeiro release real | **pendente** — depende da promoção até `main` (§4) |
+
+O enforcement foi provado, não presumido (2026-10-24):
+
+- `git push origin HEAD:main` → recusado: *"Changes must be made through a pull
+  request"* + *"Required status check branch-policy is expected"*.
+- `git push origin --delete staging` → recusado: *"Cannot delete this branch"*.
+- PR de ensaio `feat/ensaio` → `main` → `branch-policy` **fail**, como o §4
+  exige. PR fechado e branch apagada em seguida.
 
 Duas divergências em relação ao texto acima, ambas deliberadas:
 
