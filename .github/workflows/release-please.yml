@@ -29,3 +29,19 @@ jobs:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           # obrigatório: a branch padrão é `dev`, mas o release nasce da `main`.
           target-branch: main
+
+      # O PR de versão segue a mesma regra dos de promoção: quem decide é o
+      # gate. Sem isto a `main` promoveria e pararia, esperando alguém mergear.
+      - name: liga o auto-merge no PR de versão
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+        run: |
+          set -euo pipefail
+          pr=$(gh pr list --base main --state open --json number,headRefName \
+                 --jq '[.[] | select(.headRefName | startswith("release-please--"))][0].number // empty')
+          if [ -z "$pr" ]; then
+            echo "nenhum PR de versão aberto"
+            exit 0
+          fi
+          gh pr merge "$pr" --auto --merge
+          echo "auto-merge ligado no PR de versão #$pr"
