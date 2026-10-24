@@ -26,7 +26,6 @@ describe('Paper3DCard', () => {
     );
     const card = screen.getByTestId('paper3d-card');
     expect(card).toHaveAttribute('data-flipped', 'false');
-    expect(card).toHaveClass('aspect-[3/4]');
     expect(screen.getByText('pergunta')).toBeInTheDocument();
     expect(screen.getByText('resposta')).toBeInTheDocument();
     expect(card.querySelector('.shader-frame')).not.toBeNull();

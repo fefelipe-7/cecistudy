@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Vulnerabilidade de segurança
+    url: https://github.com/fefelipe-7/cecistudy/security/advisories/new
+    about: Reporte em canal privado, nunca em issue pública.
+  - name: Como contribuir
+    url: https://github.com/fefelipe-7/cecistudy/blob/main/CONTRIBUTING.md
+    about: Fluxo de branches, commits e gate.

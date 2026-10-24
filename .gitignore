@@ -21,7 +21,7 @@ ios/DerivedData/
 # Duplicata aninhada do repositório (mantida fora do controle de versão)
 cecistudy/
 
-# Site OTA gerado pelo workflow (.github/workflows/ota.yml)
+# Site OTA gerado pelo workflow (.github/workflows/release.yml)
 ota-site/
 assets/mascote_expressoes_svgs/
 

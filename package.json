@@ -24,7 +24,6 @@
     "test:watch": "vitest",
     "test:domain": "vitest run --exclude 'src/**' --exclude 'apps/**'",
     "test:ui": "vitest run --exclude 'packages/**' --exclude 'apps/**'",
-    "test:apps": "vitest run --exclude 'src/**' --exclude 'packages/**'",
     "check:boundaries": "node .github/scripts/check-boundaries.mjs",
     "check:voz": "node .github/scripts/check-boundaries.mjs --voz",
     "test:voz": "node .github/scripts/voz-fixture.mjs",

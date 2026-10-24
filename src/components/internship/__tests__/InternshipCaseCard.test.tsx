@@ -32,14 +32,6 @@ describe('InternshipCaseCard', () => {
     expect(screen.getByText('8 sessões')).toBeInTheDocument();
   });
 
-  it('usa geometria do tile da referência (12×12, rounded-2xl) sem hex em classe', () => {
-    const { container } = render(<InternshipCaseCard caseData={caso} onPress={() => {}} />);
-    const tile = container.querySelector('span[aria-hidden]');
-    expect(tile?.className).toContain('w-12 h-12');
-    expect(tile?.className).toContain('rounded-2xl');
-    expect(tile?.className).not.toMatch(/#[0-9A-Fa-f]{3,8}/);
-  });
-
   it('label longo vira "?" no tile (o tile é identidade, não conteúdo)', () => {
     const longo = { ...caso, patientLabel: 'sem iniciais' } as DerivedCase;
     const { container } = render(<InternshipCaseCard caseData={longo} onPress={() => {}} />);
@@ -51,7 +43,6 @@ describe('InternshipCaseCard', () => {
     const onPress = vi.fn();
     const { container } = render(<InternshipCaseCard caseData={caso} onPress={onPress} />);
     const card = container.querySelector('button');
-    expect(card?.className).toContain('p-4');
     card?.click();
     expect(onPress).toHaveBeenCalledTimes(1);
   });

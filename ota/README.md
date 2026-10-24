@@ -13,10 +13,10 @@ mudança de interface.
 ## Como funciona
 
 ```
-        tag v1.2.3 (ou release manual)
+   merge do PR de release (release-please) → tag vX.Y.Z
                     │
                     ▼
-        GitHub Actions (release.yml)
+        GitHub Actions (release.yml, em release publicado)
         npm ci → lint → test → build web
         zip do dist/ → sha256
         build APK (android) + IPA (ios)
@@ -45,6 +45,11 @@ mudança de interface.
 - **Bundle:** `https://fefelipe-7.github.io/cecistudy/bundles/cecistudy-<versão>.zip`
 - **Versão:** semver da **tag do release** (ex.: tag `v1.2.3` → OTA `1.2.3`). Todo
   release vira também uma atualização over-the-air.
+- **Canal único.** Só existe o canal de produção, na raiz do Pages. `staging` não
+  publica nada (nem bundle, nem APK): é a camada de teste do CI. Um segundo canal
+  publicaria bundle de teste em aparelho de verdade, que é o que se quer evitar.
+- **Push na `main` não publica.** Publicar é mergear o PR de release gerado pelo
+  release-please; é ele que cria a tag e o Release.
 
 ## Setup único (manual)
 
@@ -54,8 +59,10 @@ mudança de interface.
    nativa nova (IPA/APK) com o plugin. Depois disso, mudanças web são OTA.
    - `npm i @capgo/capacitor-updater` → `npx cap sync` → build via CI
      (`.github/workflows/release.yml`) ou local.
-3. **Release:** criar uma tag `v*` (ex.: `git tag v1.2.3 && git push origin v1.2.3`)
-   ou rodar o workflow `release.yml` manualmente (Actions → "release" → Run workflow).
+3. **Release:** mergear o PR de release que o release-please abre na `main`. O
+   merge cria a tag `vX.Y.Z` e o Release, e é o Release publicado que dispara o
+   `release.yml`. Para recuperação, rodar o workflow manualmente com a tag
+   (Actions → "release" → Run workflow).
 
 ## version.json (schema)
 
@@ -96,7 +103,8 @@ para rollback. Veja `version.json.example`.
   Para uso pessoal/TestFlight isso costuma ser tranquilo; vale ler as diretrizes.
 - **CORS:** o GitHub Pages responde com `Access-Control-Allow-Origin: *` (site
   público), então o `fetch` do `version.json` funciona direto do WebView.
-- **Dados:** no nativo a persistência é via `@capacitor/preferences` (não
-  `localStorage`), então a troca de bundle não afeta os dados da Ceci.
+- **Dados:** no nativo a persistência é SQLite (`cecistudy_user`) mais
+  `@capacitor/preferences` para preferências pequenas, então a troca de bundle
+  não afeta os dados da usuária.
 - **HTTP não funciona** (Android bloqueia cleartext) — o endpoint precisa ser HTTPS
   (o GitHub Pages é).

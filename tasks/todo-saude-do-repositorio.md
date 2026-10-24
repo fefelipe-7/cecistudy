@@ -34,7 +34,7 @@ Sem isso, nada pode ser branch, PR ou medido.
 - [ ] **T0.2** `nvm use 22 && npm ci` — `node_modules` não existe; o lock está modificado
 - [ ] **T0.3** medir e registrar (§Medições): `time npm run verify`, `time npm run content:check`,
       `time npm run db:verify`, `time npm run test:domain`, `npm audit --audit-level=high`
-- [ ] **T0.4** `npm run test:domain`, `npm run test:ui`, `npm run test:apps` verdes
+- [ ] **T0.4** `npm run test:domain` e `npm run test:ui` verdes
       (pendência **T2.11** do `todo-test-reduction.md`)
 - [ ] **T0.5** `npm run verify` verde local, uma vez, com número de duração anotado
 

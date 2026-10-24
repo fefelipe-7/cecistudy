@@ -7,7 +7,7 @@
 
 - [x] **T0.1** `docs/estandares-testes.md` com classificação e regra de corte (status aceita)
 - [x] **T0.2** seção obrigatória em `AGENTS.md` do app + referência no `AGENTS.md` da raiz
-- [x] **T0.3** scripts `test:domain`/`test:ui`/`test:apps` corrigidos: `--include` não existe no Vitest, trocado por `--exclude`
+- [x] **T0.3** scripts `test:domain`/`test:ui` corrigidos: `--include` não existe no Vitest, trocado por `--exclude`; `test:apps` removido (não há teste em `apps/` e o script saía 1)
 
 ## Fase 1 – Auditoria [concluída]
 
@@ -72,7 +72,7 @@ Contagens após a rodada: `src/` = 152 files / 1731 tests; `packages/` = 14 file
 
 ## Próxima rodada
 
-1. `npm ci` e rodar `test:domain`, `test:ui`, `test:apps` — fecha T2.11.
+1. `npm ci` e rodar `test:domain` e `test:ui` — fecha T2.11.
 2. Desacoplar `collections`, `dataClient` e `exportImport` de `src/` (`@/data/empty`, `persistentData`) e mover para o package dono — fecha T3.10.
 3. Revisar os candidatos por comportamento, não por arquivo: `ProfileHero`, `ProgressPulse`, `JourneyRail`, `TccView`. A inspeção de 2026-10-23 não achou render puro dominante; cortar só o `it` que passa com o comportamento quebrado.
 4. FSRS/review, calendarAggregator/schedule e courseRepertorio/repertorioOptions cobrem comportamentos distintos; não mesclar sem sobreposição provada.

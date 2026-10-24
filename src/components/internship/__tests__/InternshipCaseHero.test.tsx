@@ -68,12 +68,4 @@ describe('InternshipCaseView — hero de paciente (SPEC-010 D1/D3 · SPEC-022 D2
     expect(screen.getByTestId('contextual-bar-primary')).toHaveTextContent('nova sessão');
   });
 
-  it('usa accent blue (tela empilhada, contexto de uma pessoa)', () => {
-    render(
-      <MobileAppProvider>
-        <InternshipCaseView />
-      </MobileAppProvider>
-    );
-    expect(screen.getByTestId('hero-card').className).toContain('to-surface-blue');
-  });
 });

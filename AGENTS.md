@@ -6,7 +6,7 @@ Guidance for OpenCode sessions in **cecistudy ♡** — personal, mobile-first, 
 - Package manager: **npm** (no bun).
 - `npm run dev` — Vite dev server on port 3000.
 - `npm run lint` — `tsc --noEmit` (typecheck only; this is the "lint").
-- `npm run test` — Vitest (jsdom). Single file: `npm run test -- src/lib/__tests__/routing.test.ts`. Por classe: `test:domain` (ciclo de edição), `test:ui`, `test:apps`.
+- `npm run test` — Vitest (jsdom). Single file: `npm run test -- src/lib/__tests__/routing.test.ts`. Por classe: `test:domain` (ciclo de edição) e `test:ui`.
 - `npm run build` — `vite build` → `dist/`.
 - `node .github/scripts/check-boundaries.mjs` — fails if `packages/*`/shared-code boundary rules are violated. É gate obrigatório do PR (`.github/workflows/ci.yml`) e do release; rode localmente antes de tocar `packages/*`, `src/shells` ou `src/overlays`. A regra "shared UI não brancha por plataforma" (`isMobile`/`Capacitor.isNativePlatform`) vive em `src/components`, `src/shells/SharedScreenLayers.tsx` e `src/overlays/*`.
 - **Verification gate:** run `npm run lint` + `npm run test` after any code change; run the boundary check when touching `packages/*`.
@@ -29,7 +29,7 @@ Guidance for OpenCode sessions in **cecistudy ♡** — personal, mobile-first, 
 | duplicata de gate existente | qualquer | **remover ou mesclar** |
 | compat stub (`src/core/*`, `src/data/*`) | — | **não testar** |
 
-**Corte:** um teste só fica se falha quando o comportamento quebra e não é coberto por outro gate. Variação de dado vira `it.each`; teste de tempo usa `vi.useFakeTimers()` (timeout 5 s); lógica pura em `src/` migra para o package dono. Scripts: `test:domain` no ciclo de edição; `test:ui`/`test:apps` no PR; `test:ci` dentro do `verify:fast`.
+**Corte:** um teste só fica se falha quando o comportamento quebra e não é coberto por outro gate. Variação de dado vira `it.each`; teste de tempo usa `vi.useFakeTimers()` (timeout 5 s); lógica pura em `src/` migra para o package dono. Scripts: `test:domain` no ciclo de edição; `test:ui` no PR; `test:ci` dentro do `verify:fast`.
 
 ## Monorepo / Package Boundaries (read before editing `packages/*`)
 - `packages/*` are npm workspaces and the **canonical** shared libraries: `domain`, `application`, `data`, `sync`, `contracts`, `design-tokens`.

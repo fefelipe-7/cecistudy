@@ -46,7 +46,6 @@ describe('CourseIcon rendering (SPEC-004 emoji)', () => {
     const { container } = render(<CourseIcon icon="🧠" className="w-5 h-5" />);
     const span = container.querySelector('span');
     expect(span?.textContent).toBe('🧠');
-    expect(span?.className).toContain('inline-flex');
     expect(container.querySelector('svg')).toBeNull();
   });
 

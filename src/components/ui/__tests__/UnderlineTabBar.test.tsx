@@ -23,10 +23,4 @@ describe('UnderlineTabBar', () => {
     expect(onChange).toHaveBeenCalledWith('avaliacoes');
   });
 
-  it('aceita classe customizada', () => {
-    const { container } = render(
-      <UnderlineTabBar tabs={TABS} active={'aulas' as string} onChange={() => {}} className="my-custom" />
-    );
-    expect(container.firstChild).toHaveClass('my-custom');
-  });
 });

@@ -24,7 +24,6 @@ Scripts adicionados em `package.json`. Não use `--include`: não é flag do Vit
 ```json
 "test:domain": "vitest run --exclude 'src/**' --exclude 'apps/**'"
 "test:ui":     "vitest run --exclude 'packages/**' --exclude 'apps/**'"
-"test:apps":   "vitest run --exclude 'src/**' --exclude 'packages/**'"
 "test":        "vitest run"
 "test:ci":     "vitest run --reporter=dot"
 ```
@@ -86,7 +85,7 @@ O padrão vale para teste novo e para teste revisado. A rodada de 2026-10-23 cor
 
 **Pendências registradas:**
 
-1. **Verificação verde** de `test:domain`, `test:ui` e `test:apps` (T2.11 do `tasks/todo-test-reduction.md`). Este checkout não tem `node_modules`; rode `npm ci` antes.
+1. **Verificação verde** de `test:domain` e `test:ui` (T2.11 do `tasks/todo-test-reduction.md`). Este checkout não tem `node_modules`; rode `npm ci` antes.
 2. **Mover** `collections`, `dataClient`, `exportImport` (T3.10) — bloqueados por imports de `src/` (`@/data/empty`, `persistentData`). Precisa desacoplar antes.
 3. **Revisar, não cortar em bloco**, os candidatos `ProfileHero`, `ProgressPulse`, `JourneyRail` e `TccView`: inspeção de 2026-10-23 mostrou testes de comportamento (h1, navegação, aria, escrita), não render puro.
 4. **FSRS/review, calendarAggregator/schedule, courseRepertorio/repertorioOptions** foram inspecionados: cobrem comportamentos distintos, não são duplicatas. Não mesclar sem provar sobreposição.
