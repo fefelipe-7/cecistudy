@@ -52,9 +52,7 @@ jobs:
           if [ -z "$pr" ]; then
             gh pr create --base dev --head "$branch" \
               --title "merge: traz a versão da main de volta para dev" \
-              --body "Sincronização automática do que o release-please escreve na \`main\` (versão, CHANGELOG, manifest).
-
-Aberto por \`.github/workflows/sync-main-back.yml\`." >/dev/null
+              --body "Sincronização automática do que o release-please escreve na \`main\` (versão, CHANGELOG, manifest)." >/dev/null
             pr=$(gh pr list --head "$branch" --base dev --state open \
                    --json number --jq '.[0].number')
           fi
