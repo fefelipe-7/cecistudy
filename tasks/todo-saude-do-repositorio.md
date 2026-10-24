@@ -3,9 +3,10 @@
 > Criado 2026-10-23 · Spec: [`../docs/specs/SPEC-026-saude-do-repositorio-branches-ci-cd-e-readme.md`](../docs/specs/SPEC-026-saude-do-repositorio-branches-ci-cd-e-readme.md)
 > Escopo: só este repositório. Nenhuma mudança em `packages/*`, schema, dado da
 > usuária ou no desktop.
-> Status: **em andamento** — F0, F1, F2 e F4 commitados em 2026-10-23; F5 quase
-> toda (zips, catálogo, Biome instalado). O que falta está em
-> [Pendências reais](#pendências-reais), no fim do arquivo.
+> Status: **em andamento** — F0, F1, F2, F4 e F5 commitados em 2026-10-23/24.
+> Falta F6 (docs) e a parte de GitHub (push, settings, rulesets, primeiro
+> release). O que falta está em [Pendências reais](#pendências-reais), no fim
+> do arquivo.
 
 ## Decisões fechadas (não reabrir sem a dona)
 
@@ -423,6 +424,8 @@ O que **não** foi feito, e o motivo. Nenhum item aqui é esquecimento.
 | 5 | **Lint prescritivo** | o preset `recommended` acusa **3.263** achados em `src/` (hooks, a11y, non-null, unused). Corrigir é refactor próprio, não higiene | adotar por família, uma PR por regra |
 | 6 | **`npm run lint` continua `tsc`** | trocar por Biome quebraria o `AGENTS.md`, que outra sessão está editando agora | quando o `AGENTS.md` estiver livre |
 | 7 | **Expurgar os 20 MB do `.db` do histórico** | `git filter-repo` é destrutivo e sem rollback (D11) | decisão explícita |
+| 8 | **`content:check` regrava as fachadas do templo** | rodar `npm run content:check` reescreve 15 JSON + 2 `.ts` de `src/data/temple/` (17 mil linhas de diff, conteúdo idêntico — só reimpressão). A árvore fica suja a cada verificação | ou o script para de escrever e passa a comparar, ou as fachadas saem do git e entram no `prebuild` |
+| 9 | **Mover as specs da raiz para `docs/`** (T6.3) | mover `spec-tcc.md` e `spec-performance.md` quebra 15 referências em `docs/`, `tasks/`, `scripts/` e comentários de `src/lib/performance/`; várias dessas são de outra sessão | fazer junto com a atualização das referências, numa PR só de docs |
 
 O `typecheck` está vermelho por `src/lib/notifications.ts` / `ReminderSettings`
 (SPEC-025 em andamento, **de outra sessão**). Não é regressão deste plano e não

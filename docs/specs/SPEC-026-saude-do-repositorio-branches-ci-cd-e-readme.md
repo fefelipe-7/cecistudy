@@ -1,7 +1,7 @@
 # SPEC-026 · Saúde do repositório: branches, CI/CD e README
 
 > Prefixo: `SPEC-` (local do mobile) · Onde vive: `cecistudy/docs/specs/`
-> Status: **proposta** (2026-10-23)
+> Status: **em andamento** (2026-10-23) — ver §11 para o estado da execução
 > App afetado: mobile — **só este repositório** (`cecistudy/`). O desktop é outro
 > app e não é tocado (`ADR-002`, `ADR-009`).
 > Origem: `SPEC-C-004` (verificação e gate) + `spec-referencial-workspace-academico.md`
@@ -376,3 +376,34 @@ Pendências abertas:
 
 Não há golden nem fixture: esta spec muda processo, não domínio. O que ela
 garante é o gate — e o gate é o teste.
+
+## 11. Estado da execução (2026-10-24)
+
+O que está no repositório e o que ainda depende do GitHub.
+
+| Item | Estado |
+|---|---|
+| Licença PolyForm Noncommercial 1.0.0, README, CONTRIBUTING, SECURITY, CODEOWNERS, templates, Dependabot | entregue |
+| `ci.yml` (`gate-domain`/`gate-full`/`android-debug`/`pr-title`/`ci-ok`), `branch-policy.yml` | entregue, **nunca executado** |
+| `release.yml` (release publicado + dispatch) e `release-please.yml` | entregue |
+| `package.json`: `verify:domain`, `content:ensure` em `predev`/`prebuild`/`preverify`, versão 1.0.95 | entregue |
+| Zips fora do git (9,4 MB) e catálogo destrackeado (20 MB) | entregue |
+| Biome 2.6.2 (`format`, `format:check`, `lint:code`) e 508 arquivos formatados | entregue |
+| Branches `dev`/`staging`, default branch, rulesets, settings | **pendente** — ruleset exigindo `ci-ok` antes do primeiro run verde trava todo merge |
+| `RELEASE_PLEASE_TOKEN` e "Allow GitHub Actions to create and approve pull requests" | **pendente** — só a dona |
+| Primeiro release real | **pendente** — depende dos dois acima |
+
+Duas divergências em relação ao texto acima, ambas deliberadas:
+
+1. **`npm run lint` continua `tsc --noEmit`.** O §7 previa Biome no `lint`, mas
+   `AGENTS.md` documenta `lint = tsc` e é o contrato que o CI e as sessões leem.
+   Biome entrou como `lint:code`; a troca fica para quando `AGENTS.md` estiver
+   livre (outra sessão o edita agora).
+2. **`format:check` não está no `verify:fast`.** Os 17 arquivos ainda fora de
+   formato pertencem a trabalho em andamento de outra sessão. Ligar o passo
+   agora deixaria o gate vermelho por motivo alheio a esta spec.
+
+Débito novo descoberto na execução: **`npm run content:check` regrava as fachadas
+do templo** (15 JSON + 2 `.ts` em `src/data/temple/`, ~17 mil linhas de diff,
+conteúdo idêntico). A árvore fica suja a cada verificação. Registrado em
+`tasks/todo-saude-do-repositorio.md` (Pendências reais, item 8).
