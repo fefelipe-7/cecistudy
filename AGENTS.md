@@ -23,7 +23,11 @@ novo) — as três com ruleset que recusa push direto. Fluxo: `dev → staging �
 
 - **Nunca commitar direto em `main`, `dev` ou `staging`.** O servidor recusa
   ("Changes must be made through a pull request").
-- **Sempre crie e troque para uma branch antes de abrir PR**:
+- **A promoção entre camadas é automática** (`.github/workflows/promote.yml`):
+  a cada push em `dev`/`staging`, o PR da próxima camada é aberto e mergeado
+  quando o gate fecha. **Não abra PR de promoção à mão** — e não promova
+  "por fora": o gate da camada é a única coisa que decide.
+- **Sempre crie e troque para uma branch antes de abrir PR de trabalho**:
   `git switch -c <tipo>/<assunto> origin/<base>`.
 - A default do GitHub é **`main`**, então `gh pr create` **sem `--base`** abre
   PR contra a `main` — quase nunca é o que se quer. Trabalho novo vai com
