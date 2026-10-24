@@ -16,11 +16,9 @@ import { hapticSuccess } from '../lib/haptics';
 import { storage } from '../lib/storage';
 import {
   cancelClassReminders,
-  cancelDailyReminder,
-  cancelExamReminders,
-  cancelInternshipReminders,
   syncFamily,
 } from '../lib/notifications';
+import { normalizeReminderSettings } from '../lib/reminderSettings';
 import { connectGcal, disconnectGcal, syncExam, syncTask, unsyncEvent } from '../lib/gcal';
 
 /**
@@ -141,6 +139,35 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
   // Streak — derivados (a data é calculada uma vez por sessão; o app entende
   // "qual dia é" por aqui). Memoizados: só recomputam quando os dias ativos mudam.
   const todayKey = useMemo(() => toDateKey(new Date()), []);
+
+  // D12: master + categorias. O on/off antigo do TCC (`reminderPrefs.enabled`)
+  // vira a categoria `thesis` na primeira leitura, sem migração de schema.
+  const effectiveReminder = useMemo(
+    () => normalizeReminderSettings(reminderSettings, tcc?.reminderPrefs?.enabled),
+    [reminderSettings, tcc?.reminderPrefs?.enabled]
+  );
+  const remindersOn = effectiveReminder.enabled;
+  const reminderCategories = effectiveReminder.categories;
+
+  // D11: o resumo é materializado a partir dos dados do dia; o adaptador só
+  // compõe a voz. Nada aqui lê relógio.
+  const summarySnapshot = useMemo(
+    () => ({
+      courses: courses.map((c) => ({ name: c.name, schedule: c.schedule })),
+      exams: exams.map((e) => ({ title: e.title, date: e.date })),
+      tasks: tasks.map((t) => ({ title: t.title, dueDate: t.dueDate, completed: t.completed })),
+      thesis: {
+        chapters: thesisChapters.map((ch) => ({ title: ch.title, dueDate: ch.dueDate, stage: ch.stage })),
+        tasks: thesisTasks.map((t) => ({
+          title: t.title,
+          dueDate: t.dueDate,
+          completed: t.status === 'resolvida',
+        })),
+      },
+    }),
+    [courses, exams, tasks, thesisChapters, thesisTasks]
+  );
+
   const streakStats = useMemo(
     () => computeStreak(streakData.activeDays, todayKey),
     [streakData.activeDays, todayKey]
@@ -317,37 +344,32 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
     );
   }, []);
 
+  // Um único ponto de escrita (D12). Os efeitos abaixo agendam/cancelam cada
+  // família; reagendar aqui duplicaria o trabalho.
   const updateReminder = useCallback(
     (settings: ReminderSettings) => {
-      setReminderSettings(settings);
-      if (settings.enabled) {
-        void syncFamily('daily', { time: settings.time }).then((scheduled) => {
-          if (scheduled) hapticSuccess();
-        });
-        void syncFamily('class', { courses });
-        void syncFamily('exam', { exams, prefs: { enabled: settings.enabled, time: settings.time }, today: todayKey });
-        void syncFamily('internship', { logs: internshipLogs, prefs: { enabled: settings.enabled, time: settings.time }, today: todayKey });
-      } else {
-        void cancelDailyReminder();
-        void cancelClassReminders();
-        void cancelExamReminders();
-        void cancelInternshipReminders();
-      }
+      setReminderSettings(normalizeReminderSettings(settings, tcc.reminderPrefs?.enabled));
+      if (settings.enabled) hapticSuccess();
     },
-    [courses, exams, internshipLogs, todayKey, setReminderSettings]
+    [setReminderSettings, tcc.reminderPrefs?.enabled]
   );
 
-  // mantém os lembretes de aula em dia quando o horário das matérias muda
+  // Aulas: semanal. Categoria desligada cancela a faixa.
   useEffect(() => {
-    if (reminderSettings.enabled) void syncFamily('class', { courses });
+    if (remindersOn && reminderCategories.class) void syncFamily('class', { courses });
+    else void cancelClassReminders();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [courses]);
+  }, [courses, remindersOn, reminderCategories.class]);
 
-  // mantém lembretes de prova em dia quando provas mudam
+  // Provas (D4).
   useEffect(() => {
-    if (reminderSettings.enabled) void syncFamily('exam', { exams, prefs: { enabled: reminderSettings.enabled, time: reminderSettings.time }, today: todayKey });
+    void syncFamily('exam', {
+      exams,
+      prefs: { enabled: remindersOn && reminderCategories.exam, time: effectiveReminder.time },
+      today: todayKey,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exams, reminderSettings.enabled, reminderSettings.time, todayKey]);
+  }, [exams, remindersOn, reminderCategories.exam, effectiveReminder.time, todayKey]);
 
   // Lembretes do TCC (SPEC-012 §6.3): reagenda no boot e quando qualquer
   // entidade com data muda — cancela a faixa e refaz o plano (mais próximos
@@ -357,16 +379,40 @@ export function useSharedAppValue(data: DataClientValue): SharedAppValue {
     void syncFamily('thesis', {
       state: { thesis: tcc, chapters: thesisChapters, tasks: thesisTasks, meetings: thesisMeetings },
       today: todayKey,
-      prefs: tcc.reminderPrefs,
+      prefs: { ...tcc.reminderPrefs, enabled: remindersOn && reminderCategories.thesis },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tcc, thesisChapters, thesisTasks, thesisMeetings, todayKey]);
+  }, [tcc, thesisChapters, thesisTasks, thesisMeetings, todayKey, remindersOn, reminderCategories.thesis]);
 
-  // Lembretes de estágio: registro diário
+  // Estágio (D5).
   useEffect(() => {
-    if (reminderSettings.enabled) void syncFamily('internship', { logs: internshipLogs, prefs: { enabled: reminderSettings.enabled, time: reminderSettings.time }, today: todayKey });
+    void syncFamily('internship', {
+      logs: internshipLogs,
+      prefs: { enabled: remindersOn && reminderCategories.internship, time: effectiveReminder.time },
+      today: todayKey,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [internshipLogs, reminderSettings.enabled, reminderSettings.time, todayKey]);
+  }, [internshipLogs, remindersOn, reminderCategories.internship, effectiveReminder.time, todayKey]);
+
+  // Tarefas e prazos (D10).
+  useEffect(() => {
+    void syncFamily('task', {
+      tasks,
+      prefs: { enabled: remindersOn && reminderCategories.task, time: effectiveReminder.time },
+      today: todayKey,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tasks, remindersOn, reminderCategories.task, effectiveReminder.time, todayKey]);
+
+  // Resumo diário (D11).
+  useEffect(() => {
+    void syncFamily('daily', {
+      snapshot: summarySnapshot,
+      prefs: { enabled: remindersOn && reminderCategories.summary, time: effectiveReminder.time },
+      today: todayKey,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [summarySnapshot, remindersOn, reminderCategories.summary, effectiveReminder.time, todayKey]);
 
   const setGcalEnabled = useCallback(
     async (on: boolean) => {

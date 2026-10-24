@@ -49,6 +49,12 @@ const thesisWithTitle = (): ThesisProject =>
     status: 'em_andamento',
   }) as ThesisProject;
 
+/** Espia o menu universal: prova que a linha chamou `openManageItem`. */
+const ManagedProbe = () => {
+  const { managedItem } = useMobileApp();
+  return <span data-testid="managed">{managedItem ? `${managedItem.kind}:${managedItem.id}` : 'none'}</span>;
+};
+
 const Seed = ({ chapters, thesis }: { chapters: ThesisChapter[]; thesis?: ThesisProject }) => {
   const { openCalendar, setThesisChapters, handleUpdateTcc } = useMobileApp();
   const { setTasks } = useDataClientCourses();
@@ -101,6 +107,30 @@ describe('CalendarScreen (SPEC-024 D3/D5)', () => {
     );
     fireEvent.click(screen.getByLabelText('adicionar item neste dia'));
     expect(screen.getByText('reunião do tcc')).toBeTruthy();
+  });
+
+  it('D19 — tarefa sem disciplina abre o gerenciar (a linha não fica morta)', () => {
+    render(
+      <MobileAppProvider>
+        <Seed chapters={[]} />
+        <ManagedProbe />
+        <CalendarScreen />
+      </MobileAppProvider>,
+    );
+    fireEvent.click(screen.getByText('tarefa t-1'));
+    expect(screen.getByTestId('managed')).toHaveTextContent('task:t-1');
+  });
+
+  it('D20 — o `+` do dia abre a reunião já com a data do dia escolhido', () => {
+    render(
+      <MobileAppProvider>
+        <Seed chapters={[]} thesis={thesisWithTitle()} />
+        <CalendarScreen />
+      </MobileAppProvider>,
+    );
+    fireEvent.click(screen.getByLabelText('adicionar item neste dia'));
+    fireEvent.click(screen.getByText('reunião do tcc'));
+    expect(screen.getByLabelText('data')).toHaveValue(todayKeyLocal());
   });
 });
 

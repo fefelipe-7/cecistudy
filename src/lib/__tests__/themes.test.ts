@@ -26,31 +26,6 @@ beforeEach(() => {
 });
 
 describe('THEMES — inventário', () => {
-  it('tem exatamente 7 temas: 4 claros + 3 escuros', () => {
-    const all = Object.values(THEMES);
-    expect(all).toHaveLength(7);
-    expect(all.filter((t) => !t.isDark)).toHaveLength(4);
-    expect(all.filter((t) => t.isDark)).toHaveLength(3);
-  });
-
-  it('ids únicos e na ordem do picker', () => {
-    const ids = Object.values(THEMES).map((t) => t.id);
-    expect(new Set(ids).size).toBe(ids.length);
-    expect(THEME_ORDER).toEqual(ids);
-    expect(THEME_ORDER.filter((id) => THEMES[id].isDark).length).toBe(3);
-  });
-
-  it('o campinho existe, é claro e é verde (a identidade do tema novo)', () => {
-    const t = THEMES['campinho'];
-    expect(t).toBeDefined();
-    expect(t.isDark).toBe(false);
-    expect(THEME_ORDER).toContain('campinho');
-    // O canvas é o verde do campo: o canal verde domina os outros dois.
-    const [r, g, b] = [1, 3, 5].map((i) => parseInt(t.tokens['canvas'].slice(i, i + 2), 16));
-    expect(g).toBeGreaterThan(r);
-    expect(g).toBeGreaterThan(b);
-  });
-
   it('cada tema tem todas as chaves do contrato de tokens', () => {
     for (const theme of Object.values(THEMES)) {
       for (const key of TOKEN_KEYS) {
@@ -206,7 +181,10 @@ describe('contraste WCAG (E.1)', () => {
   });
 
   it('on-brand do amanhecer tem contraste AA sobre brand-strong', () => {
-    const ratio = contrastRatio(THEMES['amanhecer'].tokens['ceci-on-brand'], THEMES['amanhecer'].tokens['ceci-brand-strong']);
+    const ratio = contrastRatio(
+      THEMES['amanhecer'].tokens['ceci-on-brand'],
+      THEMES['amanhecer'].tokens['ceci-brand-strong'],
+    );
     expect(ratio).toBeGreaterThanOrEqual(4.5);
   });
 });

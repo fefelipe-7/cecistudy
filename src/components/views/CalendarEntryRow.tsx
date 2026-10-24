@@ -4,7 +4,7 @@ import React from 'react';
 import type { CalendarEntry, CalendarLayer } from '../../lib/schedule';
 import { destinationForEntry } from '../../lib/calendarDestination';
 import { formatShortDate } from '../../lib/schedule';
-import type { Exam, Task } from '../../types';
+import type { Exam } from '../../types';
 import type { NavigationValue } from '../../context/navigationEngine';
 
 export const KIND_LABEL: Record<CalendarEntry['kind'], string> = {
@@ -25,14 +25,13 @@ export const LAYER_CHIP: Record<CalendarLayer, string> = {
 
 export type EntryNav = Pick<
   NavigationValue,
-  'openCourseDetail' | 'openTccScreen' | 'openInternshipDiary' | 'openStudy'
+  'openCourseDetail' | 'openTccScreen' | 'openInternshipDiary' | 'openStudy' | 'openManageItem'
 >;
 
 interface CalendarEntryRowProps {
   entry: CalendarEntry;
   nav: EntryNav;
   exams: Exam[];
-  tasks: Task[];
   /** A Home não agrupa por dia, então mostra a data na própria linha. */
   showDate?: boolean;
 }
@@ -41,10 +40,9 @@ export const CalendarEntryRow: React.FC<CalendarEntryRowProps> = ({
   entry,
   nav,
   exams,
-  tasks,
   showDate = false,
 }) => {
-  const go = destinationForEntry(entry, nav, exams, tasks);
+  const go = destinationForEntry(entry, nav, exams);
   const when = entry.start ? `${entry.start}${entry.end ? `–${entry.end}` : ''}` : null;
 
   return (

@@ -65,6 +65,7 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
     openWizard,
     openCalendar,
     openStudy,
+    openManageItem,
   } = useNavValue();
 
   const now = useMemo(() => new Date(), []);
@@ -270,9 +271,9 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
               openTccScreen,
               openInternshipDiary,
               openStudy,
+              openManageItem,
             }}
             exams={exams}
-            tasks={tasks}
           />
         </div>
       </div>

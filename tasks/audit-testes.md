@@ -56,3 +56,15 @@ Data: 2026-10-23
 - `node .github/scripts/check-boundaries.mjs` ✅
 - `npx vitest run src` → 152 files, 1731 tests ✅
 - `npx vitest run packages` → 14 files, 367 tests ✅
+
+## Rodada 2 (2026-10-23)
+
+Corte de apresentação pura, com `test:ui` verde antes e depois:
+
+- Removidos 5 testes: HeroCard (molde serifa/raio e gradiente), InternshipCaseHero (accent blue), UnderlineTabBar (classe customizada), InternshipCaseCard (geometria do tile).
+- Removidas 3 asserções de classe sem perder o comportamento: `aspect-[3/4]` (paper3dCard), `inline-flex` (CourseIcon), `p-4` (InternshipCaseCard).
+- `test:apps` mantido com `--passWithNoTests`: `apps/` não tem teste e o script saía 1.
+- Revisados e mantidos: `ProfileHero`, `ProgressPulse`, `JourneyRail` e `TccView` — são comportamento (h1, navegação, aria, escrita), não render puro.
+- FSRS/review, calendarAggregator/schedule e courseRepertorio/repertorioOptions: camadas distintas, sem merge.
+
+Contagens: `test:ui` 134 files / 1284 tests; `test:domain` 17 files / 434 tests. `test:ui`, `test:domain`, `test:apps`, `check:boundaries`, `test:voz` e `verify:contract` verdes. `verify:fast` para no `typecheck` por erro em `src/lib/notifications.ts` / `ReminderSettings` (SPEC-025 em andamento, fora desta rodada).

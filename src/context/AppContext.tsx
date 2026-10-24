@@ -269,7 +269,13 @@ export interface AppContextValue {
   currentWizardType: WizardFlow | null;
   wizardCourseId: string | undefined;
   wizardSeed: InternshipWizardSeed | undefined;
-  openWizard: (type: WizardFlow, courseId?: string, seed?: InternshipWizardSeed) => void;
+  wizardDate: string | undefined;
+  openWizard: (
+    type: WizardFlow,
+    courseId?: string,
+    seed?: InternshipWizardSeed,
+    date?: string,
+  ) => void;
   openInternshipWizard: (seed?: InternshipWizardSeed) => void;
   openTaskExamWizard: () => void;
   closeWizard: () => void;

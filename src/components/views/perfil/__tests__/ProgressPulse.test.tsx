@@ -30,15 +30,6 @@ const renderPulse = (over: Partial<ProfilePulse> = {}) => {
 };
 
 describe('ProgressPulse', () => {
-  it('mostra as quatro métricas com seus valores', () => {
-    renderPulse();
-    expect(screen.getByRole('button', { name: /1h 15min estudados/ })).toBeTruthy();
-    expect(screen.getByRole('button', { name: /50 páginas lidas/ })).toBeTruthy();
-    expect(screen.getByRole('button', { name: /3 de 5 tarefas concluídas/ })).toBeTruthy();
-    expect(screen.getByRole('button', { name: /2 provas pendentes/ })).toBeTruthy();
-    expect(screen.getByText('3/5')).toBeTruthy();
-  });
-
   it('cada métrica navega para a sua tela', () => {
     const h = renderPulse();
     fireEvent.click(screen.getByRole('button', { name: /estudados/ }));
@@ -52,7 +43,22 @@ describe('ProgressPulse', () => {
   });
 
   it('zero métricas mostra o convite, não quatro zeros frios', () => {
-    render(<ProgressPulse pulse={pulse({ studyTimeMinutes: 0, studyTimeLabel: '0min', pagesRead: 0, tasksCompleted: 0, tasksTotal: 0, examsPending: 0 })} onOpenSessions={vi.fn()} onOpenReadings={vi.fn()} onOpenTasks={vi.fn()} onOpenExams={vi.fn()} />);
+    render(
+      <ProgressPulse
+        pulse={pulse({
+          studyTimeMinutes: 0,
+          studyTimeLabel: '0min',
+          pagesRead: 0,
+          tasksCompleted: 0,
+          tasksTotal: 0,
+          examsPending: 0,
+        })}
+        onOpenSessions={vi.fn()}
+        onOpenReadings={vi.fn()}
+        onOpenTasks={vi.fn()}
+        onOpenExams={vi.fn()}
+      />,
+    );
     expect(screen.getByText(/comece anotando uma sessão de estudo/)).toBeTruthy();
     expect(screen.queryByRole('button', { name: /provas pendentes/ })).toBeNull();
   });

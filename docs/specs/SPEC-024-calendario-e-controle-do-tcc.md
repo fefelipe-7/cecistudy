@@ -1,10 +1,10 @@
 # SPEC-024 · Calendário com um dono só, e o controle que o TCC já tinha
 
 > Prefixo: `SPEC-` (local do mobile) · Onde vive: `cecistudy/docs/specs/`
-> Status: **proposta** (2026-10-23)
+> Status: **entregue** (2026-10-24; `npm run verify` verde)
 > App afetado: mobile
 > Origem: spec-referencial-workspace-academico.md §3.2 (recorte do mobile) e §4.2 (Calendário) — **[D]**
-> Decisões: D1..D15
+> Decisões: D1..D20
 > Supersede: **SPEC-014 (D1), em duas cláusulas**: a tab bar de sub-abas deixa de ser congelada (a sub-aba `calendario` sai) e o bloco de calendário deixa de existir dentro da Faculdade — ver §12. Estende a SPEC-012 (`spec-tcc.md`; espelho de grupo `SPEC-M-016`) sem substituir nenhuma decisão dela
 > Depende de: SPEC-007 (navegação por pilha), SPEC-012 (gestão do TCC), SPEC-M-020 (arrasto de abas), SPEC-022 (barra contextual)
 > Espelha: — (spec local do mobile; a cópia de grupo é `SPEC-M-023`)
@@ -250,10 +250,11 @@
 ### D14 · Os lembretes do TCC ganham os campos que o domínio já planeja
 
 - **Decisão.** A aba visão do TCC passa a editar `chapterDaysBefore`,
-  `milestoneDaysBefore`, `time`, `meetingEve` e `meetingMinutesBefore`. Hoje só
-  `enabled` é editável (`src/components/wizards/TccWizard.tsx:75,135`).
-- **Justificativa.** `planThesisReminders` (`thesis.ts:353`) implementa 4
-  gatilhos configuráveis que a UI nunca expôs. A usuária só pode desligar tudo.
+  `milestoneDaysBefore`, `time`, `meetingEve` e `meetingMinutesBefore`. O
+  on/off (`enabled`) **não** é editável aqui: ele já mora no perfil
+  (`categories.thesis`, `SPEC-M-025 D12`).
+- **Justificativa.** `planThesisReminders` (`thesis.ts:541`) implementa 4
+  gatilhos configuráveis que a UI nunca expôs. A usuária só podia desligar tudo.
 - **Alternativa rejeitada.** Manter só on/off: a decisão de quando lembrar
   volta a ser do código, não dela.
 - **Consequência aceita.** A tela ganha uma seção; o teto de 64 notificações
@@ -279,6 +280,77 @@
 - **Consequência aceita.** O mobile continua sem bloco de planejamento. Se um
   dia ele entrar, entra **portando a decisão** do desktop pelo procedimento do
   `AGENTS.md` do grupo, não herdando este arquivo.
+
+### D16 · Um único interruptor para os lembretes do TCC
+
+- **Decisão.** O card de lembretes da aba visão edita **só os cinco campos**.
+  Ligar e desligar continua sendo `reminderSettings.enabled` +
+  `categories.thesis`, no perfil.
+- **Justificativa.** `sharedAppValue.ts:379-386` reagenda com
+  `enabled: remindersOn && reminderCategories.thesis` — o `reminderPrefs.enabled`
+  é sobrescrito e não controla nada desde a `SPEC-M-025`. Um interruptor a mais
+  no card seria um botão que liga e não toca.
+- **Alternativa rejeitada.** O card escrever `categories.thesis`: mesma fonte,
+  dois donos de tela, e o perfil passaria a refletir um estado que ela mudou em
+  outro lugar sem ver.
+- **Consequência aceita.** Quem procura o on/off dentro do TCC não o encontra
+  ali; o card não promete o que não controla. O campo `enabled` continua no
+  modelo (compat de leitura), sem UI própria.
+
+### D17 · As listas de dias são chips, não texto livre
+
+- **Decisão.** `chapterDaysBefore`, `milestoneDaysBefore` e
+  `meetingMinutesBefore` são editados por chips: cada valor tem o próprio "−" e
+  um "+" acrescenta o próximo preset que ainda não está na lista.
+- **Justificativa.** Os valores são presets de produto (7/3/1/0 dias,
+  30/14/7/3/1/0 dias, 60/30/15/5 minutos). Campo de texto com vírgula exige
+  parser, tratamento de entrada inválida e teclado numérico no celular — três
+  problemas para escolher entre quatro números.
+- **Alternativa rejeitada.** Texto livre "7, 1, 0": mais barato de escrever e
+  mais caro de usar; a lista digitada errada vira configuração silenciosa.
+- **Consequência aceita.** Não existe entrada inválida nesses campos, então a
+  decisão de "não grava e avisa por toast" fica **sem gatilho** — um valor fora
+  dos presets (45 dias) não é digitável. Se a dona quiser valor livre, o "+"
+  vira input e o toast volta.
+
+### D18 · No navegador o card aparece com a dica, não escondido
+
+- **Decisão.** Quando `isReminderSupported()` é falso, o card mostra a dica
+  `lembreteSoNoApp` (`voice.ts`) e continua editável.
+- **Justificativa.** Lembrete local só toca no app instalado
+  (`notifications.ts:32-34`). Esconder o card no web faria a mesma capacidade
+  sumir da tela sem explicação; a dica ensina por que não toca.
+- **Alternativa rejeitada.** Esconder o card no navegador: menos ruído, e a
+  usuária configura no web esperando que funcione.
+- **Consequência aceita.** Existe uma frase de dica a mais na aba visão, só no
+  navegador.
+
+### D19 · Tarefa no calendário sempre abre o gerenciar
+
+- **Decisão.** `destinationForEntry` devolve `openManageItem('task', id)` para
+  toda tarefa, com ou sem disciplina.
+- **Justificativa.** Antes, tarefa com prazo e sem `disciplineId` devolvia
+  `null`: a linha aparecia e o toque não fazia nada. Na Home, a mesma tarefa sem
+  prazo já abria o gerenciar.
+- **Alternativa rejeitada.** Disciplina quando houver, gerenciar quando não:
+  dois comportamentos para o mesmo tipo de item, e o toque muda de destino
+  conforme um campo que a linha nem mostra.
+- **Consequência aceita.** Perde-se o atalho "abrir a disciplina" pela tarefa no
+  calendário; a disciplina continua alcançável pela aba Faculdade.
+
+### D20 · O `+` do dia abre o formulário já datado
+
+- **Decisão.** O `+` do painel do dia passa o dia escolhido ao que abrir:
+  `TaskSheet` e `MeetingSheet` ganham `defaultDate`; o wizard de prova recebe
+  `wizardDate` por `openWizard(type, courseId, seed, date)`.
+- **Justificativa.** Marcar o dia 30 e receber um formulário sem data é o
+  caminho mais curto para um item sem prazo. O dia já foi escolhido — pedir de
+  novo é trabalho repetido.
+- **Alternativa rejeitada.** Manter a D5 como estava (reuso puro de
+  `open/onClose`): menos props, e a data escolhida se perde em todo `+`.
+- **Consequência aceita.** `openWizard` ganha um quarto parâmetro opcional e o
+  `wizardDate` vive e morre com o wizard (`closeWizard` limpa), para o próximo
+  wizard não nascer datado pelo anterior.
 
 ## 3. Escopo
 
@@ -370,17 +442,21 @@ dado que o mobile já possui.
 
 ## 8. Critérios de aceite
 
-- [ ] `npm run lint` sai com 0
-- [ ] `npm run test` sai com 0
-- [ ] `npm run build` sai com 0
-- [ ] `node .github/scripts/check-boundaries.mjs` sai com 0
-- [ ] `npm run test -- src/lib/__tests__/calendarAggregator.test.ts` sai com 0
-- [ ] `npm run test -- src/lib/__tests__/routing.test.ts` sai com 0
-- [ ] `rg "buildCalendarWeek|computeOverlappingEventLayout|layoutTimedEntry|snapTo30Minutes|CAL_GRID_START_HOUR|CAL_HOUR_HEIGHT" src packages` retorna vazio
-- [ ] `rg "eventsForMonth|thesisEventsForMonth|upcomingEvents" src --glob '!*.test.*'` retorna só `src/lib/schedule.ts` (o agregador)
-- [ ] `rg "'calendario'" src/components/views/FaculdadeView.tsx packages/navigation/src/types.ts` retorna vazio
-- [ ] `rg "SCHEMA_VERSION = " packages/data/src/schema.ts` continua `22`
-- [ ] Um item de cada origem (aula, prova, tarefa, capítulo, pendência, reunião, marco, estágio, estudo) aparece na agenda do teste de fixture
+Medidos em 2026-10-24 com `npm run verify` (typecheck + 1686 testes + fronteiras
++ voz + contrato + build web + relatório de bundle + build mobile) — tudo verde.
+
+- [x] `npm run lint` sai com 0
+- [x] `npm run test` sai com 0
+- [x] `npm run build` sai com 0
+- [x] `node .github/scripts/check-boundaries.mjs` sai com 0
+- [x] `npm run test -- src/lib/__tests__/calendarAggregator.test.ts` sai com 0
+- [x] `npm run test -- packages/navigation/src/__tests__/routing.test.ts` sai com 0
+      (o arquivo saiu de `src/lib/__tests__/` na rodada de redução de testes)
+- [x] `rg "buildCalendarWeek|computeOverlappingEventLayout|layoutTimedEntry|snapTo30Minutes|CAL_GRID_START_HOUR|CAL_HOUR_HEIGHT" src packages` retorna vazio
+- [x] `rg "eventsForMonth|thesisEventsForMonth|upcomingEvents" src --glob '!*.test.*'` retorna vazio
+- [x] `rg "'calendario'" src/components/views/FaculdadeView.tsx packages/navigation/src/types.ts` retorna vazio
+- [x] `rg "SCHEMA_VERSION = " packages/data/src/schema.ts` continua `22`
+- [x] Um item de cada origem (aula, prova, tarefa, capítulo, pendência, reunião, marco, estágio, estudo) aparece na agenda do teste de fixture
 
 ## 9. Medição
 
@@ -422,6 +498,11 @@ dado que o mobile já possui.
 | D13 | `src/components/views/HomeView.tsx:64-85`, `src/components/views/home/AttentionSection.tsx`, `src/components/views/faculdade/WeekEventsList.tsx` | `calendarAggregator.test.ts` (mesma entrada dos três consumidores) | `npm run test` |
 | D14 | `TccView.tsx` (seção lembretes) | `TccView.test.tsx` ("preferências salvam") | `npm run test -- src/components/tcc` |
 | D15 | `src/core/application/use-cases/calendar.ts` (sem import na tela) | `rg "planResponsibility" src/components` vazio | critério de aceite |
+| D16 | `views/TccView.tsx` (`updateReminders`, sem `enabled`) | `TccView.test.tsx` ("lembretes do tcc") | `npm run test -- src/components/tcc` |
+| D17 | `views/TccView.tsx` (`DayChips`) | `TccView.test.tsx` ("os chips gravam no singleton") | idem |
+| D18 | `views/TccView.tsx` (`isReminderSupported`) + `lib/voice.ts` (`lembreteSoNoApp`) | `TccView.test.tsx` ("no navegador a dica aparece") | idem |
+| D19 | `lib/calendarDestination.ts` (`case 'task'`) | `CalendarScreen.test.tsx` ("D19") | `npm run test` |
+| D20 | `CalendarScreen.tsx`, `home/TaskSheet.tsx`, `tcc/MeetingSheet.tsx`, `navigationEngine.ts` (`wizardDate`) | `CalendarScreen.test.tsx` ("D20") | `npm run test` |
 
 ## 12. Reconciliação
 

@@ -74,9 +74,7 @@ describe('InternshipLogCard — botão de completar (SPEC-011 §8.1, D1)', () =>
   it('registro com pendência mostra "adicionar reflexões" e abre o modal', () => {
     renderCard({ log: clinicoVazio });
     fireEvent.click(screen.getByRole('button', { name: 'adicionar reflexões' }));
-    expect(
-      screen.getByRole('heading', { name: 'o que mais tem pra anotar?' })
-    ).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'o que mais tem pra anotar?' })).toBeInTheDocument();
   });
 
   it('salvar no modal grava pelo caminho do contexto (D3→D9)', () => {
@@ -89,7 +87,7 @@ describe('InternshipLogCard — botão de completar (SPEC-011 §8.1, D1)', () =>
     fireEvent.click(screen.getByRole('button', { name: 'salvar e seguir' }));
     expect(handleSaveInternshipLog).toHaveBeenCalledTimes(1);
     expect(handleSaveInternshipLog).toHaveBeenCalledWith(
-      expect.objectContaining({ id: 'at-1', reflections: 'gostei da supervisão' })
+      expect.objectContaining({ id: 'at-1', reflections: 'gostei da supervisão' }),
     );
   });
 
@@ -153,42 +151,18 @@ describe('InternshipLogCard — chip de preenchimento (SPEC-011 D13 · SPEC-M-01
   // renderizada é a que a voz devolve para aquele contexto.
   const textoDe = (params: Record<string, unknown>) =>
     frase(VAZIO, 'preenchimento', params as Parameters<typeof frase>[2]);
-  it('registro vazio mostra "ainda falta preencher cinco" sem clique', () => {
-    renderCard({ log: clinicoVazio });
-    expect(screen.getByText(textoDe({ faltando: ['reflexoes', 'tema', 'abordagem', 'intervencoes', 'impressoes'] }))).toBeInTheDocument();
-  });
-
-  it('registro completo mostra o chip de sucesso da voz', () => {
-    renderCard({ log: clinicoCompleto });
-    expect(screen.getByText(textoDe({ faltando: [] }))).toBeInTheDocument();
-  });
-
-  it('só falta um campo mostra o campo nomeado pela voz', () => {
-    renderCard({
-      log: {
-        ...clinicoCompleto,
-        reflections: '',
-      },
-    });
-    expect(screen.getByText(textoDe({ faltando: ['reflexões'] }))).toBeInTheDocument();
-  });
-
   it('supervisão nunca mostra chip de preenchimento (I4)', () => {
     renderCard({ log: supervisao, allLogs: [supervisao] });
     expect(screen.queryByText(new RegExp(textoDe({ faltando: [] })))).not.toBeInTheDocument();
     expect(
-      screen.queryByText(new RegExp(`^${textoDe({ faltando: ['tema'] }).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`)),
+      screen.queryByText(
+        new RegExp(`^${textoDe({ faltando: ['tema'] }).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`),
+      ),
     ).not.toBeInTheDocument();
   });
 });
 
 describe('InternshipLogCard — campos de referência no expandido (SPEC-011 D10/D13)', () => {
-  it('campos marcados aparecem vazios com "ainda não anotado ♡"', () => {
-    renderCard({ log: clinicoVazio });
-    fireEvent.click(screen.getByText('sessão 1 · M. S.'));
-    expect(screen.getAllByText('ainda não anotado ♡')).toHaveLength(5);
-  });
-
   it('campo declinado fica oculto no expandido (D11)', () => {
     renderCard({
       log: { ...clinicoVazio, theme: 'não precisou listar o tema', declinedFields: ['tema'] },

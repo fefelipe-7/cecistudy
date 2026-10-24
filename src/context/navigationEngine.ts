@@ -277,7 +277,14 @@ export interface NavigationValue {
   wizardCourseId: string | undefined;
   /** Seed do wizard de estágio (SPEC-009 §8.4). undefined = sem seed. */
   wizardSeed: InternshipWizardSeed | undefined;
-  openWizard: (type: WizardFlow, courseId?: string, seed?: InternshipWizardSeed) => void;
+  /** Dia do `+` do calendário para o wizard nascer datado (SPEC-024 D20). */
+  wizardDate: string | undefined;
+  openWizard: (
+    type: WizardFlow,
+    courseId?: string,
+    seed?: InternshipWizardSeed,
+    date?: string,
+  ) => void;
   openInternshipWizard: (seed?: InternshipWizardSeed) => void;
   openTaskExamWizard: () => void;
   closeWizard: () => void;
@@ -483,6 +490,8 @@ export function useNavigationEngine(
   // Curso pré-selecionado nos wizards (ex.: aberto a partir de uma disciplina)
   const [wizardCourseId, setWizardCourseId] = useState<string | undefined>(undefined);
   const [wizardSeed, setWizardSeed] = useState<InternshipWizardSeed | undefined>(undefined);
+  /** Dia escolhido no `+` do calendário (SPEC-024 D20). Vive e morre com o wizard. */
+  const [wizardDate, setWizardDate] = useState<string | undefined>(undefined);
 
   // Wizard de detalhes da aula
   const [wizardNoteId, setWizardNoteId] = useState<string | null>(null);
@@ -1453,9 +1462,10 @@ export function useNavigationEngine(
   }, []);
 
   const openWizard = useCallback(
-    (type: WizardFlow, courseId?: string, seed?: InternshipWizardSeed) => {
+    (type: WizardFlow, courseId?: string, seed?: InternshipWizardSeed, date?: string) => {
       setWizardCourseId(courseId);
       setWizardSeed(seed);
+      setWizardDate(date);
       setWizardEdit(null);
       const top = navigationStack[navigationStack.length - 1];
       // SPEC-005: o wizard de semestre sempre nasce **sobre o perfil** — a rota
@@ -1524,6 +1534,7 @@ export function useNavigationEngine(
     // O seed morre com o wizard: se sobreviver, o próximo `openWizard` sem seed
     // abriria pré-preenchido com dados do registro anterior (`SPEC-009 §8.4`).
     setWizardSeed(undefined);
+    setWizardDate(undefined);
     setWizardEdit(null);
     goBack();
   }, [goBack, setWizardCourseId, setWizardSeed]);
@@ -1920,6 +1931,7 @@ export function useNavigationEngine(
       currentWizardType,
       wizardCourseId,
       wizardSeed,
+      wizardDate,
       openWizard,
       openInternshipWizard,
       openInternshipCaseSession,
@@ -2120,6 +2132,7 @@ export function useNavigationEngine(
       tccSheet,
       updateQuizPlayState,
       wizardCourseId,
+      wizardDate,
       wizardEdit,
       wizardNoteId,
     ],

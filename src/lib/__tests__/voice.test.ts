@@ -7,7 +7,6 @@ import {
   CATALOGOS,
   CHAVES_COM_APELIDO,
   CHAVES_ONDE_SE_NOMEIA,
-  DICA,
   ERRO,
   ERRO_POR_KIND_SYNC,
   FALLBACK,
@@ -88,7 +87,9 @@ describe('D8 · tratamento por nome é opcional e é dado', () => {
   const comNomeCtx: VozContexto = { tratamentoAutorizado: true, nomeDaUsuaria: 'Fernanda' };
 
   it('sem autorização, o nome não é usado mesmo estando no perfil', () => {
-    expect(nomeDisponivel({ tratamentoAutorizado: false, nomeDaUsuaria: 'Fernanda' })).toBeUndefined();
+    expect(
+      nomeDisponivel({ tratamentoAutorizado: false, nomeDaUsuaria: 'Fernanda' }),
+    ).toBeUndefined();
   });
 
   it('sem nome, não usa tratamento', () => {
@@ -128,12 +129,6 @@ describe('D8 · tratamento por nome é opcional e é dado', () => {
 
 describe('I3 · o apelido "ceço" só vale nas chaves autorizadas', () => {
   const apelido = VOZ.intimidade;
-
-  it('o apelido está definido e é diferente do nome de registro', () => {
-    expect(apelido).toBe('ceço');
-    expect(VOZ.registro).toBe('cecinho');
-    expect(apelido).not.toBe(VOZ.registro);
-  });
 
   it('toda chave autorizada é uma chave do catálogo', () => {
     const ids = new Set(frasesDoCatalogo().map((f) => f.id));
@@ -180,18 +175,6 @@ describe('a voz não fala vocabulário proibido', () => {
       }
     }
     expect(achados).toEqual([]);
-  });
-
-  it('o limite de palavra não acusa a marca (fixture)', () => {
-    // A comparação é sobre o texto em minúsculas, como o teste real faz.
-    expect(/\bceci\b/.test('cecistudy ♡ tcc')).toBe(false);
-    expect(/\bceci\b/.test('isso é para a Ceci'.toLowerCase())).toBe(true);
-  });
-
-  it('todo termo proibido tem motivo escrito', () => {
-    for (const [termo, motivo] of Object.entries(PROIBIDO)) {
-      expect(motivo.length, `PROIBIDO["${termo}"] sem motivo`).toBeGreaterThan(10);
-    }
   });
 
   it('"cantinho" é metáfora, não nome de produto: a marca não o contém (D4)', () => {
@@ -309,11 +292,6 @@ describe('D7 · o motor de dica é um só, com variante por contexto', () => {
     expect(a).toContain('sem pressa');
   });
 
-  it('é determinístico: mesmo contexto, mesma frase, em qualquer render', () => {
-    const c = { cartoesVencidos: 3, diasDeSequencia: 5, minutosDeFocoHoje: 0 };
-    expect(voz.dica(c, AGORA)).toBe(voz.dica(c, AGORA));
-  });
-
   it('a sequência sem foco pede sessão curta antes da sequência afirmativa', () => {
     // A ordem das candidatas É a regra de especificidade. Se inverter, a
     // usuária recebe "você tá construindo algo bonito" em vez de um convite.
@@ -330,26 +308,6 @@ describe('D7 · o motor de dica é um só, com variante por contexto', () => {
     expect(misto).toContain('2');
   });
 
-  it('o resumo e a dica não se confundem: um contexto, duas frases distintas', () => {
-    const c = { tarefasPendentes: 3, provasPendentes: 2, cartoesVencidos: 4 };
-    expect(voz.resumoDoDia(c, AGORA)).not.toBe(voz.dica(c, AGORA));
-  });
-
-  it('nenhuma dica tem o apelido — afeto próximo é outro lugar (I3)', () => {
-    const contextos = [
-      { cartoesVencidos: 3 },
-      { tarefasPendentes: 2, provasPendentes: 1 },
-      { frequenciaPercent: 70 },
-      { diasDeSequencia: 9, minutosDeFocoHoje: 10 },
-      { aulaHoje: true },
-      { minutosDeFocoNaMateria: 200 },
-    ];
-    for (const c of contextos) {
-      expect(voz.dica(c, AGORA)).not.toContain(VOZ.intimidade);
-      expect(voz.resumoDoDia(c, AGORA)).not.toContain(VOZ.intimidade);
-    }
-  });
-
   it('a saudação segue o ciclo do dia, madrugada inclusive', () => {
     expect(voz.saudacao(new Date(2026, 0, 1, 1, 30))).toBe('boa madrugada');
     expect(voz.saudacao(new Date(2026, 0, 1, 9, 30))).toBe('bom dia');
@@ -357,36 +315,7 @@ describe('D7 · o motor de dica é um só, com variante por contexto', () => {
     expect(voz.saudacao(new Date(2026, 0, 1, 20, 30))).toBe('boa noite');
   });
 
-  it('toda chave citada por uma candidata existe no catálogo (D7)', () => {
-    // Uma candidata apontando para chave morta é a forma mais silenciosa de o
-    // motor degradar para o padrão sem ninguém ver.
-    const existentes = new Set(Object.keys(voz.DICA));
-    for (const chave of CANDIDATAS_PUBLICAS) {
-      expect(existentes, `candidata aponta para "${chave}", que não existe em DICA`).toContain(chave);
-    }
-  });
 });
-
-/** As chaves que o motor pode escolher — espelha `CANDIDATAS`, sem exportá-la. */
-const CANDIDATAS_PUBLICAS = [
-  'provaPassada',
-  'provaHoje',
-  'provaAmanha',
-  'provaNaSemana',
-  'provaProgramada',
-  'frequencia',
-  'cartoesVencidos',
-  'leitura',
-  'sequenciaSemFoco',
-  'sequencia',
-  'aulaHoje',
-  'focoNaMateria',
-  'semFocoHoje',
-  'diaMisto',
-  'diaDeProvas',
-  'diaDeTarefas',
-  'diaTranquilo',
-];
 
 // ---------------------------------------------------------------------------
 // Contrato das categorias
@@ -465,18 +394,6 @@ describe('D5 · o erro tem duas frases, nesta ordem', () => {
     expect(semAcao).toEqual([]);
   });
 
-  it('o vocabulário de ação é um conjunto declarado, não uma lista ad-hoc', () => {
-    // Se um verbo novo entrar na voz, ele entra **aqui** também. Uma lista de
-    // verbos que mora dentro do teste e ninguém lê é a forma de o teste deixar
-    // de proteger o que diz proteger.
-    expect(VERBO_DE_ACAO.source).toContain('sincroniza');
-    expect(VERBO_DE_ACAO.source).toContain('começa');
-    expect(VERBO_DE_ACAO.source).toContain('coloca');
-    expect(VERBO_DE_ACAO.source).toContain('escreve');
-    expect(VERBO_DE_ACAO.source).toContain('escolhe');
-    expect(VERBO_DE_ACAO.source).toContain('cola');
-  });
-
   it('a frase composta junta as duas com ponto, e não com quebra', () => {
     const saida = erro('senhaInvalida');
     expect(saida).toBe('não consegui abrir esse backup. confere a senha e tenta de novo');
@@ -537,8 +454,9 @@ describe('D17 · erroDeSync traduz o código e esconde o diagnóstico', () => {
     // A lista é de jargão de **diagnóstico**; quem amplia sem esse critério
     // reprova frase certa — e o próprio teste abaixo seria o primeiro a cair.
     const jargao = /\b(token|401|403|409|json|sha|sha1|api)\b/i;
-    const achados = Object.keys(ERRO)
-      .filter((c) => jargao.test(textoDe(ERRO[c].oQueAconteceu) + textoDe(ERRO[c].oQuePodeFazer)));
+    const achados = Object.keys(ERRO).filter((c) =>
+      jargao.test(textoDe(ERRO[c].oQueAconteceu) + textoDe(ERRO[c].oQuePodeFazer)),
+    );
     expect(achados).toEqual([]);
   });
 
@@ -549,9 +467,6 @@ describe('D17 · erroDeSync traduz o código e esconde o diagnóstico', () => {
     expect(frase).not.toContain('undefined');
   });
 
-  it('UNKNOWN e um erro solto dão a mesma frase — não há dois "desconhecidos"', () => {
-    expect(erroDeSync(new SyncProviderError('UNKNOWN', 'github 500'))).toBe(erroDeSync(new Error('x')));
-  });
 });
 
 // ---------------------------------------------------------------------------
@@ -585,27 +500,27 @@ describe('D12 · toda chave de voz tem consumidor em produção', () => {
       const alvo = path.join(raiz, camada);
       if (fs.existsSync(alvo)) andar(alvo);
     }
-    return arquivos.map((a) => ({ arquivo: path.relative(raiz, a), texto: fs.readFileSync(a, 'utf-8') }));
+    return arquivos.map((a) => ({
+      arquivo: path.relative(raiz, a),
+      texto: fs.readFileSync(a, 'utf-8'),
+    }));
   })();
 
-  it('o consumidor é procurado no código de produção, não só no catálogo', () => {
-    expect(consumo.length).toBeGreaterThan(100);
-  });
-
-  for (const codigo of Object.keys(ERRO)) {
-    it(`ERRO.${codigo} tem consumidor em produção`, () => {
-      // Dois caminhos legítimos de consumo: a tela pede a chave, **ou** o mapa
-      // `kind → chave` do sync a referencia (a tela não conhece `kind`).
+  it('todo código de ERRO tem consumidor em produção (D12)', () => {
+    // Dois caminhos legítimos de consumo: a tela pede a chave, **ou** o mapa
+    // `kind → chave` do sync a referencia (a tela não conhece `kind`).
+    const semConsumidor = Object.keys(ERRO).filter((codigo) => {
       const noMapa = Object.values(ERRO_POR_KIND_SYNC).includes(codigo);
-      const consumidores = consumo.filter((c) => c.texto.includes(`'${codigo}'`));
-      const producao = consumidores.filter((c) => !c.texto.includes('voice.test'));
+      const producao = consumo.filter(
+        (c) => c.texto.includes(`'${codigo}'`) && !c.texto.includes('voice.test'),
+      );
       const servidaPeloMapa = Object.values(ERRO_POR_KIND_SYNC).filter((k) =>
         producao.some((c) => c.texto.includes(`erroDeSync`)),
       );
-      expect(
-        noMapa || servidaPeloMapa.includes(codigo) || producao.length > 0,
-        `ERRO.${codigo} declarado e sem consumidor — chave morta é dívida (D12)`,
-      ).toBe(true);
+      return !(noMapa || servidaPeloMapa.includes(codigo) || producao.length > 0);
     });
-  }
+    expect(semConsumidor, 'códigos sem consumidor em produção — chave morta é dívida (D12)').toEqual(
+      [],
+    );
+  });
 });

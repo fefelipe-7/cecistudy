@@ -118,7 +118,7 @@ export const CalendarScreen: React.FC = () => {
   };
 
   const renderEntry = (entry: CalendarEntry) => (
-    <CalendarEntryRow key={entry.id} entry={entry} nav={nav} exams={exams} tasks={tasks} />
+    <CalendarEntryRow key={entry.id} entry={entry} nav={nav} exams={exams} />
   );
 
   const hasTcc = tcc.title.trim().length > 0;
@@ -194,7 +194,7 @@ export const CalendarScreen: React.FC = () => {
                     key={d.id}
                     onClick={() => {
                       setMenuOpen(false);
-                      if (d.id === 'exam') nav.openWizard('exam');
+                      if (d.id === 'exam') nav.openWizard('exam', undefined, undefined, selected);
                       else setDoor(d.id);
                     }}
                     className="px-3 py-1.5 rounded-full text-[11px] font-semibold text-ceci-brand-strong bg-surface-rose border border-ceci-border-brand cursor-pointer"
@@ -216,11 +216,16 @@ export const CalendarScreen: React.FC = () => {
         )}
       </section>
 
-      <TaskSheet open={door === 'task'} onClose={() => setDoor(null)} />
+      <TaskSheet
+        open={door === 'task'}
+        defaultDate={selected ?? undefined}
+        onClose={() => setDoor(null)}
+      />
       <MeetingSheet
         open={door === 'meeting'}
         meetingId="new"
         intent="agendar"
+        defaultDate={selected ?? undefined}
         onClose={() => setDoor(null)}
       />
     </div>
