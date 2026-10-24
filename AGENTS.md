@@ -16,6 +16,21 @@ Guidance for OpenCode sessions in **cecistudy ♡** — personal, mobile-first, 
 - **Toolchain de contrato:** Node 22 (`.nvmrc` e `engines >= 22`); npm 10.x é o par testado em CI. A máquina de dev roda Node 26 + npm 12 (warning `localStorage` experimental em workers do Vitest é ruído; `vitest.setup.ts` já trata o shadowing). Relatório de bundle: `artifacts/bundle-report.json` (regenerar ao mudar chunks — F7.6 do `tasks/todo-performance.md` torna isso script).
 - Content/catalog pipeline (only when editing temple/catalog data): `npm run content:build` → `npm run db:verify` → `npm run content:check`.
 
+## Git e branches (obrigatório)
+
+O repositório tem `main` (release), `staging` (gate completo) e `dev` (trabalho
+novo) — as três com ruleset que recusa push direto. Fluxo: `dev → staging → main`.
+
+- **Nunca commitar direto em `main`, `dev` ou `staging`.** O servidor recusa
+  ("Changes must be made through a pull request").
+- **Sempre crie e troque para uma branch antes de abrir PR**:
+  `git switch -c <tipo>/<assunto> origin/<base>`.
+- A default do GitHub é **`main`**, então `gh pr create` **sem `--base`** abre
+  PR contra a `main` — quase nunca é o que se quer. Trabalho novo vai com
+  `--base dev`; promoção, com `--base staging` ou `--base main`.
+- Título do PR segue conventional commit (`pr-title` é check obrigatório);
+  promoções usam o tipo `merge`.
+
 ## Testes: classificação e corte (obrigatório)
 
 `docs/estandares-testes.md` é a regra. Todo teste novo ou revisado declara **a classe** e **o que protege que outro gate não protege**; sem isso, não entra.
@@ -112,7 +127,7 @@ Guidance for OpenCode sessions in **cecistudy ♡** — personal, mobile-first, 
 - **Node:** `engines >=22` / `.nvmrc` = 22. If running on Node 26, jsdom's `localStorage` is shadowed by an experimental global; handled in `vitest.setup.ts`.
 - **Git repo:** workspace clonado de `https://github.com/fefelipe-7/cecistudy.git`, branch `main` (push OK daqui). CI espera `main`.
 - **Docs drift:** `.context/*.md` and specs arquivadas may be stale in places — trust the code and `packages/data/src/schema` / `packages/domain` as source of truth.
-- **GitHub network is blocked from this machine** (api/cdn = 000); npm, PyPI, and Microsoft CDN work.
+- **GitHub funciona desta máquina desde 2026-10-24** (`gh` autenticado; `gh api`, push e leitura de run OK). O texto antigo dizia que a api/cdn estava bloqueada — não está mais.
 
 ## Skills do projeto (e quando usar)
 Skills em `../.opencode/skill/<nome>/SKILL.md` — no hub do grupo, desde 2026-10-22 (antes
