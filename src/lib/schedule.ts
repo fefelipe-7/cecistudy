@@ -11,7 +11,8 @@ import type {
 } from '../types';
 import { isChapterDone } from '../types';
 import { WEEKDAY_LABELS } from '../data/constants';
-import { todayKeyLocal, formatDateShortBR } from './dateBR';
+import { formatDateShortBR, addDaysKey } from './dateBR';
+import type { InternshipLog, DateKey } from '../types';
 
 const WEEKDAY_MAP: Record<string, number> = {
   domingo: 0, dom: 0,
@@ -155,157 +156,6 @@ export function extractScheduleTime(slots?: string | CourseScheduleSlot[] | unde
   return arr[0].start;
 }
 
-/** Eventos de uma data (YYYY-MM-DD) derivados de provas, tarefas e TCC. */
-export interface CalendarEvent {
-  id: string;
-  title: string;
-  date: string;
-  kind: 'prova' | 'tarefa' | 'tcc';
-  courseId?: string;
-  completed: boolean;
-  /**
-   * SPEC-012 F4.5: destino do toque quando `kind === 'tcc'`. A aba é um
-   * subconjunto de `ThesisTab` (`packages/navigation`) — o mesmo caminho de
-   * `openTccScreen(tab, focusId)` usado pela notificação (Q10).
-   */
-  tccTab?: 'visao' | 'capitulos' | 'orientacao';
-  tccFocusId?: string;
-}
-
-export function eventsForMonth(
-  exams: { id: string; title: string; date: string; courseId: string; completed: boolean }[],
-  tasks: { id: string; title: string; dueDate?: string; disciplineId?: string; completed: boolean }[],
-  month: number,
-  year: number
-): Map<number, CalendarEvent[]> {
-  const pad = (n: number) => String(n).padStart(2, '0');
-  const byDay = new Map<number, CalendarEvent[]>();
-  const add = (ev: CalendarEvent) => {
-    const day = Number(ev.date.slice(8, 10));
-    if (Number.isNaN(day)) return;
-    const list = byDay.get(day) ?? [];
-    list.push(ev);
-    byDay.set(day, list);
-  };
-  exams.forEach((e) => {
-    if (e.date.startsWith(`${year}-${pad(month)}`)) {
-      add({ id: e.id, title: e.title, date: e.date, kind: 'prova', courseId: e.courseId, completed: e.completed });
-    }
-  });
-  tasks.forEach((t) => {
-    if (t.dueDate && t.dueDate.startsWith(`${year}-${pad(month)}`)) {
-      add({ id: t.id, title: t.title, date: t.dueDate, kind: 'tarefa', courseId: t.disciplineId, completed: t.completed });
-    }
-  });
-  return byDay;
-}
-
-/**
- * Eventos derivados do TCC para o mês (SPEC-012 F4.5): capítulos com prazo,
- * pendências abertas, reuniões agendadas e os marcos (entrega/banca).
- *
- * **Puro** — nenhum relógio: a data civil vem dos campos `dueDate`/`date`.
- * `id = tcc-<tipo>-<entityId>` (por id estável, nunca por índice — F2 da spec).
- * O destino do toque viaja no próprio evento (`tccTab`/`tccFocusId`).
- */
-export function thesisEventsForMonth(
-  thesis: ThesisProject,
-  chapters: ThesisChapter[],
-  meetings: ThesisMeeting[],
-  tasks: ThesisTask[],
-  month: number,
-  year: number
-): Map<number, CalendarEvent[]> {
-  const prefix = `${year}-${String(month).padStart(2, '0')}`;
-  const byDay = new Map<number, CalendarEvent[]>();
-  const add = (date: string, ev: CalendarEvent) => {
-    const day = Number(date.slice(8, 10));
-    if (Number.isNaN(day)) return;
-    const list = byDay.get(day) ?? [];
-    list.push(ev);
-    byDay.set(day, list);
-  };
-
-  chapters.forEach((ch) => {
-    // Mesma regra de `nextThesisDeadline`: capítulo pronto deixa de ser prazo.
-    if (isChapterDone(ch)) return;
-    if (!ch.dueDate || !ch.dueDate.startsWith(prefix)) return;
-    add(ch.dueDate, {
-      id: `tcc-chapter-${ch.id}`,
-      title: ch.title,
-      date: ch.dueDate,
-      kind: 'tcc',
-      completed: false,
-      tccTab: 'capitulos',
-      tccFocusId: ch.id,
-    });
-  });
-
-  tasks.forEach((t) => {
-    if (!t.dueDate || !t.dueDate.startsWith(prefix)) return;
-    if (t.status === 'resolvida' || t.status === 'arquivada') return;
-    add(t.dueDate, {
-      id: `tcc-task-${t.id}`,
-      title: t.title,
-      date: t.dueDate,
-      kind: 'tcc',
-      completed: false,
-      tccTab: 'orientacao',
-      tccFocusId: t.id,
-    });
-  });
-
-  meetings.forEach((m) => {
-    if (m.status !== 'agendada' || !m.date.startsWith(prefix)) return;
-    add(m.date, {
-      id: `tcc-meeting-${m.id}`,
-      title: `reunião com ${thesis.advisor || 'a orientação'}`,
-      date: m.date,
-      kind: 'tcc',
-      completed: false,
-      tccTab: 'orientacao',
-      tccFocusId: m.id,
-    });
-  });
-
-  const milestone = (date: string | undefined, id: string, title: string) => {
-    if (!date || !date.startsWith(prefix)) return;
-    add(date, {
-      id: `tcc-milestone-${id}`,
-      title,
-      date,
-      kind: 'tcc',
-      completed: false,
-      tccTab: 'visao',
-    });
-  };
-  milestone(thesis.deliveryDate, 'delivery', 'entrega final do tcc');
-  milestone(thesis.defenseDate, 'defense', 'banca do tcc');
-
-  return byDay;
-}
-
-/** Próximos eventos (ordenados por data, a partir de hoje), com limite. */
-export function upcomingEvents(
-  exams: { id: string; title: string; date: string; courseId: string }[],
-  tasks: { id: string; title: string; dueDate?: string; disciplineId?: string }[],
-  internshipLogs: { id: string; date: string; activity: string }[],
-  limit = 5
-): CalendarEvent[] {
-  const todayKey = todayKeyLocal();
-  const all: CalendarEvent[] = [
-    ...exams.map((e) => ({ id: e.id, title: e.title, date: e.date, kind: 'prova' as const, courseId: e.courseId, completed: false })),
-    ...tasks
-      .filter((t) => t.dueDate)
-      .map((t) => ({ id: t.id, title: t.title, date: t.dueDate as string, kind: 'tarefa' as const, courseId: t.disciplineId, completed: false })),
-    ...internshipLogs.map((l) => ({ id: l.id, title: l.activity, date: l.date, kind: 'tarefa' as const, completed: false })),
-  ];
-  return all
-    .filter((e) => e.date >= todayKey)
-    .sort((a, b) => a.date.localeCompare(b.date))
-    .slice(0, limit);
-}
-
 /** Formata "2026-08-11" → "11/08". */
 export function formatShortDate(date: string): string {
   return formatDateShortBR(date);
@@ -324,316 +174,200 @@ export function daysInMonth(year: number, month: number): number {
 }
 
 /* ================================================================ */
-/*  Calendário desktop — camadas (Faculdade / TCC / Estudos / GCal) */
+/*  Calendário — um agregador só (SPEC-024 D4/D6)                    */
 /* ================================================================ */
 
-/** Categoria visual de um evento no calendário desktop. */
-export type CalendarLayer = 'faculdade' | 'tcc' | 'estudos' | 'gcal';
+export type CalendarLayer = 'faculdade' | 'tcc' | 'estudos' | 'estagio';
 
-/** Subtipo de evento (define ícone + semantics). */
-export type CalendarSubtype = 'aula' | 'prova' | 'tarefa' | 'tcc' | 'estudo' | 'externo';
+export type CalendarEntryKind = 'aula' | 'prova' | 'tarefa' | 'tcc' | 'estagio' | 'estudo';
 
-/** Origem do dado real (para write-back ao arrastar/redimensionar). */
-export type CalendarEntryRef = 'class' | 'exam' | 'task' | 'tccChapter' | 'session' | 'gcal';
-
-export interface CalendarStage {
+export interface CalendarEntryRef {
+  kind:
+    | 'class'
+    | 'exam'
+    | 'task'
+    | 'chapter'
+    | 'thesisTask'
+    | 'meeting'
+    | 'milestone'
+    | 'internship'
+    | 'session';
   id: string;
-  label: string;
-  done: boolean;
 }
 
-export interface CalendarLink {
-  label: string;
-}
-
+/**
+ * Item de leitura do calendário. `date` é `DateKey` (`YYYY-MM-DD`), nunca o dia
+ * do mês: a chave numérica perdia mês e ano (D6).
+ */
 export interface CalendarEntry {
   id: string;
+  date: DateKey;
+  kind: CalendarEntryKind;
   layer: CalendarLayer;
-  subtype: CalendarSubtype;
   title: string;
-  subtitle: string;
-  date: string; // YYYY-MM-DD
-  courseId?: string;
-  courseName?: string;
-  completed?: boolean;
-  importance?: string;
-  status?: string;
-  stages?: CalendarStage[];
-  links?: CalendarLink[];
-  notes?: string;
-  plannedStart?: string;
-  plannedEnd?: string;
-  start?: string; // HH:MM (quando temporizado)
-  end?: string; // HH:MM
-  /** Referência ao dado real para write-back (arrasto/redimensionar). */
-  entryRef?: CalendarEntryRef;
-  /** Id da entidade real (id do capítulo do TCC quando entryRef='tccChapter'). */
-  dataId?: string;
+  start?: string;
+  end?: string;
+  ref: CalendarEntryRef;
 }
 
-export interface TimedEntry extends CalendarEntry {
-  start: string; // HH:MM
-  end: string; // HH:MM
-}
-
-export interface DayCalendarEntries {
-  timed: TimedEntry[];
-  allDay: CalendarEntry[];
-}
-
-export interface BuildCalendarWeekArgs {
-  weekDays: Date[];
+export interface BuildCalendarEntriesArgs {
   courses: Course[];
   exams: Exam[];
   tasks: Task[];
-  sessions: StudySession[];
-  /** SPEC-012: o singleton e os capítulos são coleções separadas agora. */
-  tcc?: ThesisProject;
-  thesisChapters?: ThesisChapter[];
-  gcal?: CalendarEntry[];
+  thesis?: ThesisProject;
+  chapters: ThesisChapter[];
+  thesisTasks: ThesisTask[];
+  meetings: ThesisMeeting[];
+  internshipLogs: InternshipLog[];
+  studySessions: StudySession[];
+  /** Janela fechada: `from <= date <= to`. */
+  from: DateKey;
+  to: DateKey;
 }
-
-const pad2 = (n: number) => String(n).padStart(2, '0');
-
-function toDateKey(d: Date): string {
-  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
-}
-
-function addHoursHHMM(start: string, hours: number): string {
-  const [h, m] = start.split(':').map(Number);
-  const total = Math.min(23, h + hours);
-  return `${pad2(total)}:${pad2(m)}`;
-}
-
-function addMinutesHHMM(start: string, mins: number): string {
-  const [h, m] = start.split(':').map(Number);
-  const total = h * 60 + m + Math.max(0, mins);
-  const eh = Math.min(23, Math.floor(total / 60));
-  const em = total % 60;
-  return `${pad2(eh)}:${pad2(em)}`;
-}
-
-const STUDY_STARTS = ['09:00', '11:00', '14:00', '16:00', '19:00'];
 
 /**
- * Deriva os eventos de uma semana acadêmica (Seg…Sex por padrão) a partir do
- * estado real do app, agrupados por camada. Início das sessões de estudo é
- * estimado para o layout (StudySession armazena só data + duração).
+ * A única fonte de eventos do mobile (D4). Puro: nenhum relógio — a janela
+ * chega por `from`/`to`. Ordenado por `(date, start ?? '99:99', title)`.
+ *
+ * Capítulo pronto, pendência resolvida/arquivada e reunião cancelada não
+ * entram (I3); todo item aponta para a entidade que o originou (I2).
  */
-export function buildCalendarWeek(args: BuildCalendarWeekArgs): Record<number, DayCalendarEntries> {
-  const result: Record<number, DayCalendarEntries> = {};
+export function buildCalendarEntries(args: BuildCalendarEntriesArgs): CalendarEntry[] {
+  const { from, to, thesis } = args;
+  const out: CalendarEntry[] = [];
+  if (to < from) return out;
 
-  args.weekDays.forEach((day, idx) => {
-    const dayEntries: DayCalendarEntries = { timed: [], allDay: [] };
-    const key = toDateKey(day);
+  const inWindow = (date?: string): date is DateKey => !!date && date >= from && date <= to;
 
-    // aulas recorrentes (horário estruturado da disciplina)
-    getTodaySchedule(args.courses, day).forEach(({ course, slot }) => {
-      dayEntries.timed.push({
+  // aulas recorrentes: o slot da disciplina projetado em cada dia da janela
+  for (let key = from; key <= to; key = addDaysKey(key, 1)) {
+    const [y, m, d] = keyParts(key);
+    getTodaySchedule(args.courses, new Date(y, m, d)).forEach(({ course, slot }) => {
+      out.push({
         id: `aula-${course.id}-${slot.start}-${key}`,
+        date: key,
+        kind: 'aula',
         layer: 'faculdade',
-        subtype: 'aula',
         title: course.name,
-        subtitle: 'aula',
-        date: key,
-        courseId: course.id,
-        courseName: course.name,
         start: slot.start,
-        end: slot.end ?? addHoursHHMM(slot.start, 1),
-        entryRef: 'class',
-        dataId: course.id,
+        end: slot.end,
+        ref: { kind: 'class', id: course.id },
       });
     });
+  }
 
-    // provas (bloco de 2h; usa o horário real quando informado)
-    args.exams
-      .filter((e) => e.date === key)
-      .forEach((e) => {
-        const course = args.courses.find((c) => c.id === e.courseId);
-        const start = e.time ?? '14:00';
-        dayEntries.timed.push({
-          id: e.id,
-          layer: 'faculdade',
-          subtype: 'prova',
-          title: e.title,
-          subtitle: 'prova',
-          date: key,
-          courseId: e.courseId,
-          courseName: course?.name,
-          completed: e.completed,
-          start,
-          end: addHoursHHMM(start, 2),
-          entryRef: 'exam',
-          dataId: e.id,
-        });
-      });
-
-    // tarefas com prazo → faixa "dia inteiro" (estilo "entrega: …")
-    args.tasks
-      .filter((t) => t.dueDate && t.dueDate === key)
-      .forEach((t) => {
-        const course = args.courses.find((c) => c.id === t.disciplineId);
-        dayEntries.allDay.push({
-          id: t.id,
-          layer: 'faculdade',
-          subtype: 'tarefa',
-          title: `entrega: ${t.title}`,
-          subtitle: 'tarefa',
-          date: key,
-          courseId: t.disciplineId,
-          courseName: course?.name,
-          completed: t.completed,
-          entryRef: 'task',
-          dataId: t.id,
-        });
-      });
-
-    // TCC: capítulos com prazo viram bloco tcc; etapas = capítulos do tcc.
-    // SPEC-012: id por `entityId` (nunca por índice — F2 da spec) e `stage` no
-    // lugar de `completed`. Ainda sem chamador em produção (F4.5 liga).
-    if (args.tcc) {
-      const tcc = args.tcc;
-      const chapters = args.thesisChapters ?? [];
-      const stages: CalendarStage[] = chapters.map((c) => ({
-        id: c.id,
-        label: c.title,
-        done: c.stage === 'pronto',
-      }));
-      chapters.forEach((ch) => {
-        if (ch.dueDate && ch.dueDate === key) {
-          dayEntries.timed.push({
-            id: `tcc-chapter-${ch.id}-${key}`,
-            layer: 'tcc',
-            subtype: 'tcc',
-            title: `${tcc.title} — ${ch.title}`,
-            subtitle: 'bloco tcc',
-            date: key,
-            importance: ch.stage === 'pronto' ? undefined : 'importante',
-            status: ch.stage === 'pronto' ? 'concluído' : undefined,
-            stages,
-            notes: tcc.problemStatement,
-            start: '16:00',
-            end: '18:00',
-            entryRef: 'tccChapter',
-            dataId: ch.id,
-          });
-        }
-      });
-    }
-
-    // sessões de estudo (timed; início real quando informado, senão estimado)
-    const daySessions = args.sessions.filter((s) => s.date === key);
-    daySessions.forEach((s, i) => {
-      const start = s.startTime ?? STUDY_STARTS[i % STUDY_STARTS.length];
-      const course = s.courseId ? args.courses.find((c) => c.id === s.courseId) : undefined;
-      dayEntries.timed.push({
-        id: s.id,
-        layer: 'estudos',
-        subtype: 'estudo',
-        title: `bloco: ${s.topic}`,
-        subtitle: 'estudo',
-        date: key,
-        courseId: s.courseId,
-        courseName: course?.name,
-        start,
-        end: addMinutesHHMM(start, s.durationMinutes),
-        entryRef: 'session',
-        dataId: s.id,
-      });
+  args.exams.forEach((e) => {
+    if (!inWindow(e.date)) return;
+    out.push({
+      id: `prova-${e.id}`,
+      date: e.date,
+      kind: 'prova',
+      layer: 'faculdade',
+      title: e.title,
+      start: e.time,
+      ref: { kind: 'exam', id: e.id },
     });
-
-    // google calendar (placeholder — ainda sem integração)
-    (args.gcal ?? []).forEach((g) => {
-      if (g.date === key) dayEntries.allDay.push({ ...g, entryRef: 'gcal', dataId: g.id });
-    });
-
-    result[idx] = dayEntries;
   });
 
-  return result;
-}
-
-/** Limites e altura da grade de horas (7h–20h, 56px/h). */
-export const CAL_GRID_START_HOUR = 7;
-export const CAL_GRID_END_HOUR = 20;
-export const CAL_HOUR_HEIGHT = 56;
-
-/** Posição (top/height em px) de um evento temporizado dentro da grade. */
-export function layoutTimedEntry(start: string, end: string): { top: number; height: number } {
-  const toMin = (t: string) => {
-    const [h, m] = t.split(':').map(Number);
-    return h * 60 + m;
-  };
-  const top = Math.max(0, toMin(start) - CAL_GRID_START_HOUR * 60) / 60 * CAL_HOUR_HEIGHT;
-  const rawH = Math.max(CAL_HOUR_HEIGHT / 2, (toMin(end) - toMin(start)) / 60 * CAL_HOUR_HEIGHT);
-  const maxH = (CAL_GRID_END_HOUR - CAL_GRID_START_HOUR) * CAL_HOUR_HEIGHT - top;
-  return { top, height: Math.min(rawH, Math.max(0, maxH)) };
-}
-
-/* ================================================================ */
-/*  Layout de sobreposição (estilo Google Calendar) + snap de grade  */
-/* ================================================================ */
-
-export function timeToMinutes(time: string): number {
-  const [h, m] = time.split(':').map(Number);
-  return h * 60 + (m || 0);
-}
-
-export function minutesToTime(total: number): string {
-  const clamped = Math.max(0, Math.min(23 * 60 + 59, total));
-  const h = Math.floor(clamped / 60);
-  const m = clamped % 60;
-  return `${pad2(h)}:${pad2(m)}`;
-}
-
-/** Arredonda um horário para o múltiplo de 30min mais próximo. */
-export function snapTo30Minutes(time: string): string {
-  const mins = timeToMinutes(time);
-  const snapped = Math.round(mins / 30) * 30;
-  return minutesToTime(snapped);
-}
-
-export interface TimedLayoutEntry extends TimedEntry {
-  column: number; // 0-based
-  columns: number; // total de colunas naquele cluster
-}
-
-/**
- * Calcula colunas lado-a-lado para eventos que se sobrepõem no tempo
- * (mesmo algoritmo do app de referência). Eventos que não colidem
- * dividem a largura total; os que colidem ficam em colunas adjacentes.
- */
-export function computeOverlappingEventLayout(entries: TimedEntry[]): TimedLayoutEntry[] {
-  const sorted = [...entries].sort((a, b) => timeToMinutes(a.start) - timeToMinutes(b.start));
-  const result: TimedLayoutEntry[] = [];
-  let cluster: TimedEntry[] = [];
-  let clusterEnd = -1;
-
-  const flush = () => {
-    const cols = new Map<number, number>();
-    let maxCol = 0;
-    cluster.forEach((entry) => {
-      let col = 0;
-      while (cols.get(col) !== undefined && cols.get(col)! > timeToMinutes(entry.start)) col++;
-      cols.set(col, timeToMinutes(entry.end));
-      result.push({ ...entry, column: col, columns: 1 });
-      maxCol = Math.max(maxCol, col + 1);
+  args.tasks.forEach((t) => {
+    if (!inWindow(t.dueDate)) return;
+    out.push({
+      id: `tarefa-${t.id}`,
+      date: t.dueDate,
+      kind: 'tarefa',
+      layer: 'faculdade',
+      title: t.title,
+      ref: { kind: 'task', id: t.id },
     });
-    result.forEach((r) => {
-      if (cluster.some((c) => c.id === r.id)) r.columns = maxCol;
-    });
-    cluster = [];
-    clusterEnd = -1;
-  };
-
-  sorted.forEach((entry) => {
-    const start = timeToMinutes(entry.start);
-    const end = timeToMinutes(entry.end);
-    if (cluster.length > 0 && start >= clusterEnd) flush();
-    cluster.push(entry);
-    clusterEnd = Math.max(clusterEnd, end);
   });
-  if (cluster.length > 0) flush();
 
-  return result;
+  args.chapters.forEach((ch) => {
+    if (isChapterDone(ch) || !inWindow(ch.dueDate)) return;
+    out.push({
+      id: `tcc-chapter-${ch.id}`,
+      date: ch.dueDate,
+      kind: 'tcc',
+      layer: 'tcc',
+      title: ch.title,
+      ref: { kind: 'chapter', id: ch.id },
+    });
+  });
+
+  args.thesisTasks.forEach((t) => {
+    if (t.status === 'resolvida' || t.status === 'arquivada' || !inWindow(t.dueDate)) return;
+    out.push({
+      id: `tcc-task-${t.id}`,
+      date: t.dueDate,
+      kind: 'tcc',
+      layer: 'tcc',
+      title: t.title,
+      ref: { kind: 'thesisTask', id: t.id },
+    });
+  });
+
+  args.meetings.forEach((m) => {
+    if (m.status !== 'agendada' || !inWindow(m.date)) return;
+    out.push({
+      id: `tcc-meeting-${m.id}`,
+      date: m.date,
+      kind: 'tcc',
+      layer: 'tcc',
+      title: `reunião com ${thesis?.advisor || 'a orientação'}`,
+      ref: { kind: 'meeting', id: m.id },
+    });
+  });
+
+  const milestone = (date: string | undefined, id: string, title: string) => {
+    if (!inWindow(date)) return;
+    out.push({
+      id: `tcc-milestone-${id}`,
+      date,
+      kind: 'tcc',
+      layer: 'tcc',
+      title,
+      ref: { kind: 'milestone', id },
+    });
+  };
+  milestone(thesis?.deliveryDate, 'delivery', 'entrega final do tcc');
+  milestone(thesis?.defenseDate, 'defense', 'banca do tcc');
+
+  args.internshipLogs.forEach((l) => {
+    if (!inWindow(l.date)) return;
+    out.push({
+      id: `estagio-${l.id}`,
+      date: l.date,
+      kind: 'estagio',
+      layer: 'estagio',
+      title: l.activity,
+      ref: { kind: 'internship', id: l.id },
+    });
+  });
+
+  args.studySessions.forEach((s) => {
+    if (!inWindow(s.date)) return;
+    out.push({
+      id: `estudo-${s.id}`,
+      date: s.date,
+      kind: 'estudo',
+      layer: 'estudos',
+      title: s.topic,
+      start: s.startTime,
+      ref: { kind: 'session', id: s.id },
+    });
+  });
+
+  return out.sort(
+    (a, b) =>
+      a.date.localeCompare(b.date) ||
+      (a.start ?? '99:99').localeCompare(b.start ?? '99:99') ||
+      a.title.localeCompare(b.title, 'pt-BR'),
+  );
 }
+
+/** `[ano, mês-1, dia]` de uma `DateKey`, para o construtor local. */
+function keyParts(key: DateKey): [number, number, number] {
+  const [y, m, d] = key.split('-').map(Number);
+  return [y, m - 1, d];
+}
+
+

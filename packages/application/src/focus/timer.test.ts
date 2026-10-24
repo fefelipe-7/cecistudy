@@ -11,7 +11,7 @@ import {
   startFocus,
   tickFocus,
   partialMinutes,
-} from '../focusTimer';
+} from './timer';
 
 const MIN = 60_000;
 

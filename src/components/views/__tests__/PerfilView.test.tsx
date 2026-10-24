@@ -70,21 +70,19 @@ vi.mock('@/context/shellNavContexts', () => ({
 import { PerfilView } from '../PerfilView';
 
 describe('PerfilView — rota (SPEC-013 I1/D12)', () => {
-  it('mode="stickers" renderiza a coleção, não a página', () => {
-    render(<PerfilView mode="stickers" />);
-    expect(screen.getByTestId('stickers-view')).toBeTruthy();
-    expect(screen.queryByTestId('profile-page')).toBeNull();
-  });
-
-  it('mode="profile" renderiza a página composta (default)', () => {
-    render(<PerfilView mode="profile" />);
-    expect(screen.getByTestId('profile-page')).toBeTruthy();
-    expect(screen.queryByTestId('stickers-view')).toBeNull();
-  });
-
-  it('sem mode, o default é a página', () => {
-    render(<PerfilView />);
-    expect(screen.getByTestId('profile-page')).toBeTruthy();
+  it.each([
+    ['stickers', true, false],
+    ['profile', false, true],
+    [undefined, false, true],
+  ])('mode=%s renderiza view correta', (mode, expectStickers, expectProfile) => {
+    render(<PerfilView mode={mode as any} />);
+    if (expectStickers) {
+      expect(screen.getByTestId('stickers-view')).toBeTruthy();
+      expect(screen.queryByTestId('profile-page')).toBeNull();
+    } else {
+      expect(screen.getByTestId('profile-page')).toBeTruthy();
+      expect(screen.queryByTestId('stickers-view')).toBeNull();
+    }
   });
 
   it('a página recebe o view model derivado do perfil real', () => {

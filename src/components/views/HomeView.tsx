@@ -4,19 +4,27 @@ import { useNavValue, useStudyActions } from '@/context/shellNavContexts';
 import { ATTENTION_LIMIT } from '../../lib/homeMeta';
 import { resumoDoDia, saudacao, dica } from '../../lib/voice';
 import { daysUntil } from '../../lib/diasAte';
-import { getTodaySchedule } from '../../lib/schedule';
+import { buildCalendarEntries, getTodaySchedule } from '../../lib/schedule';
+import { addDaysKey, todayKeyLocal } from '../../lib/dateBR';
 import { isCardDue } from '../../lib/fsrs';
 import HeroSection from './home/HeroSection';
 import TodayClasses from './home/TodayClasses';
-import AttentionSection from './home/AttentionSection';
+import AttentionSection, { type AttentionItem } from './home/AttentionSection';
 import WeekRhythmCard from './home/WeekRhythmCard';
 import QuickActions from './home/QuickActions';
 import CecinhoTip from './home/CecinhoTip';
 
 export const HomeView: React.FC = () => {
-  const { profile } = useDataClientApp();
+  const {
+    profile,
+    internshipLogs,
+    tcc,
+    thesisChapters,
+    thesisMeetings,
+    thesisTasks,
+  } = useDataClientApp();
   const { courses, tasks, exams } = useDataClientCourses();
-  const { flashcards } = useDataClientStudy();
+  const { flashcards, sessions } = useDataClientStudy();
   const { streakStats, currentWeekProgress } = useStudyActions();
   const { handleNavigate, openStreak, openStudy } = useNavValue();
 
@@ -57,32 +65,54 @@ export const HomeView: React.FC = () => {
   }, [tasks, pendingExamsIn14Days]);
 
   /**
-   * Bloco "o que precisa da sua atenção hoje":
-   * tarefas pendentes + provas próximas fundidas num único plano (máx. 5 itens),
-   * ordenados por prazo (sem prazo vai para o fim).
+   * "O que precisa da sua atenção hoje" — agora vem do agregador (SPEC-024
+   * D13/D4): prova, tarefa, prazo do TCC e pendência de estágio, todos na mesma
+   * ordem por data e com o teto de 5. Tarefa **sem prazo** não tem `DateKey` e
+   * por isso fica de fora do agregador; ela continua no fim da lista, como antes.
+   *
+   * `from` olha 14 dias para trás para as atrasadas entrarem primeiro.
    */
-  const attentionItems = useMemo(() => {
-    const byDue = (a?: string, b?: string) => {
-      if (!a && !b) return 0;
-      if (!a) return 1;
-      if (!b) return -1;
-      return a.localeCompare(b);
-    };
-    const taskItems = tasks
-      .filter((t) => !t.completed)
-      .sort((x, y) => byDue(x.dueDate, y.dueDate))
-      .map((t) => ({ kind: 'task' as const, id: t.id }));
-    const examItems = [...pendingExamsIn14Days]
-      .sort((x, y) => byDue(x.date, y.date))
-      .map((e) => ({ kind: 'exam' as const, id: e.id }))
-      .filter((e) => !tasks.some((t) => !t.completed && t.title === exams.find((x) => x.id === e.id)?.title));
-    return [...taskItems, ...examItems].slice(0, ATTENTION_LIMIT);
-  }, [tasks, pendingExamsIn14Days, exams]);
+  const attentionAll = useMemo<AttentionItem[]>(() => {
+    const today = todayKeyLocal();
+    const comData: AttentionItem[] = buildCalendarEntries({
+      courses,
+      exams,
+      tasks,
+      thesis: tcc,
+      chapters: thesisChapters,
+      thesisTasks,
+      meetings: thesisMeetings,
+      internshipLogs,
+      studySessions: sessions,
+      from: addDaysKey(today, -14),
+      to: addDaysKey(today, 14),
+    })
+      .filter(
+        (e) =>
+          e.kind === 'tarefa' || e.kind === 'prova' || e.kind === 'tcc' || e.kind === 'estagio',
+      )
+      .map((entry) => ({ kind: 'calendar' as const, entry }));
 
-  const remainingAttention = Math.max(
-    0,
-    tasks.filter((t) => !t.completed).length + pendingExamsIn14Days.length - attentionItems.length
-  );
+    const semPrazo: AttentionItem[] = tasks
+      .filter((t) => !t.completed && !t.dueDate)
+      .map((t) => ({ kind: 'task' as const, id: t.id }));
+
+    return [...comData, ...semPrazo];
+  }, [
+    courses,
+    exams,
+    tasks,
+    tcc,
+    thesisChapters,
+    thesisTasks,
+    thesisMeetings,
+    internshipLogs,
+    sessions,
+  ]);
+
+  const attentionItems = attentionAll.slice(0, ATTENTION_LIMIT);
+
+  const remainingAttention = Math.max(0, attentionAll.length - attentionItems.length);
 
   // Dica contextual do cecinho (derivada do estado real do dia)
   // `SPEC-M-018 D7`: o componente monta o contexto; quem escreve é a voz.

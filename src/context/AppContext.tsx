@@ -314,6 +314,11 @@ export interface AppContextValue {
   thesisFocusId: string | undefined;
   openTccScreen: (tab?: ThesisTab, focusId?: string) => void;
   closeTccScreen: () => void;
+  /** Calendário empilhado (`SPEC-024 D1`): nunca sexta aba. */
+  isCalendarScreenOpen: boolean;
+  calendarDay: string | undefined;
+  openCalendar: (day?: string) => void;
+  closeCalendar: () => void;
   /**
    * Folha (sheet) aberta do TCC (SPEC-022 D3) — mora no contexto porque a
    * barra contextual e o conteúdo abrem a **mesma** folha.

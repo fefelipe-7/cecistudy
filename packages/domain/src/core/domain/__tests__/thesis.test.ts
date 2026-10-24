@@ -19,6 +19,8 @@ import {
   newTaskId,
   newWritingLogId,
   nextThesisDeadline,
+  thesisDeadlines,
+  thesisPace,
   normalizeUrl,
   orderChaptersForRender,
   parseAuthorString,
@@ -957,6 +959,62 @@ describe('parseCaptureDeepLink (F8.4)', () => {
   it('recusa quando a URL não é http(s)', () => {
     expect(parseCaptureDeepLink('cecistudy://captura?u=' + encodeURIComponent('file:///etc'))).toBeNull();
     expect(parseCaptureDeepLink('cecistudy://captura')).toBeNull();
+  });
+});
+
+describe('thesisDeadlines (SPEC-024 D9)', () => {
+  const thesis = emptyThesis();
+
+  it('inclui o atrasado e ordena por data', () => {
+    const chapters = [
+      chapter({ title: 'cap 1', dueDate: '2026-10-20' }),
+      chapter({ title: 'cap 2', dueDate: '2026-09-10' }),
+    ];
+    const list = thesisDeadlines({ thesis, chapters, tasks: [], meetings: [] }, '2026-10-01', '2026-10-31');
+    expect(list.map((d) => d.date)).toEqual(['2026-09-10', '2026-10-20']);
+    expect(list[0].overdue).toBe(true);
+    expect(list[1].overdue).toBe(false);
+  });
+
+  it('corta em `to`', () => {
+    const chapters = [chapter({ dueDate: '2026-11-15' })];
+    expect(
+      thesisDeadlines({ thesis, chapters, tasks: [], meetings: [] }, '2026-10-01', '2026-10-31'),
+    ).toEqual([]);
+  });
+});
+
+describe('thesisPace (SPEC-024 D11)', () => {
+  const today = '2026-10-01';
+  const thesis = { ...emptyThesis(), deliveryDate: '2026-10-29' }; // 4 semanas
+  const chapters = [chapter({ wordGoal: 4000 })];
+  const state = (logs: ThesisWritingLog[], deliveryDate: string | null = thesis.deliveryDate ?? null) => ({
+    thesis: { ...thesis, deliveryDate: deliveryDate ?? undefined },
+    chapters,
+    tasks: [],
+    meetings: [],
+    logs,
+  });
+
+  it('sem entrega ou sem log devolve null', () => {
+    expect(thesisPace(state([log({})], null), today)).toBeNull();
+    expect(thesisPace(state([]), today)).toBeNull();
+  });
+
+  it('entrega no passado não dá para projetar', () => {
+    expect(thesisPace(state([log({ date: '2026-09-20', words: 1000 })], '2026-09-01'), today)).toBe('nao_da');
+  });
+
+  it('três faixas: no ritmo, apertado, não dá', () => {
+    // falta 1000/semana; média real = total das últimas 4 semanas / 4
+    expect(thesisPace(state([log({ date: '2026-09-20', words: 6000 })]), today)).toBe('no_ritmo');
+    expect(thesisPace(state([log({ date: '2026-09-20', words: 4000 })]), today)).toBe('no_ritmo');
+    expect(thesisPace(state([log({ date: '2026-09-20', words: 3000 })]), today)).toBe('apertado');
+    expect(thesisPace(state([log({ date: '2026-09-20', words: 1000 })]), today)).toBe('nao_da');
+  });
+
+  it('log fora das últimas 4 semanas não conta', () => {
+    expect(thesisPace(state([log({ date: '2026-08-01', words: 9000 })]), today)).toBe('nao_da');
   });
 });
 

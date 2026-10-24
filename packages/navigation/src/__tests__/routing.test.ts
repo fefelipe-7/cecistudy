@@ -4,8 +4,9 @@ import {
   routeToStack,
   stackToHash,
   DEFAULT_SUB_TAB,
-} from '../routing';
-import type { NavScreen, QuizConfig, QuizPlayState, QuizAnswer, StudyQuestion } from '../../types';
+} from '../hash';
+import type { NavScreen } from '../../../../src/types/navigation';
+import type { QuizConfig, QuizPlayState, QuizAnswer, StudyQuestion } from '../../../../src/types/quiz';
 
 const QUESTION: StudyQuestion = {
   id: 'q1',
@@ -91,7 +92,27 @@ describe('parseRoute', () => {
 
   it('distingue sub-tab de courseId em /faculdade (legadas aulas/avaliacoes degradam)', () => {
     expect(parseRoute('#/faculdade/aulas')).toEqual({ tab: 'faculdade' });
-    expect(parseRoute('#/faculdade/calendario')).toEqual({ tab: 'faculdade', subTab: 'calendario' });
+    expect(parseRoute('#/faculdade/calendario')).toEqual({ tab: 'faculdade', calendar: true });
+  });
+
+  it('a sub-aba removida degrada para a tela de calendário (I8)', () => {
+    // Faculdade → calendário mantém a Faculdade como base.
+    expect(routeToStack(parseRoute('#/faculdade/calendario'))).toEqual([
+      { kind: 'tab', tab: 'faculdade' },
+      { kind: 'calendar', day: undefined },
+    ]);
+    // Reload direto de `#/calendario` cai em `[home, calendar]` (D1).
+    expect(parseRoute('#/calendario')).toEqual({ tab: 'home', calendar: true, calendarDay: undefined });
+    expect(routeToStack(parseRoute('#/calendario'))).toEqual([
+      { kind: 'tab', tab: 'home' },
+      { kind: 'calendar', day: undefined },
+    ]);
+  });
+
+  it('preserva o dia do calendário na ida e volta (I10)', () => {
+    const stack = routeToStack(parseRoute('#/calendario/2026-10-05'));
+    expect(stack[1]).toEqual({ kind: 'calendar', day: '2026-10-05' });
+    expect(stackToHash(stack)).toBe('#/calendario/2026-10-05');
   });
 
   it('reconhece telas dedicadas de estudos (sem sub-tabs)', () => {
@@ -256,7 +277,7 @@ describe('parseRoute', () => {
 
   it('não confunde notas (plural) da biblioteca com composição', () => {
     expect(parseRoute('#/biblioteca/notas')).toEqual({ tab: 'biblioteca', notes: true });
-    expect(parseRoute('#/faculdade/calendario')).toEqual({ tab: 'faculdade', subTab: 'calendario' });
+    expect(parseRoute('#/faculdade/calendario')).toEqual({ tab: 'faculdade', calendar: true });
   });
 
   it('degrada rotas de quiz (jogo/resultado) ao seletor de categorias', () => {
@@ -490,7 +511,7 @@ describe('stackToHash', () => {
 
 describe('round-trip hash ↔ rota', () => {
   it('reconstrói a rota a partir do hash serializado (abas + sub-tabs)', () => {
-    const cases = ['#/home', '#/faculdade', '#/faculdade/c3', '#/faculdade/c3/aula/cl-1', '#/faculdade/c3/repertorio/cat-9', '#/faculdade/calendario', '#/estudos/foco', '#/estudos/revisar', '#/estudos/leituras', '#/estudos/historico', '#/biblioteca/conceitos', '#/biblioteca/notas', '#/biblioteca/notas/note-1', '#/biblioteca/notas/note-1/transformar', '#/biblioteca/templo', '#/biblioteca/templo/conceitos', '#/biblioteca/templo/autores', '#/biblioteca/templo/tecnicas', '#/biblioteca/familias', '#/biblioteca/familias/fam-01', '#/biblioteca/abordagens/psic-04-01', '#/streak', '#/perfil/streak', '#/faculdade/estagio', '#/estudos/tcc', '#/perfil/stickers', '#/nota', '#/nota/detalhes', '#/biblioteca/nota', '#/faculdade/c3/nota', '#/biblioteca/nota/detalhes', '#/faculdade/c3/nota/detalhes', '#/novo/estagio', '#/novo/prova-atividade', '#/biblioteca/novo/leitura', '#/faculdade/c3/novo/prova', '#/novo/materia', '#/faculdade/novo/materia', '#/estudos/quiz', '#/perfil/semestre', '#/perfil/semestre/historico', '#/perfil/semestre/historico/trm-3'];
+    const cases = ['#/home', '#/faculdade', '#/faculdade/c3', '#/faculdade/c3/aula/cl-1', '#/faculdade/c3/repertorio/cat-9', '#/calendario', '#/calendario/2026-10-05', '#/estudos/foco', '#/estudos/revisar', '#/estudos/leituras', '#/estudos/historico', '#/biblioteca/conceitos', '#/biblioteca/notas', '#/biblioteca/notas/note-1', '#/biblioteca/notas/note-1/transformar', '#/biblioteca/templo', '#/biblioteca/templo/conceitos', '#/biblioteca/templo/autores', '#/biblioteca/templo/tecnicas', '#/biblioteca/familias', '#/biblioteca/familias/fam-01', '#/biblioteca/abordagens/psic-04-01', '#/streak', '#/perfil/streak', '#/faculdade/estagio', '#/estudos/tcc', '#/perfil/stickers', '#/nota', '#/nota/detalhes', '#/biblioteca/nota', '#/faculdade/c3/nota', '#/biblioteca/nota/detalhes', '#/faculdade/c3/nota/detalhes', '#/novo/estagio', '#/novo/prova-atividade', '#/biblioteca/novo/leitura', '#/faculdade/c3/novo/prova', '#/novo/materia', '#/faculdade/novo/materia', '#/estudos/quiz', '#/perfil/semestre', '#/perfil/semestre/historico', '#/perfil/semestre/historico/trm-3'];
     for (const h of cases) {
       const route = parseRoute(h);
       const stack = routeToStack(route);

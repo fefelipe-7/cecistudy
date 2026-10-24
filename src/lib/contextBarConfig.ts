@@ -146,6 +146,8 @@ export const BARRA_APARECE: Record<NavScreen['kind'], boolean> = {
   // Fluxos modais em tela cheia: a barra ficaria por cima do conteúdo.
   'quiz-loading': false,
   'quiz-play': false,
+  // Calendário empilhado: tem seu próprio rodapé (SPEC-024 D4).
+  calendar: false,
   // Desktop: sem barra contextual (o rodapé é outro).
   'knowledge-graph': false,
   projects: false,

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { canonicalize } from '../canonicalJson';
+import { canonicalize } from '../canonical-json';
+
 
 /**
  * Test vectors — a MESMA tabela foi usada no lado Rust (histórico, removido

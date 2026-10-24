@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import type { QuizAnswer, QuizConfig, QuizPlayState, StudyQuestion } from '../../types';
+import type { QuizAnswer, QuizConfig, QuizPlayState, StudyQuestion } from '../../../../src/types/quiz';
 import {
   advanceQuestion,
   applyAnswer,
   buildAnswer,
   finishQuiz,
   isAnswerCorrect,
-} from '../quizPlayState';
+} from './playState';
 
 const QUESTION: StudyQuestion = {
   id: 'q1',

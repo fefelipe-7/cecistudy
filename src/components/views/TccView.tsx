@@ -31,12 +31,14 @@ import {
   nextThesisDeadline,
   orderChaptersForRender,
   thesisProgress,
+  thesisPace,
   toPlainText,
   validateRef,
   weekWords,
   type ChapterStage,
   type RefStatus,
   type ThesisChapter,
+  type ThesisPace,
   type ThesisReference,
 } from '../../types';
 import { ChapterSheet } from '../tcc/ChapterSheet';
@@ -62,6 +64,18 @@ const FILTER_TO_STATUS: Record<Exclude<LeiturasFilter, 'todas'>, RefStatus> = {
   candidatas: 'candidata',
   lidas: 'lida',
   citadas: 'citada',
+};
+
+const PACE_LABEL: Record<ThesisPace, string> = {
+  no_ritmo: 'no ritmo',
+  apertado: 'apertado',
+  nao_da: 'não dá',
+};
+
+const PACE_HINT: Record<ThesisPace, string> = {
+  no_ritmo: 'no ritmo atual, dá tempo',
+  apertado: 'no ritmo atual, o prazo fica justo',
+  nao_da: 'no ritmo atual, o prazo não fecha',
 };
 
 const TYPE_LABEL: Record<string, string> = {
@@ -123,6 +137,11 @@ export const TccView: React.FC = () => {
   const chaptersDone = thesisChapters.filter(isChapterDone).length;
   const chaptersTotal = thesisChapters.length;
   const progress = thesisProgress(thesisChapters);
+  // SPEC-024 D7/D8: duas fontes de palavra com nome próprio (log ≠ total) e a
+  // leitura dos capítulos essenciais, sem mudar o significado do percentual.
+  const wordsTotal = thesisChapters.reduce((sum, ch) => sum + (ch.wordCount ?? 0), 0);
+  const essentialChapters = thesisChapters.filter((ch) => ch.requiredness === 'obrigatorio');
+  const essentialsDone = essentialChapters.filter(isChapterDone).length;
   const statusLabel =
     tcc.status === 'concluido' ? 'concluído' : tcc.status === 'revisao' ? 'em revisão' : 'em andamento';
 
@@ -131,6 +150,20 @@ export const TccView: React.FC = () => {
     ? nextThesisDeadline(tcc, thesisChapters, thesisTasks, thesisMeetings, today)
     : null;
   const daysToDeadline = deadline ? daysBetween(today, deadline.date) : 0;
+
+  // D11: sem entrega ou sem log a função devolve null e o card nem existe.
+  const pace: ThesisPace | null = hasTcc
+    ? thesisPace(
+        {
+          thesis: tcc,
+          chapters: thesisChapters,
+          tasks: thesisTasks,
+          meetings: thesisMeetings,
+          logs: thesisWritingLogs,
+        },
+        today,
+      )
+    : null;
 
   // ---- aba escrita (F5.1/F5.3): tudo derivado; o único dado é o log ----
   const weekStart = weekStartKey(today);
@@ -156,8 +189,18 @@ export const TccView: React.FC = () => {
   // ---- aba orientação (F6): pendências e reuniões ----
   const [showCancelled, setShowCancelled] = useState(false);
   const [announceText, setAnnounceText] = useState('');
-  // ---- aba leituras (F7.2): filtro (SPEC-010 D7) e sheet da referência ----
+  // ---- aba leituras (F7.2): filtros e sheet da referência (SPEC-010 D7) ----
   const [leiturasFilter, setLeiturasFilter] = useState<LeiturasFilter>('todas');
+  /** Segundo filtro da aba leituras: capítulo (SPEC-024 D10, T4.1). */
+  const [leiturasCapitulo, setLeiturasCapitulo] = useState<string>('todos');
+  /** Opções do filtro por capítulo: "todos" + a ordem canônica (D10/T4.1). */
+  const capituloOptions = useMemo(
+    () => [
+      { value: 'todos', label: 'todos' },
+      ...ordered.map((c) => ({ value: c.id, label: c.title })),
+    ],
+    [ordered],
+  );
   const dragControls = useDragControls();
 
   /**
@@ -368,10 +411,26 @@ export const TccView: React.FC = () => {
           value={progress}
           valueText={`${chaptersDone} de ${chaptersTotal} capítulos prontos`}
         />
+        <div className="flex items-center justify-between gap-2 text-[11px] text-ceci-secondary">
+          <span>{essentialsDone} de {essentialChapters.length} essenciais prontos</span>
+          <span>{wordsTotal} palavras no total</span>
+        </div>
       </div>
 
       {/* esta semana (F4.9 remanescente, entregue na F5): o ritmo de escrita */}
       {renderWeekCard()}
+
+      {/* ritmo até a entrega (SPEC-024 D11): informa, não cobra — nenhuma faixa
+          usa vermelho, e sem dado suficiente o card não aparece. */}
+      {pace && (
+        <div className="rounded-2xl p-4 bg-surface-default border border-ceci-border-default shadow-sm flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-[11px] font-semibold text-ceci-secondary">ritmo até a entrega</p>
+            <p className="text-xs text-ceci-secondary">{PACE_HINT[pace]}</p>
+          </div>
+          <StatusChip tone="info" label={PACE_LABEL[pace]} className="shrink-0" />
+        </div>
+      )}
 
       {/* problema e objetivos (o conteúdo que já existia) */}
       {(tcc.problemStatement || tcc.objectives.length > 0) && (
@@ -423,6 +482,35 @@ export const TccView: React.FC = () => {
       );
     }
 
+    // Sumário em texto puro (SPEC-024 D12/T4.3): ordem canônica + numeração +
+    // tipo. Sem editor, sem arquivo — só a área de transferência.
+    const copySumario = async () => {
+      const numeros = new Map<string, number>();
+      const contagem = new Map<string, number>();
+      let topo = 0;
+      const linhas: string[] = [];
+      for (const ch of ordered) {
+        if (!ch.parentId) {
+          topo += 1;
+          numeros.set(ch.id, topo);
+          linhas.push(`${topo}. ${ch.title}${ch.kind === 'secao' ? ' (seção)' : ''}`);
+        } else if (numeros.has(ch.parentId)) {
+          const pai = numeros.get(ch.parentId)!;
+          const n = (contagem.get(ch.parentId) ?? 0) + 1;
+          contagem.set(ch.parentId, n);
+          linhas.push(`${pai}.${n} ${ch.title} (seção)`);
+        } else {
+          // Órfã (o pai foi apagado): fica no fim, sem número inventado.
+          linhas.push(`- ${ch.title} (seção)`);
+        }
+      }
+      const ok = await copyToClipboard(linhas.join('\n'));
+      if (ok) {
+        hapticSuccess();
+        showToast(frase(CELEBRACAO, 'sumarioCopiado'));
+      }
+    };
+
     return (
       <div className="rounded-2xl p-3 bg-surface-default border border-ceci-border-default shadow-sm space-y-2">
         <Reorder.Group
@@ -460,9 +548,16 @@ export const TccView: React.FC = () => {
                     <p className={`text-xs font-medium truncate ${done ? 'line-through text-ceci-tertiary' : 'text-ceci-primary'}`}>
                       {ch.title}
                     </p>
-                    {ch.dueDate && (
+                    {(ch.dueDate || ch.wordCount != null || ch.wordGoal != null) && (
                       <p className="text-[10px] text-ceci-secondary mt-0.5">
-                        prazo: {formatDateBR(ch.dueDate)}
+                        {[
+                          ch.dueDate ? `prazo: ${formatDateBR(ch.dueDate)}` : null,
+                          ch.wordCount != null || ch.wordGoal != null
+                            ? `${ch.wordCount ?? 0}${ch.wordGoal != null ? `/${ch.wordGoal}` : ''} palavras`
+                            : null,
+                        ]
+                          .filter(Boolean)
+                          .join(' · ')}
                       </p>
                     )}
                   </div>
@@ -485,13 +580,23 @@ export const TccView: React.FC = () => {
             );
           })}
         </Reorder.Group>
-        <button
-          type="button"
-          onClick={() => openTccSheet({ type: 'chapter', id: 'new' })}
-          className="w-full flex items-center justify-center gap-1.5 min-h-[44px] text-xs font-semibold text-ceci-brand-strong border border-dashed border-ceci-border-brand bg-surface-rose/50 hover:bg-surface-rose rounded-xl cursor-pointer transition-colors active:scale-[0.99]"
-        >
-          <Plus className="w-3.5 h-3.5" /> adicionar capítulo
-        </button>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => openTccSheet({ type: 'chapter', id: 'new' })}
+            className="w-full flex items-center justify-center gap-1.5 min-h-[44px] text-xs font-semibold text-ceci-brand-strong border border-dashed border-ceci-border-brand bg-surface-rose/50 hover:bg-surface-rose rounded-xl cursor-pointer transition-colors active:scale-[0.99]"
+          >
+            <Plus className="w-3.5 h-3.5" /> adicionar capítulo
+          </button>
+          <button
+            type="button"
+            onClick={() => void copySumario()}
+            aria-label="copiar o sumário"
+            className="w-full flex items-center justify-center gap-1.5 px-3 rounded-xl text-xs font-semibold text-ceci-secondary border border-ceci-border-default bg-surface-default hover:border-ceci-border-brand hover:text-ceci-primary cursor-pointer tap-interactive"
+          >
+            <Copy className="w-3.5 h-3.5" /> copiar sumário
+          </button>
+        </div>
         {/* Anúncio de reordenação (a11y, F4.2): quem não arrasta precisa ouvir
             que a lista mudou e para onde. */}
         <div role="status" aria-live="polite" className="sr-only">
@@ -514,10 +619,15 @@ export const TccView: React.FC = () => {
       .filter((r): r is NonNullable<typeof r> => r !== null);
 
     const visiveis = rows.filter((r) => r.ref.status !== 'descartada');
-    const selected =
+    const porStatus =
       leiturasFilter === 'todas'
         ? visiveis
         : visiveis.filter((r) => r.ref.status === FILTER_TO_STATUS[leiturasFilter]);
+    // Os dois filtros combinam por interseção (SPEC-024 D10).
+    const selected =
+      leiturasCapitulo === 'todos'
+        ? porStatus
+        : porStatus.filter((r) => (r.ref.chapterIds ?? []).includes(leiturasCapitulo));
     const filtradas = [...selected].sort((a, b) => byAbnt(a.citation, b.citation));
     const descartadas = rows.length - visiveis.length;
 
@@ -606,15 +716,29 @@ export const TccView: React.FC = () => {
             label="mostrar"
           />
 
+          {ordered.length > 0 && (
+            <PillGroup<string>
+              variant="academic"
+              size="sm"
+              value={leiturasCapitulo}
+              onChange={setLeiturasCapitulo}
+              options={capituloOptions}
+              label="capítulo"
+            />
+          )}
+
           {filtradas.length === 0 ? (
             <div className="bg-surface-muted rounded-xl p-5 text-center border border-ceci-border-subtle space-y-2">
               <p className="text-xs text-ceci-secondary leading-relaxed">
-                nenhuma {leiturasFilter === 'todas' ? 'referência' : leiturasFilter} por aqui ainda.
+                {frase(VAZIO, 'semResultadoFiltro')}
               </p>
-              {leiturasFilter !== 'todas' && (
+              {(leiturasFilter !== 'todas' || leiturasCapitulo !== 'todos') && (
                 <button
                   type="button"
-                  onClick={() => setLeiturasFilter('todas')}
+                  onClick={() => {
+                    setLeiturasFilter('todas');
+                    setLeiturasCapitulo('todos');
+                  }}
                   className="text-[11px] font-semibold text-ceci-brand-strong hover:underline underline-offset-2 cursor-pointer"
                 >
                   ver todas

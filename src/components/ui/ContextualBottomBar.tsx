@@ -232,7 +232,10 @@ export const ContextualBottomBar: React.FC<ContextualBottomBarProps> = ({
             // Invisível é inerte: sem toque e fora da árvore de leitura (D4).
             inert={hidden ? true : undefined}
             className={cn(
-              'pointer-events-auto flex items-center gap-[var(--contextual-bar-gap)]',
+              'pointer-events-auto flex items-center justify-center gap-[var(--contextual-bar-gap)]',
+              // As peças medem o próprio conteúdo; só encolhem (com o rótulo
+              // truncado) quando a soma não cabe na tela.
+              'min-w-0 max-w-full',
               hidden && 'pointer-events-none',
             )}
           >
@@ -241,8 +244,8 @@ export const ContextualBottomBar: React.FC<ContextualBottomBarProps> = ({
                 irmãos** — antes a setinha era um `div role="button"` dentro de
                 um `<button>` (HTML inválido, e inalcançável por teclado). */}
             {primary && (
-              <div className="relative flex items-center">
-                <div className="liquid-glass-nav border rounded-full flex items-center h-[var(--contextual-bar-height)] min-w-[110px] max-w-[min(220px,60vw)] shadow-floating pl-4 pr-0.5">
+              <div className="relative flex items-center min-w-0">
+                <div className="liquid-glass-nav border rounded-full flex items-center h-[var(--contextual-bar-height)] max-w-full shadow-floating pl-4 pr-0.5">
                   <motion.button
                     type="button"
                     data-testid="contextual-bar-primary"
@@ -306,7 +309,7 @@ export const ContextualBottomBar: React.FC<ContextualBottomBarProps> = ({
                         duration: reduced ? 0 : profile.d.contextMenu,
                         ease: EASE.standard,
                       }}
-                      className="absolute bottom-[calc(var(--contextual-bar-height)+8px)] right-0 liquid-glass-nav rounded-2xl shadow-floating p-1 flex flex-col gap-1 pointer-events-auto max-w-[min(220px,60vw)]"
+                      className="absolute bottom-[calc(var(--contextual-bar-height)+8px)] right-0 liquid-glass-nav rounded-2xl shadow-floating p-1 flex flex-col gap-1 pointer-events-auto max-w-[calc(100vw-1.5rem)]"
                     >
                       {primaryActions.slice(1).map((action) => (
                         <motion.button
@@ -342,7 +345,7 @@ export const ContextualBottomBar: React.FC<ContextualBottomBarProps> = ({
               aria-label="voltar para a tela anterior"
               className={cn(
                 'liquid-glass-nav border rounded-full flex items-center gap-2 pointer-events-auto cursor-pointer tap-interactive',
-                'h-[var(--contextual-bar-height)] min-w-[110px] max-w-[min(220px,60vw)] shadow-floating px-4',
+                'h-[var(--contextual-bar-height)] shadow-floating px-4 shrink-0',
                 'focus:outline-none focus-visible:ring-2 focus-visible:ring-ceci-brand',
                 'transition-[filter] duration-200 active:scale-[0.98]',
               )}

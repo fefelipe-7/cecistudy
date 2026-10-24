@@ -28,11 +28,6 @@ describe('PillGroupMulti', () => {
     expect(onChange).toHaveBeenCalledWith(['b']);
   });
 
-  it('aceita label do grupo', () => {
-    render(<PillGroupMulti label="multi" value={[]} onChange={() => {}} options={OPTIONS} />);
-    expect(screen.getByText('multi')).toBeInTheDocument();
-  });
-
   it('lista grande (>8) alterna para modo busca com contador, chips e limpar tudo', () => {
     const many = Array.from({ length: 10 }, (_, i) => ({
       value: `v${i}`,

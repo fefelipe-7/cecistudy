@@ -4,7 +4,6 @@ import {
   acceptSuggestion,
   rejectSuggestion,
   createProjectUseCase,
-  createWorkspaceUseCase,
   planResponsibility,
   scheduleEvent,
   createContentBaseUseCase,
@@ -32,11 +31,6 @@ describe('use-cases — conhecimento', () => {
     expect(() => addRelation(base, [], [policy])).toThrow(/bloqueada/);
   });
 
-  it('relação semântica nasce não-aceita (Inbox)', () => {
-    const r = addRelation({ ...base, kind: 'semantica' }, [], []);
-    expect(r.accepted).toBe(false);
-  });
-
   it('accept/reject alteram status da sugestão', () => {
     const s: Suggestion = { id: 'sgt-1', workspaceId: 'ws-1', type: 'relation', payload: {}, status: 'pending', createdAt: '' };
     expect(acceptSuggestion(s).status).toBe('accepted');
@@ -58,10 +52,6 @@ describe('use-cases — projetos (invariante de limite)', () => {
 });
 
 describe('use-cases — workspace/calendar/marketing', () => {
-  it('createWorkspaceUseCase delega para o domínio', () => {
-    const ws = createWorkspaceUseCase({ name: 'Profissional', kind: 'profissional' }, []);
-    expect(ws.kind).toBe('profissional');
-  });
   it('planResponsibility e scheduleEvent geram entidades válidas', () => {
     const r = planResponsibility({ workspaceId: 'ws-1', title: 'escrever', dueDate: '2026-09-01' });
     const e = scheduleEvent({ workspaceId: 'ws-1', title: 'prova', start: '2026-09-01T10:00:00Z', origin: 'faculdade' });

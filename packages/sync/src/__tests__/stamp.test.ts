@@ -6,6 +6,7 @@ import {
   tieBreak,
 } from '../stamp';
 
+
 describe('applyStampChange', () => {
   it('bumpa o stamp da coleção em qualquer mudança', () => {
     const idx = emptySyncIndex();

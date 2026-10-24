@@ -216,6 +216,11 @@ export const VAZIO: Catalogo = {
   semConceitoParecido: 'ainda não tem conceito parecido por aqui ♡',
   semAutorParecido: 'ainda não tem autor parecido por aqui ♡',
   semLeituraParecida: 'ainda não tem leitura parecida por aqui ♡',
+  calendarioVazio: 'nada marcado nos próximos dias — o calendário enche sozinho conforme você anota ♡',
+  diaSemNada: 'nada marcado neste dia ♡',
+  /** Capítulo aberto sem referência vinculada (SPEC-024 T4.2). */
+  capituloSemReferencia:
+    'nenhuma referência vinculada ainda — o vínculo se faz na própria referência ♡',
   semAbordagensRegistradas: 'ainda não há abordagens registradas.',
   semDisciplinas: 'ainda não há disciplinas cadastradas. que tal criar a primeira?',
   semGrupos: 'ainda não há grupos. crie um depois ♡',
@@ -502,6 +507,8 @@ export const CELEBRACAO: Catalogo = {
   sessaoDeLeituraGuardada: 'sessão de leitura guardada com carinho ♡',
   tccGuardado: 'tcc guardado ♡',
   listaCopiada: 'lista copiada ♡',
+  /** Sumário de capítulos copiado (SPEC-024 T4.3). */
+  sumarioCopiado: 'sumário copiado ♡',
   tarefaAtualizada: 'tarefa atualizada ♡',
   provaAtualizada: 'prova atualizada ♡',
   leituraAtualizada: 'leitura atualizada ♡',

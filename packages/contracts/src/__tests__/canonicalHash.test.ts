@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { canonicalize } from '../canonicalJson';
-import { canonicalSha256, canonicalPayloadHash, sha256HexUtf8 } from '../canonicalHash';
+import { canonicalize } from '../canonical-json';
+import { canonicalSha256, canonicalPayloadHash, sha256HexUtf8 } from '../canonical-hash';
 
 /**
  * Vetores de Canonical JSON v1 + SHA-256 (T0.4).
@@ -12,11 +12,14 @@ import { canonicalSha256, canonicalPayloadHash, sha256HexUtf8 } from '../canonic
  * e Rust, então o teste não é tautológico: se este lado canonicalizar ou
  * hashear diferente, ele quebra. Hoje os vetores são o contrato do mobile
  * (F0 0.1), em `contracts/golden/`.
+ *
+ * Movido de `src/lib/__tests__/` em 2026-10-23: o módulo é `packages/contracts`
+ * desde a Fase 3, e o teste não tinha dependência nenhuma de `src/`.
  */
 
 const VECTORS_PATH = join(
   import.meta.dirname,
-  '../../../contracts/golden/canonical_hash_vectors.json'
+  '../../../../contracts/golden/canonical_hash_vectors.json'
 );
 
 interface Vector {

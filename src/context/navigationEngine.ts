@@ -206,6 +206,12 @@ export interface NavigationValue {
   thesisFocusId: string | undefined;
   openTccScreen: (tab?: ThesisTab, focusId?: string) => void;
   closeTccScreen: () => void;
+  /** Calendário empilhado (SPEC-024 D1): nunca sexta aba. */
+  isCalendarScreenOpen: boolean;
+  /** Dia destacado (`DateKey`); ausente = hoje. */
+  calendarDay: string | undefined;
+  openCalendar: (day?: string) => void;
+  closeCalendar: () => void;
   /** Folha (sheet) aberta do TCC (SPEC-022 D3). */
   tccSheet: TccSheet | null;
   tccCaptureText: string;
@@ -419,7 +425,7 @@ export function useNavigationEngine(
     navigationStackRef.current = next;
   }, []);
 
-  const [subTabFaculdade, setSubTabFaculdade] = useState<SubTabFaculdade>('calendario');
+  const [subTabFaculdade, setSubTabFaculdade] = useState<SubTabFaculdade>('disciplinas');
   const [subTabBiblioteca, setSubTabBiblioteca] = useState<SubTabBiblioteca>('autores');
   const [targetId, setTargetId] = useState<string | undefined>(undefined);
 
@@ -502,6 +508,8 @@ export function useNavigationEngine(
   const internshipPatientKey =
     currentScreen.kind === 'internshipCase' ? currentScreen.patientKey : undefined;
   const isTccScreenOpen = currentScreen.kind === 'tcc';
+  const isCalendarScreenOpen = currentScreen.kind === 'calendar';
+  const calendarDay = currentScreen.kind === 'calendar' ? currentScreen.day : undefined;
   /** Aba/foco ativos do TCC: moram na navegação (`SPEC-012 F3`, molde `D16`). */
   const thesisTab: ThesisTab | undefined =
     currentScreen.kind === 'tcc' ? currentScreen.tab : undefined;
@@ -618,6 +626,8 @@ export function useNavigationEngine(
                               ? 'internshipDiary'
                               : currentScreen.kind === 'tcc'
                                 ? 'tcc'
+                                : currentScreen.kind === 'calendar'
+                                  ? 'calendar'
                                 : currentScreen.kind === 'stickers'
                                   ? 'stickers'
                                   : currentScreen.kind === 'sync'
@@ -1134,6 +1144,29 @@ export function useNavigationEngine(
     closeTccSheet();
     goBack();
   }, [closeTccSheet, goBack]);
+
+  /**
+   * Calendário empilhado (SPEC-024 D1). Já aberto: só troca o dia focado, sem
+   * empilhar de novo — o calendário pertence à aba de onde foi aberto.
+   */
+  const openCalendar = useCallback(
+    (day?: string) => {
+      const top = navigationStack[navigationStack.length - 1];
+      const next: NavScreen[] =
+        top.kind === 'calendar'
+          ? navigationStack.map((s) => (s.kind === 'calendar' ? { ...s, day } : s))
+          : [
+              navigationStack[0].kind === 'tab' ? navigationStack[0] : { kind: 'tab', tab: 'home' },
+              { kind: 'calendar', day } as const,
+            ];
+      setStack(next);
+      syncHash(next);
+      scrollToTop();
+    },
+    [navigationStack, setStack, syncHash]
+  );
+
+  const closeCalendar = useCallback(() => goBack(), [goBack]);
 
   const openStickersScreen = useCallback(() => {
     const top = navigationStack[navigationStack.length - 1];
@@ -1824,6 +1857,10 @@ export function useNavigationEngine(
     thesisFocusId,
     openTccScreen,
     closeTccScreen,
+    isCalendarScreenOpen,
+    calendarDay,
+    openCalendar,
+    closeCalendar,
     tccSheet,
     tccCaptureText,
     openTccSheet,
@@ -1925,13 +1962,13 @@ export function useNavigationEngine(
     internshipPatientKey, isNoteDetailOpen, isNoteTransformOpen, isNotesScreenOpen,
       isQuickAddOpen, isQuizCategoryOpen, isQuizGroupDetailOpen, isQuizLoadingOpen,
       isQuizPlayOpen, isQuizResultOpen, isRepertorioItemOpen, isSearchOpen, isStickersScreenOpen, isStreakScreenOpen,
-      isSyncScreenOpen, isTccScreenOpen, thesisTab, thesisFocusId, isTempleScreenOpen, isTermHistoryOpen, isWizardOpen, managedItem,
+      isSyncScreenOpen, isTccScreenOpen, thesisTab, thesisFocusId, isCalendarScreenOpen, calendarDay, openCalendar, closeCalendar, isTempleScreenOpen, isTermHistoryOpen, isWizardOpen, managedItem,
       navDirection, navigationStack, newQuizFromResult, openApproach, openComparison, openCompose,
       openComposeDetails, openCourseDetail, openDetailPrompt, openEditCourse,
       openClassNoteDetail, openFamilies, openFamily, openInternshipCaseSession, openInternshipDiary, openManageItem, openNoteDetail,
       openNoteTransform, openNotesScreen, openQuickAdd, openQuizCategory, openQuizGroupDetail,
       openQuizLoading, openQuizPlay, openQuizResult, openRepertorioItem, openSearch, openStickersScreen, openStreak,
-      openStudy, openSyncScreen, openTaskExamWizard, openTccCapture, openTccScreen, openTccSheet, openTemple, openTempleSection,
+      openStudy, openSyncScreen, openTaskExamWizard, openTccCapture, openTccScreen, openTccSheet, openCalendar, openTemple, openTempleSection,
       openTermHistory,
       openWizard, overlayKey, screenKey, setActiveTab, setFocusedCourseId, setIsCreatingLooseNote,
       setStack, setSubTabBiblioteca, setSubTabFaculdade, setTargetId, slideKey,

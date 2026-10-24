@@ -57,10 +57,14 @@ function toNativeParams(params?: SqlValue[]): unknown[] | undefined {
 /**
  * Abre (ou cria) o banco `database` no plugin comunitário e devolve um driver.
  * `setup` roda após abrir — lugar padrão para `runUserMigrations`/bootstrap.
+ * `encrypted` ativa a cifragem do banco no dispositivo (apenas nativo; ignorado
+ * no web). Padrão: `false` (texto claro), usado pelo catálogo. O banco do
+ * usuário deve passar `true` (SPEC-M-024 D4).
  */
 export async function createNativeSqliteDriver(
   database: string,
-  setup?: (driver: SqlDriver) => Promise<void>
+  setup?: (driver: SqlDriver) => Promise<void>,
+  encrypted: boolean = false
 ): Promise<SqlDriver> {
   const mod = (await import('@capacitor-community/sqlite')) as {
     CapacitorSQLite: NativeCapacitorSQLite;
@@ -69,8 +73,8 @@ export async function createNativeSqliteDriver(
 
   await sqlite.createConnection({
     database,
-    encrypted: false,
-    mode: 'no-encryption',
+    encrypted,
+    mode: encrypted ? 'encrypted' : 'no-encryption',
     version: 1,
     readonly: false,
   });

@@ -75,6 +75,8 @@ export function slideBaseKeyOf(screen: NavScreen, base: NavScreen | undefined): 
       return 'internshipDiary';
     case 'tcc':
       return 'tcc';
+    case 'calendar':
+      return 'calendar';
     case 'stickers':
       return 'stickers';
     case 'sync':

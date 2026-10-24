@@ -19,7 +19,8 @@
  */
 import { useState, useEffect, useRef, useCallback } from 'react';
 import type React from 'react';
-import { storage, isNativePlatform } from './storage.ts';
+import { isNativePlatform } from './storage.ts';
+import { userStorage } from './storageLayers.ts';
 import { getUserDb } from './db/userDb.ts';
 import {
   isUserCollectionKey,
@@ -39,7 +40,7 @@ export function useSqliteState<T>(
   const [state, setStateRaw] = useState<T>(() => {
     // Web: inicialização síncrona do localStorage (sem flash).
     if (!isNativePlatform) {
-      const item = storage.getSync(key);
+      const item = userStorage.getSync(key);
       if (item) {
         try {
           return JSON.parse(item) as T;
@@ -69,7 +70,7 @@ export function useSqliteState<T>(
           const value = await loadCollection<T>(db, key);
           if (!cancelled && value !== undefined && !dirtyRef.current) setStateRaw(value);
         } else {
-          const item = await storage.get(key);
+          const item = await userStorage.get(key);
           if (!cancelled && item != null && !dirtyRef.current) {
             try {
               setStateRaw(JSON.parse(item) as T);
@@ -109,7 +110,7 @@ async function writeSnapshot<T>(key: string, value: T): Promise<void> {
     if (db && isUserCollectionKey(key)) {
       await saveCollection(db, key, value);
     } else {
-      await storage.set(key, JSON.stringify(value));
+      await userStorage.set(key, JSON.stringify(value));
     }
   });
 }

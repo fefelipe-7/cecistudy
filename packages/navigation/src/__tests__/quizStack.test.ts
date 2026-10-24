@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import type { NavScreen, QuizConfig, StudyQuestion } from '../../types';
+import type { NavScreen } from '../../../../src/types/navigation';
+import type { QuizConfig, StudyQuestion } from '../../../../src/types/quiz';
 import {
   stackAfterCloseAllQuizScreens,
   stackAfterCloseQuizResult,
@@ -8,7 +9,7 @@ import {
   stackAfterOpenQuizLoading,
   stackAfterOpenQuizPlay,
   stackAfterOpenQuizResult,
-} from '../quizStack';
+} from '../stack';
 
 const QUESTION: StudyQuestion = {
   id: 'q1',

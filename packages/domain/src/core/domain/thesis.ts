@@ -202,14 +202,27 @@ export interface ThesisDeadline {
   overdue: boolean;
 }
 
-export const nextThesisDeadline = (
-  thesis: ThesisProject,
-  chapters: ThesisChapter[],
-  tasks: ThesisTask[],
-  meetings: ThesisMeeting[],
-  today: DateKey,
-): ThesisDeadline | null => {
+export interface ThesisDeadlineState {
+  thesis: ThesisProject;
+  chapters: ThesisChapter[];
+  tasks: ThesisTask[];
+  meetings: ThesisMeeting[];
+}
+
+/**
+ * Prazos do TCC até `to`, ordenados por data (`SPEC-024 D9`). `from` é a
+ * referência de "atrasado": prazo que já passou **entra** na lista — esconder
+ * o atrasado é justamente o que a tela não pode fazer.
+ */
+export const thesisDeadlines = (
+  state: ThesisDeadlineState,
+  from: DateKey,
+  to: DateKey,
+): ThesisDeadline[] => {
+  const { thesis, chapters, tasks, meetings } = state;
   const candidates: ThesisDeadline[] = [];
+  const today = dateKeyOrdinal(from);
+  const limit = dateKeyOrdinal(to);
 
   for (const ch of chapters) {
     if (ch.dueDate && !isChapterDone(ch)) {
@@ -218,7 +231,7 @@ export const nextThesisDeadline = (
         entityId: ch.id,
         title: ch.title,
         date: ch.dueDate,
-        overdue: dateKeyOrdinal(ch.dueDate) < dateKeyOrdinal(today),
+        overdue: dateKeyOrdinal(ch.dueDate) < today,
       });
     }
   }
@@ -230,7 +243,7 @@ export const nextThesisDeadline = (
         entityId: task.id,
         title: task.title,
         date: task.dueDate,
-        overdue: dateKeyOrdinal(task.dueDate) < dateKeyOrdinal(today),
+        overdue: dateKeyOrdinal(task.dueDate) < today,
       });
     }
   }
@@ -242,7 +255,7 @@ export const nextThesisDeadline = (
         entityId: meeting.id,
         title: 'reunião com orientação',
         date: meeting.date,
-        overdue: dateKeyOrdinal(meeting.date) < dateKeyOrdinal(today),
+        overdue: dateKeyOrdinal(meeting.date) < today,
       });
     }
   }
@@ -253,7 +266,7 @@ export const nextThesisDeadline = (
       entityId: 'delivery',
       title: 'entrega final',
       date: thesis.deliveryDate,
-      overdue: dateKeyOrdinal(thesis.deliveryDate) < dateKeyOrdinal(today),
+      overdue: dateKeyOrdinal(thesis.deliveryDate) < today,
     });
   }
 
@@ -263,15 +276,56 @@ export const nextThesisDeadline = (
       entityId: 'defense',
       title: 'banca',
       date: thesis.defenseDate,
-      overdue: dateKeyOrdinal(thesis.defenseDate) < dateKeyOrdinal(today),
+      overdue: dateKeyOrdinal(thesis.defenseDate) < today,
     });
   }
 
-  if (candidates.length === 0) return null;
-
-  candidates.sort((a, b) => dateKeyOrdinal(a.date) - dateKeyOrdinal(b.date));
-  return candidates[0];
+  return candidates
+    .filter((c) => dateKeyOrdinal(c.date) <= limit)
+    .sort((a, b) => dateKeyOrdinal(a.date) - dateKeyOrdinal(b.date));
 };
+
+export type ThesisPace = 'no_ritmo' | 'apertado' | 'nao_da';
+
+/**
+ * Ritmo de escrita contra a entrega (`SPEC-024 D11`) — informa, nunca cobra.
+ * Sem entrega ou sem log devolve `null`: a tela não estima a partir de zero.
+ */
+export const thesisPace = (
+  state: ThesisDeadlineState & { logs: ThesisWritingLog[] },
+  today: DateKey,
+): ThesisPace | null => {
+  const { thesis, chapters, logs } = state;
+  if (!thesis.deliveryDate || logs.length === 0) return null;
+
+  const weeksLeft = (dateKeyOrdinal(thesis.deliveryDate) - dateKeyOrdinal(today)) / 7;
+  if (weeksLeft <= 0) return 'nao_da';
+
+  const remaining = chapters
+    .filter((ch) => !isChapterDone(ch))
+    .reduce((sum, ch) => sum + (ch.wordGoal ?? ch.wordCount ?? 0), 0);
+  if (remaining === 0) return 'no_ritmo';
+
+  const since = dateKeyOrdinal(addDays(today, -28));
+  const recent = logs
+    .filter((log) => dateKeyOrdinal(log.date) > since && dateKeyOrdinal(log.date) <= dateKeyOrdinal(today))
+    .reduce((sum, log) => sum + log.words, 0);
+
+  const needed = remaining / weeksLeft;
+  const rate = recent / 4;
+  if (rate >= needed) return 'no_ritmo';
+  return rate * 2 >= needed ? 'apertado' : 'nao_da';
+};
+
+/** O próximo prazo é o primeiro item da lista (`SPEC-024 D9`, I5). */
+export const nextThesisDeadline = (
+  thesis: ThesisProject,
+  chapters: ThesisChapter[],
+  tasks: ThesisTask[],
+  meetings: ThesisMeeting[],
+  today: DateKey,
+): ThesisDeadline | null =>
+  thesisDeadlines({ thesis, chapters, tasks, meetings }, today, '9999-12-31')[0] ?? null;
 
 export const weekWords = (logs: ThesisWritingLog[], weekStart: DateKey): number =>
   logs
@@ -584,7 +638,21 @@ export const planThesisReminders = (
  */
 export const routeFromNotificationExtra = (extra: unknown): { tab: ThesisReminderTarget; focusId?: string } | null => {
   if (typeof extra !== 'object' || extra === null) return null;
-  const thesis = (extra as Record<string, unknown>).thesis;
+  const rec = extra as Record<string, unknown>;
+  // novo formato genérico (SPEC-M-025 D8)
+  if (typeof rec.family === 'string' && typeof rec.target === 'object' && rec.target !== null) {
+    const tab = (rec.target as Record<string, unknown>).tab;
+    const entityId = (rec.target as Record<string, unknown>).entityId;
+    if (tab === 'visao' || tab === 'capitulos' || tab === 'orientacao') {
+      return {
+        tab,
+        ...(typeof entityId === 'string' && entityId !== '' ? { focusId: entityId } : {}),
+      };
+    }
+    return null;
+  }
+  // formato legado TCC
+  const thesis = rec.thesis;
   if (typeof thesis !== 'object' || thesis === null) return null;
   const { tab, entityId } = thesis as Record<string, unknown>;
   if (tab !== 'visao' && tab !== 'capitulos' && tab !== 'orientacao') return null;

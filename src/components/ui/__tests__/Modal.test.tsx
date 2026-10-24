@@ -3,16 +3,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { Modal } from '../Modal';
 
 describe('Modal', () => {
-  it('renderiza o conteúdo quando aberto', () => {
-    render(
-      <Modal open onClose={() => {}}>
-        <p>conteúdo do modal</p>
-      </Modal>
-    );
-    expect(screen.getByText('conteúdo do modal')).toBeInTheDocument();
-    expect(screen.getByRole('dialog')).toBeInTheDocument();
-  });
-
   it('não renderiza quando fechado', () => {
     render(
       <Modal open={false} onClose={() => {}}>

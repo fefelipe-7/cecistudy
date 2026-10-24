@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { migrateDatabase, MIGRATIONS, SCHEMA_VERSION, DEFAULT_WORKSPACE_ID } from '../schema';
 
+
 describe('schema — migração 11 → 12 (escopo de workspace)', () => {
   const sample = {
     profile: { name: 'Ceci' },

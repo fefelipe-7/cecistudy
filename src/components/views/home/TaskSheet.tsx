@@ -1,11 +1,11 @@
 // Sheet pequeno de fundo (position="bottom") para criar uma tarefa na tela de
 // home. Substitui o formulário inline "adicionar sem nada".
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { CheckCircle2, ChevronLeft } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import type { Task } from '@/types';
 import { Modal } from '../../ui/Modal';
-import { TextInput, DateField } from '../../wizards/wizardFields';
+import { TextInput, DeadlineField } from '../../wizards/wizardFields';
 import { ChoiceCardGrid } from '../../ui/ChoiceCardGrid';
 import { CourseSelect } from '../../wizards/CourseSelect';
 import { PRIORITIES, TASK_CATEGORIES } from '../../wizards/note/constants';
@@ -25,18 +25,30 @@ interface TaskSheetProps {
   onClose: () => void;
 }
 
+const EMPTY_VALUES: TaskSheetValues = {
+  taskTitle: '',
+  taskCategory: 'outro',
+  taskPriority: 'media',
+  taskDueDate: '',
+  courseId: '',
+};
+
 export const TaskSheet: React.FC<TaskSheetProps> = ({ open, onClose }) => {
   const { courses, handleAddTask, showToast } = useMobileApp();
   const [step, setStep] = useState(0);
   const [busy, setBusy] = useState(false);
+  const [triedNext, setTriedNext] = useState(false);
 
-  const [values, setValues] = useState<TaskSheetValues>({
-    taskTitle: '',
-    taskCategory: 'outro',
-    taskPriority: 'media',
-    taskDueDate: '',
-    courseId: '',
-  });
+  const [values, setValues] = useState<TaskSheetValues>(EMPTY_VALUES);
+
+  // Reabrir começa do zero — sem o passo e o título do registro anterior.
+  useEffect(() => {
+    if (!open) {
+      setStep(0);
+      setTriedNext(false);
+      setValues(EMPTY_VALUES);
+    }
+  }, [open]);
 
   const patch = useCallback((p: Partial<TaskSheetValues>) => {
     setValues((prev) => ({ ...prev, ...p }));
@@ -73,7 +85,13 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, onClose }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [busy, taskTitle, courseId, taskCategory, taskDueDate, taskPriority, handleAddTask, showToast, onClose]);
 
-  const next = () => setStep((s) => Math.min(s + 1, steps.length - 1));
+  const next = () => {
+    if (!canNext) {
+      setTriedNext(true);
+      return;
+    }
+    setStep((s) => Math.min(s + 1, steps.length - 1));
+  };
   const back = () => {
     if (step === 0) onClose();
     else setStep((s) => s - 1);
@@ -84,7 +102,7 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, onClose }) => {
   const current = steps[step];
 
   return (
-    <Modal open={open} onClose={onClose} position="bottom" showGrabber className="w-full sm:max-w-lg p-0">
+    <Modal open={open} onClose={onClose} position="bottom" showGrabber className="w-full sm:max-w-lg bg-canvas rounded-t-[28px] sm:rounded-2xl border border-ceci-border-default shadow-xl overflow-hidden text-ceci-primary">
       <div className="flex flex-col gap-3 p-4 sm:p-6">
         {/* Cabeçalho compacto */}
         <div className="flex items-start gap-3">
@@ -106,10 +124,11 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, onClose }) => {
               <TextInput
                 value={taskTitle}
                 onChange={(e) => patch({ taskTitle: e.target.value })}
+                onKeyDown={(e) => e.key === 'Enter' && next()}
                 placeholder="ex: ler capítulo 4 de psicopatologia"
                 autoFocus
               />
-              {!canNext && (
+              {!canNext && triedNext && (
                 <p className="text-[11px] text-status-danger-strong">preencha o título para continuar</p>
               )}
             </div>
@@ -141,11 +160,10 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, onClose }) => {
                 onChange={(v) => patch({ courseId: v })}
                 placeholder="sem disciplina — tarefa avulsa"
               />
-              <DateField
+              <DeadlineField
                 label="data limite (prazo)"
                 value={taskDueDate}
                 onChange={(v) => patch({ taskDueDate: v })}
-                placeholder="sem prazo é um estado válido ♡"
               />
             </div>
           )}
@@ -168,8 +186,7 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, onClose }) => {
           <button
             type="button"
             onClick={isLast ? handleSave : next}
-            disabled={!canNext && step === 0}
-            className="bg-ceci-brand hover:bg-ceci-brand text-ceci-on-brand px-4 py-2.5 rounded-xl text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed tap-interactive cursor-pointer shrink-0"
+            className="bg-ceci-brand hover:bg-ceci-brand text-ceci-on-brand px-4 py-2.5 rounded-xl text-sm font-semibold tap-interactive cursor-pointer shrink-0"
           >
             {isLast ? 'guardar tarefa ♡' : 'continuar'}
           </button>

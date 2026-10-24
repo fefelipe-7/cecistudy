@@ -47,6 +47,13 @@ export interface Route {
   internshipFocusId?: string;
   /** Tela cheia do meu TCC (criar/manter), empilhada sobre os estudos. */
   tcc?: boolean;
+  /**
+   * Calendário empilhado (SPEC-024 D1): `#/calendario[/<DateKey>]`. Aberto a
+   * partir da Faculdade (`#/faculdade/calendario`), a base é a Faculdade.
+   */
+  calendar?: boolean;
+  /** Dia destacado no calendário (`DateKey`); ausente = hoje. */
+  calendarDay?: string;
   /** Aba ativa do TCC (`SPEC-012 F3`): `#/estudos/tcc/<tab>`. */
   tccTab?: ThesisTab;
   /** Entidade do TCC a destacar ao abrir (capítulo/referência/pendência). */
@@ -91,7 +98,7 @@ export interface Route {
 
 /** Valores de sub-tab conhecidos por aba (usados para distinguir sub-tab de courseId na rota). */
 const SUB_TAB_BY_TAB: Record<string, string[]> = {
-  faculdade: ['disciplinas', 'calendario', 'estagio'],
+  faculdade: ['disciplinas', 'estagio'],
   // estudos não tem mais sub-tabs — cada área virou tela dedicada (`#/estudos/<slug>`)
   estudos: [],
   biblioteca: ['materiais', 'autores', 'conceitos', 'abordagens', 'mapa'],
@@ -235,7 +242,12 @@ export function parseRoute(hash: string): Route {
   };
 
   if (!seg || seg === 'home') return { tab: 'home' };
+  // Calendário (SPEC-024 D1): `#/calendario[/<DateKey>]`.
+  if (seg === 'calendario') return { tab: 'home', calendar: true, calendarDay: h[1] };
   if (seg === 'faculdade') {
+    // Hash antigo da sub-aba removida: abre a tela de calendário, não a lista
+    // de disciplinas (SPEC-024 D2, I8).
+    if (h[1] === 'calendario') return { tab: 'faculdade', calendar: true };
     // Diário de estágio: `#/faculdade/estagio/diario`
     // #/faculdade/estagio/<aba> e #/faculdade/estagio/pacientes/:patientKey
     // (SPEC-009 D16). sem-iniciais e '' significam o grupo de ?rfãos.
@@ -392,6 +404,14 @@ export function routeToStack(route: Route): NavScreen[] {
       { kind: 'tcc', tab: route.tccTab, focusId: route.tccFocusId },
     ];
   }
+  if (route.calendar) {
+    // Aberto da Faculdade, a base é a Faculdade; reload direto de `#/calendario`
+    // cai em `[home, calendar]` e o voltar leva à Home (SPEC-024 D1).
+    return [
+      { kind: 'tab', tab: route.tab ?? 'home' },
+      { kind: 'calendar', day: route.calendarDay },
+    ];
+  }
   if (route.stickers) return [{ kind: 'tab', tab: 'perfil' }, { kind: 'stickers' }];
   if (route.termHistory) {
     // O histórico é **irmão** do wizard (SPEC-008 D5): a rota só sabe que a base
@@ -516,6 +536,7 @@ export function stackToHash(stack: NavScreen[], subTab?: string): string {
     const base = top.tab ? `#/estudos/tcc/${top.tab}` : '#/estudos/tcc';
     return top.focusId ? `${base}/${top.focusId}` : base;
   }
+  if (top.kind === 'calendar') return top.day ? `#/calendario/${top.day}` : '#/calendario';
   if (top.kind === 'stickers') return '#/perfil/stickers';
   if (top.kind === 'termHistory') {
     return top.termId

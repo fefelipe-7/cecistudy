@@ -125,6 +125,7 @@ describe('ProfilePage — narrativa composta', () => {
       'conquistas',
       'cuidado do cantinho',
       'seus dados',
+      'backup em nuvem',
       'zona de cuidado',
     ]);
   });

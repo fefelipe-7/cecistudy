@@ -50,7 +50,7 @@ const KNOWN_INLINE: Record<string, number[]> = {
   // SPEC-015: o pager de abas migrou para `ui/SwipeableTabPanel.tsx`, que usa
   // os tokens do sistema — as duas entradas do `CourseDetailView` saíram do
   // ratchet porque o literal deixou de existir lá (ratchet só encolhe).
-  'src/components/views/home/rows.tsx': [31, 80],
+  'src/components/views/home/rows.tsx': [31],
   'src/components/views/StreakView.tsx': [36, 124],
   'src/components/quizzes/QuizCategorySelector.tsx': [98],
   'src/components/quizzes/QuizGroupSelector.tsx': [89],

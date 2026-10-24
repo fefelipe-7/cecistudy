@@ -358,7 +358,7 @@ describe('TccWizard — concluir com capítulo pendente (SPEC-012 F0.3 / D4)', (
     // tinha carregado do storage (`useStampedState('tcc', ...)`). Para o teste
     // não depender do que um teste anterior deixou em `localStorage`, grava a
     // ficha antes de montar — mesmo caminho do dreno do boot (SPEC-012 §17.2).
-    localStorage.setItem('cecistudy_tcc', JSON.stringify(tcc));
+    localStorage.setItem('cecistudy_user_tcc', JSON.stringify(tcc));
     return render(
       <MobileAppProvider>
         <Seed tcc={tcc} chapters={chapters} tab="capitulos" />
@@ -449,7 +449,7 @@ describe('TccWizard — concluir com capítulo pendente (SPEC-012 F0.3 / D4)', (
     // E o singleton persistiu os dois marcos, as duas metas e o interruptor
     // de lembretes (F4.6).
     await waitFor(() => {
-      const stored = JSON.parse(localStorage.getItem('cecistudy_tcc') ?? '{}');
+      const stored = JSON.parse(localStorage.getItem('cecistudy_user_tcc') ?? '{}');
       expect(stored.deliveryDate).toBe(entregaKey);
       expect(stored.defenseDate).toBe(bancaKey);
       expect(stored.wordGoalTotal).toBe(20000);
@@ -597,13 +597,13 @@ describe('TccView — aba escrita (SPEC-012 F5)', () => {
     fireEvent.click(screen.getByRole('button', { name: /guardar/ }));
 
     await waitFor(() => {
-      const storedLogs = JSON.parse(localStorage.getItem('cecistudy_thesisWritingLogs') ?? '[]');
+      const storedLogs = JSON.parse(localStorage.getItem('cecistudy_user_thesisWritingLogs') ?? '[]');
       expect(storedLogs).toHaveLength(1);
       expect(storedLogs[0]).toMatchObject({ words: 250, chapterId: 'thc-1', minutes: 30 });
     });
     await waitFor(() => {
       const storedChapters: { id: string; wordCount?: number }[] = JSON.parse(
-        localStorage.getItem('cecistudy_thesisChapters') ?? '[]',
+        localStorage.getItem('cecistudy_user_thesisChapters') ?? '[]',
       );
       expect(storedChapters.find((c) => c.id === 'thc-1')?.wordCount).toBe(250);
     });
@@ -617,7 +617,7 @@ describe('TccView — aba escrita (SPEC-012 F5)', () => {
 
     // A sheet continua aberta (nada foi escrito) — o toast vive na casca.
     expect(screen.getByLabelText('palavras escritas')).toBeInTheDocument();
-    const storedLogs = JSON.parse(localStorage.getItem('cecistudy_thesisWritingLogs') ?? '[]');
+    const storedLogs = JSON.parse(localStorage.getItem('cecistudy_user_thesisWritingLogs') ?? '[]');
     expect(storedLogs).toHaveLength(0);
   });
 });
@@ -713,7 +713,7 @@ describe('TccView — aba orientação (SPEC-012 F6)', () => {
     expect(pendenciaChecked('revisar metodologia')).toBe('true');
     await waitFor(() => {
       const stored: { id: string; status: string }[] = JSON.parse(
-        localStorage.getItem('cecistudy_thesisTasks') ?? '[]',
+        localStorage.getItem('cecistudy_user_thesisTasks') ?? '[]',
       );
       expect(stored.find((t) => t.id === 'tts-1')?.status).toBe('resolvida');
     });
@@ -758,7 +758,7 @@ describe('TccView — aba orientação (SPEC-012 F6)', () => {
 
     await waitFor(() => {
       const tasks: { title: string; origin: string; meetingId?: string }[] = JSON.parse(
-        localStorage.getItem('cecistudy_thesisTasks') ?? '[]',
+        localStorage.getItem('cecistudy_user_thesisTasks') ?? '[]',
       );
       expect(tasks).toHaveLength(1);
       expect(tasks[0]).toMatchObject({
@@ -769,7 +769,7 @@ describe('TccView — aba orientação (SPEC-012 F6)', () => {
     });
     await waitFor(() => {
       const meetings: { status: string }[] = JSON.parse(
-        localStorage.getItem('cecistudy_thesisMeetings') ?? '[]',
+        localStorage.getItem('cecistudy_user_thesisMeetings') ?? '[]',
       );
       // thm-1 virou realizada + a próxima agendada.
       expect(meetings.filter((m) => m.status === 'agendada')).toHaveLength(1);
@@ -784,7 +784,7 @@ describe('Dreno do boot — tcc legado vira coleções (SPEC-012 §17.2 A1)', ()
   // primeiro boot pós-22. Aqui ele é exercitado de ponta a ponta.
   it('tcc legado no localStorage aparece como thesisChapters na tela', async () => {
     // `storage` prefixa as chaves com `cecistudy_` (`src/lib/storage.ts`).
-    const KEY = 'cecistudy_tcc';
+    const KEY = 'cecistudy_user_tcc';
     localStorage.setItem(
       KEY,
       JSON.stringify({
@@ -820,7 +820,7 @@ describe('Dreno do boot — tcc legado vira coleções (SPEC-012 §17.2 A1)', ()
       expect(storedTcc.id).toBe('tcc-main');
     });
     await waitFor(() => {
-      const storedChapters = JSON.parse(localStorage.getItem('cecistudy_thesisChapters') ?? '[]');
+      const storedChapters = JSON.parse(localStorage.getItem('cecistudy_user_thesisChapters') ?? '[]');
       expect(storedChapters[0]).toMatchObject({ id: 'thc-1', stage: 'a_fazer' });
     });
   });

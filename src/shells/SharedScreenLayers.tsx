@@ -44,6 +44,7 @@ const loadStudyHistoricoScreen = () => import('../components/estudos/StudyHistor
 const loadInternshipDiaryView = () => import('../components/views/InternshipDiaryView').then((m) => ({ default: m.InternshipDiaryView }));
 const loadInternshipCaseView = () => import('../components/views/InternshipCaseView').then((m) => ({ default: m.InternshipCaseView }));
 const loadTccView = () => import('../components/views/TccView').then((m) => ({ default: m.TccView }));
+const loadCalendarScreen = () => import('../components/views/CalendarScreen').then((m) => ({ default: m.CalendarScreen }));
 
 const HomeView = memo(lazy(loadHomeView));
 const FaculdadeView = memo(lazy(loadFaculdadeView));
@@ -78,6 +79,7 @@ const StudyHistoricoScreen = lazy(loadStudyHistoricoScreen);
 const InternshipDiaryView = lazy(loadInternshipDiaryView);
 const InternshipCaseView = lazy(loadInternshipCaseView);
 const TccView = lazy(loadTccView);
+const CalendarScreen = lazy(loadCalendarScreen);
 
 /** Fallback discreto enquanto um chunk de view carrega (primeira visita à aba). */
 export const ViewFallback = () => <ViewSkeleton rows={5} />;
@@ -116,7 +118,8 @@ export type ScreenKey =
   | 'studyHistorico'
   | 'internshipDiary'
   | 'internshipCase'
-  | 'tcc';
+  | 'tcc'
+  | 'calendar';
 
 /** Factories dos chunks — reutilizadas pelo lazy e pelo prefetch com política. */
 const SCREEN_CHUNK_LOADERS: Record<ScreenKey, () => Promise<unknown>> = {
@@ -147,6 +150,7 @@ const SCREEN_CHUNK_LOADERS: Record<ScreenKey, () => Promise<unknown>> = {
   internshipDiary: loadInternshipDiaryView,
   internshipCase: loadInternshipCaseView,
   tcc: loadTccView,
+  calendar: loadCalendarScreen,
 };
 
 /**
@@ -316,9 +320,12 @@ export const SlideContent: React.FC = () => {
       ) : (
         <>
           <Suspense fallback={<ViewFallback />}>
-            {activeTab === 'home' && <HomeView />}
+            {activeTab === 'home' &&
+              (app.isCalendarScreenOpen ? <CalendarScreen /> : <HomeView />)}
             {activeTab === 'faculdade' &&
-              (app.isInternshipCaseOpen ? (
+              (app.isCalendarScreenOpen ? (
+                <CalendarScreen />
+              ) : app.isInternshipCaseOpen ? (
                 <InternshipCaseView />
               ) : app.isInternshipDiaryOpen ? (
                 <InternshipDiaryView />
