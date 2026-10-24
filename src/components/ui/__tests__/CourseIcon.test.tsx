@@ -1,9 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import {
-  COURSE_ICON_NAMES,
-  CourseIcon,
-} from '../CourseIcon';
+import { COURSE_ICON_NAMES, CourseIcon } from '../CourseIcon';
 import type { CourseIconName } from '../../../types';
 
 const ALL_ICON_NAMES: readonly CourseIconName[] = [

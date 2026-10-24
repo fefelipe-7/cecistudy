@@ -67,7 +67,7 @@ export const LogTypeBadge: React.FC<{
       className={cn(
         'inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full',
         meta.chip,
-        className
+        className,
       )}
     >
       <meta.Icon className="w-3 h-3" aria-hidden />

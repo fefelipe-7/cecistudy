@@ -24,7 +24,11 @@ export async function loadNativeLibraryDataset(): Promise<LibraryDataset | null>
       getCatalogWorksByType('interdisciplinary'),
       getCatalogWorksByType('article'),
     ]);
-    if (catalogRows.length === 0 && interdisciplinaryRows.length === 0 && articleRows.length === 0) {
+    if (
+      catalogRows.length === 0 &&
+      interdisciplinaryRows.length === 0 &&
+      articleRows.length === 0
+    ) {
       return null;
     }
     const catalogBooks = catalogRows as CatalogBook[];

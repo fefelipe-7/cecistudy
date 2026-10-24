@@ -22,12 +22,7 @@ import { ensureSyncRepository } from '../../lib/githubRepoSetup';
 import { frase, VAZIO } from '../../lib/voice';
 
 export function CloudBackupToggle() {
-  const {
-    githubSyncConfig,
-    configureGithubSync,
-    clearGithubSync,
-    syncStatus,
-  } = useDataClient();
+  const { githubSyncConfig, configureGithubSync, clearGithubSync, syncStatus } = useDataClient();
   const [isEnabled, setIsEnabled] = useState(!!githubSyncConfig);
   const [configuring, setConfiguring] = useState(false);
   const [token, setToken] = useState('');
@@ -103,8 +98,8 @@ export function CloudBackupToggle() {
       </div>
 
       <p className="text-xs text-ceci-secondary leading-relaxed -mt-1">
-        opcional. desligado por padrão: seus dados ficam no dispositivo. ligue
-        para enviar para seu próprio repositório privado no GitHub.
+        opcional. desligado por padrão: seus dados ficam no dispositivo. ligue para enviar para seu
+        próprio repositório privado no GitHub.
       </p>
 
       {/* Switch principal, padrão do cecistudy (ToggleRow). */}
@@ -133,9 +128,8 @@ export function CloudBackupToggle() {
           </h3>
           <p className="text-sm text-ceci-secondary">
             informe seu token de acesso pessoal (PAT) do GitHub com permissão
-            <code className="font-mono text-xs">repo</code>. o app acessa apenas
-            seu repositório privado{' '}
-            <code className="font-mono text-xs">cecistudy-sync</code>.
+            <code className="font-mono text-xs">repo</code>. o app acessa apenas seu repositório
+            privado <code className="font-mono text-xs">cecistudy-sync</code>.
           </p>
 
           {setupError && (
@@ -154,17 +148,13 @@ export function CloudBackupToggle() {
               disabled={setupBusy}
             />
             <p className="text-xs text-ceci-muted">
-              o token é guardado apenas no seu dispositivo (Preferences) e usado
-              somente para acessar seu repositório privado.
+              o token é guardado apenas no seu dispositivo (Preferences) e usado somente para
+              acessar seu repositório privado.
             </p>
           </div>
 
           <div className="flex gap-2 pt-2">
-            <Button
-              onClick={handleSaveConfig}
-              disabled={setupBusy || !token}
-              className="flex-1"
-            >
+            <Button onClick={handleSaveConfig} disabled={setupBusy || !token} className="flex-1">
               {setupBusy ? 'configurando…' : 'ativar sync'}
             </Button>
             <Button variant="outline" onClick={handleCancelConfig} className="flex-1">

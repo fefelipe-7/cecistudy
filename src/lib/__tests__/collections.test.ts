@@ -140,7 +140,7 @@ describe('registry de coleções (T0.3)', () => {
       // `supervision` é legada: não existe mais no contrato de payload.
       if (!(c.key in db)) {
         expect(c.syncable, `${c.key} ausente do EmptyDatabase precisa ser syncable: false`).toBe(
-          false
+          false,
         );
         continue;
       }
@@ -151,10 +151,9 @@ describe('registry de coleções (T0.3)', () => {
         expect(valor !== null && !Array.isArray(valor), c.key).toBe(true);
       }
       if (c.kind === 'map') {
-        expect(
-          valor !== null && typeof valor === 'object' && !Array.isArray(valor),
-          c.key
-        ).toBe(true);
+        expect(valor !== null && typeof valor === 'object' && !Array.isArray(valor), c.key).toBe(
+          true,
+        );
       }
     }
   });

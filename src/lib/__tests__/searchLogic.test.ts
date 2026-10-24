@@ -31,12 +31,18 @@ describe('titleRanges', () => {
   });
 
   it('acha múltiplas ocorrências', () => {
-    expect(titleRanges('aula 1 e aula 2', 'aula')).toEqual([[0, 4], [9, 13]]);
+    expect(titleRanges('aula 1 e aula 2', 'aula')).toEqual([
+      [0, 4],
+      [9, 13],
+    ]);
   });
 
   it('exige todas as palavras (AND)', () => {
     expect(titleRanges('tríade cognitiva', 'triade beck')).toEqual([]);
-    expect(titleRanges('tríade cognitiva de beck', 'triade beck')).toEqual([[0, 6], [20, 24]]);
+    expect(titleRanges('tríade cognitiva de beck', 'triade beck')).toEqual([
+      [0, 6],
+      [20, 24],
+    ]);
   });
 
   it('retorna vazio sem match', () => {
@@ -88,7 +94,12 @@ describe('groupResults', () => {
       entry({ id: 'n1', type: 'note' }),
       entry({ id: 'c1', type: 'class' }),
       entry({ id: 'a1', type: 'author' }),
-    ].map((e) => ({ ...e, score: 1, matchField: 'title' as const, titleRanges: [] as [number, number][] }));
+    ].map((e) => ({
+      ...e,
+      score: 1,
+      matchField: 'title' as const,
+      titleRanges: [] as [number, number][],
+    }));
     const groups = groupResults(items);
     expect(groups.map((g) => g.key)).toEqual(['aulas', 'autores', 'notas']);
     expect(groups.map((g) => g.label)).toEqual(['aulas', 'autores', 'notas avulsas']);

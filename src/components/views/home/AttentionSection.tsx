@@ -69,7 +69,8 @@ const AttentionSection: React.FC<AttentionSectionProps> = ({ items, remainingCou
           </AnimatePresence>
           {remainingCount > 0 && (
             <p className="text-[11px] text-ceci-secondary px-1">
-              + {remainingCount} {remainingCount === 1 ? 'item pendente' : 'itens pendentes'} aguardando por você ♡
+              + {remainingCount} {remainingCount === 1 ? 'item pendente' : 'itens pendentes'}{' '}
+              aguardando por você ♡
             </p>
           )}
         </div>

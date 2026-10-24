@@ -12,7 +12,10 @@ describe('UnderlineTabBar', () => {
   it('renderiza todas as abas e marca a ativa', () => {
     render(<UnderlineTabBar tabs={TABS} active={'aulas' as string} onChange={() => {}} />);
     expect(screen.getByRole('button', { name: 'aulas' })).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByRole('button', { name: 'avaliações' })).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByRole('button', { name: 'avaliações' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
     expect(screen.getByRole('button', { name: 'calendário' })).toBeInTheDocument();
   });
 
@@ -22,5 +25,4 @@ describe('UnderlineTabBar', () => {
     fireEvent.click(screen.getByRole('button', { name: 'avaliações' }));
     expect(onChange).toHaveBeenCalledWith('avaliacoes');
   });
-
 });

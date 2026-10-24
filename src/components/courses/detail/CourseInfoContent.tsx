@@ -14,11 +14,7 @@ import { AnimatedNumber } from '../../ui/AnimatedNumber';
 import { CourseAttendanceCard } from './CourseAttendanceCard';
 import CecinhoTip from '../../views/home/CecinhoTip';
 import { useMobileApp } from '@/context/mobileApp';
-import {
-  formatCourseSchedule,
-  formatShortDate,
-  getTodaySchedule,
-} from '../../../lib/schedule';
+import { formatCourseSchedule, formatShortDate, getTodaySchedule } from '../../../lib/schedule';
 import { attendanceStats } from '../../../lib/attendance';
 import { dica } from '../../../lib/voice';
 import { Course } from '../../../types';
@@ -30,8 +26,7 @@ interface CourseInfoContentProps {
 }
 
 const CARD = 'rounded-2xl paper-card p-4 space-y-3';
-const CARD_TITLE =
-  'font-display font-bold text-sm text-ceci-primary flex items-center gap-2';
+const CARD_TITLE = 'font-display font-bold text-sm text-ceci-primary flex items-center gap-2';
 const ROW_LABEL = 'text-[10px] font-bold text-ceci-tertiary uppercase tracking-wider';
 const ROW_VALUE = 'font-semibold text-xs text-ceci-primary mt-0.5';
 
@@ -59,10 +54,7 @@ const MetricTile: React.FC<{
   <div className="rounded-2xl bg-surface-subtle border border-ceci-border-subtle p-3 space-y-1.5 flex-1 min-w-[96px]">
     <div className={`flex items-center gap-1.5 ${iconClass}`}>
       {icon}
-      <AnimatedNumber
-        value={value}
-        className="font-display text-lg font-bold text-ceci-primary"
-      />
+      <AnimatedNumber value={value} className="font-display text-lg font-bold text-ceci-primary" />
     </div>
     <p className="text-[9px] font-bold uppercase tracking-wider text-ceci-tertiary">{label}</p>
   </div>
@@ -80,9 +72,7 @@ export const CourseInfoContent: React.FC<CourseInfoContentProps> = ({ course, on
     .sort((a, b) => a.date.localeCompare(b.date));
   const pendingTasks = tasks.filter((t) => t.disciplineId === course.id && !t.completed);
 
-  const assessments = useAssessments(course.id).sort((a, b) =>
-    a.date.localeCompare(b.date)
-  );
+  const assessments = useAssessments(course.id).sort((a, b) => a.date.localeCompare(b.date));
 
   const courseSessions = sessions.filter((s) => s.courseId === course.id);
   const focusMinutes = courseSessions.reduce((acc, s) => acc + (s.durationMinutes || 0), 0);
@@ -94,7 +84,7 @@ export const CourseInfoContent: React.FC<CourseInfoContentProps> = ({ course, on
     courseSessions.length > 0;
 
   const hasClassToday = getTodaySchedule(courses, new Date()).some(
-    (s) => s.course.id === course.id
+    (s) => s.course.id === course.id,
   );
 
   /** Dica do cecinho — sempre conversa sobre o momento real da matéria. */
@@ -231,7 +221,8 @@ export const CourseInfoContent: React.FC<CourseInfoContentProps> = ({ course, on
         ) : (
           <p className="text-xs text-ceci-tertiary py-1 flex items-center gap-1.5">
             <Mascote expression="class-ready" className="w-6 h-6 shrink-0" decorative />
-            ainda não tem prova com peso anotada — registre as avaliações para ver a composição da média.
+            ainda não tem prova com peso anotada — registre as avaliações para ver a composição da
+            média.
           </p>
         )}
       </section>
@@ -255,6 +246,6 @@ function useAssessments(courseId: string) {
   const { exams } = useMobileApp();
   return React.useMemo(
     () => exams.filter((e) => e.courseId === courseId && typeof e.weightValue === 'number'),
-    [exams, courseId]
+    [exams, courseId],
   );
 }

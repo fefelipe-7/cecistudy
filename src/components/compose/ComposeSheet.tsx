@@ -39,7 +39,7 @@ export const ComposeSheet: React.FC<ComposeSheetProps> = ({
   <div
     className={cn(
       'relative flex-1 min-h-0 flex flex-col bg-surface-default rounded-[20px] border border-ceci-border-default shadow-[0_2px_8px_rgba(64,56,58,0.05)] overflow-hidden',
-      className
+      className,
     )}
   >
     {mode === 'aula' ? (
@@ -80,7 +80,13 @@ export const ComposeSheet: React.FC<ComposeSheetProps> = ({
         {/* estrelas na base do cabeçalho */}
         <div className="flex items-center justify-between gap-2 px-4 py-2 bg-surface-rose/30">
           <span className="text-[11px] font-medium text-ceci-tertiary">como foi a aula?</span>
-          <StarRating value={rating} onChange={onRatingChange} size="sm" showLabel labelClassName="text-ceci-secondary" />
+          <StarRating
+            value={rating}
+            onChange={onRatingChange}
+            size="sm"
+            showLabel
+            labelClassName="text-ceci-secondary"
+          />
         </div>
       </>
     ) : (

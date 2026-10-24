@@ -1,5 +1,13 @@
 import React, { useMemo } from 'react';
-import { HeartHandshake, Stethoscope, Compass, Users, Sparkles, Check, AlertCircle } from 'lucide-react';
+import {
+  HeartHandshake,
+  Stethoscope,
+  Compass,
+  Users,
+  Sparkles,
+  Check,
+  AlertCircle,
+} from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import type { InternshipLog, InternshipLogType, ManagedItem } from '../../types';
 import type { InternshipWizardSeed } from '../../types/internshipSeed';
@@ -56,16 +64,34 @@ const KINDS: {
   caption: string;
   Icon: React.ComponentType<{ className?: string }>;
 }[] = [
-  { value: 'estagio', label: 'estágio', caption: 'dia de campo na clínica escola', Icon: HeartHandshake },
-  { value: 'atendimento_clinico', label: 'atendimento clínico', caption: 'sessão com paciente', Icon: Stethoscope },
+  {
+    value: 'estagio',
+    label: 'estágio',
+    caption: 'dia de campo na clínica escola',
+    Icon: HeartHandshake,
+  },
+  {
+    value: 'atendimento_clinico',
+    label: 'atendimento clínico',
+    caption: 'sessão com paciente',
+    Icon: Stethoscope,
+  },
   { value: 'supervisao', label: 'supervisão', caption: 'orientação da supervisora', Icon: Compass },
-  { value: 'intervisao', label: 'intervisão', caption: 'troca com colegas de estágio', Icon: Users },
+  {
+    value: 'intervisao',
+    label: 'intervisão',
+    caption: 'troca com colegas de estágio',
+    Icon: Users,
+  },
   { value: 'outro', label: 'outro', caption: 'registro avulso de campo', Icon: Sparkles },
 ];
 
 const KIND_META: Record<InternshipLogType, { title: string; icon: React.ReactNode }> = {
   estagio: { title: 'novo registro de estágio', icon: <HeartHandshake className="w-3.5 h-3.5" /> },
-  atendimento_clinico: { title: 'novo atendimento clínico', icon: <Stethoscope className="w-3.5 h-3.5" /> },
+  atendimento_clinico: {
+    title: 'novo atendimento clínico',
+    icon: <Stethoscope className="w-3.5 h-3.5" />,
+  },
   supervisao: { title: 'nova supervisão', icon: <Compass className="w-3.5 h-3.5" /> },
   intervisao: { title: 'nova intervisão', icon: <Users className="w-3.5 h-3.5" /> },
   outro: { title: 'novo registro', icon: <Sparkles className="w-3.5 h-3.5" /> },
@@ -109,17 +135,12 @@ export const parseHours = (raw?: string): number => {
 const MAX_HOURS = 24; // `D18`
 
 export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
-  const {
-    internshipLogs,
-    wizardSeed,
-    handleSaveInternshipLog,
-    closeWizard,
-    showToast,
-  } = useMobileApp();
+  const { internshipLogs, wizardSeed, handleSaveInternshipLog, closeWizard, showToast } =
+    useMobileApp();
 
   const today = new Date();
   const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(
-    today.getDate()
+    today.getDate(),
   ).padStart(2, '0')}`;
 
   const editingLog =
@@ -150,8 +171,8 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
       sessionNumber: seedTarget?.sessionNumber
         ? String(seedTarget.sessionNumber)
         : wizardSeed?.sessionNumber
-        ? String(wizardSeed.sessionNumber)
-        : '',
+          ? String(wizardSeed.sessionNumber)
+          : '',
       patientAge: seedTarget?.patientAge ?? wizardSeed?.patientAge ?? '',
       theme: seedTarget?.theme ?? '',
       approach: seedTarget?.approach ?? wizardSeed?.approach ?? '',
@@ -198,9 +219,27 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
   });
 
   const {
-    kind, activity, hours, date, reflections, patient, sessionNumber, patientAge,
-    theme, approach, interventionNotes, observations, supervisor, topics,
-    orientations, doubts, nextSteps, discussedLogIds, beforeNotes, afterNotes, selfAssessment,
+    kind,
+    activity,
+    hours,
+    date,
+    reflections,
+    patient,
+    sessionNumber,
+    patientAge,
+    theme,
+    approach,
+    interventionNotes,
+    observations,
+    supervisor,
+    topics,
+    orientations,
+    doubts,
+    nextSteps,
+    discussedLogIds,
+    beforeNotes,
+    afterNotes,
+    selfAssessment,
     declinedFields,
   } = values;
   const confidence = selfAssessment?.confidence ?? '';
@@ -253,12 +292,15 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
   const looksFullName =
     kind === 'atendimento_clinico' &&
     patient.trim().length > 12 &&
-    patient.trim().split(/\s+/).filter((w) => w.replace(/\./g, '').length >= 3).length >= 2;
+    patient
+      .trim()
+      .split(/\s+/)
+      .filter((w) => w.replace(/\./g, '').length >= 3).length >= 2;
   const duplicateSession = (() => {
     if (kind !== 'atendimento_clinico' || !typedKey || !sessionNumber) return undefined;
     const caso = derived.cases.find((c) => c.patientKey === typedKey);
     return caso?.logs.find(
-      (l) => String(l.sessionNumber ?? '') === sessionNumber.trim() && l.id !== seedTarget?.id
+      (l) => String(l.sessionNumber ?? '') === sessionNumber.trim() && l.id !== seedTarget?.id,
     );
   })();
 
@@ -280,10 +322,10 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
 
   const inThisSupervision = seedTarget?.discussedLogIds ?? [];
   const pendingAttendance = attendanceLogs.filter(
-    (l) => !statusOf(l, linkIndex, todayKey).supervised && !inThisSupervision.includes(l.id)
+    (l) => !statusOf(l, linkIndex, todayKey).supervised && !inThisSupervision.includes(l.id),
   );
   const discussedElsewhere = attendanceLogs.filter(
-    (l) => statusOf(l, linkIndex, todayKey).supervised && !inThisSupervision.includes(l.id)
+    (l) => statusOf(l, linkIndex, todayKey).supervised && !inThisSupervision.includes(l.id),
   );
   const hereAttendance = attendanceLogs.filter((l) => inThisSupervision.includes(l.id));
 
@@ -320,8 +362,12 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
                 <Icon className="w-5 h-5" />
               </span>
               <span>
-                <span className="block font-display font-bold text-base text-ceci-primary">{k.label}</span>
-                <span className="block text-xs text-ceci-secondary mt-0.5 leading-snug">{k.caption}</span>
+                <span className="block font-display font-bold text-base text-ceci-primary">
+                  {k.label}
+                </span>
+                <span className="block text-xs text-ceci-secondary mt-0.5 leading-snug">
+                  {k.caption}
+                </span>
               </span>
             </button>
           );
@@ -407,9 +453,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
     subtitle: 'suas impressões e aprendizados — é o coração do diário de estágio ♡',
     content: (
       <div className="space-y-4">
-        {isFuture && (
-          <p className="text-[11px] text-ceci-tertiary">dá pra preencher depois</p>
-        )}
+        {isFuture && <p className="text-[11px] text-ceci-tertiary">dá pra preencher depois</p>}
         {extra}
         <TextArea
           rows={5}
@@ -485,8 +529,8 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
       )}
       {duplicateCase && duplicateCase.patientKey !== undefined && (
         <p className="text-[11px] text-status-warning-strong inline-flex items-center gap-1.5">
-          <AlertCircle className="w-3.5 h-3.5" aria-hidden /> já existe “{duplicateCase.patientLabel}” — as duas
-          vão virar o mesmo caso
+          <AlertCircle className="w-3.5 h-3.5" aria-hidden /> já existe “
+          {duplicateCase.patientLabel}” — as duas vão virar o mesmo caso
         </p>
       )}
       {looksFullName && (
@@ -680,7 +724,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
           onChange={(e) => patch({ observations: e.target.value })}
           placeholder="como foi o vínculo, o estado emocional, algo que chamou atenção..."
         />
-      </div>
+      </div>,
     ),
     {
       id: 'revisar',
@@ -789,7 +833,8 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
       id: 'combinados',
       title: 'combinados',
       headline: 'o que ficou combinado?',
-      subtitle: 'orientações e próximos passos — cada passo vira tarefa, leitura ou foco quando você quiser.',
+      subtitle:
+        'orientações e próximos passos — cada passo vira tarefa, leitura ou foco quando você quiser.',
       content: (
         <div className="space-y-4">
           <div>
@@ -820,15 +865,15 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
       subtitle: 'tudo aqui é opcional — dá pra deixar pra depois.',
       content: (
         <div className="space-y-4">
-          {isFuture && (
-            <p className="text-[11px] text-ceci-tertiary">dá pra preencher depois</p>
-          )}
+          {isFuture && <p className="text-[11px] text-ceci-tertiary">dá pra preencher depois</p>}
           <div>
             <FieldLabel>confiança</FieldLabel>
             <TextArea
               rows={2}
               value={confidence}
-              onChange={(e) => patch({ selfAssessment: { confidence: e.target.value, limits, themes } })}
+              onChange={(e) =>
+                patch({ selfAssessment: { confidence: e.target.value, limits, themes } })
+              }
               placeholder="o que já consigo fazer bem..."
             />
           </div>
@@ -837,7 +882,9 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
             <TextArea
               rows={2}
               value={limits}
-              onChange={(e) => patch({ selfAssessment: { confidence, limits: e.target.value, themes } })}
+              onChange={(e) =>
+                patch({ selfAssessment: { confidence, limits: e.target.value, themes } })
+              }
               placeholder="o que ainda é difícil ou incerto..."
             />
           </div>
@@ -846,7 +893,9 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
             <TextArea
               rows={2}
               value={themes}
-              onChange={(e) => patch({ selfAssessment: { confidence, limits, themes: e.target.value } })}
+              onChange={(e) =>
+                patch({ selfAssessment: { confidence, limits, themes: e.target.value } })
+              }
               placeholder="assuntos que quer revisar ou estudar mais..."
             />
           </div>
@@ -895,10 +944,10 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
     kind === null
       ? [choiceStep]
       : kind === 'atendimento_clinico'
-      ? atendimentoSteps
-      : kind === 'supervisao' || kind === 'intervisao'
-      ? supervisionSteps
-      : estagioSteps;
+        ? atendimentoSteps
+        : kind === 'supervisao' || kind === 'intervisao'
+          ? supervisionSteps
+          : estagioSteps;
 
   // O seed pode abrir direto num passo ("sem reflexão · adicionar" → `reflexao`).
   React.useEffect(() => {
@@ -973,7 +1022,7 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
       showToast(
         discusses
           ? `supervisão guardada · ${pluralPt(discusses, 'sessão ligada', 'sessões ligadas')} ♡`
-          : 'supervisão guardada ♡'
+          : 'supervisão guardada ♡',
       );
     else showToast(frase(CELEBRACAO, 'registroGuardado'));
   };
@@ -987,7 +1036,9 @@ export const InternshipWizard: React.FC<{ editing?: ManagedItem | null }> = ({ e
     showToast(isFuture ? 'agendado ♡' : 'registro guardado ♡');
   };
 
-  const meta = kind ? KIND_META[kind] : { title: 'novo registro de estágio', icon: <Sparkles className="w-3.5 h-3.5" /> };
+  const meta = kind
+    ? KIND_META[kind]
+    : { title: 'novo registro de estágio', icon: <Sparkles className="w-3.5 h-3.5" /> };
 
   return (
     <WizardScaffold

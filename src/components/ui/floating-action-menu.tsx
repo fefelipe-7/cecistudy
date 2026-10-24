@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { IOS_EASE } from "@/lib/motion";
-import { Plus } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { usePressGesture } from "@/lib/usePressGesture";
-import { hapticTap } from "@/lib/haptics";
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { IOS_EASE } from '@/lib/motion';
+import { Plus } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { usePressGesture } from '@/lib/usePressGesture';
+import { hapticTap } from '@/lib/haptics';
 
 export type FloatingActionMenuProps = {
   options: {
@@ -20,11 +20,7 @@ export type FloatingActionMenuProps = {
   onLongPress?: () => void;
 };
 
-const FloatingActionMenu = ({
-  options,
-  className,
-  onLongPress,
-}: FloatingActionMenuProps) => {
+const FloatingActionMenu = ({ options, className, onLongPress }: FloatingActionMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -45,11 +41,13 @@ const FloatingActionMenu = ({
   });
 
   return (
-    <div className={cn("fixed bottom-8 right-8 z-50", className)}>
+    <div className={cn('fixed bottom-8 right-8 z-50', className)}>
       <Button
         {...handlers}
         data-phase={phase}
-        aria-label={isOpen ? 'fechar menu de atalhos' : 'abrir menu de atalhos (segure para buscar)'}
+        aria-label={
+          isOpen ? 'fechar menu de atalhos' : 'abrir menu de atalhos (segure para buscar)'
+        }
         aria-expanded={isOpen}
         className="liquid-glass-fab w-11 h-11 rounded-full hover:brightness-110 active:scale-95 data-[phase=pressing]:scale-90 shadow-brand tap-interactive cursor-pointer border transition-[filter,transform] duration-200"
       >
@@ -57,8 +55,8 @@ const FloatingActionMenu = ({
           animate={{ rotate: isOpen ? 45 : 0 }}
           transition={{
             duration: 0.3,
-            ease: "easeInOut",
-            type: "spring",
+            ease: 'easeInOut',
+            type: 'spring',
             stiffness: 300,
             damping: 20,
           }}

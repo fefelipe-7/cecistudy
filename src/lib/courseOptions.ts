@@ -62,13 +62,46 @@ export const COURSE_ICON_OPTIONS: Array<{ value: string; label: string; emoji: s
  */
 export const COURSE_EMOJIS: readonly string[] = [
   // classe psicologia
-  '🧠', '📚', '✍️', '📝', '🎓', '🔬', '🧬', '🧩', '💭',
+  '🧠',
+  '📚',
+  '✍️',
+  '📝',
+  '🎓',
+  '🔬',
+  '🧬',
+  '🧩',
+  '💭',
   // academia
-  '🏛️', '⚖️', '💊', '🎯', '⏳', '📈', '🧭', '🪶',
+  '🏛️',
+  '⚖️',
+  '💊',
+  '🎯',
+  '⏳',
+  '📈',
+  '🧭',
+  '🪶',
   // natureza & afeto
-  '🌸', '🦋', '🌱', '🐝', '🦉', '🐢', '🐋', '🐈', '🌼', '🍀', '🌙', '☀️',
+  '🌸',
+  '🦋',
+  '🌱',
+  '🐝',
+  '🦉',
+  '🐢',
+  '🐋',
+  '🐈',
+  '🌼',
+  '🍀',
+  '🌙',
+  '☀️',
   // arte & ferramentas
-  '🎨', '🎸', '📷', '⚗️', '🧵', '🗿', '🧘', '✨',
+  '🎨',
+  '🎸',
+  '📷',
+  '⚗️',
+  '🧵',
+  '🗿',
+  '🧘',
+  '✨',
 ];
 
 /** Heurística para `Course.icon`: verdadeiro quando o valor é um emoji salvo. */

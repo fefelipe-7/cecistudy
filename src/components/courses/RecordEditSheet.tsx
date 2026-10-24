@@ -26,7 +26,8 @@ const STATUS_OPTIONS: {
     status: 'presente',
     label: 'presente ✓',
     hint: 'conta como assistida',
-    activeClass: 'bg-status-success-surface border-status-success-border text-status-success-strong',
+    activeClass:
+      'bg-status-success-surface border-status-success-border text-status-success-strong',
   },
   {
     status: 'falta',
@@ -38,7 +39,8 @@ const STATUS_OPTIONS: {
     status: 'cancelada',
     label: 'cancelada',
     hint: 'não conta no total',
-    activeClass: 'bg-status-warning-surface border-status-warning-border text-status-warning-strong',
+    activeClass:
+      'bg-status-warning-surface border-status-warning-border text-status-warning-strong',
   },
 ];
 
@@ -62,13 +64,16 @@ const RecordEditSheet: React.FC<RecordEditSheetProps> = ({ open, course, record,
   };
 
   return (
-    <Modal open={open} onClose={onClose} position="bottom" labelledBy="record-edit-title" className="w-full max-w-md">
+    <Modal
+      open={open}
+      onClose={onClose}
+      position="bottom"
+      labelledBy="record-edit-title"
+      className="w-full max-w-md"
+    >
       <div className="w-full bg-canvas rounded-t-[28px] sm:rounded-2xl border border-ceci-border-default shadow-xl overflow-hidden px-4 pb-6 pt-1 space-y-4 sm:px-5 text-ceci-primary">
         <div className="text-center">
-          <h3
-            id="record-edit-title"
-            className="font-display font-bold text-base text-ceci-primary"
-          >
+          <h3 id="record-edit-title" className="font-display font-bold text-base text-ceci-primary">
             {record ? formatShortDate(record.date) : ''}
           </h3>
           <p className="text-xs text-ceci-tertiary mt-0.5">frequência de {course.name}</p>

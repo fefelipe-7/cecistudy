@@ -1,11 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  applyStampChange,
-  emptySyncIndex,
-  mergeIndexes,
-  tieBreak,
-} from '../stamp';
-
+import { applyStampChange, emptySyncIndex, mergeIndexes, tieBreak } from '../stamp';
 
 describe('applyStampChange', () => {
   it('bumpa o stamp da coleção em qualquer mudança', () => {
@@ -22,7 +16,13 @@ describe('applyStampChange', () => {
       { id: 'c1', name: 'renomeada' },
       { id: 'c2', name: 'nova' },
     ];
-    const { index, changedRecords } = applyStampChange(emptySyncIndex(), 'courses', prev, next, 200);
+    const { index, changedRecords } = applyStampChange(
+      emptySyncIndex(),
+      'courses',
+      prev,
+      next,
+      200,
+    );
     expect(changedRecords).toBe(2);
     expect(index.records.courses['c1']).toBe(200);
     expect(index.records.courses['c2']).toBe(200);

@@ -203,8 +203,7 @@ export const THEMES: Record<ThemeId, Theme> = {
     id: 'campinho',
     label: 'campinho',
     emoji: '🌿',
-    description:
-      'o verde de onde a cecinho senta — grama ao entardecer.',
+    description: 'o verde de onde a cecinho senta — grama ao entardecer.',
     isDark: false,
     chartTheme: 'light',
     themeColor: '#D8E6C8',
@@ -684,11 +683,23 @@ export function wcagPairs(theme: Theme): Array<{ label: string; a: string; b: st
     { label: 'secondary/on-canvas', a: t['ceci-secondary'], b: t['canvas'] },
     { label: 'secondary/on-default', a: t['ceci-secondary'], b: t['surface-default'] },
     { label: 'on-primary/on-primary-fill', a: t['ceci-on-primary'], b: t['ceci-primary'] },
-    { label: 'status-success-strong/on-default', a: t['status-success-strong'], b: t['surface-default'] },
+    {
+      label: 'status-success-strong/on-default',
+      a: t['status-success-strong'],
+      b: t['surface-default'],
+    },
     { label: 'status-success-on/on-fill', a: t['status-success-on'], b: t['status-success'] },
-    { label: 'status-danger-strong/on-default', a: t['status-danger-strong'], b: t['surface-default'] },
+    {
+      label: 'status-danger-strong/on-default',
+      a: t['status-danger-strong'],
+      b: t['surface-default'],
+    },
     { label: 'status-danger-on/on-fill', a: t['status-danger-on'], b: t['status-danger'] },
-    { label: 'status-warning-strong/on-default', a: t['status-warning-strong'], b: t['surface-default'] },
+    {
+      label: 'status-warning-strong/on-default',
+      a: t['status-warning-strong'],
+      b: t['surface-default'],
+    },
     { label: 'status-warning-on/on-fill', a: t['status-warning-on'], b: t['status-warning'] },
   ];
 }

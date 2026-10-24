@@ -65,11 +65,5 @@ export const CaptureHost: React.FC = () => {
   }, []);
 
   if (sheetText === null) return null;
-  return (
-    <CaptureLinkSheet
-      open
-      initialText={sheetText}
-      onClose={() => setSheetText(null)}
-    />
-  );
+  return <CaptureLinkSheet open initialText={sheetText} onClose={() => setSheetText(null)} />;
 };

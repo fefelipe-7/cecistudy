@@ -6,18 +6,13 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   padded?: boolean;
 }
 
-export const Card: React.FC<CardProps> = ({
-  className,
-  hoverable,
-  padded = true,
-  ...props
-}) => (
+export const Card: React.FC<CardProps> = ({ className, hoverable, padded = true, ...props }) => (
   <div
     className={cn(
       'bg-surface-default border border-ceci-border-default shadow-sm',
       padded && 'p-6',
       hoverable && 'hover:shadow-md transition-shadow',
-      className
+      className,
     )}
     {...props}
   />

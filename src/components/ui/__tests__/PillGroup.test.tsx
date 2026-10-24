@@ -13,7 +13,10 @@ describe('PillGroup', () => {
   it('renderiza as opções e marca a selecionada', () => {
     render(<PillGroup value={A} onChange={() => {}} options={OPTIONS} />);
     expect(screen.getByRole('button', { name: 'opção a' })).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByRole('button', { name: 'opção b' })).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByRole('button', { name: 'opção b' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
   });
 
   it('chama onChange com o valor ao clicar', () => {

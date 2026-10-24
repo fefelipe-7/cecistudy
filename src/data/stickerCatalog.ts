@@ -757,10 +757,7 @@ export function stickerDefinitionFor(id: string): StickerDefinition | undefined 
 }
 
 /** Constroi um sticker do catálogo a partir do progresso persistido (ou novo). */
-export function stickerFromCatalog(
-  def: StickerDefinition,
-  progress?: Sticker
-): Sticker {
+export function stickerFromCatalog(def: StickerDefinition, progress?: Sticker): Sticker {
   return {
     id: def.id,
     name: def.name,

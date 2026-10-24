@@ -7,7 +7,7 @@ describe('Modal', () => {
     render(
       <Modal open={false} onClose={() => {}}>
         <p>conteúdo do modal</p>
-      </Modal>
+      </Modal>,
     );
     expect(screen.queryByText('conteúdo do modal')).not.toBeInTheDocument();
   });
@@ -17,7 +17,7 @@ describe('Modal', () => {
     render(
       <Modal open onClose={onClose}>
         <p>conteúdo</p>
-      </Modal>
+      </Modal>,
     );
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(onClose).toHaveBeenCalledTimes(1);
@@ -28,7 +28,7 @@ describe('Modal', () => {
     render(
       <Modal open onClose={onClose}>
         <p>conteúdo</p>
-      </Modal>
+      </Modal>,
     );
     fireEvent.click(screen.getByRole('dialog'));
     expect(onClose).toHaveBeenCalledTimes(1);
@@ -39,7 +39,7 @@ describe('Modal', () => {
     render(
       <Modal open onClose={onClose}>
         <p>conteúdo</p>
-      </Modal>
+      </Modal>,
     );
     const panel = screen.getByText('conteúdo').closest('.relative');
     fireEvent.click(panel!);
@@ -51,7 +51,7 @@ describe('Modal', () => {
       <Modal open onClose={() => {}} labelledBy="titulo-modal">
         <h2 id="titulo-modal">título</h2>
         <p>conteúdo</p>
-      </Modal>
+      </Modal>,
     );
     expect(screen.getByRole('dialog')).toHaveAttribute('aria-labelledby', 'titulo-modal');
   });
@@ -63,7 +63,7 @@ describe('Modal', () => {
         <Modal open={false} onClose={() => {}}>
           <button>dentro</button>
         </Modal>
-      </>
+      </>,
     );
     const trigger = screen.getByText('abrir modal');
     trigger.focus();
@@ -75,7 +75,7 @@ describe('Modal', () => {
         <Modal open onClose={() => {}}>
           <button>dentro</button>
         </Modal>
-      </>
+      </>,
     );
     const panel = screen.getByRole('dialog').querySelector('.relative') as HTMLElement;
     expect(document.activeElement).toBe(panel);
@@ -86,7 +86,7 @@ describe('Modal', () => {
         <Modal open={false} onClose={() => {}}>
           <button>dentro</button>
         </Modal>
-      </>
+      </>,
     );
     expect(document.activeElement).toBe(trigger);
   });
@@ -98,7 +98,7 @@ describe('Modal', () => {
           <button>primeiro</button>
           <button>último</button>
         </div>
-      </Modal>
+      </Modal>,
     );
     const first = screen.getByText('primeiro');
     const last = screen.getByText('último');

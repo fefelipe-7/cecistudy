@@ -24,11 +24,7 @@
  */
 import { isNativePlatform, storage } from './storage';
 import { getUserDb } from './db/userDb';
-import {
-  getCatalogApproaches,
-  getCatalogQuestions,
-  getCatalogDb,
-} from './db/catalogDb';
+import { getCatalogApproaches, getCatalogQuestions, getCatalogDb } from './db/catalogDb';
 import { mark, measure, traceAsync } from './performance/perfMarks';
 import { requestPrefetch } from './performance/screenPrefetch';
 
@@ -266,9 +262,7 @@ function buildState(steps: Record<BootStepId, BootStepResult>): BootState {
 }
 
 /** Runner padrão de cada passo, conforme plano (`skipReason` = null). */
-function defaultRunner(
-  id: BootStepId,
-): (() => Promise<unknown>) | null {
+function defaultRunner(id: BootStepId): (() => Promise<unknown>) | null {
   switch (id) {
     case 'theme':
       // initTheme() já rodou em main.tsx antes do React montar — o passo só
@@ -281,8 +275,7 @@ function defaultRunner(
     case 'catalog-core':
       return () => getCatalogDb();
     case 'route-prefetch':
-      return () =>
-        traceAsync('first-route-chunk', () => import('../components/views/HomeView'));
+      return () => traceAsync('first-route-chunk', () => import('../components/views/HomeView'));
     case 'catalog-approaches':
       return () => memoize('approaches');
     case 'catalog-questions':
@@ -415,21 +408,17 @@ export function scheduleIdlePrefetch(timeoutMs = 4000): void {
   ).requestIdleCallback;
   if (!ric) return;
   idlePrefetchScheduled = true;
-  ric(() => {
-    requestPrefetch('screen:biblioteca', () =>
-      import('../components/views/BibliotecaView'),
-    );
-    requestPrefetch('screen:estudos', () =>
-      import('../components/views/EstudosView'),
-    );
-  }, { timeout: timeoutMs });
+  ric(
+    () => {
+      requestPrefetch('screen:biblioteca', () => import('../components/views/BibliotecaView'));
+      requestPrefetch('screen:estudos', () => import('../components/views/EstudosView'));
+    },
+    { timeout: timeoutMs },
+  );
 }
 
 /** Uso interno de testes: substitui a fonte de qualquer passo. */
-export function setStepImplForTests(
-  id: BootStepId,
-  impl: () => Promise<unknown>,
-): void {
+export function setStepImplForTests(id: BootStepId, impl: () => Promise<unknown>): void {
   if (id === 'catalog-approaches') {
     stepImpls.approachesImpl = impl;
     return;

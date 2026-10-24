@@ -116,9 +116,7 @@ describe('ProfilePage — narrativa composta', () => {
   it('tem um único h1 (o nome) e a ordem dos movimentos é fixa', () => {
     renderPage();
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
-    expect(
-      screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent),
-    ).toEqual([
+    expect(screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)).toEqual([
       'sua jornada',
       'seu ritmo',
       'memória da graduação',
@@ -171,9 +169,17 @@ describe('ProfilePage — narrativa composta', () => {
 
   it('cada métrica do ritmo leva à sua tela', () => {
     const h = renderPage({
-      sessions: [{ id: 'ses-1', topic: 'psicologia social', date: '2026-10-10', durationMinutes: 45 }],
+      sessions: [
+        { id: 'ses-1', topic: 'psicologia social', date: '2026-10-10', durationMinutes: 45 },
+      ],
       tasks: [
-        { id: 't-1', title: 'ler o capítulo 3', completed: true, priority: 'media', category: 'leitura' },
+        {
+          id: 't-1',
+          title: 'ler o capítulo 3',
+          completed: true,
+          priority: 'media',
+          category: 'leitura',
+        },
       ],
     });
     fireEvent.click(screen.getByRole('button', { name: /estudados/ }));

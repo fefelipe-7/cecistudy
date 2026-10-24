@@ -57,7 +57,14 @@ const keyStates = new Map<string, KeyState>();
 function stateOf(key: string): KeyState {
   let s = keyStates.get(key);
   if (!s) {
-    s = { version: 0, pending: null, inFlight: null, inFlightPromise: null, debounceTimer: undefined, lastError: undefined };
+    s = {
+      version: 0,
+      pending: null,
+      inFlight: null,
+      inFlightPromise: null,
+      debounceTimer: undefined,
+      lastError: undefined,
+    };
     keyStates.set(key, s);
   }
   return s;
@@ -185,7 +192,8 @@ export async function invalidatePendingWrites(): Promise<void> {
  */
 let hideFlushInstalled = false;
 function installHideFlush(): void {
-  if (hideFlushInstalled || typeof window === 'undefined' || typeof document === 'undefined') return;
+  if (hideFlushInstalled || typeof window === 'undefined' || typeof document === 'undefined')
+    return;
   hideFlushInstalled = true;
   const flush = () => {
     void flushWriteQueue();

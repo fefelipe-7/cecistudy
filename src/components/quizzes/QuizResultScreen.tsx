@@ -17,7 +17,13 @@ interface QuizResultScreenProps {
   onNewQuiz: () => void;
 }
 
-function StatCard({ icon, label, value, colorClass, bgClass }: {
+function StatCard({
+  icon,
+  label,
+  value,
+  colorClass,
+  bgClass,
+}: {
   icon: React.ReactNode;
   label: string;
   value: string | number;
@@ -32,14 +38,18 @@ function StatCard({ icon, label, value, colorClass, bgClass }: {
         </span>
         <span className="text-xs font-medium text-ceci-secondary">{label}</span>
       </div>
-      <div className={`font-display font-bold text-2xl ${colorClass}`}>
-        {value}
-      </div>
+      <div className={`font-display font-bold text-2xl ${colorClass}`}>{value}</div>
     </div>
   );
 }
 
-function BarStat({ label, count, total, colorClass, barClass }: {
+function BarStat({
+  label,
+  count,
+  total,
+  colorClass,
+  barClass,
+}: {
   label: string;
   count: number;
   total: number;
@@ -51,7 +61,9 @@ function BarStat({ label, count, total, colorClass, barClass }: {
     <div className="space-y-1.5">
       <div className="flex items-center justify-between text-xs">
         <span className="text-ceci-secondary truncate pr-2">{label}</span>
-        <span className={`font-semibold ${colorClass}`}>{count}/{total} ({Math.round(pct)}%)</span>
+        <span className={`font-semibold ${colorClass}`}>
+          {count}/{total} ({Math.round(pct)}%)
+        </span>
       </div>
       <div className="h-2 rounded-full bg-ceci-border-subtle overflow-hidden">
         <motion.div
@@ -132,7 +144,14 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
       .slice(0, 5);
   }, [answers]);
 
-  const mascoteExpression = scorePct === 100 ? 'celebrate-small' : scorePct >= 70 ? 'correct-soft' : scorePct >= 50 ? 'review-card' : 'try-again';
+  const mascoteExpression =
+    scorePct === 100
+      ? 'celebrate-small'
+      : scorePct >= 70
+        ? 'correct-soft'
+        : scorePct >= 50
+          ? 'review-card'
+          : 'try-again';
 
   return (
     <div className="min-h-[70vh] flex flex-col pb-44">
@@ -140,14 +159,15 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
       <div className="flex-1 pt-4 overflow-y-auto">
         <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 space-y-6">
           {/* Hero card com score */}
-          <div
-            className="rounded-2xl p-6 bg-surface-default border border-ceci-border-default shadow-sm text-center space-y-4"
-          >
+          <div className="rounded-2xl p-6 bg-surface-default border border-ceci-border-default shadow-sm text-center space-y-4">
             <Mascote expression={mascoteExpression} className="w-20 h-20 mx-auto" decorative />
             <div>
-              <h3 className="font-display font-bold text-xl text-ceci-primary">quiz finalizado ♡</h3>
+              <h3 className="font-display font-bold text-xl text-ceci-primary">
+                quiz finalizado ♡
+              </h3>
               <p className="text-xs text-ceci-secondary mt-1">
-                {totalCount} questões • {totalTimeMin} {totalTimeMin === 1 ? 'minuto' : 'minutos'} no total
+                {totalCount} questões • {totalTimeMin} {totalTimeMin === 1 ? 'minuto' : 'minutos'}{' '}
+                no total
               </p>
             </div>
             <div className="flex items-center justify-center gap-4 text-3xl font-display font-bold">
@@ -156,12 +176,17 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
               <span className="text-ceci-primary">{totalCount}</span>
             </div>
             <div className="flex items-center justify-center gap-2">
-              <span className={`inline-flex items-center gap-1 px-4 py-1.5 rounded-full text-sm font-bold ${
-                scorePct === 100 ? 'bg-status-success-surface text-status-success-strong' :
-                scorePct >= 70 ? 'bg-surface-blue text-ceci-academic-strong' :
-                scorePct >= 50 ? 'bg-status-warning-surface text-status-warning-strong' :
-                'bg-status-danger-surface text-status-danger-strong'
-              }`}>
+              <span
+                className={`inline-flex items-center gap-1 px-4 py-1.5 rounded-full text-sm font-bold ${
+                  scorePct === 100
+                    ? 'bg-status-success-surface text-status-success-strong'
+                    : scorePct >= 70
+                      ? 'bg-surface-blue text-ceci-academic-strong'
+                      : scorePct >= 50
+                        ? 'bg-status-warning-surface text-status-warning-strong'
+                        : 'bg-status-danger-surface text-status-danger-strong'
+                }`}
+              >
                 {scorePct}%
               </span>
             </div>
@@ -269,17 +294,25 @@ export const QuizResultScreen: React.FC<QuizResultScreenProps> = ({
                     key={i}
                     className={cn(
                       'p-3 rounded-xl bg-surface-muted text-[11px] flex items-start gap-2',
-                      isCorrect ? 'border-l-2 border-status-success' : 'border-l-2 border-status-danger'
+                      isCorrect
+                        ? 'border-l-2 border-status-success'
+                        : 'border-l-2 border-status-danger',
                     )}
                   >
-                    <span className={cn(
-                      'w-6 h-6 rounded-full border flex items-center justify-center font-bold flex-shrink-0',
-                      isCorrect ? 'bg-status-success-surface border-status-success-border text-status-success-strong' : 'bg-status-danger-surface border-status-danger-border text-status-danger-strong'
-                    )}>
+                    <span
+                      className={cn(
+                        'w-6 h-6 rounded-full border flex items-center justify-center font-bold flex-shrink-0',
+                        isCorrect
+                          ? 'bg-status-success-surface border-status-success-border text-status-success-strong'
+                          : 'bg-status-danger-surface border-status-danger-border text-status-danger-strong',
+                      )}
+                    >
                       {userLetter}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-ceci-primary truncate">{a.question.question}</p>
+                      <p className="font-medium text-ceci-primary truncate">
+                        {a.question.question}
+                      </p>
                       <p className="text-ceci-secondary">
                         sua: {userLetter} · correta: {correctLetter}
                         {a.explanation && ` • ${a.explanation.slice(0, 80)}...`}

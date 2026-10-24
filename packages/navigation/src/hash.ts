@@ -251,8 +251,10 @@ export function parseRoute(hash: string): Route {
     // Diário de estágio: `#/faculdade/estagio/diario`
     // #/faculdade/estagio/<aba> e #/faculdade/estagio/pacientes/:patientKey
     // (SPEC-009 D16). sem-iniciais e '' significam o grupo de ?rfãos.
-    if (h[1] === 'estagio' && h[2] === 'diario') return { tab: 'faculdade', internshipTab: 'diario' };
-    if (h[1] === 'estagio' && h[2] === 'supervisao') return { tab: 'faculdade', internshipTab: 'supervisao' };
+    if (h[1] === 'estagio' && h[2] === 'diario')
+      return { tab: 'faculdade', internshipTab: 'diario' };
+    if (h[1] === 'estagio' && h[2] === 'supervisao')
+      return { tab: 'faculdade', internshipTab: 'supervisao' };
     if (h[1] === 'estagio' && h[2] === 'pacientes') {
       if (h[3]) {
         const raw = decodeURIComponent(h[3]);
@@ -291,7 +293,7 @@ export function parseRoute(hash: string): Route {
       // Seções internas: `#/biblioteca/templo/conceitos|autores|tecnicas|comparacoes`
       if (h[2]) {
         const section = (Object.keys(TEMPLE_SECTION_SLUGS) as TempleSection[]).find(
-          (s) => TEMPLE_SECTION_SLUGS[s] === h[2]
+          (s) => TEMPLE_SECTION_SLUGS[s] === h[2],
         );
         if (section) {
           // Detalhe de uma comparação: `#/biblioteca/templo/comparacoes/:slug`
@@ -316,7 +318,8 @@ export function parseRoute(hash: string): Route {
     if (h[1] === 'streak') return { tab: 'estudos', streak: true };
     // Telas dedicadas de estudo (`#/estudos/foco`, `revisar`, `leituras`, `historico`)
     // + retrocompat das antigas sub-tabs (`flashcards` → revisar, `questoes` → quiz).
-    if (h[1] && STUDY_SCREEN_SLUGS[h[1]]) return { tab: 'estudos', studyScreen: STUDY_SCREEN_SLUGS[h[1]] };
+    if (h[1] && STUDY_SCREEN_SLUGS[h[1]])
+      return { tab: 'estudos', studyScreen: STUDY_SCREEN_SLUGS[h[1]] };
     if (h[1] === 'flashcards') return { tab: 'estudos', studyScreen: 'revisar' };
     if (h[1] === 'questoes') return { tab: 'estudos', quizCategory: true };
     // Meu TCC: `#/estudos/tcc[/<aba>[/<id>]]` (SPEC-012 F3 — a aba é deep-link:
@@ -370,7 +373,10 @@ export function parseRoute(hash: string): Route {
 /** Pilha base para telas auxiliares empilhadas sobre uma aba (+ curso opcional). */
 function baseStackFor(baseTab: NavTab, baseCourseId?: string): NavScreen[] {
   if (baseTab === 'faculdade' && baseCourseId) {
-    return [{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: baseCourseId }];
+    return [
+      { kind: 'tab', tab: 'faculdade' },
+      { kind: 'course', courseId: baseCourseId },
+    ];
   }
   return [{ kind: 'tab', tab: baseTab }];
 }
@@ -378,13 +384,19 @@ function baseStackFor(baseTab: NavTab, baseCourseId?: string): NavScreen[] {
 /** Reconstrói a pilha de navegação a partir da rota hash. */
 export function routeToStack(route: Route): NavScreen[] {
   if (route.composeDetails) {
-    return [...baseStackFor(route.baseTab ?? 'home', route.baseCourseId), { kind: 'composeDetails' }];
+    return [
+      ...baseStackFor(route.baseTab ?? 'home', route.baseCourseId),
+      { kind: 'composeDetails' },
+    ];
   }
   if (route.compose) {
     return [...baseStackFor(route.baseTab ?? 'home', route.baseCourseId), { kind: 'compose' }];
   }
   if (route.wizard) {
-    return [...baseStackFor(route.baseTab ?? 'home', route.baseCourseId), { kind: 'wizard', type: route.wizard }];
+    return [
+      ...baseStackFor(route.baseTab ?? 'home', route.baseCourseId),
+      { kind: 'wizard', type: route.wizard },
+    ];
   }
   if (route.streak) return [...baseStackFor(route.tab ?? 'home'), { kind: 'streak' }];
   if (route.internshipPatientKey !== undefined) {
@@ -395,9 +407,13 @@ export function routeToStack(route: Route): NavScreen[] {
     ];
   }
   if (route.internshipTab) {
-    return [{ kind: 'tab', tab: 'faculdade' }, { kind: 'internshipDiary', tab: route.internshipTab }];
+    return [
+      { kind: 'tab', tab: 'faculdade' },
+      { kind: 'internshipDiary', tab: route.internshipTab },
+    ];
   }
-  if (route.internshipDiary) return [{ kind: 'tab', tab: 'faculdade' }, { kind: 'internshipDiary' }];
+  if (route.internshipDiary)
+    return [{ kind: 'tab', tab: 'faculdade' }, { kind: 'internshipDiary' }];
   if (route.tcc) {
     return [
       { kind: 'tab', tab: 'estudos' },
@@ -419,7 +435,10 @@ export function routeToStack(route: Route): NavScreen[] {
     // chegou aqui pelo assistente mantém o wizard porque quem montou a pilha foi
     // `openTermHistory`; no reload (esta função) volta ao Perfil, que é o
     // destino honesto de um deep-link.
-    return [{ kind: 'tab', tab: 'perfil' }, { kind: 'termHistory', termId: route.termId }];
+    return [
+      { kind: 'tab', tab: 'perfil' },
+      { kind: 'termHistory', termId: route.termId },
+    ];
   }
   if (route.notes) return [{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }];
   if (route.noteTransformId) {
@@ -464,7 +483,10 @@ export function routeToStack(route: Route): NavScreen[] {
     return [...baseStackFor('estudos'), { kind: 'quiz-category' }];
   }
   if (route.studyScreen) {
-    return [{ kind: 'tab', tab: 'estudos' }, { kind: 'study', screen: route.studyScreen }];
+    return [
+      { kind: 'tab', tab: 'estudos' },
+      { kind: 'study', screen: route.studyScreen },
+    ];
   }
   if (route.tab === 'faculdade' && route.focusedCourseId) {
     const courseScreen: NavScreen = { kind: 'course', courseId: route.focusedCourseId };
@@ -539,9 +561,7 @@ export function stackToHash(stack: NavScreen[], subTab?: string): string {
   if (top.kind === 'calendar') return top.day ? `#/calendario/${top.day}` : '#/calendario';
   if (top.kind === 'stickers') return '#/perfil/stickers';
   if (top.kind === 'termHistory') {
-    return top.termId
-      ? `#/perfil/semestre/historico/${top.termId}`
-      : '#/perfil/semestre/historico';
+    return top.termId ? `#/perfil/semestre/historico/${top.termId}` : '#/perfil/semestre/historico';
   }
   if (top.kind === 'notes') return '#/biblioteca/notas';
   if (top.kind === 'noteDetail') return `#/biblioteca/notas/${top.noteId}`;
@@ -564,7 +584,12 @@ export function stackToHash(stack: NavScreen[], subTab?: string): string {
   if (top.kind === 'families') return '#/biblioteca/familias';
   if (top.kind === 'family') return `#/biblioteca/familias/${top.familyId}`;
   if (top.kind === 'sync') return '#/perfil/sincronizar';
-  if (top.kind === 'quiz-category' || top.kind === 'quiz-group-detail' || top.kind === 'quiz-loading') return '#/estudos/quiz';
+  if (
+    top.kind === 'quiz-category' ||
+    top.kind === 'quiz-group-detail' ||
+    top.kind === 'quiz-loading'
+  )
+    return '#/estudos/quiz';
   if (top.kind === 'quiz-play') return '#/estudos/quiz/play';
   if (top.kind === 'quiz-result') return '#/estudos/quiz/result';
   if (top.kind === 'study') return `#/estudos/${STUDY_SCREEN_TO_SLUG[top.screen]}`;

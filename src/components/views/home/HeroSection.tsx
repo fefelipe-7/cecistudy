@@ -10,12 +10,7 @@ interface HeroSectionProps {
   dayMessage: string;
 }
 
-const HeroSection: React.FC<HeroSectionProps> = ({
-  formattedDate,
-  greeting,
-  name,
-  dayMessage,
-}) => (
+const HeroSection: React.FC<HeroSectionProps> = ({ formattedDate, greeting, name, dayMessage }) => (
   <section className="rounded-[26px] bg-gradient-to-br from-surface-default to-surface-rose border border-ceci-border-subtle shadow-sm p-5 relative overflow-hidden">
     <div className="flex items-start justify-between gap-3">
       <div className="min-w-0">

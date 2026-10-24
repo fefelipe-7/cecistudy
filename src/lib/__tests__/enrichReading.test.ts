@@ -66,7 +66,10 @@ describe('buildEnrichmentPlan (SPEC-012 §7.3 item 0)', () => {
 describe('enrichReadingWith (transporte injetado)', () => {
   it('Crossref: título e autores separados entram no patch', async () => {
     const transport: Transport = vi.fn(async () => okJson(crossref()));
-    const res = await enrichReadingWith(reading({ doi: 'https://doi.org/10.1000/titulo.x' }), transport);
+    const res = await enrichReadingWith(
+      reading({ doi: 'https://doi.org/10.1000/titulo.x' }),
+      transport,
+    );
     expect(res.kind).toBe('ok');
     if (res.kind !== 'ok') return;
     expect(res.patch.title).toBe('Título vindo do Crossref');

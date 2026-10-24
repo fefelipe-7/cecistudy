@@ -39,15 +39,13 @@ const ProgressPulse: React.FC<ProgressPulseProps> = ({
         <h2 id="perfil-ritmo-titulo" className="font-display font-bold text-xl text-ceci-primary">
           seu ritmo
         </h2>
-        <p className="text-xs text-ceci-secondary">
-          o que você já construiu, em quatro toques ♡
-        </p>
+        <p className="text-xs text-ceci-secondary">o que você já construiu, em quatro toques ♡</p>
       </div>
 
       {isEmpty ? (
         <p className="rounded-2xl bg-surface-muted border border-ceci-border-subtle px-4 py-5 text-xs text-ceci-secondary text-center">
-          ainda não há registros por aqui — comece anotando uma sessão de estudo e este cantinho começa
-          a contar a sua história ♡
+          ainda não há registros por aqui — comece anotando uma sessão de estudo e este cantinho
+          começa a contar a sua história ♡
         </p>
       ) : (
         <div className="grid grid-cols-2 gap-2.5">

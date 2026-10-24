@@ -99,7 +99,7 @@ function mergeByKey<T>(key: (t: T) => string, ...lists: T[][]): T[] {
  */
 export function resolveCourseRepertorio(
   course: Course,
-  entities: CourseRepertorioEntities
+  entities: CourseRepertorioEntities,
 ): CourseRepertorioResolved {
   const conceptIds = new Set(course.conceptIds ?? []);
   const authorIds = new Set(course.authorIds ?? []);
@@ -110,7 +110,7 @@ export function resolveCourseRepertorio(
   const concepts = mergeByKey(
     (c) => c.id,
     entities.concepts.filter((c) => conceptIds.has(c.id)),
-    conceptsByLegacy
+    conceptsByLegacy,
   );
 
   // ---- autores: vínculo explícito ∪ legado (transitividade) ----
@@ -123,7 +123,7 @@ export function resolveCourseRepertorio(
   const authors = mergeByKey(
     (a) => a.id,
     entities.authors.filter((a) => authorIds.has(a.id)),
-    entities.authors.filter((a) => authorIdsByDerivation.has(a.id))
+    entities.authors.filter((a) => authorIdsByDerivation.has(a.id)),
   );
 
   // ---- bibliografia: vínculo explícito ∪ legado (reading/material courseId) ----

@@ -98,37 +98,49 @@ export const ManageDataModal: React.FC = () => {
   const { managedItem, closeManageItem, deleteManagedItem } = ctx;
   const [phase, setPhase] = useState<Phase>('menu');
 
-const db: ManagedDB = useMemo(
-     () => ({
-       courses: ctx.courses,
-       classes: ctx.classes,
-       tasks: ctx.tasks,
-       exams: ctx.exams,
-       authors: ctx.authors,
-       concepts: ctx.concepts,
-       readings: ctx.readings,
-       flashcards: ctx.flashcards,
-       materials: ctx.materials,
-       internshipLogs: ctx.internshipLogs,
-       sessions: ctx.sessions,
-       quizSessions: ctx.quizSessions,
-       looseNotes: ctx.looseNotes,
-       bookmarkedCourseIds: ctx.bookmarkedCourseIds,
-       savedBookIds: ctx.savedBookIds,
-       readingProgress: ctx.readingProgress,
-       catalogBooks: CATALOG_REFS,
-     }),
-     [
-       ctx.courses, ctx.classes, ctx.tasks, ctx.exams, ctx.authors, ctx.concepts,
-       ctx.readings, ctx.flashcards, ctx.materials, ctx.internshipLogs,
-       ctx.sessions, ctx.quizSessions, ctx.looseNotes, ctx.bookmarkedCourseIds,
-       ctx.savedBookIds, ctx.readingProgress,
-     ]
-   );
+  const db: ManagedDB = useMemo(
+    () => ({
+      courses: ctx.courses,
+      classes: ctx.classes,
+      tasks: ctx.tasks,
+      exams: ctx.exams,
+      authors: ctx.authors,
+      concepts: ctx.concepts,
+      readings: ctx.readings,
+      flashcards: ctx.flashcards,
+      materials: ctx.materials,
+      internshipLogs: ctx.internshipLogs,
+      sessions: ctx.sessions,
+      quizSessions: ctx.quizSessions,
+      looseNotes: ctx.looseNotes,
+      bookmarkedCourseIds: ctx.bookmarkedCourseIds,
+      savedBookIds: ctx.savedBookIds,
+      readingProgress: ctx.readingProgress,
+      catalogBooks: CATALOG_REFS,
+    }),
+    [
+      ctx.courses,
+      ctx.classes,
+      ctx.tasks,
+      ctx.exams,
+      ctx.authors,
+      ctx.concepts,
+      ctx.readings,
+      ctx.flashcards,
+      ctx.materials,
+      ctx.internshipLogs,
+      ctx.sessions,
+      ctx.quizSessions,
+      ctx.looseNotes,
+      ctx.bookmarkedCourseIds,
+      ctx.savedBookIds,
+      ctx.readingProgress,
+    ],
+  );
 
   const itemContext = useMemo(
     () => (managedItem ? buildItemContext(managedItem.kind, managedItem.id, db) : null),
-    [managedItem, db]
+    [managedItem, db],
   );
 
   const reset = () => {
@@ -195,7 +207,13 @@ const db: ManagedDB = useMemo(
         const quiz = ctx.quizSessions.find((q) => q.id === id);
         reset();
         if (quiz) {
-          ctx.openQuizResult(quiz.answers, quiz.config, quiz.startedAt, quiz.correctCount, quiz.totalCount);
+          ctx.openQuizResult(
+            quiz.answers,
+            quiz.config,
+            quiz.startedAt,
+            quiz.correctCount,
+            quiz.totalCount,
+          );
         }
         return;
       }
@@ -235,8 +253,8 @@ const db: ManagedDB = useMemo(
   if (phase === 'progress') {
     const isCatalog = itemContext.kind === 'catalogBook';
     const currentPages = isCatalog
-      ? ctx.readingProgress[itemContext.id] ?? 0
-      : ctx.readings.find((r) => r.id === itemContext.id)?.readPages ?? 0;
+      ? (ctx.readingProgress[itemContext.id] ?? 0)
+      : (ctx.readings.find((r) => r.id === itemContext.id)?.readPages ?? 0);
     const totalPages = isCatalog
       ? CATALOG_REFS.find((b) => b.id === itemContext.id)?.totalPages
       : ctx.readings.find((r) => r.id === itemContext.id)?.totalPages;
@@ -252,9 +270,16 @@ const db: ManagedDB = useMemo(
               <p className="text-xs font-semibold text-ceci-tertiary uppercase tracking-wider">
                 progresso de leitura
               </p>
-              <p className="font-display font-bold text-ceci-primary truncate">{itemContext.name}</p>
+              <p className="font-display font-bold text-ceci-primary truncate">
+                {itemContext.name}
+              </p>
             </div>
-            <Mascote expression="reading-curious" className="w-10 h-10 shrink-0" decorative alt="" />
+            <Mascote
+              expression="reading-curious"
+              className="w-10 h-10 shrink-0"
+              decorative
+              alt=""
+            />
           </div>
 
           <ReadingProgressEditor
@@ -282,12 +307,19 @@ const db: ManagedDB = useMemo(
               <p className="text-xs font-semibold text-ceci-tertiary uppercase tracking-wider">
                 excluir {kindLabel}
               </p>
-              <p className="font-display font-bold text-ceci-primary truncate">{itemContext.name}</p>
+              <p className="font-display font-bold text-ceci-primary truncate">
+                {itemContext.name}
+              </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3 mb-5">
-            <Mascote expression="boundaries-care" className="w-12 h-12 shrink-0" decorative alt="" />
+            <Mascote
+              expression="boundaries-care"
+              className="w-12 h-12 shrink-0"
+              decorative
+              alt=""
+            />
             <div>
               <p className="text-sm text-ceci-secondary">
                 excluir mesmo? isso some do cantinho de vez ♡
@@ -322,8 +354,8 @@ const db: ManagedDB = useMemo(
   // ---- fase: menu de ações (recomendada + comuns + destrutiva isolada) ----
   const renderActionButton = (action: ContextActionDef) => {
     const Icon = ACTION_ICON[action.icon];
-    const isRecommended = action.id === itemContext.recommended?.id &&
-      action.label === itemContext.recommended?.label;
+    const isRecommended =
+      action.id === itemContext.recommended?.id && action.label === itemContext.recommended?.label;
     return (
       <button
         key={`${action.id}-${action.label}`}
@@ -335,7 +367,7 @@ const db: ManagedDB = useMemo(
             ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
             : action.tone === 'danger'
               ? 'border-ceci-border-default bg-surface-default text-status-danger-strong'
-              : 'border-ceci-border-default bg-surface-default text-ceci-primary'
+              : 'border-ceci-border-default bg-surface-default text-ceci-primary',
         )}
       >
         <span
@@ -345,7 +377,7 @@ const db: ManagedDB = useMemo(
               ? 'bg-surface-default text-ceci-brand-strong border border-ceci-border-brand'
               : action.tone === 'danger'
                 ? 'bg-surface-rose text-status-danger-strong'
-                : 'bg-surface-blue text-ceci-academic-strong'
+                : 'bg-surface-blue text-ceci-academic-strong',
           )}
         >
           <Icon className="w-4 h-4" />
@@ -379,12 +411,7 @@ const db: ManagedDB = useMemo(
               <p className="text-[11px] text-ceci-tertiary truncate">{itemContext.meta}</p>
             )}
           </div>
-          <Mascote
-            expression="listening-hello"
-            className="w-10 h-10 shrink-0"
-            decorative
-            alt=""
-          />
+          <Mascote expression="listening-hello" className="w-10 h-10 shrink-0" decorative alt="" />
         </div>
 
         <div className="flex flex-col gap-2.5">

@@ -110,8 +110,20 @@ export const COLLECTIONS = [
   { key: 'sessions', kind: 'array', table: 'study_session', syncable: true },
   { key: 'streakData', kind: 'singleton', table: 'streak', syncable: true },
   { key: 'looseNotes', kind: 'array', table: 'note', syncable: true },
-  { key: 'savedBookIds', kind: 'idList', table: 'saved_catalog_item', itemType: 'book', syncable: true },
-  { key: 'bookmarkedCourseIds', kind: 'idList', table: 'saved_catalog_item', itemType: 'course', syncable: true },
+  {
+    key: 'savedBookIds',
+    kind: 'idList',
+    table: 'saved_catalog_item',
+    itemType: 'book',
+    syncable: true,
+  },
+  {
+    key: 'bookmarkedCourseIds',
+    kind: 'idList',
+    table: 'saved_catalog_item',
+    itemType: 'course',
+    syncable: true,
+  },
   { key: 'readingProgress', kind: 'map', table: 'reading_progress', syncable: true },
   { key: 'quizSessions', kind: 'array', table: 'quiz_session', syncable: true },
   // SPEC-005: entra no **fim** de propósito. A ordem do array é a ordem de
@@ -168,7 +180,7 @@ export function getCollectionTable(key: string): string | null {
 
 /** Coleções que entram no payload de sincronização (spec §7.1). */
 export const SYNCABLE_COLLECTION_KEYS = COLLECTIONS.filter((c) => c.syncable).map(
-  (c) => c.key
+  (c) => c.key,
 ) as CollectionKey[];
 
 /** Coleções com merge por conjunto/mapa — exigem tombstones/stamp por chave. */

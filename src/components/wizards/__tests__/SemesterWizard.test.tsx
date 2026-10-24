@@ -204,7 +204,7 @@ describe('SemesterWizard — ordinal do próximo semestre (SPEC-008 F4.1/F4.4)',
 describe('SemesterWizard — pendências do flashcards (SPEC-008 F4.6)', () => {
   it('conta só o que não foi revisado no semestre que está fechando', async () => {
     state.flashcards = [
-      { id: 'f-novo', courseId: undefined },                        // nunca revisado
+      { id: 'f-novo', courseId: undefined }, // nunca revisado
       { id: 'f-deste-ano', courseId: undefined, lastReviewed: '2026-05-01T00:00:00.000Z' },
       { id: 'f-velho', courseId: undefined, lastReviewed: '2025-06-01T00:00:00.000Z' },
     ];
@@ -257,7 +257,9 @@ describe('SemesterWizard — a11y do passo de decisões (SPEC-008 F4.7)', () => 
     fireEvent.keyDown(last, { key: 'ArrowRight' });
 
     await waitFor(() =>
-      expect(within(group).getByRole('radio', { name: 'continua' }).getAttribute('aria-checked')).toBe('true'),
+      expect(
+        within(group).getByRole('radio', { name: 'continua' }).getAttribute('aria-checked'),
+      ).toBe('true'),
     );
   });
 });

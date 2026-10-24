@@ -13,7 +13,11 @@ export function isAnswerCorrect(gabarito: string | undefined, userAnswer: string
 }
 
 /** Monta a resposta de uma questão a partir da letra escolhida (snapshot da questão preservado). */
-export function buildAnswer(question: StudyQuestion, userAnswer: string, timeMs: number): QuizAnswer {
+export function buildAnswer(
+  question: StudyQuestion,
+  userAnswer: string,
+  timeMs: number,
+): QuizAnswer {
   return {
     questionId: question.id,
     userAnswer,

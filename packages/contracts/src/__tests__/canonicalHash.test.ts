@@ -19,7 +19,7 @@ import { canonicalSha256, canonicalPayloadHash, sha256HexUtf8 } from '../canonic
 
 const VECTORS_PATH = join(
   import.meta.dirname,
-  '../../../../contracts/golden/canonical_hash_vectors.json'
+  '../../../../contracts/golden/canonical_hash_vectors.json',
 );
 
 interface Vector {

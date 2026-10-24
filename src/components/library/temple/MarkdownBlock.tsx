@@ -11,8 +11,7 @@ type Inline = React.ReactNode;
 
 function renderInline(text: string, keyPrefix: string): Inline[] {
   const nodes: Inline[] = [];
-  const regex =
-    /(\*\*[^*]+\*\*|\*[^*\n]+\*|\[\d+\]|\[[^\]]+\]\([^)]+\))/g;
+  const regex = /(\*\*[^*]+\*\*|\*[^*\n]+\*|\[\d+\]|\[[^\]]+\]\([^)]+\))/g;
   let last = 0;
   let match: RegExpExecArray | null;
   let i = 0;
@@ -24,7 +23,7 @@ function renderInline(text: string, keyPrefix: string): Inline[] {
       nodes.push(
         <strong key={key} className="font-semibold text-ceci-primary">
           {token.slice(2, -2)}
-        </strong>
+        </strong>,
       );
     } else if (token.startsWith('[') && token.includes('](')) {
       const [, label, href] = /\[([^\]]+)\]\(([^)]+)\)/.exec(token)!;
@@ -37,19 +36,19 @@ function renderInline(text: string, keyPrefix: string): Inline[] {
           className="text-ceci-academic-strong underline decoration-ceci-border-academic hover:decoration-ceci-academic-strong break-all"
         >
           {label}
-        </a>
+        </a>,
       );
     } else if (/^\[\d+\]$/.test(token)) {
       nodes.push(
         <sup key={key} className="text-[10px] text-ceci-muted font-medium">
           {token.slice(1, -1)}
-        </sup>
+        </sup>,
       );
     } else {
       nodes.push(
         <em key={key} className="italic">
           {token.slice(1, -1)}
-        </em>
+        </em>,
       );
     }
     last = match.index + token.length;
@@ -66,7 +65,7 @@ function renderTable(lines: string[], keyPrefix: string): Inline {
         .trim()
         .replace(/^\||\|$/g, '')
         .split('|')
-        .map((c) => c.trim())
+        .map((c) => c.trim()),
     );
   if (rows.length === 0) return null;
   const [head, ...body] = rows;
@@ -131,13 +130,17 @@ export const MarkdownBlock: React.FC<{ source: string; muted?: boolean }> = ({
           className="font-mono text-[11px] leading-relaxed bg-surface-muted border border-ceci-border-subtle rounded-xl p-3 overflow-x-auto scrollbar-none text-ceci-secondary whitespace-pre"
         >
           {buf.join('\n')}
-        </pre>
+        </pre>,
       );
       continue;
     }
 
     // tabela
-    if (trimmed.startsWith('|') && i + 1 < lines.length && /^\s*\|[\s|:-]+\|\s*$/.test(lines[i + 1])) {
+    if (
+      trimmed.startsWith('|') &&
+      i + 1 < lines.length &&
+      /^\s*\|[\s|:-]+\|\s*$/.test(lines[i + 1])
+    ) {
       const buf: string[] = [];
       while (i < lines.length && lines[i].trim().startsWith('|')) {
         buf.push(lines[i]);
@@ -152,7 +155,7 @@ export const MarkdownBlock: React.FC<{ source: string; muted?: boolean }> = ({
       blocks.push(
         <h3 key={key++} className="text-sm font-bold font-display text-ceci-primary pt-1">
           {renderInline(trimmed.slice(4), `h${key}`)}
-        </h3>
+        </h3>,
       );
       i++;
       continue;
@@ -181,7 +184,7 @@ export const MarkdownBlock: React.FC<{ source: string; muted?: boolean }> = ({
           {items.map((item, ii) => (
             <li key={ii}>{renderInline(item, `l${key}-${ii}`)}</li>
           ))}
-        </ListTag>
+        </ListTag>,
       );
       continue;
     }
@@ -189,7 +192,11 @@ export const MarkdownBlock: React.FC<{ source: string; muted?: boolean }> = ({
     // parágrafo (agrupa linhas contíguas não vazias)
     if (trimmed !== '') {
       const buf: string[] = [];
-      while (i < lines.length && lines[i].trim() !== '' && !/^\s*(\||```|###|[-*]\s|\d+[.)]\s)/.test(lines[i])) {
+      while (
+        i < lines.length &&
+        lines[i].trim() !== '' &&
+        !/^\s*(\||```|###|[-*]\s|\d+[.)]\s)/.test(lines[i])
+      ) {
         buf.push(lines[i].trim());
         i++;
       }
@@ -199,7 +206,7 @@ export const MarkdownBlock: React.FC<{ source: string; muted?: boolean }> = ({
           className={`text-sm leading-relaxed ${muted ? 'text-ceci-secondary' : 'text-ceci-primary'}`}
         >
           {renderInline(buf.join(' '), `p${key}`)}
-        </p>
+        </p>,
       );
       continue;
     }

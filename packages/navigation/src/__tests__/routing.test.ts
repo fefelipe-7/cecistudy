@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import {
-  parseRoute,
-  routeToStack,
-  stackToHash,
-  DEFAULT_SUB_TAB,
-} from '../hash';
+import { parseRoute, routeToStack, stackToHash, DEFAULT_SUB_TAB } from '../hash';
 import type { NavScreen } from '../../../../src/types/navigation';
-import type { QuizConfig, QuizPlayState, QuizAnswer, StudyQuestion } from '../../../../src/types/quiz';
+import type {
+  QuizConfig,
+  QuizPlayState,
+  QuizAnswer,
+  StudyQuestion,
+} from '../../../../src/types/quiz';
 
 const QUESTION: StudyQuestion = {
   id: 'q1',
@@ -102,7 +102,11 @@ describe('parseRoute', () => {
       { kind: 'calendar', day: undefined },
     ]);
     // Reload direto de `#/calendario` cai em `[home, calendar]` (D1).
-    expect(parseRoute('#/calendario')).toEqual({ tab: 'home', calendar: true, calendarDay: undefined });
+    expect(parseRoute('#/calendario')).toEqual({
+      tab: 'home',
+      calendar: true,
+      calendarDay: undefined,
+    });
     expect(routeToStack(parseRoute('#/calendario'))).toEqual([
       { kind: 'tab', tab: 'home' },
       { kind: 'calendar', day: undefined },
@@ -127,16 +131,25 @@ describe('parseRoute', () => {
 
   it('nova sub-tab estágio: `/faculdade/estagio` → subTab estagio; diário em `/faculdade/estagio/diario`', () => {
     expect(parseRoute('#/faculdade/estagio')).toEqual({ tab: 'faculdade', subTab: 'estagio' });
-    expect(parseRoute('#/faculdade/estagio/diario')).toEqual({ tab: 'faculdade', internshipTab: 'diario' });
-    expect(parseRoute('#/faculdade/estagio/supervisao')).toEqual({ tab: 'faculdade', internshipTab: 'supervisao' });
-    expect(parseRoute('#/faculdade/estagio/pacientes')).toEqual({ tab: 'faculdade', internshipTab: 'pacientes' });
+    expect(parseRoute('#/faculdade/estagio/diario')).toEqual({
+      tab: 'faculdade',
+      internshipTab: 'diario',
+    });
+    expect(parseRoute('#/faculdade/estagio/supervisao')).toEqual({
+      tab: 'faculdade',
+      internshipTab: 'supervisao',
+    });
+    expect(parseRoute('#/faculdade/estagio/pacientes')).toEqual({
+      tab: 'faculdade',
+      internshipTab: 'pacientes',
+    });
     // round-trip
     expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'internshipDiary' }])).toBe(
-      '#/faculdade/estagio/diario'
+      '#/faculdade/estagio/diario',
     );
-    expect(
-      stackToHash(routeToStack({ tab: 'faculdade', subTab: 'estagio' }), 'estagio')
-    ).toBe('#/faculdade/estagio');
+    expect(stackToHash(routeToStack({ tab: 'faculdade', subTab: 'estagio' }), 'estagio')).toBe(
+      '#/faculdade/estagio',
+    );
   });
 
   it('perfil não tem sub-tabs — segmento desconhecido cai na aba base', () => {
@@ -144,9 +157,18 @@ describe('parseRoute', () => {
   });
 
   it('reconhece o diário de estágio em /faculdade/estagio/diario (legado /perfil/estagio degrada para tab estágio)', () => {
-    expect(parseRoute('#/faculdade/estagio/diario')).toEqual({ tab: 'faculdade', internshipTab: 'diario' });
-    expect(parseRoute('#/faculdade/estagio/supervisao')).toEqual({ tab: 'faculdade', internshipTab: 'supervisao' });
-    expect(parseRoute('#/faculdade/estagio/pacientes')).toEqual({ tab: 'faculdade', internshipTab: 'pacientes' });
+    expect(parseRoute('#/faculdade/estagio/diario')).toEqual({
+      tab: 'faculdade',
+      internshipTab: 'diario',
+    });
+    expect(parseRoute('#/faculdade/estagio/supervisao')).toEqual({
+      tab: 'faculdade',
+      internshipTab: 'supervisao',
+    });
+    expect(parseRoute('#/faculdade/estagio/pacientes')).toEqual({
+      tab: 'faculdade',
+      internshipTab: 'pacientes',
+    });
     expect(parseRoute('#/perfil/estagio')).toEqual({ tab: 'faculdade', subTab: 'estagio' });
   });
 
@@ -216,7 +238,10 @@ describe('parseRoute', () => {
   });
 
   it('reconhece sub-tab da biblioteca', () => {
-    expect(parseRoute('#/biblioteca/conceitos')).toEqual({ tab: 'biblioteca', subTab: 'conceitos' });
+    expect(parseRoute('#/biblioteca/conceitos')).toEqual({
+      tab: 'biblioteca',
+      subTab: 'conceitos',
+    });
   });
 
   it('reconhece a tela de streak com base dinâmica', () => {
@@ -321,9 +346,7 @@ describe('routeToStack', () => {
   });
 
   it('monta pilha de detalhe de aula sobre o curso', () => {
-    expect(
-      routeToStack({ tab: 'faculdade', focusedCourseId: 'c3', classNoteId: 'cl-1' })
-    ).toEqual([
+    expect(routeToStack({ tab: 'faculdade', focusedCourseId: 'c3', classNoteId: 'cl-1' })).toEqual([
       { kind: 'tab', tab: 'faculdade' },
       { kind: 'course', courseId: 'c3' },
       { kind: 'classNote', classNoteId: 'cl-1', courseId: 'c3' },
@@ -373,10 +396,7 @@ describe('routeToStack', () => {
       { kind: 'internshipDiary', tab: 'pacientes' },
       { kind: 'internshipCase', patientKey: 'ms' },
     ]);
-    expect(routeToStack({ tcc: true })).toEqual([
-      { kind: 'tab', tab: 'estudos' },
-      { kind: 'tcc' },
-    ]);
+    expect(routeToStack({ tcc: true })).toEqual([{ kind: 'tab', tab: 'estudos' }, { kind: 'tcc' }]);
     expect(routeToStack({ stickers: true })).toEqual([
       { kind: 'tab', tab: 'perfil' },
       { kind: 'stickers' },
@@ -411,7 +431,9 @@ describe('routeToStack', () => {
       { kind: 'tab', tab: 'home' },
       { kind: 'composeDetails' },
     ]);
-    expect(routeToStack({ composeDetails: true, baseTab: 'faculdade', baseCourseId: 'c3' })).toEqual([
+    expect(
+      routeToStack({ composeDetails: true, baseTab: 'faculdade', baseCourseId: 'c3' }),
+    ).toEqual([
       { kind: 'tab', tab: 'faculdade' },
       { kind: 'course', courseId: 'c3' },
       { kind: 'composeDetails' },
@@ -443,58 +465,181 @@ describe('stackToHash', () => {
   it('serializa tab base sem sub-tab padrão', () => {
     expect(stackToHash([{ kind: 'tab', tab: 'home' }])).toBe('#/home');
     expect(stackToHash([{ kind: 'tab', tab: 'estudos' }], 'sessoes')).toBe('#/estudos');
-    expect(stackToHash([{ kind: 'tab', tab: 'estudos' }], DEFAULT_SUB_TAB.estudos)).toBe('#/estudos');
+    expect(stackToHash([{ kind: 'tab', tab: 'estudos' }], DEFAULT_SUB_TAB.estudos)).toBe(
+      '#/estudos',
+    );
   });
 
   it('serializa sub-tab quando diferente da padrão', () => {
-    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }], 'conceitos')).toBe('#/biblioteca/conceitos');
+    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }], 'conceitos')).toBe(
+      '#/biblioteca/conceitos',
+    );
   });
 
   it('serializa telas dedicadas de estudos', () => {
-    expect(stackToHash([{ kind: 'tab', tab: 'estudos' }, { kind: 'study', screen: 'focus' }])).toBe('#/estudos/foco');
-    expect(stackToHash([{ kind: 'tab', tab: 'estudos' }, { kind: 'study', screen: 'revisar' }])).toBe('#/estudos/revisar');
-    expect(stackToHash([{ kind: 'tab', tab: 'estudos' }, { kind: 'study', screen: 'leituras' }])).toBe('#/estudos/leituras');
-    expect(stackToHash([{ kind: 'tab', tab: 'estudos' }, { kind: 'study', screen: 'historico' }])).toBe('#/estudos/historico');
+    expect(
+      stackToHash([
+        { kind: 'tab', tab: 'estudos' },
+        { kind: 'study', screen: 'focus' },
+      ]),
+    ).toBe('#/estudos/foco');
+    expect(
+      stackToHash([
+        { kind: 'tab', tab: 'estudos' },
+        { kind: 'study', screen: 'revisar' },
+      ]),
+    ).toBe('#/estudos/revisar');
+    expect(
+      stackToHash([
+        { kind: 'tab', tab: 'estudos' },
+        { kind: 'study', screen: 'leituras' },
+      ]),
+    ).toBe('#/estudos/leituras');
+    expect(
+      stackToHash([
+        { kind: 'tab', tab: 'estudos' },
+        { kind: 'study', screen: 'historico' },
+      ]),
+    ).toBe('#/estudos/historico');
   });
 
   it('serializa telas auxiliares ignorando sub-tab', () => {
-    expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c3' }], 'calendario')).toBe('#/faculdade/c3');
-    expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c3' }, { kind: 'classNote', classNoteId: 'cl-1', courseId: 'c3' }])).toBe('#/faculdade/c3/aula/cl-1');
-    expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c3' }, { kind: 'repertorioItem', courseId: 'c3', itemId: 'r-9' }])).toBe('#/faculdade/c3/repertorio/r-9');
+    expect(
+      stackToHash(
+        [
+          { kind: 'tab', tab: 'faculdade' },
+          { kind: 'course', courseId: 'c3' },
+        ],
+        'calendario',
+      ),
+    ).toBe('#/faculdade/c3');
+    expect(
+      stackToHash([
+        { kind: 'tab', tab: 'faculdade' },
+        { kind: 'course', courseId: 'c3' },
+        { kind: 'classNote', classNoteId: 'cl-1', courseId: 'c3' },
+      ]),
+    ).toBe('#/faculdade/c3/aula/cl-1');
+    expect(
+      stackToHash([
+        { kind: 'tab', tab: 'faculdade' },
+        { kind: 'course', courseId: 'c3' },
+        { kind: 'repertorioItem', courseId: 'c3', itemId: 'r-9' },
+      ]),
+    ).toBe('#/faculdade/c3/repertorio/r-9');
     expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'streak' }])).toBe('#/streak');
-    expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'streak' }])).toBe('#/perfil/streak');
-    expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'internshipDiary', tab: 'supervisao' }])).toBe('#/faculdade/estagio/supervisao');
+    expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'streak' }])).toBe(
+      '#/perfil/streak',
+    );
+    expect(
+      stackToHash([
+        { kind: 'tab', tab: 'faculdade' },
+        { kind: 'internshipDiary', tab: 'supervisao' },
+      ]),
+    ).toBe('#/faculdade/estagio/supervisao');
     expect(stackToHash([{ kind: 'tab', tab: 'estudos' }, { kind: 'tcc' }])).toBe('#/estudos/tcc');
-    expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'stickers' }])).toBe('#/perfil/stickers');
-    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }])).toBe('#/biblioteca/notas');
-    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }, { kind: 'noteDetail', noteId: 'note-1' }])).toBe('#/biblioteca/notas/note-1');
-    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }, { kind: 'noteTransform', noteId: 'note-1' }])).toBe('#/biblioteca/notas/note-1/transformar');
-    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'approach', approachId: 'psic-04-01' }])).toBe('#/biblioteca/abordagens/psic-04-01');
-    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'families' }])).toBe('#/biblioteca/familias');
-    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'family', familyId: 'fam-01' }])).toBe('#/biblioteca/familias/fam-01');
+    expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'stickers' }])).toBe(
+      '#/perfil/stickers',
+    );
+    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'notes' }])).toBe(
+      '#/biblioteca/notas',
+    );
+    expect(
+      stackToHash([
+        { kind: 'tab', tab: 'biblioteca' },
+        { kind: 'notes' },
+        { kind: 'noteDetail', noteId: 'note-1' },
+      ]),
+    ).toBe('#/biblioteca/notas/note-1');
+    expect(
+      stackToHash([
+        { kind: 'tab', tab: 'biblioteca' },
+        { kind: 'notes' },
+        { kind: 'noteTransform', noteId: 'note-1' },
+      ]),
+    ).toBe('#/biblioteca/notas/note-1/transformar');
+    expect(
+      stackToHash([
+        { kind: 'tab', tab: 'biblioteca' },
+        { kind: 'approach', approachId: 'psic-04-01' },
+      ]),
+    ).toBe('#/biblioteca/abordagens/psic-04-01');
+    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'families' }])).toBe(
+      '#/biblioteca/familias',
+    );
+    expect(
+      stackToHash([
+        { kind: 'tab', tab: 'biblioteca' },
+        { kind: 'family', familyId: 'fam-01' },
+      ]),
+    ).toBe('#/biblioteca/familias/fam-01');
     expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'compose' }])).toBe('#/nota');
-    expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'composeDetails' }])).toBe('#/nota/detalhes');
+    expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'composeDetails' }])).toBe(
+      '#/nota/detalhes',
+    );
   });
 
   it('serializa telas de quiz com rota parseável por etapa', () => {
-    const base = [{ kind: 'tab' as const, tab: 'estudos' as const }, { kind: 'quiz-category' as const }];
+    const base = [
+      { kind: 'tab' as const, tab: 'estudos' as const },
+      { kind: 'quiz-category' as const },
+    ];
     expect(stackToHash(base)).toBe('#/estudos/quiz');
     expect(stackToHash([...base, QUIZ_PLAY_SCREEN])).toBe('#/estudos/quiz/play');
-    expect(stackToHash([...base, QUIZ_PLAY_SCREEN, QUIZ_RESULT_SCREEN])).toBe('#/estudos/quiz/result');
+    expect(stackToHash([...base, QUIZ_PLAY_SCREEN, QUIZ_RESULT_SCREEN])).toBe(
+      '#/estudos/quiz/result',
+    );
   });
 
   it('serializa composição com a base (aba/curso) preservada', () => {
-    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'compose' }])).toBe('#/biblioteca/nota');
-    expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c3' }, { kind: 'compose' }])).toBe('#/faculdade/c3/nota');
-    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'composeDetails' }])).toBe('#/biblioteca/nota/detalhes');
-    expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c3' }, { kind: 'composeDetails' }])).toBe('#/faculdade/c3/nota/detalhes');
+    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'compose' }])).toBe(
+      '#/biblioteca/nota',
+    );
+    expect(
+      stackToHash([
+        { kind: 'tab', tab: 'faculdade' },
+        { kind: 'course', courseId: 'c3' },
+        { kind: 'compose' },
+      ]),
+    ).toBe('#/faculdade/c3/nota');
+    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'composeDetails' }])).toBe(
+      '#/biblioteca/nota/detalhes',
+    );
+    expect(
+      stackToHash([
+        { kind: 'tab', tab: 'faculdade' },
+        { kind: 'course', courseId: 'c3' },
+        { kind: 'composeDetails' },
+      ]),
+    ).toBe('#/faculdade/c3/nota/detalhes');
   });
 
   it('serializa wizard de criação com a base preservada', () => {
-    expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'wizard', type: 'internship' }])).toBe('#/novo/estagio');
-    expect(stackToHash([{ kind: 'tab', tab: 'home' }, { kind: 'wizard', type: 'task-exam' }])).toBe('#/novo/prova-atividade');
-    expect(stackToHash([{ kind: 'tab', tab: 'biblioteca' }, { kind: 'wizard', type: 'reading' }])).toBe('#/biblioteca/novo/leitura');
-    expect(stackToHash([{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c3' }, { kind: 'wizard', type: 'exam' }])).toBe('#/faculdade/c3/novo/prova');
+    expect(
+      stackToHash([
+        { kind: 'tab', tab: 'home' },
+        { kind: 'wizard', type: 'internship' },
+      ]),
+    ).toBe('#/novo/estagio');
+    expect(
+      stackToHash([
+        { kind: 'tab', tab: 'home' },
+        { kind: 'wizard', type: 'task-exam' },
+      ]),
+    ).toBe('#/novo/prova-atividade');
+    expect(
+      stackToHash([
+        { kind: 'tab', tab: 'biblioteca' },
+        { kind: 'wizard', type: 'reading' },
+      ]),
+    ).toBe('#/biblioteca/novo/leitura');
+    expect(
+      stackToHash([
+        { kind: 'tab', tab: 'faculdade' },
+        { kind: 'course', courseId: 'c3' },
+        { kind: 'wizard', type: 'exam' },
+      ]),
+    ).toBe('#/faculdade/c3/novo/prova');
   });
 
   it('serializa seções do templo sobre o templo', () => {
@@ -503,7 +648,7 @@ describe('stackToHash', () => {
         { kind: 'tab', tab: 'biblioteca' },
         { kind: 'temple' },
         { kind: 'templeSection', section: 'tecnicas' },
-      ])
+      ]),
     ).toBe('#/biblioteca/templo/tecnicas');
     expect(stackToHash([{ kind: 'temple' } as never])).toBe('#/biblioteca/templo');
   });
@@ -511,7 +656,51 @@ describe('stackToHash', () => {
 
 describe('round-trip hash ↔ rota', () => {
   it('reconstrói a rota a partir do hash serializado (abas + sub-tabs)', () => {
-    const cases = ['#/home', '#/faculdade', '#/faculdade/c3', '#/faculdade/c3/aula/cl-1', '#/faculdade/c3/repertorio/cat-9', '#/calendario', '#/calendario/2026-10-05', '#/estudos/foco', '#/estudos/revisar', '#/estudos/leituras', '#/estudos/historico', '#/biblioteca/conceitos', '#/biblioteca/notas', '#/biblioteca/notas/note-1', '#/biblioteca/notas/note-1/transformar', '#/biblioteca/templo', '#/biblioteca/templo/conceitos', '#/biblioteca/templo/autores', '#/biblioteca/templo/tecnicas', '#/biblioteca/familias', '#/biblioteca/familias/fam-01', '#/biblioteca/abordagens/psic-04-01', '#/streak', '#/perfil/streak', '#/faculdade/estagio', '#/estudos/tcc', '#/perfil/stickers', '#/nota', '#/nota/detalhes', '#/biblioteca/nota', '#/faculdade/c3/nota', '#/biblioteca/nota/detalhes', '#/faculdade/c3/nota/detalhes', '#/novo/estagio', '#/novo/prova-atividade', '#/biblioteca/novo/leitura', '#/faculdade/c3/novo/prova', '#/novo/materia', '#/faculdade/novo/materia', '#/estudos/quiz', '#/perfil/semestre', '#/perfil/semestre/historico', '#/perfil/semestre/historico/trm-3'];
+    const cases = [
+      '#/home',
+      '#/faculdade',
+      '#/faculdade/c3',
+      '#/faculdade/c3/aula/cl-1',
+      '#/faculdade/c3/repertorio/cat-9',
+      '#/calendario',
+      '#/calendario/2026-10-05',
+      '#/estudos/foco',
+      '#/estudos/revisar',
+      '#/estudos/leituras',
+      '#/estudos/historico',
+      '#/biblioteca/conceitos',
+      '#/biblioteca/notas',
+      '#/biblioteca/notas/note-1',
+      '#/biblioteca/notas/note-1/transformar',
+      '#/biblioteca/templo',
+      '#/biblioteca/templo/conceitos',
+      '#/biblioteca/templo/autores',
+      '#/biblioteca/templo/tecnicas',
+      '#/biblioteca/familias',
+      '#/biblioteca/familias/fam-01',
+      '#/biblioteca/abordagens/psic-04-01',
+      '#/streak',
+      '#/perfil/streak',
+      '#/faculdade/estagio',
+      '#/estudos/tcc',
+      '#/perfil/stickers',
+      '#/nota',
+      '#/nota/detalhes',
+      '#/biblioteca/nota',
+      '#/faculdade/c3/nota',
+      '#/biblioteca/nota/detalhes',
+      '#/faculdade/c3/nota/detalhes',
+      '#/novo/estagio',
+      '#/novo/prova-atividade',
+      '#/biblioteca/novo/leitura',
+      '#/faculdade/c3/novo/prova',
+      '#/novo/materia',
+      '#/faculdade/novo/materia',
+      '#/estudos/quiz',
+      '#/perfil/semestre',
+      '#/perfil/semestre/historico',
+      '#/perfil/semestre/historico/trm-3',
+    ];
     for (const h of cases) {
       const route = parseRoute(h);
       const stack = routeToStack(route);
@@ -560,9 +749,12 @@ describe('rota do período letivo (SPEC-005)', () => {
   });
 
   it('o wizard de semestre serializa para #/perfil/semestre (nunca #/novo/semestre)', () => {
-    expect(stackToHash([{ kind: 'tab', tab: 'perfil' }, { kind: 'wizard', type: 'semester' }])).toBe(
-      '#/perfil/semestre',
-    );
+    expect(
+      stackToHash([
+        { kind: 'tab', tab: 'perfil' },
+        { kind: 'wizard', type: 'semester' },
+      ]),
+    ).toBe('#/perfil/semestre');
   });
 
   it('o histórico serializa com e sem período', () => {

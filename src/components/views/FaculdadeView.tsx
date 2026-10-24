@@ -4,7 +4,11 @@ import { SubTabFaculdade, Course } from '../../types';
 import { CourseDetailView } from './CourseDetailView';
 import { UnderlineTabBar } from '../ui/UnderlineTabBar';
 import { SwipeableTabPanel, useTabPager } from '../ui/SwipeableTabPanel';
-import { useDataClientApp, useDataClientCourses, useDataClientStudy } from '@/context/DataClientProvider';
+import {
+  useDataClientApp,
+  useDataClientCourses,
+  useDataClientStudy,
+} from '@/context/DataClientProvider';
 import { useNavValue } from '@/context/shellNavContexts';
 import { buildCalendarEntries, getTodaySchedule } from '../../lib/schedule';
 import { useTermScope } from '../../lib/termScope';
@@ -100,8 +104,12 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
 
   // ---- dados reais derivados do estado ----
   // Provas/tarefas herdam o período pelo `courseId` da disciplina (§D3).
-  const pendingExams = exams.filter((e) => !e.completed && (!e.courseId || activeIds.has(e.courseId)));
-  const pendingTasks = tasks.filter((t) => !t.completed && (!t.disciplineId || activeIds.has(t.disciplineId)));
+  const pendingExams = exams.filter(
+    (e) => !e.completed && (!e.courseId || activeIds.has(e.courseId)),
+  );
+  const pendingTasks = tasks.filter(
+    (t) => !t.completed && (!t.disciplineId || activeIds.has(t.disciplineId)),
+  );
 
   const todaySchedule = getTodaySchedule(grade, now);
 
@@ -142,7 +150,6 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
 
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-6 pb-1">
-
       {/* 1. HERO — semestre + resumo real */}
       <HeroSection
         semester={term?.ordinal ?? profile.semester}
@@ -181,8 +188,7 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
                     </span>
                   </p>
                   <p className="text-xs text-ceci-secondary mt-1 leading-relaxed">
-                    {estagio.registros}{' '}
-                    {estagio.registros === 1 ? 'registro' : 'registros'}
+                    {estagio.registros} {estagio.registros === 1 ? 'registro' : 'registros'}
                     {estagio.pendencias > 0
                       ? ` · ${estagio.pendencias} pedindo carinho`
                       : ' — tudo em dia por aqui'}
@@ -224,10 +230,8 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
 
       {/* Desktop (≥ lg): grade 12 colunas — esquerda: sub-tabs · direita: semana */}
       <div className="lg:grid lg:grid-cols-12 lg:gap-6 lg:items-start">
-
         {/* coluna esquerda */}
         <div className="lg:col-span-7 space-y-6">
-
           {/* Sub-Tabs Navigation */}
           <UnderlineTabBar
             tabs={SUBTABS}
@@ -255,7 +259,6 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
               />
             )}
           </SwipeableTabPanel>
-
         </div>
 
         {/* coluna direita */}
@@ -272,7 +275,6 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
             tasks={tasks}
           />
         </div>
-
       </div>
     </div>
   );

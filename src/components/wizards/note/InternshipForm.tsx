@@ -37,12 +37,7 @@ const InternshipForm: React.FC<InternshipFormProps> = ({
       placeholder="o que aconteceu (atividade/evento)"
       autoFocus
     />
-    <ChoiceCardGrid
-      label="tipo"
-      options={INTERNSHIP_TYPES}
-      value={type}
-      onChange={onTypeChange}
-    />
+    <ChoiceCardGrid label="tipo" options={INTERNSHIP_TYPES} value={type} onChange={onTypeChange} />
     <div className="grid grid-cols-2 gap-3">
       <div>
         <FieldLabel>data</FieldLabel>

@@ -80,7 +80,7 @@ export const PillGroupMulti = <T extends string>({
                   SIZES[size],
                   sel
                     ? VARIANT_CLASSES[variant]
-                    : 'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-surface-muted'
+                    : 'bg-surface-default text-ceci-secondary border border-ceci-border-default hover:bg-surface-muted',
                 )}
               >
                 {o.emoji ? `${o.emoji} ` : ''}
@@ -130,7 +130,7 @@ export const PillGroupMulti = <T extends string>({
               className={cn(
                 'inline-flex items-center gap-1 rounded-full font-semibold tap-interactive cursor-pointer transition',
                 SIZES[size],
-                VARIANT_CLASSES[variant]
+                VARIANT_CLASSES[variant],
               )}
             >
               {o.label}
@@ -170,7 +170,9 @@ export const PillGroupMulti = <T extends string>({
               onClick={() => toggle(o.value)}
               className={cn(
                 'w-full flex items-center justify-between gap-2 px-3.5 py-2.5 text-left text-xs font-medium capitalize cursor-pointer transition-colors',
-                sel ? 'bg-surface-rose text-ceci-brand-strong font-bold' : 'hover:bg-surface-muted text-ceci-primary'
+                sel
+                  ? 'bg-surface-rose text-ceci-brand-strong font-bold'
+                  : 'hover:bg-surface-muted text-ceci-primary',
               )}
             >
               <span className="line-clamp-2 leading-snug">

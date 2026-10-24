@@ -40,7 +40,11 @@ const QUALITY_STYLES: Record<RatingQuality, string> = {
  * cada toque aplica o veredito e avança a fila.
  */
 export const RatingBar: React.FC<RatingBarProps> = ({ options, onGrade, disabled, className }) => (
-  <div role="group" aria-label="avaliar sua resposta" className={cn('grid grid-cols-4 gap-2', className)}>
+  <div
+    role="group"
+    aria-label="avaliar sua resposta"
+    className={cn('grid grid-cols-4 gap-2', className)}
+  >
     {options.map((opt) => (
       <button
         key={opt.quality}
@@ -50,7 +54,7 @@ export const RatingBar: React.FC<RatingBarProps> = ({ options, onGrade, disabled
         aria-label={opt.interval ? `${opt.label} · volta em ${opt.interval}` : opt.label}
         className={cn(
           'flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2.5 min-h-[52px] text-[11px] font-bold border shadow-xs transition-transform active:scale-95 cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ceci-brand-strong',
-          QUALITY_STYLES[opt.quality]
+          QUALITY_STYLES[opt.quality],
         )}
       >
         <span>{opt.label}</span>

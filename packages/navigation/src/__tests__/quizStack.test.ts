@@ -47,15 +47,32 @@ describe('quizStack', () => {
 
   it('abre loading empilhando sobre a categoria (base = estudos)', () => {
     const next = stackAfterOpenQuizLoading([estudosTab, { kind: 'quiz-category' }], CONFIG);
-    expect(next).toEqual([estudosTab, { kind: 'quiz-category' }, { kind: 'quiz-loading', config: CONFIG }]);
-  });
-
-  it('abre o jogo com base na categoria existente', () => {
-    const next = stackAfterOpenQuizPlay([estudosTab, { kind: 'quiz-category' }], [QUESTION], CONFIG, 1000);
     expect(next).toEqual([
       estudosTab,
       { kind: 'quiz-category' },
-      { kind: 'quiz-play', state: expect.objectContaining({ pool: [QUESTION], config: CONFIG, currentIdx: 0, startTime: 1000 }) },
+      { kind: 'quiz-loading', config: CONFIG },
+    ]);
+  });
+
+  it('abre o jogo com base na categoria existente', () => {
+    const next = stackAfterOpenQuizPlay(
+      [estudosTab, { kind: 'quiz-category' }],
+      [QUESTION],
+      CONFIG,
+      1000,
+    );
+    expect(next).toEqual([
+      estudosTab,
+      { kind: 'quiz-category' },
+      {
+        kind: 'quiz-play',
+        state: expect.objectContaining({
+          pool: [QUESTION],
+          config: CONFIG,
+          currentIdx: 0,
+          startTime: 1000,
+        }),
+      },
     ]);
   });
 
@@ -65,7 +82,12 @@ describe('quizStack', () => {
   });
 
   it('resultado substitui o jogo na pilha e mantém a categoria (P2-5)', () => {
-    const play = stackAfterOpenQuizPlay([estudosTab, { kind: 'quiz-category' }], [QUESTION], CONFIG, 1000);
+    const play = stackAfterOpenQuizPlay(
+      [estudosTab, { kind: 'quiz-category' }],
+      [QUESTION],
+      CONFIG,
+      1000,
+    );
     const next = stackAfterOpenQuizResult(play, {
       answers: [],
       config: CONFIG,
@@ -80,7 +102,7 @@ describe('quizStack', () => {
   it('back do resultado volta à categoria, não ao jogo (P1-2)', () => {
     const result = stackAfterOpenQuizResult(
       stackAfterOpenQuizPlay([estudosTab, { kind: 'quiz-category' }], [QUESTION], CONFIG, 1000),
-      { answers: [], config: CONFIG, startTime: 1000, correctCount: 1, totalCount: 1 }
+      { answers: [], config: CONFIG, startTime: 1000, correctCount: 1, totalCount: 1 },
     );
     const next = stackAfterCloseQuizResult(result);
     expect(next.map((s) => s.kind)).toEqual(['tab', 'quiz-category']);
@@ -92,7 +114,11 @@ describe('quizStack', () => {
   });
 
   it('novo quiz mantém a categoria', () => {
-    const next = stackAfterNewQuizFromResult([estudosTab, { kind: 'quiz-category' }, { kind: 'quiz-result' } as NavScreen]);
+    const next = stackAfterNewQuizFromResult([
+      estudosTab,
+      { kind: 'quiz-category' },
+      { kind: 'quiz-result' } as NavScreen,
+    ]);
     expect(next && next.map((s) => s.kind)).toEqual(['tab', 'quiz-category']);
   });
 
@@ -101,7 +127,11 @@ describe('quizStack', () => {
   });
 
   it('fecha todo o fluxo de quiz voltando à tela anterior ao quiz', () => {
-    const next = stackAfterCloseAllQuizScreens([homeTab, { kind: 'quiz-category' }, { kind: 'quiz-result' } as NavScreen]);
+    const next = stackAfterCloseAllQuizScreens([
+      homeTab,
+      { kind: 'quiz-category' },
+      { kind: 'quiz-result' } as NavScreen,
+    ]);
     expect(next).toEqual([homeTab]);
   });
 

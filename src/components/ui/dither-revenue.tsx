@@ -60,15 +60,12 @@ export const RevenueLineChart: React.FC<RevenueLineChartProps> = ({
 
   const labelsX = useMemo(
     () => labels ?? data.map((_, i) => formatShortDate(data.length - 1 - i)),
-    [labels, data]
+    [labels, data],
   );
 
   const total = useMemo(() => data.reduce((a, b) => a + b, 0), [data]);
   const maxVal = useMemo(() => Math.max(3, ...data) * 1.15, [data]);
-  const avg = useMemo(
-    () => (data.length > 0 ? Math.round(total / data.length) : 0),
-    [data, total]
-  );
+  const avg = useMemo(() => (data.length > 0 ? Math.round(total / data.length) : 0), [data, total]);
 
   const tickFractions = [1, 2 / 3, 1 / 3, 0];
   const ticks = [Math.round(maxVal), Math.round(maxVal * (2 / 3)), Math.round(maxVal / 3), 0];
@@ -110,120 +107,119 @@ export const RevenueLineChart: React.FC<RevenueLineChartProps> = ({
     morphStartTimeRef.current > 0 &&
     performance.now() - morphStartTimeRef.current < 500;
 
-  const { scheduleFrame } = useDitherLoop(
-    () => {
-      const canvas = canvasRef.current;
-      if (!canvas) return false;
-      const ctx = ctxRef.current ?? (ctxRef.current = canvas.getContext('2d'));
-      if (!ctx) return false;
+  const { scheduleFrame } = useDitherLoop(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return false;
+    const ctx = ctxRef.current ?? (ctxRef.current = canvas.getContext('2d'));
+    if (!ctx) return false;
 
-      const { width: w, height: h } = rect.current;
-      if (w === 0 || h === 0) return true; // aguardando o ResizeObserver medir
+    const { width: w, height: h } = rect.current;
+    if (w === 0 || h === 0) return true; // aguardando o ResizeObserver medir
 
-      timeRef.current += reducedMotion ? 0 : 0.02;
-      const time = timeRef.current;
+    timeRef.current += reducedMotion ? 0 : 0.02;
+    const time = timeRef.current;
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      ctx.save();
-      ctx.scale(dpr, dpr);
-      ctx.clearRect(0, 0, w, h);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    ctx.save();
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, w, h);
 
-      const prog = reducedMotion ? 1 : Math.min(1, (performance.now() - morphStartTimeRef.current) / 500);
-      const e = 1 - Math.pow(2, -10 * prog);
+    const prog = reducedMotion
+      ? 1
+      : Math.min(1, (performance.now() - morphStartTimeRef.current) / 500);
+    const e = 1 - Math.pow(2, -10 * prog);
 
-      const points = data.length;
-      if (points < 2) {
-        ctx.restore();
-        return false;
-      }
+    const points = data.length;
+    if (points < 2) {
+      ctx.restore();
+      return false;
+    }
 
-      const stepX = w / (points - 1);
-      const cell = Math.max(2, Math.round(w / 200));
+    const stepX = w / (points - 1);
+    const cell = Math.max(2, Math.round(w / 200));
 
-      // Linha
-      ctx.beginPath();
-      for (let i = 0; i < points; i++) {
-        const target = targetDataRef.current[i];
-        const from = fromDataRef.current[i];
-        const val = from + (target - from) * e;
+    // Linha
+    ctx.beginPath();
+    for (let i = 0; i < points; i++) {
+      const target = targetDataRef.current[i];
+      const from = fromDataRef.current[i];
+      const val = from + (target - from) * e;
 
-        const x = i * stepX;
-        const y = h - (val / maxVal) * h;
+      const x = i * stepX;
+      const y = h - (val / maxVal) * h;
 
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
 
-      ctx.lineWidth = 2.5;
-      ctx.strokeStyle = lineColor;
-      ctx.lineJoin = 'round';
-      ctx.lineCap = 'round';
-      ctx.stroke();
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = lineColor;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.stroke();
 
-      // Área dithered abaixo da linha
-      ctx.lineTo(w, h);
-      ctx.lineTo(0, h);
-      ctx.closePath();
+    // Área dithered abaixo da linha
+    ctx.lineTo(w, h);
+    ctx.lineTo(0, h);
+    ctx.closePath();
 
-      ctx.save();
-      ctx.clip();
+    ctx.save();
+    ctx.clip();
 
-      ctx.fillStyle = lineColor;
+    ctx.fillStyle = lineColor;
 
-      for (let x = 0; x <= w; x += cell) {
-        for (let y = 0; y <= h; y += cell) {
-          const jx = x + cell / 2;
-          const jy = y + cell / 2;
-          const jit = hash(jx, jy);
+    for (let x = 0; x <= w; x += cell) {
+      for (let y = 0; y <= h; y += cell) {
+        const jx = x + cell / 2;
+        const jy = y + cell / 2;
+        const jit = hash(jx, jy);
 
-          const gradientFalloff = Math.max(0, 1 - jy / h);
-          const waveRaw = reducedMotion
-            ? 0
-            : Math.sin(jx * 0.05 + time) + Math.sin(jy * 0.05 + time * 0.7);
-          const mod = smoothstep(-1.5, 1.5, waveRaw);
+        const gradientFalloff = Math.max(0, 1 - jy / h);
+        const waveRaw = reducedMotion
+          ? 0
+          : Math.sin(jx * 0.05 + time) + Math.sin(jy * 0.05 + time * 0.7);
+        const mod = smoothstep(-1.5, 1.5, waveRaw);
 
-          const sz = cell * (0.3 * gradientFalloff + 0.3 * mod) * (0.8 + 0.4 * jit);
-          if (sz > 0) {
-            ctx.fillRect(x + (cell - sz) / 2, y + (cell - sz) / 2, sz, sz);
-          }
+        const sz = cell * (0.3 * gradientFalloff + 0.3 * mod) * (0.8 + 0.4 * jit);
+        if (sz > 0) {
+          ctx.fillRect(x + (cell - sz) / 2, y + (cell - sz) / 2, sz, sz);
         }
       }
+    }
 
-      ctx.restore();
-      // clip da área dithered encerrado
+    ctx.restore();
+    // clip da área dithered encerrado
 
-      // Linhas de grade horizontais alinhadas aos rótulos do eixo y.
-      ctx.fillStyle = gridLineColor;
-      tickFractions.forEach((f) => {
-        const gy = (1 - f) * h;
-        ctx.fillRect(0, gy, w, 1);
-      });
+    // Linhas de grade horizontais alinhadas aos rótulos do eixo y.
+    ctx.fillStyle = gridLineColor;
+    tickFractions.forEach((f) => {
+      const gy = (1 - f) * h;
+      ctx.fillRect(0, gy, w, 1);
+    });
 
-      // Linha tracejada da média com legenda.
-      const avgY = h - (avg / maxVal) * h;
-      ctx.strokeStyle = theme === 'dark' ? 'rgba(255, 255, 255, 0.45)' : 'rgba(216, 95, 121, 0.6)';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([5, 5]);
-      ctx.beginPath();
-      ctx.moveTo(0, avgY);
-      ctx.lineTo(w, avgY);
-      ctx.stroke();
-      ctx.setLineDash([]);
+    // Linha tracejada da média com legenda.
+    const avgY = h - (avg / maxVal) * h;
+    ctx.strokeStyle = theme === 'dark' ? 'rgba(255, 255, 255, 0.45)' : 'rgba(216, 95, 121, 0.6)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(0, avgY);
+    ctx.lineTo(w, avgY);
+    ctx.stroke();
+    ctx.setLineDash([]);
 
-      if (avgY > 14) {
-        ctx.fillStyle = theme === 'dark' ? 'rgba(255,255,255,0.85)' : 'rgba(64,56,58,0.85)';
-        ctx.font = 'bold 9px system-ui, sans-serif';
-        ctx.textAlign = 'right';
-        ctx.textBaseline = 'bottom';
-        ctx.fillText(`${formatCount(avg)} ${unitLabel}`, w - 4, avgY - 3);
-      }
+    if (avgY > 14) {
+      ctx.fillStyle = theme === 'dark' ? 'rgba(255,255,255,0.85)' : 'rgba(64,56,58,0.85)';
+      ctx.font = 'bold 9px system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(`${formatCount(avg)} ${unitLabel}`, w - 4, avgY - 3);
+    }
 
-      ctx.restore();
-      // needsAnimation (spec §5.2): só o morph — dado estável congela o shimmer.
-      return morphActive();
-    },
-    setup,
-  );
+    ctx.restore();
+    // needsAnimation (spec §5.2): só o morph — dado estável congela o shimmer.
+    return morphActive();
+  }, setup);
 
   useEffect(() => {
     fromDataRef.current = targetDataRef.current;
@@ -233,12 +229,7 @@ export const RevenueLineChart: React.FC<RevenueLineChartProps> = ({
   }, [data, scheduleFrame]);
 
   const canvasBlock = (
-    <div
-      className={cn(
-        'relative w-full h-[120px] rounded-xl overflow-hidden',
-        'bg-surface-muted'
-      )}
-    >
+    <div className={cn('relative w-full h-[120px] rounded-xl overflow-hidden', 'bg-surface-muted')}>
       <canvas ref={canvasRef} className="w-full h-full" />
     </div>
   );
@@ -256,7 +247,7 @@ export const RevenueLineChart: React.FC<RevenueLineChartProps> = ({
       className={cn(
         'relative w-full rounded-2xl p-5 border shadow-sm transition-colors',
         'bg-surface-default border-ceci-border-default text-ceci-primary',
-        className
+        className,
       )}
     >
       {/* Header */}
@@ -265,7 +256,7 @@ export const RevenueLineChart: React.FC<RevenueLineChartProps> = ({
           <div
             className={cn(
               'p-2 rounded-xl',
-              'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand'
+              'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand',
             )}
           >
             {icon}
@@ -281,7 +272,7 @@ export const RevenueLineChart: React.FC<RevenueLineChartProps> = ({
               <span
                 className={cn(
                   'flex items-center gap-1 text-[11px] font-semibold',
-                  'text-ceci-secondary'
+                  'text-ceci-secondary',
                 )}
               >
                 <span
@@ -299,7 +290,7 @@ export const RevenueLineChart: React.FC<RevenueLineChartProps> = ({
           <div
             className={cn(
               'flex items-center p-1 rounded-full border text-xs font-medium',
-              'bg-surface-subtle border-ceci-border-default'
+              'bg-surface-subtle border-ceci-border-default',
             )}
           >
             {(variants ?? DEMO_REVENUE_VARIANTS).map((v, idx) => (
@@ -310,7 +301,7 @@ export const RevenueLineChart: React.FC<RevenueLineChartProps> = ({
                   'px-2.5 py-1 rounded-full transition cursor-pointer',
                   variantIndex === idx
                     ? 'bg-ceci-primary text-ceci-on-primary'
-                    : 'text-ceci-secondary hover:text-ceci-primary'
+                    : 'text-ceci-secondary hover:text-ceci-primary',
                 )}
               >
                 {v.label}
@@ -327,7 +318,7 @@ export const RevenueLineChart: React.FC<RevenueLineChartProps> = ({
               key={i}
               className={cn(
                 'absolute right-1 text-[10px] font-mono leading-none',
-                'text-ceci-muted'
+                'text-ceci-muted',
               )}
               style={{ top: `${tickTopPct(f)}%`, transform: 'translateY(-50%)' }}
             >
@@ -340,7 +331,7 @@ export const RevenueLineChart: React.FC<RevenueLineChartProps> = ({
             ref={wrapperRef}
             className={cn(
               'relative h-[120px] rounded-xl overflow-hidden touch-none cursor-crosshair',
-              'bg-surface-muted'
+              'bg-surface-muted',
             )}
             onPointerMove={handlePointer}
             onPointerLeave={handlePointerLeave}
@@ -351,27 +342,29 @@ export const RevenueLineChart: React.FC<RevenueLineChartProps> = ({
                 <motion.div
                   className={cn(
                     'absolute top-0 bottom-0 w-px pointer-events-none z-10',
-                    'bg-ceci-brand'
+                    'bg-ceci-brand',
                   )}
                   style={{ left: xPos }}
                 />
                 <motion.div
                   className={cn(
                     'absolute w-3 h-3 rounded-full border-2 shadow-floating pointer-events-none z-20',
-                    'bg-ceci-brand border-surface-default'
+                    'bg-ceci-brand border-surface-default',
                   )}
                   style={{ left: xPos, top: yPos, marginLeft: -6, marginTop: -6 }}
                 />
                 <motion.div
                   className={cn(
                     'absolute px-2.5 py-1.5 rounded-lg text-xs font-semibold shadow-floating border pointer-events-none z-30',
-                    'bg-ceci-primary text-ceci-on-primary border-ceci-primary'
+                    'bg-ceci-primary text-ceci-on-primary border-ceci-primary',
                   )}
-                  style={{ left: xPos, top: yPos, transform: 'translate(-50%, calc(-100% - 12px))' }}
+                  style={{
+                    left: xPos,
+                    top: yPos,
+                    transform: 'translate(-50%, calc(-100% - 12px))',
+                  }}
                 >
-                  <div
-                    className={cn('text-[10px] uppercase', 'text-ceci-on-primary/70')}
-                  >
+                  <div className={cn('text-[10px] uppercase', 'text-ceci-on-primary/70')}>
                     {labelsX[scrubIndex]}
                   </div>
                   <div>

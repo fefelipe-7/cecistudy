@@ -19,8 +19,7 @@ interface BackupViewProps {
 }
 
 export function BackupView(props: BackupViewProps = {}) {
-  const { exportData: contextExportData, importData: contextImportData } =
-    useDataClient();
+  const { exportData: contextExportData, importData: contextImportData } = useDataClient();
   const exportData = props.exportData ?? contextExportData;
   const importData = props.importData ?? contextImportData;
   const [importing, setImporting] = useState(false);
@@ -55,9 +54,9 @@ export function BackupView(props: BackupViewProps = {}) {
           Backup do cantinho
         </h2>
         <p className="text-sm text-ceci-secondary mt-2">
-          Seus dados próprios (perfil, disciplinas, tarefas, estágio, TCC,
-          leituras, flashcards…) são exportados num arquivo JSON. Conteúdos fixos
-          do app (templo, abordagens, questões) não entram — eles vêm do bundle.
+          Seus dados próprios (perfil, disciplinas, tarefas, estágio, TCC, leituras, flashcards…)
+          são exportados num arquivo JSON. Conteúdos fixos do app (templo, abordagens, questões) não
+          entram — eles vêm do bundle.
         </p>
 
         <div className="mt-6 flex flex-col sm:flex-row gap-3">
@@ -81,16 +80,19 @@ export function BackupView(props: BackupViewProps = {}) {
         {/* D4: aviso reforçado sobre perda de chave de criptografia. */}
         <div className="mt-6 rounded-2xl border border-status-danger/50 bg-status-danger/25 p-4">
           <div className="flex items-start gap-3">
-            <ShieldAlert className="w-4 h-4 text-status-danger-strong shrink-0" aria-hidden="true" />
+            <ShieldAlert
+              className="w-4 h-4 text-status-danger-strong shrink-0"
+              aria-hidden="true"
+            />
             <div>
               <p className="text-xs text-status-danger-strong font-semibold mb-1">
                 se você perder a senha, perde o backup
               </p>
               <p className="text-xs text-ceci-muted leading-relaxed">
-                um backup criptografado só pode ser aberto com a senha que você
-                escolher. se esquecer a senha, não há como recuperar os dados — nem
-                pelo cecistudy, nem por ninguém. guarde a senha num lugar seguro ou
-                use o botão abaixo para exportar uma cópia sem senha.
+                um backup criptografado só pode ser aberto com a senha que você escolher. se
+                esquecer a senha, não há como recuperar os dados — nem pelo cecistudy, nem por
+                ninguém. guarde a senha num lugar seguro ou use o botão abaixo para exportar uma
+                cópia sem senha.
               </p>
             </div>
           </div>

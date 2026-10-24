@@ -49,7 +49,7 @@ function MobileShellInner({ children }: { children: React.ReactNode }) {
       ...shared.dataActions.courses,
       toggleBookmarkCourse: shared.toggleBookmarkCourse,
     }),
-    [shared.dataActions.courses, shared.toggleBookmarkCourse]
+    [shared.dataActions.courses, shared.toggleBookmarkCourse],
   );
 
   const studyBundle: StudyBundle = useMemo(
@@ -64,7 +64,7 @@ function MobileShellInner({ children }: { children: React.ReactNode }) {
       shared.streakStats,
       shared.currentWeekProgress,
       shared.registerActivity,
-    ]
+    ],
   );
 
   const knowledgeBundle: KnowledgeBundle = useMemo(
@@ -79,7 +79,7 @@ function MobileShellInner({ children }: { children: React.ReactNode }) {
       shared.toggleSaveBook,
       shared.updateReadingProgress,
       data.showToast,
-    ]
+    ],
   );
 
   const appBundle: AppBundle = useMemo(
@@ -89,7 +89,7 @@ function MobileShellInner({ children }: { children: React.ReactNode }) {
       updateReminder: shared.updateReminder,
       setGcalEnabled: shared.setGcalEnabled,
     }),
-    [shared.dataActions.app, data.showToast, shared.updateReminder, shared.setGcalEnabled]
+    [shared.dataActions.app, data.showToast, shared.updateReminder, shared.setGcalEnabled],
   );
 
   const termBundle: TermBundle = useMemo(
@@ -97,7 +97,7 @@ function MobileShellInner({ children }: { children: React.ReactNode }) {
       ...shared.dataActions.term,
       showToast: data.showToast,
     }),
-    [shared.dataActions.term, data.showToast]
+    [shared.dataActions.term, data.showToast],
   );
 
   return (
@@ -109,9 +109,7 @@ function MobileShellInner({ children }: { children: React.ReactNode }) {
               <KnowledgeActionsContext.Provider value={knowledgeBundle}>
                 <AppActionsContext.Provider value={appBundle}>
                   <TermActionsContext.Provider value={termBundle}>
-                    <NavValueContext.Provider value={nav}>
-                      {children}
-                    </NavValueContext.Provider>
+                    <NavValueContext.Provider value={nav}>{children}</NavValueContext.Provider>
                   </TermActionsContext.Provider>
                 </AppActionsContext.Provider>
               </KnowledgeActionsContext.Provider>

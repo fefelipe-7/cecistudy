@@ -28,7 +28,7 @@ export function useStampedState<T>(
   key: string,
   initialValue: T,
   syncIndex: SyncIndex,
-  setSyncIndex: Dispatch<SetStateAction<SyncIndex>>
+  setSyncIndex: Dispatch<SetStateAction<SyncIndex>>,
 ): StampedState<T> {
   const [value, rawSet] = useSqliteState<T>(key, initialValue);
 
@@ -51,8 +51,7 @@ export function useStampedState<T>(
   const set = useCallback(
     (action: SetStateAction<T>) => {
       const prev = valueRef.current;
-      const next =
-        typeof action === 'function' ? (action as (p: T) => T)(prev) : action;
+      const next = typeof action === 'function' ? (action as (p: T) => T)(prev) : action;
       if (next === prev) return;
       valueRef.current = next;
       rawSet(next);
@@ -60,18 +59,17 @@ export function useStampedState<T>(
       const { index } = applyStampChange(syncIndexRef.current, key, prev, next, now);
       if (index !== syncIndexRef.current) setSyncIndex(index);
     },
-    [rawSet, key, setSyncIndex]
+    [rawSet, key, setSyncIndex],
   );
 
   const setRaw = useCallback(
     (action: SetStateAction<T>) => {
       const prev = valueRef.current;
-      const next =
-        typeof action === 'function' ? (action as (p: T) => T)(prev) : action;
+      const next = typeof action === 'function' ? (action as (p: T) => T)(prev) : action;
       valueRef.current = next;
       rawSet(next);
     },
-    [rawSet]
+    [rawSet],
   );
 
   return { value, set, setRaw };

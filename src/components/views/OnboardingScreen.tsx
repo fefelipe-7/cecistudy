@@ -39,10 +39,30 @@ const PERMISSION_CARDS: {
 }[] = [
   // `SPEC-C-014` D1: a dica de cada permissão vem da voz; o rótulo ("arquivos",
   // "fotos") é camada 2 e fica.
-  { kind: 'files', title: 'arquivos', description: frase(ONBOARDING, 'permissaoFiles'), Icon: FolderOpen },
-  { kind: 'photos', title: 'fotos e mídias', description: frase(ONBOARDING, 'permissaoPhotos'), Icon: Images },
-  { kind: 'calendar', title: 'agenda', description: frase(ONBOARDING, 'permissaoCalendar'), Icon: CalendarDays },
-  { kind: 'notifications', title: 'notificações', description: frase(ONBOARDING, 'permissaoNotifications'), Icon: Bell },
+  {
+    kind: 'files',
+    title: 'arquivos',
+    description: frase(ONBOARDING, 'permissaoFiles'),
+    Icon: FolderOpen,
+  },
+  {
+    kind: 'photos',
+    title: 'fotos e mídias',
+    description: frase(ONBOARDING, 'permissaoPhotos'),
+    Icon: Images,
+  },
+  {
+    kind: 'calendar',
+    title: 'agenda',
+    description: frase(ONBOARDING, 'permissaoCalendar'),
+    Icon: CalendarDays,
+  },
+  {
+    kind: 'notifications',
+    title: 'notificações',
+    description: frase(ONBOARDING, 'permissaoNotifications'),
+    Icon: Bell,
+  },
 ];
 
 export const OnboardingScreen: React.FC = () => {
@@ -67,18 +87,16 @@ export const OnboardingScreen: React.FC = () => {
   };
 
   const finish = () => {
-    completeOnboarding(
-      {
-        name: name.trim(),
-        semester,
-        totalSemesters,
-        university: university.trim(),
-        targetCareer: targetCareer.trim() || 'Psicóloga Clínica',
-        dailyQuote: 'compreender o ser humano é a forma mais bonita de cuidado.',
-        stickersCollected: 0,
-        photoUrl: photoUrl || '',
-      }
-    );
+    completeOnboarding({
+      name: name.trim(),
+      semester,
+      totalSemesters,
+      university: university.trim(),
+      targetCareer: targetCareer.trim() || 'Psicóloga Clínica',
+      dailyQuote: 'compreender o ser humano é a forma mais bonita de cuidado.',
+      stickersCollected: 0,
+      photoUrl: photoUrl || '',
+    });
   };
 
   return (
@@ -102,7 +120,7 @@ export const OnboardingScreen: React.FC = () => {
                 key={i}
                 className={cn(
                   'h-1.5 rounded-full transition-[width] duration-300',
-                  step >= i ? 'bg-ceci-brand w-5' : 'bg-ceci-border-default w-1.5'
+                  step >= i ? 'bg-ceci-brand w-5' : 'bg-ceci-border-default w-1.5',
                 )}
               />
             ))}
@@ -111,7 +129,11 @@ export const OnboardingScreen: React.FC = () => {
 
         <div className="flex-1 flex flex-col justify-center">
           {step === 0 && (
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-4">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center space-y-4"
+            >
               <div className="w-16 h-16 mx-auto rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-3xl">
                 🌷
               </div>
@@ -133,7 +155,11 @@ export const OnboardingScreen: React.FC = () => {
           )}
 
           {step === 1 && (
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-5"
+            >
               <div className="flex items-center gap-3">
                 <span className="w-11 h-11 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong">
                   <Heart className="w-5 h-5" />
@@ -168,7 +194,9 @@ export const OnboardingScreen: React.FC = () => {
                   disabled={!canProceedName}
                   className={cn(
                     'flex-1 flex items-center justify-center gap-2 text-ceci-on-brand py-3 rounded-full text-xs font-semibold transition-colors cursor-pointer',
-                    canProceedName ? 'bg-ceci-brand-strong hover:bg-ceci-brand' : 'bg-ceci-faded cursor-not-allowed'
+                    canProceedName
+                      ? 'bg-ceci-brand-strong hover:bg-ceci-brand'
+                      : 'bg-ceci-faded cursor-not-allowed',
                   )}
                 >
                   continuar <ArrowRight className="w-4 h-4" />
@@ -178,7 +206,11 @@ export const OnboardingScreen: React.FC = () => {
           )}
 
           {step === 2 && (
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-5"
+            >
               <div className="flex items-center gap-3">
                 <span className="w-11 h-11 rounded-2xl bg-surface-blue border border-ceci-border-academic flex items-center justify-center text-ceci-academic-strong">
                   <GraduationCap className="w-5 h-5" />
@@ -235,7 +267,11 @@ export const OnboardingScreen: React.FC = () => {
           )}
 
           {step === 3 && (
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-5"
+            >
               <div className="flex items-center gap-3">
                 <span className="w-11 h-11 rounded-2xl bg-surface-blue border border-ceci-border-academic flex items-center justify-center text-ceci-academic-strong">
                   <Sparkles className="w-5 h-5" />
@@ -284,7 +320,11 @@ export const OnboardingScreen: React.FC = () => {
           )}
 
           {step === 4 && (
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-5"
+            >
               <div className="flex items-center gap-3">
                 <span className="w-11 h-11 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong">
                   <Camera className="w-5 h-5" />
@@ -293,16 +333,18 @@ export const OnboardingScreen: React.FC = () => {
                   <h1 className="font-display text-xl font-bold tracking-tight">
                     {frase(ONBOARDING, 'suaFoto')}
                   </h1>
-                  <p className="text-xs text-ceci-secondary">
-                    {frase(ONBOARDING, 'suaFotoDica')}
-                  </p>
+                  <p className="text-xs text-ceci-secondary">{frase(ONBOARDING, 'suaFotoDica')}</p>
                 </div>
               </div>
 
               <div className="flex flex-col items-center gap-4 py-2">
                 <div className="w-28 h-28 rounded-[32px] bg-surface-rose border-2 border-ceci-border-brand flex items-center justify-center overflow-hidden shadow-2xs">
                   {photoUrl ? (
-                    <img src={photoUrl} alt="sua foto de perfil" className="w-full h-full object-cover" />
+                    <img
+                      src={photoUrl}
+                      alt="sua foto de perfil"
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <span className="font-display font-bold text-5xl text-ceci-primary">
                       {name.trim().charAt(0).toUpperCase() || 'C'}
@@ -346,9 +388,7 @@ export const OnboardingScreen: React.FC = () => {
             </motion.div>
           )}
 
-          {step === 5 && (
-            <PermissionsStep onFinish={finish} onBack={() => setStep(4)} />
-          )}
+          {step === 5 && <PermissionsStep onFinish={finish} onBack={() => setStep(4)} />}
         </div>
 
         <p className="text-center text-[11px] text-ceci-tertiary mt-6">
@@ -359,7 +399,10 @@ export const OnboardingScreen: React.FC = () => {
   );
 };
 
-const PermissionsStep: React.FC<{ onFinish: () => void; onBack: () => void }> = ({ onFinish, onBack }) => {
+const PermissionsStep: React.FC<{ onFinish: () => void; onBack: () => void }> = ({
+  onFinish,
+  onBack,
+}) => {
   const [states, setStates] = useState<Record<AppPermissionKind, AppPermissionState | 'loading'>>({
     files: 'loading',
     photos: 'loading',
@@ -371,10 +414,14 @@ const PermissionsStep: React.FC<{ onFinish: () => void; onBack: () => void }> = 
     let active = true;
     (async () => {
       const entries = await Promise.all(
-        PERMISSION_CARDS.map(async (card) => [card.kind, await checkPermission(card.kind)] as const)
+        PERMISSION_CARDS.map(
+          async (card) => [card.kind, await checkPermission(card.kind)] as const,
+        ),
       );
       if (!active) return;
-      setStates(Object.fromEntries(entries) as Record<AppPermissionKind, AppPermissionState | 'loading'>);
+      setStates(
+        Object.fromEntries(entries) as Record<AppPermissionKind, AppPermissionState | 'loading'>,
+      );
     })();
     return () => {
       active = false;
@@ -389,7 +436,11 @@ const PermissionsStep: React.FC<{ onFinish: () => void; onBack: () => void }> = 
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-4"
+    >
       <div className="flex items-center gap-3">
         <span className="w-11 h-11 rounded-2xl bg-surface-blue border border-ceci-border-academic flex items-center justify-center text-ceci-academic-strong">
           <Bell className="w-5 h-5" />
@@ -398,9 +449,7 @@ const PermissionsStep: React.FC<{ onFinish: () => void; onBack: () => void }> = 
           <h1 className="font-display text-xl font-bold tracking-tight">
             {frase(ONBOARDING, 'permissoesTitulo')}
           </h1>
-          <p className="text-xs text-ceci-secondary">
-            {frase(ONBOARDING, 'permissoesDica')}
-          </p>
+          <p className="text-xs text-ceci-secondary">{frase(ONBOARDING, 'permissoesDica')}</p>
         </div>
       </div>
 
@@ -440,7 +489,9 @@ const PermissionsStep: React.FC<{ onFinish: () => void; onBack: () => void }> = 
               }
               className={cn(
                 'rounded-2xl p-4 border',
-                granted ? 'bg-surface-rose border-ceci-border-brand' : 'bg-surface-default border-ceci-border-default'
+                granted
+                  ? 'bg-surface-rose border-ceci-border-brand'
+                  : 'bg-surface-default border-ceci-border-default',
               )}
             />
           );

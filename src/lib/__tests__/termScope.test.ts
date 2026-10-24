@@ -72,9 +72,11 @@ describe('lib/termScope — período', () => {
     // O acesso é por namespace + cast de propósito: o símbolo ainda não existe
     // (chega na F1), e assim o `tsc` do gate continua verde enquanto este teste
     // fica vermelho até a implementação.
-    const allActiveTerms = (termScope as unknown as {
-      allActiveTerms?: (terms: AcademicTerm[]) => AcademicTerm[];
-    }).allActiveTerms;
+    const allActiveTerms = (
+      termScope as unknown as {
+        allActiveTerms?: (terms: AcademicTerm[]) => AcademicTerm[];
+      }
+    ).allActiveTerms;
 
     expect(typeof allActiveTerms).toBe('function');
     const withTwo = [
@@ -126,8 +128,11 @@ describe('lib/termScope — disciplina', () => {
 
   it('allActiveCourses com DOIS ativos (conflito SPEC-006 D9) devolve a união', () => {
     const conflicted = [term(), term({ id: 'trm-2', ordinal: 7, status: 'ativo' })];
-    expect(allActiveCourses([...COURSES, course('c5', { termId: 'trm-2' })], conflicted).map((c) => c.id))
-      .toEqual(['c1', 'c5']);
+    expect(
+      allActiveCourses([...COURSES, course('c5', { termId: 'trm-2' })], conflicted).map(
+        (c) => c.id,
+      ),
+    ).toEqual(['c1', 'c5']);
   });
 
   it('archivedCourses pega as arquivadas (continuam pesquisáveis)', () => {

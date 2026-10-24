@@ -85,7 +85,10 @@ export const FocusImmersiveView: React.FC<FocusImmersiveViewProps> = ({
           label="minutos customizados"
           value=""
           onChange={(v) => onChangeMin(Number(v))}
-          options={FOCUS_CUSTOM_MINUTES.map((mins) => ({ value: String(mins), label: `${mins} min` }))}
+          options={FOCUS_CUSTOM_MINUTES.map((mins) => ({
+            value: String(mins),
+            label: `${mins} min`,
+          }))}
           placeholder={presetSelected ? 'custom' : customLabel}
           buttonClassName={`focus-pill focus-pill-static ${presetSelected ? '' : 'focus-pill-active'}`}
           sheetTitle="quantos minutos de foco?"
@@ -99,7 +102,14 @@ export const FocusImmersiveView: React.FC<FocusImmersiveViewProps> = ({
         className="focus-clock-button"
       >
         <svg viewBox="0 0 200 200" className="focus-ring" aria-hidden="true">
-          <circle cx="100" cy="100" r={R} fill="none" stroke="var(--color-focus-track)" strokeWidth="10" />
+          <circle
+            cx="100"
+            cy="100"
+            r={R}
+            fill="none"
+            stroke="var(--color-focus-track)"
+            strokeWidth="10"
+          />
           <circle
             cx="100"
             cy="100"
@@ -140,6 +150,6 @@ export const FocusImmersiveView: React.FC<FocusImmersiveViewProps> = ({
         <p className="focus-hint">{hint}</p>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 };

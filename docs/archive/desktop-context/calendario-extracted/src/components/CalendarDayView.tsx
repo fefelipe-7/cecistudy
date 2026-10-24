@@ -36,7 +36,7 @@ interface CalendarDayViewProps {
     itemId: string,
     newDate: string,
     newStartTime: string,
-    newEndTime: string
+    newEndTime: string,
   ) => void;
   activeTimerItemId?: string | null;
 }
@@ -110,7 +110,7 @@ export const CalendarDayView: React.FC<CalendarDayViewProps> = ({
               currentStartMins: newStartMins,
               currentEndMins: newEndMins,
             }
-          : null
+          : null,
       );
     };
 
@@ -126,7 +126,7 @@ export const CalendarDayView: React.FC<CalendarDayViewProps> = ({
           draggingState.itemId,
           draggingState.originalDate,
           newStartTime,
-          newEndTime
+          newEndTime,
         );
       }
       setDraggingState(null);
@@ -167,7 +167,7 @@ export const CalendarDayView: React.FC<CalendarDayViewProps> = ({
               currentEndMins: newEndMins,
               currentDurationMins: newDuration,
             }
-          : null
+          : null,
       );
     };
 
@@ -182,7 +182,7 @@ export const CalendarDayView: React.FC<CalendarDayViewProps> = ({
           resizingState.itemId,
           resizingState.date,
           resizingState.startTime,
-          newEndTime
+          newEndTime,
         );
       }
       setResizingState(null);
@@ -198,16 +198,12 @@ export const CalendarDayView: React.FC<CalendarDayViewProps> = ({
 
   const visibleLayerIds = new Set(layers.filter((l) => l.visible).map((l) => l.id));
   const dayItems = items.filter(
-    (item) => item.date === selectedDate && visibleLayerIds.has(item.layer)
+    (item) => item.date === selectedDate && visibleLayerIds.has(item.layer),
   );
   const allDayItems = dayItems.filter((i) => i.isAllDay);
   const timeGridItems = dayItems.filter((i) => !i.isAllDay);
 
-  const positionedEvents = computeOverlappingEventLayout(
-    timeGridItems,
-    START_HOUR,
-    HOUR_HEIGHT
-  );
+  const positionedEvents = computeOverlappingEventLayout(timeGridItems, START_HOUR, HOUR_HEIGHT);
 
   const getLayerStyles = (layerId: string, isSelected: boolean) => {
     switch (layerId) {
@@ -313,7 +309,8 @@ export const CalendarDayView: React.FC<CalendarDayViewProps> = ({
             </span>
           </div>
           <span className="text-xs text-[#918689] font-medium">
-            {dayItems.length} compromissos previstos • Arraste ou redimensione os blocos para ajustar horários
+            {dayItems.length} compromissos previstos • Arraste ou redimensione os blocos para
+            ajustar horários
           </span>
         </div>
       </div>
@@ -353,12 +350,8 @@ export const CalendarDayView: React.FC<CalendarDayViewProps> = ({
                 style={{ height: `${HOUR_HEIGHT}px` }}
                 className="border-b border-[#F2EBE8] flex flex-col justify-between py-1 pr-3 text-right"
               >
-                <div className="text-xs font-bold font-mono text-[#40383A]">
-                  {hourObj.label}
-                </div>
-                <div className="text-[11px] font-mono text-[#ADA3A5]">
-                  :30
-                </div>
+                <div className="text-xs font-bold font-mono text-[#40383A]">{hourObj.label}</div>
+                <div className="text-[11px] font-mono text-[#ADA3A5]">:30</div>
               </div>
             ))}
           </div>
@@ -426,10 +419,7 @@ export const CalendarDayView: React.FC<CalendarDayViewProps> = ({
                 displayStartTime = minutesToTime(draggingState.currentStartMins);
                 displayEndTime = minutesToTime(draggingState.currentEndMins);
               } else if (isBeingResized && resizingState) {
-                height = Math.max(
-                  (resizingState.currentDurationMins / 60) * HOUR_HEIGHT - 3,
-                  36
-                );
+                height = Math.max((resizingState.currentDurationMins / 60) * HOUR_HEIGHT - 3, 36);
                 displayEndTime = minutesToTime(resizingState.currentEndMins);
                 displayDuration = resizingState.currentDurationMins;
               }
@@ -476,10 +466,10 @@ export const CalendarDayView: React.FC<CalendarDayViewProps> = ({
                     isBeingDragged
                       ? 'z-40 opacity-95 shadow-xl scale-[1.01] ring-2 ring-[#D85F79]'
                       : isBeingResized
-                      ? 'z-40 shadow-lg ring-2 ring-[#4A879F]'
-                      : pos.totalCols > 1
-                      ? 'z-10 shadow-xs hover:z-20 hover:shadow-md'
-                      : 'z-10 shadow-2xs hover:shadow-sm'
+                        ? 'z-40 shadow-lg ring-2 ring-[#4A879F]'
+                        : pos.totalCols > 1
+                          ? 'z-10 shadow-xs hover:z-20 hover:shadow-md'
+                          : 'z-10 shadow-2xs hover:shadow-sm'
                   } ${styles.bg} ${styles.border}`}
                 >
                   {/* Drag / Resize Feedback Overlay */}
@@ -535,7 +525,9 @@ export const CalendarDayView: React.FC<CalendarDayViewProps> = ({
 
                   {/* Bottom: Subcategory Icon, Time & Etapas */}
                   <div className="flex items-center justify-between text-xs pt-2 border-t border-black/5 mt-auto">
-                    <div className={`flex items-center gap-1.5 font-mono font-medium ${styles.subtext}`}>
+                    <div
+                      className={`flex items-center gap-1.5 font-mono font-medium ${styles.subtext}`}
+                    >
                       {getSubcategoryIcon(item.category)}
                       <span>
                         {displayStartTime} — {displayEndTime}

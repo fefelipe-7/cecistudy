@@ -35,7 +35,7 @@ async function bootstrapUserDb(): Promise<SqlDriver | null> {
       async (d) => {
         await runUserMigrations(d);
       },
-      true // D4: banco do usuário cifrado no dispositivo
+      true, // D4: banco do usuário cifrado no dispositivo
     );
 
     // Import legado (Preferences → SQLite), uma vez por chave. Só remove as

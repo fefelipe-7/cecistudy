@@ -23,13 +23,7 @@ const DEFAULT_MANIFEST_URL = 'https://fefelipe-7.github.io/cecistudy/version.jso
 export const OTA_MANIFEST_URL: string =
   (import.meta.env.VITE_OTA_MANIFEST_URL as string | undefined) || DEFAULT_MANIFEST_URL;
 
-export type OtaStatus =
-  | 'idle'
-  | 'checking'
-  | 'downloading'
-  | 'ready'
-  | 'applied'
-  | 'error';
+export type OtaStatus = 'idle' | 'checking' | 'downloading' | 'ready' | 'applied' | 'error';
 
 export interface OtaState {
   /** Disponível apenas no app nativo (Android/iOS). */

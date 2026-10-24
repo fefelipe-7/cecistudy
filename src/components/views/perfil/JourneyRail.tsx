@@ -37,16 +37,11 @@ function connectorClass(status: ProfileJourneySlot['status']): string {
 }
 
 const JourneyRail: React.FC<JourneyRailProps> = ({ slots }) => {
-  const summary = slots
-    .map((s) => `${s.ordinal}º ${STATUS_TEXT[s.status]}`)
-    .join(', ');
+  const summary = slots.map((s) => `${s.ordinal}º ${STATUS_TEXT[s.status]}`).join(', ');
 
   return (
     <div className="rounded-2xl bg-surface-muted border border-ceci-border-subtle px-3 py-4">
-      <ol
-        className="flex items-center"
-        aria-label={`trilho da formação: ${summary}`}
-      >
+      <ol className="flex items-center" aria-label={`trilho da formação: ${summary}`}>
         {slots.map((slot, index) => (
           <li
             key={slot.ordinal}

@@ -41,10 +41,16 @@ export const TaskRow: React.FC<{ task: Task }> = ({ task }) => {
         <CompletionToggle
           checked={task.completed}
           onChange={() => handleToggleTask(task.id)}
-          label={task.completed ? `marcar "${task.title}" como pendente` : `marcar "${task.title}" como concluída`}
+          label={
+            task.completed
+              ? `marcar "${task.title}" como pendente`
+              : `marcar "${task.title}" como concluída`
+          }
         />
         <div className="min-w-0">
-          <p className={`text-sm font-medium ${task.completed ? 'line-through text-ceci-muted' : 'text-ceci-primary'}`}>
+          <p
+            className={`text-sm font-medium ${task.completed ? 'line-through text-ceci-muted' : 'text-ceci-primary'}`}
+          >
             {task.title}
           </p>
           <p className={`text-[11px] mt-1 flex items-center gap-1.5 flex-wrap`}>

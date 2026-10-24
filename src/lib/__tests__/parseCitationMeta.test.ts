@@ -41,9 +41,7 @@ describe('normalizeDoi / extractDoi (SPEC-012 §7.3)', () => {
 
   it('extrai DOI de URL doi.org e de texto livre', () => {
     expect(extractDoi('https://doi.org/10.1590/2023.xxxx')).toBe('10.1590/2023.xxxx');
-    expect(extractDoi('confira em https://doi.org/10.1590/2023.xxxx ok')).toBe(
-      '10.1590/2023.xxxx',
-    );
+    expect(extractDoi('confira em https://doi.org/10.1590/2023.xxxx ok')).toBe('10.1590/2023.xxxx');
     expect(extractDoi('doi:10.1000/j.abc.2022.01')).toBe('10.1000/j.abc.2022.01');
   });
 });
@@ -52,7 +50,10 @@ describe('parseCitationMeta (SPEC-012 §7.3 item 1-3)', () => {
   it('Highwire: título, autores separados, periódico, ano, vol/nº/págs, DOI', () => {
     const fields = parseCitationMeta(highwireHtml, 'https://revista.example/artigo');
     expect(fields.title).toBe('Luto e escuta clínica: & prática');
-    expect(fields.authors).toEqual([hundred('Worden', 'J. William'), hundred('Parkes', 'Colin Murray')]);
+    expect(fields.authors).toEqual([
+      hundred('Worden', 'J. William'),
+      hundred('Parkes', 'Colin Murray'),
+    ]);
     expect(fields.container).toBe('Revista Brasileira de Terapias');
     expect(fields.year).toBe('2023');
     expect(fields.volume).toBe('42');
@@ -62,7 +63,8 @@ describe('parseCitationMeta (SPEC-012 §7.3 item 1-3)', () => {
   });
 
   it('autor sem vírgula não é adivinhado — deixa para conferir (§7.3)', () => {
-    const html = '<meta name="citation_title" content="Título"><meta name="citation_author" content="Ana Maria Silva">';
+    const html =
+      '<meta name="citation_title" content="Título"><meta name="citation_author" content="Ana Maria Silva">';
     const fields = parseCitationMeta(html, 'https://x.example/a');
     expect(fields.title).toBe('Título');
     expect(fields.authors ?? []).toHaveLength(0);
@@ -127,7 +129,8 @@ describe('parseCitationMeta (SPEC-012 §7.3 item 1-3)', () => {
 });
 
 describe('mapCrossrefWork (SPEC-012 §7.3 item 0)', () => {
-  const nl = (N: number) => Array.from({ length: N }, (_, i) => ({ family: `Sobrenome${i}`, given: `Nome${i}` }));
+  const nl = (N: number) =>
+    Array.from({ length: N }, (_, i) => ({ family: `Sobrenome${i}`, given: `Nome${i}` }));
 
   it('artigo com 1, 3 e 5 autores — todos separados', () => {
     for (const n of [1, 3, 5]) {
@@ -172,13 +175,13 @@ describe('mapCrossrefWork (SPEC-012 §7.3 item 0)', () => {
 });
 
 describe('mergeEnrichment (SPEC-012 §7.3 — só campo vazio)', () => {
-  const base = (): Pick<ReadingItem, 'title' | 'url' | 'authors' | 'year' | 'container'> & Partial<ReadingItem> =>
-    ({
-      title: 'site.com.br',
-      url: 'https://site.com.br/artigo',
-      author: 'autor não informado',
-      authors: [],
-    });
+  const base = (): Pick<ReadingItem, 'title' | 'url' | 'authors' | 'year' | 'container'> &
+    Partial<ReadingItem> => ({
+    title: 'site.com.br',
+    url: 'https://site.com.br/artigo',
+    author: 'autor não informado',
+    authors: [],
+  });
 
   it('título provisório (host) é sobrescrito; o resto preenche só o vazio', () => {
     expect(isProvisionalTitle(base())).toBe(true);

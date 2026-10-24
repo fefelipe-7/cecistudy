@@ -91,7 +91,7 @@ const fmtDate = (iso: string | undefined): string | undefined => {
 export function clampPageInput(
   current: number,
   raw: string | number,
-  totalPages?: number
+  totalPages?: number,
 ): number | null {
   const n = typeof raw === 'number' ? Math.floor(raw) : parseInt(String(raw), 10);
   if (Number.isNaN(n)) return null;
@@ -125,7 +125,7 @@ function readingProgressAction(pages: number): ContextActionDef {
 export function buildItemContext(
   kind: ManagedItemKind,
   id: string,
-  db: ManagedDB
+  db: ManagedDB,
 ): ManagedItemContext | null {
   switch (kind) {
     case 'course': {
@@ -141,7 +141,10 @@ export function buildItemContext(
         kind,
         id,
         name: course.name,
-        status: recordCount > 0 ? `${recordCount} registro${recordCount > 1 ? 's' : ''}` : 'sem registros ainda',
+        status:
+          recordCount > 0
+            ? `${recordCount} registro${recordCount > 1 ? 's' : ''}`
+            : 'sem registros ainda',
         recommended: {
           id: 'add-course-record',
           label: recordCount > 0 ? 'adicionar registro' : 'adicionar primeiro registro',

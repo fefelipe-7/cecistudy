@@ -54,7 +54,7 @@ export function useLongPress({
     // apenas se ele nascer dentro do elemento pressionado.
     const swallow = (e: MouseEvent) => {
       const target = e.target as Node | null;
-      const hit = pressedEl ? (target && pressedEl.contains(target)) : true;
+      const hit = pressedEl ? target && pressedEl.contains(target) : true;
       window.removeEventListener('click', swallow, true);
       if (!hit) return;
       e.stopPropagation();
@@ -74,7 +74,7 @@ export function useLongPress({
       startRef.current = { x: e.clientX, y: e.clientY, id: e.pointerId };
       timerRef.current = window.setTimeout(fire, thresholdMs);
     },
-    [clear, fire, thresholdMs]
+    [clear, fire, thresholdMs],
   );
 
   const handlePointerMove = useCallback(
@@ -88,7 +88,7 @@ export function useLongPress({
         clear();
       }
     },
-    [clear, moveTolerance]
+    [clear, moveTolerance],
   );
 
   const handlePointerEnd = useCallback(() => {
@@ -101,7 +101,7 @@ export function useLongPress({
       void e;
       onClick?.();
     },
-    [onClick]
+    [onClick],
   );
 
   const handleContextMenu = useCallback(
@@ -109,7 +109,7 @@ export function useLongPress({
       e.preventDefault();
       fire();
     },
-    [fire]
+    [fire],
   );
 
   return {

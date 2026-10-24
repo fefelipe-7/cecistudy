@@ -13,7 +13,11 @@ interface QuizLoadingScreenProps {
 }
 
 /** Splash transitório: garante o acervo em memória e só então abre o quiz. */
-export const QuizLoadingScreen: React.FC<QuizLoadingScreenProps> = ({ config, onReady, onCancel }) => {
+export const QuizLoadingScreen: React.FC<QuizLoadingScreenProps> = ({
+  config,
+  onReady,
+  onCancel,
+}) => {
   const { ensureQuestionsLoaded, showToast } = useMobileApp();
   const [message, setMessage] = useState('escrevendo suas questões...');
 
@@ -59,7 +63,9 @@ export const QuizLoadingScreen: React.FC<QuizLoadingScreenProps> = ({ config, on
     <div className="min-h-[70vh] flex flex-col items-center justify-center gap-4 text-center px-6">
       <Mascote expression="loading-patient" className="w-16 h-16" decorative />
       <div>
-        <h3 className="font-display font-bold text-lg text-ceci-primary">escrevendo suas questões ♡</h3>
+        <h3 className="font-display font-bold text-lg text-ceci-primary">
+          escrevendo suas questões ♡
+        </h3>
         <p className="text-xs text-ceci-secondary mt-2">{message}</p>
       </div>
       <div className="mt-2 flex gap-1.5">

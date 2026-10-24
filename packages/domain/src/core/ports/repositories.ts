@@ -1,6 +1,15 @@
 import type { EntityId } from '../domain/common';
 import type { Workspace } from '../domain';
-import type { Document, Relation, CalendarEvent, Project, Output, ContentBase, ChannelVariant, Publication } from '../domain';
+import type {
+  Document,
+  Relation,
+  CalendarEvent,
+  Project,
+  Output,
+  ContentBase,
+  ChannelVariant,
+  Publication,
+} from '../domain';
 
 /** Repositório genérico de uma agregação do domínio (implementação fica para a Fase 3+). */
 export interface Repository<T> {

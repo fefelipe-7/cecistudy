@@ -64,7 +64,7 @@ function toNativeParams(params?: SqlValue[]): unknown[] | undefined {
 export async function createNativeSqliteDriver(
   database: string,
   setup?: (driver: SqlDriver) => Promise<void>,
-  encrypted: boolean = false
+  encrypted: boolean = false,
 ): Promise<SqlDriver> {
   const mod = (await import('@capacitor-community/sqlite')) as {
     CapacitorSQLite: NativeCapacitorSQLite;

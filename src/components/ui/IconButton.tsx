@@ -6,12 +6,7 @@ interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
   active?: boolean;
 }
 
-export const IconButton: React.FC<IconButtonProps> = ({
-  label,
-  active,
-  className,
-  ...props
-}) => (
+export const IconButton: React.FC<IconButtonProps> = ({ label, active, className, ...props }) => (
   <button
     aria-label={label}
     title={label}
@@ -20,7 +15,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
       active
         ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
         : 'bg-surface-default border-ceci-border-default text-ceci-secondary hover:bg-surface-muted',
-      className
+      className,
     )}
     {...props}
   />

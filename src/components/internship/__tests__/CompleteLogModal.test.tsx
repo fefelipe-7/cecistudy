@@ -93,7 +93,7 @@ describe('CompleteLogModal — salvar e seguir (§7)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'salvar e seguir' }));
     expect(onSave).toHaveBeenCalledTimes(1);
     expect(onSave).toHaveBeenCalledWith(
-      expect.objectContaining({ id: 'at-1', reflections: 'gostei da supervisão' })
+      expect.objectContaining({ id: 'at-1', reflections: 'gostei da supervisão' }),
     );
     expect(screen.getByText('campo 2 de 5')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'tema' })).toBeInTheDocument();
@@ -138,7 +138,7 @@ describe('CompleteLogModal — declinar grava o auto-texto (SPEC-011 D12)', () =
         id: 'at-1',
         theme: TEXTO_NAO_RESPONDER.tema,
         declinedFields: ['tema'],
-      })
+      }),
     );
     expect(screen.getByText('campo 1 de 4')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'reflexões' })).toBeInTheDocument();
@@ -160,7 +160,7 @@ describe('CompleteLogModal — declinar grava o auto-texto (SPEC-011 D12)', () =
         interventionNotes: TEXTO_NAO_RESPONDER.intervencoes,
         observations: TEXTO_NAO_RESPONDER.impressoes,
         declinedFields: ['reflexoes', 'tema', 'abordagem', 'intervencoes', 'impressoes'],
-      })
+      }),
     );
     expect(screen.getByText('registro atualizado com 5 campos ♡')).toBeInTheDocument();
   });

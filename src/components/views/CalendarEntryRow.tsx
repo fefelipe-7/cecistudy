@@ -65,9 +65,7 @@ export const CalendarEntryRow: React.FC<CalendarEntryRowProps> = ({
             {when}
           </span>
         )}
-        <h3 className="font-semibold text-xs text-ceci-primary line-clamp-1">
-          {entry.title}
-        </h3>
+        <h3 className="font-semibold text-xs text-ceci-primary line-clamp-1">{entry.title}</h3>
       </div>
       <span
         className={`text-[10px] font-bold px-2.5 py-1 rounded-full border shrink-0 ${LAYER_CHIP[entry.layer]}`}

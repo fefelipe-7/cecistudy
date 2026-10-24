@@ -1,27 +1,81 @@
 import { describe, it, expect } from 'vitest';
 import { migrateDatabase, MIGRATIONS, SCHEMA_VERSION, DEFAULT_WORKSPACE_ID } from '../schema';
 
-
 describe('schema — migração 11 → 12 (escopo de workspace)', () => {
   const sample = {
     profile: { name: 'Ceci' },
     courses: [{ id: 'c1', name: 'Psicologia' }],
     classes: [{ id: 'cl-1', courseId: 'c1', title: 'aula' }],
     tasks: [{ id: 't1', title: 'x', completed: false, priority: 'baixa', category: 'outro' }],
-    exams: [{ id: 'e1', courseId: 'c1', title: 'p1', date: '2026-01-01', weight: '40%', topics: [], completed: false }],
+    exams: [
+      {
+        id: 'e1',
+        courseId: 'c1',
+        title: 'p1',
+        date: '2026-01-01',
+        weight: '40%',
+        topics: [],
+        completed: false,
+      },
+    ],
     authors: [{ id: 'aut-1', name: 'Freud', bio: '', keyConcepts: [], majorWorks: [] }],
     concepts: [{ id: 'con-1', name: 'c', definition: 'd', authorIds: [], courseIds: [], tags: [] }],
     readings: [{ id: 'r1', title: 'l', author: 'a', type: 'livro', status: 'nao_iniciado' }],
     flashcards: [{ id: 'f1', question: 'q', answer: 'a' }],
-    materials: [{ id: 'm1', title: 't', type: 'pdf', author: 'a', tags: [], addedAt: '2026-01-01' }],
-    internshipLogs: [{ id: 'ilog-1', type: 'estagio', date: '2026-01-01', hours: 2, activity: 'x', reflections: '' }],
-    supervision: [{ id: 's1', date: '2026-01-01', questions: [], conceptIds: [], referenceIds: [], nextSteps: [], selfAssessment: {} }],
-    stickers: [{ id: 'st-1', name: 'n', emoji: '♡', description: 'd', unlocked: false, category: 'jornada' }],
+    materials: [
+      { id: 'm1', title: 't', type: 'pdf', author: 'a', tags: [], addedAt: '2026-01-01' },
+    ],
+    internshipLogs: [
+      {
+        id: 'ilog-1',
+        type: 'estagio',
+        date: '2026-01-01',
+        hours: 2,
+        activity: 'x',
+        reflections: '',
+      },
+    ],
+    supervision: [
+      {
+        id: 's1',
+        date: '2026-01-01',
+        questions: [],
+        conceptIds: [],
+        referenceIds: [],
+        nextSteps: [],
+        selfAssessment: {},
+      },
+    ],
+    stickers: [
+      { id: 'st-1', name: 'n', emoji: '♡', description: 'd', unlocked: false, category: 'jornada' },
+    ],
     sessions: [{ id: 'ss-1', topic: 't', date: '2026-01-01', durationMinutes: 25 }],
     techniques: [{ id: 'tec-1', name: 'n', description: 'd' }],
-    quizSessions: [{ id: 'qs-1', config: { areas: [], temas: [], escolas: [], dificuldades: [], count: 5 }, answers: [], startedAt: 0, finishedAt: 0, totalTimeMs: 0, correctCount: 0, totalCount: 0, scorePct: 0, createdAt: '2026-01-01' }],
+    quizSessions: [
+      {
+        id: 'qs-1',
+        config: { areas: [], temas: [], escolas: [], dificuldades: [], count: 5 },
+        answers: [],
+        startedAt: 0,
+        finishedAt: 0,
+        totalTimeMs: 0,
+        correctCount: 0,
+        totalCount: 0,
+        scorePct: 0,
+        createdAt: '2026-01-01',
+      },
+    ],
     looseNotes: [{ id: 'ln-1', title: 't', content: 'c', category: 'ideia', date: '2026-01-01' }],
-    tcc: { title: '', advisor: '', field: '', problemStatement: '', objectives: [], status: 'em_andamento', chapters: [], references: [] },
+    tcc: {
+      title: '',
+      advisor: '',
+      field: '',
+      problemStatement: '',
+      objectives: [],
+      status: 'em_andamento',
+      chapters: [],
+      references: [],
+    },
   };
 
   it('SCHEMA_VERSION é 22', () => {
@@ -38,9 +92,7 @@ describe('schema — migração 11 → 12 (escopo de workspace)', () => {
     /** TCC legado COM capítulos e referências — o caso que o fixture v21 não cobre. */
     const legacyPayload = () => ({
       profile: { name: 'Ceci' },
-      readings: [
-        { id: 'r1', title: 'l', author: 'a', type: 'livro', status: 'nao_iniciado' },
-      ],
+      readings: [{ id: 'r1', title: 'l', author: 'a', type: 'livro', status: 'nao_iniciado' }],
       tcc: {
         title: 'luto e escuta clínica',
         advisor: 'Helena',
@@ -179,7 +231,19 @@ describe('schema — migração 12 → 13 (rename internshipLogsLegacy → inter
 
 describe('schema — migração 13 → 14 (repertório da disciplina, SPEC-001)', () => {
   it('faz backfill dos arrays de repertório em courses antigos', () => {
-    const legacy = { courses: [{ id: 'c1', name: 'x', professor: 'p', semester: '1', schedule: [], color: '#fff', icon: 'Brain' }] };
+    const legacy = {
+      courses: [
+        {
+          id: 'c1',
+          name: 'x',
+          professor: 'p',
+          semester: '1',
+          schedule: [],
+          color: '#fff',
+          icon: 'Brain',
+        },
+      ],
+    };
     const next = migrateDatabase(13, legacy as Record<string, unknown>) as Record<string, any>;
     expect(next.courses[0].conceptIds).toEqual([]);
     expect(next.courses[0].authorIds).toEqual([]);
@@ -189,7 +253,18 @@ describe('schema — migração 13 → 14 (repertório da disciplina, SPEC-001)'
   it('preserva vínculos já presentes (idempotente)', () => {
     const legacy = {
       courses: [
-        { id: 'c1', name: 'x', professor: 'p', semester: '1', schedule: [], color: '#fff', icon: 'Brain', conceptIds: ['con-1'], authorIds: ['aut-1'], bibliographyIds: ['cat-1'] },
+        {
+          id: 'c1',
+          name: 'x',
+          professor: 'p',
+          semester: '1',
+          schedule: [],
+          color: '#fff',
+          icon: 'Brain',
+          conceptIds: ['con-1'],
+          authorIds: ['aut-1'],
+          bibliographyIds: ['cat-1'],
+        },
       ],
     };
     const next = migrateDatabase(13, legacy as Record<string, unknown>) as Record<string, any>;
@@ -203,7 +278,16 @@ describe('schema — migração 14 → 15 (frequência detalhada, spec-frequenci
   it('converte o par legado {attended,total} para CourseAttendance', () => {
     const legacy = {
       courses: [
-        { id: 'c1', name: 'x', professor: 'p', semester: '1', schedule: [], color: '#fff', icon: 'Brain', attendance: { attended: 8, total: 12 } },
+        {
+          id: 'c1',
+          name: 'x',
+          professor: 'p',
+          semester: '1',
+          schedule: [],
+          color: '#fff',
+          icon: 'Brain',
+          attendance: { attended: 8, total: 12 },
+        },
       ],
     };
     const next = migrateDatabase(14, legacy as Record<string, unknown>) as Record<string, any>;
@@ -221,7 +305,16 @@ describe('schema — migração 14 → 15 (frequência detalhada, spec-frequenci
   it('ignora frequência sem total (não vira rastreador ativo)', () => {
     const legacy = {
       courses: [
-        { id: 'c1', name: 'x', professor: 'p', semester: '1', schedule: [], color: '#fff', icon: 'Brain', attendance: { attended: 3 } },
+        {
+          id: 'c1',
+          name: 'x',
+          professor: 'p',
+          semester: '1',
+          schedule: [],
+          color: '#fff',
+          icon: 'Brain',
+          attendance: { attended: 3 },
+        },
       ],
     };
     const next = migrateDatabase(14, legacy as Record<string, unknown>) as Record<string, any>;
@@ -231,7 +324,21 @@ describe('schema — migração 14 → 15 (frequência detalhada, spec-frequenci
   it('preserva o shape novo intocado (idempotente) — horas são backfilladas pela 17', () => {
     const legacy = {
       courses: [
-        { id: 'c1', name: 'x', professor: 'p', semester: '1', schedule: [], color: '#fff', icon: 'Brain', attendance: { total: 12, minPct: 75, baseAttended: 8, records: [{ id: 'ar-1', date: '2026-09-01', status: 'presente' }] } },
+        {
+          id: 'c1',
+          name: 'x',
+          professor: 'p',
+          semester: '1',
+          schedule: [],
+          color: '#fff',
+          icon: 'Brain',
+          attendance: {
+            total: 12,
+            minPct: 75,
+            baseAttended: 8,
+            records: [{ id: 'ar-1', date: '2026-09-01', status: 'presente' }],
+          },
+        },
       ],
     };
     const next = migrateDatabase(14, legacy as Record<string, unknown>) as Record<string, any>;
@@ -251,7 +358,11 @@ describe('schema — migração 16 → 17 (frequência em horas, SPEC-004)', () 
     const legacy = {
       courses: [
         {
-          id: 'c1', name: 'x', professor: 'p', semester: '1', icon: 'Brain',
+          id: 'c1',
+          name: 'x',
+          professor: 'p',
+          semester: '1',
+          icon: 'Brain',
           schedule: [{ day: 1, start: '19:00', end: '21:00' }], // 2h
           attendance: { total: 33, minPct: 75, baseAttended: 8, records: [] },
         },
@@ -272,7 +383,11 @@ describe('schema — migração 16 → 17 (frequência em horas, SPEC-004)', () 
     const legacy = {
       courses: [
         {
-          id: 'c1', name: 'x', professor: 'p', semester: '1', icon: 'Brain',
+          id: 'c1',
+          name: 'x',
+          professor: 'p',
+          semester: '1',
+          icon: 'Brain',
           schedule: [
             { day: 1, start: '19:00', end: '21:00' }, // 2h
             { day: 3, start: '19:00', end: '20:30' }, // 1,5h → média 1,75h
@@ -291,9 +406,20 @@ describe('schema — migração 16 → 17 (frequência em horas, SPEC-004)', () 
     const legacy = {
       courses: [
         {
-          id: 'c1', name: 'x', professor: 'p', semester: '1', icon: 'Brain',
+          id: 'c1',
+          name: 'x',
+          professor: 'p',
+          semester: '1',
+          icon: 'Brain',
           schedule: [{ day: 1, start: '19:00', end: '21:00' }],
-          attendance: { total: 33, minPct: 75, baseAttended: 8, records: [], totalHours: 66, baseHoursDone: 16 },
+          attendance: {
+            total: 33,
+            minPct: 75,
+            baseAttended: 8,
+            records: [],
+            totalHours: 66,
+            baseHoursDone: 16,
+          },
         },
       ],
     };
@@ -305,7 +431,15 @@ describe('schema — migração 16 → 17 (frequência em horas, SPEC-004)', () 
   it('morre em silêncio para curso sem attendance', () => {
     const legacy = {
       courses: [
-        { id: 'c1', name: 'x', professor: 'p', semester: '1', schedule: [], color: '#fff', icon: 'Brain' },
+        {
+          id: 'c1',
+          name: 'x',
+          professor: 'p',
+          semester: '1',
+          schedule: [],
+          color: '#fff',
+          icon: 'Brain',
+        },
       ],
     };
     const next = migrateDatabase(16, legacy as Record<string, unknown>) as Record<string, any>;
@@ -317,7 +451,11 @@ describe('schema — migração 16 → 17 (frequência em horas, SPEC-004)', () 
     const legacy = {
       courses: [
         {
-          id: 'c1', name: 'x', professor: 'p', semester: '1', icon: 'Brain',
+          id: 'c1',
+          name: 'x',
+          professor: 'p',
+          semester: '1',
+          icon: 'Brain',
           schedule: [],
           attendance: { minPct: 75, records: [] },
         },
@@ -333,7 +471,15 @@ describe('schema — migração 17 → 18 (período letivo, SPEC-005)', () => {
   const legacy = {
     profile: { name: 'ceci', semester: 6, totalSemesters: 8 },
     courses: [
-      { id: 'c1', name: 'Psicologia Social', professor: 'p', semester: '6º Semestre', schedule: [], color: '#fff', icon: 'Brain' },
+      {
+        id: 'c1',
+        name: 'Psicologia Social',
+        professor: 'p',
+        semester: '6º Semestre',
+        schedule: [],
+        color: '#fff',
+        icon: 'Brain',
+      },
     ],
     classes: [
       { id: 'cl-1', courseId: 'c1', title: 'aula 1', date: '2026-03-05' },
@@ -409,7 +555,14 @@ describe('schema — migração 17 → 18 (período letivo, SPEC-005)', () => {
     const closed = {
       ...legacy,
       academicTerms: [
-        { id: 'trm-old', label: '5º semestre', ordinal: 5, status: 'encerrado', startedAt: '2025-08-01', endedAt: '2025-12-20' },
+        {
+          id: 'trm-old',
+          label: '5º semestre',
+          ordinal: 5,
+          status: 'encerrado',
+          startedAt: '2025-08-01',
+          endedAt: '2025-12-20',
+        },
       ],
     };
     const next = migrateDatabase(17, closed as Record<string, unknown>) as Record<string, any>;
@@ -421,7 +574,10 @@ describe('schema — migração 17 → 18 (período letivo, SPEC-005)', () => {
   it('totalSemesters ausente cai em 8 na [18] e a cadeia 17 → 19 entrega 10', () => {
     // A [18] continua defaultando 8 (ela não deve conhecer a SPEC-006), mas quem
     // migra de verdade encadeia até a [19], que conserta. O valor final é 10.
-    const via19 = migrateDatabase(17, { profile: { name: 'ceci' } } as Record<string, unknown>) as Record<string, any>;
+    const via19 = migrateDatabase(17, { profile: { name: 'ceci' } } as Record<
+      string,
+      unknown
+    >) as Record<string, any>;
     expect(via19.profile.totalSemesters).toBe(10);
   });
 
@@ -451,7 +607,13 @@ describe('schema — migração 18 → 19 (total de semestres do curso, SPEC-006
     ({
       profile: { name: 'ceci', semester, totalSemesters },
       academicTerms: [
-        { id: 'trm-active', label: `${semester}º semestre`, ordinal: semester, status: 'ativo', startedAt: '2026-02-01' },
+        {
+          id: 'trm-active',
+          label: `${semester}º semestre`,
+          ordinal: semester,
+          status: 'ativo',
+          startedAt: '2026-02-01',
+        },
       ],
       courses: [],
     }) as Record<string, unknown>;
@@ -467,8 +629,12 @@ describe('schema — migração 18 → 19 (total de semestres do curso, SPEC-006
   });
 
   it('NÃO toca quem já configurou outro total (10, 12, …)', () => {
-    expect((migrateDatabase(18, withTotal(12, 6)) as Record<string, any>).profile.totalSemesters).toBe(12);
-    expect((migrateDatabase(18, withTotal(10, 6)) as Record<string, any>).profile.totalSemesters).toBe(10);
+    expect(
+      (migrateDatabase(18, withTotal(12, 6)) as Record<string, any>).profile.totalSemesters,
+    ).toBe(12);
+    expect(
+      (migrateDatabase(18, withTotal(10, 6)) as Record<string, any>).profile.totalSemesters,
+    ).toBe(10);
   });
 
   it('preserva o resto do payload (período e disciplinas intocados)', () => {
@@ -486,7 +652,10 @@ describe('schema — migração 18 → 19 (total de semestres do curso, SPEC-006
   });
 
   it('sem profile no payload, não quebra (morte silenciosa)', () => {
-    const next = migrateDatabase(18, { courses: [] } as Record<string, unknown>) as Record<string, any>;
+    const next = migrateDatabase(18, { courses: [] } as Record<string, unknown>) as Record<
+      string,
+      any
+    >;
     expect(next).toBeTruthy();
   });
 });

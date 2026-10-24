@@ -9,9 +9,7 @@ import {
 } from '../acervoBridge';
 import type { TempleAuthor, TempleConceptIndexEntry } from '../../types';
 
-const conceptEntry = (
-  overrides: Partial<TempleConceptIndexEntry>
-): TempleConceptIndexEntry => ({
+const conceptEntry = (overrides: Partial<TempleConceptIndexEntry>): TempleConceptIndexEntry => ({
   id: 'concept-01-fundamentos-psicologicos-inconsciente',
   name: 'inconsciente',
   domainId: 'domain-01',
@@ -62,7 +60,7 @@ describe('templeAuthorToDraft', () => {
 
   it('campos ausentes ficam undefined/vazios sem quebrar', () => {
     const draft = templeAuthorToDraft(
-      templeAuthor({ oneLiner: null, born: undefined, died: undefined, mainWork: undefined })
+      templeAuthor({ oneLiner: null, born: undefined, died: undefined, mainWork: undefined }),
     );
     expect(draft.bio).toBe('');
     expect(draft.lifespan).toBeUndefined();
@@ -77,7 +75,7 @@ describe('filterNewNames', () => {
         conceptEntry({ id: 'c1', name: 'Inconsciente' }),
         conceptEntry({ id: 'c2', name: 'Transferência' }),
       ],
-      [{ name: 'inconsciente' }]
+      [{ name: 'inconsciente' }],
     );
     expect(kept.map((k) => k.id)).toEqual(['c2']);
   });

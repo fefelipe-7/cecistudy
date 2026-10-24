@@ -29,8 +29,7 @@ export const TAB_LABELS = {
 } as const;
 
 /** Nome falado de uma aba; devolve o próprio id se for uma aba nova. */
-export const tabLabel = (tab: string): string =>
-  (TAB_LABELS as Record<string, string>)[tab] ?? tab;
+export const tabLabel = (tab: string): string => (TAB_LABELS as Record<string, string>)[tab] ?? tab;
 
 /**
  * Frase anunciada quando a tela muda.
@@ -44,10 +43,7 @@ export const tabLabel = (tab: string): string =>
  * ⚠️ Só o texto muda o que é anunciado: a região viva precisa ser a mesma no DOM
  * (daí o `role="status"` fixo no shell). É por isso que isto devolve só a string.
  */
-export const screenAnnouncement = (
-  tab: string,
-  headerTitle: string | undefined,
-): string | null => {
+export const screenAnnouncement = (tab: string, headerTitle: string | undefined): string | null => {
   const title = headerTitle?.trim();
   if (title) return title;
   const label = tabLabel(tab);

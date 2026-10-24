@@ -2,7 +2,11 @@ import { describe, expect, it, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useWizardForm } from '../useWizardForm';
 
-interface Vals { title: string; minutes: string; courseId: string }
+interface Vals {
+  title: string;
+  minutes: string;
+  courseId: string;
+}
 const defaults: Vals = { title: '', minutes: '25', courseId: '' };
 
 describe('useWizardForm', () => {
@@ -20,7 +24,11 @@ describe('useWizardForm', () => {
   it('patch mescla parcial sem perder os outros campos', () => {
     const { result } = renderHook(() => useWizardForm({ initial: defaults }));
     act(() => result.current.patch({ title: 'revisar semiologia' }));
-    expect(result.current.values).toEqual({ title: 'revisar semiologia', minutes: '25', courseId: '' });
+    expect(result.current.values).toEqual({
+      title: 'revisar semiologia',
+      minutes: '25',
+      courseId: '',
+    });
   });
 
   it('setStep navega entre passos', () => {
@@ -31,7 +39,7 @@ describe('useWizardForm', () => {
 
   it('deriva isDirty pelo callback', () => {
     const { result } = renderHook(() =>
-      useWizardForm({ initial: defaults, isDirty: (v) => v.title.trim().length > 0 })
+      useWizardForm({ initial: defaults, isDirty: (v) => v.title.trim().length > 0 }),
     );
     expect(result.current.isDirty).toBe(false);
     act(() => result.current.patch({ title: 'algo escrito' }));
@@ -52,7 +60,7 @@ describe('useWizardForm', () => {
 
     const editingInitial = { title: 'sessão salva', minutes: '30', courseId: 'c1' };
     const { result } = renderHook(() =>
-      useWizardForm({ draftKey: 'sessao-edit', initial: editingInitial, editing: true })
+      useWizardForm({ draftKey: 'sessao-edit', initial: editingInitial, editing: true }),
     );
     expect(result.current.values).toEqual(editingInitial);
 
@@ -63,7 +71,9 @@ describe('useWizardForm', () => {
   });
 
   it('clearDraft limpa o rascunho', () => {
-    const { result } = renderHook(() => useWizardForm({ draftKey: 'sessao-limpar', initial: defaults }));
+    const { result } = renderHook(() =>
+      useWizardForm({ draftKey: 'sessao-limpar', initial: defaults }),
+    );
     act(() => result.current.patch({ title: 'temporário' }));
     act(() => result.current.clearDraft());
 

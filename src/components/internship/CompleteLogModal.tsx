@@ -195,7 +195,7 @@ export const CompleteLogModal: React.FC<CompleteLogModalProps> = ({
       (c) =>
         camposDeReferencia(alvo.type).includes(c.key) &&
         !limpos.includes(c.key) &&
-        conteudoDe(alvo, c.key) === ''
+        conteudoDe(alvo, c.key) === '',
     );
     setFila(pendentes);
     if (pendentes.length) setStep({ kind: 'field', index: 0 });
@@ -223,7 +223,8 @@ export const CompleteLogModal: React.FC<CompleteLogModalProps> = ({
   const pularCampo = (index: number) => avancar(index);
 
   const ativos = CAMPOS.filter((c) => camposDeReferencia(log.type).includes(c.key));
-  const selecionados = ativos.length - declinados.filter((d) => ativos.some((a) => a.key === d)).length;
+  const selecionados =
+    ativos.length - declinados.filter((d) => ativos.some((a) => a.key === d)).length;
 
   const titulo =
     step.kind === 'select'
@@ -242,157 +243,152 @@ export const CompleteLogModal: React.FC<CompleteLogModalProps> = ({
       className="w-full max-w-sm bg-surface-default rounded-[28px] border border-ceci-border-default shadow-2xl p-0 text-ceci-primary"
     >
       <div className="overflow-hidden rounded-[28px]">
-        <motion.div
-          key={stepKey}
-          variants={STEP_VARIANTS}
-          initial="initial"
-          animate="animate"
-        >
-            {step.kind === 'select' && (
-              <>
-                <header className="relative overflow-hidden px-5 pt-5 pb-4 bg-gradient-to-br from-surface-rose via-surface-default to-surface-blue border-b border-ceci-border-subtle">
-                  <span
-                    aria-hidden
-                    className="absolute -top-8 -right-8 w-28 h-28 rounded-full bg-ceci-border-brand/70 blur-2xl pointer-events-none"
-                  />
-                  <p className="relative text-[11px] font-semibold text-ceci-brand-strong tracking-wide">
-                    completar registro ♡
-                  </p>
-                  <h3
-                    id="complete-log-title"
-                    className="relative font-display font-bold text-xl text-ceci-primary leading-tight mt-1"
-                  >
-                    {titulo}
-                  </h3>
-                  <p className="relative text-xs text-ceci-secondary leading-relaxed mt-1.5 max-w-[88%]">
-                    marca os campos que você vai responder — os desligados ficam anotados como
-                    não respondidos (sem texto seu) e podem voltar quando quiser.
-                  </p>
-                  <Mascote
-                    expression="field-prepare"
-                    className="w-16 h-16 absolute -bottom-1 -right-2 opacity-95 pointer-events-none"
-                    decorative
-                  />
-                </header>
-
-                <div className="p-4 space-y-3">
-                  {ativos.map((c) => {
-                    const checado = !declinados.includes(c.key);
-                    const Icone = ICONES[c.key];
-                    return (
-                      <div
-                        key={c.key}
-                        className={cn(
-                          'rounded-2xl border px-3.5 py-3 transition-colors duration-150',
-                          checado
-                            ? 'border-ceci-border-brand bg-surface-rose/50'
-                            : 'border-ceci-border-default bg-surface-default'
-                        )}
-                      >
-                        <ToggleRow
-                          label={c.label}
-                          description={c.description}
-                          icon={<Icone className="w-5 h-5" aria-hidden />}
-                          iconClassName={ACENTO[c.key]}
-                          checked={checado}
-                          onChange={() => toggle(c.key)}
-                        />
-                      </div>
-                    );
-                  })}
-
-                  <div className="space-y-2 pt-1">
-                    <BotaoPrimario onClick={continuar}>continuar</BotaoPrimario>
-                    <BotaoFantasma onClick={close}>agora não</BotaoFantasma>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {step.kind === 'field' && fila[step.index] && (
-              <div className="p-5 space-y-4">
-                <div className="flex items-center gap-3">
-                  <span className="shrink-0 inline-flex items-center min-h-[44px] px-3 rounded-full text-[11px] font-semibold text-ceci-brand-strong bg-surface-rose border border-ceci-border-brand">
-                    campo {step.index + 1} de {fila.length}
-                  </span>
-                  <div className="flex-1 flex items-center gap-1" aria-hidden>
-                    {fila.map((_, i) => (
-                      <span
-                        key={i}
-                        className={cn(
-                          'h-1.5 flex-1 rounded-full transition-colors duration-150',
-                          i < step.index
-                            ? 'bg-ceci-brand/60'
-                            : i === step.index
-                              ? 'bg-ceci-brand-strong'
-                              : 'bg-ceci-border-default'
-                        )}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                <div className="pb-1">
-                  <h3
-                    id="complete-log-title"
-                    className="font-serif-academic text-3xl text-ceci-primary leading-tight tracking-tight"
-                  >
-                    {fila[step.index].label}
-                  </h3>
-                  <p className="text-xs text-ceci-secondary leading-relaxed mt-1.5">
-                    {fila[step.index].description}
-                  </p>
-                </div>
-
-                <textarea
-                  value={texto}
-                  onChange={(e) => setTexto(e.target.value)}
-                  placeholder={fila[step.index].placeholder}
-                  rows={5}
-                  autoFocus
-                  className="w-full rounded-2xl border border-ceci-border-default bg-surface-input p-3.5 text-sm text-ceci-primary placeholder:text-ceci-muted resize-none transition-shadow focus:outline-none focus:ring-2 focus:ring-ceci-brand focus:border-ceci-brand"
+        <motion.div key={stepKey} variants={STEP_VARIANTS} initial="initial" animate="animate">
+          {step.kind === 'select' && (
+            <>
+              <header className="relative overflow-hidden px-5 pt-5 pb-4 bg-gradient-to-br from-surface-rose via-surface-default to-surface-blue border-b border-ceci-border-subtle">
+                <span
+                  aria-hidden
+                  className="absolute -top-8 -right-8 w-28 h-28 rounded-full bg-ceci-border-brand/70 blur-2xl pointer-events-none"
                 />
+                <p className="relative text-[11px] font-semibold text-ceci-brand-strong tracking-wide">
+                  completar registro ♡
+                </p>
+                <h3
+                  id="complete-log-title"
+                  className="relative font-display font-bold text-xl text-ceci-primary leading-tight mt-1"
+                >
+                  {titulo}
+                </h3>
+                <p className="relative text-xs text-ceci-secondary leading-relaxed mt-1.5 max-w-[88%]">
+                  marca os campos que você vai responder — os desligados ficam anotados como não
+                  respondidos (sem texto seu) e podem voltar quando quiser.
+                </p>
+                <Mascote
+                  expression="field-prepare"
+                  className="w-16 h-16 absolute -bottom-1 -right-2 opacity-95 pointer-events-none"
+                  decorative
+                />
+              </header>
+
+              <div className="p-4 space-y-3">
+                {ativos.map((c) => {
+                  const checado = !declinados.includes(c.key);
+                  const Icone = ICONES[c.key];
+                  return (
+                    <div
+                      key={c.key}
+                      className={cn(
+                        'rounded-2xl border px-3.5 py-3 transition-colors duration-150',
+                        checado
+                          ? 'border-ceci-border-brand bg-surface-rose/50'
+                          : 'border-ceci-border-default bg-surface-default',
+                      )}
+                    >
+                      <ToggleRow
+                        label={c.label}
+                        description={c.description}
+                        icon={<Icone className="w-5 h-5" aria-hidden />}
+                        iconClassName={ACENTO[c.key]}
+                        checked={checado}
+                        onChange={() => toggle(c.key)}
+                      />
+                    </div>
+                  );
+                })}
 
                 <div className="space-y-2 pt-1">
-                  <BotaoPrimario onClick={() => salvarCampo(step.index)}>
-                    salvar e seguir
-                  </BotaoPrimario>
-                  <BotaoFantasma onClick={() => pularCampo(step.index)}>
-                    desisti da ideia
-                  </BotaoFantasma>
+                  <BotaoPrimario onClick={continuar}>continuar</BotaoPrimario>
+                  <BotaoFantasma onClick={close}>agora não</BotaoFantasma>
                 </div>
               </div>
-            )}
+            </>
+          )}
 
-            {step.kind === 'done' && (
-              <div className="text-center px-6 py-8 space-y-4">
-                <div className="relative mx-auto w-24 h-24 rounded-full bg-surface-rose border border-ceci-border-brand flex items-center justify-center">
-                  <Mascote expression="celebrate-small" className="w-16 h-16" decorative />
-                </div>
-                <div className="space-y-1.5">
-                  <h3
-                    id="complete-log-title"
-                    className="font-display font-bold text-xl text-ceci-primary leading-tight"
-                  >
-                    {titulo}
-                  </h3>
-                  <p className="text-sm text-ceci-primary font-semibold">
-                    {salvos.length > 0
-                      ? `registro atualizado com ${salvos.length === 1 ? '1 campo' : `${salvos.length} campos`} ♡`
-                      : 'nada mudou por aqui — tudo certo ♡'}
-                  </p>
-                  <p className="text-xs text-ceci-secondary leading-relaxed">
-                    {salvos.length > 0
-                      ? 'obrigada por completar o registro — a supervisão agradece depois ♡'
-                      : 'quando quiser, é só abrir de novo pelo card.'}
-                  </p>
-                </div>
-                <div className="pt-1">
-                  <BotaoPrimario onClick={close}>concluir</BotaoPrimario>
+          {step.kind === 'field' && fila[step.index] && (
+            <div className="p-5 space-y-4">
+              <div className="flex items-center gap-3">
+                <span className="shrink-0 inline-flex items-center min-h-[44px] px-3 rounded-full text-[11px] font-semibold text-ceci-brand-strong bg-surface-rose border border-ceci-border-brand">
+                  campo {step.index + 1} de {fila.length}
+                </span>
+                <div className="flex-1 flex items-center gap-1" aria-hidden>
+                  {fila.map((_, i) => (
+                    <span
+                      key={i}
+                      className={cn(
+                        'h-1.5 flex-1 rounded-full transition-colors duration-150',
+                        i < step.index
+                          ? 'bg-ceci-brand/60'
+                          : i === step.index
+                            ? 'bg-ceci-brand-strong'
+                            : 'bg-ceci-border-default',
+                      )}
+                    />
+                  ))}
                 </div>
               </div>
-            )}
-          </motion.div>
+
+              <div className="pb-1">
+                <h3
+                  id="complete-log-title"
+                  className="font-serif-academic text-3xl text-ceci-primary leading-tight tracking-tight"
+                >
+                  {fila[step.index].label}
+                </h3>
+                <p className="text-xs text-ceci-secondary leading-relaxed mt-1.5">
+                  {fila[step.index].description}
+                </p>
+              </div>
+
+              <textarea
+                value={texto}
+                onChange={(e) => setTexto(e.target.value)}
+                placeholder={fila[step.index].placeholder}
+                rows={5}
+                autoFocus
+                className="w-full rounded-2xl border border-ceci-border-default bg-surface-input p-3.5 text-sm text-ceci-primary placeholder:text-ceci-muted resize-none transition-shadow focus:outline-none focus:ring-2 focus:ring-ceci-brand focus:border-ceci-brand"
+              />
+
+              <div className="space-y-2 pt-1">
+                <BotaoPrimario onClick={() => salvarCampo(step.index)}>
+                  salvar e seguir
+                </BotaoPrimario>
+                <BotaoFantasma onClick={() => pularCampo(step.index)}>
+                  desisti da ideia
+                </BotaoFantasma>
+              </div>
+            </div>
+          )}
+
+          {step.kind === 'done' && (
+            <div className="text-center px-6 py-8 space-y-4">
+              <div className="relative mx-auto w-24 h-24 rounded-full bg-surface-rose border border-ceci-border-brand flex items-center justify-center">
+                <Mascote expression="celebrate-small" className="w-16 h-16" decorative />
+              </div>
+              <div className="space-y-1.5">
+                <h3
+                  id="complete-log-title"
+                  className="font-display font-bold text-xl text-ceci-primary leading-tight"
+                >
+                  {titulo}
+                </h3>
+                <p className="text-sm text-ceci-primary font-semibold">
+                  {salvos.length > 0
+                    ? `registro atualizado com ${salvos.length === 1 ? '1 campo' : `${salvos.length} campos`} ♡`
+                    : 'nada mudou por aqui — tudo certo ♡'}
+                </p>
+                <p className="text-xs text-ceci-secondary leading-relaxed">
+                  {salvos.length > 0
+                    ? 'obrigada por completar o registro — a supervisão agradece depois ♡'
+                    : 'quando quiser, é só abrir de novo pelo card.'}
+                </p>
+              </div>
+              <div className="pt-1">
+                <BotaoPrimario onClick={close}>concluir</BotaoPrimario>
+              </div>
+            </div>
+          )}
+        </motion.div>
       </div>
     </Modal>
   );

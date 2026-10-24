@@ -6,10 +6,7 @@ import type { MaterialItem, ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { useWizardForm } from '../../lib/useWizardForm';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
-import {
-  ReviewCard,
-  TextInput,
-} from './wizardFields';
+import { ReviewCard, TextInput } from './wizardFields';
 import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
 import { TagField } from '../ui/TagField';
 import { CourseSelect } from './CourseSelect';
@@ -25,10 +22,17 @@ interface MaterialValues {
 }
 
 export const MaterialWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
-  const { courses, materials, wizardCourseId, handleAddMaterial, handleUpdateMaterial, closeWizard, showToast } = useMobileApp();
-  const editingMaterial = editing?.kind === 'material'
-    ? materials.find((m) => m.id === editing.id)
-    : undefined;
+  const {
+    courses,
+    materials,
+    wizardCourseId,
+    handleAddMaterial,
+    handleUpdateMaterial,
+    closeWizard,
+    showToast,
+  } = useMobileApp();
+  const editingMaterial =
+    editing?.kind === 'material' ? materials.find((m) => m.id === editing.id) : undefined;
 
   const { values, patch, step, setStep } = useWizardForm<MaterialValues>({
     initial: {
@@ -59,7 +63,12 @@ export const MaterialWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edi
             placeholder="título do material — ex: manual diagnóstico e estatístico"
             autoFocus
           />
-          <ChoiceCardGrid label="tipo" options={MATERIAL_TYPES} value={type} onChange={(v) => patch({ type: v })} />
+          <ChoiceCardGrid
+            label="tipo"
+            options={MATERIAL_TYPES}
+            value={type}
+            onChange={(v) => patch({ type: v })}
+          />
           <TextInput
             value={author}
             onChange={(e) => patch({ author: e.target.value })}

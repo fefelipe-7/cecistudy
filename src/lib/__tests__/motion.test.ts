@@ -31,7 +31,9 @@ const variants = createScreenVariants(W, FULL_PROFILE);
 
 describe('canal de direção (o que a instância que SAI consegue ler)', () => {
   it('a instância saindo tem props congeladas: o intent chega pelo canal, não por props', () => {
-    setMotionIntent(deriveIntent([{ kind: 'tab', tab: 'faculdade' }], [{ kind: 'tab', tab: 'home' }]));
+    setMotionIntent(
+      deriveIntent([{ kind: 'tab', tab: 'faculdade' }], [{ kind: 'tab', tab: 'home' }]),
+    );
     // `exit` é chamado SEM argumento nenhum — é o canal que responde.
     const out = (variants.exit as () => { opacity: number })();
     expect(out.opacity).toBe(0);
@@ -67,7 +69,10 @@ describe('REGRESSÃO B2 — o offset do gesto sobrevive até o exit', () => {
     // A regra nova: só deriva quando não há intent de gesto pendente.
     setMotionIntent(gesturePopIntent(137));
     const derived = deriveIntent(
-      [{ kind: 'tab', tab: 'faculdade' }, { kind: 'course', courseId: 'c1' }],
+      [
+        { kind: 'tab', tab: 'faculdade' },
+        { kind: 'course', courseId: 'c1' },
+      ],
       [{ kind: 'tab', tab: 'faculdade' }],
     );
     if (!peekMotionIntent().fromGesture) setMotionIntent(derived);

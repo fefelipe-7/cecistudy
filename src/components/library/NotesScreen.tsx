@@ -55,8 +55,7 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
   const [newNoteCategory, setNewNoteCategory] = useState<LooseNote['category']>('reflexão');
 
   const filteredNotes = looseNotes.filter((note) => {
-    const matchesCategory =
-      noteCategoryFilter === 'todas' || note.category === noteCategoryFilter;
+    const matchesCategory = noteCategoryFilter === 'todas' || note.category === noteCategoryFilter;
     const matchesSearch =
       !noteSearchTerm ||
       note.title.toLowerCase().includes(noteSearchTerm.toLowerCase()) ||
@@ -66,9 +65,15 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
 
   const courseName = (id?: string) => courses.find((c) => c.id === id)?.name ?? '';
   const conceptNames = (ids: string[] = []) =>
-    concepts.filter((c) => ids.includes(c.id)).map((c) => c.name).slice(0, 3);
+    concepts
+      .filter((c) => ids.includes(c.id))
+      .map((c) => c.name)
+      .slice(0, 3);
   const authorNames = (ids: string[] = []) =>
-    authors.filter((a) => ids.includes(a.id)).map((a) => a.name).slice(0, 3);
+    authors
+      .filter((a) => ids.includes(a.id))
+      .map((a) => a.name)
+      .slice(0, 3);
 
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-5 pb-1 relative">
@@ -164,7 +169,10 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
                 variant="brand"
                 value={newNoteCategory}
                 onChange={(v) => setNewNoteCategory(v)}
-                options={(['reflexão', 'estudo', 'ideia', 'lembrete'] as const).map((cat) => ({ value: cat, label: cat }))}
+                options={(['reflexão', 'estudo', 'ideia', 'lembrete'] as const).map((cat) => ({
+                  value: cat,
+                  label: cat,
+                }))}
               />
             </div>
 
@@ -229,7 +237,9 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-2 border-b border-ceci-border-subtle pb-2">
                   <div className="flex items-center gap-1.5 min-w-0">
-                    <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider ${CATEGORY_BADGE[note.category]}`}>
+                    <span
+                      className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider ${CATEGORY_BADGE[note.category]}`}
+                    >
                       {note.category}
                     </span>
                     <h3 className="font-bold font-display text-xs text-ceci-primary truncate">

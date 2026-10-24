@@ -83,7 +83,17 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, onClose }) => {
     onClose();
     setBusy(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [busy, taskTitle, courseId, taskCategory, taskDueDate, taskPriority, handleAddTask, showToast, onClose]);
+  }, [
+    busy,
+    taskTitle,
+    courseId,
+    taskCategory,
+    taskDueDate,
+    taskPriority,
+    handleAddTask,
+    showToast,
+    onClose,
+  ]);
 
   const next = () => {
     if (!canNext) {
@@ -102,7 +112,13 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, onClose }) => {
   const current = steps[step];
 
   return (
-    <Modal open={open} onClose={onClose} position="bottom" showGrabber className="w-full sm:max-w-lg bg-canvas rounded-t-[28px] sm:rounded-2xl border border-ceci-border-default shadow-xl overflow-hidden text-ceci-primary">
+    <Modal
+      open={open}
+      onClose={onClose}
+      position="bottom"
+      showGrabber
+      className="w-full sm:max-w-lg bg-canvas rounded-t-[28px] sm:rounded-2xl border border-ceci-border-default shadow-xl overflow-hidden text-ceci-primary"
+    >
       <div className="flex flex-col gap-3 p-4 sm:p-6">
         {/* Cabeçalho compacto */}
         <div className="flex items-start gap-3">
@@ -129,7 +145,9 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, onClose }) => {
                 autoFocus
               />
               {!canNext && triedNext && (
-                <p className="text-[11px] text-status-danger-strong">preencha o título para continuar</p>
+                <p className="text-[11px] text-status-danger-strong">
+                  preencha o título para continuar
+                </p>
               )}
             </div>
           )}
@@ -177,7 +195,9 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, onClose }) => {
             disabled={step === 0}
             className="text-xs font-medium text-ceci-tertiary hover:text-ceci-primary disabled:opacity-40 cursor-pointer"
           >
-            {step === 0 ? 'fechar' : (
+            {step === 0 ? (
+              'fechar'
+            ) : (
               <>
                 <ChevronLeft className="w-3.5 h-3.5 mr-1" /> voltar
               </>

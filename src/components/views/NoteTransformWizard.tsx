@@ -38,16 +38,43 @@ export const NoteTransformWizard: React.FC = () => {
 
   const form = useWizardForm<TransformValues>({
     initial: {
-      title: '', courseId: '', content: '',
-      classNumber: 1, classDate: '',
-      taskCategory: 'leitura', priority: 'media', dueDate: '',
-      examDate: '', examWeight: '1,0', topics: [],
-      question: '', answer: '', conceptId: '',
-      sessionTopic: '', sessionDate: '', duration: 30,
-      activity: '', internshipType: 'estagio', internshipDate: '', hours: 1, reflections: '',
-      conceptName: '', definition: '', approachId: '', authorIds: [], courseIds: [], tags: [],
-      authorName: '', bio: '', keyConcepts: [], majorWorks: [],
-      materialTitle: '', materialAuthor: '', materialType: 'artigo', url: '', materialTags: [],
+      title: '',
+      courseId: '',
+      content: '',
+      classNumber: 1,
+      classDate: '',
+      taskCategory: 'leitura',
+      priority: 'media',
+      dueDate: '',
+      examDate: '',
+      examWeight: '1,0',
+      topics: [],
+      question: '',
+      answer: '',
+      conceptId: '',
+      sessionTopic: '',
+      sessionDate: '',
+      duration: 30,
+      activity: '',
+      internshipType: 'estagio',
+      internshipDate: '',
+      hours: 1,
+      reflections: '',
+      conceptName: '',
+      definition: '',
+      approachId: '',
+      authorIds: [],
+      courseIds: [],
+      tags: [],
+      authorName: '',
+      bio: '',
+      keyConcepts: [],
+      majorWorks: [],
+      materialTitle: '',
+      materialAuthor: '',
+      materialType: 'artigo',
+      url: '',
+      materialTags: [],
     },
   });
   const { values, patch, setValues } = form;
@@ -68,7 +95,7 @@ export const NoteTransformWizard: React.FC = () => {
 
   const courseName = useMemo(
     () => courses.find((x) => x.id === courseId)?.name ?? '',
-    [courses, courseId]
+    [courses, courseId],
   );
 
   if (!focusedNote) {
@@ -114,12 +141,18 @@ export const NoteTransformWizard: React.FC = () => {
                 }}
                 className="w-full flex items-center gap-3.5 p-4 rounded-xl bg-surface-default border-2 border-ceci-border-default hover:border-ceci-border-brand text-left transition active:scale-[0.98] cursor-pointer shadow-sm"
               >
-                <span className={`w-11 h-11 rounded-2xl border flex items-center justify-center shrink-0 ${opt.accent}`}>
+                <span
+                  className={`w-11 h-11 rounded-2xl border flex items-center justify-center shrink-0 ${opt.accent}`}
+                >
                   <Icon className="w-5 h-5" />
                 </span>
                 <span>
-                  <span className="block font-display font-bold text-sm text-ceci-primary">{opt.label}</span>
-                  <span className="block text-[11px] text-ceci-secondary mt-0.5 leading-snug">{opt.caption}</span>
+                  <span className="block font-display font-bold text-sm text-ceci-primary">
+                    {opt.label}
+                  </span>
+                  <span className="block text-[11px] text-ceci-secondary mt-0.5 leading-snug">
+                    {opt.caption}
+                  </span>
                 </span>
               </button>
             );
@@ -147,7 +180,9 @@ export const NoteTransformWizard: React.FC = () => {
                   }}
                   className="w-full flex flex-col items-start gap-2 p-3.5 rounded-xl bg-surface-default border border-ceci-border-default hover:border-ceci-border-brand text-left transition active:scale-[0.98] cursor-pointer shadow-2xs"
                 >
-                  <span className={`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 ${opt.accent}`}>
+                  <span
+                    className={`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 ${opt.accent}`}
+                  >
                     <Icon className="w-4 h-4" />
                   </span>
                   <span>
@@ -177,13 +212,19 @@ export const NoteTransformWizard: React.FC = () => {
         <ReviewCard rows={rows} />
         {/* §5.11: explicar o que acontece com a nota original */}
         <p className="text-[11px] text-ceci-tertiary leading-relaxed px-1">
-          ao transformar, a nota original sai das suas notas avulsas — o conteúdo vai junto para o novo registro ♡
+          ao transformar, a nota original sai das suas notas avulsas — o conteúdo vai junto para o
+          novo registro ♡
         </p>
       </div>
     ),
   });
 
-  const formStep = (id: string, headline: string, content: React.ReactNode, subtitle?: string): WizardStep => ({
+  const formStep = (
+    id: string,
+    headline: string,
+    content: React.ReactNode,
+    subtitle?: string,
+  ): WizardStep => ({
     id,
     title: 'detalhes',
     headline,
@@ -297,7 +338,11 @@ export const NoteTransformWizard: React.FC = () => {
       hideNext={target === null}
       onSave={handleSave}
       onClose={closeAllNoteScreens}
-      saveLabel={target ? `transformar em ${TARGETS.find((t) => t.type === target)?.label ?? ''} ♡` : 'guardar ♡'}
+      saveLabel={
+        target
+          ? `transformar em ${TARGETS.find((t) => t.type === target)?.label ?? ''} ♡`
+          : 'guardar ♡'
+      }
     />
   );
 };

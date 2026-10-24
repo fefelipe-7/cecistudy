@@ -308,7 +308,10 @@ export const thesisPace = (
 
   const since = dateKeyOrdinal(addDays(today, -28));
   const recent = logs
-    .filter((log) => dateKeyOrdinal(log.date) > since && dateKeyOrdinal(log.date) <= dateKeyOrdinal(today))
+    .filter(
+      (log) =>
+        dateKeyOrdinal(log.date) > since && dateKeyOrdinal(log.date) <= dateKeyOrdinal(today),
+    )
     .reduce((sum, log) => sum + log.words, 0);
 
   const needed = remaining / weeksLeft;
@@ -404,7 +407,9 @@ export const orderChaptersForRender = (chapters: ThesisChapter[]): ThesisChapter
   const out: ThesisChapter[] = [];
   for (const ch of topLevel) {
     out.push(ch);
-    const kids = chapters.filter((k) => k.parentId === ch.id).sort((a, b) => a.position - b.position);
+    const kids = chapters
+      .filter((k) => k.parentId === ch.id)
+      .sort((a, b) => a.position - b.position);
     out.push(...kids);
   }
   const known = new Set(out.map((ch) => ch.id));
@@ -442,7 +447,11 @@ export const commitFlatOrder = (
 };
 
 /** "Mover para cima/baixo" de um capítulo entre os irmãos (o caminho acessível do arrastar). */
-export const moveChapter = (chapters: ThesisChapter[], id: EntityId, delta: -1 | 1): ThesisChapter[] => {
+export const moveChapter = (
+  chapters: ThesisChapter[],
+  id: EntityId,
+  delta: -1 | 1,
+): ThesisChapter[] => {
   const ch = chapters.find((c) => c.id === id);
   if (!ch) return chapters;
   const siblings = chapters
@@ -598,9 +607,7 @@ export const planThesisReminders = (
       for (const mins of prefs.meetingMinutesBefore) {
         const { hour, minute } = parseHHMM(meeting.time);
         push(
-          new Date(
-            at(meeting.date, '00:00').getTime() + (hour * 60 + minute - mins) * 60_000,
-          ),
+          new Date(at(meeting.date, '00:00').getTime() + (hour * 60 + minute - mins) * 60_000),
           { kind: 'reuniao', referencia: orientador, dias: 0, hora: meeting.time },
           'orientacao',
           meeting.id,
@@ -627,7 +634,9 @@ export const planThesisReminders = (
   }
 
   out.sort((a, b) => a.at.getTime() - b.at.getTime());
-  return out.slice(0, THESIS_REMINDER_CEILING).map((r, i) => ({ ...r, id: THESIS_REMINDER_BASE + i }));
+  return out
+    .slice(0, THESIS_REMINDER_CEILING)
+    .map((r, i) => ({ ...r, id: THESIS_REMINDER_BASE + i }));
 };
 
 /**
@@ -636,7 +645,9 @@ export const planThesisReminders = (
  * desconhecida idem, `focusId` de item removido cai na aba sem erro (o
  * `NavScreen` já tolera).
  */
-export const routeFromNotificationExtra = (extra: unknown): { tab: ThesisReminderTarget; focusId?: string } | null => {
+export const routeFromNotificationExtra = (
+  extra: unknown,
+): { tab: ThesisReminderTarget; focusId?: string } | null => {
   if (typeof extra !== 'object' || extra === null) return null;
   const rec = extra as Record<string, unknown>;
   // novo formato genérico (SPEC-M-025 D8)
@@ -747,12 +758,7 @@ export const parseAuthorString = (raw: string): RefAuthor | null => {
  * nunca por adivinhação. */
 export const abntDataFromReading = (r: ReadingAbntSource): ThesisReferenceData => {
   const fromText = r.author ? parseAuthorString(r.author) : null;
-  const authors =
-    r.authors && r.authors.length > 0
-      ? r.authors
-      : fromText
-        ? [fromText]
-        : [];
+  const authors = r.authors && r.authors.length > 0 ? r.authors : fromText ? [fromText] : [];
   return {
     type: r.refType ?? READING_TYPE_TO_REF[r.type],
     authors,
@@ -780,7 +786,20 @@ export interface AbntSegment {
   bold?: boolean;
 }
 
-const MONTHS_SHORT = ['jan.', 'fev.', 'mar.', 'abr.', 'maio', 'jun.', 'jul.', 'ago.', 'set.', 'out.', 'nov.', 'dez.'];
+const MONTHS_SHORT = [
+  'jan.',
+  'fev.',
+  'mar.',
+  'abr.',
+  'maio',
+  'jun.',
+  'jul.',
+  'ago.',
+  'set.',
+  'out.',
+  'nov.',
+  'dez.',
+];
 
 const formatAccessedOn = (key: DateKey): string => {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(key);
@@ -811,7 +830,10 @@ const formatAuthors = (authors: RefAuthor[], listAll: boolean): string => {
  * - Sobrenome em caixa alta vem do campo `family` já separado — o formatador
  *   **não adivinha** preposição nem heurística de nome.
  */
-export const formatAbnt = (ref: ThesisReferenceData, opts: { listAllAuthors?: boolean } = {}): AbntSegment[] => {
+export const formatAbnt = (
+  ref: ThesisReferenceData,
+  opts: { listAllAuthors?: boolean } = {},
+): AbntSegment[] => {
   if (ref.rawCitation) return [{ text: ref.rawCitation }];
 
   const authors = formatAuthors(ref.authors, opts.listAllAuthors ?? false);

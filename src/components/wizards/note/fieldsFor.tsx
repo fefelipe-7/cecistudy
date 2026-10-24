@@ -144,16 +144,14 @@ export interface TransformSaveContext {
 export function hydrateTransform(
   focusedNote: LooseNote,
   courses: Course[],
-  classes: ClassNote[]
+  classes: ClassNote[],
 ): TransformValues {
   const course = focusedNote.courseId || courses[0]?.id || '';
   const t = focusedNote.title;
   const c = focusedNote.content;
   const fallback = t || noteFirstLine(c);
 
-  const nextNums = classes
-    .filter((cl) => cl.courseId === course)
-    .map((cl) => cl.number || 0);
+  const nextNums = classes.filter((cl) => cl.courseId === course).map((cl) => cl.number || 0);
 
   return {
     title: t,
@@ -252,7 +250,10 @@ export const FIELDS_FOR: Record<NoteTargetType, TargetFieldConfig> = {
       { label: 'categoria', value: v.taskCategory },
       { label: 'prioridade', value: v.priority },
       { label: 'disciplina', value: lookups.courseName },
-      { label: 'prazo', value: v.dueDate ? new Date(v.dueDate).toLocaleDateString('pt-BR') : 'sem prazo' },
+      {
+        label: 'prazo',
+        value: v.dueDate ? new Date(v.dueDate).toLocaleDateString('pt-BR') : 'sem prazo',
+      },
     ],
     valid: (v) => v.title.trim().length > 0,
     save: ({ v, actions }) => {
@@ -265,7 +266,9 @@ export const FIELDS_FOR: Record<NoteTargetType, TargetFieldConfig> = {
         completed: false,
         priority: v.priority,
       });
-      return { onOpen: () => setTimeout(() => actions.gotoTab(v.courseId ? 'faculdade' : 'home'), 50) };
+      return {
+        onOpen: () => setTimeout(() => actions.gotoTab(v.courseId ? 'faculdade' : 'home'), 50),
+      };
     },
   },
   exam: {
@@ -288,7 +291,10 @@ export const FIELDS_FOR: Record<NoteTargetType, TargetFieldConfig> = {
     review: ({ v, lookups }) => [
       { label: 'prova', value: v.title.trim() },
       { label: 'disciplina', value: lookups.courseName },
-      { label: 'data', value: v.examDate ? new Date(v.examDate).toLocaleDateString('pt-BR') : 'a confirmar' },
+      {
+        label: 'data',
+        value: v.examDate ? new Date(v.examDate).toLocaleDateString('pt-BR') : 'a confirmar',
+      },
       { label: 'peso', value: v.examWeight.trim() || '1,0' },
       { label: 'tópicos', value: v.topics.length ? v.topics.join(' · ') : 'sem tópicos' },
     ],
@@ -326,7 +332,10 @@ export const FIELDS_FOR: Record<NoteTargetType, TargetFieldConfig> = {
       { label: 'pergunta', value: v.question.trim() },
       { label: 'resposta', value: truncate(v.answer.trim(), 120) },
       { label: 'disciplina', value: lookups.courseName },
-      { label: 'conceito', value: lookups.concepts.find((x) => x.id === v.conceptId)?.name ?? 'sem conceito' },
+      {
+        label: 'conceito',
+        value: lookups.concepts.find((x) => x.id === v.conceptId)?.name ?? 'sem conceito',
+      },
     ],
     valid: (v) => v.question.trim().length > 0,
     save: ({ v, note, actions }) => {
@@ -336,7 +345,7 @@ export const FIELDS_FOR: Record<NoteTargetType, TargetFieldConfig> = {
           courseId: v.courseId || undefined,
           question: v.question.trim(),
           answer: v.answer.trim() || v.content,
-        })
+        }),
       );
       return {};
     },
@@ -359,7 +368,10 @@ export const FIELDS_FOR: Record<NoteTargetType, TargetFieldConfig> = {
     review: ({ v, lookups }) => [
       { label: 'tópico', value: v.sessionTopic.trim() },
       { label: 'disciplina', value: lookups.courseName },
-      { label: 'data', value: v.sessionDate ? new Date(v.sessionDate).toLocaleDateString('pt-BR') : 'hoje' },
+      {
+        label: 'data',
+        value: v.sessionDate ? new Date(v.sessionDate).toLocaleDateString('pt-BR') : 'hoje',
+      },
       { label: 'duração', value: `${v.duration || 0} min` },
     ],
     valid: (v) => v.sessionTopic.trim().length > 0,
@@ -396,7 +408,10 @@ export const FIELDS_FOR: Record<NoteTargetType, TargetFieldConfig> = {
     review: ({ v }) => [
       { label: 'atividade', value: v.activity.trim() },
       { label: 'tipo', value: v.internshipType.replace('_', ' ') },
-      { label: 'data', value: v.internshipDate ? new Date(v.internshipDate).toLocaleDateString('pt-BR') : 'hoje' },
+      {
+        label: 'data',
+        value: v.internshipDate ? new Date(v.internshipDate).toLocaleDateString('pt-BR') : 'hoje',
+      },
       { label: 'horas', value: `${v.hours || 0}h` },
       { label: 'reflexões', value: truncate(v.reflections.trim()) },
     ],
@@ -440,9 +455,24 @@ export const FIELDS_FOR: Record<NoteTargetType, TargetFieldConfig> = {
     review: ({ v, lookups }) => [
       { label: 'conceito', value: v.conceptName.trim() },
       { label: 'definição', value: truncate(v.definition.trim()) },
-      { label: 'abordagem', value: lookups.approaches.find((x) => x.id === v.approachId)?.shortName ?? 'sem abordagem' },
-      { label: 'autores', value: lookups.authors.filter((x) => v.authorIds.includes(x.id)).map((x) => x.name).join(' · ') },
-      { label: 'disciplinas', value: lookups.courses.filter((x) => v.courseIds.includes(x.id)).map((x) => x.name).join(' · ') },
+      {
+        label: 'abordagem',
+        value: lookups.approaches.find((x) => x.id === v.approachId)?.shortName ?? 'sem abordagem',
+      },
+      {
+        label: 'autores',
+        value: lookups.authors
+          .filter((x) => v.authorIds.includes(x.id))
+          .map((x) => x.name)
+          .join(' · '),
+      },
+      {
+        label: 'disciplinas',
+        value: lookups.courses
+          .filter((x) => v.courseIds.includes(x.id))
+          .map((x) => x.name)
+          .join(' · '),
+      },
       { label: 'tags', value: v.tags.join(' · ') },
     ],
     valid: (v) => v.conceptName.trim().length > 0,
@@ -481,7 +511,10 @@ export const FIELDS_FOR: Record<NoteTargetType, TargetFieldConfig> = {
     review: ({ v, lookups }) => [
       { label: 'autor', value: v.authorName.trim() },
       { label: 'bio', value: truncate(v.bio.trim()) },
-      { label: 'abordagem', value: lookups.approaches.find((x) => x.id === v.approachId)?.shortName ?? 'sem abordagem' },
+      {
+        label: 'abordagem',
+        value: lookups.approaches.find((x) => x.id === v.approachId)?.shortName ?? 'sem abordagem',
+      },
       { label: 'conceitos-chave', value: v.keyConcepts.join(' · ') },
       { label: 'obras', value: v.majorWorks.join(' · ') },
     ],

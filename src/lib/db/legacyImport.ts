@@ -22,17 +22,16 @@ export type LegacySourceReader = (key: UserCollectionKey) => Promise<string | nu
 
 /** A chave já foi importada antes? */
 export async function hasLegacyImport(driver: SqlDriver, key: string): Promise<boolean> {
-  const rows = await driver.query(
-    'SELECT source_key FROM legacy_import_map WHERE source_key = ?',
-    [key]
-  );
+  const rows = await driver.query('SELECT source_key FROM legacy_import_map WHERE source_key = ?', [
+    key,
+  ]);
   return rows.length > 0;
 }
 
 async function markImported(driver: SqlDriver, key: string): Promise<void> {
   await driver.run(
     'INSERT OR REPLACE INTO legacy_import_map (source_key, imported_at, entity_type) VALUES (?, ?, ?)',
-    [key, new Date().toISOString(), key]
+    [key, new Date().toISOString(), key],
   );
 }
 
@@ -43,7 +42,7 @@ async function markImported(driver: SqlDriver, key: string): Promise<void> {
 export async function importLegacyCollections(
   driver: SqlDriver,
   keys: readonly string[],
-  readSource: LegacySourceReader
+  readSource: LegacySourceReader,
 ): Promise<LegacyImportReport> {
   const report: LegacyImportReport = { imported: [], skipped: [], errors: [] };
 

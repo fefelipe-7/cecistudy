@@ -22,17 +22,13 @@ import type React from 'react';
 import { isNativePlatform } from './storage.ts';
 import { userStorage } from './storageLayers.ts';
 import { getUserDb } from './db/userDb.ts';
-import {
-  isUserCollectionKey,
-  loadCollection,
-  saveCollection,
-} from './db/normalize.ts';
+import { isUserCollectionKey, loadCollection, saveCollection } from './db/normalize.ts';
 import { enqueueWrite } from './db/writeQueue.ts';
 import { traceAsync } from './performance/perfMarks.ts';
 
 export function useSqliteState<T>(
   key: string,
-  initialValue: T
+  initialValue: T,
 ): [T, React.Dispatch<React.SetStateAction<T>>] {
   const [hydrated, setHydrated] = useState(!isNativePlatform);
   /** true quando um `set` aconteceu antes de a hidratação aplicar o disco. */

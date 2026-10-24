@@ -49,9 +49,7 @@ describe('JourneyHistory', () => {
   });
 
   it('não repete o CTA de virada (I3)', () => {
-    render(
-      <JourneyHistory journey={journey({ history: [row(5)] })} onOpenTermHistory={vi.fn()} />,
-    );
+    render(<JourneyHistory journey={journey({ history: [row(5)] })} onOpenTermHistory={vi.fn()} />);
     expect(screen.queryByRole('button', { name: /virar o semestre/ })).toBeNull();
   });
 
@@ -63,11 +61,7 @@ describe('JourneyHistory', () => {
   });
 
   it.each([
-    [
-      'com período ativo, sem histórico',
-      journey(),
-      /quando este semestre for encerrado/,
-    ],
+    ['com período ativo, sem histórico', journey(), /quando este semestre for encerrado/],
     [
       'sem período ativo',
       journey({ hasActiveTerm: false, activeTermId: undefined, history: [] }),

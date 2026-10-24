@@ -19,9 +19,7 @@ import { EdgeSwipeBack } from '../EdgeSwipeBack';
 const makeSwipeX = (): MotionValue<number> => new MotionValue(0);
 
 function renderGesture() {
-  return render(
-    <EdgeSwipeBack swipeX={makeSwipeX()} onBack={() => true} canGoBack={true} />,
-  );
+  return render(<EdgeSwipeBack swipeX={makeSwipeX()} onBack={() => true} canGoBack={true} />);
 }
 
 /**

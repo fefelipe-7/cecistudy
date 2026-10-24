@@ -9,7 +9,7 @@ export function noteFirstLine(content: string, max = 60): string {
 /** Constrói uma ClassNote a partir de uma nota avulsa (herda os vínculos). */
 export function buildClassNoteFromNote(
   note: LooseNote,
-  overrides: { title: string; courseId: string; number: number }
+  overrides: { title: string; courseId: string; number: number },
 ): ClassNote {
   return {
     id: 'cl-' + Date.now(),

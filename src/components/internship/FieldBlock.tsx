@@ -24,8 +24,8 @@ export const metaLine = (log: InternshipLog): string => {
       return log.supervisor?.trim()
         ? `com ${log.supervisor.trim()}`
         : log.type === 'intervisao'
-        ? 'intervisão com o grupo'
-        : '';
+          ? 'intervisão com o grupo'
+          : '';
     default:
       return '';
   }
@@ -50,11 +50,13 @@ export const FieldBlock: React.FC<{
         tone === 'muted'
           ? 'bg-surface-muted border border-ceci-border-default rounded-xl p-3'
           : tone === 'rose'
-          ? 'bg-surface-rose border border-ceci-border-brand rounded-xl p-3'
-          : 'bg-surface-default border border-ceci-border-default rounded-xl p-3'
+            ? 'bg-surface-rose border border-ceci-border-brand rounded-xl p-3'
+            : 'bg-surface-default border border-ceci-border-default rounded-xl p-3'
       }
     >
-      <p className="text-[12px] font-bold uppercase tracking-wider text-ceci-tertiary mb-1">{label}</p>
+      <p className="text-[12px] font-bold uppercase tracking-wider text-ceci-tertiary mb-1">
+        {label}
+      </p>
       <div className="text-[13px] text-ceci-secondary leading-relaxed break-words">{children}</div>
     </div>
   );
@@ -99,7 +101,9 @@ export const SelfAssessmentBlocks: React.FC<{
           <p className="text-[9px] font-bold uppercase tracking-wider text-ceci-tertiary mb-1 truncate">
             {label}
           </p>
-          <p className="text-[11px] text-ceci-secondary leading-snug break-words line-clamp-3">{text}</p>
+          <p className="text-[11px] text-ceci-secondary leading-snug break-words line-clamp-3">
+            {text}
+          </p>
         </div>
       ))}
     </div>

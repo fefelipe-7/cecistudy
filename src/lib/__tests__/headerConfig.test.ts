@@ -41,7 +41,10 @@ describe('buildHeaderConfig', () => {
   });
 
   it('revisar inclui a contagem de cartões vencidos', () => {
-    const cfg = buildHeaderConfig({ ...baseInput, currentScreen: { kind: 'study', screen: 'revisar' } });
+    const cfg = buildHeaderConfig({
+      ...baseInput,
+      currentScreen: { kind: 'study', screen: 'revisar' },
+    });
     expect(cfg?.subtitle).toBe('3 cartões esperando por você');
   });
 
@@ -61,9 +64,14 @@ describe('buildHeaderConfig', () => {
       ...baseInput,
       currentScreen: { kind: 'course', courseId: 'c1' },
       focusedCourse: {
-        id: 'c1', name: 'TCC', code: 'PSI-300', professor: 'Prof. Ana',
-        semester: '6º Semestre', schedule: [{ day: 1, start: '09:00', end: '12:00' }],
-        icon: 'Brain', color: '#D85F79',
+        id: 'c1',
+        name: 'TCC',
+        code: 'PSI-300',
+        professor: 'Prof. Ana',
+        semester: '6º Semestre',
+        schedule: [{ day: 1, start: '09:00', end: '12:00' }],
+        icon: 'Brain',
+        color: '#D85F79',
       } as HeaderConfigInput['focusedCourse'],
       bookmarkedCourseIds: ['c1'],
     });
@@ -76,12 +84,22 @@ describe('buildHeaderConfig', () => {
       ...baseInput,
       currentScreen: { kind: 'classNote', classNoteId: 'cl-1', courseId: 'c1' } as NavScreen,
       focusedClassNote: {
-        id: 'cl-1', courseId: 'c1', title: 'psicanálise em clips', number: 3,
-        date: '2026-09-21', summary: 'resumo breve',
+        id: 'cl-1',
+        courseId: 'c1',
+        title: 'psicanálise em clips',
+        number: 3,
+        date: '2026-09-21',
+        summary: 'resumo breve',
       } as ClassNote,
       focusedCourse: {
-        id: 'c1', name: 'teorias clínicas', code: 'PSI-200', professor: 'Prof. Ana',
-        semester: '6º Semestre', schedule: [], icon: 'Brain', color: '#D85F79',
+        id: 'c1',
+        name: 'teorias clínicas',
+        code: 'PSI-200',
+        professor: 'Prof. Ana',
+        semester: '6º Semestre',
+        schedule: [],
+        icon: 'Brain',
+        color: '#D85F79',
       } as HeaderConfigInput['focusedCourse'],
     });
     expect(cfg?.title).toBe('aula 3 • psicanálise em clips');

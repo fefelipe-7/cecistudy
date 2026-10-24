@@ -18,11 +18,7 @@
  */
 
 /** Arquivos que são a própria voz, ou a liga a ela — nunca infração neles. */
-export const ISENTOS_DE_VOZ = [
-  'src/lib/voice.ts',
-  'src/lib/useVoz.ts',
-  'src/lib/diasAte.ts',
-];
+export const ISENTOS_DE_VOZ = ['src/lib/voice.ts', 'src/lib/useVoz.ts', 'src/lib/diasAte.ts'];
 
 /** Categorias da camada 1 e o sinal que as denuncia (`SPEC-C-014` §5.2). */
 export const CATEGORIAS_DE_VOZ = [
@@ -103,9 +99,7 @@ export const E_PT_BR = /[à-úâêôãõç♡✨🔥☕🌷]/;
  * documentada.
  */
 export function semComentario(content) {
-  return content
-    .replace(/\/\*[\s\S]*?\*\//g, ' ')
-    .replace(/(^|[^:])\/\/.*$/gm, '$1');
+  return content.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:])\/\/.*$/gm, '$1');
 }
 
 /** As infrações de voz inline de um arquivo. Uma por linha, no máximo. */

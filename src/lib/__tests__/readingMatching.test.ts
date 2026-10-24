@@ -43,7 +43,9 @@ describe('findMyReadingMatches', () => {
   });
 
   it('casa por inclusão nos dois sentidos quando os títulos são grandes', () => {
-    expect(findMyReadingMatches('interpretação dos sonhos', readings).map((m) => m.id)).toContain('r-1');
+    expect(findMyReadingMatches('interpretação dos sonhos', readings).map((m) => m.id)).toContain(
+      'r-1',
+    );
   });
 
   it('inclusão vale a partir de 4 caracteres normalizados', () => {
@@ -68,7 +70,9 @@ describe('findCatalogMatches', () => {
   ];
 
   it('acha obra do catálogo pelo título normalizado', () => {
-    expect(findCatalogMatches('interpretacao dos sonhos', works).map((w) => w.id)).toEqual(['cat-1']);
+    expect(findCatalogMatches('interpretacao dos sonhos', works).map((w) => w.id)).toEqual([
+      'cat-1',
+    ]);
   });
 
   it('não acha nada quando não há semelhança', () => {

@@ -23,7 +23,7 @@ export const ClassNoteDetailWizard: React.FC = () => {
 
   const note = useMemo(
     () => classes.find((c) => c.id === wizardNoteId) ?? null,
-    [classes, wizardNoteId]
+    [classes, wizardNoteId],
   );
 
   const [step, setStep] = useState<number>(0);
@@ -117,7 +117,8 @@ export const ClassNoteDetailWizard: React.FC = () => {
       id: 'enriquecer',
       title: 'enriquecer',
       headline: 'quer conectar com o seu repertório?',
-      subtitle: 'tudo opcional: conceitos, abordagens, autores, materiais e a sua avaliação da aula ♡',
+      subtitle:
+        'tudo opcional: conceitos, abordagens, autores, materiais e a sua avaliação da aula ♡',
       content: (
         <div className="space-y-5">
           <PillGroupMulti
@@ -154,7 +155,9 @@ export const ClassNoteDetailWizard: React.FC = () => {
 
           <div className="bg-surface-default rounded-2xl border border-ceci-border-default px-4 py-4 shadow-2xs space-y-2">
             <p className="text-xs font-bold text-ceci-primary">sua avaliação da aula</p>
-            <p className="text-[11px] text-ceci-secondary">ajuda a classificar melhor as aulas no seu diário.</p>
+            <p className="text-[11px] text-ceci-secondary">
+              ajuda a classificar melhor as aulas no seu diário.
+            </p>
             <StarRating value={rating} onChange={setRating} showLabel />
           </div>
 
@@ -171,8 +174,7 @@ export const ClassNoteDetailWizard: React.FC = () => {
   ];
 
   const canNext = step === 0 ? title.trim().length > 0 : true;
-  const blockedReason =
-    step === 0 ? 'dê um título à aula para continuar' : undefined;
+  const blockedReason = step === 0 ? 'dê um título à aula para continuar' : undefined;
 
   const handleSave = () => {
     hapticSuccess();

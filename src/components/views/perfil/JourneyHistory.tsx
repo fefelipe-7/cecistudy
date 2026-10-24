@@ -27,7 +27,10 @@ const JourneyHistory: React.FC<JourneyHistoryProps> = ({ journey, onOpenTermHist
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <CalendarDays className="w-4 h-4 text-ceci-academic-strong" aria-hidden="true" />
-          <h2 id="perfil-historia-titulo" className="font-display font-bold text-xl text-ceci-primary">
+          <h2
+            id="perfil-historia-titulo"
+            className="font-display font-bold text-xl text-ceci-primary"
+          >
             memória da graduação
           </h2>
         </div>
@@ -55,13 +58,17 @@ const JourneyHistory: React.FC<JourneyHistoryProps> = ({ journey, onOpenTermHist
               className="rounded-2xl bg-surface-muted border border-ceci-border-subtle px-3.5 py-3 space-y-1"
             >
               <div className="flex items-center justify-between gap-2">
-                <span className="font-display text-sm font-bold text-ceci-primary">{term.label}</span>
+                <span className="font-display text-sm font-bold text-ceci-primary">
+                  {term.label}
+                </span>
                 <span className="text-[11px] text-ceci-tertiary">
                   {term.courses} {term.courses === 1 ? 'disciplina' : 'disciplinas'}
                 </span>
               </div>
               {term.highlights.length > 0 ? (
-                <p className="text-[11px] text-ceci-secondary leading-relaxed">{term.highlights[0]}</p>
+                <p className="text-[11px] text-ceci-secondary leading-relaxed">
+                  {term.highlights[0]}
+                </p>
               ) : null}
             </li>
           ))}

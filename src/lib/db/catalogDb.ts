@@ -49,9 +49,7 @@ async function setStoredHash(hash: string): Promise<void> {
 }
 
 /** Lê o `content_hash` de um banco aberto, ou `null` se não houver / erro. */
-async function readCatalogHash(
-  sqlite: CatalogCapacitorSQLite
-): Promise<string | null> {
+async function readCatalogHash(sqlite: CatalogCapacitorSQLite): Promise<string | null> {
   try {
     const res = await sqlite.query({
       database: CATALOG_DB_NAME,
@@ -70,7 +68,7 @@ async function readCatalogHash(
  * depender do import dinâmico de `@capacitor-community/sqlite`.
  */
 export async function bootstrapCatalogDbForTests(
-  sqlite: CatalogCapacitorSQLite
+  sqlite: CatalogCapacitorSQLite,
 ): Promise<SqlDriver | null> {
   // Primeiro uso: copia o `.db` embutido (assets) para o storage do app.
   try {
@@ -165,7 +163,7 @@ export async function getCatalogRelease(): Promise<CatalogReleaseInfo | null> {
   const db = await getCatalogDb();
   if (!db) return null;
   const rows = await db.query(
-    'SELECT version, content_hash, built_at FROM catalog_release WHERE id = 1'
+    'SELECT version, content_hash, built_at FROM catalog_release WHERE id = 1',
   );
   if (rows.length === 0) return null;
   return {
@@ -213,22 +211,26 @@ export async function getCatalogWorksByType(type: string): Promise<unknown[]> {
 export async function getCatalogConceptDomains(): Promise<Array<{ id: string; name: string }>> {
   const db = await getCatalogDb();
   if (!db) return [];
-  const rows = await db.query(
-    'SELECT id, name FROM concept_domain ORDER BY display_order'
-  );
+  const rows = await db.query('SELECT id, name FROM concept_domain ORDER BY display_order');
   return rows.map((r) => ({ id: String(r.id), name: String(r.name) }));
 }
 
 /** Índice leve dos conceitos (sem o corpo — vem do data_json no detalhe). */
 export async function getCatalogConceptIndex(): Promise<
-  Array<{ id: string; name: string; domainId: string; domainName: string | null; definition: string }>
+  Array<{
+    id: string;
+    name: string;
+    domainId: string;
+    domainName: string | null;
+    definition: string;
+  }>
 > {
   const db = await getCatalogDb();
   if (!db) return [];
   const rows = await db.query(
     `SELECT c.id, c.name, c.domain_id, d.name AS domain_name
      FROM concept c JOIN concept_domain d ON d.id = c.domain_id
-     ORDER BY d.display_order, c.display_order`
+     ORDER BY d.display_order, c.display_order`,
   );
   return rows.map((r) => ({
     id: String(r.id),
@@ -245,7 +247,7 @@ export async function getCatalogConceptsByDomain<T = unknown>(domainId: string):
   if (!db) return [];
   const rows = await db.query(
     'SELECT data_json FROM concept WHERE domain_id = ? ORDER BY display_order',
-    [domainId]
+    [domainId],
   );
   return parseJsonRows(rows) as T[];
 }
@@ -263,20 +265,16 @@ export async function getCatalogAuthors<T = unknown>(): Promise<T[]> {
   const db = await getCatalogDb();
   if (!db) return [];
   const rows = await db.query(
-    'SELECT data_json FROM catalog_author ORDER BY question_count DESC, name ASC'
+    'SELECT data_json FROM catalog_author ORDER BY question_count DESC, name ASC',
   );
   return parseJsonRows(rows) as T[];
 }
 
 /** Categorias de técnicas (10), em ordem de exibição. */
-export async function getCatalogTechniqueCategories<
-  T = unknown,
->(): Promise<T[]> {
+export async function getCatalogTechniqueCategories<T = unknown>(): Promise<T[]> {
   const db = await getCatalogDb();
   if (!db) return [];
-  const rows = await db.query(
-    'SELECT data_json FROM technique_category ORDER BY display_order'
-  );
+  const rows = await db.query('SELECT data_json FROM technique_category ORDER BY display_order');
   return parseJsonRows(rows) as T[];
 }
 
@@ -285,11 +283,12 @@ export async function getCatalogTechniques<T = unknown>(categoryId?: string): Pr
   const db = await getCatalogDb();
   if (!db) return [];
   const rows = categoryId
-    ? await db.query('SELECT data_json FROM technique WHERE category_id = ? ORDER BY display_order', [
-        categoryId,
-      ])
+    ? await db.query(
+        'SELECT data_json FROM technique WHERE category_id = ? ORDER BY display_order',
+        [categoryId],
+      )
     : await db.query(
-        'SELECT t.data_json FROM technique t JOIN technique_category c ON c.id = t.category_id ORDER BY c.display_order, t.display_order'
+        'SELECT t.data_json FROM technique t JOIN technique_category c ON c.id = t.category_id ORDER BY c.display_order, t.display_order',
       );
   return parseJsonRows(rows) as T[];
 }
@@ -300,7 +299,7 @@ export async function getCatalogComparisons<T = unknown>(): Promise<T[]> {
   if (!db) return [];
   const rows = await db.query(
     `SELECT data_json FROM comparison
-     ORDER BY CASE priority WHEN 'P1' THEN 0 ELSE 1 END, phase ASC, id ASC`
+     ORDER BY CASE priority WHEN 'P1' THEN 0 ELSE 1 END, phase ASC, id ASC`,
   );
   return parseJsonRows(rows) as T[];
 }

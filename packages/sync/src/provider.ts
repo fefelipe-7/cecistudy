@@ -48,12 +48,7 @@ export interface RemotePackage {
   sha: string;
 }
 
-export type SyncProviderErrorKind =
-  | 'REMOTE_CHANGED'
-  | 'NETWORK'
-  | 'AUTH'
-  | 'NOT_FOUND'
-  | 'UNKNOWN';
+export type SyncProviderErrorKind = 'REMOTE_CHANGED' | 'NETWORK' | 'AUTH' | 'NOT_FOUND' | 'UNKNOWN';
 
 /**
  * O tipo de falha do sync — **código de máquina**, não frase.
@@ -89,10 +84,7 @@ export interface SyncProvider {
   /** Pacote remoto + sha do blob, ou null se não houver. */
   downloadPackage(): Promise<RemotePackage | null>;
   /** Sobe o pacote; exige o sha base para CAS. Devolve nova revisão + sha. */
-  uploadPackage(
-    pkg: SyncPackage,
-    baseSha?: string,
-  ): Promise<{ revision: number; sha: string }>;
+  uploadPackage(pkg: SyncPackage, baseSha?: string): Promise<{ revision: number; sha: string }>;
 }
 
 /**

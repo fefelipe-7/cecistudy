@@ -9,10 +9,7 @@ import {
   CollectionBook,
   ContextCollection,
 } from '../../../data/libraryData';
-import {
-  Article,
-  MixedCollection,
-} from '../../../data/books';
+import { Article, MixedCollection } from '../../../data/books';
 import type { LibraryDataset } from '../../../data/books/curate';
 
 export interface LibraryFilterDeps {
@@ -29,7 +26,8 @@ export type BookReadingStatus = 'lendo' | 'concluido' | 'para_ler';
 export type LibraryFilterResult = ReturnType<typeof useLibraryFilters>;
 
 export function useLibraryFilters({ library, savedBookIds, readingProgress }: LibraryFilterDeps) {
-  const { psychotherapyCollections, complementaryCollections, articleGroups, mixedCollections } = library;
+  const { psychotherapyCollections, complementaryCollections, articleGroups, mixedCollections } =
+    library;
 
   // Filter States
   const [activeCategory, setActiveCategory] = useState<string>('todos');
@@ -47,8 +45,7 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
     selectedTag !== null ||
     searchTerm.trim() !== '';
 
-  const toggleSection = (id: string) =>
-    setOpenSections((prev) => ({ ...prev, [id]: !prev[id] }));
+  const toggleSection = (id: string) => setOpenSections((prev) => ({ ...prev, [id]: !prev[id] }));
   const isOpen = (id: string) => hasActiveFilters || openSections[id] !== false;
 
   const resetAllFilters = () => {
@@ -85,14 +82,11 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
   };
 
   const matchesStatus = (col: ContextCollection) =>
-    activeStatus === 'todos' ||
-    col.books.some((b) => getBookStatus(b) === activeStatus);
+    activeStatus === 'todos' || col.books.some((b) => getBookStatus(b) === activeStatus);
 
   const matchesTag = (col: ContextCollection) =>
     !selectedTag ||
-    col.books.some((b) =>
-      b.tags.some((t) => t.toLowerCase().includes(selectedTag.toLowerCase()))
-    );
+    col.books.some((b) => b.tags.some((t) => t.toLowerCase().includes(selectedTag.toLowerCase())));
 
   const matchesSearch = (col: ContextCollection) => {
     if (!searchTerm) return true;
@@ -104,7 +98,7 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
         (b) =>
           b.title.toLowerCase().includes(searchLower) ||
           b.author.toLowerCase().includes(searchLower) ||
-          b.tags.some((t) => t.toLowerCase().includes(searchLower))
+          b.tags.some((t) => t.toLowerCase().includes(searchLower)),
       )
     );
   };
@@ -116,13 +110,19 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
     () =>
       initialContextCollections.filter(
         (col) =>
-          matchesCategory(col, ['autores', 'conceitos', 'abordagens', 'multidisciplinar', 'testes']) &&
+          matchesCategory(col, [
+            'autores',
+            'conceitos',
+            'abordagens',
+            'multidisciplinar',
+            'testes',
+          ]) &&
           matchesStatus(col) &&
           matchesTag(col) &&
-          matchesSearch(col)
+          matchesSearch(col),
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds, readingProgress]
+    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds, readingProgress],
   );
 
   const filteredCatalogCollections = useMemo(
@@ -132,10 +132,10 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
           matchesCategory(col, ['psicoterapias']) &&
           matchesStatus(col) &&
           matchesTag(col) &&
-          matchesSearch(col)
+          matchesSearch(col),
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds, readingProgress]
+    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds, readingProgress],
   );
 
   const filteredComplementaryCollections = useMemo(
@@ -145,10 +145,10 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
           matchesCategory(col, ['multidisciplinar', 'complementar']) &&
           matchesStatus(col) &&
           matchesTag(col) &&
-          matchesSearch(col)
+          matchesSearch(col),
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds, readingProgress]
+    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds, readingProgress],
   );
 
   const filteredTrendingBooks = useMemo(
@@ -158,7 +158,8 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
         if (activeStatus !== 'todos' && bookStatus !== activeStatus) return false;
         if (activeCategory === 'salvos' && !savedBookIds.has(b.id)) return false;
         if (activeCategory === 'em_leitura' && bookStatus !== 'lendo') return false;
-        if (selectedTag && !b.tags.some((t) => t.toLowerCase().includes(selectedTag.toLowerCase()))) return false;
+        if (selectedTag && !b.tags.some((t) => t.toLowerCase().includes(selectedTag.toLowerCase())))
+          return false;
 
         if (!searchTerm) return true;
         const searchLower = searchTerm.toLowerCase();
@@ -168,7 +169,7 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
           b.tags.some((t) => t.toLowerCase().includes(searchLower))
         );
       }),
-    [activeStatus, activeCategory, savedBookIds, selectedTag, searchTerm, readingProgress]
+    [activeStatus, activeCategory, savedBookIds, selectedTag, searchTerm, readingProgress],
   );
 
   const articleMatches = (a: Article) => {
@@ -206,11 +207,11 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
         .map((g) => ({ ...g, articles: g.articles.filter(articleMatches) }))
         .filter((g) => g.articles.length > 0),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds]
+    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds],
   );
   const totalFilteredArticles = useMemo(
     () => filteredArticleGroups.reduce((acc, g) => acc + g.articles.length, 0),
-    [filteredArticleGroups]
+    [filteredArticleGroups],
   );
 
   const mixedMatches = (col: MixedCollection) => {
@@ -220,16 +221,14 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
       activeCategory === 'complementar' ||
       activeCategory === 'multidisciplinar' ||
       activeCategory === 'mistas' ||
-      (activeCategory === 'salvos' &&
-        col.books.some((b) => savedBookIds.has(b.id))) ||
+      (activeCategory === 'salvos' && col.books.some((b) => savedBookIds.has(b.id))) ||
       (activeCategory === 'em_leitura' && col.books.some((b) => isBookReading(b)));
 
     const articleCategoryOk =
       activeCategory === 'todos' ||
       activeCategory === 'artigos' ||
       activeCategory === 'mistas' ||
-      (activeCategory === 'salvos' &&
-        col.articles.some((a) => savedBookIds.has(a.id)));
+      (activeCategory === 'salvos' && col.articles.some((a) => savedBookIds.has(a.id)));
 
     if (!bookCategoryOk && !articleCategoryOk) return false;
 
@@ -243,27 +242,23 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
         (b) =>
           b.title.toLowerCase().includes(searchLower) ||
           b.author.toLowerCase().includes(searchLower) ||
-          b.tags.some((t) => t.toLowerCase().includes(searchLower))
+          b.tags.some((t) => t.toLowerCase().includes(searchLower)),
       );
-      const articleMatch = col.articles.some(
-        (a) =>
-          `${a.titulo} ${a.autores} ${a.periodico} ${a.classificacao}`
-            .toLowerCase()
-            .includes(searchLower)
+      const articleMatch = col.articles.some((a) =>
+        `${a.titulo} ${a.autores} ${a.periodico} ${a.classificacao}`
+          .toLowerCase()
+          .includes(searchLower),
       );
       if (!bookMatch && !articleMatch) return false;
     }
 
     if (selectedTag) {
       const tagLower = selectedTag.toLowerCase();
-      const bookTag = col.books.some((b) =>
-        b.tags.some((t) => t.toLowerCase().includes(tagLower))
-      );
-      const articleTag = col.articles.some(
-        (a) =>
-          `${a.titulo} ${a.autores} ${a.periodico} ${a.classificacao}`
-            .toLowerCase()
-            .includes(tagLower)
+      const bookTag = col.books.some((b) => b.tags.some((t) => t.toLowerCase().includes(tagLower)));
+      const articleTag = col.articles.some((a) =>
+        `${a.titulo} ${a.autores} ${a.periodico} ${a.classificacao}`
+          .toLowerCase()
+          .includes(tagLower),
       );
       if (!bookTag && !articleTag) return false;
     }
@@ -274,7 +269,7 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
   const filteredMixedCollections = useMemo(
     () => mixedCollections.filter(mixedMatches),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds, readingProgress]
+    [activeCategory, activeStatus, selectedTag, searchTerm, savedBookIds, readingProgress],
   );
 
   // Category specific slices for inline sections
@@ -305,7 +300,7 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
 
   const savedBooks = useMemo(
     () => [...allBooksById.values()].filter((b) => savedBookIds.has(b.id)),
-    [allBooksById, savedBookIds]
+    [allBooksById, savedBookIds],
   );
   const readingBooks = useMemo(
     () =>
@@ -313,7 +308,7 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
         const p = readingProgress[b.id];
         return p !== undefined && p > 0;
       }),
-    [allBooksById, readingProgress]
+    [allBooksById, readingProgress],
   );
 
   // Tags derivadas do catálogo (nenhuma lista fixa no código da view)
@@ -325,9 +320,9 @@ export function useLibraryFilters({ library, savedBookIds, readingProgress }: Li
           ...initialTrendingBooks.flatMap((b) => b.tags),
           ...psychotherapyCollections.flatMap((c) => c.books.flatMap((b) => b.tags)),
           ...complementaryCollections.flatMap((c) => c.books.flatMap((b) => b.tags)),
-        ])
+        ]),
       ).sort((a, b) => a.localeCompare(b)),
-    []
+    [],
   );
 
   return {

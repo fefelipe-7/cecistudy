@@ -246,11 +246,7 @@ export function closeTerm(
 }
 
 /** `planejado` → `ativo`. Idempotente. Não move um período já encerrado. */
-export function openTerm(
-  terms: AcademicTerm[],
-  termId: EntityId,
-  now: string,
-): AcademicTerm[] {
+export function openTerm(terms: AcademicTerm[], termId: EntityId, now: string): AcademicTerm[] {
   return mapTerm(terms, termId, (term) => {
     if (term.status === 'ativo') return null;
     if (!canTransition(term.status, 'ativo')) return null;
@@ -275,11 +271,7 @@ export function openTerm(
  * elas são a marca de "encerrado", e `toEqual`/serialização do backup não devem
  * carregar lixo.
  */
-export function reopenTerm(
-  terms: AcademicTerm[],
-  termId: EntityId,
-  now: string,
-): AcademicTerm[] {
+export function reopenTerm(terms: AcademicTerm[], termId: EntityId, now: string): AcademicTerm[] {
   return mapTerm(terms, termId, (term) => {
     if (term.status !== 'encerrado') return null;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars -- a remoção é o ponto
@@ -340,7 +332,8 @@ export function retitleTerm(
  * `encerrado` no merge, os dois bancos divergiriam para sempre.
  */
 function newerTerm(a: AcademicTerm, b: AcademicTerm): boolean {
-  if (a.statusTransitionAt !== b.statusTransitionAt) return a.statusTransitionAt > b.statusTransitionAt;
+  if (a.statusTransitionAt !== b.statusTransitionAt)
+    return a.statusTransitionAt > b.statusTransitionAt;
   return a.id > b.id;
 }
 

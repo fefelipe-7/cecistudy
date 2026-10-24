@@ -28,7 +28,9 @@ describe('MIGRATIONS[20] — vínculo com fonte única', () => {
         log({ id: 'sup-1', type: 'supervisao' }),
       ],
     });
-    expect(next.internshipLogs.find((l: any) => l.id === 'sup-1').discussedLogIds).toEqual(['at-1']);
+    expect(next.internshipLogs.find((l: any) => l.id === 'sup-1').discussedLogIds).toEqual([
+      'at-1',
+    ]);
   });
 
   it('converte também quando a supervisão é INTERVISÃO', () => {
@@ -38,7 +40,9 @@ describe('MIGRATIONS[20] — vínculo com fonte única', () => {
         log({ id: 'int-1', type: 'intervisao' }),
       ],
     });
-    expect(next.internshipLogs.find((l: any) => l.id === 'int-1').discussedLogIds).toEqual(['at-1']);
+    expect(next.internshipLogs.find((l: any) => l.id === 'int-1').discussedLogIds).toEqual([
+      'at-1',
+    ]);
   });
 
   it('descarta vínculo órfão e apaga supervisionLogId em TODO caso', () => {
@@ -51,7 +55,9 @@ describe('MIGRATIONS[20] — vínculo com fonte única', () => {
     });
     for (const l of next.internshipLogs) expect('supervisionLogId' in l).toBe(false);
     // O órfão não criou vínculo em lugar nenhum.
-    expect(next.internshipLogs.find((l: any) => l.id === 'sup-1').discussedLogIds).toEqual(['at-2']);
+    expect(next.internshipLogs.find((l: any) => l.id === 'sup-1').discussedLogIds).toEqual([
+      'at-2',
+    ]);
   });
 
   it('NÃO converte ponteiro cujo alvo não é supervisão/intervisão', () => {
@@ -70,7 +76,17 @@ describe('MIGRATIONS[20] — vínculo com fonte única', () => {
         log({ id: 'at-1', supervisionLogId: 'sup-1' }),
         log({ id: 'sup-1', type: 'supervisao' }),
       ],
-      supervision: [{ id: 'nb-1', date: '2026-05-04', questions: [], conceptIds: [], referenceIds: [], nextSteps: [], selfAssessment: {} }],
+      supervision: [
+        {
+          id: 'nb-1',
+          date: '2026-05-04',
+          questions: [],
+          conceptIds: [],
+          referenceIds: [],
+          nextSteps: [],
+          selfAssessment: {},
+        },
+      ],
     };
     const uma = run20(base);
     const duas = run20(JSON.parse(JSON.stringify(uma)));
@@ -146,17 +162,23 @@ describe('MIGRATIONS[20] — normalização', () => {
         log({ id: 'sup-1', type: 'supervisao', discussedLogIds: ['at-1', 'at-1', 'fantasma'] }),
       ],
     });
-    expect(next.internshipLogs.find((l: any) => l.id === 'sup-1').discussedLogIds).toEqual(['at-1']);
+    expect(next.internshipLogs.find((l: any) => l.id === 'sup-1').discussedLogIds).toEqual([
+      'at-1',
+    ]);
   });
 
   it('discussedLogIds vazio remove o campo em vez de deixar array vazio', () => {
-    const next = run20({ internshipLogs: [log({ id: 'sup-1', type: 'supervisao', discussedLogIds: ['fantasma'] })] });
+    const next = run20({
+      internshipLogs: [log({ id: 'sup-1', type: 'supervisao', discussedLogIds: ['fantasma'] })],
+    });
     expect(next.internshipLogs[0].discussedLogIds).toBeUndefined();
   });
 
   it('selfAssessment vazio é removido (I8)', () => {
     const next = run20({
-      internshipLogs: [log({ id: 'sup-1', type: 'supervisao', selfAssessment: { confidence: '  ' } })],
+      internshipLogs: [
+        log({ id: 'sup-1', type: 'supervisao', selfAssessment: { confidence: '  ' } }),
+      ],
     });
     expect(next.internshipLogs[0].selfAssessment).toBeUndefined();
   });

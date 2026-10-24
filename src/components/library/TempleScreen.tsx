@@ -30,7 +30,8 @@ const TEMPLE_CARDS: TempleCard[] = [
     title: 'famílias',
     subtitle: 'grupos de teorias e correntes que organizam o pensamento da psicologia',
     Icon: Network,
-    bubble: 'bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong group-hover:bg-ceci-brand-strong group-hover:text-ceci-on-brand',
+    bubble:
+      'bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong group-hover:bg-ceci-brand-strong group-hover:text-ceci-on-brand',
     titleHover: 'group-hover:text-ceci-brand-strong',
     chevron: 'text-ceci-brand-strong',
     action: 'familias',
@@ -40,7 +41,8 @@ const TEMPLE_CARDS: TempleCard[] = [
     title: 'conceitos',
     subtitle: 'ideias-chave e definições que aparecem nas aulas e nas provas',
     Icon: Lightbulb,
-    bubble: 'bg-surface-blue border border-ceci-border-academic text-ceci-academic-strong group-hover:bg-ceci-academic-strong group-hover:text-ceci-on-academic',
+    bubble:
+      'bg-surface-blue border border-ceci-border-academic text-ceci-academic-strong group-hover:bg-ceci-academic-strong group-hover:text-ceci-on-academic',
     titleHover: 'group-hover:text-ceci-academic-strong',
     chevron: 'text-ceci-academic-strong',
     action: 'conceitos',
@@ -50,7 +52,8 @@ const TEMPLE_CARDS: TempleCard[] = [
     title: 'autores',
     subtitle: 'pensadores e grandes obras de cada abordagem',
     Icon: User,
-    bubble: 'bg-surface-muted border border-ceci-border-default text-ceci-tertiary group-hover:bg-beige-700 group-hover:text-beige-50',
+    bubble:
+      'bg-surface-muted border border-ceci-border-default text-ceci-tertiary group-hover:bg-beige-700 group-hover:text-beige-50',
     titleHover: 'group-hover:text-ceci-tertiary',
     chevron: 'text-ceci-tertiary',
     action: 'autores',
@@ -60,7 +63,8 @@ const TEMPLE_CARDS: TempleCard[] = [
     title: 'técnicas',
     subtitle: 'instrumentos e recursos clínicos usados na prática',
     Icon: Wrench,
-    bubble: 'bg-status-success-surface border border-ceci-border-academic text-status-success-strong group-hover:bg-status-success-strong group-hover:text-status-success-on',
+    bubble:
+      'bg-status-success-surface border border-ceci-border-academic text-status-success-strong group-hover:bg-status-success-strong group-hover:text-status-success-on',
     titleHover: 'group-hover:text-status-success-strong',
     chevron: 'text-status-success-strong',
     action: 'tecnicas',
@@ -70,7 +74,8 @@ const TEMPLE_CARDS: TempleCard[] = [
     title: 'comparações',
     subtitle: 'lado a lado das abordagens para entender diferenças e pontes',
     Icon: GitCompare,
-    bubble: 'bg-status-warning-surface border border-status-warning-border text-status-warning-strong group-hover:bg-status-warning-strong group-hover:text-status-warning-on',
+    bubble:
+      'bg-status-warning-surface border border-status-warning-border text-status-warning-strong group-hover:bg-status-warning-strong group-hover:text-status-warning-on',
     titleHover: 'group-hover:text-status-warning-strong',
     chevron: 'text-status-warning-strong',
     action: 'comparacoes',
@@ -104,9 +109,7 @@ export const TempleScreen: React.FC = () => {
             <h1 className="text-lg font-bold font-display text-ceci-primary leading-tight">
               templo de conhecimento
             </h1>
-            <p className="text-xs text-ceci-secondary">
-              o mapa da sua jornada pela psicologia
-            </p>
+            <p className="text-xs text-ceci-secondary">o mapa da sua jornada pela psicologia</p>
           </div>
         </div>
       </div>
@@ -126,15 +129,17 @@ export const TempleScreen: React.FC = () => {
                 <card.Icon className="w-5 h-5" />
               </div>
               <div className="min-w-0">
-                <h2 className={`text-sm font-bold text-ceci-primary font-display transition-colors ${card.titleHover}`}>
+                <h2
+                  className={`text-sm font-bold text-ceci-primary font-display transition-colors ${card.titleHover}`}
+                >
                   {card.title}
                 </h2>
-                <p className="text-xs text-ceci-secondary mt-0.5">
-                  {card.subtitle}
-                </p>
+                <p className="text-xs text-ceci-secondary mt-0.5">{card.subtitle}</p>
               </div>
             </div>
-            <ChevronRight className={`w-5 h-5 ${card.chevron} group-hover:translate-x-1 transition-transform shrink-0`} />
+            <ChevronRight
+              className={`w-5 h-5 ${card.chevron} group-hover:translate-x-1 transition-transform shrink-0`}
+            />
           </button>
         ))}
       </div>

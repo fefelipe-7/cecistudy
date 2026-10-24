@@ -49,9 +49,11 @@ const WeekRhythmCard: React.FC<WeekRhythmCardProps> = ({
             >
               {cell.active ? '✓' : cell.label.slice(0, 1).toUpperCase()}
             </span>
-            <span className={`text-[10px] font-semibold ${
-              cell.status === 'today' ? 'text-ceci-brand-strong' : 'text-ceci-muted'
-            }`}>
+            <span
+              className={`text-[10px] font-semibold ${
+                cell.status === 'today' ? 'text-ceci-brand-strong' : 'text-ceci-muted'
+              }`}
+            >
               {cell.label.slice(0, 3)}
             </span>
           </div>
@@ -59,10 +61,11 @@ const WeekRhythmCard: React.FC<WeekRhythmCardProps> = ({
       </div>
 
       <p className="text-xs text-ceci-secondary flex items-center gap-1.5 border-t border-ceci-border-subtle pt-3.5 -mb-0.5">
-        <Flame className={`w-4 h-4 shrink-0 ${streakActive ? 'fill-ceci-brand text-ceci-brand-strong' : 'text-ceci-muted'}`} />
+        <Flame
+          className={`w-4 h-4 shrink-0 ${streakActive ? 'fill-ceci-brand text-ceci-brand-strong' : 'text-ceci-muted'}`}
+        />
         <span>
-          sequência de{' '}
-          <AnimatedNumber value={streakCurrent} />{' '}
+          sequência de <AnimatedNumber value={streakCurrent} />{' '}
           {streakCurrent === 1 ? 'dia' : 'dias'}
           {streakActive ? ' — bora manter! 🔥' : ' — hoje é um bom dia para recomeçar ♡'}
         </span>

@@ -1,5 +1,14 @@
 import React, { useMemo } from 'react';
-import { Home, GraduationCap, Brain, Library, FileText, BookOpen, Check, HeartHandshake } from 'lucide-react';
+import {
+  Home,
+  GraduationCap,
+  Brain,
+  Library,
+  FileText,
+  BookOpen,
+  Check,
+  HeartHandshake,
+} from 'lucide-react';
 import { NavTab, WizardFlow } from '../types';
 import { BottomNavBar, NavItem } from '@/components/ui/bottom-nav-bar';
 import FloatingActionMenu from '@/components/ui/floating-action-menu';
@@ -79,7 +88,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
         onClick: () => onOpenCompose?.(),
       },
     ],
-    [onOpenWizard, onOpenTaskExamWizard, onOpenCompose]
+    [onOpenWizard, onOpenTaskExamWizard, onOpenCompose],
   );
 
   return (
@@ -106,4 +115,3 @@ export const BottomNav: React.FC<BottomNavProps> = ({
     </div>
   );
 };
-

@@ -103,26 +103,30 @@ export const Picker: React.FC<PickerProps> = ({
             aria-expanded={open}
             className={cn(
               'w-full bg-surface-input border border-transparent rounded-2xl px-4 py-4 text-sm flex items-center justify-between gap-2 focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 focus:border-ceci-brand cursor-pointer transition-colors',
-              buttonClassName
+              buttonClassName,
             )}
           >
             <span className="truncate text-left min-w-0 flex flex-col">
-              <span className={cn('leading-tight', value ? 'text-ceci-primary' : 'text-ceci-faded')}>
+              <span
+                className={cn('leading-tight', value ? 'text-ceci-primary' : 'text-ceci-faded')}
+              >
                 {selected ? selected.label : placeholder}
               </span>
               {selected?.hint && (
-                <span className="text-[10px] text-ceci-tertiary leading-tight">{selected.hint}</span>
+                <span className="text-[10px] text-ceci-tertiary leading-tight">
+                  {selected.hint}
+                </span>
               )}
             </span>
-            <ChevronDown className={cn('w-4 h-4 text-ceci-tertiary shrink-0 transition-transform', open && 'rotate-180')} />
+            <ChevronDown
+              className={cn(
+                'w-4 h-4 text-ceci-tertiary shrink-0 transition-transform',
+                open && 'rotate-180',
+              )}
+            />
           </button>
 
-          <Modal
-            open={open}
-            onClose={closeSheet}
-            position="bottom"
-            className="w-full max-w-md"
-          >
+          <Modal open={open} onClose={closeSheet} position="bottom" className="w-full max-w-md">
             <div className="bg-surface-default rounded-t-[28px] sm:rounded-2xl border border-ceci-border-default shadow-xl overflow-hidden text-ceci-primary">
               <div className="px-5 pt-4 pb-2 border-b border-ceci-border-subtle">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-ceci-tertiary">
@@ -181,7 +185,7 @@ export const Picker: React.FC<PickerProps> = ({
                         'w-full flex items-center justify-between gap-2 px-5 py-3.5 text-sm text-left cursor-pointer transition-colors',
                         isSelected
                           ? 'bg-surface-rose text-ceci-brand-strong font-semibold'
-                          : 'text-ceci-primary hover:bg-surface-muted'
+                          : 'text-ceci-primary hover:bg-surface-muted',
                       )}
                     >
                       <span className="min-w-0 flex flex-col">
@@ -222,7 +226,7 @@ export const Picker: React.FC<PickerProps> = ({
                       }}
                       className={cn(
                         'min-h-[44px] px-4 rounded-2xl bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong text-xs font-bold inline-flex items-center gap-1.5 active:scale-[0.98] transition-transform cursor-pointer',
-                        !(clearable && value) && 'flex-1 justify-center'
+                        !(clearable && value) && 'flex-1 justify-center',
                       )}
                     >
                       <Plus className="w-3.5 h-3.5" />

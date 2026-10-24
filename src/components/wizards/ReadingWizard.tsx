@@ -13,12 +13,7 @@ import {
 } from '../../lib/readingMatching';
 import { loadNativeLibraryDataset } from '../../lib/catalogLibrary';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
-import {
-  FieldHint,
-  FieldLabel,
-  ReviewCard,
-  TextInput,
-} from './wizardFields';
+import { FieldHint, FieldLabel, ReviewCard, TextInput } from './wizardFields';
 import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
 import { AuthorSuggestInput } from '../ui/AuthorSuggestInput';
 import { CourseSelect } from './CourseSelect';
@@ -48,9 +43,8 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
     closeWizard,
     showToast,
   } = useMobileApp();
-  const editingReading = editing?.kind === 'reading'
-    ? readings.find((r) => r.id === editing.id)
-    : undefined;
+  const editingReading =
+    editing?.kind === 'reading' ? readings.find((r) => r.id === editing.id) : undefined;
 
   const [step, setStep] = useState(0);
   const [title, setTitle] = useState(editingReading?.title ?? '');
@@ -58,10 +52,10 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
   const [type, setType] = useState<ReadingType>(editingReading?.type ?? 'livro');
   // §5.5: cadastro ≠ progresso — total começa vazio e páginas lidas em zero
   const [totalPages, setTotalPages] = useState(
-    editingReading?.totalPages ? String(editingReading.totalPages) : ''
+    editingReading?.totalPages ? String(editingReading.totalPages) : '',
   );
   const [courseId, setCourseId] = useState(
-    editingReading?.courseId ?? (wizardCourseId || courses[0]?.id || '')
+    editingReading?.courseId ?? (wizardCourseId || courses[0]?.id || ''),
   );
   const [status, setStatus] = useState<ReadingStatus>(editingReading?.status ?? 'nao_iniciado');
 
@@ -70,9 +64,7 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
   const [catalogWorks, setCatalogWorks] = useState<CatalogWorkRef[]>([]);
   useEffect(() => {
     let cancelled = false;
-    const toRefs = (
-      books: { id: string; nome: string; autor: string }[]
-    ): CatalogWorkRef[] =>
+    const toRefs = (books: { id: string; nome: string; autor: string }[]): CatalogWorkRef[] =>
       books.map((b) => ({ id: b.id, title: b.nome, author: b.autor }));
     void loadNativeLibraryDataset()
       .then((dataset) => {
@@ -86,7 +78,10 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
         }
         return import('../../data/books').then((facade) => {
           if (!cancelled) {
-            setCatalogWorks([...toRefs(facade.catalogBooks), ...toRefs(facade.interdisciplinaryBooks)]);
+            setCatalogWorks([
+              ...toRefs(facade.catalogBooks),
+              ...toRefs(facade.interdisciplinaryBooks),
+            ]);
           }
         });
       })
@@ -102,11 +97,11 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       editing?.kind === 'reading'
         ? findMyReadingMatches(titleTrimmed, readings, editing.id)
         : findMyReadingMatches(titleTrimmed, readings),
-    [readings, titleTrimmed, editing]
+    [readings, titleTrimmed, editing],
   );
   const catalogMatches = useMemo(
     () => findCatalogMatches(titleTrimmed, catalogWorks),
-    [catalogWorks, titleTrimmed]
+    [catalogWorks, titleTrimmed],
   );
 
   const authorSuggestions = useMemo(
@@ -116,7 +111,7 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
         readings,
         catalogWorks: catalogMatches,
       }),
-    [authors, readings, catalogMatches]
+    [authors, readings, catalogMatches],
   );
 
   const handleCreateAuthor = (name: string) => {
@@ -183,12 +178,16 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
                 >
                   <BookOpen className="w-4 h-4 text-ceci-brand-strong shrink-0" />
                   <span className="min-w-0 flex-1">
-                    <span className="block text-xs font-semibold text-ceci-primary line-clamp-1">{r.title}</span>
+                    <span className="block text-xs font-semibold text-ceci-primary line-clamp-1">
+                      {r.title}
+                    </span>
                     <span className="block text-[10px] text-ceci-secondary">
                       {r.author || 'autor não informado'} · já cadastrada
                     </span>
                   </span>
-                  <span className="text-[10px] font-bold text-ceci-academic-strong shrink-0">usar essa</span>
+                  <span className="text-[10px] font-bold text-ceci-academic-strong shrink-0">
+                    usar essa
+                  </span>
                 </button>
               ))}
             </div>
@@ -208,10 +207,16 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
                 >
                   <Library className="w-4 h-4 text-ceci-academic-strong shrink-0" />
                   <span className="min-w-0 flex-1">
-                    <span className="block text-xs font-semibold text-ceci-primary line-clamp-1">{w.title}</span>
-                    <span className="block text-[10px] text-ceci-secondary">{w.author || 'autor não informado'}</span>
+                    <span className="block text-xs font-semibold text-ceci-primary line-clamp-1">
+                      {w.title}
+                    </span>
+                    <span className="block text-[10px] text-ceci-secondary">
+                      {w.author || 'autor não informado'}
+                    </span>
                   </span>
-                  <span className="text-[10px] font-bold text-ceci-academic-strong shrink-0">usar dados</span>
+                  <span className="text-[10px] font-bold text-ceci-academic-strong shrink-0">
+                    usar dados
+                  </span>
                 </button>
               ))}
             </div>
@@ -234,12 +239,7 @@ export const ReadingWizard: React.FC<{ editing?: ManagedItem | null }> = ({ edit
       subtitle: 'o tipo da obra e o total de páginas, para acompanhar o progresso depois.',
       content: (
         <div className="space-y-5">
-          <ChoiceCardGrid
-            label="tipo"
-            options={TYPES}
-            value={type}
-            onChange={(v) => setType(v)}
-          />
+          <ChoiceCardGrid label="tipo" options={TYPES} value={type} onChange={(v) => setType(v)} />
           <div>
             <FieldLabel>total de páginas (opcional)</FieldLabel>
             <TextInput

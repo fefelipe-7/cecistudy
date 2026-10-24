@@ -1,12 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { emptyDatabase } from '@/data/empty';
 import { SyncEngine, INITIAL_CHECKPOINT, type SyncCheckpoint } from '../engine';
-import type {
-  RemotePackage,
-  SyncManifest,
-  SyncPackage,
-  SyncProvider,
-} from '../provider';
+import type { RemotePackage, SyncManifest, SyncPackage, SyncProvider } from '../provider';
 import type { SyncableDatabase } from '../../../../packages/sync/src/merge';
 
 class InMemoryProvider implements SyncProvider {
@@ -34,7 +29,19 @@ const deps = (deviceId: string) => ({
 
 function withCourse(db: ReturnType<typeof emptyDatabase>, id: string, name: string) {
   db.courses = [
-    { id, name, code: '', professor: '', semester: 1, schedule: [], room: '', color: '#fff', icon: 'book', progress: 0, description: '' },
+    {
+      id,
+      name,
+      code: '',
+      professor: '',
+      semester: 1,
+      schedule: [],
+      room: '',
+      color: '#fff',
+      icon: 'book',
+      progress: 0,
+      description: '',
+    },
   ] as unknown as ReturnType<typeof emptyDatabase>['courses'];
   return db;
 }

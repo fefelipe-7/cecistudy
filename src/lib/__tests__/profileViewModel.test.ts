@@ -123,7 +123,10 @@ describe('deriveProfileViewModel — identidade', () => {
 describe('deriveProfileViewModel — jornada', () => {
   it('deriva progresso e restantes do período ativo (SPEC-005 D4)', () => {
     const vm = deriveProfileViewModel(
-      base({ activeTerm: term({ ordinal: 6 }), profile: profile({ totalSemesters: 10, semester: 1 }) }),
+      base({
+        activeTerm: term({ ordinal: 6 }),
+        profile: profile({ totalSemesters: 10, semester: 1 }),
+      }),
     );
     expect(vm.journey.currentOrdinal).toBe(6);
     expect(vm.journey.percent).toBe(60);
@@ -134,7 +137,11 @@ describe('deriveProfileViewModel — jornada', () => {
 
   it('sem período ativo, usa `profile.semester` como fallback legado', () => {
     const vm = deriveProfileViewModel(
-      base({ activeTerm: null, academicTerms: [], profile: profile({ semester: 3, totalSemesters: 8 }) }),
+      base({
+        activeTerm: null,
+        academicTerms: [],
+        profile: profile({ semester: 3, totalSemesters: 8 }),
+      }),
     );
     expect(vm.journey.currentOrdinal).toBe(3);
     expect(vm.journey.hasActiveTerm).toBe(false);
@@ -193,8 +200,24 @@ describe('deriveProfileViewModel — ritmo', () => {
       { id: 't2', title: 'b', completed: false, priority: 'media', category: 'outro' },
     ];
     const exams: Exam[] = [
-      { id: 'e1', courseId: 'c1', title: 'p1', date: '2026-04-01', weight: '50%', topics: [], completed: false },
-      { id: 'e2', courseId: 'c1', title: 'p2', date: '2026-05-01', weight: '50%', topics: [], completed: true },
+      {
+        id: 'e1',
+        courseId: 'c1',
+        title: 'p1',
+        date: '2026-04-01',
+        weight: '50%',
+        topics: [],
+        completed: false,
+      },
+      {
+        id: 'e2',
+        courseId: 'c1',
+        title: 'p2',
+        date: '2026-05-01',
+        weight: '50%',
+        topics: [],
+        completed: true,
+      },
     ];
     const vm = deriveProfileViewModel(base({ sessions, readings, tasks, exams }));
     expect(vm.pulse.studyTimeMinutes).toBe(75);

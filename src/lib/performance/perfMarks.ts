@@ -113,9 +113,13 @@ export function flushDevMetrics(): void {
   if (!perfEnabled()) return;
   if (measures.length === 0 && events.length === 0) return;
   const flushed = readPerfForTests();
-  console.groupCollapsed(`[perf] ${flushed.measures.length} medições · ${flushed.events.length} eventos`);
+  console.groupCollapsed(
+    `[perf] ${flushed.measures.length} medições · ${flushed.events.length} eventos`,
+  );
   for (const m of flushed.measures) {
-    console.log(`${m.name}: ${m.durationMs}ms (${m.startMark}${m.endMark ? ` → ${m.endMark}` : ''})`);
+    console.log(
+      `${m.name}: ${m.durationMs}ms (${m.startMark}${m.endMark ? ` → ${m.endMark}` : ''})`,
+    );
   }
   for (const e of flushed.events) {
     console.log(`${e.name}${e.detail ? ` ${JSON.stringify(e.detail)}` : ''}`);

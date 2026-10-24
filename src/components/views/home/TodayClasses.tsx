@@ -57,7 +57,7 @@ const TodayClasses: React.FC<TodayClassesProps> = ({ todaySchedule, onOpenCourse
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           {todaySchedule.map(({ course, slot }) => {
             const recordedToday = (course.attendance?.records ?? []).some(
-              (r) => r.date === todayKey
+              (r) => r.date === todayKey,
             );
             return (
               <button
@@ -80,7 +80,9 @@ const TodayClasses: React.FC<TodayClassesProps> = ({ todaySchedule, onOpenCourse
                     {slot.start}
                   </p>
                   {slot.end && (
-                    <p className="text-[10px] text-ceci-tertiary mt-0.5 tabular-nums">→ {slot.end}</p>
+                    <p className="text-[10px] text-ceci-tertiary mt-0.5 tabular-nums">
+                      → {slot.end}
+                    </p>
                   )}
                 </div>
                 <div className="w-px self-stretch bg-ceci-border-subtle" />

@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 
-import { cn } from "@/lib/utils";
-import { IOS_EASE } from "@/lib/motion";
+import { cn } from '@/lib/utils';
+import { IOS_EASE } from '@/lib/motion';
 
 export type NavItem = {
   id?: string;
@@ -20,12 +20,7 @@ export type BottomNavBarProps = {
   onChange?: (index: number) => void;
 };
 
-export function BottomNavBar({
-  className,
-  items,
-  activeIndex,
-  onChange,
-}: BottomNavBarProps) {
+export function BottomNavBar({ className, items, activeIndex, onChange }: BottomNavBarProps) {
   const handleSelect = (idx: number) => {
     onChange?.(idx);
   };
@@ -38,7 +33,7 @@ export function BottomNavBar({
       role="navigation"
       aria-label="bottom navigation"
       className={cn(
-        "liquid-glass-nav relative rounded-full border shadow-floating w-max max-w-[95vw] h-[52px]",
+        'liquid-glass-nav relative rounded-full border shadow-floating w-max max-w-[95vw] h-[52px]',
         className,
       )}
     >
@@ -52,9 +47,11 @@ export function BottomNavBar({
               key={item.id || item.label}
               whileTap={{ scale: 0.94 }}
               className={cn(
-                "flex items-center gap-0 px-3 py-2 rounded-full transition-colors duration-200 relative h-10 min-w-[44px] min-h-[44px] max-h-[44px] cursor-pointer",
-                isActive ? "text-ceci-brand-strong gap-2" : "bg-transparent text-ceci-tertiary hover:bg-[color:var(--color-glass-hairline)]",
-                "focus:outline-none focus-visible:ring-2 focus-visible:ring-ceci-brand focus-visible:ring-offset-2",
+                'flex items-center gap-0 px-3 py-2 rounded-full transition-colors duration-200 relative h-10 min-w-[44px] min-h-[44px] max-h-[44px] cursor-pointer',
+                isActive
+                  ? 'text-ceci-brand-strong gap-2'
+                  : 'bg-transparent text-ceci-tertiary hover:bg-[color:var(--color-glass-hairline)]',
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-ceci-brand focus-visible:ring-offset-2',
               )}
               onClick={() => handleSelect(idx)}
               aria-label={item.label}
@@ -64,7 +61,7 @@ export function BottomNavBar({
                 <motion.span
                   layoutId="bottomnav-active-pill"
                   className="absolute inset-0 rounded-full liquid-glass-pill border"
-                  transition={{ type: "spring", stiffness: 400, damping: 34 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 34 }}
                 />
               )}
 
@@ -73,20 +70,20 @@ export function BottomNavBar({
                 strokeWidth={isActive ? 2.2 : 1.8}
                 aria-hidden
                 className={cn(
-                  "relative z-10 transition-colors duration-200 shrink-0",
-                  isActive ? "text-ceci-brand-strong" : "text-ceci-tertiary",
+                  'relative z-10 transition-colors duration-200 shrink-0',
+                  isActive ? 'text-ceci-brand-strong' : 'text-ceci-tertiary',
                 )}
               />
 
               <motion.div
                 initial={false}
                 animate={{
-                  width: isActive ? "auto" : "0px",
+                  width: isActive ? 'auto' : '0px',
                   opacity: isActive ? 1 : 0,
-                  marginLeft: isActive ? "6px" : "0px",
+                  marginLeft: isActive ? '6px' : '0px',
                 }}
                 transition={{
-                  type: "spring",
+                  type: 'spring',
                   stiffness: 380,
                   damping: 30,
                 }}
@@ -94,7 +91,7 @@ export function BottomNavBar({
               >
                 <span
                   className={cn(
-                    "font-semibold text-xs sm:text-xs text-ceci-brand-strong whitespace-nowrap select-none tracking-tight",
+                    'font-semibold text-xs sm:text-xs text-ceci-brand-strong whitespace-nowrap select-none tracking-tight',
                   )}
                   title={item.label}
                 >
@@ -110,4 +107,3 @@ export function BottomNavBar({
 }
 
 export default BottomNavBar;
-

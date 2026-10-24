@@ -78,7 +78,7 @@ export const StudyFocusScreen: React.FC = () => {
       setDurationMin(minutes);
       timer.setDuration(minutes);
     },
-    [timer]
+    [timer],
   );
 
   const clearSessionFields = useCallback(() => {
@@ -146,14 +146,20 @@ export const StudyFocusScreen: React.FC = () => {
       />
 
       {/* Registro da sessão concluída */}
-      <Modal open={showSaveSession} onClose={() => setShowSaveSession(false)} closeOnBackdrop={false}>
+      <Modal
+        open={showSaveSession}
+        onClose={() => setShowSaveSession(false)}
+        closeOnBackdrop={false}
+      >
         <div className="w-full max-w-sm bg-surface-default rounded-2xl shadow-floating p-6 text-left">
           <p className="font-display font-bold text-lg text-ceci-primary flex items-center gap-1.5 mb-2">
             <Timer className="w-4 h-4 text-ceci-brand" /> guardar sessão de {timer.presetMin} min?
           </p>
           <div className="space-y-3">
             <div>
-              <label className="block text-xs font-medium text-ceci-secondary mb-1">o que você estudou?</label>
+              <label className="block text-xs font-medium text-ceci-secondary mb-1">
+                o que você estudou?
+              </label>
               <input
                 type="text"
                 value={sessionTopic}
@@ -164,7 +170,9 @@ export const StudyFocusScreen: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-ceci-secondary mb-1">disciplina</label>
+              <label className="block text-xs font-medium text-ceci-secondary mb-1">
+                disciplina
+              </label>
               <Picker
                 label="disciplina"
                 value={sessionCourseId}
@@ -203,7 +211,9 @@ export const StudyFocusScreen: React.FC = () => {
       {/* Reiniciar sessão */}
       <Modal open={pendingReset} onClose={() => setPendingReset(false)} closeOnBackdrop={false}>
         <div className="w-full max-w-sm bg-surface-default rounded-2xl shadow-floating p-6 text-left">
-          <h3 className="font-display font-bold text-lg text-ceci-primary mb-2">reiniciar sessão?</h3>
+          <h3 className="font-display font-bold text-lg text-ceci-primary mb-2">
+            reiniciar sessão?
+          </h3>
           <p className="text-sm text-ceci-secondary leading-relaxed mb-5">
             isso zera o timer e descarta o tempo já decorrido. tem certeza?
           </p>
@@ -241,7 +251,9 @@ export const StudyFocusScreen: React.FC = () => {
       {/* Sair de uma sessão em andamento */}
       <Modal open={pendingExit} onClose={() => setPendingExit(false)} closeOnBackdrop={false}>
         <div className="w-full max-w-sm bg-surface-default rounded-2xl shadow-floating p-6 text-left">
-          <h3 className="font-display font-bold text-lg text-ceci-primary mb-2">encerrar a sessão agora?</h3>
+          <h3 className="font-display font-bold text-lg text-ceci-primary mb-2">
+            encerrar a sessão agora?
+          </h3>
           <p className="text-sm text-ceci-secondary leading-relaxed mb-5">
             {canSavePartial
               ? `tem ${timer.partial} min estudados. quer guardar antes de sair?`

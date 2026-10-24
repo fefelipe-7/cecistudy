@@ -55,10 +55,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({
         </button>
 
         <div className="flex items-center justify-center gap-1.5 flex-wrap px-10">
-          <span
-            className={chip}
-            style={{ color: familia?.accent ?? '#6D6366' }}
-          >
+          <span className={chip} style={{ color: familia?.accent ?? '#6D6366' }}>
             {familia?.label ?? 'artigo científico'}
           </span>
           <span className={`${chip} capitalize`}>
@@ -66,7 +63,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({
           </span>
         </div>
 
-         {/* Medalhão do artigo sobrepondo a fronteira */}
+        {/* Medalhão do artigo sobrepondo a fronteira */}
         <div className="relative flex justify-center mt-3">
           <div
             className="relative z-10 w-14 h-14 -mb-7 rounded-2xl bg-cover-base/95 shadow-lg border border-black/5 flex items-center justify-center rotate-2 transition-transform duration-300"
@@ -95,9 +92,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({
         <div className="space-y-1">
           <span className="text-[11px] font-bold text-ceci-tertiary lowercase">resumo</span>
           <div className="max-h-40 overflow-y-auto overscroll-contain bg-surface-muted p-3.5 rounded-2xl">
-            <p className="text-xs text-ceci-secondary leading-relaxed">
-              {article.resumo}
-            </p>
+            <p className="text-xs text-ceci-secondary leading-relaxed">{article.resumo}</p>
           </div>
         </div>
 
@@ -107,9 +102,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({
             <Landmark className="w-3 h-3" /> por que importa
           </span>
           <div className="rounded-2xl bg-surface-rose p-3.5">
-            <p className="text-xs text-ceci-primary leading-relaxed">
-              {article.observacao}
-            </p>
+            <p className="text-xs text-ceci-primary leading-relaxed">{article.observacao}</p>
           </div>
         </div>
 

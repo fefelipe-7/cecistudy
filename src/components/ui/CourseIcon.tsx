@@ -87,10 +87,7 @@ interface CourseIconProps {
   className?: string;
 }
 
-export const CourseIcon: React.FC<CourseIconProps> = ({
-  icon,
-  className = 'w-4 h-4',
-}) => {
+export const CourseIcon: React.FC<CourseIconProps> = ({ icon, className = 'w-4 h-4' }) => {
   if (icon && isEmojiIcon(icon)) {
     return (
       <span

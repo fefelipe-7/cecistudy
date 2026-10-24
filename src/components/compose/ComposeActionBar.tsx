@@ -40,7 +40,7 @@ export const ComposeActionBar: React.FC<ComposeActionBarProps> = ({
           'flex items-center justify-center gap-1.5 w-full min-h-[48px] rounded-2xl text-sm font-bold transition active:scale-[0.99] cursor-pointer',
           canSave
             ? 'bg-ceci-brand-strong hover:bg-ceci-brand-hover text-ceci-on-brand shadow-2xs'
-            : 'bg-surface-muted text-ceci-tertiary cursor-not-allowed'
+            : 'bg-surface-muted text-ceci-tertiary cursor-not-allowed',
         )}
       >
         <Check className="w-4 h-4 stroke-[2.5]" />

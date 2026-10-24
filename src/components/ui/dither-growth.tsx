@@ -72,7 +72,8 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
   const activeRange = (ranges ?? DEMO_RANGES)[rangeIndex];
 
   const data = dataProp ?? activeRange.data;
-  const dates = datesProp ?? activeRange.dates ?? data.map((_, i) => formatShortDate(data.length - 1 - i));
+  const dates =
+    datesProp ?? activeRange.dates ?? data.map((_, i) => formatShortDate(data.length - 1 - i));
 
   const total = useMemo(() => data.reduce((a, b) => a + b, 0), [data]);
   const maxVal = useMemo(() => Math.max(3, ...data), [data]);
@@ -89,7 +90,9 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
     if (first === 0) return last > 0 ? 100 : 0;
     return Math.round(((last - first) / first) * 100);
   }, [data]);
-  const finalTrend = trendLabel ?? (computedTrend !== null ? `${computedTrend > 0 ? '+' : ''}${computedTrend}%` : undefined);
+  const finalTrend =
+    trendLabel ??
+    (computedTrend !== null ? `${computedTrend > 0 ? '+' : ''}${computedTrend}%` : undefined);
   const trendUp = computedTrend === null ? true : computedTrend >= 0;
 
   const [scrubIndex, setScrubIndex] = useState<number | null>(null);
@@ -113,126 +116,123 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
     morphStartTimeRef.current > 0 &&
     performance.now() - morphStartTimeRef.current < 460;
 
-  const { scheduleFrame } = useDitherLoop(
-    () => {
-      const canvas = canvasRef.current;
-      if (!canvas) return false;
-      const ctx = ctxRef.current ?? (ctxRef.current = canvas.getContext('2d'));
-      if (!ctx) return false;
+  const { scheduleFrame } = useDitherLoop(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return false;
+    const ctx = ctxRef.current ?? (ctxRef.current = canvas.getContext('2d'));
+    if (!ctx) return false;
 
-      const { width: w, height: h } = rect.current;
-      if (w === 0 || h === 0) return true; // aguardando o ResizeObserver medir
+    const { width: w, height: h } = rect.current;
+    if (w === 0 || h === 0) return true; // aguardando o ResizeObserver medir
 
-      timeRef.current += reducedMotion ? 0 : 0.03;
+    timeRef.current += reducedMotion ? 0 : 0.03;
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const cell = Math.max(3, Math.round(w / 180));
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const cell = Math.max(3, Math.round(w / 180));
 
-      ctx.save();
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.scale(dpr, dpr);
+    ctx.save();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.scale(dpr, dpr);
 
-      let prog = 0;
-      if (reducedMotion) {
-        prog = 1;
-      } else if (morphStartTimeRef.current > 0) {
-        prog = (performance.now() - morphStartTimeRef.current) / 460;
-        if (prog > 1) prog = 1;
-      } else {
-        prog = 1;
-      }
+    let prog = 0;
+    if (reducedMotion) {
+      prog = 1;
+    } else if (morphStartTimeRef.current > 0) {
+      prog = (performance.now() - morphStartTimeRef.current) / 460;
+      if (prog > 1) prog = 1;
+    } else {
+      prog = 1;
+    }
 
-      const curMax = fromMaxRef.current + (targetMaxRef.current - fromMaxRef.current) * prog;
-      // Buffer in-place: mesmo tamanho do alvo, mutado por índice (sem .map/frame).
-      const buf = curDataRef.current;
-      const target = targetDataRef.current;
-      const from = fromDataRef.current;
-      if (buf.length !== target.length) buf.length = target.length;
-      for (let i = 0; i < target.length; i++) {
-        buf[i] = from[i] + (target[i] - from[i]) * prog;
-      }
-      const curData = buf;
+    const curMax = fromMaxRef.current + (targetMaxRef.current - fromMaxRef.current) * prog;
+    // Buffer in-place: mesmo tamanho do alvo, mutado por índice (sem .map/frame).
+    const buf = curDataRef.current;
+    const target = targetDataRef.current;
+    const from = fromDataRef.current;
+    if (buf.length !== target.length) buf.length = target.length;
+    for (let i = 0; i < target.length; i++) {
+      buf[i] = from[i] + (target[i] - from[i]) * prog;
+    }
+    const curData = buf;
 
-      const px = pointerPosRef.current.x;
-      const py = pointerPosRef.current.y;
-      const isActive = pointerActiveRef.current;
-      const t2 = timeRef.current;
+    const px = pointerPosRef.current.x;
+    const py = pointerPosRef.current.y;
+    const isActive = pointerActiveRef.current;
+    const t2 = timeRef.current;
 
-      const headroom = PLOT_HEADROOM * h;
-      const plotH = h - headroom;
+    const headroom = PLOT_HEADROOM * h;
+    const plotH = h - headroom;
 
-      // Área sólida de baixa opacidade: dá forma à curva antes da textura dither.
-      ctx.beginPath();
-      for (let x = 0; x <= w; x += 1) {
-        const t = x / w;
-        const exactIdx = t * (curData.length - 1);
-        const a0 = Math.floor(exactIdx);
-        const a1 = Math.min(a0 + 1, curData.length - 1);
-        const aFrac = exactIdx - a0;
-        const aVal = curData[a0] + (curData[a1] - curData[a0]) * aFrac;
-        const ay = h - plotH * (aVal / curMax);
-        if (x === 0) ctx.moveTo(x, ay);
-        else ctx.lineTo(x, ay);
-      }
-      ctx.lineTo(w, h);
-      ctx.lineTo(0, h);
-      ctx.closePath();
-      ctx.fillStyle = areaFill;
-      ctx.fill();
+    // Área sólida de baixa opacidade: dá forma à curva antes da textura dither.
+    ctx.beginPath();
+    for (let x = 0; x <= w; x += 1) {
+      const t = x / w;
+      const exactIdx = t * (curData.length - 1);
+      const a0 = Math.floor(exactIdx);
+      const a1 = Math.min(a0 + 1, curData.length - 1);
+      const aFrac = exactIdx - a0;
+      const aVal = curData[a0] + (curData[a1] - curData[a0]) * aFrac;
+      const ay = h - plotH * (aVal / curMax);
+      if (x === 0) ctx.moveTo(x, ay);
+      else ctx.lineTo(x, ay);
+    }
+    ctx.lineTo(w, h);
+    ctx.lineTo(0, h);
+    ctx.closePath();
+    ctx.fillStyle = areaFill;
+    ctx.fill();
 
-      for (let x = 0; x < w; x += cell) {
-        const t = x / w;
-        const exactIdx = t * (curData.length - 1);
-        const i0 = Math.floor(exactIdx);
-        const i1 = Math.min(i0 + 1, curData.length - 1);
-        const frac = exactIdx - i0;
-        const val = curData[i0] + (curData[i1] - curData[i0]) * frac;
+    for (let x = 0; x < w; x += cell) {
+      const t = x / w;
+      const exactIdx = t * (curData.length - 1);
+      const i0 = Math.floor(exactIdx);
+      const i1 = Math.min(i0 + 1, curData.length - 1);
+      const frac = exactIdx - i0;
+      const val = curData[i0] + (curData[i1] - curData[i0]) * frac;
 
-        const curveY = h - plotH * (val / curMax);
+      const curveY = h - plotH * (val / curMax);
 
-        for (let y = h; y >= 0; y -= cell) {
-          ctx.fillStyle = gridColor;
-          ctx.fillRect(x + 1, y + 1, cell - 1, cell - 1);
+      for (let y = h; y >= 0; y -= cell) {
+        ctx.fillStyle = gridColor;
+        ctx.fillRect(x + 1, y + 1, cell - 1, cell - 1);
 
-          if (y < curveY) continue;
+        if (y < curveY) continue;
 
-          const dx = x - px;
-          const dy = y - py;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+        const dx = x - px;
+        const dy = y - py;
+        const dist = Math.sqrt(dx * dx + dy * dy);
 
-          let glow = 0;
-          if (isActive && !reducedMotion) {
-            const rad = h * 0.35;
-            glow = 1 - smoothstep(0, rad, dist);
-          }
-
-          const shimmer = reducedMotion ? 0 : Math.sin(y * 0.1 - t2 * 2) * 0.07;
-
-          ctx.fillStyle = dotColor;
-          const sz = cell * (0.7 + shimmer + glow * 0.3);
-          const alpha = 0.6 + glow * 0.4;
-          ctx.globalAlpha = alpha;
-
-          const offset = (cell - sz) / 2;
-          ctx.fillRect(x + offset, y + offset, sz, sz);
-          ctx.globalAlpha = 1;
+        let glow = 0;
+        if (isActive && !reducedMotion) {
+          const rad = h * 0.35;
+          glow = 1 - smoothstep(0, rad, dist);
         }
+
+        const shimmer = reducedMotion ? 0 : Math.sin(y * 0.1 - t2 * 2) * 0.07;
+
+        ctx.fillStyle = dotColor;
+        const sz = cell * (0.7 + shimmer + glow * 0.3);
+        const alpha = 0.6 + glow * 0.4;
+        ctx.globalAlpha = alpha;
+
+        const offset = (cell - sz) / 2;
+        ctx.fillRect(x + offset, y + offset, sz, sz);
+        ctx.globalAlpha = 1;
       }
+    }
 
-      // Linhas de grade horizontais alinhadas aos rótulos do eixo y (por cima da textura).
-      ctx.fillStyle = gridLineColor;
-      TICK_FRACTIONS.forEach((f) => {
-        const gy = (tickTopPct(f) / 100) * h;
-        ctx.fillRect(0, gy, w, 1);
-      });
+    // Linhas de grade horizontais alinhadas aos rótulos do eixo y (por cima da textura).
+    ctx.fillStyle = gridLineColor;
+    TICK_FRACTIONS.forEach((f) => {
+      const gy = (tickTopPct(f) / 100) * h;
+      ctx.fillRect(0, gy, w, 1);
+    });
 
-      ctx.restore();
-      // needsAnimation (spec §5.2): morph em curso ou interação de ponteiro —
-      // dado estável sem toque congela o shimmer (sem loop ornamental infinito).
-      return morphActive() || isActive;
-    },
-    setup,
-  );
+    ctx.restore();
+    // needsAnimation (spec §5.2): morph em curso ou interação de ponteiro —
+    // dado estável sem toque congela o shimmer (sem loop ornamental infinito).
+    return morphActive() || isActive;
+  }, setup);
 
   useEffect(() => {
     fromDataRef.current = targetDataRef.current.map((_, i) => targetDataRef.current[i]);
@@ -317,7 +317,7 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
       className={cn(
         'relative w-full rounded-2xl p-5 border shadow-sm transition-colors',
         'bg-surface-default border-ceci-border-default text-ceci-primary',
-        className
+        className,
       )}
     >
       {/* Header */}
@@ -326,7 +326,7 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
           <div
             className={cn(
               'p-2.5 rounded-2xl',
-              'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand'
+              'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand',
             )}
           >
             {icon}
@@ -336,7 +336,10 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
             <div className="flex items-baseline gap-2">
               <AnimatedNumber
                 value={total}
-                className={cn('font-display text-2xl font-bold tracking-tight', 'text-ceci-primary')}
+                className={cn(
+                  'font-display text-2xl font-bold tracking-tight',
+                  'text-ceci-primary',
+                )}
                 format={(n) => `${valuePrefix}${formatCount(n)}`}
               />
               {finalTrend !== undefined && (
@@ -345,10 +348,14 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
                     'text-[11px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-0.5',
                     trendUp
                       ? 'text-status-success-strong bg-status-success-surface border-status-success-border'
-                      : 'text-status-danger-strong bg-status-danger-surface border-status-danger-border'
+                      : 'text-status-danger-strong bg-status-danger-surface border-status-danger-border',
                   )}
                 >
-                  {trendUp ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                  {trendUp ? (
+                    <TrendingUp className="w-3 h-3" />
+                  ) : (
+                    <TrendingDown className="w-3 h-3" />
+                  )}
                   {finalTrend}
                 </span>
               )}
@@ -362,7 +369,7 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
           <div
             className={cn(
               'flex items-center p-1 rounded-full border text-xs font-medium',
-              'bg-surface-subtle border-ceci-border-default'
+              'bg-surface-subtle border-ceci-border-default',
             )}
           >
             {(ranges ?? DEMO_RANGES).map((r, idx) => (
@@ -373,7 +380,7 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
                   'px-3 py-1 rounded-full transition cursor-pointer',
                   rangeIndex === idx
                     ? 'bg-ceci-primary text-ceci-on-primary shadow-xs'
-                    : 'text-ceci-secondary hover:text-ceci-primary'
+                    : 'text-ceci-secondary hover:text-ceci-primary',
                 )}
               >
                 {r.label}
@@ -390,10 +397,7 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
           {ticks.map((tick, i) => (
             <span
               key={i}
-              className={cn(
-                'absolute right-0 text-[10px] font-mono',
-                'text-ceci-muted'
-              )}
+              className={cn('absolute right-0 text-[10px] font-mono', 'text-ceci-muted')}
               style={{ top: `${tickTopPct(TICK_FRACTIONS[i])}%`, transform: 'translateY(-50%)' }}
             >
               {formatCount(tick)}
@@ -407,7 +411,7 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
             ref={wrapperRef}
             className={cn(
               'relative h-[180px] touch-none cursor-crosshair overflow-hidden rounded-xl',
-              'bg-surface-muted'
+              'bg-surface-muted',
             )}
             onPointerMove={handlePointer}
             onPointerLeave={handlePointerLeave}
@@ -419,27 +423,25 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
                 <motion.div
                   className={cn(
                     'absolute top-0 bottom-0 w-px pointer-events-none z-10',
-                    'bg-ceci-brand'
+                    'bg-ceci-brand',
                   )}
                   style={{ left: xPos }}
                 />
                 <motion.div
                   className={cn(
                     'absolute w-3 h-3 -ml-[6px] -mt-[6px] rounded-full border-2 shadow-lg pointer-events-none z-20',
-                    'bg-ceci-brand border-surface-default'
+                    'bg-ceci-brand border-surface-default',
                   )}
                   style={{ left: xPos, top: yPos }}
                 />
                 <motion.div
                   className={cn(
                     'absolute -translate-x-1/2 -translate-y-full mb-3 px-2.5 py-1 rounded-lg text-xs font-semibold shadow-floating border pointer-events-none z-30',
-                    'bg-ceci-primary text-ceci-on-primary border-ceci-primary'
+                    'bg-ceci-primary text-ceci-on-primary border-ceci-primary',
                   )}
                   style={{ left: xPos, top: yPos }}
                 >
-                  <div className="text-[10px] uppercase text-ceci-muted">
-                    {dates[scrubIndex]}
-                  </div>
+                  <div className="text-[10px] uppercase text-ceci-muted">{dates[scrubIndex]}</div>
                   <div>
                     {valuePrefix}
                     {formatCount(data[scrubIndex])}
@@ -451,7 +453,11 @@ export const DitherGrowthChart: React.FC<DitherGrowthChartProps> = ({
           </div>
 
           {/* Datas do eixo x */}
-          <div className={cn('flex justify-between items-center mt-2 px-1 text-[10px] font-mono opacity-60')}>
+          <div
+            className={cn(
+              'flex justify-between items-center mt-2 px-1 text-[10px] font-mono opacity-60',
+            )}
+          >
             {dateLabels.map((lbl, idx) => (
               <span key={idx}>{lbl}</span>
             ))}

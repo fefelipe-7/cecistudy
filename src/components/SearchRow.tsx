@@ -12,15 +12,12 @@ export const MarkedTitle: React.FC<{ title: string; ranges: [number, number][] }
     <>
       {splitMarked(title, ranges).map((seg, i) =>
         seg.mark ? (
-          <mark
-            key={i}
-            className="bg-ceci-border-brand/70 text-inherit rounded-[3px] px-px -mx-px"
-          >
+          <mark key={i} className="bg-ceci-border-brand/70 text-inherit rounded-[3px] px-px -mx-px">
             {seg.text}
           </mark>
         ) : (
           <React.Fragment key={i}>{seg.text}</React.Fragment>
-        )
+        ),
       )}
     </>
   );
@@ -67,9 +64,7 @@ export const SearchRow: React.FC<SearchRowProps> = ({
     <span className="flex items-center gap-3 min-w-0">
       <span
         className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
-          selected
-            ? 'bg-ceci-border-brand text-ceci-primary'
-            : 'bg-surface-rose text-ceci-primary'
+          selected ? 'bg-ceci-border-brand text-ceci-primary' : 'bg-surface-rose text-ceci-primary'
         }`}
       >
         {icon}

@@ -60,7 +60,9 @@ function mapSetupError(status: number, body?: string): GitHubRepositorySetupErro
  * Retorna apenas nomes privados por simplicidade, mas traz tudo para checar
  * se o nome esperado já existe (público ou privado).
  */
-async function listUserRepos(token: string): Promise<Array<{ name: string; private: boolean; owner: string }>> {
+async function listUserRepos(
+  token: string,
+): Promise<Array<{ name: string; private: boolean; owner: string }>> {
   const repos: Array<{ name: string; private: boolean; owner: string }> = [];
   let page = 1;
 
@@ -74,7 +76,11 @@ async function listUserRepos(token: string): Promise<Array<{ name: string; priva
     }
     if (!res.ok) throw mapSetupError(res.status);
 
-    const pageData = (await res.json()) as Array<{ name: string; private: boolean; owner: { login: string } }>;
+    const pageData = (await res.json()) as Array<{
+      name: string;
+      private: boolean;
+      owner: { login: string };
+    }>;
     if (!pageData || pageData.length === 0) break;
 
     for (const r of pageData) {
@@ -95,7 +101,10 @@ async function listUserRepos(token: string): Promise<Array<{ name: string; priva
 /**
  * Cria um repositório privado autenticado pelo usuário.
  */
-async function createPrivateRepo(token: string, name: string): Promise<{ owner: string; repo: string }> {
+async function createPrivateRepo(
+  token: string,
+  name: string,
+): Promise<{ owner: string; repo: string }> {
   let res: Response;
   try {
     res = await fetch('https://api.github.com/user/repos', {
@@ -128,7 +137,7 @@ async function createPrivateRepo(token: string, name: string): Promise<{ owner: 
  */
 export async function ensureSyncRepository(
   token: string,
-  repoName: string = REPO_NAME
+  repoName: string = REPO_NAME,
 ): Promise<GitHubRepositoryEnsured> {
   const repos = await listUserRepos(token);
 

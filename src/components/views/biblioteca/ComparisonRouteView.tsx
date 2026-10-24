@@ -47,6 +47,7 @@ export const ComparisonRouteView: React.FC<{ comparisonSlug?: string }> = ({ com
 
   if (!comparisonSlug) return <ComparisonsScreen onOpen={openComparison} />;
   if (loading) return <TempleLoading label="carregando comparação…" />;
-  if (error || !focusedComparison) return <TempleEmptyState message="comparação não encontrada ♡" />;
+  if (error || !focusedComparison)
+    return <TempleEmptyState message="comparação não encontrada ♡" />;
   return <ComparisonDetailScreen comparison={focusedComparison} onBack={closeComparison} />;
 };

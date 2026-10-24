@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { canonicalize } from '../canonical-json';
 
-
 /**
  * Test vectors — a MESMA tabela foi usada no lado Rust (histórico, removido
  * pela ADR-008). Fonte: `contracts/canonical-json-v1.md` seção 6.
@@ -45,7 +44,7 @@ describe('canonicalize (canonical JSON v1)', () => {
 
   it('preserva a ordem de itens de arrays (intencional)', () => {
     expect(canonicalize({ topics: ['ansiedade', 'medo', 'ansiedade'] })).toBe(
-      '{"topics":["ansiedade","medo","ansiedade"]}'
+      '{"topics":["ansiedade","medo","ansiedade"]}',
     );
   });
 

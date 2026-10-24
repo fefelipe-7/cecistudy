@@ -37,17 +37,14 @@ export const ApproachDetailBookCard: React.FC<ApproachDetailBookCardProps> = ({
         <div className="flex-1">
           <h3 className="font-display font-bold text-sm text-ceci-primary">{book.title}</h3>
           <p className="text-xs text-ceci-secondary">
-            por {book.author}{book.year ? ` (${book.year})` : ''}
+            por {book.author}
+            {book.year ? ` (${book.year})` : ''}
           </p>
           {book.importance && (
-            <p className="text-[10px] font-semibold text-ceci-primary mt-1">
-              {book.importance}
-            </p>
+            <p className="text-[10px] font-semibold text-ceci-primary mt-1">{book.importance}</p>
           )}
           {book.reasonToRead && (
-            <p className="text-[10px] text-ceci-secondary mt-1 line-clamp-2">
-              {book.reasonToRead}
-            </p>
+            <p className="text-[10px] text-ceci-secondary mt-1 line-clamp-2">{book.reasonToRead}</p>
           )}
         </div>
       </div>

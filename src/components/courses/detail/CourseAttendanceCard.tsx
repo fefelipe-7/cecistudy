@@ -89,7 +89,8 @@ const QUICK_ACTIONS: {
     label: 'cancelada',
     aria: 'marcar como aula cancelada',
     icon: <CalendarX2 className="w-4 h-4" />,
-    className: 'bg-status-warning-surface border-status-warning-border text-status-warning-strong hover:border-status-warning/60',
+    className:
+      'bg-status-warning-surface border-status-warning-border text-status-warning-strong hover:border-status-warning/60',
     toast: 'aula cancelada não conta como falta ♡',
   },
 ];
@@ -107,7 +108,7 @@ export const CourseAttendanceCard: React.FC<CourseAttendanceCardProps> = ({
   const stats = attendanceStats(course.attendance);
 
   const hasClassToday = getTodaySchedule(courses, new Date()).some(
-    (s) => s.course.id === course.id
+    (s) => s.course.id === course.id,
   );
 
   if (!course.attendance) return null;
@@ -126,8 +127,8 @@ export const CourseAttendanceCard: React.FC<CourseAttendanceCardProps> = ({
           <UserCheck className="w-3.5 h-3.5 text-ceci-muted" /> frequência
         </span>
         <p className="text-xs text-ceci-secondary leading-relaxed">
-          que tal definir a carga horária da matéria em horas? aí você acompanha as aulas e a
-          margem de faltas com carinho ♡
+          que tal definir a carga horária da matéria em horas? aí você acompanha as aulas e a margem
+          de faltas com carinho ♡
         </p>
         {hasClassToday && (
           <div className="grid grid-cols-3 gap-2 pt-1">
@@ -225,7 +226,11 @@ export const CourseAttendanceCard: React.FC<CourseAttendanceCardProps> = ({
 
       {status !== 'ok' && (
         <p className="text-[11px] text-ceci-secondary mt-2.5 leading-relaxed">
-          <Mascote expression="boundaries-care" className="w-5 h-5 inline-block -mt-1 mr-1" decorative />
+          <Mascote
+            expression="boundaries-care"
+            className="w-5 h-5 inline-block -mt-1 mr-1"
+            decorative
+          />
           {copy.hint}. bora manter a frequência com jeitinho?
         </p>
       )}

@@ -22,13 +22,19 @@ describe('CourseIconPicker (SPEC-004)', () => {
 
   it('marca o emoji ativo com aria-pressed', () => {
     render(<CourseIconPicker value="🌸" onChange={() => {}} />);
-    expect(screen.getByRole('button', { name: 'emoji 🌸' }).getAttribute('aria-pressed')).toBe('true');
-    expect(screen.getByRole('button', { name: 'emoji 🧠' }).getAttribute('aria-pressed')).toBe('false');
+    expect(screen.getByRole('button', { name: 'emoji 🌸' }).getAttribute('aria-pressed')).toBe(
+      'true',
+    );
+    expect(screen.getByRole('button', { name: 'emoji 🧠' }).getAttribute('aria-pressed')).toBe(
+      'false',
+    );
   });
 
   it('marca o ícone ativo com aria-pressed', () => {
     render(<CourseIconPicker value="Brain" onChange={() => {}} />);
-    expect(screen.getByRole('button', { name: 'ícone psicologia' }).getAttribute('aria-pressed')).toBe('true');
+    expect(
+      screen.getByRole('button', { name: 'ícone psicologia' }).getAttribute('aria-pressed'),
+    ).toBe('true');
   });
 });
 

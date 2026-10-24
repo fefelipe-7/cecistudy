@@ -12,8 +12,7 @@ export const smoothstep = (min: number, max: number, value: number) => {
   return x * x * (3 - 2 * x);
 };
 
-export const clamp = (val: number, min: number, max: number) =>
-  Math.max(min, Math.min(max, val));
+export const clamp = (val: number, min: number, max: number) => Math.max(min, Math.min(max, val));
 
 /** Hash determinístico por célula — dá a textura "jitter" do dither. */
 export const hash = (x: number, y: number) => {
@@ -37,8 +36,7 @@ export const mixHex = (hexA: string, hexB: string, t: number) => {
   ];
   const [ar, ag, ab] = toNums(hexA);
   const [br, bg, bb] = toNums(hexB);
-  const ch = (a: number, b: number) =>
-    Math.round(a + (b - a) * Math.min(1, Math.max(0, t)));
+  const ch = (a: number, b: number) => Math.round(a + (b - a) * Math.min(1, Math.max(0, t)));
   return `#${[ch(ar, br), ch(ag, bg), ch(ab, bb)].map((v) => v.toString(16).padStart(2, '0')).join('')}`;
 };
 
@@ -51,7 +49,7 @@ export const drawRoundedWedge = (
   rOut: number,
   aStart: number,
   aEnd: number,
-  cr: number
+  cr: number,
 ) => {
   const sweep = aEnd - aStart;
   const maxCr = Math.min(cr, (rOut - rIn) / 2, (sweep * rIn) / 2);
@@ -67,25 +65,33 @@ export const drawRoundedWedge = (
   ctx.moveTo(cx + rIn * Math.cos(aStartIn), cy + rIn * Math.sin(aStartIn));
   ctx.arc(cx, cy, rIn, aStartIn, aEndIn);
   ctx.arcTo(
-    cx + rIn * Math.cos(aEnd), cy + rIn * Math.sin(aEnd),
-    cx + rOut * Math.cos(aEnd), cy + rOut * Math.sin(aEnd),
-    crIn
+    cx + rIn * Math.cos(aEnd),
+    cy + rIn * Math.sin(aEnd),
+    cx + rOut * Math.cos(aEnd),
+    cy + rOut * Math.sin(aEnd),
+    crIn,
   );
   ctx.arcTo(
-    cx + rOut * Math.cos(aEnd), cy + rOut * Math.sin(aEnd),
-    cx + rOut * Math.cos(aEndOut), cy + rOut * Math.sin(aEndOut),
-    crOut
+    cx + rOut * Math.cos(aEnd),
+    cy + rOut * Math.sin(aEnd),
+    cx + rOut * Math.cos(aEndOut),
+    cy + rOut * Math.sin(aEndOut),
+    crOut,
   );
   ctx.arc(cx, cy, rOut, aEndOut, aStartOut, true);
   ctx.arcTo(
-    cx + rOut * Math.cos(aStart), cy + rOut * Math.sin(aStart),
-    cx + rIn * Math.cos(aStart), cy + rIn * Math.sin(aStart),
-    crOut
+    cx + rOut * Math.cos(aStart),
+    cy + rOut * Math.sin(aStart),
+    cx + rIn * Math.cos(aStart),
+    cy + rIn * Math.sin(aStart),
+    crOut,
   );
   ctx.arcTo(
-    cx + rIn * Math.cos(aStart), cy + rIn * Math.sin(aStart),
-    cx + rIn * Math.cos(aStartIn), cy + rIn * Math.sin(aStartIn),
-    crIn
+    cx + rIn * Math.cos(aStart),
+    cy + rIn * Math.sin(aStart),
+    cx + rIn * Math.cos(aStartIn),
+    cy + rIn * Math.sin(aStartIn),
+    crIn,
   );
 };
 

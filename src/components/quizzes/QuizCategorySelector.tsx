@@ -76,9 +76,11 @@ function FilterSection({
             </p>
           </div>
         </div>
-        <span className={`flex items-center gap-1 text-xs font-semibold ${
-          selected.length > 0 ? 'text-ceci-brand-strong' : 'text-ceci-secondary'
-        }`}>
+        <span
+          className={`flex items-center gap-1 text-xs font-semibold ${
+            selected.length > 0 ? 'text-ceci-brand-strong' : 'text-ceci-secondary'
+          }`}
+        >
           {selected.length > 0 && (
             <span className="w-5 h-5 rounded-full bg-ceci-brand-strong text-ceci-on-brand flex items-center justify-center">
               {selected.length}
@@ -108,7 +110,7 @@ function FilterSection({
                     'w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-xs transition',
                     isSel
                       ? 'bg-ceci-brand-strong text-ceci-on-brand'
-                      : 'bg-surface-muted text-ceci-primary hover:bg-surface-rose'
+                      : 'bg-surface-muted text-ceci-primary hover:bg-surface-rose',
                   )}
                 >
                   <span className="truncate">{opt}</span>
@@ -123,7 +125,15 @@ function FilterSection({
   );
 }
 
-function CountSelector({ count, onChange, maxAvailable }: { count: number; onChange: (n: number) => void; maxAvailable: number }) {
+function CountSelector({
+  count,
+  onChange,
+  maxAvailable,
+}: {
+  count: number;
+  onChange: (n: number) => void;
+  maxAvailable: number;
+}) {
   const options = [5, 10, 15, 20].filter((n) => n <= maxAvailable);
   return (
     <div className="rounded-xl bg-surface-default border border-ceci-border-default p-4">
@@ -165,7 +175,10 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
     };
   }, [questions.length, ensureQuestionsLoaded]);
 
-  const { areas, temas, escolas, dificuldades } = useMemo(() => getUniqueOptions(questions), [questions]);
+  const { areas, temas, escolas, dificuldades } = useMemo(
+    () => getUniqueOptions(questions),
+    [questions],
+  );
 
   const [config, setConfig] = useState<QuizConfig>({
     areas: [],
@@ -213,7 +226,11 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
     onStart(config);
   };
 
-  const hasAnyFilter = config.areas.length > 0 || config.temas.length > 0 || config.escolas.length > 0 || config.dificuldades.length > 0;
+  const hasAnyFilter =
+    config.areas.length > 0 ||
+    config.temas.length > 0 ||
+    config.escolas.length > 0 ||
+    config.dificuldades.length > 0;
 
   return (
     <div className="min-h-[70vh] flex flex-col pb-44">
@@ -225,118 +242,127 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
         >
           <Mascote expression="loading-patient" className="w-14 h-14" decorative />
           <div>
-            <h3 className="font-display font-bold text-base text-ceci-primary">escrevendo suas questões ♡</h3>
+            <h3 className="font-display font-bold text-base text-ceci-primary">
+              escrevendo suas questões ♡
+            </h3>
             <p className="text-xs text-ceci-secondary mt-1.5">
-              {questions.length === 0 ? 'a tia kelly está montando o acervo pra você...' : 'só um minutinho...'}
+              {questions.length === 0
+                ? 'a tia kelly está montando o acervo pra você...'
+                : 'só um minutinho...'}
             </p>
           </div>
         </motion.div>
       )}
       {!isReloading && (
-      <>
-      <div className="flex-1 pt-4 overflow-y-auto">
-        <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 space-y-4">
-          {/* Card explicativo */}
-          <div
-            className="rounded-xl p-4 bg-surface-default border border-ceci-border-default shadow-sm text-center space-y-3"
-          >
-            <Mascote expression="quiz-ready" className="w-12 h-12 mx-auto" decorative />
-            <div>
-              <h3 className="font-display font-bold text-base text-ceci-primary">monte seu quiz ♡</h3>
-              <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
-                escolha áreas, temas, escolas e dificuldade. o pool filtra em tempo real.
-              </p>
+        <>
+          <div className="flex-1 pt-4 overflow-y-auto">
+            <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 space-y-4">
+              {/* Card explicativo */}
+              <div className="rounded-xl p-4 bg-surface-default border border-ceci-border-default shadow-sm text-center space-y-3">
+                <Mascote expression="quiz-ready" className="w-12 h-12 mx-auto" decorative />
+                <div>
+                  <h3 className="font-display font-bold text-base text-ceci-primary">
+                    monte seu quiz ♡
+                  </h3>
+                  <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
+                    escolha áreas, temas, escolas e dificuldade. o pool filtra em tempo real.
+                  </p>
+                </div>
+              </div>
+
+              {/* Filtros */}
+              <div className="space-y-3">
+                <FilterSection
+                  label="áreas"
+                  icon={<Sparkles className="w-4 h-4" />}
+                  options={areas}
+                  selected={config.areas}
+                  onToggle={(opt) => toggleOption('areas', opt)}
+                  isOpen={openSections.areas}
+                  onToggleOpen={() => toggleSection('areas')}
+                  count={config.areas.length}
+                />
+                <FilterSection
+                  label="temas"
+                  icon={<Filter className="w-4 h-4" />}
+                  options={temas}
+                  selected={config.temas}
+                  onToggle={(opt) => toggleOption('temas', opt)}
+                  isOpen={openSections.temas}
+                  onToggleOpen={() => toggleSection('temas')}
+                  count={config.temas.length}
+                />
+                <FilterSection
+                  label="escolas / abordagens"
+                  icon={<Sparkles className="w-4 h-4" />}
+                  options={escolas}
+                  selected={config.escolas}
+                  onToggle={(opt) => toggleOption('escolas', opt)}
+                  isOpen={openSections.escolas}
+                  onToggleOpen={() => toggleSection('escolas')}
+                  count={config.escolas.length}
+                />
+                <FilterSection
+                  label="dificuldade"
+                  icon={<Target className="w-4 h-4" />}
+                  options={dificuldades}
+                  selected={config.dificuldades}
+                  onToggle={(opt) => toggleOption('dificuldades', opt)}
+                  isOpen={openSections.dificuldades}
+                  onToggleOpen={() => toggleSection('dificuldades')}
+                  count={config.dificuldades.length}
+                />
+              </div>
+
+              {/* Selector de quantidade */}
+              <div>
+                <CountSelector
+                  count={config.count}
+                  onChange={(n) => setConfig((c) => ({ ...c, count: n }))}
+                  maxAvailable={pool.length}
+                />
+              </div>
+
+              {/* Badge de filtro ativo */}
+              {hasAnyFilter && (
+                <div className="rounded-xl p-3 bg-surface-rose border border-ceci-border-brand text-center">
+                  <p className="text-xs text-ceci-brand-strong">
+                    {pool.length} questões correspondem aos filtros
+                  </p>
+                </div>
+              )}
+
+              {/* Botão começar */}
+              <div className="pt-2">
+                <button
+                  onClick={handleStart}
+                  disabled={pool.length === 0}
+                  className={`w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold cursor-pointer transition active:scale-[0.98] ${
+                    pool.length === 0
+                      ? 'bg-ceci-muted text-ceci-secondary cursor-not-allowed'
+                      : 'bg-ceci-brand hover:bg-ceci-brand-strong text-ceci-on-brand shadow-2xs'
+                  }`}
+                >
+                  <Target className="w-4 h-4" />{' '}
+                  {pool.length === 0
+                    ? 'nenhuma questão com esses filtros'
+                    : `começar quiz (${config.count} questões)`}
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Filtros */}
-          <div className="space-y-3">
-            <FilterSection
-              label="áreas"
-              icon={<Sparkles className="w-4 h-4" />}
-              options={areas}
-              selected={config.areas}
-              onToggle={(opt) => toggleOption('areas', opt)}
-              isOpen={openSections.areas}
-              onToggleOpen={() => toggleSection('areas')}
-              count={config.areas.length}
-            />
-            <FilterSection
-              label="temas"
-              icon={<Filter className="w-4 h-4" />}
-              options={temas}
-              selected={config.temas}
-              onToggle={(opt) => toggleOption('temas', opt)}
-              isOpen={openSections.temas}
-              onToggleOpen={() => toggleSection('temas')}
-              count={config.temas.length}
-            />
-            <FilterSection
-              label="escolas / abordagens"
-              icon={<Sparkles className="w-4 h-4" />}
-              options={escolas}
-              selected={config.escolas}
-              onToggle={(opt) => toggleOption('escolas', opt)}
-              isOpen={openSections.escolas}
-              onToggleOpen={() => toggleSection('escolas')}
-              count={config.escolas.length}
-            />
-            <FilterSection
-              label="dificuldade"
-              icon={<Target className="w-4 h-4" />}
-              options={dificuldades}
-              selected={config.dificuldades}
-              onToggle={(opt) => toggleOption('dificuldades', opt)}
-              isOpen={openSections.dificuldades}
-              onToggleOpen={() => toggleSection('dificuldades')}
-              count={config.dificuldades.length}
-            />
-          </div>
-
-          {/* Selector de quantidade */}
-          <div>
-            <CountSelector count={config.count} onChange={(n) => setConfig((c) => ({ ...c, count: n }))} maxAvailable={pool.length} />
-          </div>
-
-          {/* Badge de filtro ativo */}
-          {hasAnyFilter && (
-            <div
-              className="rounded-xl p-3 bg-surface-rose border border-ceci-border-brand text-center"
-            >
-              <p className="text-xs text-ceci-brand-strong">
-                {pool.length} questões correspondem aos filtros
-              </p>
+          <FixedBottomBar>
+            <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
+              <button
+                onClick={onClose}
+                className="w-full min-h-[40px] rounded-xl text-xs font-medium text-ceci-tertiary hover:text-ceci-primary hover:bg-surface-muted transition-colors cursor-pointer"
+              >
+                cancelar
+              </button>
             </div>
-          )}
-
-          {/* Botão começar */}
-          <div className="pt-2">
-            <button
-              onClick={handleStart}
-              disabled={pool.length === 0}
-              className={`w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl text-xs font-semibold cursor-pointer transition active:scale-[0.98] ${
-                pool.length === 0
-                  ? 'bg-ceci-muted text-ceci-secondary cursor-not-allowed'
-                  : 'bg-ceci-brand hover:bg-ceci-brand-strong text-ceci-on-brand shadow-2xs'
-              }`}
-            >
-              <Target className="w-4 h-4" /> {pool.length === 0 ? 'nenhuma questão com esses filtros' : `começar quiz (${config.count} questões)`}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <FixedBottomBar>
-        <div className="max-w-md sm:max-w-xl mx-auto px-3.5 sm:px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
-          <button
-            onClick={onClose}
-            className="w-full min-h-[40px] rounded-xl text-xs font-medium text-ceci-tertiary hover:text-ceci-primary hover:bg-surface-muted transition-colors cursor-pointer"
-          >
-            cancelar
-          </button>
-        </div>
-      </FixedBottomBar>
-      </>
+          </FixedBottomBar>
+        </>
       )}
     </div>
   );

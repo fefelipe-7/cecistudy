@@ -17,12 +17,24 @@ const NavigationProbe = () => {
     <div>
       <output data-testid="active-tab">{activeTab}</output>
       <output data-testid="slide-key">{slideKey}</output>
-      <button type="button" onClick={() => handleNavigate('biblioteca')}>abrir biblioteca</button>
-      <button type="button" onClick={() => handleNavigate('home')}>voltar para home</button>
-      <button type="button" onClick={() => openCompose()}>abrir composição</button>
-      <button type="button" onClick={() => closeCompose()}>fechar composição</button>
-      <button type="button" onClick={() => openCourseDetail('c1')}>abrir disciplina</button>
-      <button type="button" onClick={() => openTermHistory()}>abrir histórico de períodos</button>
+      <button type="button" onClick={() => handleNavigate('biblioteca')}>
+        abrir biblioteca
+      </button>
+      <button type="button" onClick={() => handleNavigate('home')}>
+        voltar para home
+      </button>
+      <button type="button" onClick={() => openCompose()}>
+        abrir composição
+      </button>
+      <button type="button" onClick={() => closeCompose()}>
+        fechar composição
+      </button>
+      <button type="button" onClick={() => openCourseDetail('c1')}>
+        abrir disciplina
+      </button>
+      <button type="button" onClick={() => openTermHistory()}>
+        abrir histórico de períodos
+      </button>
     </div>
   );
 };
@@ -41,7 +53,7 @@ describe('regressão da navegação entre abas', () => {
     render(
       <MobileAppProvider>
         <NavigationProbe />
-      </MobileAppProvider>
+      </MobileAppProvider>,
     );
 
     const initialKey = screen.getByTestId('slide-key').textContent;
@@ -60,7 +72,7 @@ describe('regressão da navegação entre abas', () => {
     render(
       <MobileAppProvider>
         <NavigationProbe />
-      </MobileAppProvider>
+      </MobileAppProvider>,
     );
 
     const initialKey = screen.getByTestId('slide-key').textContent;
@@ -77,7 +89,7 @@ describe('regressão da navegação entre abas', () => {
     render(
       <MobileAppProvider>
         <NavigationProbe />
-      </MobileAppProvider>
+      </MobileAppProvider>,
     );
 
     fireEvent.click(screen.getByRole('button', { name: 'abrir disciplina' }));
@@ -98,7 +110,7 @@ describe('regressão da navegação entre abas', () => {
     render(
       <MobileAppProvider>
         <NavigationProbe />
-      </MobileAppProvider>
+      </MobileAppProvider>,
     );
 
     const beforeKey = screen.getByTestId('slide-key').textContent;

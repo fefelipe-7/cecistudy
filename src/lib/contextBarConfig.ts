@@ -154,7 +154,7 @@ export const BARRA_APARECE: Record<NavScreen['kind'], boolean> = {
   inbox: false,
   // Demais telas auxiliares: a barra aparece.
   course: true,
-  'repertorioItem': true,
+  repertorioItem: true,
   notes: true,
   temple: true,
   templeSection: true,
@@ -213,10 +213,7 @@ export function buildContextBarConfig(input: ContextBarConfigInput): ContextBarC
   // D2-ii): o herói cedeu a ação para a barra. A semente é a mesma que o
   // herói usava — sem ela, o wizard abria no passo "tipo" e a usuária
   // escolhia de novo.
-  if (
-    currentScreen.kind === 'internshipDiary' &&
-    currentScreen.tab === 'diario'
-  ) {
+  if (currentScreen.kind === 'internshipDiary' && currentScreen.tab === 'diario') {
     return {
       ...base,
       primaryActions: [
@@ -233,10 +230,7 @@ export function buildContextBarConfig(input: ContextBarConfigInput): ContextBarC
 
   /* ------------------------------------------------------------------ */
   // Estágio > pacientes: novo atendimento
-  if (
-    currentScreen.kind === 'internshipDiary' &&
-    currentScreen.tab === 'pacientes'
-  ) {
+  if (currentScreen.kind === 'internshipDiary' && currentScreen.tab === 'pacientes') {
     return {
       ...base,
       primaryActions: [
@@ -253,10 +247,7 @@ export function buildContextBarConfig(input: ContextBarConfigInput): ContextBarC
 
   /* ------------------------------------------------------------------ */
   // Estágio > supervisão: nova supervisão
-  if (
-    currentScreen.kind === 'internshipDiary' &&
-    currentScreen.tab === 'supervisao'
-  ) {
+  if (currentScreen.kind === 'internshipDiary' && currentScreen.tab === 'supervisao') {
     return {
       ...base,
       primaryActions: [
@@ -375,8 +366,7 @@ export function buildContextBarConfig(input: ContextBarConfigInput): ContextBarC
             label: 'agendar reunião',
             ariaLabel: 'agendar nova reunião de orientação do tcc',
             Icon: Users,
-            onSelect: () =>
-              openTccSheet({ type: 'meeting', id: 'new', intent: 'agendar' }),
+            onSelect: () => openTccSheet({ type: 'meeting', id: 'new', intent: 'agendar' }),
           },
           {
             id: 'tcc-pendencia',

@@ -2,7 +2,13 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { RefreshCcw, SlidersHorizontal, Undo2 } from 'lucide-react';
 import { celebrate } from '../../lib/celebrate';
 import { hapticSuccess } from '../../lib/haptics';
-import { cardCounts, daysUntilDue, isCardDue, ratingIntervals, type FSRSQuality } from '../../lib/fsrs';
+import {
+  cardCounts,
+  daysUntilDue,
+  isCardDue,
+  ratingIntervals,
+  type FSRSQuality,
+} from '../../lib/fsrs';
 import type { Flashcard } from '../../types';
 import { Paper3DCard } from '../flashcards/Paper3DCard';
 import { RatingBar, type RatingOption } from '../flashcards/RatingBar';
@@ -80,7 +86,7 @@ export const ReviewSession: React.FC<ReviewSessionProps> = ({
   const counts = useMemo(() => cardCounts(allCards.filter((c) => isCardDue(c))), [allCards]);
   const countChips = [
     counts.news > 0 && { label: 'novas', value: counts.news },
-    (counts.learning + counts.relearning) > 0 && {
+    counts.learning + counts.relearning > 0 && {
       label: 'aprendendo',
       value: counts.learning + counts.relearning,
     },
@@ -88,16 +94,14 @@ export const ReviewSession: React.FC<ReviewSessionProps> = ({
   ].filter(Boolean) as { label: string; value: number }[];
 
   const ratingOptions = useMemo<RatingOption[]>(
-    () => activeCard && isFlipped ? ratingIntervals(activeCard).map((r) => ({ ...r })) : [],
-    [activeCard, isFlipped]
+    () => (activeCard && isFlipped ? ratingIntervals(activeCard).map((r) => ({ ...r })) : []),
+    [activeCard, isFlipped],
   );
 
   // Próxima rodada: menor intervalo entre os cartões recém-revisados.
   const nextRoundInDays = useMemo(() => {
     const reviewedIds = new Set(reviewQueue.map((c) => c.id));
-    const reviewed = allCards.filter(
-      (c) => reviewedIds.has(c.id) && c.lastReviewed && c.due
-    );
+    const reviewed = allCards.filter((c) => reviewedIds.has(c.id) && c.lastReviewed && c.due);
     if (reviewed.length === 0) return null;
     return Math.min(...reviewed.map((c) => Math.max(1, daysUntilDue(c))));
   }, [allCards, reviewQueue]);
@@ -143,11 +147,16 @@ export const ReviewSession: React.FC<ReviewSessionProps> = ({
     return (
       <div className="rounded-2xl p-6 bg-surface-default border border-ceci-border-default shadow-sm text-center space-y-4">
         <div className="py-6 space-y-3">
-          <div role="presentation" aria-hidden="true" className="mx-auto text-3xl">✨</div>
+          <div role="presentation" aria-hidden="true" className="mx-auto text-3xl">
+            ✨
+          </div>
           <div>
-            <h3 className="font-display font-bold text-base text-ceci-primary">tudo em dia por aqui!</h3>
+            <h3 className="font-display font-bold text-base text-ceci-primary">
+              tudo em dia por aqui!
+            </h3>
             <p className="text-xs text-ceci-secondary mt-1.5 leading-relaxed">
-              nenhum flashcard precisa de revisão agora. pode dar uma volta ou revisar todos de novo.
+              nenhum flashcard precisa de revisão agora. pode dar uma volta ou revisar todos de
+              novo.
             </p>
           </div>
           {allCards.length > 0 && (
@@ -168,7 +177,9 @@ export const ReviewSession: React.FC<ReviewSessionProps> = ({
     return (
       <div className="rounded-2xl p-6 bg-surface-default border border-ceci-border-default shadow-sm text-center space-y-4">
         <div className="py-6 space-y-3">
-          <div role="presentation" aria-hidden="true" className="mx-auto text-3xl">🎉</div>
+          <div role="presentation" aria-hidden="true" className="mx-auto text-3xl">
+            🎉
+          </div>
           <div>
             <h3 className="font-display font-bold text-base text-ceci-primary">
               revisão concluída{name ? `, parabéns ${name}` : ', parabéns'}! ♡
@@ -212,7 +223,10 @@ export const ReviewSession: React.FC<ReviewSessionProps> = ({
         {countChips.length > 0 && (
           <span className="flex items-center gap-1.5">
             {countChips.map((chip) => (
-              <span key={chip.label} className="rounded-full bg-surface-rose border border-ceci-border-brand px-2 py-0.5 text-[10px] font-semibold text-ceci-brand-strong">
+              <span
+                key={chip.label}
+                className="rounded-full bg-surface-rose border border-ceci-border-brand px-2 py-0.5 text-[10px] font-semibold text-ceci-brand-strong"
+              >
                 {chip.label}: {chip.value}
               </span>
             ))}
@@ -256,14 +270,22 @@ export const ReviewSession: React.FC<ReviewSessionProps> = ({
           backClassName="flex flex-col items-center justify-center gap-2 text-center"
           front={
             <>
-              <span className="text-[10px] font-semibold text-ceci-muted uppercase tracking-wider select-none">pergunta ❓</span>
-              <p className="font-display font-bold text-base text-ceci-primary select-none break-words">{activeCard.question}</p>
+              <span className="text-[10px] font-semibold text-ceci-muted uppercase tracking-wider select-none">
+                pergunta ❓
+              </span>
+              <p className="font-display font-bold text-base text-ceci-primary select-none break-words">
+                {activeCard.question}
+              </p>
             </>
           }
           back={
             <>
-              <span className="text-[10px] font-semibold text-ceci-brand-strong uppercase tracking-wider select-none">resposta ✨</span>
-              <p className="text-sm text-ceci-primary select-none break-words leading-relaxed">{activeCard.answer}</p>
+              <span className="text-[10px] font-semibold text-ceci-brand-strong uppercase tracking-wider select-none">
+                resposta ✨
+              </span>
+              <p className="text-sm text-ceci-primary select-none break-words leading-relaxed">
+                {activeCard.answer}
+              </p>
             </>
           }
         />

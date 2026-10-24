@@ -37,7 +37,7 @@ describe('contrato D6 (I3/I4)', () => {
         log={log}
         exists={() => true}
         onConvert={() => {}}
-      />
+      />,
     );
     const keyWarnings = error.mock.calls.filter((c) => String(c[0]).includes('key'));
     expect(keyWarnings).toHaveLength(0);
@@ -45,9 +45,7 @@ describe('contrato D6 (I3/I4)', () => {
   });
 
   it('I4: botões do NextStepRow têm alvo ≥44px (w-11 h-11)', () => {
-    render(
-      <NextStepList steps={['um']} log={log} exists={() => true} onConvert={() => {}} />
-    );
+    render(<NextStepList steps={['um']} log={log} exists={() => true} onConvert={() => {}} />);
     const buttons = screen.getAllByRole('button');
     expect(buttons.length).toBe(3);
     for (const b of buttons) expect(b.className).toContain('w-11');

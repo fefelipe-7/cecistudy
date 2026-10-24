@@ -7,24 +7,24 @@ const todayISO = () => todayKeyLocal();
 const yesterday = () => addDaysKey(todayKeyLocal(), -1);
 
 function makeDb(overrides: Partial<ManagedDB> = {}): ManagedDB {
-   return {
-     courses: [{ id: 'c1', name: 'Psicopatologia I' } as never],
-     classes: [],
-     tasks: [],
-     exams: [],
-     authors: [],
-     concepts: [],
-     readings: [],
-     flashcards: [],
-     materials: [],
-     internshipLogs: [],
-     sessions: [],
-     quizSessions: [],
-     looseNotes: [],
-     bookmarkedCourseIds: [],
-     ...overrides,
-   };
- }
+  return {
+    courses: [{ id: 'c1', name: 'Psicopatologia I' } as never],
+    classes: [],
+    tasks: [],
+    exams: [],
+    authors: [],
+    concepts: [],
+    readings: [],
+    flashcards: [],
+    materials: [],
+    internshipLogs: [],
+    sessions: [],
+    quizSessions: [],
+    looseNotes: [],
+    bookmarkedCourseIds: [],
+    ...overrides,
+  };
+}
 
 describe('clampPageInput', () => {
   it('aceita valor maior que a atual e dentro do total', () => {
@@ -94,9 +94,17 @@ describe('buildItemContext — task', () => {
 describe('buildItemContext — exam', () => {
   it('prova pendente recomenda concluir; concluída recomenda reabrir', () => {
     const base = { id: 'e1', title: 'P2', courseId: 'c1' };
-    const pending = buildItemContext('exam', 'e1', makeDb({ exams: [{ ...base, completed: false }] as never }));
+    const pending = buildItemContext(
+      'exam',
+      'e1',
+      makeDb({ exams: [{ ...base, completed: false }] as never }),
+    );
     expect(pending?.recommended?.id).toBe('toggle-done');
-    const done = buildItemContext('exam', 'e1', makeDb({ exams: [{ ...base, completed: true }] as never }));
+    const done = buildItemContext(
+      'exam',
+      'e1',
+      makeDb({ exams: [{ ...base, completed: true }] as never }),
+    );
     expect(done?.recommended?.label).toBe('reabrir prova');
   });
 });
@@ -105,7 +113,13 @@ describe('buildItemContext — reading', () => {
   it('não iniciada recomenda começar leitura', () => {
     const db = makeDb({
       readings: [
-        { id: 'r1', title: 'A interpretação dos sonhos', status: 'nao_iniciado', readPages: 0, totalPages: 180 } as never,
+        {
+          id: 'r1',
+          title: 'A interpretação dos sonhos',
+          status: 'nao_iniciado',
+          readPages: 0,
+          totalPages: 180,
+        } as never,
       ],
     });
     const ctx = buildItemContext('reading', 'r1', db);
@@ -175,32 +189,56 @@ describe('buildItemContext — catalogBook', () => {
   });
 
   it('livro concluído não tem recomendada; livro sem total usa progresso do mapa', () => {
-    const done = buildItemContext('catalogBook', 'bk-1', makeDb({
-      catalogBooks: catalog,
-      readingProgress: { 'bk-1': 180 },
-    }));
+    const done = buildItemContext(
+      'catalogBook',
+      'bk-1',
+      makeDb({
+        catalogBooks: catalog,
+        readingProgress: { 'bk-1': 180 },
+      }),
+    );
     expect(done?.status).toBe('concluída');
     expect(done?.recommended).toBeUndefined();
 
-    const openTotal = buildItemContext('catalogBook', 'bk-2', makeDb({
-      catalogBooks: catalog,
-      readingProgress: { 'bk-2': 30 },
-    }));
+    const openTotal = buildItemContext(
+      'catalogBook',
+      'bk-2',
+      makeDb({
+        catalogBooks: catalog,
+        readingProgress: { 'bk-2': 30 },
+      }),
+    );
     expect(openTotal?.meta).toBe('30 páginas');
   });
 });
 
 describe('buildItemContext — class', () => {
   it('aula completa recomenda revisar; incompleta recomenda continuar', () => {
-    const completeCtx = buildItemContext('class', 'cl-1', makeDb({
-      classes: [{ id: 'cl-1', title: 'Ansiedade', courseId: 'c1', fullNotes: 'texto', date: '2026-08-20' } as never],
-    }));
+    const completeCtx = buildItemContext(
+      'class',
+      'cl-1',
+      makeDb({
+        classes: [
+          {
+            id: 'cl-1',
+            title: 'Ansiedade',
+            courseId: 'c1',
+            fullNotes: 'texto',
+            date: '2026-08-20',
+          } as never,
+        ],
+      }),
+    );
     expect(completeCtx?.status).toBe('completa');
     expect(completeCtx?.recommended?.label).toBe('revisar anotação');
 
-    const incompleteCtx = buildItemContext('class', 'cl-1', makeDb({
-      classes: [{ id: 'cl-1', title: 'Ansiedade', courseId: 'c1', date: '2026-08-20' } as never],
-    }));
+    const incompleteCtx = buildItemContext(
+      'class',
+      'cl-1',
+      makeDb({
+        classes: [{ id: 'cl-1', title: 'Ansiedade', courseId: 'c1', date: '2026-08-20' } as never],
+      }),
+    );
     expect(incompleteCtx?.status).toBe('para completar');
     expect(incompleteCtx?.recommended?.label).toBe('continuar anotação');
   });
@@ -218,15 +256,23 @@ describe('buildItemContext — flashcard', () => {
   });
 
   it('cartão revisado hoje não tem recomendada; revisado ontem volta a vencer', () => {
-    const reviewedToday = buildItemContext('flashcard', 'f1', makeDb({
-      flashcards: [{ id: 'f1', question: 'q', lastReviewed: todayISO() } as never],
-    }));
+    const reviewedToday = buildItemContext(
+      'flashcard',
+      'f1',
+      makeDb({
+        flashcards: [{ id: 'f1', question: 'q', lastReviewed: todayISO() } as never],
+      }),
+    );
     expect(reviewedToday?.recommended).toBeUndefined();
     expect(reviewedToday?.status).toBe('revisado hoje');
 
-    const reviewedYesterday = buildItemContext('flashcard', 'f1', makeDb({
-      flashcards: [{ id: 'f1', question: 'q', lastReviewed: yesterday() } as never],
-    }));
+    const reviewedYesterday = buildItemContext(
+      'flashcard',
+      'f1',
+      makeDb({
+        flashcards: [{ id: 'f1', question: 'q', lastReviewed: yesterday() } as never],
+      }),
+    );
     expect(reviewedYesterday?.recommended?.id).toBe('review-flashcard');
   });
 
@@ -243,7 +289,16 @@ describe('buildItemContext — course', () => {
   it('conta registros e ajusta o rótulo da recomendada', () => {
     const withRecords = makeDb({
       classes: [{ id: 'cl-1', title: 'A', courseId: 'c1' } as never],
-      tasks: [{ id: 't1', title: 'T', disciplineId: 'c1', completed: false, priority: 'baixa', category: 'outro' } as never],
+      tasks: [
+        {
+          id: 't1',
+          title: 'T',
+          disciplineId: 'c1',
+          completed: false,
+          priority: 'baixa',
+          category: 'outro',
+        } as never,
+      ],
     });
     const ctx = buildItemContext('course', 'c1', withRecords);
     expect(ctx?.status).toBe('2 registros');
@@ -257,16 +312,34 @@ describe('buildItemContext — course', () => {
 
 describe('buildItemContext — looseNote', () => {
   it('nota curta recomenda transformar; nota longa recomenda continuar editando com transformar nas comuns', () => {
-    const short = buildItemContext('looseNote', 'n1', makeDb({
-      looseNotes: [{ id: 'n1', title: 'ideia', content: 'curta', category: 'ideia', date: '' } as never],
-    }));
+    const short = buildItemContext(
+      'looseNote',
+      'n1',
+      makeDb({
+        looseNotes: [
+          { id: 'n1', title: 'ideia', content: 'curta', category: 'ideia', date: '' } as never,
+        ],
+      }),
+    );
     expect(short?.recommended?.id).toBe('transform-note');
     expect(short?.recommended?.label).toBe('transformar em tarefa');
     expect(short?.actions).toHaveLength(0);
 
-    const long = buildItemContext('looseNote', 'n1', makeDb({
-      looseNotes: [{ id: 'n1', title: 'ensaio', content: 'x'.repeat(300), category: 'reflexão', date: '' } as never],
-    }));
+    const long = buildItemContext(
+      'looseNote',
+      'n1',
+      makeDb({
+        looseNotes: [
+          {
+            id: 'n1',
+            title: 'ensaio',
+            content: 'x'.repeat(300),
+            category: 'reflexão',
+            date: '',
+          } as never,
+        ],
+      }),
+    );
     expect(long?.recommended?.id).toBe('edit');
     expect(long?.actions.map((a) => a.id)).toEqual(['transform-note']);
   });
@@ -274,44 +347,95 @@ describe('buildItemContext — looseNote', () => {
 
 describe('buildItemContext — concept / author / material / session / internship / quizSession', () => {
   it('conceito recomenda criar flashcard', () => {
-    const ctx = buildItemContext('concept', 'con-1', makeDb({
-      concepts: [{ id: 'con-1', name: 'Vínculo', authorIds: [], courseIds: [], tags: [] } as never],
-    }));
+    const ctx = buildItemContext(
+      'concept',
+      'con-1',
+      makeDb({
+        concepts: [
+          { id: 'con-1', name: 'Vínculo', authorIds: [], courseIds: [], tags: [] } as never,
+        ],
+      }),
+    );
     expect(ctx?.recommended?.id).toBe('create-flashcard');
   });
 
   it('autor recomenda conceitos relacionados', () => {
-    const ctx = buildItemContext('author', 'aut-1', makeDb({
-      authors: [{ id: 'aut-1', name: 'Melanie Klein', bio: '', keyConcepts: [], majorWorks: [] } as never],
-    }));
+    const ctx = buildItemContext(
+      'author',
+      'aut-1',
+      makeDb({
+        authors: [
+          { id: 'aut-1', name: 'Melanie Klein', bio: '', keyConcepts: [], majorWorks: [] } as never,
+        ],
+      }),
+    );
     expect(ctx?.recommended?.id).toBe('view-related');
   });
 
   it('material com link recomenda abrir; sem link cai para editar', () => {
-    const withUrl = buildItemContext('material', 'm1', makeDb({
-      materials: [{ id: 'm1', title: 'Artigo', type: 'artigo', author: '', url: 'https://x', tags: [], addedAt: '' } as never],
-    }));
+    const withUrl = buildItemContext(
+      'material',
+      'm1',
+      makeDb({
+        materials: [
+          {
+            id: 'm1',
+            title: 'Artigo',
+            type: 'artigo',
+            author: '',
+            url: 'https://x',
+            tags: [],
+            addedAt: '',
+          } as never,
+        ],
+      }),
+    );
     expect(withUrl?.recommended?.id).toBe('open-link');
     expect(withUrl?.actions.map((a) => a.id)).toEqual(['edit']);
 
-    const noUrl = buildItemContext('material', 'm1', makeDb({
-      materials: [{ id: 'm1', title: 'Artigo', type: 'artigo', author: '', tags: [], addedAt: '' } as never],
-    }));
+    const noUrl = buildItemContext(
+      'material',
+      'm1',
+      makeDb({
+        materials: [
+          { id: 'm1', title: 'Artigo', type: 'artigo', author: '', tags: [], addedAt: '' } as never,
+        ],
+      }),
+    );
     expect(noUrl?.recommended?.id).toBe('edit');
   });
 
   it('sessão recomenda ver no histórico', () => {
-    const ctx = buildItemContext('session', 'ss-1', makeDb({
-      sessions: [{ id: 'ss-1', topic: 'pomodoro', date: '2026-08-21', durationMinutes: 25 } as never],
-    }));
+    const ctx = buildItemContext(
+      'session',
+      'ss-1',
+      makeDb({
+        sessions: [
+          { id: 'ss-1', topic: 'pomodoro', date: '2026-08-21', durationMinutes: 25 } as never,
+        ],
+      }),
+    );
     expect(ctx?.recommended?.id).toBe('view-history');
     expect(ctx?.meta).toContain('25 min');
   });
 
   it('registro de estágio incompleto recomenda continuar registro (ação de editar)', () => {
-    const ctx = buildItemContext('internship', 'ilog-1', makeDb({
-      internshipLogs: [{ id: 'ilog-1', type: 'estagio', activity: 'triagem', hours: 4, date: '2026-08-21', reflections: '' } as never],
-    }));
+    const ctx = buildItemContext(
+      'internship',
+      'ilog-1',
+      makeDb({
+        internshipLogs: [
+          {
+            id: 'ilog-1',
+            type: 'estagio',
+            activity: 'triagem',
+            hours: 4,
+            date: '2026-08-21',
+            reflections: '',
+          } as never,
+        ],
+      }),
+    );
     expect(ctx?.status).toBe('incompleto');
     expect(ctx?.recommended?.id).toBe('edit');
     expect(ctx?.recommended?.label).toBe('continuar registro');
@@ -328,16 +452,24 @@ describe('buildItemContext — concept / author / material / session / internshi
       answers: [],
       createdAt: '',
     };
-    const withErrors = buildItemContext('quizSession', 'qs-1', makeDb({
-      quizSessions: [{ ...base, correctCount: 3, totalCount: 5, scorePct: 60 } as never],
-    }));
+    const withErrors = buildItemContext(
+      'quizSession',
+      'qs-1',
+      makeDb({
+        quizSessions: [{ ...base, correctCount: 3, totalCount: 5, scorePct: 60 } as never],
+      }),
+    );
     expect(withErrors?.recommended?.id).toBe('review-quiz');
     expect(withErrors?.meta).toContain('2 erros');
     expect(withErrors?.status).toBe('60% de acerto');
 
-    const perfect = buildItemContext('quizSession', 'qs-1', makeDb({
-      quizSessions: [{ ...base, correctCount: 5, totalCount: 5, scorePct: 100 } as never],
-    }));
+    const perfect = buildItemContext(
+      'quizSession',
+      'qs-1',
+      makeDb({
+        quizSessions: [{ ...base, correctCount: 5, totalCount: 5, scorePct: 100 } as never],
+      }),
+    );
     expect(perfect?.recommended).toBeUndefined();
   });
 });

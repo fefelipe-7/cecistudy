@@ -9,8 +9,8 @@ export const FamiliesView: React.FC = () => {
   const [query, setQuery] = useState('');
 
   const q = query.trim().toLowerCase();
-  const families = PSICOTERAPIA_FAMILIES.filter((f) =>
-    !q || f.name.toLowerCase().includes(q) || f.description.toLowerCase().includes(q)
+  const families = PSICOTERAPIA_FAMILIES.filter(
+    (f) => !q || f.name.toLowerCase().includes(q) || f.description.toLowerCase().includes(q),
   );
 
   return (
@@ -49,9 +49,7 @@ export const FamiliesView: React.FC = () => {
         {families.length === 0 && (
           <div className="text-center py-8 space-y-2">
             <Mascote expression="no-results" className="w-14 h-14 mx-auto" decorative />
-            <p className="text-sm text-ceci-secondary">
-              nada por aqui com esse nome ♡
-            </p>
+            <p className="text-sm text-ceci-secondary">nada por aqui com esse nome ♡</p>
           </div>
         )}
         {families.map((family) => (

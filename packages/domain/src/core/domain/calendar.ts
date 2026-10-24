@@ -12,7 +12,14 @@ export type CalendarItemStatus =
   | 'dispensado';
 
 /** Módulo dono do conteúdo (o Calendário é dono só do tempo). */
-export type ModuleOrigin = 'faculdade' | 'tcc' | 'estudos' | 'estagio' | 'conhecimento' | 'google' | 'marketing';
+export type ModuleOrigin =
+  | 'faculdade'
+  | 'tcc'
+  | 'estudos'
+  | 'estagio'
+  | 'conhecimento'
+  | 'google'
+  | 'marketing';
 
 export interface SourceRef {
   kind: string;

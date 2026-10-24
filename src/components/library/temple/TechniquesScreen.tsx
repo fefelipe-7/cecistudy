@@ -1,10 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Sparkles, Wrench } from 'lucide-react';
 import type { TempleTechnique, TempleTechniqueCategory } from '../../../types';
-import {
-  getTempleTechniqueCategories,
-  getTempleTechniques,
-} from '../../../lib/templeData';
+import { getTempleTechniqueCategories, getTempleTechniques } from '../../../lib/templeData';
 import { MarkdownBlock } from './MarkdownBlock';
 import {
   TempleAccordionHeader,
@@ -67,7 +64,7 @@ export const TechniquesScreen: React.FC = () => {
       (t) =>
         t.nome.toLowerCase().includes(q) ||
         (t.emUmaFrase ?? '').toLowerCase().includes(q) ||
-        (catNameById.get(t.dominioId) ?? '').includes(q)
+        (catNameById.get(t.dominioId) ?? '').includes(q),
     );
   }, [techniques, categories, q]);
 
@@ -201,7 +198,9 @@ export const TechniquesScreen: React.FC = () => {
                           {tech.nome}
                         </h3>
                         {tech.emUmaFrase && (
-                          <p className="text-xs text-ceci-secondary mt-0.5 line-clamp-2">{tech.emUmaFrase}</p>
+                          <p className="text-xs text-ceci-secondary mt-0.5 line-clamp-2">
+                            {tech.emUmaFrase}
+                          </p>
                         )}
                       </button>
                     ))}

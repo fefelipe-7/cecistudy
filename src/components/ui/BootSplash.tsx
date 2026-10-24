@@ -39,7 +39,9 @@ const BOOT_PHRASES = [
 /** Fração do grupo crítico (done/skipped/error contam como resolvidos). */
 function criticalFraction(state: BootState | null): number {
   if (!state) return 0;
-  const resolved = CRITICAL_STEPS.filter((id) => state.steps[id].status !== 'pending' && state.steps[id].status !== 'running').length;
+  const resolved = CRITICAL_STEPS.filter(
+    (id) => state.steps[id].status !== 'pending' && state.steps[id].status !== 'running',
+  ).length;
   return resolved / CRITICAL_STEPS.length;
 }
 
@@ -55,9 +57,7 @@ function criticalFraction(state: BootState | null): number {
 export const BootSplash: React.FC = () => {
   const [phase, setPhase] = useState<Phase>('show');
   const [fraction, setFraction] = useState(0);
-  const [phraseIdx, setPhraseIdx] = useState(
-    () => Math.floor(Math.random() * BOOT_PHRASES.length)
-  );
+  const [phraseIdx, setPhraseIdx] = useState(() => Math.floor(Math.random() * BOOT_PHRASES.length));
   const bootStateRef = useRef<BootState | null>(null);
   const startedAtRef = useRef(Date.now());
   const reducedMotion = useRef(prefersReducedMotion());
@@ -98,9 +98,7 @@ export const BootSplash: React.FC = () => {
           criticalReady: state?.criticalReady ?? false,
           errors: state?.errors.map((e) => e.step) ?? [],
         });
-        console.warn(
-          '[BootSplash] teto de segurança acionado antes do caminho crítico terminar',
-        );
+        console.warn('[BootSplash] teto de segurança acionado antes do caminho crítico terminar');
         setPhase('fade');
       }
     }, TICK_MS);
@@ -143,9 +141,7 @@ export const BootSplash: React.FC = () => {
       <motion.div
         animate={reducedMotion.current ? undefined : { y: [0, -9, 0] }}
         transition={
-          reducedMotion.current
-            ? undefined
-            : { duration: 2.2, repeat: Infinity, ease: 'easeInOut' }
+          reducedMotion.current ? undefined : { duration: 2.2, repeat: Infinity, ease: 'easeInOut' }
         }
         className="flex items-center justify-center"
       >

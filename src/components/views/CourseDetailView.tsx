@@ -47,7 +47,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
   /** Chip "do agora" — hoje tem aula? senão a próxima prova no radar. */
   const nowChip = (() => {
     const hasClassToday = getTodaySchedule(courses, new Date()).some(
-      (s) => s.course.id === course.id
+      (s) => s.course.id === course.id,
     );
     if (hasClassToday) return { Icon: GraduationCap, label: 'hoje tem aula ♡' };
     const next = courseExams
@@ -102,7 +102,11 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
                 <MapPin className="w-3 h-3 text-ceci-muted shrink-0" />
                 {contextBits.map((bit, i) => (
                   <React.Fragment key={i}>
-                    {i > 0 && <span aria-hidden className="text-ceci-muted">·</span>}
+                    {i > 0 && (
+                      <span aria-hidden className="text-ceci-muted">
+                        ·
+                      </span>
+                    )}
                     <span>{bit}</span>
                   </React.Fragment>
                 ))}
@@ -147,7 +151,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
         className="px-1"
       />
 
-{/* Sub-tabs + conteúdo deslizável */}
+      {/* Sub-tabs + conteúdo deslizável */}
       <div className="px-1">
         <SwipeableTabPanel active={activeTab} pager={pager} label={TAB_LABEL[activeTab]}>
           {activeTab === 'info' && (

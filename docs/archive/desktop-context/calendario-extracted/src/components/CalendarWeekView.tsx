@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  CalendarItem,
-  LayerConfig,
-} from '../types';
+import { CalendarItem, LayerConfig } from '../types';
 import {
   STRUCTURED_HOURS,
   parseTimeToMinutes,
@@ -37,7 +34,7 @@ interface CalendarWeekViewProps {
     itemId: string,
     newDate: string,
     newStartTime: string,
-    newEndTime: string
+    newEndTime: string,
   ) => void;
   activeTimerItemId?: string | null;
 }
@@ -130,7 +127,7 @@ export const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({
               currentStartMins: newStartMins,
               currentEndMins: newEndMins,
             }
-          : null
+          : null,
       );
     };
 
@@ -143,12 +140,7 @@ export const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({
       ) {
         const newStartTime = minutesToTime(draggingState.currentStartMins);
         const newEndTime = minutesToTime(draggingState.currentEndMins);
-        onUpdateItemTime(
-          draggingState.itemId,
-          draggingState.currentDate,
-          newStartTime,
-          newEndTime
-        );
+        onUpdateItemTime(draggingState.itemId, draggingState.currentDate, newStartTime, newEndTime);
       }
       setDraggingState(null);
     };
@@ -188,7 +180,7 @@ export const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({
               currentEndMins: newEndMins,
               currentDurationMins: newDuration,
             }
-          : null
+          : null,
       );
     };
 
@@ -203,7 +195,7 @@ export const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({
           resizingState.itemId,
           resizingState.date,
           resizingState.startTime,
-          newEndTime
+          newEndTime,
         );
       }
       setResizingState(null);
@@ -217,9 +209,7 @@ export const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({
     };
   }, [resizingState, onUpdateItemTime]);
 
-  const visibleLayerIds = new Set(
-    layers.filter((l) => l.visible).map((l) => l.id)
-  );
+  const visibleLayerIds = new Set(layers.filter((l) => l.visible).map((l) => l.id));
 
   // Filter items by visible layers
   const visibleItems = items.filter((item) => visibleLayerIds.has(item.layer));
@@ -415,9 +405,7 @@ export const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({
                   {hourObj.label}
                 </div>
                 {/* Sub :30 label */}
-                <div className="text-[10px] font-mono text-[#ADA3A5] leading-none">
-                  :30
-                </div>
+                <div className="text-[10px] font-mono text-[#ADA3A5] leading-none">:30</div>
               </div>
             ))}
           </div>
@@ -429,7 +417,7 @@ export const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({
             const positionedEvents = computeOverlappingEventLayout(
               dayItems,
               START_HOUR,
-              HOUR_HEIGHT
+              HOUR_HEIGHT,
             );
 
             return (
@@ -505,15 +493,14 @@ export const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({
                   let displayDuration = pos.durationMins;
 
                   if (isBeingDragged && draggingState) {
-                    const startFromBase =
-                      draggingState.currentStartMins - START_HOUR * 60;
+                    const startFromBase = draggingState.currentStartMins - START_HOUR * 60;
                     top = (startFromBase / 60) * HOUR_HEIGHT;
                     displayStartTime = minutesToTime(draggingState.currentStartMins);
                     displayEndTime = minutesToTime(draggingState.currentEndMins);
                   } else if (isBeingResized && resizingState) {
                     height = Math.max(
                       (resizingState.currentDurationMins / 60) * HOUR_HEIGHT - 3,
-                      36
+                      36,
                     );
                     displayEndTime = minutesToTime(resizingState.currentEndMins);
                     displayDuration = resizingState.currentDurationMins;
@@ -566,10 +553,10 @@ export const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({
                         isBeingDragged
                           ? 'z-40 opacity-95 shadow-xl scale-[1.02] ring-2 ring-[#D85F79]'
                           : isBeingResized
-                          ? 'z-40 shadow-lg ring-2 ring-[#4A879F]'
-                          : pos.totalCols > 1
-                          ? 'z-10 shadow-xs hover:z-20 hover:shadow-md'
-                          : 'z-10 shadow-2xs hover:shadow-sm'
+                            ? 'z-40 shadow-lg ring-2 ring-[#4A879F]'
+                            : pos.totalCols > 1
+                              ? 'z-10 shadow-xs hover:z-20 hover:shadow-md'
+                              : 'z-10 shadow-2xs hover:shadow-sm'
                       } ${styles.bg} ${styles.border}`}
                     >
                       {/* Active Live Drag / Resize Feedback Overlay Tooltip */}
@@ -590,9 +577,7 @@ export const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({
                               className="w-1.5 h-1.5 rounded-full shrink-0"
                               style={{ backgroundColor: styles.dot }}
                             />
-                            <span
-                              className={`text-xs font-bold truncate ${styles.text}`}
-                            >
+                            <span className={`text-xs font-bold truncate ${styles.text}`}>
                               {item.title}
                             </span>
                           </div>

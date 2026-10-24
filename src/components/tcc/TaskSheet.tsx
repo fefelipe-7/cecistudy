@@ -48,8 +48,7 @@ const STATUS_OPTIONS: { value: TaskStatus; label: string }[] = [
 ];
 
 export const TaskSheet: React.FC<TaskSheetProps> = ({ open, taskId, onClose }) => {
-  const { thesisTasks, thesisChapters, thesisMeetings, setThesisTasks, showToast } =
-    useMobileApp();
+  const { thesisTasks, thesisChapters, thesisMeetings, setThesisTasks, showToast } = useMobileApp();
 
   const live = taskId === 'new' ? undefined : thesisTasks.find((t) => t.id === taskId);
 
@@ -128,7 +127,9 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, taskId, onClose }) =
         </h3>
 
         <div>
-          <label htmlFor="task-titulo" className={labelClass}>título</label>
+          <label htmlFor="task-titulo" className={labelClass}>
+            título
+          </label>
           <input
             id="task-titulo"
             type="text"
@@ -153,7 +154,9 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, taskId, onClose }) =
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label htmlFor="task-capitulo" className={labelClass}>capítulo</label>
+            <label htmlFor="task-capitulo" className={labelClass}>
+              capítulo
+            </label>
             <select
               id="task-capitulo"
               value={chapterId}
@@ -162,12 +165,16 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, taskId, onClose }) =
             >
               <option value="">— nenhum —</option>
               {thesisChapters.map((c) => (
-                <option key={c.id} value={c.id}>{c.title}</option>
+                <option key={c.id} value={c.id}>
+                  {c.title}
+                </option>
               ))}
             </select>
           </div>
           <div>
-            <label htmlFor="task-prazo" className={labelClass}>prazo</label>
+            <label htmlFor="task-prazo" className={labelClass}>
+              prazo
+            </label>
             <input
               id="task-prazo"
               type="date"
@@ -238,8 +245,8 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, taskId, onClose }) =
             remover “{live?.title}”?
           </h3>
           <p className="text-xs text-ceci-secondary leading-relaxed">
-            a pendência sai da lista. as reuniões e as decisões que já ficaram
-            registradas continuam salvas.
+            a pendência sai da lista. as reuniões e as decisões que já ficaram registradas continuam
+            salvas.
           </p>
           <div className="flex items-center justify-end gap-2">
             <button

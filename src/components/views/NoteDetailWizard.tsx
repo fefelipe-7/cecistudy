@@ -5,12 +5,7 @@ import { useMobileApp } from '@/context/mobileApp';
 import type { LooseNote } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { WizardScaffold, type WizardStep } from '../wizards/WizardScaffold';
-import {
-  FieldLabel,
-  ReviewCard,
-  TextArea,
-  TextInput,
-} from '../wizards/wizardFields';
+import { FieldLabel, ReviewCard, TextArea, TextInput } from '../wizards/wizardFields';
 import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
 import { PillGroupMulti } from '../ui/PillGroupMulti';
 import { CourseSelect } from '../wizards/CourseSelect';
@@ -63,23 +58,23 @@ export const NoteDetailWizard: React.FC = () => {
 
   const courseName = useMemo(
     () => courses.find((c) => c.id === courseId)?.name ?? '',
-    [courses, courseId]
+    [courses, courseId],
   );
   const conceptNames = useMemo(
     () => concepts.filter((c) => conceptIds.includes(c.id)).map((c) => c.name),
-    [concepts, conceptIds]
+    [concepts, conceptIds],
   );
   const authorNames = useMemo(
     () => authors.filter((a) => authorIds.includes(a.id)).map((a) => a.name),
-    [authors, authorIds]
+    [authors, authorIds],
   );
   const approachNames = useMemo(
     () => approaches.filter((a) => approachIds.includes(a.id)).map((a) => a.shortName || a.name),
-    [approaches, approachIds]
+    [approaches, approachIds],
   );
   const materialNames = useMemo(
     () => materials.filter((m) => materialIds.includes(m.id)).map((m) => m.title),
-    [materials, materialIds]
+    [materials, materialIds],
   );
 
   if (!focusedNote) {
@@ -132,7 +127,8 @@ export const NoteDetailWizard: React.FC = () => {
       id: 'vinculos',
       title: 'vínculos',
       headline: 'o que essa nota tem a ver com o cantinho?',
-      subtitle: 'vínculos são opcionais — conectam a nota a matérias, conceitos, autores e materiais ♡',
+      subtitle:
+        'vínculos são opcionais — conectam a nota a matérias, conceitos, autores e materiais ♡',
       content: (
         <div className="space-y-5">
           <CourseSelect
@@ -173,7 +169,9 @@ export const NoteDetailWizard: React.FC = () => {
                 onChange={setApproachIds}
               />
             ) : (
-              <span className="text-[11px] text-ceci-tertiary">ainda não há abordagens registradas.</span>
+              <span className="text-[11px] text-ceci-tertiary">
+                ainda não há abordagens registradas.
+              </span>
             )}
           </div>
 
@@ -187,7 +185,9 @@ export const NoteDetailWizard: React.FC = () => {
                 onChange={setMaterialIds}
               />
             ) : (
-              <span className="text-[11px] text-ceci-tertiary">ainda não há materiais guardados.</span>
+              <span className="text-[11px] text-ceci-tertiary">
+                ainda não há materiais guardados.
+              </span>
             )}
           </div>
         </div>
@@ -206,7 +206,9 @@ export const NoteDetailWizard: React.FC = () => {
               { label: 'categoria', value: category },
               {
                 label: 'conteúdo',
-                value: content.trim() ? `${content.trim().slice(0, 80)}${content.trim().length > 80 ? '…' : ''}` : '—',
+                value: content.trim()
+                  ? `${content.trim().slice(0, 80)}${content.trim().length > 80 ? '…' : ''}`
+                  : '—',
               },
               { label: 'matéria', value: courseName },
               { label: 'conceitos', value: conceptNames.join(' · ') },

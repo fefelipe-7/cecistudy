@@ -7,10 +7,10 @@ import { LOOSE_CATEGORIES, type ComposeMode } from '@/lib/composeLogic';
 import type { LooseNote } from '@/types/entity';
 
 const CATEGORY_EMOJI: Record<LooseNote['category'], string> = {
-  'reflexão': '💭',
-  'estudo': '📚',
-  'ideia': '✨',
-  'lembrete': '📌',
+  reflexão: '💭',
+  estudo: '📚',
+  ideia: '✨',
+  lembrete: '📌',
 };
 
 interface ComposeConfigAccordionProps {
@@ -57,7 +57,10 @@ export const ComposeConfigAccordion: React.FC<ComposeConfigAccordionProps> = ({
           )}
         </span>
         <ChevronDown
-          className={cn('w-4 h-4 text-ceci-tertiary transition-transform shrink-0', open && 'rotate-180')}
+          className={cn(
+            'w-4 h-4 text-ceci-tertiary transition-transform shrink-0',
+            open && 'rotate-180',
+          )}
         />
       </button>
 

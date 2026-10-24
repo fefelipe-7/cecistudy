@@ -22,7 +22,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSaved, onSe
       style={{ backgroundColor: `color-mix(in srgb, ${color} 70%, var(--color-cover-base))` }}
       aria-label={`abrir artigo ${article.titulo}`}
     >
-       {/* Dobradinha de folha de papel (canto superior direito) */}
+      {/* Dobradinha de folha de papel (canto superior direito) */}
       <div className="absolute top-0 right-0 w-0 h-0 border-t-[18px] border-t-cover-base/70 border-l-[18px] border-l-transparent" />
       <div className="absolute top-0 right-0 w-[18px] h-[18px] bg-black/10 rounded-bl-[10px]" />
 
@@ -33,7 +33,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSaved, onSe
         ))}
       </div>
 
-       {/* Badge + salvos */}
+      {/* Badge + salvos */}
       <div className="relative flex items-center justify-between gap-1">
         <span
           className="text-[8px] font-extrabold uppercase tracking-wider bg-cover-base/90 px-1.5 py-0.5 rounded shadow-2xs line-clamp-1 max-w-[80px]"
@@ -53,9 +53,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSaved, onSe
 
       {/* Autores + ano */}
       <div className="relative space-y-0.5">
-        <p className="text-[9px] font-semibold text-cover-ink/80 line-clamp-1">
-          {article.autores}
-        </p>
+        <p className="text-[9px] font-semibold text-cover-ink/80 line-clamp-1">{article.autores}</p>
         <p className="text-[9px] font-bold" style={{ color: accent }}>
           {article.ano}
         </p>

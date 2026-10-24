@@ -20,11 +20,17 @@ describe('Picker', () => {
   it('marca a opção selecionada com aria-selected', () => {
     render(<Picker value="b" onChange={() => {}} options={OPTIONS} />);
     fireEvent.click(screen.getByRole('button', { name: 'opção b' }));
-    expect(screen.getByRole('option', { name: 'opção b' })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByRole('option', { name: 'opção b' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
   });
 
   it('mostra busca e filtra opções individualmente em listas grandes', () => {
-    const many = Array.from({ length: 12 }, (_, i) => ({ value: `v${i}`, label: `matéria ${i + 1}` }));
+    const many = Array.from({ length: 12 }, (_, i) => ({
+      value: `v${i}`,
+      label: `matéria ${i + 1}`,
+    }));
     render(<Picker value="" onChange={() => {}} options={many} />);
     fireEvent.click(screen.getByRole('button', { name: 'escolher...' }));
     const search = screen.getByLabelText(/buscar em/i);
@@ -57,7 +63,7 @@ describe('Picker', () => {
         emptyMessage="ainda não há disciplinas."
         createLabel="criar matéria agora"
         onCreate={onCreate}
-      />
+      />,
     );
     fireEvent.click(screen.getByRole('button', { name: /criar matéria agora/i }));
     expect(onCreate).toHaveBeenCalledTimes(1);

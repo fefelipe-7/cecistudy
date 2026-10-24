@@ -44,9 +44,7 @@ export async function getTempleConceptIndex(): Promise<TempleConceptIndexEntry[]
 const conceptsByDomainCache = new Map<string, Promise<TempleConcept[]>>();
 
 /** Corpo completo dos conceitos de um domínio (chunk lazy na web). */
-export async function getTempleConceptsByDomain(
-  domainId: string
-): Promise<TempleConcept[]> {
+export async function getTempleConceptsByDomain(domainId: string): Promise<TempleConcept[]> {
   if (isNativePlatform) {
     const { getCatalogConceptsByDomain } = await import('./db/catalogDb.ts');
     return getCatalogConceptsByDomain<TempleConcept>(domainId);
@@ -149,7 +147,7 @@ let approachRegistryModule: Promise<typeof import('../data/temple/registry.ts')>
 
 /** Resolve qualquer alias de abordagem → canônica; registro pequeno, chunk próprio. */
 export async function resolveApproach(
-  aliasId: string
+  aliasId: string,
 ): Promise<{ id: string; name: string; familyId: string | null } | null> {
   if (!approachRegistryModule) {
     approachRegistryModule = import('../data/temple/registry.ts');

@@ -33,9 +33,7 @@ export async function decodeQrFromDataUrl(dataUrl: string): Promise<string | nul
  * Abre a câmera/galeria e devolve o conteúdo do QR escaneado.
  * Resolve `null` quando a usuária cancela ou nenhum QR é encontrado.
  */
-export async function scanQrPayload(
-  options: { header?: string } = {}
-): Promise<string | null> {
+export async function scanQrPayload(options: { header?: string } = {}): Promise<string | null> {
   const photo = await Camera.getPhoto({
     resultType: CameraResultType.DataUrl,
     source: CameraSource.Prompt,

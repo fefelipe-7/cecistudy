@@ -114,7 +114,10 @@ const JourneyNow: React.FC<JourneyNowProps> = ({
 
           {editing ? (
             <div className="space-y-2">
-              <label htmlFor="term-ordinal" className="block text-xs font-medium text-ceci-secondary">
+              <label
+                htmlFor="term-ordinal"
+                className="block text-xs font-medium text-ceci-secondary"
+              >
                 em que semestre você está?
               </label>
               <div className="flex items-center gap-2">
@@ -158,7 +161,9 @@ const JourneyNow: React.FC<JourneyNowProps> = ({
                 <span className="font-display text-sm font-bold text-ceci-brand-strong">
                   {journey.percent}% do curso
                 </span>
-                <span className="text-xs text-ceci-secondary">{leftLabel(journey.semestersLeft)}</span>
+                <span className="text-xs text-ceci-secondary">
+                  {leftLabel(journey.semestersLeft)}
+                </span>
               </div>
               <div
                 role="progressbar"
@@ -181,8 +186,8 @@ const JourneyNow: React.FC<JourneyNowProps> = ({
 
           {journey.beyondCourseEstimate ? (
             <p className="rounded-xl bg-surface-rose border border-ceci-border-brand px-3 py-2 text-[11px] text-ceci-secondary">
-              seu {journey.currentOrdinal}º está além dos {journey.totalSemesters} do curso — se esse
-              palpite estiver errado, ajusta o total aqui embaixo ♡
+              seu {journey.currentOrdinal}º está além dos {journey.totalSemesters} do curso — se
+              esse palpite estiver errado, ajusta o total aqui embaixo ♡
             </p>
           ) : null}
 

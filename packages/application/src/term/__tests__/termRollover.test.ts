@@ -24,7 +24,10 @@ function term(over: Partial<AcademicTerm> = {}): AcademicTerm {
   };
 }
 
-function course(id: string, over: Partial<TermScopedCourse> & { attendance?: TermAttendanceInput } = {}): TermScopedCourse & { attendance?: TermAttendanceInput } {
+function course(
+  id: string,
+  over: Partial<TermScopedCourse> & { attendance?: TermAttendanceInput } = {},
+): TermScopedCourse & { attendance?: TermAttendanceInput } {
   return { id, termId: 'trm-1', status: 'ativo', ...over };
 }
 
@@ -280,7 +283,15 @@ describe('application/term — planTermRollover', () => {
 
   it('não muta as entradas e é determinístico', () => {
     const terms = [term()];
-    const input = { terms, courses, decisions: {}, summaryInput: INPUT, newTermId: 'trm-2', closedAt: '2026-06-30', now: '2026-06-30T12:00:00.000Z' };
+    const input = {
+      terms,
+      courses,
+      decisions: {},
+      summaryInput: INPUT,
+      newTermId: 'trm-2',
+      closedAt: '2026-06-30',
+      now: '2026-06-30T12:00:00.000Z',
+    };
     const snapshot = JSON.stringify({ terms, courses });
     const a = planTermRollover(input);
     const b = planTermRollover(input);
@@ -502,7 +513,12 @@ describe('application/term — undoTermRollover', () => {
     expect(Object.keys(plan.originalTermIds).sort()).toEqual(['c1', 'c2', 'c3']);
     expect(plan.originalTermIds.c1).toEqual({ termId: 'trm-1', status: 'ativo' });
 
-    const back = undoTermRollover({ terms: plan.terms, courses: plan.courses, plan, now: '2026-07-01T00:00:00.000Z' });
+    const back = undoTermRollover({
+      terms: plan.terms,
+      courses: plan.courses,
+      plan,
+      now: '2026-07-01T00:00:00.000Z',
+    });
     expect(back.courses).toEqual(courses);
   });
 
@@ -519,7 +535,12 @@ describe('application/term — undoTermRollover', () => {
       closedAt: '2026-06-30',
       now: '2026-06-30T12:00:00.000Z',
     });
-    const back = undoTermRollover({ terms: plan.terms, courses: plan.courses, plan, now: '2026-07-01T00:00:00.000Z' });
+    const back = undoTermRollover({
+      terms: plan.terms,
+      courses: plan.courses,
+      plan,
+      now: '2026-07-01T00:00:00.000Z',
+    });
     expect('status' in back.courses[0]).toBe(false);
     expect(back.courses[0]).toEqual(c1);
   });
@@ -536,13 +557,20 @@ describe('application/term — undoTermRollover', () => {
       closedAt: '2026-06-30',
       now: '2026-06-30T12:00:00.000Z',
     });
-    const back = undoTermRollover({ terms: plan.terms, courses: plan.courses, plan, now: '2026-07-01T00:00:00.000Z' });
+    const back = undoTermRollover({
+      terms: plan.terms,
+      courses: plan.courses,
+      plan,
+      now: '2026-07-01T00:00:00.000Z',
+    });
     expect(back.courses[0]).toEqual(c1);
   });
 });
 
 describe('application/term — gradeCourses', () => {
   it('só o que está ativo aparece na grade', () => {
-    expect(gradeCourses([course('c1'), course('c2', { status: 'arquivado' })]).map((c) => c.id)).toEqual(['c1']);
+    expect(
+      gradeCourses([course('c1'), course('c2', { status: 'arquivado' })]).map((c) => c.id),
+    ).toEqual(['c1']);
   });
 });

@@ -46,7 +46,7 @@ export const useAcervoTheory = () => {
         label: `✦ ${c.name}`,
       })),
     ],
-    [concepts, conceptIndex]
+    [concepts, conceptIndex],
   );
 
   const authorOptions = useMemo(
@@ -57,7 +57,7 @@ export const useAcervoTheory = () => {
         label: `✦ ${a.name}`,
       })),
     ],
-    [authors, templeAuthors]
+    [authors, templeAuthors],
   );
 
   /** Resolve seleção mista (ids pessoais + pseudo-ids do acervo) → ids reais. */

@@ -15,23 +15,23 @@ function uniqueSort(arr: string[]): string[] {
 }
 
 const APPROACH_ICONS: Record<string, string> = {
-  'Psicanálise': '🧠',
-  'TCC': '🎯',
-  'Humanista': '🌱',
-  'Sistêmica': '🔗',
-  'Comportamental': '⚡',
-  'Cognitiva': '💭',
-  'Existencial': '🌅',
-  'Junguiana': '🔮',
-  'Rogeriana': '🤝',
+  Psicanálise: '🧠',
+  TCC: '🎯',
+  Humanista: '🌱',
+  Sistêmica: '🔗',
+  Comportamental: '⚡',
+  Cognitiva: '💭',
+  Existencial: '🌅',
+  Junguiana: '🔮',
+  Rogeriana: '🤝',
   Fenomenologia: '👁',
   Psicossomática: '💚',
 };
 
 const AREA_ICONS: Record<string, string> = {
   'Psicologia Clínica': '🩺',
-  'Psicopatologia': '🔬',
-  'Neuropsicologia': '🧠',
+  Psicopatologia: '🔬',
+  Neuropsicologia: '🧠',
   'Psicologia do Desenvolvimento': '🌱',
   'Psicologia Social': '👥',
   'Psicologia Educacional': '📚',
@@ -76,7 +76,7 @@ function makeGroup(
   description: string,
   icon: string,
   qs: StudyQuestion[],
-  filter: Partial<QuizConfig>
+  filter: Partial<QuizConfig>,
 ): QuestionGroup {
   const filterConfig: QuizConfig = { ...emptyConfig(), ...filter };
   const allAuthors = new Set<string>();
@@ -105,7 +105,11 @@ function makeGroup(
     approaches: uniqueSort(Array.from(allApproaches)),
     concepts: uniqueSort(Array.from(allConcepts)),
     areas: uniqueSort(Array.from(allAreas)),
-    dificuldades: Array.from(allDificuldades).filter((d) => DIFICULDADES.includes(d as any)) as ('basica' | 'intermediaria' | 'avancada')[],
+    dificuldades: Array.from(allDificuldades).filter((d) => DIFICULDADES.includes(d as any)) as (
+      | 'basica'
+      | 'intermediaria'
+      | 'avancada'
+    )[],
     escolas: uniqueSort(Array.from(allEscolas)),
     filterConfig,
   };
@@ -132,13 +136,16 @@ export async function buildQuizGroups(): Promise<QuestionGroup[]> {
     const qs = byEscola.get(escola)!;
     groups.push(
       makeGroup(
-        `escola-${escola.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-')}`,
+        `escola-${escola
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[^a-z0-9]+/g, '-')}`,
         escola,
         pickDescription(escola),
         pickIcon(escola),
         qs,
-        { escolas: [escola] }
-      )
+        { escolas: [escola] },
+      ),
     );
   }
 
@@ -155,13 +162,16 @@ export async function buildQuizGroups(): Promise<QuestionGroup[]> {
     const qs = byArea.get(area)!;
     groups.push(
       makeGroup(
-        `area-${area.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-')}`,
+        `area-${area
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[^a-z0-9]+/g, '-')}`,
         area,
         pickDescription(undefined, area),
         pickIcon(undefined, area),
         qs,
-        { areas: [area] }
-      )
+        { areas: [area] },
+      ),
     );
   }
 
@@ -176,8 +186,8 @@ export async function buildQuizGroups(): Promise<QuestionGroup[]> {
           pickDescription(undefined, undefined, dif),
           pickIcon(undefined, undefined, dif),
           qs,
-          { dificuldades: [dif] }
-        )
+          { dificuldades: [dif] },
+        ),
       );
     }
   }
@@ -195,26 +205,25 @@ export async function buildQuizGroups(): Promise<QuestionGroup[]> {
     const qs = byBanca.get(banca)!;
     groups.push(
       makeGroup(
-        `banca-${banca.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-')}`,
+        `banca-${banca
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[^a-z0-9]+/g, '-')}`,
         banca,
         `questões da banca ${banca}`,
         '📝',
         qs,
-        { escolas: [...new Set(members(qs.map((q) => q.escolaOuAbordagem).filter(Boolean)))], areas: [...new Set(members(qs.map((q) => q.area).filter(Boolean)))] }
-      )
+        {
+          escolas: [...new Set(members(qs.map((q) => q.escolaOuAbordagem).filter(Boolean)))],
+          areas: [...new Set(members(qs.map((q) => q.area).filter(Boolean)))],
+        },
+      ),
     );
   }
 
   // 5. Grupo "tudo" — pool geral do banco
   groups.push(
-    makeGroup(
-      'all',
-      'banco completo',
-      'todas as questões do acervo',
-      '📚',
-      questions,
-      {}
-    )
+    makeGroup('all', 'banco completo', 'todas as questões do acervo', '📚', questions, {}),
   );
 
   groupsCache = groups;

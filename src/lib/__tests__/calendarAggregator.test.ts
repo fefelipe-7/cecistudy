@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { buildCalendarEntries, type BuildCalendarEntriesArgs, type CalendarEntry } from '../schedule';
+import {
+  buildCalendarEntries,
+  type BuildCalendarEntriesArgs,
+  type CalendarEntry,
+} from '../schedule';
 import type {
   Course,
   Exam,
@@ -22,7 +26,12 @@ const course = {
   schedule: [{ day: 1, start: '08:00', end: '10:00' }],
 } as Course;
 
-const exam = { id: 'e-1', title: 'prova de estatística', date: '2026-10-06', courseId: 'c-1' } as Exam;
+const exam = {
+  id: 'e-1',
+  title: 'prova de estatística',
+  date: '2026-10-06',
+  courseId: 'c-1',
+} as Exam;
 const task = { id: 't-1', title: 'entregar fichamento', dueDate: '2026-10-07' } as Task;
 const chapter = {
   id: 'ch-1',
@@ -43,7 +52,11 @@ const thesis = {
   advisor: 'mariana',
   deliveryDate: '2026-10-11',
 } as ThesisProject;
-const internshipLog = { id: 'il-1', date: '2026-10-06', activity: 'plantão na clínica' } as InternshipLog;
+const internshipLog = {
+  id: 'il-1',
+  date: '2026-10-06',
+  activity: 'plantão na clínica',
+} as InternshipLog;
 const studySession = { id: 'ss-1', date: '2026-10-07', topic: 'ler capítulo 2' } as StudySession;
 
 const args = (over: Partial<BuildCalendarEntriesArgs> = {}): BuildCalendarEntriesArgs => ({
@@ -84,7 +97,9 @@ describe('buildCalendarEntries (SPEC-024 D4/D6)', () => {
   });
 
   it('as 9 origens produzem um item cada', () => {
-    const kinds = buildCalendarEntries(args()).map((e) => e.kind).sort();
+    const kinds = buildCalendarEntries(args())
+      .map((e) => e.kind)
+      .sort();
     expect(kinds).toEqual([
       'aula',
       'estagio',
@@ -150,6 +165,10 @@ describe('buildCalendarEntries (SPEC-024 D4/D6)', () => {
         meetings: [{ ...meeting, status: 'cancelada' } as ThesisMeeting],
       }),
     );
-    expect(entries.filter((e) => e.ref.kind === 'chapter' || e.ref.kind === 'thesisTask' || e.ref.kind === 'meeting')).toEqual([]);
+    expect(
+      entries.filter(
+        (e) => e.ref.kind === 'chapter' || e.ref.kind === 'thesisTask' || e.ref.kind === 'meeting',
+      ),
+    ).toEqual([]);
   });
 });

@@ -9,12 +9,7 @@ import {
   shouldIgnoreTarget,
   supportsEdgeSwipe,
 } from '@/lib/swipe';
-import {
-  BASE_T,
-  gesturePopIntent,
-  prefersReducedMotion,
-  setMotionIntent,
-} from '@/lib/motion';
+import { BASE_T, gesturePopIntent, prefersReducedMotion, setMotionIntent } from '@/lib/motion';
 import { useMotionProfile } from '@/components/motion/MotionProfileProvider';
 
 export type EdgeSwipeBackProps = {

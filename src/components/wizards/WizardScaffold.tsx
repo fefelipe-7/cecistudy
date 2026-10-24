@@ -86,7 +86,7 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const [confirmingDiscard, setConfirmingDiscard] = useState(false);
   const isLast = step === steps.length - 1;
-  const canConfirm = isLast ? canSave ?? canNext : canNext;
+  const canConfirm = isLast ? (canSave ?? canNext) : canNext;
 
   /**
    * O foco vai para a pergunta do passo (SPEC-008 F4.7).
@@ -123,8 +123,7 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
     else goTo(step + 1);
   };
 
-  const showBlockedHint =
-    !hideNext && !canConfirm && !!blockedReason && !confirmingDiscard;
+  const showBlockedHint = !hideNext && !canConfirm && !!blockedReason && !confirmingDiscard;
 
   return (
     <div className="min-h-[70vh] flex flex-col pb-44">
@@ -146,7 +145,7 @@ export const WizardScaffold: React.FC<WizardScaffoldProps> = ({
           (popLayout): o passo que sai desliza enquanto o novo entra — sem o
           "vazio" do mode="wait" entre passos. */}
       <div className="flex-1 pt-4">
-        <StepProgress steps={steps.map(s => s.title)} current={step} />
+        <StepProgress steps={steps.map((s) => s.title)} current={step} />
         <AnimatePresence mode="popLayout" initial={false} custom={dirRef.current}>
           <motion.div
             key={steps[step].id}

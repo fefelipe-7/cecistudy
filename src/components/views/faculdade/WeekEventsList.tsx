@@ -16,9 +16,10 @@ interface WeekEventsListProps {
 
 const WeekEventsList: React.FC<WeekEventsListProps> = ({ entries, nav, exams, tasks }) => (
   <section className="space-y-2.5 px-0.5 pt-6 lg:pt-0">
-    <SectionTitle icon={<CalendarIcon className="w-4 h-4 text-ceci-brand-strong" />} action={
-      <span className="text-[11px] text-ceci-tertiary font-medium">próximos eventos</span>
-    }>
+    <SectionTitle
+      icon={<CalendarIcon className="w-4 h-4 text-ceci-brand-strong" />}
+      action={<span className="text-[11px] text-ceci-tertiary font-medium">próximos eventos</span>}
+    >
       sua semana acadêmica
     </SectionTitle>
 
@@ -32,7 +33,14 @@ const WeekEventsList: React.FC<WeekEventsListProps> = ({ entries, nav, exams, ta
       )}
 
       {entries.map((entry) => (
-        <CalendarEntryRow key={entry.id} entry={entry} nav={nav} exams={exams} tasks={tasks} showDate />
+        <CalendarEntryRow
+          key={entry.id}
+          entry={entry}
+          nav={nav}
+          exams={exams}
+          tasks={tasks}
+          showDate
+        />
       ))}
     </div>
   </section>

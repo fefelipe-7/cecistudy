@@ -71,7 +71,9 @@ export function GithubSyncCard() {
       <div className="rounded-2xl p-5 bg-surface-default border border-ceci-border-brand shadow-sm space-y-4">
         <div className="flex items-center gap-2">
           <Cloud className="w-4 h-4 text-ceci-brand-strong" />
-          <h2 className="font-display font-bold text-xl text-ceci-primary">sincronização (github)</h2>
+          <h2 className="font-display font-bold text-xl text-ceci-primary">
+            sincronização (github)
+          </h2>
         </div>
         <p className="text-xs text-ceci-secondary leading-relaxed -mt-1">
           conecta seu notebook e seu celular por um repositório privado. seus dados ficam no
@@ -110,7 +112,10 @@ export function GithubSyncCard() {
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs text-ceci-secondary">
-                conectado: <span className="text-ceci-primary font-semibold">{owner}/{repo}</span>
+                conectado:{' '}
+                <span className="text-ceci-primary font-semibold">
+                  {owner}/{repo}
+                </span>
               </span>
               <StatusBadge status={syncStatus} errorMessage={syncErrorMessage} />
             </div>
@@ -134,14 +139,19 @@ export function GithubSyncCard() {
 
       <Modal open={pendingSyncPreview != null} onClose={discardSyncPreview}>
         <div className="w-full max-w-sm bg-surface-default rounded-2xl shadow-floating p-6 space-y-4">
-          <h3 className="font-display font-bold text-lg text-ceci-primary">ha uma versao mais nova</h3>
+          <h3 className="font-display font-bold text-lg text-ceci-primary">
+            ha uma versao mais nova
+          </h3>
           <p className="text-sm text-ceci-secondary leading-relaxed">
             seu outro dispositivo enviou mudancas. quer mesclar com o que voce tem aqui?
           </p>
           {pendingSyncPreview && (
             <div className="rounded-2xl bg-surface-subtle border border-ceci-border-default p-3 space-y-1.5">
               <StatLine label="o que chega para voce" stat={pendingSyncPreview.preview.local} />
-              <StatLine label="o que vai para o outro lado" stat={pendingSyncPreview.preview.remote} />
+              <StatLine
+                label="o que vai para o outro lado"
+                stat={pendingSyncPreview.preview.remote}
+              />
             </div>
           )}
           <div className="flex gap-2">

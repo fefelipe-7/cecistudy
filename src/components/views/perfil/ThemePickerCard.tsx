@@ -53,14 +53,29 @@ const ThemePickerCard: React.FC<ThemePickerCardProps> = ({ currentTheme, onSelec
           </select>
         </div>
 
-        <div className="rounded-xl p-3 border border-black/5" style={{ backgroundColor: t['canvas'] }}>
-          <div className="h-1.5 w-2/3 rounded-full mb-2" style={{ backgroundColor: t['ceci-primary'] }} />
-          <div className="h-8 rounded-lg px-1.5 py-1 space-y-1" style={{ backgroundColor: t['surface-default'] }}>
+        <div
+          className="rounded-xl p-3 border border-black/5"
+          style={{ backgroundColor: t['canvas'] }}
+        >
+          <div
+            className="h-1.5 w-2/3 rounded-full mb-2"
+            style={{ backgroundColor: t['ceci-primary'] }}
+          />
+          <div
+            className="h-8 rounded-lg px-1.5 py-1 space-y-1"
+            style={{ backgroundColor: t['surface-default'] }}
+          >
             <div className="flex gap-1">
               <div className="h-2 w-6 rounded-full" style={{ backgroundColor: t['ceci-brand'] }} />
-              <div className="h-2 w-4 rounded-full" style={{ backgroundColor: t['ceci-academic'] }} />
+              <div
+                className="h-2 w-4 rounded-full"
+                style={{ backgroundColor: t['ceci-academic'] }}
+              />
             </div>
-            <div className="h-1 w-3/5 rounded-full" style={{ backgroundColor: t['ceci-border-strong'] }} />
+            <div
+              className="h-1 w-3/5 rounded-full"
+              style={{ backgroundColor: t['ceci-border-strong'] }}
+            />
           </div>
         </div>
 

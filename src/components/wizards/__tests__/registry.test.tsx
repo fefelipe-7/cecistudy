@@ -19,7 +19,9 @@ describe('WIZARD_REGISTRY', () => {
     for (const flow of flows) {
       const node = WIZARD_REGISTRY[flow](null);
       expect(node, flow).toBeTruthy();
-      expect(typeof node === 'object' && node !== null && 'type' in (node as object), flow).toBe(true);
+      expect(typeof node === 'object' && node !== null && 'type' in (node as object), flow).toBe(
+        true,
+      );
     }
   });
 });

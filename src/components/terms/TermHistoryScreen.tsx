@@ -54,8 +54,8 @@ export const TermHistoryScreen: React.FC = () => {
   return (
     <div className="px-4 pt-6 pb-10 space-y-4">
       <p className="text-xs text-ceci-secondary">
-        {degreeProgress(activeTerm?.ordinal ?? profile.semester, profile.totalSemesters)}% do curso ·
-        cada semestre guardado com o resumo do momento em que ele fechou
+        {degreeProgress(activeTerm?.ordinal ?? profile.semester, profile.totalSemesters)}% do curso
+        · cada semestre guardado com o resumo do momento em que ele fechou
       </p>
 
       <ol className="space-y-3">
@@ -90,14 +90,18 @@ const TermCard: React.FC<{
     <div
       className={cn(
         'rounded-[24px] border bg-white p-4',
-        active ? 'border-ceci-border-brand shadow-brand-soft' : 'border-ceci-border-default shadow-xs'
+        active
+          ? 'border-ceci-border-brand shadow-brand-soft'
+          : 'border-ceci-border-default shadow-xs',
       )}
     >
       <div className="flex items-center gap-2">
         <span
           className={cn(
             'flex h-9 w-9 items-center justify-center rounded-2xl',
-            active ? 'bg-surface-rose text-ceci-brand-strong' : 'bg-surface-muted text-ceci-tertiary'
+            active
+              ? 'bg-surface-rose text-ceci-brand-strong'
+              : 'bg-surface-muted text-ceci-tertiary',
           )}
         >
           {active ? <Sparkles className="w-4 h-4" /> : <BookOpen className="w-4 h-4" />}
@@ -126,7 +130,9 @@ const TermCard: React.FC<{
               { label: 'leitura', value: s.pagesRead },
             ].map((m) => (
               <div key={m.label} className="rounded-2xl bg-surface-muted px-2 py-2">
-                <dt className="text-[10px] uppercase tracking-wider text-ceci-tertiary">{m.label}</dt>
+                <dt className="text-[10px] uppercase tracking-wider text-ceci-tertiary">
+                  {m.label}
+                </dt>
                 <dd className="text-sm font-semibold text-ceci-primary">{m.value}</dd>
               </div>
             ))}

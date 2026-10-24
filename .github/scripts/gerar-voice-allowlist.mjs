@@ -14,7 +14,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { infracoesDeVoz, infracoesDeNotificacao, ISENTOS_DE_VOZ, ARQUIVO_DE_NOTIFICACAO } from './voz-gate.mjs';
+import {
+  infracoesDeVoz,
+  infracoesDeNotificacao,
+  ISENTOS_DE_VOZ,
+  ARQUIVO_DE_NOTIFICACAO,
+} from './voz-gate.mjs';
 
 const root = path.resolve(process.cwd());
 

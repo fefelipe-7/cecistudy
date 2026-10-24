@@ -6,11 +6,7 @@ import type { ManagedItem } from '../../types';
 import { hapticSuccess } from '../../lib/haptics';
 import { useWizardForm } from '../../lib/useWizardForm';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
-import {
-  ReviewCard,
-  TextArea,
-  TextInput,
-} from './wizardFields';
+import { ReviewCard, TextArea, TextInput } from './wizardFields';
 import { Picker } from '../ui/Picker';
 import { TagField } from '../ui/TagField';
 
@@ -24,10 +20,10 @@ interface AuthorValues {
 }
 
 export const AuthorWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editing }) => {
-  const { approaches, authors, handleAddAuthor, handleUpdateAuthor, closeWizard, showToast } = useMobileApp();
-  const editingAuthor = editing?.kind === 'author'
-    ? authors.find((a) => a.id === editing.id)
-    : undefined;
+  const { approaches, authors, handleAddAuthor, handleUpdateAuthor, closeWizard, showToast } =
+    useMobileApp();
+  const editingAuthor =
+    editing?.kind === 'author' ? authors.find((a) => a.id === editing.id) : undefined;
 
   const { values, patch, step, setStep } = useWizardForm<AuthorValues>({
     initial: {
@@ -124,8 +120,14 @@ export const AuthorWizard: React.FC<{ editing?: ManagedItem | null }> = ({ editi
             { label: 'lifespan', value: lifespan.trim() || '—' },
             { label: 'biografia', value: bio.trim() },
             { label: 'abordagem', value: approachName || 'sem abordagem' },
-            { label: 'obras principais', value: majorWorks.length ? majorWorks.join(' · ') : 'sem obras' },
-            { label: 'conceitos-chave', value: keyConcepts.length ? keyConcepts.join(' · ') : 'sem conceitos' },
+            {
+              label: 'obras principais',
+              value: majorWorks.length ? majorWorks.join(' · ') : 'sem obras',
+            },
+            {
+              label: 'conceitos-chave',
+              value: keyConcepts.length ? keyConcepts.join(' · ') : 'sem conceitos',
+            },
           ]}
         />
       ),

@@ -9,11 +9,16 @@ import { Toast } from '@/components/ui/Toast';
 // B.3 — modais pesados fora do chunk de boot (só carregam ao montar, e como
 // chunks próprios): QuickAdd/Search/EditCourse são formulários densos; só
 // aparecem por interação. `Modal`/`Toast` ficam eager (leves e instantâneos).
-const loadQuickAddModal = () => import('@/components/QuickAddModal').then((m) => ({ default: m.QuickAddModal }));
-const loadGlobalSearchModal = () => import('@/components/GlobalSearchModal').then((m) => ({ default: m.GlobalSearchModal }));
-const loadEditCourseModal = () => import('@/components/courses/EditCourseModal').then((m) => ({ default: m.EditCourseModal }));
-const loadManageDataModal = () => import('@/components/ui/ManageDataModal').then((m) => ({ default: m.ManageDataModal }));
-const loadOtaUpdateModal = () => import('@/components/ui/OtaUpdateModal').then((m) => ({ default: m.OtaUpdateModal }));
+const loadQuickAddModal = () =>
+  import('@/components/QuickAddModal').then((m) => ({ default: m.QuickAddModal }));
+const loadGlobalSearchModal = () =>
+  import('@/components/GlobalSearchModal').then((m) => ({ default: m.GlobalSearchModal }));
+const loadEditCourseModal = () =>
+  import('@/components/courses/EditCourseModal').then((m) => ({ default: m.EditCourseModal }));
+const loadManageDataModal = () =>
+  import('@/components/ui/ManageDataModal').then((m) => ({ default: m.ManageDataModal }));
+const loadOtaUpdateModal = () =>
+  import('@/components/ui/OtaUpdateModal').then((m) => ({ default: m.OtaUpdateModal }));
 const QuickAddModal = lazy(loadQuickAddModal);
 const GlobalSearchModal = lazy(loadGlobalSearchModal);
 const EditCourseModal = lazy(loadEditCourseModal);
@@ -150,7 +155,7 @@ export const OverlaysContent: React.FC<{ app: AppContextValue }> = ({ app }) => 
         isOpen={app.isEditCourseOpen}
         course={
           app.editCourseId
-            ? app.courses.find((c) => c.id === app.editCourseId) ?? app.focusedCourse
+            ? (app.courses.find((c) => c.id === app.editCourseId) ?? app.focusedCourse)
             : app.focusedCourse
         }
         onClose={app.closeEditCourse}

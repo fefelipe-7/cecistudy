@@ -11,9 +11,9 @@ import type {
   ReadingItem,
   Flashcard,
   MaterialItem,
-   InternshipLog,
-   InternshipNextStepLink,
-   ThesisProject,
+  InternshipLog,
+  InternshipNextStepLink,
+  ThesisProject,
   StudySession,
   Technique,
   QuizSession,
@@ -130,7 +130,11 @@ export interface DataActions {
   handleAddCourse: (course: Course) => void;
   handleAddAuthor: (author: PsychologyAuthor) => void;
   markAttendance: (courseId: string, status: AttendanceStatus) => void;
-  updateAttendanceRecord: (courseId: string, recordId: string, patch: Partial<Pick<AttendanceRecord, 'status' | 'noteId' | 'hours'>>) => void;
+  updateAttendanceRecord: (
+    courseId: string,
+    recordId: string,
+    patch: Partial<Pick<AttendanceRecord, 'status' | 'noteId' | 'hours'>>,
+  ) => void;
   removeAttendanceRecord: (courseId: string, recordId: string) => void;
   adoptAcervoConcept: (draft: ConceptDraft) => string;
   handleAddSession: (session: StudySession) => void;
@@ -160,7 +164,7 @@ export interface DataActions {
     step: string,
     kind: InternshipNextStepLink['kind'],
     entityId: string,
-    nowIso: string
+    nowIso: string,
   ) => InternshipLog;
   handleUpdateAuthor: (author: PsychologyAuthor) => void;
   handleUpdateConcept: (concept: PsychologyConcept) => void;
@@ -212,28 +216,54 @@ export interface DataActions {
 export interface DataActionGroups {
   courses: Pick<
     DataActions,
-    | 'handleToggleTask' | 'handleToggleExam' | 'handleAddTask' | 'handleUpdateTask'
-    | 'handleAddClassNote' | 'handleUpdateClassNote'
-    | 'handleAddExam' | 'handleUpdateExam' | 'handleAddCourse' | 'handleUpdateCourse'
-    | 'handleAddMaterial' | 'handleUpdateMaterial'
-    | 'markAttendance' | 'updateAttendanceRecord' | 'removeAttendanceRecord'
+    | 'handleToggleTask'
+    | 'handleToggleExam'
+    | 'handleAddTask'
+    | 'handleUpdateTask'
+    | 'handleAddClassNote'
+    | 'handleUpdateClassNote'
+    | 'handleAddExam'
+    | 'handleUpdateExam'
+    | 'handleAddCourse'
+    | 'handleUpdateCourse'
+    | 'handleAddMaterial'
+    | 'handleUpdateMaterial'
+    | 'markAttendance'
+    | 'updateAttendanceRecord'
+    | 'removeAttendanceRecord'
   >;
   study: Pick<
     DataActions,
-    | 'handleAddReading' | 'handleUpdateReadingPages' | 'handleUpdateReadingChapters'
-    | 'handleUpdateReading' | 'handleAddFlashcard' | 'handleReviewFlashcard'
-    | 'handleUpdateFlashcard' | 'handleAddSession' | 'handleUpdateSession'
-    | 'handleSaveQuizSession' | 'handleAddTechnique'
+    | 'handleAddReading'
+    | 'handleUpdateReadingPages'
+    | 'handleUpdateReadingChapters'
+    | 'handleUpdateReading'
+    | 'handleAddFlashcard'
+    | 'handleReviewFlashcard'
+    | 'handleUpdateFlashcard'
+    | 'handleAddSession'
+    | 'handleUpdateSession'
+    | 'handleSaveQuizSession'
+    | 'handleAddTechnique'
   >;
   knowledge: Pick<
     DataActions,
-    | 'addLooseNote' | 'deleteLooseNote' | 'updateLooseNote'
-    | 'handleAddConcept' | 'handleUpdateConcept' | 'handleAddAuthor' | 'handleUpdateAuthor'
-    | 'adoptAcervoConcept' | 'adoptAcervoAuthor'
+    | 'addLooseNote'
+    | 'deleteLooseNote'
+    | 'updateLooseNote'
+    | 'handleAddConcept'
+    | 'handleUpdateConcept'
+    | 'handleAddAuthor'
+    | 'handleUpdateAuthor'
+    | 'adoptAcervoConcept'
+    | 'adoptAcervoAuthor'
   >;
   app: Pick<
     DataActions,
-    'handleAddInternshipLog' | 'handleUpdateInternshipLog' | 'handleUpdateProfile' | 'handleUpdateTcc'
+    | 'handleAddInternshipLog'
+    | 'handleUpdateInternshipLog'
+    | 'handleUpdateProfile'
+    | 'handleUpdateTcc'
   >;
   /** Período letivo isolado: mexer no semestre não invalida o resto da UI. */
   term: Pick<
@@ -298,269 +328,388 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
   // um período está fechado e o próximo ainda não foi aberto.
   const activeTermId = resolveActiveTerm(academicTerms)?.id ?? null;
 
-  const handleToggleTask = useCallback((taskId: string) => {
-    hapticTap();
-    const nextTasks = tasks.map((t) => (t.id === taskId ? { ...t, completed: !t.completed } : t));
-    setTasks(nextTasks);
-    const toggled = nextTasks.find((t) => t.id === taskId);
-    if (toggled?.completed) registerActivity();
-    if (shouldCelebrateTasks(nextTasks, taskId)) {
-      hapticSuccess();
-      celebrate('tasks-done');
-      showToast(
-        // `SPEC-C-014 D8`: o nome só entra quando a usuária **autorizou**. Antes
-        // deste comentário, o `profile.name` entrava sem pedir — e autorização é
-        // decisão dela, não padrão do app.
-        frase(CELEBRACAO, 'planoDoDiaCompleto', {
-          nome: profile.nomeAutorizado ? profile.name.trim() : undefined,
-        }),
+  const handleToggleTask = useCallback(
+    (taskId: string) => {
+      hapticTap();
+      const nextTasks = tasks.map((t) => (t.id === taskId ? { ...t, completed: !t.completed } : t));
+      setTasks(nextTasks);
+      const toggled = nextTasks.find((t) => t.id === taskId);
+      if (toggled?.completed) registerActivity();
+      if (shouldCelebrateTasks(nextTasks, taskId)) {
+        hapticSuccess();
+        celebrate('tasks-done');
+        showToast(
+          // `SPEC-C-014 D8`: o nome só entra quando a usuária **autorizou**. Antes
+          // deste comentário, o `profile.name` entrava sem pedir — e autorização é
+          // decisão dela, não padrão do app.
+          frase(CELEBRACAO, 'planoDoDiaCompleto', {
+            nome: profile.nomeAutorizado ? profile.name.trim() : undefined,
+          }),
+        );
+      }
+    },
+    [tasks, setTasks, registerActivity, showToast, profile],
+  );
+
+  const handleToggleExam = useCallback(
+    (examId: string) => {
+      hapticTap();
+      setExams((prev) =>
+        prev.map((e) => (e.id === examId ? { ...e, completed: !e.completed } : e)),
       );
-    }
-  }, [tasks, setTasks, registerActivity, showToast, profile]);
+    },
+    [setExams],
+  );
 
-  const handleToggleExam = useCallback((examId: string) => {
-    hapticTap();
-    setExams((prev) =>
-      prev.map((e) => (e.id === examId ? { ...e, completed: !e.completed } : e))
-    );
-  }, [setExams]);
+  const handleAddTask = useCallback(
+    (task: Task) => {
+      const withWs = { ...task, workspaceId: currentWorkspaceId };
+      setTasks((prev) => [withWs, ...prev]);
+      void gcalSyncTask(withWs, 'upsert');
+    },
+    [currentWorkspaceId, setTasks, gcalSyncTask],
+  );
 
-  const handleAddTask = useCallback((task: Task) => {
-    const withWs = { ...task, workspaceId: currentWorkspaceId };
-    setTasks((prev) => [withWs, ...prev]);
-    void gcalSyncTask(withWs, 'upsert');
-  }, [currentWorkspaceId, setTasks, gcalSyncTask]);
+  const handleUpdateTask = useCallback(
+    (taskId: string, patch: Partial<Task>) => {
+      setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, ...patch } : t)));
+      if (patch.title || patch.dueDate || patch.disciplineId) {
+        const updated = tasks.find((t) => t.id === taskId);
+        if (updated) void gcalSyncTask({ ...updated, ...patch }, 'upsert');
+      }
+    },
+    [tasks, setTasks, gcalSyncTask],
+  );
 
-  const handleUpdateTask = useCallback((taskId: string, patch: Partial<Task>) => {
-    setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, ...patch } : t)));
-    if (patch.title || patch.dueDate || patch.disciplineId) {
-      const updated = tasks.find((t) => t.id === taskId);
-      if (updated) void gcalSyncTask({ ...updated, ...patch }, 'upsert');
-    }
-  }, [tasks, setTasks, gcalSyncTask]);
+  const handleAddClassNote = useCallback(
+    (note: ClassNote) => {
+      setClasses((prev) => [{ ...note, workspaceId: currentWorkspaceId }, ...prev]);
+      // frequência detalhada (spec-frequencia.md): anotou a aula = esteve presente.
+      if (note.date) {
+        setCourses((prev) =>
+          prev.map((c) =>
+            c.id === note.courseId
+              ? upsertPresenceForClassNote(c, { id: note.id, date: note.date })
+              : c,
+          ),
+        );
+      }
+      registerActivity();
+    },
+    [currentWorkspaceId, setClasses, setCourses, registerActivity],
+  );
 
-  const handleAddClassNote = useCallback((note: ClassNote) => {
-    setClasses((prev) => [{ ...note, workspaceId: currentWorkspaceId }, ...prev]);
-    // frequência detalhada (spec-frequencia.md): anotou a aula = esteve presente.
-    if (note.date) {
-      setCourses((prev) =>
-        prev.map((c) =>
-          c.id === note.courseId
-            ? upsertPresenceForClassNote(c, { id: note.id, date: note.date })
-            : c
-        )
-      );
-    }
-    registerActivity();
-  }, [currentWorkspaceId, setClasses, setCourses, registerActivity]);
-
-  const handleUpdateClassNote = useCallback((note: ClassNote) => {
-    setClasses((prev) => prev.map((c) => (c.id === note.id ? note : c)));
-  }, [setClasses]);
+  const handleUpdateClassNote = useCallback(
+    (note: ClassNote) => {
+      setClasses((prev) => prev.map((c) => (c.id === note.id ? note : c)));
+    },
+    [setClasses],
+  );
 
   // Frequência detalhada (spec-frequencia.md): registra a participação de hoje
   // na disciplina (menu 2×2 da Home; presente/falta contam como atividade do dia).
-  const markAttendance = useCallback((courseId: string, status: AttendanceStatus) => {
-    const today = toDateKey(new Date());
-    setCourses((prev) =>
-      prev.map((c) => (c.id === courseId ? applyAttendanceAction(c, { status }, today) : c))
-    );
-    if (status === 'presente' || status === 'falta') registerActivity();
-  }, [setCourses, registerActivity]);
+  const markAttendance = useCallback(
+    (courseId: string, status: AttendanceStatus) => {
+      const today = toDateKey(new Date());
+      setCourses((prev) =>
+        prev.map((c) => (c.id === courseId ? applyAttendanceAction(c, { status }, today) : c)),
+      );
+      if (status === 'presente' || status === 'falta') registerActivity();
+    },
+    [setCourses, registerActivity],
+  );
 
-  const updateAttendanceRecord = useCallback((courseId: string, recordId: string, patch: Partial<Pick<AttendanceRecord, 'status' | 'noteId' | 'hours'>>) => {
-    setCourses((prev) =>
-      prev.map((c) => (c.id === courseId ? patchRecord(c, recordId, patch) : c))
-    );
-  }, [setCourses]);
+  const updateAttendanceRecord = useCallback(
+    (
+      courseId: string,
+      recordId: string,
+      patch: Partial<Pick<AttendanceRecord, 'status' | 'noteId' | 'hours'>>,
+    ) => {
+      setCourses((prev) =>
+        prev.map((c) => (c.id === courseId ? patchRecord(c, recordId, patch) : c)),
+      );
+    },
+    [setCourses],
+  );
 
-  const removeAttendanceRecord = useCallback((courseId: string, recordId: string) => {
-    setCourses((prev) =>
-      prev.map((c) => (c.id === courseId ? removeRecord(c, recordId) : c))
-    );
-  }, [setCourses]);
+  const removeAttendanceRecord = useCallback(
+    (courseId: string, recordId: string) => {
+      setCourses((prev) => prev.map((c) => (c.id === courseId ? removeRecord(c, recordId) : c)));
+    },
+    [setCourses],
+  );
 
-  const addLooseNote = useCallback((note: LooseNote) => {
-    setLooseNotes((prev) => [{ ...note, workspaceId: currentWorkspaceId }, ...prev]);
-  }, [currentWorkspaceId, setLooseNotes]);
+  const addLooseNote = useCallback(
+    (note: LooseNote) => {
+      setLooseNotes((prev) => [{ ...note, workspaceId: currentWorkspaceId }, ...prev]);
+    },
+    [currentWorkspaceId, setLooseNotes],
+  );
 
-  const deleteLooseNote = useCallback((id: string) => {
-    setLooseNotes((prev) => prev.filter((n) => n.id !== id));
-  }, [setLooseNotes]);
+  const deleteLooseNote = useCallback(
+    (id: string) => {
+      setLooseNotes((prev) => prev.filter((n) => n.id !== id));
+    },
+    [setLooseNotes],
+  );
 
-  const updateLooseNote = useCallback((id: string, patch: Partial<LooseNote>) => {
-    setLooseNotes((prev) =>
-      prev.map((n) =>
-        n.id === id ? { ...n, ...patch, updatedAt: new Date().toISOString() } : n
-      )
-    );
-  }, [setLooseNotes]);
+  const updateLooseNote = useCallback(
+    (id: string, patch: Partial<LooseNote>) => {
+      setLooseNotes((prev) =>
+        prev.map((n) =>
+          n.id === id ? { ...n, ...patch, updatedAt: new Date().toISOString() } : n,
+        ),
+      );
+    },
+    [setLooseNotes],
+  );
 
-  const handleAddConcept = useCallback((concept: PsychologyConcept) => {
-    setConcepts((prev) => [{ ...concept, workspaceId: currentWorkspaceId }, ...prev]);
-  }, [setConcepts, currentWorkspaceId]);
+  const handleAddConcept = useCallback(
+    (concept: PsychologyConcept) => {
+      setConcepts((prev) => [{ ...concept, workspaceId: currentWorkspaceId }, ...prev]);
+    },
+    [setConcepts, currentWorkspaceId],
+  );
 
-  const handleAddMaterial = useCallback((material: MaterialItem) => {
-    setMaterials((prev) => [{ ...material, workspaceId: currentWorkspaceId }, ...prev]);
-  }, [setMaterials, currentWorkspaceId]);
+  const handleAddMaterial = useCallback(
+    (material: MaterialItem) => {
+      setMaterials((prev) => [{ ...material, workspaceId: currentWorkspaceId }, ...prev]);
+    },
+    [setMaterials, currentWorkspaceId],
+  );
 
-  const handleAddReading = useCallback((reading: ReadingItem) => {
-    setReadings((prev) => [{ ...reading, workspaceId: currentWorkspaceId }, ...prev]);
-  }, [currentWorkspaceId, setReadings]);
+  const handleAddReading = useCallback(
+    (reading: ReadingItem) => {
+      setReadings((prev) => [{ ...reading, workspaceId: currentWorkspaceId }, ...prev]);
+    },
+    [currentWorkspaceId, setReadings],
+  );
 
-  const handleAddReadingSession = useCallback((session: ReadingSession) => {
-    setReadingSessions((prev) => [{ ...session, workspaceId: currentWorkspaceId }, ...prev]);
-    registerActivity();
-  }, [currentWorkspaceId, setReadingSessions, registerActivity]);
+  const handleAddReadingSession = useCallback(
+    (session: ReadingSession) => {
+      setReadingSessions((prev) => [{ ...session, workspaceId: currentWorkspaceId }, ...prev]);
+      registerActivity();
+    },
+    [currentWorkspaceId, setReadingSessions, registerActivity],
+  );
 
-  const handleAddReadingHighlight = useCallback((highlight: ReadingHighlight) => {
-    setReadingHighlights((prev) => [{ ...highlight, workspaceId: currentWorkspaceId }, ...prev]);
-  }, [currentWorkspaceId, setReadingHighlights]);
+  const handleAddReadingHighlight = useCallback(
+    (highlight: ReadingHighlight) => {
+      setReadingHighlights((prev) => [{ ...highlight, workspaceId: currentWorkspaceId }, ...prev]);
+    },
+    [currentWorkspaceId, setReadingHighlights],
+  );
 
-  const handleAddReadingBookmark = useCallback((bookmark: ReadingBookmark) => {
-    setReadingBookmarks((prev) => [{ ...bookmark, workspaceId: currentWorkspaceId }, ...prev]);
-  }, [currentWorkspaceId, setReadingBookmarks]);
+  const handleAddReadingBookmark = useCallback(
+    (bookmark: ReadingBookmark) => {
+      setReadingBookmarks((prev) => [{ ...bookmark, workspaceId: currentWorkspaceId }, ...prev]);
+    },
+    [currentWorkspaceId, setReadingBookmarks],
+  );
 
-  const handleUpdateReadingPages = useCallback((readingId: string, newPages: number) => {
-    const prev = readings.find((r) => r.id === readingId);
-    const nextReadings = readings.map((r) => {
-      if (r.id === readingId) {
-        const updatedPages = Math.min(newPages, r.totalPages || 999);
-        const isDone = updatedPages >= (r.totalPages || 100);
-        const status: ReadingItem['status'] = isDone ? 'concluido' : 'lendo';
-        // `lastReadAt` é o que alimenta o "continue lendo" do hub (SPEC-M-014):
-        // sem ele a estante nunca mostra por onde retomar.
-        return { ...r, readPages: updatedPages, status, lastReadAt: new Date().toISOString() };
+  const handleUpdateReadingPages = useCallback(
+    (readingId: string, newPages: number) => {
+      const prev = readings.find((r) => r.id === readingId);
+      const nextReadings = readings.map((r) => {
+        if (r.id === readingId) {
+          const updatedPages = Math.min(newPages, r.totalPages || 999);
+          const isDone = updatedPages >= (r.totalPages || 100);
+          const status: ReadingItem['status'] = isDone ? 'concluido' : 'lendo';
+          // `lastReadAt` é o que alimenta o "continue lendo" do hub (SPEC-M-014):
+          // sem ele a estante nunca mostra por onde retomar.
+          return { ...r, readPages: updatedPages, status, lastReadAt: new Date().toISOString() };
+        }
+        return r;
+      });
+      setReadings(nextReadings);
+      if (newPages > (prev?.readPages || 0)) registerActivity();
+      const doneNow = nextReadings.find((r) => r.id === readingId);
+      if (doneNow?.status === 'concluido' && prev?.status !== 'concluido') {
+        hapticSuccess();
+        celebrate('reading-done');
+        showToast(frase(CELEBRACAO, 'leituraConcluida'));
       }
-      return r;
-    });
-    setReadings(nextReadings);
-    if (newPages > (prev?.readPages || 0)) registerActivity();
-    const doneNow = nextReadings.find((r) => r.id === readingId);
-    if (doneNow?.status === 'concluido' && prev?.status !== 'concluido') {
-      hapticSuccess();
-      celebrate('reading-done');
-      showToast(frase(CELEBRACAO, 'leituraConcluida'));
-    }
-  }, [readings, setReadings, registerActivity, showToast]);
+    },
+    [readings, setReadings, registerActivity, showToast],
+  );
 
-  const handleAddFlashcard = useCallback((card: Flashcard) => {
-    setFlashcards((prev) => [{ ...card, workspaceId: currentWorkspaceId }, ...prev]);
-  }, [currentWorkspaceId, setFlashcards]);
+  const handleAddFlashcard = useCallback(
+    (card: Flashcard) => {
+      setFlashcards((prev) => [{ ...card, workspaceId: currentWorkspaceId }, ...prev]);
+    },
+    [currentWorkspaceId, setFlashcards],
+  );
 
-  const handleReviewFlashcard = useCallback((id: string, quality: 0 | 1 | 2 | 3) => {
-    hapticTap();
-    registerActivity();
-    setFlashcards((prev) =>
-      prev.map((c) => {
-        if (c.id !== id) return c;
-        // FSRS é o scheduler único: `schedule` define due/lastReviewed/state/estabilidade.
-        // `timesReviewed` mantém a semântica atual (spec §Modelo de dados): +1 apenas p/ quality >= 2
-        // (alimenta stickers e a métrica do Perfil sem mudança de comportamento).
-        const updated = schedule(c, quality);
-        return {
-          ...updated,
-          timesReviewed: (c.timesReviewed ?? 0) + (quality >= 2 ? 1 : 0),
-        };
-      })
-    );
-  }, [setFlashcards, registerActivity]);
+  const handleReviewFlashcard = useCallback(
+    (id: string, quality: 0 | 1 | 2 | 3) => {
+      hapticTap();
+      registerActivity();
+      setFlashcards((prev) =>
+        prev.map((c) => {
+          if (c.id !== id) return c;
+          // FSRS é o scheduler único: `schedule` define due/lastReviewed/state/estabilidade.
+          // `timesReviewed` mantém a semântica atual (spec §Modelo de dados): +1 apenas p/ quality >= 2
+          // (alimenta stickers e a métrica do Perfil sem mudança de comportamento).
+          const updated = schedule(c, quality);
+          return {
+            ...updated,
+            timesReviewed: (c.timesReviewed ?? 0) + (quality >= 2 ? 1 : 0),
+          };
+        }),
+      );
+    },
+    [setFlashcards, registerActivity],
+  );
 
-  const handleAddInternshipLog = useCallback((log: InternshipLog) => {
-    setInternshipLogs((prev) => [{ ...log, workspaceId: currentWorkspaceId }, ...prev]);
-  }, [currentWorkspaceId, setInternshipLogs]);
+  const handleAddInternshipLog = useCallback(
+    (log: InternshipLog) => {
+      setInternshipLogs((prev) => [{ ...log, workspaceId: currentWorkspaceId }, ...prev]);
+    },
+    [currentWorkspaceId, setInternshipLogs],
+  );
 
-  const handleAddExam = useCallback((exam: Exam) => {
-    const withWs = { ...exam, workspaceId: currentWorkspaceId };
-    setExams((prev) => [withWs, ...prev]);
-    void gcalSyncExam(withWs, 'upsert');
-  }, [currentWorkspaceId, setExams, gcalSyncExam]);
+  const handleAddExam = useCallback(
+    (exam: Exam) => {
+      const withWs = { ...exam, workspaceId: currentWorkspaceId };
+      setExams((prev) => [withWs, ...prev]);
+      void gcalSyncExam(withWs, 'upsert');
+    },
+    [currentWorkspaceId, setExams, gcalSyncExam],
+  );
 
-  const handleAddCourse = useCallback((course: Course) => {
-    // SPEC-005: disciplina nova nasce no período ativo (mesmo padrão do
-    // `workspaceId`) e visível. `termId` explícito no rascunho manda — é assim
-    // que o wizard de semestre cria a disciplina já no período certo.
-    const termId = course.termId ?? activeTermId;
-    setCourses((prev) => [
-      { ...course, workspaceId: currentWorkspaceId, termId, status: course.status ?? 'ativo' },
-      ...prev,
-    ]);
-  }, [setCourses, currentWorkspaceId, activeTermId]);
+  const handleAddCourse = useCallback(
+    (course: Course) => {
+      // SPEC-005: disciplina nova nasce no período ativo (mesmo padrão do
+      // `workspaceId`) e visível. `termId` explícito no rascunho manda — é assim
+      // que o wizard de semestre cria a disciplina já no período certo.
+      const termId = course.termId ?? activeTermId;
+      setCourses((prev) => [
+        { ...course, workspaceId: currentWorkspaceId, termId, status: course.status ?? 'ativo' },
+        ...prev,
+      ]);
+    },
+    [setCourses, currentWorkspaceId, activeTermId],
+  );
 
-  const handleAddAuthor = useCallback((author: PsychologyAuthor) => {
-    setAuthors((prev) => [{ ...author, workspaceId: currentWorkspaceId }, ...prev]);
-  }, [currentWorkspaceId, setAuthors]);
+  const handleAddAuthor = useCallback(
+    (author: PsychologyAuthor) => {
+      setAuthors((prev) => [{ ...author, workspaceId: currentWorkspaceId }, ...prev]);
+    },
+    [currentWorkspaceId, setAuthors],
+  );
 
   // Acervo do templo → banco pessoal ("copiar ao selecionar"): idempotente por
   // nome normalizado — se já existe, devolve o id existente em vez de duplicar.
-  const adoptAcervoConcept = useCallback((draft: ConceptDraft): string => {
-    const name = normalizeText(draft.name);
-    const existing = concepts.find((c) => normalizeText(c.name) === name);
-    if (existing) return existing.id;
-    const id = 'con-' + Date.now();
-    setConcepts((prev) => [{ ...draft, id, workspaceId: currentWorkspaceId }, ...prev]);
-    return id;
-  }, [concepts, setConcepts, currentWorkspaceId]);
+  const adoptAcervoConcept = useCallback(
+    (draft: ConceptDraft): string => {
+      const name = normalizeText(draft.name);
+      const existing = concepts.find((c) => normalizeText(c.name) === name);
+      if (existing) return existing.id;
+      const id = 'con-' + Date.now();
+      setConcepts((prev) => [{ ...draft, id, workspaceId: currentWorkspaceId }, ...prev]);
+      return id;
+    },
+    [concepts, setConcepts, currentWorkspaceId],
+  );
 
-  const handleAddSession = useCallback((session: StudySession) => {
-    setSessions((prev) => [{ ...session, workspaceId: currentWorkspaceId }, ...prev]);
-    registerActivity();
-  }, [currentWorkspaceId, setSessions, registerActivity]);
+  const handleAddSession = useCallback(
+    (session: StudySession) => {
+      setSessions((prev) => [{ ...session, workspaceId: currentWorkspaceId }, ...prev]);
+      registerActivity();
+    },
+    [currentWorkspaceId, setSessions, registerActivity],
+  );
 
-  const adoptAcervoAuthor = useCallback((draft: AuthorDraft): string => {
-    const name = normalizeText(draft.name);
-    const existing = authors.find((a) => normalizeText(a.name) === name);
-    if (existing) return existing.id;
-    const id = 'aut-' + Date.now();
-    setAuthors((prev) => [{ ...draft, id }, ...prev]);
-    return id;
-  }, [authors, setAuthors]);
+  const adoptAcervoAuthor = useCallback(
+    (draft: AuthorDraft): string => {
+      const name = normalizeText(draft.name);
+      const existing = authors.find((a) => normalizeText(a.name) === name);
+      if (existing) return existing.id;
+      const id = 'aut-' + Date.now();
+      setAuthors((prev) => [{ ...draft, id }, ...prev]);
+      return id;
+    },
+    [authors, setAuthors],
+  );
 
-  const handleSaveQuizSession = useCallback((session: QuizSession) => {
-    setQuizSessions((prev) => [{ ...session, workspaceId: currentWorkspaceId }, ...prev]);
-    registerActivity();
-  }, [currentWorkspaceId, setQuizSessions, registerActivity]);
+  const handleSaveQuizSession = useCallback(
+    (session: QuizSession) => {
+      setQuizSessions((prev) => [{ ...session, workspaceId: currentWorkspaceId }, ...prev]);
+      registerActivity();
+    },
+    [currentWorkspaceId, setQuizSessions, registerActivity],
+  );
 
-  const handleAddTechnique = useCallback((technique: Technique) => {
-    setTechniques((prev) => [{ ...technique, workspaceId: currentWorkspaceId }, ...prev]);
-  }, [currentWorkspaceId, setTechniques]);
+  const handleAddTechnique = useCallback(
+    (technique: Technique) => {
+      setTechniques((prev) => [{ ...technique, workspaceId: currentWorkspaceId }, ...prev]);
+    },
+    [currentWorkspaceId, setTechniques],
+  );
 
-  const handleUpdateReadingChapters = useCallback((readingId: string, chapters: ReadingItem['chapters']) => {
-    setReadings((prev) => prev.map((r) => (r.id === readingId ? { ...r, chapters } : r)));
-  }, [setReadings]);
+  const handleUpdateReadingChapters = useCallback(
+    (readingId: string, chapters: ReadingItem['chapters']) => {
+      setReadings((prev) => prev.map((r) => (r.id === readingId ? { ...r, chapters } : r)));
+    },
+    [setReadings],
+  );
 
-  const handleUpdateProfile = useCallback((updated: Partial<UserProfile>) => {
-    setProfile((prev) => ({ ...prev, ...updated }));
-  }, [setProfile]);
+  const handleUpdateProfile = useCallback(
+    (updated: Partial<UserProfile>) => {
+      setProfile((prev) => ({ ...prev, ...updated }));
+    },
+    [setProfile],
+  );
 
-  const handleUpdateTcc = useCallback((updated: ThesisProject) => {
-    setTcc(updated);
-  }, [setTcc]);
+  const handleUpdateTcc = useCallback(
+    (updated: ThesisProject) => {
+      setTcc(updated);
+    },
+    [setTcc],
+  );
 
-  const handleUpdateCourse = useCallback((updated: Course) => {
-    setCourses((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
-  }, [setCourses]);
+  const handleUpdateCourse = useCallback(
+    (updated: Course) => {
+      setCourses((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
+    },
+    [setCourses],
+  );
 
-  const handleUpdateExam = useCallback((exam: Exam) => {
-    setExams((prev) => prev.map((e) => (e.id === exam.id ? exam : e)));
-    void gcalSyncExam(exam, 'upsert');
-  }, [setExams, gcalSyncExam]);
+  const handleUpdateExam = useCallback(
+    (exam: Exam) => {
+      setExams((prev) => prev.map((e) => (e.id === exam.id ? exam : e)));
+      void gcalSyncExam(exam, 'upsert');
+    },
+    [setExams, gcalSyncExam],
+  );
 
-  const handleUpdateReading = useCallback((reading: ReadingItem) => {
-    setReadings((prev) => prev.map((r) => (r.id === reading.id ? reading : r)));
-  }, [setReadings]);
+  const handleUpdateReading = useCallback(
+    (reading: ReadingItem) => {
+      setReadings((prev) => prev.map((r) => (r.id === reading.id ? reading : r)));
+    },
+    [setReadings],
+  );
 
-  const handleUpdateFlashcard = useCallback((card: Flashcard) => {
-    setFlashcards((prev) => prev.map((c) => (c.id === card.id ? card : c)));
-  }, [setFlashcards]);
+  const handleUpdateFlashcard = useCallback(
+    (card: Flashcard) => {
+      setFlashcards((prev) => prev.map((c) => (c.id === card.id ? card : c)));
+    },
+    [setFlashcards],
+  );
 
-  const handleUpdateSession = useCallback((session: StudySession) => {
-    setSessions((prev) => prev.map((s) => (s.id === session.id ? session : s)));
-  }, [setSessions]);
+  const handleUpdateSession = useCallback(
+    (session: StudySession) => {
+      setSessions((prev) => prev.map((s) => (s.id === session.id ? session : s)));
+    },
+    [setSessions],
+  );
 
-  const handleUpdateInternshipLog = useCallback((log: InternshipLog) => {
-    setInternshipLogs((prev) => prev.map((l) => (l.id === log.id ? log : l)));
-  }, [setInternshipLogs]);
+  const handleUpdateInternshipLog = useCallback(
+    (log: InternshipLog) => {
+      setInternshipLogs((prev) => prev.map((l) => (l.id === log.id ? log : l)));
+    },
+    [setInternshipLogs],
+  );
 
   /**
    * A porta de escrita **única** do estágio (`SPEC-009 §8.1`, `D3`).
@@ -578,10 +727,10 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
   const handleSaveInternshipLog = useCallback(
     (draft: InternshipLog) => {
       setInternshipLogs((prev) =>
-        planSave(prev, { ...draft, workspaceId: draft.workspaceId ?? currentWorkspaceId })
+        planSave(prev, { ...draft, workspaceId: draft.workspaceId ?? currentWorkspaceId }),
       );
     },
-    [currentWorkspaceId, setInternshipLogs]
+    [currentWorkspaceId, setInternshipLogs],
   );
 
   /** Apagar um registro e retirar o id de todo `discussedLogIds` (`E3`, `E4`). */
@@ -589,7 +738,7 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
     (id: string) => {
       setInternshipLogs((prev) => planDelete(prev, id));
     },
-    [setInternshipLogs]
+    [setInternshipLogs],
   );
 
   /** Renomear as iniciais de um caso inteiro (`E5`). */
@@ -597,7 +746,7 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
     (fromKey: string, toLabel: string) => {
       setInternshipLogs((prev) => planRenamePatient(prev, fromKey, toLabel).logs);
     },
-    [setInternshipLogs]
+    [setInternshipLogs],
   );
 
   /** Definir iniciais de registros específicos — o caminho dos órfãos (`D9`). */
@@ -605,7 +754,7 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
     (ids: string[], label: string) => {
       setInternshipLogs((prev) => planSetPatient(prev, ids, label));
     },
-    [setInternshipLogs]
+    [setInternshipLogs],
   );
 
   /**
@@ -619,26 +768,35 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
       step: string,
       kind: InternshipNextStepLink['kind'],
       entityId: string,
-      nowIso: string
+      nowIso: string,
     ): InternshipLog => {
       const linked = planLinkNextStep(log, step, kind, entityId, nowIso);
       setInternshipLogs((prev) => planSave(prev, linked));
       return linked;
     },
-    [setInternshipLogs]
+    [setInternshipLogs],
   );
 
-  const handleUpdateAuthor = useCallback((author: PsychologyAuthor) => {
-    setAuthors((prev) => prev.map((a) => (a.id === author.id ? author : a)));
-  }, [setAuthors]);
+  const handleUpdateAuthor = useCallback(
+    (author: PsychologyAuthor) => {
+      setAuthors((prev) => prev.map((a) => (a.id === author.id ? author : a)));
+    },
+    [setAuthors],
+  );
 
-  const handleUpdateConcept = useCallback((concept: PsychologyConcept) => {
-    setConcepts((prev) => prev.map((c) => (c.id === concept.id ? concept : c)));
-  }, [setConcepts]);
+  const handleUpdateConcept = useCallback(
+    (concept: PsychologyConcept) => {
+      setConcepts((prev) => prev.map((c) => (c.id === concept.id ? concept : c)));
+    },
+    [setConcepts],
+  );
 
-  const handleUpdateMaterial = useCallback((material: MaterialItem) => {
-    setMaterials((prev) => prev.map((m) => (m.id === material.id ? material : m)));
-  }, [setMaterials]);
+  const handleUpdateMaterial = useCallback(
+    (material: MaterialItem) => {
+      setMaterials((prev) => prev.map((m) => (m.id === material.id ? material : m)));
+    },
+    [setMaterials],
+  );
 
   // ---- Período letivo (SPEC-005) ----
 
@@ -666,7 +824,10 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
    * janela: sem expirar, `canUndoRollover` ficava verdadeiro para sempre depois
    * que o toast sumia — um "desfazer" invisível, valendo sempre.
    */
-  const [lastRollover, setLastRollover] = useState<{ plan: TermRolloverPlan; appliedAt: number } | null>(null);
+  const [lastRollover, setLastRollover] = useState<{
+    plan: TermRolloverPlan;
+    appliedAt: number;
+  } | null>(null);
   const lastRolloverPlan = lastRollover?.plan ?? null;
 
   // Um dono só do relógio da janela: ao passar de 8s o plano some, junto com a
@@ -683,28 +844,33 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
     return () => clearTimeout(timer);
   }, [lastRollover]);
 
-  const applyTermRollover = useCallback((plan: TermRolloverPlan) => {
-    const byId = new Map(plan.courses.map((c) => [c.id, c]));
-    setCourses((prev) =>
-      prev.map((c) => {
-        const next = byId.get(c.id);
-        return next ? { ...c, termId: next.termId, status: next.status } : c;
-      })
-    );
-    // A virada é a 2ª das 3 portas de escrita (ver `core/domain/term.ts`) e
-    // sempre passa pela invariante de um ativo só.
-    const terms = enforceSingleActiveTerm(plan.terms);
-    setAcademicTerms(terms);
-    const active = resolveActiveTerm(terms);
-    if (active) {
-      setProfile((prev) => (prev.semester === active.ordinal ? prev : { ...prev, semester: active.ordinal }));
-    }
-    setLastRollover({ plan, appliedAt: Date.now() });
-    hapticSuccess();
-    // fecha um capítulo da jornada — o burst mais raro do app, no mesmo espírito
-    // do "parabéns" das tarefas e do level up (SPEC-006 D8)
-    celebrate('term-closed');
-  }, [setCourses, setAcademicTerms, setProfile]);
+  const applyTermRollover = useCallback(
+    (plan: TermRolloverPlan) => {
+      const byId = new Map(plan.courses.map((c) => [c.id, c]));
+      setCourses((prev) =>
+        prev.map((c) => {
+          const next = byId.get(c.id);
+          return next ? { ...c, termId: next.termId, status: next.status } : c;
+        }),
+      );
+      // A virada é a 2ª das 3 portas de escrita (ver `core/domain/term.ts`) e
+      // sempre passa pela invariante de um ativo só.
+      const terms = enforceSingleActiveTerm(plan.terms);
+      setAcademicTerms(terms);
+      const active = resolveActiveTerm(terms);
+      if (active) {
+        setProfile((prev) =>
+          prev.semester === active.ordinal ? prev : { ...prev, semester: active.ordinal },
+        );
+      }
+      setLastRollover({ plan, appliedAt: Date.now() });
+      hapticSuccess();
+      // fecha um capítulo da jornada — o burst mais raro do app, no mesmo espírito
+      // do "parabéns" das tarefas e do level up (SPEC-006 D8)
+      celebrate('term-closed');
+    },
+    [setCourses, setAcademicTerms, setProfile],
+  );
 
   /** Reverte a virada. Nada foi apagado, então é só devolver cada campo. */
   const undoTermRollover = useCallback(
@@ -727,16 +893,18 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
           if (next.status === undefined) delete merged.status;
           else merged.status = next.status;
           return merged;
-        })
+        }),
       );
       const terms = enforceSingleActiveTerm(reverted.terms);
       setAcademicTerms(terms);
       const active = resolveActiveTerm(terms);
       if (active) {
-        setProfile((prev) => (prev.semester === active.ordinal ? prev : { ...prev, semester: active.ordinal }));
+        setProfile((prev) =>
+          prev.semester === active.ordinal ? prev : { ...prev, semester: active.ordinal },
+        );
       }
     },
-    [academicTerms, courses, setCourses, setAcademicTerms, setProfile]
+    [academicTerms, courses, setCourses, setAcademicTerms, setProfile],
   );
 
   /**
@@ -761,7 +929,9 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
       setAcademicTerms(terms);
       const active = resolveActiveTerm(terms);
       if (active) {
-        setProfile((prev) => (prev.semester === active.ordinal ? prev : { ...prev, semester: active.ordinal }));
+        setProfile((prev) =>
+          prev.semester === active.ordinal ? prev : { ...prev, semester: active.ordinal },
+        );
       }
       hapticTap();
     },
@@ -788,7 +958,9 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
       const created = createAcademicTerm({ ordinal, startedAt: now.slice(0, 10), now });
       const terms = enforceSingleActiveTerm([...academicTerms, created]);
       setAcademicTerms(terms);
-      setProfile((prev) => (prev.semester === created.ordinal ? prev : { ...prev, semester: created.ordinal }));
+      setProfile((prev) =>
+        prev.semester === created.ordinal ? prev : { ...prev, semester: created.ordinal },
+      );
       hapticTap();
     },
     [academicTerms, setAcademicTerms, setProfile],
@@ -802,7 +974,9 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
   const setTotalSemesters = useCallback(
     (total: number) => {
       const next = Math.max(1, Math.min(MAX_TERM_ORDINAL, Math.trunc(total) || 1));
-      setProfile((prev) => (prev.totalSemesters === next ? prev : { ...prev, totalSemesters: next }));
+      setProfile((prev) =>
+        prev.totalSemesters === next ? prev : { ...prev, totalSemesters: next },
+      );
       hapticTap();
     },
     [setProfile],
@@ -824,11 +998,13 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
       setAcademicTerms(terms);
       const active = resolveActiveTerm(terms);
       if (active) {
-        setProfile((prev) => (prev.semester === active.ordinal ? prev : { ...prev, semester: active.ordinal }));
+        setProfile((prev) =>
+          prev.semester === active.ordinal ? prev : { ...prev, semester: active.ordinal },
+        );
       }
       hapticSuccess();
     },
-    [academicTerms, setAcademicTerms, setProfile]
+    [academicTerms, setAcademicTerms, setProfile],
   );
 
   /**
@@ -849,10 +1025,15 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
   }, [lastRollover, undoTermRollover]);
 
   /** Arquiva: sai da grade do período, some do plano de ação, continua pesquisável. */
-  const archiveCourse = useCallback((courseId: string) => {
-    setCourses((prev) => prev.map((c) => (c.id === courseId ? { ...c, status: 'arquivado' } : c)));
-    hapticTap();
-  }, [setCourses]);
+  const archiveCourse = useCallback(
+    (courseId: string) => {
+      setCourses((prev) =>
+        prev.map((c) => (c.id === courseId ? { ...c, status: 'arquivado' } : c)),
+      );
+      hapticTap();
+    },
+    [setCourses],
+  );
 
   /**
    * Desarquiva de volta para a grade do período **ativo**.
@@ -862,16 +1043,17 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
    * para um semestre que já fechou — e ela sumiria da grade mesmo "ativa".
    * Sem período ativo, mantém o `termId` (não inventa um período).
    */
-  const restoreCourse = useCallback((courseId: string) => {
-    setCourses((prev) =>
-      prev.map((c) =>
-        c.id === courseId
-          ? { ...c, status: 'ativo', termId: activeTermId ?? c.termId }
-          : c
-      )
-    );
-    hapticTap();
-  }, [setCourses, activeTermId]);
+  const restoreCourse = useCallback(
+    (courseId: string) => {
+      setCourses((prev) =>
+        prev.map((c) =>
+          c.id === courseId ? { ...c, status: 'ativo', termId: activeTermId ?? c.termId } : c,
+        ),
+      );
+      hapticTap();
+    },
+    [setCourses, activeTermId],
+  );
 
   const groupTerm = useMemo(
     () => ({
@@ -889,7 +1071,19 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
       archiveCourse,
       restoreCourse,
     }),
-    [applyTermRollover, undoTermRollover, undoLastRollover, lastRollover, lastRolloverPlan, correctTermOrdinal, setTotalSemesters, openFirstTerm, reopenTermById, archiveCourse, restoreCourse]
+    [
+      applyTermRollover,
+      undoTermRollover,
+      undoLastRollover,
+      lastRollover,
+      lastRolloverPlan,
+      correctTermOrdinal,
+      setTotalSemesters,
+      openFirstTerm,
+      reopenTermById,
+      archiveCourse,
+      restoreCourse,
+    ],
   );
 
   // Grupos por domínio (PERF-001 A.3): cada grupo memoizado nas próprias
@@ -930,7 +1124,7 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
       markAttendance,
       updateAttendanceRecord,
       removeAttendanceRecord,
-    ]
+    ],
   );
 
   const groupStudy = useMemo(
@@ -965,7 +1159,7 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
       handleUpdateSession,
       handleSaveQuizSession,
       handleAddTechnique,
-    ]
+    ],
   );
 
   const groupKnowledge = useMemo(
@@ -990,7 +1184,7 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
       handleUpdateAuthor,
       adoptAcervoConcept,
       adoptAcervoAuthor,
-    ]
+    ],
   );
 
   const groupApp = useMemo(
@@ -1015,7 +1209,7 @@ export function useDataActions(deps: DataActionsDeps): DataActions & DataActionG
       handleConvertNextStep,
       handleUpdateProfile,
       handleUpdateTcc,
-    ]
+    ],
   );
 
   return {

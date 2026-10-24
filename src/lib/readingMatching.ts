@@ -39,19 +39,14 @@ export interface CatalogWorkRef {
 export function findMyReadingMatches(
   title: string,
   readings: ReadingItem[],
-  excludeId?: string
+  excludeId?: string,
 ): ReadingItem[] {
   if (!title.trim()) return [];
-  return readings.filter(
-    (r) => r.id !== excludeId && titlesMatch(title, r.title)
-  );
+  return readings.filter((r) => r.id !== excludeId && titlesMatch(title, r.title));
 }
 
 /** Obras do catálogo da biblioteca que batem com o título digitado. */
-export function findCatalogMatches(
-  title: string,
-  works: CatalogWorkRef[]
-): CatalogWorkRef[] {
+export function findCatalogMatches(title: string, works: CatalogWorkRef[]): CatalogWorkRef[] {
   if (!title.trim()) return [];
   return works.filter((w) => titlesMatch(title, w.title));
 }

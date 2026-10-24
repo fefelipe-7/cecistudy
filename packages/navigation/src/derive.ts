@@ -74,11 +74,15 @@ export interface DerivedNav {
  */
 export function deriveScreen(
   stack: NavScreen[],
-  resolveQuizResultPool?: (stack: NavScreen[]) => StudyQuestion[] | null
+  resolveQuizResultPool?: (stack: NavScreen[]) => StudyQuestion[] | null,
 ): DerivedNav {
   const currentScreen = stack[stack.length - 1];
   const activeTab: NavTab =
-    currentScreen.kind === 'tab' ? currentScreen.tab : stack[0]?.kind === 'tab' ? stack[0].tab : 'home';
+    currentScreen.kind === 'tab'
+      ? currentScreen.tab
+      : stack[0]?.kind === 'tab'
+        ? stack[0].tab
+        : 'home';
 
   const resolvedPool =
     currentScreen.kind === 'quiz-result'
@@ -226,9 +230,12 @@ export function deriveScreen(
     currentQuizPlayState: currentScreen.kind === 'quiz-play' ? currentScreen.state : null,
     currentQuizResultAnswers: currentScreen.kind === 'quiz-result' ? currentScreen.answers : null,
     currentQuizResultConfig: currentScreen.kind === 'quiz-result' ? currentScreen.config : null,
-    currentQuizResultStartTime: currentScreen.kind === 'quiz-result' ? currentScreen.startTime : null,
-    currentQuizResultCorrectCount: currentScreen.kind === 'quiz-result' ? currentScreen.correctCount : null,
-    currentQuizResultTotalCount: currentScreen.kind === 'quiz-result' ? currentScreen.totalCount : null,
+    currentQuizResultStartTime:
+      currentScreen.kind === 'quiz-result' ? currentScreen.startTime : null,
+    currentQuizResultCorrectCount:
+      currentScreen.kind === 'quiz-result' ? currentScreen.correctCount : null,
+    currentQuizResultTotalCount:
+      currentScreen.kind === 'quiz-result' ? currentScreen.totalCount : null,
     currentQuizResultPool: resolvedPool,
     focusedCourseId: currentScreen.kind === 'course' ? currentScreen.courseId : null,
     focusedStudyScreen: currentScreen.kind === 'study' ? currentScreen.screen : null,
@@ -238,6 +245,8 @@ export function deriveScreen(
 
 /** Resolve o pool do resultado a partir do quiz-play remanescente na pilha. */
 export function resolveQuizResultPoolFromStack(stack: NavScreen[]): StudyQuestion[] | null {
-  const play = stack.find((s): s is Extract<NavScreen, { kind: 'quiz-play' }> => s.kind === 'quiz-play');
+  const play = stack.find(
+    (s): s is Extract<NavScreen, { kind: 'quiz-play' }> => s.kind === 'quiz-play',
+  );
   return play ? play.state.pool : null;
 }

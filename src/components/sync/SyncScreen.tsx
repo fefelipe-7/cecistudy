@@ -21,11 +21,7 @@ import {
 } from '../../lib/sync/pairing';
 import { scanQrPayload } from '../../lib/sync/scanQr';
 import { erro as vozErro, CELEBRACAO, frase } from '../../lib/voice';
-import {
-  resolveSyncTransport,
-  SyncPreview,
-  SyncRole,
-} from '../../lib/sync/transport-bridge';
+import { resolveSyncTransport, SyncPreview, SyncRole } from '../../lib/sync/transport-bridge';
 
 /**
  * Sincronização entre dispositivos (Fase Sync S3).
@@ -53,7 +49,9 @@ const StepCard: React.FC<{ children: React.ReactNode; className?: string }> = ({
   children,
   className = '',
 }) => (
-  <div className={`rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm ${className}`}>
+  <div
+    className={`rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm ${className}`}
+  >
     {children}
   </div>
 );
@@ -75,7 +73,7 @@ export const SyncScreen: React.FC = () => {
       if (timeoutRef.current !== null) window.clearTimeout(timeoutRef.current);
       resolveSyncTransport()?.close();
     },
-    []
+    [],
   );
 
   /** QR do host gerado sob demanda (chunk separado). */
@@ -117,30 +115,27 @@ export const SyncScreen: React.FC = () => {
     setInputCode('');
   }, []);
 
-  const handleConnect = useCallback(
-    async (pairCode: string) => {
-      const transport = resolveSyncTransport();
-      if (!transport) {
-        // Fase S2 pendente: transporte ainda não implementado.
-        setPhase('unavailable');
-        return;
-      }
-      setRole('join');
-      setPhase('connecting');
-      setErrorMsg('');
-      try {
-        await transport.connect(pairCode);
-        if (timeoutRef.current !== null) window.clearTimeout(timeoutRef.current);
-        // A troca de payloads + cálculo do merge acontece no engine da Fase S2
-        // (getSyncPayloadJson → exchange → mergeSyncedDatabases → preview).
-        setPhase('preview');
-      } catch {
-        setPhase('error');
-        setErrorMsg(vozErro('syncRede'));
-      }
-    },
-    []
-  );
+  const handleConnect = useCallback(async (pairCode: string) => {
+    const transport = resolveSyncTransport();
+    if (!transport) {
+      // Fase S2 pendente: transporte ainda não implementado.
+      setPhase('unavailable');
+      return;
+    }
+    setRole('join');
+    setPhase('connecting');
+    setErrorMsg('');
+    try {
+      await transport.connect(pairCode);
+      if (timeoutRef.current !== null) window.clearTimeout(timeoutRef.current);
+      // A troca de payloads + cálculo do merge acontece no engine da Fase S2
+      // (getSyncPayloadJson → exchange → mergeSyncedDatabases → preview).
+      setPhase('preview');
+    } catch {
+      setPhase('error');
+      setErrorMsg(vozErro('syncRede'));
+    }
+  }, []);
 
   const beginJoinWithTimeout = useCallback(() => {
     const clean = normalizePairCode(inputCode);
@@ -270,13 +265,19 @@ export const SyncScreen: React.FC = () => {
 
             <div className="w-56 h-56 rounded-xl bg-surface-default border border-ceci-border-default shadow-sm flex items-center justify-center overflow-hidden mb-4">
               {qrDataUrl ? (
-                <img src={qrDataUrl} alt="QR code de pareamento" className="w-full h-full object-contain" />
+                <img
+                  src={qrDataUrl}
+                  alt="QR code de pareamento"
+                  className="w-full h-full object-contain"
+                />
               ) : (
                 <Loader2 className="w-6 h-6 animate-spin text-ceci-muted" />
               )}
             </div>
 
-            <p className="text-[11px] uppercase tracking-wider text-ceci-muted mb-1">ou digite o código</p>
+            <p className="text-[11px] uppercase tracking-wider text-ceci-muted mb-1">
+              ou digite o código
+            </p>
             <p className="font-mono text-2xl tracking-[0.2em] text-ceci-primary font-semibold mb-4">
               {formatPairCode(code)}
             </p>
@@ -308,7 +309,11 @@ export const SyncScreen: React.FC = () => {
               disabled={isScanning}
               className="w-full flex items-center justify-center gap-2 bg-surface-blue border border-ceci-border-academic text-ceci-academic-strong px-4 py-3 rounded-2xl text-sm font-semibold tap-interactive cursor-pointer hover:bg-ceci-academic-strong hover:text-ceci-on-academic transition-colors disabled:opacity-60"
             >
-              {isScanning ? <Loader2 className="w-4 h-4 animate-spin" /> : <ScanLine className="w-4 h-4" />}
+              {isScanning ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <ScanLine className="w-4 h-4" />
+              )}
               {isScanning ? 'abrindo a câmera…' : 'escanear QR code'}
             </button>
 
@@ -414,7 +419,9 @@ export const SyncScreen: React.FC = () => {
             <h2 className="font-display font-bold text-base text-ceci-primary mb-1">
               ops, não deu dessa vez
             </h2>
-            <p className="text-xs text-ceci-secondary leading-relaxed max-w-[280px] mb-4">{errorMsg}</p>
+            <p className="text-xs text-ceci-secondary leading-relaxed max-w-[280px] mb-4">
+              {errorMsg}
+            </p>
             <div className="flex gap-2 w-full max-w-[280px]">
               <button
                 onClick={backToChoose}
@@ -446,10 +453,14 @@ const StatsBadge: React.FC<{
 }> = ({ label, stats, tone }) => (
   <div
     className={`rounded-2xl border px-3 py-2.5 ${
-      tone === 'receive' ? 'bg-surface-rose border-ceci-border-brand' : 'bg-surface-blue border-ceci-border-academic'
+      tone === 'receive'
+        ? 'bg-surface-rose border-ceci-border-brand'
+        : 'bg-surface-blue border-ceci-border-academic'
     }`}
   >
-    <p className={`text-[11px] font-semibold mb-1 ${tone === 'receive' ? 'text-ceci-brand-strong' : 'text-ceci-academic-strong'}`}>
+    <p
+      className={`text-[11px] font-semibold mb-1 ${tone === 'receive' ? 'text-ceci-brand-strong' : 'text-ceci-academic-strong'}`}
+    >
       {label}
     </p>
     <p className="text-xs text-ceci-secondary leading-relaxed">

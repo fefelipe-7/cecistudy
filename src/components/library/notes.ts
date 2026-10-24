@@ -1,10 +1,10 @@
 import type { LooseNote } from '../../types';
 
 export const CATEGORY_BADGE: Record<LooseNote['category'], string> = {
-  'reflexão': 'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand',
-  'estudo': 'bg-surface-blue text-ceci-academic-strong border border-ceci-border-academic',
-  'ideia': 'bg-status-warning-surface text-status-warning-strong border border-status-warning-border',
-  'lembrete': 'bg-surface-muted text-ceci-secondary border border-ceci-border-default',
+  reflexão: 'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand',
+  estudo: 'bg-surface-blue text-ceci-academic-strong border border-ceci-border-academic',
+  ideia: 'bg-status-warning-surface text-status-warning-strong border border-status-warning-border',
+  lembrete: 'bg-surface-muted text-ceci-secondary border border-ceci-border-default',
 };
 
 /** Formata um timestamp ISO para exibição amigável em pt-BR (ex.: "hoje, 11:30"). */
@@ -29,7 +29,6 @@ export function formatNoteDate(iso: string): string {
     d
       .toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' })
       .replace('.', '')
-      .toLowerCase() +
-    `, ${time}`
+      .toLowerCase() + `, ${time}`
   );
 }

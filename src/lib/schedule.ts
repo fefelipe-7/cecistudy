@@ -15,13 +15,29 @@ import { formatDateShortBR, addDaysKey } from './dateBR';
 import type { InternshipLog, DateKey } from '../types';
 
 const WEEKDAY_MAP: Record<string, number> = {
-  domingo: 0, dom: 0,
-  segunda: 1, segundas: 1, seg: 1,
-  terça: 2, terças: 2, terca: 2, tercas: 2, ter: 2,
-  quarta: 3, quartas: 3, qua: 3,
-  quinta: 4, quintas: 4, qui: 4,
-  sexta: 5, sextas: 5, sex: 5,
-  sábado: 6, sáb: 6, sabado: 6, sab: 6,
+  domingo: 0,
+  dom: 0,
+  segunda: 1,
+  segundas: 1,
+  seg: 1,
+  terça: 2,
+  terças: 2,
+  terca: 2,
+  tercas: 2,
+  ter: 2,
+  quarta: 3,
+  quartas: 3,
+  qua: 3,
+  quinta: 4,
+  quintas: 4,
+  qui: 4,
+  sexta: 5,
+  sextas: 5,
+  sex: 5,
+  sábado: 6,
+  sáb: 6,
+  sabado: 6,
+  sab: 6,
 };
 
 /** Dia da semana (0=domingo) de uma data. */
@@ -46,7 +62,9 @@ export function parseLegacySchedule(text?: string): CourseScheduleSlot[] {
       .filter(([name]) => new RegExp(`\\b${name}s?\\b`).test(seg))
       .map(([, idx]) => idx);
     if (days.length === 0) continue;
-    const colonTimes = [...seg.matchAll(/(\d{1,2}):(\d{2})/g)].map((m) => `${m[1].padStart(2, '0')}:${m[2]}`);
+    const colonTimes = [...seg.matchAll(/(\d{1,2}):(\d{2})/g)].map(
+      (m) => `${m[1].padStart(2, '0')}:${m[2]}`,
+    );
     let start = colonTimes[0];
     let end = colonTimes[1];
     if (!start) {
@@ -79,16 +97,13 @@ export interface ScheduledClass {
 }
 
 /** Aulas do dia, ordenadas por horário de início. */
-export function getTodaySchedule(
-  courses: Course[],
-  date: Date
-): ScheduledClass[] {
+export function getTodaySchedule(courses: Course[], date: Date): ScheduledClass[] {
   const target = weekdayIndex(date);
   const out: ScheduledClass[] = [];
   courses.forEach((c) =>
     slotsOf(c.schedule).forEach((slot) => {
       if (slot.day === target) out.push({ course: c, slot });
-    })
+    }),
   );
   return out.sort((a, b) => a.slot.start.localeCompare(b.slot.start));
 }
@@ -105,7 +120,7 @@ function dateOfDay(year: number, month: number, day: number): Date {
 export function classesForMonth(
   courses: Course[],
   year: number,
-  month: number
+  month: number,
 ): Map<number, ScheduledClass[]> {
   const byDay = new Map<number, ScheduledClass[]>();
   for (let day = 1; day <= daysInMonth(year, month); day++) {
@@ -150,7 +165,9 @@ export function formatCourseSchedule(slots: string | CourseScheduleSlot[] | unde
 }
 
 /** Primeira hora de início (HH:MM) ou null se não houver horário. */
-export function extractScheduleTime(slots?: string | CourseScheduleSlot[] | undefined): string | null {
+export function extractScheduleTime(
+  slots?: string | CourseScheduleSlot[] | undefined,
+): string | null {
   const arr = slotsOf(slots);
   if (!arr.length) return null;
   return arr[0].start;
@@ -163,9 +180,7 @@ export function formatShortDate(date: string): string {
 
 /** Nome do mês em pt-BR minúsculo (ex.: "agosto"). */
 export function monthName(year: number, month: number): string {
-  return new Date(year, month - 1, 1)
-    .toLocaleDateString('pt-BR', { month: 'long' })
-    .toLowerCase();
+  return new Date(year, month - 1, 1).toLocaleDateString('pt-BR', { month: 'long' }).toLowerCase();
 }
 
 /** Dias de um mês (1..28-31). */
@@ -369,5 +384,3 @@ function keyParts(key: DateKey): [number, number, number] {
   const [y, m, d] = key.split('-').map(Number);
   return [y, m - 1, d];
 }
-
-

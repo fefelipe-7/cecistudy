@@ -75,8 +75,7 @@ export const addDays = (key: DateKey, n: number): DateKey => {
  * para comparar — `20261201 - 20261008` dá 1193, não 54 (o aviso já estava no
  * `dayNumber`, e o bug aconteceu mesmo assim, pego por teste).
  */
-export const daysBetween = (from: DateKey, to: DateKey): number =>
-  dayNumber(to) - dayNumber(from);
+export const daysBetween = (from: DateKey, to: DateKey): number => dayNumber(to) - dayNumber(from);
 
 /** Segunda-feira da semana de `key`. Domingo devolve a segunda anterior. */
 export const weekStartKey = (key: DateKey): DateKey => {

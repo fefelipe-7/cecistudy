@@ -35,9 +35,7 @@ describe('slideBaseKeyOf', () => {
   it('REGRESSÃO B5: sub-telas do curso têm key PRÓPRIA (não a do curso)', () => {
     // Antes as duas devolviam `course-c1`, então abrir a anotação não trocava a
     // camada e o CourseDetailView remontava junto (perdendo a sub-tab ativa).
-    expect(slideBaseKeyOf(c1, faculdade)).not.toBe(
-      slideBaseKeyOf(note1, faculdade),
-    );
+    expect(slideBaseKeyOf(c1, faculdade)).not.toBe(slideBaseKeyOf(note1, faculdade));
     expect(slideBaseKeyOf(note1, faculdade)).toBe('classNote-c1-cl-1');
   });
 
@@ -138,9 +136,9 @@ describe('slideLayerChanged — a regra REAL substitui o proxy "não é overlay"
   });
 
   it('termHistory → voltar pro wizard também muda a camada', () => {
-    expect(
-      slideLayerChanged([perfil, wizardSemester, termHistory], [perfil, wizardSemester]),
-    ).toBe(true);
+    expect(slideLayerChanged([perfil, wizardSemester, termHistory], [perfil, wizardSemester])).toBe(
+      true,
+    );
   });
 
   it('REGRESSÃO B5: abrir/fechar sub-tela do curso MUDA a camada', () => {

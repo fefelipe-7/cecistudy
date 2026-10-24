@@ -1,9 +1,5 @@
 import React from 'react';
-import type {
-  DataClientValue,
-  ReminderSettings,
-  ToastOptions,
-} from './DataClientProvider';
+import type { DataClientValue, ReminderSettings, ToastOptions } from './DataClientProvider';
 import type { SharedAppValue } from './sharedAppValue';
 import type { InternshipWizardSeed } from '../types/internshipSeed';
 import type { InternshipTab, ThesisTab } from '../../packages/navigation/src/types';
@@ -19,7 +15,8 @@ import type {
   NavTab,
   NavScreen,
   SubTabFaculdade,
-  SubTabBiblioteca,  UserProfile,
+  SubTabBiblioteca,
+  UserProfile,
   Course,
   ClassNote,
   Task,
@@ -387,7 +384,7 @@ export interface AppContextValue {
     config: QuizConfig,
     startTime: number,
     correctCount: number,
-    totalCount: number
+    totalCount: number,
   ) => void;
   closeQuizResult: () => void;
   updateQuizPlayState: (updates: Partial<QuizPlayState>) => void;
@@ -487,23 +484,24 @@ export interface AppContextValue {
     step: string,
     kind: InternshipNextStepLink['kind'],
     entityId: string,
-    nowIso: string
+    nowIso: string,
   ) => InternshipLog;
   handleAddExam: (exam: Exam) => void;
   handleAddCourse: (course: Course) => void;
   handleAddAuthor: (author: PsychologyAuthor) => void;
   /** Frequência detalhada (spec-frequencia.md): marca a aula de hoje na disciplina. */
   markAttendance: (courseId: string, status: AttendanceStatus) => void;
-  updateAttendanceRecord: (courseId: string, recordId: string, patch: Partial<Pick<AttendanceRecord, 'status' | 'noteId' | 'hours'>>) => void;
+  updateAttendanceRecord: (
+    courseId: string,
+    recordId: string,
+    patch: Partial<Pick<AttendanceRecord, 'status' | 'noteId' | 'hours'>>,
+  ) => void;
   removeAttendanceRecord: (courseId: string, recordId: string) => void;
   /** Adota um autor do acervo (idempotente por nome): devolve o id real a usar. */
   adoptAcervoAuthor: (draft: AuthorDraft) => string;
   handleAddSession: (session: StudySession) => void;
   handleAddTechnique: (technique: Technique) => void;
-  handleUpdateReadingChapters: (
-    readingId: string,
-    chapters: ReadingItem['chapters']
-  ) => void;
+  handleUpdateReadingChapters: (readingId: string, chapters: ReadingItem['chapters']) => void;
   handleUpdateProfile: (updated: Partial<UserProfile>) => void;
   handleUpdateTcc: (updated: ThesisProject) => void;
   handleUpdateCourse: (updated: Course) => void;
@@ -558,10 +556,15 @@ export interface AppContextValue {
  * apenas os handlers achatados (`DataActions`). Os grupos (PERF-001 A.3) são
  * expostos pelas cascas em contextos próprios — aqui só interessam os handlers.
  */
-export function pickDomainActions(
-  actions: DataActions & DataActionGroups,
-): DataActions {
-  const { courses: _courses, study: _study, knowledge: _knowledge, app: _app, term: _term, ...handlers } = actions;
+export function pickDomainActions(actions: DataActions & DataActionGroups): DataActions {
+  const {
+    courses: _courses,
+    study: _study,
+    knowledge: _knowledge,
+    app: _app,
+    term: _term,
+    ...handlers
+  } = actions;
   void _courses;
   void _study;
   void _knowledge;

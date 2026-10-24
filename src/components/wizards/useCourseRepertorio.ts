@@ -64,7 +64,7 @@ export const useCourseRepertorio = () => {
 
   const bibliographyOptions = useMemo<BibliographyOption[]>(
     () => buildBibliographyOptions({ readings, materials, catalog: catalogWorks }),
-    [readings, materials, catalogWorks]
+    [readings, materials, catalogWorks],
   );
 
   /** Opções no formato do CatalogMultiSelect (com grupo+badge). */
@@ -75,7 +75,7 @@ export const useCourseRepertorio = () => {
         label: o.label,
         group: o.value.startsWith('acervo-') ? 'acervo' : 'pessoal',
       })),
-    [conceptOptions]
+    [conceptOptions],
   );
 
   const authorOptionsGrouped = useMemo<CatalogSelectOption[]>(
@@ -85,7 +85,7 @@ export const useCourseRepertorio = () => {
         label: o.label,
         group: o.value.startsWith('acervo-') ? 'acervo' : 'pessoal',
       })),
-    [authorOptions]
+    [authorOptions],
   );
 
   const bibliographyOptionsGrouped = useMemo<CatalogSelectOption[]>(
@@ -97,7 +97,7 @@ export const useCourseRepertorio = () => {
         badge: o.badge,
         group: o.source === 'reading' || o.source === 'material' ? 'pessoal' : 'catalogo',
       })),
-    [bibliographyOptions]
+    [bibliographyOptions],
   );
 
   return {

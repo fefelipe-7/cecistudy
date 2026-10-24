@@ -93,6 +93,8 @@ describe('categoryXpOrDefault', () => {
 
   it('totalXp soma as categorias', () => {
     expect(totalXp({})).toBe(0);
-    expect(totalXp({ categoryXp: { estudo: 50, leituras: 20, jornada: 120, faculdade: 0 } })).toBe(190);
+    expect(totalXp({ categoryXp: { estudo: 50, leituras: 20, jornada: 120, faculdade: 0 } })).toBe(
+      190,
+    );
   });
 });

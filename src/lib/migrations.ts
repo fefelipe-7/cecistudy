@@ -16,7 +16,7 @@ import { legacyNotebookToLog } from '../lib/internshipCases';
  */
 export function migrateSupervisionNotebook(
   logs: InternshipLog[],
-  notebooks: SupervisionNotebook[]
+  notebooks: SupervisionNotebook[],
 ): InternshipLog[] {
   if (!notebooks.length) return logs;
   const byId = new Set(logs.map((l) => l.id));

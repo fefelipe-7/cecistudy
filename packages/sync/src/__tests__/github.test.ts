@@ -22,10 +22,7 @@ function makePackage(revision: number): SyncPackage {
 }
 
 /** Servidor GitHub fake em memória, controlado pelo teste. */
-function fakeGitHub(opts: {
-  initial?: { pkg: SyncPackage; sha: string };
-  authOk?: boolean;
-}) {
+function fakeGitHub(opts: { initial?: { pkg: SyncPackage; sha: string }; authOk?: boolean }) {
   let store: { pkg: SyncPackage; sha: string } | null = opts.initial ?? null;
   const calls: Array<{ method: string }> = [];
   const fetchMock = vi.fn(async (url: string | URL | Request, init?: RequestInit) => {
@@ -54,10 +51,9 @@ function fakeGitHub(opts: {
         pkg: body.content ? JSON.parse(atob(body.content)) : store!.pkg,
         sha: newSha,
       };
-      return new Response(
-        JSON.stringify({ sha: newSha, content: { sha: newSha } }),
-        { status: 200 },
-      );
+      return new Response(JSON.stringify({ sha: newSha, content: { sha: newSha } }), {
+        status: 200,
+      });
     }
     return new Response('', { status: 405 });
   });
@@ -91,9 +87,7 @@ describe('GitHubSyncProvider', () => {
     const remote = await p.downloadPackage();
     expect(remote?.sha).toBe('s3');
     expect(remote?.package.manifest.revision).toBe(3);
-    expect(
-      (remote?.package.snapshot as { profile: { name: string } }).profile.name,
-    ).toBe('ceci');
+    expect((remote?.package.snapshot as { profile: { name: string } }).profile.name).toBe('ceci');
   });
 
   it('sobe pacote novo (sem sha) e retorna nova revisão', async () => {

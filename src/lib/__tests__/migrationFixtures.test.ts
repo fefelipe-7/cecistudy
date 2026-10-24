@@ -16,10 +16,7 @@ import { MIGRATIONS, SCHEMA_VERSION, migrateDatabase } from '../../../packages/d
  * GERAÇÃO: `MIGRATION_WRITE=1 npm run test -- src/lib/__tests__/migrationFixtures.test.ts`
  * Nunca editar os arquivos manualmente: regenerar + revisar o diff.
  */
-const OUT = join(
-  import.meta.dirname,
-  '../../../contracts/golden/migrations'
-);
+const OUT = join(import.meta.dirname, '../../../contracts/golden/migrations');
 const WRITE = process.env.MIGRATION_WRITE === '1';
 
 /**
@@ -54,7 +51,14 @@ function legacyPayloadV1(): Record<string, unknown> {
         schedule: 'terça e quinta 10h',
         // Attendance já no shape novo (v15) e já com horas (v17): os dois
         // passos devem ser idempotentes e não sobrescrever o que existe.
-        attendance: { total: 4, minPct: 80, baseAttended: 1, records: [], totalHours: 9.5, baseHoursDone: 2 },
+        attendance: {
+          total: 4,
+          minPct: 80,
+          baseAttended: 1,
+          records: [],
+          totalHours: 9.5,
+          baseHoursDone: 2,
+        },
       },
       { id: 'c4', name: 'sem horário', schedule: 'quando der' },
       {
@@ -78,7 +82,9 @@ function legacyPayloadV1(): Record<string, unknown> {
       { id: 't1', title: 'ler cap 3', disciplineId: 'c1', completed: false },
       { id: 't2', title: 'resumo', disciplineId: 'c2', completed: true, workspaceId: 'ws-x' },
     ],
-    exams: [{ id: 'e1', courseId: 'c1', title: 'prova 1', date: '2026-03-01', topics: ['histeria'] }],
+    exams: [
+      { id: 'e1', courseId: 'c1', title: 'prova 1', date: '2026-03-01', topics: ['histeria'] },
+    ],
     authors: [],
     concepts: [{ id: 'con-1', name: 'transferência', definition: '...' }],
     approaches: [],
@@ -96,7 +102,9 @@ function legacyPayloadV1(): Record<string, unknown> {
     sessions: [],
     reminder: { enabled: true, time: '18:00' },
     savedBookIds: ['bk-1'],
-    looseNotes: [{ id: 'ln-1', title: 'nota solta', body: 'texto', date: '2026-01-05T00:00:00.000Z' }],
+    looseNotes: [
+      { id: 'ln-1', title: 'nota solta', body: 'texto', date: '2026-01-05T00:00:00.000Z' },
+    ],
   };
 }
 
@@ -112,10 +120,7 @@ beforeAll(() => {
     const migrateOne = MIGRATIONS[step];
     if (!migrateOne) continue;
     state = migrateOne(structuredClone(state));
-    writeFileSync(
-      join(OUT, `legacy_payload.v${step}.json`),
-      canonicalize(state) + '\n'
-    );
+    writeFileSync(join(OUT, `legacy_payload.v${step}.json`), canonicalize(state) + '\n');
   }
 });
 
@@ -136,9 +141,7 @@ describe('fixtures de migração (F1.13)', () => {
       const migrateOne = MIGRATIONS[step];
       if (!migrateOne) continue;
       state = migrateOne(structuredClone(state));
-      expect(canonicalize(state), `v${step}`).toBe(
-        readFixture(`legacy_payload.v${step}.json`)
-      );
+      expect(canonicalize(state), `v${step}`).toBe(readFixture(`legacy_payload.v${step}.json`));
     }
   });
 

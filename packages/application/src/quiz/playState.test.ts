@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import type { QuizAnswer, QuizConfig, QuizPlayState, StudyQuestion } from '../../../../src/types/quiz';
+import type {
+  QuizAnswer,
+  QuizConfig,
+  QuizPlayState,
+  StudyQuestion,
+} from '../../../../src/types/quiz';
 import {
   advanceQuestion,
   applyAnswer,

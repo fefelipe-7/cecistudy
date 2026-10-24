@@ -8,7 +8,9 @@ import { HeroCard } from '../../ui/HeroCard';
 
 describe('HeroCard', () => {
   it('renderiza eyebrow, título, resumo e testId padrão', () => {
-    render(<HeroCard eyebrow="estágio" title="132h de campo" summary="meta 300h · 3 pendências ♡" />);
+    render(
+      <HeroCard eyebrow="estágio" title="132h de campo" summary="meta 300h · 3 pendências ♡" />,
+    );
     const hero = screen.getByTestId('hero-card');
     expect(hero).toBeInTheDocument();
     expect(screen.getByText('estágio')).toBeInTheDocument();
@@ -18,14 +20,26 @@ describe('HeroCard', () => {
 
   it('chama onClick da ação e usa aria-label', () => {
     const onClick = vi.fn();
-    render(<HeroCard eyebrow="estágio" title="12h" action={{ label: 'anotar', onClick, ariaLabel: 'anotar no estágio' }} />);
+    render(
+      <HeroCard
+        eyebrow="estágio"
+        title="12h"
+        action={{ label: 'anotar', onClick, ariaLabel: 'anotar no estágio' }}
+      />,
+    );
     const botao = screen.getByLabelText('anotar no estágio');
     botao.click();
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
   it('usa aria-label do label quando não há ariaLabel', () => {
-    render(<HeroCard eyebrow="paciente" title="M. S." action={{ label: 'nova sessão', onClick: () => {} }} />);
+    render(
+      <HeroCard
+        eyebrow="paciente"
+        title="M. S."
+        action={{ label: 'nova sessão', onClick: () => {} }}
+      />,
+    );
     expect(screen.getByRole('button', { name: 'nova sessão' })).toBeInTheDocument();
   });
 

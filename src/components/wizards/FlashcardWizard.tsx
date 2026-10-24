@@ -49,9 +49,8 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
     closeWizard,
     showToast,
   } = useMobileApp();
-  const editingCard = editing?.kind === 'flashcard'
-    ? flashcards.find((c) => c.id === editing.id)
-    : undefined;
+  const editingCard =
+    editing?.kind === 'flashcard' ? flashcards.find((c) => c.id === editing.id) : undefined;
 
   const [prefs, setPrefs] = usePersistentState<FlashcardPrefs>(FLASHCARD_PREFS_KEY, { mode: '3d' });
   // Edição abre em modo simples (clareza > novidade); o 3D continua a memória default.
@@ -112,7 +111,7 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
                   'px-3 py-1.5 rounded-full text-[10px] font-bold cursor-pointer border transition active:scale-95',
                   mode === m
                     ? 'bg-surface-rose border-ceci-border-brand text-ceci-brand-strong'
-                    : 'bg-surface-default border-ceci-border-default text-ceci-tertiary hover:bg-surface-muted'
+                    : 'bg-surface-default border-ceci-border-default text-ceci-tertiary hover:bg-surface-muted',
                 )}
               >
                 {MODE_LABELS[m]}
@@ -183,7 +182,10 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
           >
             <span>contexto (opcional)</span>
             <ChevronDown
-              className={cn('w-4 h-4 text-ceci-tertiary transition-transform', contextOpen && 'rotate-180')}
+              className={cn(
+                'w-4 h-4 text-ceci-tertiary transition-transform',
+                contextOpen && 'rotate-180',
+              )}
             />
           </button>
           <AnimatePresence initial={false}>
@@ -237,7 +239,9 @@ export const FlashcardWizard: React.FC<{ editing?: ManagedItem | null }> = ({ ed
               initial={false}
               className="absolute inset-x-4 top-3 bottom-3 flex flex-col items-center justify-center gap-1 rounded-xl bg-surface-default border border-ceci-border-default p-3 text-center shadow-sm overflow-hidden"
             >
-              <span className="text-[9px] font-bold uppercase tracking-wider text-ceci-muted">pergunta</span>
+              <span className="text-[9px] font-bold uppercase tracking-wider text-ceci-muted">
+                pergunta
+              </span>
               <span className="text-[11px] font-bold text-ceci-primary leading-snug line-clamp-2">
                 {question.trim() || 'sua pergunta aqui'}
               </span>

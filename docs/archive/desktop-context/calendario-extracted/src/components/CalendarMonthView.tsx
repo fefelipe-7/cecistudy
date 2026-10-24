@@ -34,7 +34,10 @@ export const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({
   };
 
   return (
-    <div id="calendar-month-view" className="flex-1 flex flex-col min-w-0 bg-[#FFFCF8] overflow-y-auto select-none">
+    <div
+      id="calendar-month-view"
+      className="flex-1 flex flex-col min-w-0 bg-[#FFFCF8] overflow-y-auto select-none"
+    >
       {/* Month Header Days */}
       <div className="grid grid-cols-7 border-b border-[#E9DFDC] bg-[#FAF8F5] shrink-0">
         {daysOfWeek.map((day) => (
@@ -51,7 +54,7 @@ export const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({
       <div className="grid grid-cols-7 auto-rows-fr flex-1 min-h-[640px] bg-[#E9DFDC] gap-px">
         {monthGrid.map((cell, index) => {
           const dayItems = items.filter(
-            (i) => i.date === cell.fullDate && visibleLayerIds.has(i.layer)
+            (i) => i.date === cell.fullDate && visibleLayerIds.has(i.layer),
           );
           const isSelected = cell.fullDate === selectedDate;
 
@@ -74,10 +77,10 @@ export const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({
                     cell.isToday
                       ? 'w-6 h-6 rounded-full bg-[#D85F79] text-white flex items-center justify-center shadow-xs font-mono'
                       : isSelected
-                      ? 'w-6 h-6 rounded-full bg-[#FFE9EE] text-[#D85F79] flex items-center justify-center font-bold'
-                      : cell.isCurrentMonth
-                      ? 'text-[#40383A]'
-                      : 'text-[#ADA3A5]'
+                        ? 'w-6 h-6 rounded-full bg-[#FFE9EE] text-[#D85F79] flex items-center justify-center font-bold'
+                        : cell.isCurrentMonth
+                          ? 'text-[#40383A]'
+                          : 'text-[#ADA3A5]'
                   }`}
                 >
                   {cell.dayOfMonth}

@@ -7,7 +7,10 @@ import { ManageSurface } from '../../ui/ManageSurface';
 import { CatalogMultiSelect } from '../../ui/CatalogMultiSelect';
 import { useMobileApp } from '@/context/mobileApp';
 import { useCourseRepertorio } from '../../wizards/useCourseRepertorio';
-import { resolveCourseRepertorio, type RepertorioBibliographyItem } from '../../../lib/courseRepertorio';
+import {
+  resolveCourseRepertorio,
+  type RepertorioBibliographyItem,
+} from '../../../lib/courseRepertorio';
 import type { Course } from '../../../types';
 
 interface CourseRepertorioContentProps {
@@ -17,7 +20,10 @@ interface CourseRepertorioContentProps {
 type SheetKind = 'conceitos' | 'autores' | 'bibliografia' | null;
 
 /** Lista de bibliografia: badge de origem por tipo de item. */
-function bibliographyBadge(item: RepertorioBibliographyItem): { label: string; tone: 'success' | 'academic' } {
+function bibliographyBadge(item: RepertorioBibliographyItem): {
+  label: string;
+  tone: 'success' | 'academic';
+} {
   switch (item.kind) {
     case 'reading':
       return { label: 'minha leitura', tone: 'success' };
@@ -33,16 +39,28 @@ function bibliographyBadge(item: RepertorioBibliographyItem): { label: string; t
 
 /** Conteúdo da tab "repertório & conteúdo" — união dos vínculos explícitos com o caminho legado. */
 export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = ({ course }) => {
-  const { classes, concepts, authors, readings, materials, handleUpdateCourse, openRepertorioItem } = useMobileApp();
-  const { conceptOptions, authorOptions, bibliographyOptions, catalog, resolveIds } = useCourseRepertorio();
+  const {
+    classes,
+    concepts,
+    authors,
+    readings,
+    materials,
+    handleUpdateCourse,
+    openRepertorioItem,
+  } = useMobileApp();
+  const { conceptOptions, authorOptions, bibliographyOptions, catalog, resolveIds } =
+    useCourseRepertorio();
   const [sheet, setSheet] = useState<SheetKind>(null);
 
   const resolved = useMemo(
-    () => resolveCourseRepertorio(course, { classes, concepts, authors, readings, materials, catalog }),
-    [course, classes, concepts, authors, readings, materials, catalog]
+    () =>
+      resolveCourseRepertorio(course, { classes, concepts, authors, readings, materials, catalog }),
+    [course, classes, concepts, authors, readings, materials, catalog],
   );
 
-  const patchLinks = (patch: Partial<Pick<Course, 'conceptIds' | 'authorIds' | 'bibliographyIds'>>) => {
+  const patchLinks = (
+    patch: Partial<Pick<Course, 'conceptIds' | 'authorIds' | 'bibliographyIds'>>,
+  ) => {
     handleUpdateCourse({
       ...course,
       conceptIds: course.conceptIds ?? [],
@@ -60,7 +78,9 @@ export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = (
           <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-ceci-brand-strong" />
             <span>conceitos-chave da disciplina</span>
-            <span className="text-[11px] font-semibold text-ceci-tertiary">{resolved.concepts.length}</span>
+            <span className="text-[11px] font-semibold text-ceci-tertiary">
+              {resolved.concepts.length}
+            </span>
           </h3>
           <button
             type="button"
@@ -109,7 +129,9 @@ export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = (
           <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
             <UserCheck className="w-4 h-4 text-ceci-academic-strong" />
             <span>autores fundamentais</span>
-            <span className="text-[11px] font-semibold text-ceci-tertiary">{resolved.authors.length}</span>
+            <span className="text-[11px] font-semibold text-ceci-tertiary">
+              {resolved.authors.length}
+            </span>
           </h3>
           <button
             type="button"
@@ -136,7 +158,9 @@ export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = (
                 </div>
                 <div className="space-y-0.5 min-w-0">
                   <div className="flex items-center gap-2">
-                    <h4 className="font-display font-bold text-sm text-ceci-primary">{author.name}</h4>
+                    <h4 className="font-display font-bold text-sm text-ceci-primary">
+                      {author.name}
+                    </h4>
                     <span className="text-[10px] text-ceci-tertiary">{author.lifespan}</span>
                   </div>
                   <p className="text-xs text-ceci-secondary leading-relaxed">{author.bio}</p>
@@ -158,7 +182,9 @@ export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = (
           <h3 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
             <BookOpen className="w-4 h-4 text-ceci-tertiary" />
             <span>leituras & bibliografia recomendada</span>
-            <span className="text-[11px] font-semibold text-ceci-tertiary">{resolved.bibliography.length}</span>
+            <span className="text-[11px] font-semibold text-ceci-tertiary">
+              {resolved.bibliography.length}
+            </span>
           </h3>
           <button
             type="button"
@@ -173,12 +199,19 @@ export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = (
         {resolved.bibliography.length > 0 ? (
           <div className="divide-y divide-ceci-border-default border-y border-ceci-border-default">
             {resolved.bibliography.map((item) => {
-              const key = item.kind === 'reading' || item.kind === 'material' ? item.ref.id : item.kind;
+              const key =
+                item.kind === 'reading' || item.kind === 'material' ? item.ref.id : item.kind;
               const badge = bibliographyBadge(item);
 
               if (item.kind === 'reading') {
                 return (
-                  <ManageSurface key={key} kind="reading" id={item.ref.id} onTap={() => openRepertorioItem(item.ref.id, course.id)} className="py-2.5 text-xs">
+                  <ManageSurface
+                    key={key}
+                    kind="reading"
+                    id={item.ref.id}
+                    onTap={() => openRepertorioItem(item.ref.id, course.id)}
+                    className="py-2.5 text-xs"
+                  >
                     <div className="flex items-center justify-between gap-2">
                       <div className="space-y-0.5 min-w-0 pr-2">
                         <h5 className="font-bold text-ceci-primary">{item.ref.title}</h5>
@@ -194,7 +227,13 @@ export const CourseRepertorioContent: React.FC<CourseRepertorioContentProps> = (
 
               if (item.kind === 'material') {
                 return (
-                  <ManageSurface key={key} kind="material" id={item.ref.id} onTap={() => openRepertorioItem(item.ref.id, course.id)} className="py-2.5 text-xs">
+                  <ManageSurface
+                    key={key}
+                    kind="material"
+                    id={item.ref.id}
+                    onTap={() => openRepertorioItem(item.ref.id, course.id)}
+                    className="py-2.5 text-xs"
+                  >
                     <div className="flex items-center justify-between gap-2">
                       <div className="space-y-0.5 min-w-0 pr-2">
                         <h5 className="font-semibold text-ceci-primary">{item.ref.title}</h5>

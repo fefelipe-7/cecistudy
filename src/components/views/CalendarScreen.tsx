@@ -3,7 +3,11 @@
 // derivado de `buildCalendarEntries`, que é a única fonte de eventos (D4).
 import React, { useMemo, useState } from 'react';
 import { ChevronLeft, Plus } from 'lucide-react';
-import { useDataClientApp, useDataClientCourses, useDataClientStudy } from '@/context/DataClientProvider';
+import {
+  useDataClientApp,
+  useDataClientCourses,
+  useDataClientStudy,
+} from '@/context/DataClientProvider';
 import { useNavValue } from '@/context/shellNavContexts';
 import { buildCalendarEntries, daysInMonth } from '../../lib/schedule';
 import type { CalendarEntry } from '../../lib/schedule';
@@ -48,16 +52,35 @@ export const CalendarScreen: React.FC = () => {
 
   const agenda = useMemo(
     () => entriesFor(today, addDaysKey(today, 13)),
-    [courses, exams, tasks, tcc, thesisChapters, thesisTasks, thesisMeetings, internshipLogs, sessions, today],
+    [
+      courses,
+      exams,
+      tasks,
+      tcc,
+      thesisChapters,
+      thesisTasks,
+      thesisMeetings,
+      internshipLogs,
+      sessions,
+      today,
+    ],
   );
 
   const monthEntries = useMemo(
-    () =>
-      entriesFor(
-        dateKeyOf(year, month, 1),
-        dateKeyOf(year, month, daysInMonth(year, month)),
-      ),
-    [courses, exams, tasks, tcc, thesisChapters, thesisTasks, thesisMeetings, internshipLogs, sessions, year, month],
+    () => entriesFor(dateKeyOf(year, month, 1), dateKeyOf(year, month, daysInMonth(year, month))),
+    [
+      courses,
+      exams,
+      tasks,
+      tcc,
+      thesisChapters,
+      thesisTasks,
+      thesisMeetings,
+      internshipLogs,
+      sessions,
+      year,
+      month,
+    ],
   );
 
   const agendaGroups = useMemo(() => {
@@ -70,15 +93,19 @@ export const CalendarScreen: React.FC = () => {
     return groups;
   }, [agenda]);
 
-  const selectedEntries = selected
-    ? monthEntries.filter((e) => e.date === selected)
-    : [];
+  const selectedEntries = selected ? monthEntries.filter((e) => e.date === selected) : [];
 
   const shiftMonth = (delta: number) => {
     let m = month + delta;
     let y = year;
-    if (m < 1) { m = 12; y -= 1; }
-    if (m > 12) { m = 1; y += 1; }
+    if (m < 1) {
+      m = 12;
+      y -= 1;
+    }
+    if (m > 12) {
+      m = 1;
+      y += 1;
+    }
     setMonth(m);
     setYear(y);
     setSelected(null);
@@ -150,9 +177,7 @@ export const CalendarScreen: React.FC = () => {
         {selected && (
           <div className="rounded-xl p-3 bg-surface-subtle border border-ceci-border-subtle space-y-2">
             <div className="flex items-center justify-between gap-2">
-              <p className="text-xs font-semibold text-ceci-primary">
-                {formatDateBR(selected)}
-              </p>
+              <p className="text-xs font-semibold text-ceci-primary">{formatDateBR(selected)}</p>
               <button
                 onClick={() => setMenuOpen((v) => !v)}
                 aria-label="adicionar item neste dia"

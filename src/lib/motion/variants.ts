@@ -82,13 +82,13 @@ export function createScreenTargets(width: number, profile: MotionProfile): Scre
     front: { x: 0, opacity: 1, transition: { duration: d.screenRest, ease: EASE.standard } },
 
     /** `depth` níveis abaixo do topo. */
-  behind: (depth: number) => ({
-    // `-0` vira `translateX(-0px)` e quebra igualdade por `Object.is`; depth 0 é
-    // a própria frente, então devolvemos `0` limpo.
-    x: depth === 0 ? 0 : -depth * PARALLAX * width,
-    opacity: 1,
-    transition: { duration: d.screenRest, ease: EASE.standard },
-  }),
+    behind: (depth: number) => ({
+      // `-0` vira `translateX(-0px)` e quebra igualdade por `Object.is`; depth 0 é
+      // a própria frente, então devolvemos `0` limpo.
+      x: depth === 0 ? 0 : -depth * PARALLAX * width,
+      opacity: 1,
+      transition: { duration: d.screenRest, ease: EASE.standard },
+    }),
 
     // `opacity: 1` explícito: um push **não pode fazer fade**. Sumir enquanto
     // desliza é o maior sinal de "web app fingindo ser nativo".
@@ -141,12 +141,12 @@ export function createScreenVariants(width: number, profile: MotionProfile): Var
     initial: (intent: NavIntent) => targets.enter(intent),
     animate: (intent: NavIntent) =>
       intent.kind === 'push' || intent.kind === 'pop'
-        // `behind()` pode virar `front` e `front()` pode virar `behind()` na mesma
-        // camada (a tela-base troca de papel em push e pop). Se qualquer um dos dois
-        // dissesse `opacity`, a troca de papel devolveria a camada para o valor herdado
-        // do papel anterior — e o sintoma seria "depois de navegar, some tudo". Por isso
-        // o par é reescrito, e não só `front`: os dois alvos declaram `opacity`.
-        ? { ...targets.front, transition: { duration: profile.d.screenRest, ease: EASE.standard } }
+        ? // `behind()` pode virar `front` e `front()` pode virar `behind()` na mesma
+          // camada (a tela-base troca de papel em push e pop). Se qualquer um dos dois
+          // dissesse `opacity`, a troca de papel devolveria a camada para o valor herdado
+          // do papel anterior — e o sintoma seria "depois de navegar, some tudo". Por isso
+          // o par é reescrito, e não só `front`: os dois alvos declaram `opacity`.
+          { ...targets.front, transition: { duration: profile.d.screenRest, ease: EASE.standard } }
         : { ...targets.front },
     exit: () => targets.exit(consumeMotionIntent()),
   };
@@ -268,8 +268,7 @@ export const SHADE_OPACITY = SHADE_MAX_OPACITY;
  */
 export const sheetVariants: Record<'center' | 'top' | 'bottom', Variants> = {
   center: {
-    initial: () =>
-      prefersReducedMotion() ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 10 },
+    initial: () => (prefersReducedMotion() ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 10 }),
     animate: () =>
       prefersReducedMotion()
         ? { opacity: 1, transition: { duration: BASE_D.replace, ease: EASE.standard } }
@@ -277,7 +276,12 @@ export const sheetVariants: Record<'center' | 'top' | 'bottom', Variants> = {
     exit: () =>
       prefersReducedMotion()
         ? { opacity: 0, transition: { duration: BASE_D.replace, ease: EASE.exit } }
-        : { opacity: 0, scale: 0.97, y: 8, transition: { duration: BASE_D.replace, ease: EASE.exit } },
+        : {
+            opacity: 0,
+            scale: 0.97,
+            y: 8,
+            transition: { duration: BASE_D.replace, ease: EASE.exit },
+          },
   },
   top: {
     initial: () => (prefersReducedMotion() ? { opacity: 0 } : { opacity: 0, y: -28 }),
@@ -291,8 +295,7 @@ export const sheetVariants: Record<'center' | 'top' | 'bottom', Variants> = {
         : { opacity: 0, y: -20, transition: { duration: BASE_D.replace, ease: EASE.exit } },
   },
   bottom: {
-    initial: () =>
-      prefersReducedMotion() ? { y: '100%', opacity: 0 } : { y: '100%' },
+    initial: () => (prefersReducedMotion() ? { y: '100%', opacity: 0 } : { y: '100%' }),
     animate: () =>
       prefersReducedMotion()
         ? { y: 0, transition: { duration: BASE_D.sheet, ease: EASE.standard } }

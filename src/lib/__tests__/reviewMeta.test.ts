@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { initCard, schedule, ratingIntervals, shortInterval, RATING_LABELS, daysUntilDue } from '../fsrs';
+import {
+  initCard,
+  schedule,
+  ratingIntervals,
+  shortInterval,
+  RATING_LABELS,
+  daysUntilDue,
+} from '../fsrs';
 
 describe('shortInterval — rótulo curto do próximo vencimento', () => {
   it('mapeia dias para formas amigáveis', () => {

@@ -42,12 +42,7 @@ const MaterialForm: React.FC<MaterialFormProps> = ({
       placeholder="título do material"
       autoFocus
     />
-    <ChoiceCardGrid
-      label="tipo"
-      options={MATERIAL_TYPES}
-      value={type}
-      onChange={onTypeChange}
-    />
+    <ChoiceCardGrid label="tipo" options={MATERIAL_TYPES} value={type} onChange={onTypeChange} />
     <TextInput
       value={author}
       onChange={(e) => onAuthorChange(e.target.value)}

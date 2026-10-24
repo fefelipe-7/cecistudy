@@ -101,7 +101,15 @@ export type NavScreen =
   | { kind: 'quiz-category' }
   | { kind: 'quiz-loading'; config: QuizConfig }
   | { kind: 'quiz-play'; state: QuizPlayState }
-  | { kind: 'quiz-result'; answers: QuizAnswer[]; config: QuizConfig; startTime: number; correctCount: number; totalCount: number; pool: StudyQuestion[] }
+  | {
+      kind: 'quiz-result';
+      answers: QuizAnswer[];
+      config: QuizConfig;
+      startTime: number;
+      correctCount: number;
+      totalCount: number;
+      pool: StudyQuestion[];
+    }
   /** Sincronização entre dispositivos (pareamento P2P), empilhada sobre o perfil. */
   | { kind: 'sync' }
   /** Telas dedicadas do estudo (empurradas sobre a aba estudos pelo feed). */

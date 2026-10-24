@@ -1,6 +1,17 @@
 import React, { useMemo, useState } from 'react';
 import { Reorder, useDragControls } from 'framer-motion';
-import { CalendarClock, ListChecks, BookOpen, Users, PenLine, GripVertical, Plus, Copy, ExternalLink, Link2 } from 'lucide-react';
+import {
+  CalendarClock,
+  ListChecks,
+  BookOpen,
+  Users,
+  PenLine,
+  GripVertical,
+  Plus,
+  Copy,
+  ExternalLink,
+  Link2,
+} from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import { HeroCard } from '../ui/HeroCard';
 import { UnderlineTabBar } from '../ui/UnderlineTabBar';
@@ -111,7 +122,7 @@ const TABS: { id: ThesisTab; label: string; icon: React.ReactNode }[] = [
 
 /** Nome legível da aba — o `aria-label` do painel mostra isto, não o id cru. */
 const TAB_LABEL: Record<ThesisTab, string> = Object.fromEntries(
-  TABS.map((t) => [t.id, t.label])
+  TABS.map((t) => [t.id, t.label]),
 ) as Record<ThesisTab, string>;
 
 export const TccView: React.FC = () => {
@@ -143,7 +154,11 @@ export const TccView: React.FC = () => {
   const essentialChapters = thesisChapters.filter((ch) => ch.requiredness === 'obrigatorio');
   const essentialsDone = essentialChapters.filter(isChapterDone).length;
   const statusLabel =
-    tcc.status === 'concluido' ? 'concluído' : tcc.status === 'revisao' ? 'em revisão' : 'em andamento';
+    tcc.status === 'concluido'
+      ? 'concluído'
+      : tcc.status === 'revisao'
+        ? 'em revisão'
+        : 'em andamento';
 
   const today = todayKeyLocal();
   const deadline = hasTcc
@@ -209,13 +224,7 @@ export const TccView: React.FC = () => {
    * porta não tem dois donos. Por isso não existe mais `useState` para cada
    * sheet nesta tela.
    */
-  const {
-    tccSheet,
-    tccCaptureText,
-    openTccSheet,
-    closeTccSheet,
-    openTccCapture,
-  } = useMobileApp();
+  const { tccSheet, tccCaptureText, openTccSheet, closeTccSheet, openTccCapture } = useMobileApp();
 
   const editingChapter = tccSheet?.type === 'chapter' ? tccSheet.id : null;
   const writingOpen = tccSheet?.type === 'writing';
@@ -234,11 +243,11 @@ export const TccView: React.FC = () => {
     if (committed === thesisChapters) return; // soltou onde estava: não escreve
     setThesisChapters(committed);
     hapticTap();
-    const moved = rendered.find(
-      (ch, i) => ordered[i]?.id !== ch.id,
-    );
+    const moved = rendered.find((ch, i) => ordered[i]?.id !== ch.id);
     if (moved) {
-      const siblings = committed.filter((c) => (c.parentId ?? undefined) === (moved.parentId ?? undefined));
+      const siblings = committed.filter(
+        (c) => (c.parentId ?? undefined) === (moved.parentId ?? undefined),
+      );
       const pos = siblings.findIndex((c) => c.id === moved.id) + 1;
       setAnnounceText(`capítulo ${moved.title} movido para a posição ${pos} de ${siblings.length}`);
     }
@@ -388,13 +397,18 @@ export const TccView: React.FC = () => {
         >
           <div className="min-w-0">
             <p className="text-[11px] font-semibold text-ceci-secondary">próximo prazo</p>
-            <p className="text-sm font-bold font-display text-ceci-primary truncate">{deadline.title}</p>
+            <p className="text-sm font-bold font-display text-ceci-primary truncate">
+              {deadline.title}
+            </p>
             <p className="text-xs text-ceci-secondary">{formatDateBR(deadline.date)}</p>
           </div>
           {deadline.overdue ? (
             <StatusChip tone="warning" label="atrasado" />
           ) : (
-            <StatusChip tone="info" label={daysToDeadline === 0 ? 'hoje' : `em ${daysToDeadline} dias`} />
+            <StatusChip
+              tone="info"
+              label={daysToDeadline === 0 ? 'hoje' : `em ${daysToDeadline} dias`}
+            />
           )}
         </div>
       )}
@@ -412,7 +426,9 @@ export const TccView: React.FC = () => {
           valueText={`${chaptersDone} de ${chaptersTotal} capítulos prontos`}
         />
         <div className="flex items-center justify-between gap-2 text-[11px] text-ceci-secondary">
-          <span>{essentialsDone} de {essentialChapters.length} essenciais prontos</span>
+          <span>
+            {essentialsDone} de {essentialChapters.length} essenciais prontos
+          </span>
           <span>{wordsTotal} palavras no total</span>
         </div>
       </div>
@@ -545,7 +561,9 @@ export const TccView: React.FC = () => {
                     className="!min-h-[44px] !w-11 !h-11 -ml-2"
                   />
                   <div className="min-w-0 flex-1">
-                    <p className={`text-xs font-medium truncate ${done ? 'line-through text-ceci-tertiary' : 'text-ceci-primary'}`}>
+                    <p
+                      className={`text-xs font-medium truncate ${done ? 'line-through text-ceci-tertiary' : 'text-ceci-primary'}`}
+                    >
                       {ch.title}
                     </p>
                     {(ch.dueDate || ch.wordCount != null || ch.wordGoal != null) && (
@@ -561,7 +579,11 @@ export const TccView: React.FC = () => {
                       </p>
                     )}
                   </div>
-                  <StatusChip tone={stageTone(ch.stage)} label={stageLabel(ch.stage)} className="!min-h-[28px] !text-[10px] shrink-0" />
+                  <StatusChip
+                    tone={stageTone(ch.stage)}
+                    label={stageLabel(ch.stage)}
+                    className="!min-h-[28px] !text-[10px] shrink-0"
+                  />
                   {/* Alça do arrastar (Q6): é `button` com `data-no-swipe` —
                       o edge-swipe do iOS já ignora `button` (`swipe.ts:18-19`)
                       e o `dragListener={false}` deixa o scroll livre; o drag
@@ -751,13 +773,12 @@ export const TccView: React.FC = () => {
                 const first = data.authors[0];
                 const headline = first
                   ? `${first.family.toUpperCase()}, ${first.given ? `${first.given[0]}.` : ''}`
-                  : citation
-                    .split(/[.;]/)[0]
-                    .trim()
-                    .slice(0, 42) || 'sem autor';
+                  : citation.split(/[.;]/)[0].trim().slice(0, 42) || 'sem autor';
                 const missing = data.rawCitation
                   ? []
-                  : validateRef(data).slice(0, 3).map((m) => m.label);
+                  : validateRef(data)
+                      .slice(0, 3)
+                      .map((m) => m.label);
                 return (
                   <li key={ref.id}>
                     <div
@@ -779,7 +800,9 @@ export const TccView: React.FC = () => {
                             {headline}
                           </span>
                           {reading.year && (
-                            <span className="text-[11px] text-ceci-secondary shrink-0">{reading.year}</span>
+                            <span className="text-[11px] text-ceci-secondary shrink-0">
+                              {reading.year}
+                            </span>
                           )}
                           <TagChip size="sm" variant="neutral" className="shrink-0">
                             {TYPE_LABEL[reading.type] ?? reading.type}
@@ -828,7 +851,9 @@ export const TccView: React.FC = () => {
                         </p>
                       ) : (
                         reading.status === 'lendo' && (
-                          <p className="text-[11px] text-ceci-tertiary mt-1">você ainda está lendo esta obra</p>
+                          <p className="text-[11px] text-ceci-tertiary mt-1">
+                            você ainda está lendo esta obra
+                          </p>
                         )
                       )}
                     </div>
@@ -839,7 +864,10 @@ export const TccView: React.FC = () => {
           )}
 
           {descartadas > 0 && (
-            <p className="text-[11px] text-ceci-tertiary">{descartadas} descartada{descartadas === 1 ? '' : 's'} fora da lista — abra a referência para revisitar.</p>
+            <p className="text-[11px] text-ceci-tertiary">
+              {descartadas} descartada{descartadas === 1 ? '' : 's'} fora da lista — abra a
+              referência para revisitar.
+            </p>
           )}
         </div>
       </div>
@@ -904,7 +932,20 @@ export const TccView: React.FC = () => {
     );
   };
 
-  const MESES_CURTOS = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+  const MESES_CURTOS = [
+    'jan',
+    'fev',
+    'mar',
+    'abr',
+    'mai',
+    'jun',
+    'jul',
+    'ago',
+    'set',
+    'out',
+    'nov',
+    'dez',
+  ];
   const meetingDayTile = (date: string, tone: 'brand' | 'muted') => {
     const day = date.slice(8, 10);
     const month = MESES_CURTOS[Number(date.slice(5, 7)) - 1] ?? '';
@@ -938,9 +979,7 @@ export const TccView: React.FC = () => {
   const renderTaskRow = (t: (typeof thesisTasks)[number]) => {
     const done = t.status === 'resolvida';
     const overdue = !done && taskOverdue(t.dueDate);
-    const chapter = t.chapterId
-      ? thesisChapters.find((c) => c.id === t.chapterId)
-      : undefined;
+    const chapter = t.chapterId ? thesisChapters.find((c) => c.id === t.chapterId) : undefined;
     return (
       <div
         key={t.id}
@@ -994,7 +1033,11 @@ export const TccView: React.FC = () => {
           </div>
         </button>
         {overdue && (
-          <StatusChip tone="warning" label="vencida" className="!min-h-[26px] !text-[10px] shrink-0" />
+          <StatusChip
+            tone="warning"
+            label="vencida"
+            className="!min-h-[26px] !text-[10px] shrink-0"
+          />
         )}
       </div>
     );
@@ -1038,8 +1081,8 @@ export const TccView: React.FC = () => {
           </SectionTitle>
           {openTasks.length === 0 && closedTasks.length === 0 ? (
             <p className="text-xs text-ceci-secondary leading-relaxed bg-surface-muted rounded-2xl p-3 border border-ceci-border-subtle">
-              nada pendente por aqui ♡ o que a orientadora pedir e o que você
-              quiser lembrar cabe nesta lista.
+              nada pendente por aqui ♡ o que a orientadora pedir e o que você quiser lembrar cabe
+              nesta lista.
             </p>
           ) : (
             <div className="space-y-2">
@@ -1074,8 +1117,8 @@ export const TccView: React.FC = () => {
 
           {agendadas.length === 0 && realizadas.length === 0 && canceladas.length === 0 ? (
             <p className="text-xs text-ceci-secondary leading-relaxed bg-surface-muted rounded-2xl p-3 border border-ceci-border-subtle">
-              agende a próxima conversa com a orientação ou registre o que já
-              aconteceu — as decisões podem virar pendências.
+              agende a próxima conversa com a orientação ou registre o que já aconteceu — as
+              decisões podem virar pendências.
             </p>
           ) : (
             <div className="space-y-2">
@@ -1100,7 +1143,9 @@ export const TccView: React.FC = () => {
                         {m.time && (
                           <span className="text-[10px] text-ceci-secondary">· {m.time}</span>
                         )}
-                        <TagChip size="sm" variant="neutral">{m.mode}</TagChip>
+                        <TagChip size="sm" variant="neutral">
+                          {m.mode}
+                        </TagChip>
                       </div>
                     </div>
                     <StatusChip
@@ -1130,13 +1175,16 @@ export const TccView: React.FC = () => {
                       </span>
                       {m.decisions.length > 0 && (
                         <span className="text-[10px] text-ceci-secondary">
-                          · {m.decisions.length}{' '}
-                          {m.decisions.length === 1 ? 'decisão' : 'decisões'}
+                          · {m.decisions.length} {m.decisions.length === 1 ? 'decisão' : 'decisões'}
                         </span>
                       )}
                     </div>
                   </div>
-                  <StatusChip tone="success" label="realizada" className="!min-h-[26px] !text-[10px] shrink-0" />
+                  <StatusChip
+                    tone="success"
+                    label="realizada"
+                    className="!min-h-[26px] !text-[10px] shrink-0"
+                  />
                 </button>
               ))}
 
@@ -1155,7 +1203,9 @@ export const TccView: React.FC = () => {
                         <button
                           key={m.id}
                           type="button"
-                          onClick={() => openTccSheet({ type: 'meeting', id: m.id, intent: 'agendar' })}
+                          onClick={() =>
+                            openTccSheet({ type: 'meeting', id: m.id, intent: 'agendar' })
+                          }
                           className="w-full flex items-center gap-3 p-2.5 rounded-2xl border border-ceci-border-subtle bg-surface-muted text-left cursor-pointer tap-interactive"
                         >
                           {meetingDayTile(m.date, 'muted')}
@@ -1163,7 +1213,11 @@ export const TccView: React.FC = () => {
                             reunião de {formatDateBR(m.date)}
                             {m.time ? ` · ${m.time}` : ''}
                           </p>
-                          <StatusChip tone="muted" label="cancelada" className="!min-h-[26px] !text-[10px] shrink-0" />
+                          <StatusChip
+                            tone="muted"
+                            label="cancelada"
+                            className="!min-h-[26px] !text-[10px] shrink-0"
+                          />
                         </button>
                       ))}
                     </div>
@@ -1206,8 +1260,7 @@ export const TccView: React.FC = () => {
               // pessoa faz ao abrir a tela; a data por extenso fica para o
               // registro antigo, onde a distância já não importa.
               const days = daysBetween(log.date, today);
-              const quando =
-                days === 0 ? 'hoje' : days === 1 ? 'ontem' : formatDateBR(log.date);
+              const quando = days === 0 ? 'hoje' : days === 1 ? 'ontem' : formatDateBR(log.date);
               return (
                 <div
                   key={log.id}
@@ -1217,7 +1270,9 @@ export const TccView: React.FC = () => {
                     <span className="font-display font-bold text-sm leading-none text-ceci-primary">
                       {log.words}
                     </span>
-                    <span className="text-[9px] text-ceci-tertiary leading-none mt-0.5">palavras</span>
+                    <span className="text-[9px] text-ceci-tertiary leading-none mt-0.5">
+                      palavras
+                    </span>
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="text-[11px] text-ceci-secondary">
@@ -1343,11 +1398,7 @@ export const TccView: React.FC = () => {
 
       {/* Captura de link (F8.2/F8.3): mesma sheet do hub de leitura. */}
       {captureOpen && (
-        <CaptureLinkSheet
-          open
-          initialText={captureText}
-          onClose={() => closeTccSheet()}
-        />
+        <CaptureLinkSheet open initialText={captureText} onClose={() => closeTccSheet()} />
       )}
     </div>
   );

@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { X, Share2, Sun, Moon, Type, ChevronLeft, ChevronRight, Highlighter, List } from 'lucide-react';
+import {
+  X,
+  Share2,
+  Sun,
+  Moon,
+  Type,
+  ChevronLeft,
+  ChevronRight,
+  Highlighter,
+  List,
+} from 'lucide-react';
 import { ReadingItem } from '../../types';
 import { Modal } from '../ui/Modal';
 import { SegmentedControl } from '../ui/SegmentedControl';
@@ -21,7 +31,9 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
   reading,
   onUpdateProgress,
 }) => {
-  const [theme, setTheme] = useState<ReaderTheme>(() => (getActiveTheme().isDark ? 'dark' : 'paper'));
+  const [theme, setTheme] = useState<ReaderTheme>(() =>
+    getActiveTheme().isDark ? 'dark' : 'paper',
+  );
   const [fontSize, setFontSize] = useState<number>(18);
   const [currentPage, setCurrentPage] = useState<number>(() => reading?.readPages || 1);
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -102,12 +114,12 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
 
         {/* Reader Canvas Content */}
         <div className="flex-1 overflow-y-auto px-8 sm:px-14 py-8 space-y-6 select-text">
-<div className="text-center space-y-2 mb-4">
-             <h2 className="font-display text-2xl sm:text-3xl font-bold leading-tight">
-               {reading.title}
-             </h2>
-             <div className="w-8 h-0.5 bg-ceci-brand mx-auto opacity-70 mt-2" />
-           </div>
+          <div className="text-center space-y-2 mb-4">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold leading-tight">
+              {reading.title}
+            </h2>
+            <div className="w-8 h-0.5 bg-ceci-brand mx-auto opacity-70 mt-2" />
+          </div>
 
           {reading.highlights && reading.highlights.length > 0 && (
             <div className="mb-6 p-4 rounded-xl bg-[color:var(--reader-soft)] border-l-4 border-[color:var(--color-status-warning-border)] text-sm leading-relaxed italic">
@@ -125,10 +137,7 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
               {reading.chapters.map((chapter, idx) => (
                 <div key={chapter.id} className="mb-6">
                   <h3 className="font-display text-xl font-bold mb-2">{chapter.title}</h3>
-                  <p
-                    className="leading-relaxed text-justify"
-                    style={{ fontSize: `${fontSize}px` }}
-                  >
+                  <p className="leading-relaxed text-justify" style={{ fontSize: `${fontSize}px` }}>
                     {chapter.body}
                   </p>
                 </div>
@@ -139,7 +148,6 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
               Nenhum capítulo disponível para esta leitura.
             </p>
           )}
-
         </div>
 
         {/* Floating Reader Actions Bar */}
@@ -148,7 +156,9 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
           <div className="space-y-1">
             <div className="flex items-center justify-between text-[11px] opacity-90">
               <span>{progressPercent}% lido</span>
-              <span>página {currentPage} de {totalPages}</span>
+              <span>
+                página {currentPage} de {totalPages}
+              </span>
               <span>~{Math.round((totalPages - currentPage) * 1.2)} min restantes</span>
             </div>
             <input
@@ -168,9 +178,22 @@ export const ReaderModeModal: React.FC<ReaderModeModalProps> = ({
               value={theme}
               onChange={(v) => setTheme(v)}
               options={[
-                { value: 'paper', label: 'papel', activeClassName: 'bg-surface-default text-ceci-primary shadow-2xs' },
-                { value: 'sepia', label: 'sépia', activeClassName: 'bg-surface-paper text-ceci-tertiary shadow-2xs' },
-                { value: 'dark', label: 'noturno', activeClassName: 'bg-[color:var(--color-reader-dark-text)] text-[color:var(--color-reader-dark-bg)] shadow-2xs' },
+                {
+                  value: 'paper',
+                  label: 'papel',
+                  activeClassName: 'bg-surface-default text-ceci-primary shadow-2xs',
+                },
+                {
+                  value: 'sepia',
+                  label: 'sépia',
+                  activeClassName: 'bg-surface-paper text-ceci-tertiary shadow-2xs',
+                },
+                {
+                  value: 'dark',
+                  label: 'noturno',
+                  activeClassName:
+                    'bg-[color:var(--color-reader-dark-text)] text-[color:var(--color-reader-dark-bg)] shadow-2xs',
+                },
               ]}
             />
 

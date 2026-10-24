@@ -19,7 +19,8 @@ const formatShortDate = (daysAgo: number) => {
 
 /** Tela dedicada de histórico — sessões de foco, quizzes e leituras concluídas. */
 export const StudyHistoricoScreen: React.FC = () => {
-  const { sessions, quizSessions, readings, courses, streakStats, openStudy, themePref } = useMobileApp();
+  const { sessions, quizSessions, readings, courses, streakStats, openStudy, themePref } =
+    useMobileApp();
   const appIsDark = isDarkTheme(themePref);
 
   const courseName = (id?: string) => courses.find((c) => c.id === id)?.name || 'geral';
@@ -31,11 +32,11 @@ export const StudyHistoricoScreen: React.FC = () => {
 
   const sortedSessions = useMemo(
     () => [...sessions].sort((a, b) => b.date.localeCompare(a.date)),
-    [sessions]
+    [sessions],
   );
   const sortedQuizzes = useMemo(
     () => [...quizSessions].sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
-    [quizSessions]
+    [quizSessions],
   );
   const doneReadings = readings.filter((r) => r.status === 'concluido');
 
@@ -119,17 +120,22 @@ export const StudyHistoricoScreen: React.FC = () => {
             <div>
               <p className="text-xs font-semibold text-ceci-primary">foco nesta semana</p>
               <p className="text-[11px] text-ceci-secondary">
-                {focusDaysCount} {focusDaysCount === 1 ? 'dia' : 'dias'} · {weekSessions.length} {weekSessions.length === 1 ? 'sessão' : 'sessões'}
+                {focusDaysCount} {focusDaysCount === 1 ? 'dia' : 'dias'} · {weekSessions.length}{' '}
+                {weekSessions.length === 1 ? 'sessão' : 'sessões'}
               </p>
             </div>
           </div>
-          <span className="font-display font-bold text-lg text-ceci-primary">{weekFocusMinutes} min</span>
+          <span className="font-display font-bold text-lg text-ceci-primary">
+            {weekFocusMinutes} min
+          </span>
         </div>
 
         <div className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="w-9 h-9 rounded-full bg-surface-rose border border-ceci-border-brand flex items-center justify-center">
-              <Flame className={`w-4 h-4 ${streakStats.alive ? 'fill-ceci-brand text-ceci-brand-strong' : 'text-ceci-muted'}`} />
+              <Flame
+                className={`w-4 h-4 ${streakStats.alive ? 'fill-ceci-brand text-ceci-brand-strong' : 'text-ceci-muted'}`}
+              />
             </span>
             <div>
               <p className="text-xs font-semibold text-ceci-primary">sua ofensiva</p>
@@ -138,7 +144,9 @@ export const StudyHistoricoScreen: React.FC = () => {
               </p>
             </div>
           </div>
-          <span className={`font-display font-bold text-lg ${streakStats.alive ? 'text-ceci-brand-strong' : 'text-ceci-muted'}`}>
+          <span
+            className={`font-display font-bold text-lg ${streakStats.alive ? 'text-ceci-brand-strong' : 'text-ceci-muted'}`}
+          >
             {streakStats.current} {streakStats.current === 1 ? 'dia' : 'dias'}
           </span>
         </div>
@@ -198,7 +206,9 @@ export const StudyHistoricoScreen: React.FC = () => {
           {/* Sessões de foco */}
           {sortedSessions.length > 0 && (
             <div className="space-y-2">
-              <p className="text-xs text-ceci-tertiary font-semibold tracking-wide lowercase px-1 pt-1">sessões de foco</p>
+              <p className="text-xs text-ceci-tertiary font-semibold tracking-wide lowercase px-1 pt-1">
+                sessões de foco
+              </p>
               {sortedSessions.map((s) => (
                 <ManageSurface
                   key={s.id}
@@ -224,7 +234,9 @@ export const StudyHistoricoScreen: React.FC = () => {
           {sortedQuizzes.length > 0 && (
             <div className="space-y-2">
               <div className="flex items-center justify-between px-1 pt-1">
-                <p className="text-xs text-ceci-tertiary font-semibold tracking-wide lowercase">quizzes</p>
+                <p className="text-xs text-ceci-tertiary font-semibold tracking-wide lowercase">
+                  quizzes
+                </p>
                 <span className="text-[11px] font-bold text-ceci-academic-strong bg-surface-blue px-2.5 py-1 rounded-full border border-ceci-border-academic">
                   média {avgQuizScore}%
                 </span>
@@ -279,7 +291,9 @@ export const StudyHistoricoScreen: React.FC = () => {
           {/* Leituras concluídas */}
           {doneReadings.length > 0 && (
             <div className="space-y-2">
-              <p className="text-xs text-ceci-tertiary font-semibold tracking-wide lowercase px-1 pt-1">leituras concluídas</p>
+              <p className="text-xs text-ceci-tertiary font-semibold tracking-wide lowercase px-1 pt-1">
+                leituras concluídas
+              </p>
               {doneReadings.map((r) => (
                 <ManageSurface
                   key={r.id}
@@ -292,7 +306,9 @@ export const StudyHistoricoScreen: React.FC = () => {
                       <BookOpen className="w-4 h-4 text-ceci-academic-strong" />
                     </span>
                     <div className="min-w-0">
-                      <h3 className="font-semibold text-xs text-ceci-primary truncate">{r.title}</h3>
+                      <h3 className="font-semibold text-xs text-ceci-primary truncate">
+                        {r.title}
+                      </h3>
                       <p className="text-[11px] text-ceci-secondary mt-0.5">
                         {r.author} · {courseName(r.courseId)}
                       </p>

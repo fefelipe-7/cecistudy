@@ -131,7 +131,7 @@ describe('estados derivados', () => {
         supervision({ discussedLogIds: ['at-1', 'at-inexistente'] }),
         supervision({ id: 'sup-futura', date: '2026-09-20', discussedLogIds: ['at-2'] }),
       ],
-      TODAY
+      TODAY,
     );
     expect(index.get('at-1')?.supervisionIds).toEqual(['sup-1']);
     expect(index.has('at-inexistente')).toBe(false);
@@ -140,8 +140,11 @@ describe('estados derivados', () => {
 
   it('intervisão NÃO supervisiona, mas marca intervised (D5)', () => {
     const index = buildLinkIndex(
-      [clinical({ id: 'at-1' }), log({ id: 'int-1', type: 'intervisao', date: '2026-09-08', discussedLogIds: ['at-1'] })],
-      TODAY
+      [
+        clinical({ id: 'at-1' }),
+        log({ id: 'int-1', type: 'intervisao', date: '2026-09-08', discussedLogIds: ['at-1'] }),
+      ],
+      TODAY,
     );
     const st = statusOf(clinical({ id: 'at-1' }), index, TODAY);
     expect(st.supervised).toBe(false);
@@ -155,7 +158,7 @@ describe('estados derivados', () => {
         supervision({ id: 'sup-antiga', date: '2026-09-01', discussedLogIds: ['at-1'] }),
         supervision({ id: 'sup-recente', date: '2026-09-09', discussedLogIds: ['at-1'] }),
       ],
-      TODAY
+      TODAY,
     );
     expect(index.get('at-1')?.supervisionIds).toEqual(['sup-antiga', 'sup-recente']);
   });
@@ -170,7 +173,7 @@ describe('computePendencies', () => {
         log({ id: 'sup-1', type: 'supervisao', date: '2026-09-08' }),
         clinical({ id: 'at-futura', date: '2026-09-20' }),
       ],
-      TODAY
+      TODAY,
     );
     expect(noReflection).toEqual(['at-1', 'est-1']);
   });
@@ -200,7 +203,7 @@ describe('proximasPendenciasDePreenchimento', () => {
 
   it('campo com só espaços conta como vazio', () => {
     expect(
-      proximasPendenciasDePreenchimento(clinical({ reflections: '   ', theme: '  ' }))
+      proximasPendenciasDePreenchimento(clinical({ reflections: '   ', theme: '  ' })),
     ).toEqual(['reflexoes', 'tema', 'abordagem', 'intervencoes', 'impressoes']);
   });
 
@@ -213,8 +216,8 @@ describe('proximasPendenciasDePreenchimento', () => {
           approach: 'TCC',
           interventionNotes: 'reestruturação',
           observations: 'colaborativa',
-        })
-      )
+        }),
+      ),
     ).toEqual([]);
   });
 
@@ -235,8 +238,8 @@ describe('proximasPendenciasDePreenchimento', () => {
           approach: 'TCC',
           interventionNotes: 'escuta',
           observations: 'receptiva',
-        })
-      )
+        }),
+      ),
     ).toEqual([]);
   });
 
@@ -259,9 +262,12 @@ describe('proximasPendenciasDePreenchimento', () => {
   });
 
   it('campo declinado sai da lista de pendências (D11)', () => {
-    expect(
-      proximasPendenciasDePreenchimento(clinical({ declinedFields: ['reflexoes'] }))
-    ).toEqual(['tema', 'abordagem', 'intervencoes', 'impressoes']);
+    expect(proximasPendenciasDePreenchimento(clinical({ declinedFields: ['reflexoes'] }))).toEqual([
+      'tema',
+      'abordagem',
+      'intervencoes',
+      'impressoes',
+    ]);
   });
 });
 
@@ -274,7 +280,13 @@ describe('camposDeReferencia (SPEC-011 D10)', () => {
   });
 
   it('CAMPOS_DE_REFERENCIA é a ordem canônica e tem rótulo para todo campo', () => {
-    expect(CAMPOS_DE_REFERENCIA).toEqual(['reflexoes', 'tema', 'abordagem', 'intervencoes', 'impressoes']);
+    expect(CAMPOS_DE_REFERENCIA).toEqual([
+      'reflexoes',
+      'tema',
+      'abordagem',
+      'intervencoes',
+      'impressoes',
+    ]);
     for (const c of CAMPOS_DE_REFERENCIA) {
       expect(CAMPO_REFERENCIA_LABEL[c].length).toBeGreaterThan(0);
       expect(TEXTO_NAO_RESPONDER[c].length).toBeGreaterThan(0);
@@ -303,7 +315,7 @@ describe('declinadosDe / comDeclinados (SPEC-011 D11/D12)', () => {
   it('texto próprio é preservado ao religar (só o auto-texto exato é limpo)', () => {
     const religado = comDeclinados(
       clinical({ reflections: 'minha escrita', declinedFields: ['reflexoes'] }),
-      []
+      [],
     );
     expect(religado.reflections).toBe('minha escrita');
     expect(religado.declinedFields).toBeUndefined();
@@ -402,12 +414,12 @@ describe('sanitizeLog e declinedFields (SPEC-011 D11/D12)', () => {
   it('sanitize remove declinedFields de supervisão e limpa inválidos', () => {
     const clean = sanitizeLog(
       { ...supervision({}), declinedFields: ['reflexoes'] as CampoPendencia[] },
-      []
+      [],
     );
     expect(clean.declinedFields).toBeUndefined();
     const limpo = sanitizeLog(
       { ...clinical({}), declinedFields: ['reflexoes', 'nada' as CampoPendencia] },
-      []
+      [],
     );
     expect(limpo.declinedFields).toEqual(['reflexoes']);
   });
@@ -420,7 +432,7 @@ describe('computeStats', () => {
         clinical({ id: 'at-1', hours: 2, date: '2026-09-10' }),
         clinical({ id: 'at-2', hours: 5, date: '2026-09-25' }),
       ],
-      TODAY
+      TODAY,
     );
     expect(s.doneHours).toBe(2);
     expect(s.weekHours).toBe(2);
@@ -432,8 +444,11 @@ describe('computeStats', () => {
 
   it('a semana começa na segunda: domingo anterior está fora', () => {
     const s = computeStats(
-      [log({ id: 'a', hours: 3, date: '2026-09-06' }), log({ id: 'b', hours: 4, date: '2026-09-07' })],
-      TODAY
+      [
+        log({ id: 'a', hours: 3, date: '2026-09-06' }),
+        log({ id: 'b', hours: 4, date: '2026-09-07' }),
+      ],
+      TODAY,
     );
     expect(s.weekHours).toBe(4);
   });
@@ -445,7 +460,7 @@ describe('computeStats', () => {
         log({ id: 'sem', hours: 2, date: '2026-09-08' }),
         log({ id: 'old', hours: 4, date: '2026-08-19' }), // 3 semanas atrás
       ],
-      TODAY
+      TODAY,
     );
     expect(s.weeklySeries).toHaveLength(WEEKS_IN_SERIES);
     expect(s.weeklySeries[WEEKS_IN_SERIES - 1]).toBe(3); // corrente
@@ -467,7 +482,7 @@ describe('deriveCases', () => {
         clinical({ id: 'a', patient: 'José P.', sessionNumber: 1 }),
         clinical({ id: 'b', patient: 'Jose P.', sessionNumber: 2, date: '2026-09-09' }),
       ],
-      TODAY
+      TODAY,
     );
     expect(cases).toHaveLength(1);
     expect(cases[0].patientKey).toBe('josep');
@@ -479,7 +494,7 @@ describe('deriveCases', () => {
         clinical({ id: 'a', patient: 'm.s', sessionNumber: 1 }),
         clinical({ id: 'b', patient: 'M.S.', sessionNumber: 2, date: '2026-09-09' }),
       ],
-      TODAY
+      TODAY,
     );
     expect(cases[0].patientLabel).toBe('M.S.'); // grafia do atendimento mais recente
   });
@@ -490,7 +505,7 @@ describe('deriveCases', () => {
         clinical({ id: 'a', patientAge: '28', approach: 'TCC' }),
         clinical({ id: 'b', sessionNumber: 2, date: '2026-09-09' }),
       ],
-      TODAY
+      TODAY,
     );
     expect(cases[0].latestAge).toBe('28');
     expect(cases[0].latestApproach).toBe('TCC');
@@ -503,7 +518,7 @@ describe('deriveCases', () => {
         clinical({ id: 'b', sessionNumber: 7 }),
         clinical({ id: 'c', sessionNumber: 2, date: '2026-09-09' }),
       ],
-      TODAY
+      TODAY,
     );
     expect(nextSessionNumber(cases[0])).toBe(8);
     expect(nextSessionNumber()).toBe(1);
@@ -528,8 +543,11 @@ describe('normalizePatientKey / formatPatientLabel', () => {
 describe('groupByWeek', () => {
   it('"próximos" vem primeiro, com hours 0', () => {
     const groups = groupByWeek(
-      [log({ id: 'a', date: '2026-09-25', hours: 5 }), log({ id: 'b', date: '2026-09-09', hours: 2 })],
-      TODAY
+      [
+        log({ id: 'a', date: '2026-09-25', hours: 5 }),
+        log({ id: 'b', date: '2026-09-09', hours: 2 }),
+      ],
+      TODAY,
     );
     expect(groups[0].id).toBe('upcoming');
     expect(groups[0].hours).toBe(0);
@@ -543,7 +561,7 @@ describe('groupByWeek', () => {
         log({ id: 'sem', date: '2026-09-02' }),
         log({ id: 'velha', date: '2026-08-12' }),
       ],
-      TODAY
+      TODAY,
     );
     const labels = groups.map((g) => g.label);
     expect(labels).toContain('esta semana');
@@ -553,11 +571,8 @@ describe('groupByWeek', () => {
 
   it('dentro da semana: data desc', () => {
     const groups = groupByWeek(
-      [
-        log({ id: 'antigo', date: '2026-09-07' }),
-        log({ id: 'novo', date: '2026-09-09' }),
-      ],
-      TODAY
+      [log({ id: 'antigo', date: '2026-09-07' }), log({ id: 'novo', date: '2026-09-09' })],
+      TODAY,
     );
     expect(groups[0].logs.map((l) => l.id)).toEqual(['novo', 'antigo']);
   });
@@ -572,11 +587,13 @@ describe('suggestTitle', () => {
   it('por tipo', () => {
     expect(suggestTitle(clinical({ sessionNumber: 3 }))).toBe('sessão 3 · M.S.');
     expect(suggestTitle(clinical({ sessionNumber: undefined }))).toBe('atendimento · M.S.');
-    expect(suggestTitle(clinical({ patient: undefined, sessionNumber: undefined }))).toBe('atendimento clínico');
+    expect(suggestTitle(clinical({ patient: undefined, sessionNumber: undefined }))).toBe(
+      'atendimento clínico',
+    );
     expect(suggestTitle(supervision({ supervisor: 'D.' }))).toBe('supervisão com D.');
     expect(suggestTitle(supervision())).toBe('supervisão');
     expect(suggestTitle(log({ id: 'i', type: 'intervisao', supervisor: 'colegas' }))).toBe(
-      'intervisão com colegas'
+      'intervisão com colegas',
     );
     expect(suggestTitle(log({ type: 'estagio' }))).toBe('dia de estágio');
     expect(suggestTitle(log({ type: 'outro' }))).toBe('registro de campo');
@@ -590,7 +607,7 @@ describe('sanitizeLog (I1–I8)', () => {
     expect(sanitizeLog(log({ reflections: '' }), all).reflections).toBe('');
     expect(sanitizeLog(log({ reflections: '  ' }), all).reflections).toBe('');
     expect(sanitizeLog(log({ reflections: 'olhar a transferência' }), all).reflections).toBe(
-      'olhar a transferência'
+      'olhar a transferência',
     );
   });
 
@@ -608,29 +625,34 @@ describe('sanitizeLog (I1–I8)', () => {
   });
 
   it('discussedLogIds só em supervisão/intervisão, e só para clínico existente (I1/I2/I3)', () => {
-    expect(sanitizeLog(clinical({ discussedLogIds: ['at-1'] }), all).discussedLogIds).toBeUndefined();
-    expect(sanitizeLog(supervision({ discussedLogIds: ['at-1'] }), all).discussedLogIds).toEqual(['at-1']);
     expect(
-      sanitizeLog(supervision({ discussedLogIds: ['sup-1'] }), all).discussedLogIds // não é clínico
+      sanitizeLog(clinical({ discussedLogIds: ['at-1'] }), all).discussedLogIds,
+    ).toBeUndefined();
+    expect(sanitizeLog(supervision({ discussedLogIds: ['at-1'] }), all).discussedLogIds).toEqual([
+      'at-1',
+    ]);
+    expect(
+      sanitizeLog(supervision({ discussedLogIds: ['sup-1'] }), all).discussedLogIds, // não é clínico
     ).toBeUndefined();
     expect(
-      sanitizeLog(supervision({ id: 'sup-1', discussedLogIds: ['sup-1'] }), all).discussedLogIds
+      sanitizeLog(supervision({ id: 'sup-1', discussedLogIds: ['sup-1'] }), all).discussedLogIds,
     ).toBeUndefined(); // auto-referência
   });
 
   it('remove duplicata de discussedLogIds', () => {
     expect(
-      sanitizeLog(supervision({ discussedLogIds: ['at-1', 'at-1'] }), all).discussedLogIds
+      sanitizeLog(supervision({ discussedLogIds: ['at-1', 'at-1'] }), all).discussedLogIds,
     ).toEqual(['at-1']);
   });
 
   it('remove selfAssessment vazio (I8)', () => {
     expect(sanitizeLog(supervision({ selfAssessment: {} }), all).selfAssessment).toBeUndefined();
     expect(
-      sanitizeLog(supervision({ selfAssessment: { confidence: '  ' } }), all).selfAssessment
+      sanitizeLog(supervision({ selfAssessment: { confidence: '  ' } }), all).selfAssessment,
     ).toBeUndefined();
     expect(
-      sanitizeLog(supervision({ selfAssessment: { confidence: 'mais segura' } }), all).selfAssessment
+      sanitizeLog(supervision({ selfAssessment: { confidence: 'mais segura' } }), all)
+        .selfAssessment,
     ).toEqual({ confidence: 'mais segura' });
   });
 
@@ -650,10 +672,12 @@ describe('sanitizeLog (I1–I8)', () => {
       'ler a ata',
       'task',
       't1',
-      '2026-09-09T12:00:00.000Z'
+      '2026-09-09T12:00:00.000Z',
     );
     expect(sanitizeLog(withLink, all).nextStepLinks).toHaveLength(1);
-    expect(sanitizeLog({ ...withLink, nextSteps: ['outro texto'] }, all).nextStepLinks).toBeUndefined();
+    expect(
+      sanitizeLog({ ...withLink, nextSteps: ['outro texto'] }, all).nextStepLinks,
+    ).toBeUndefined();
   });
 });
 
@@ -674,7 +698,11 @@ describe('planSave / planDelete', () => {
   });
 
   it('planDelete: apagar atendimento tira o id órfão da supervisão (E3)', () => {
-    const logs = [clinical({ id: 'at-1' }), clinical({ id: 'at-2' }), supervision({ discussedLogIds: ['at-1', 'at-2'] })];
+    const logs = [
+      clinical({ id: 'at-1' }),
+      clinical({ id: 'at-2' }),
+      supervision({ discussedLogIds: ['at-1', 'at-2'] }),
+    ];
     const next = planDelete(logs, 'at-2');
     expect(next.find((l) => l.id === 'sup-1')?.discussedLogIds).toEqual(['at-1']);
   });
@@ -734,10 +762,18 @@ describe('nextStepLinks (D17)', () => {
   });
 
   it('hasLiveNextStepLink é falso quando o texto mudou ou a entidade sumiu (E19/E20)', () => {
-    const l = planLinkNextStep(supervision({ nextSteps: ['ler a ata'] }), 'ler a ata', 'task', 't1', 'x');
+    const l = planLinkNextStep(
+      supervision({ nextSteps: ['ler a ata'] }),
+      'ler a ata',
+      'task',
+      't1',
+      'x',
+    );
     expect(hasLiveNextStepLink(l, 'ler a ata', () => true)).toBe(true);
     expect(hasLiveNextStepLink(l, 'ler a ata', () => false)).toBe(false);
-    expect(hasLiveNextStepLink({ ...l, nextSteps: ['mudou'] }, 'ler a ata', () => true)).toBe(false);
+    expect(hasLiveNextStepLink({ ...l, nextSteps: ['mudou'] }, 'ler a ata', () => true)).toBe(
+      false,
+    );
   });
 });
 

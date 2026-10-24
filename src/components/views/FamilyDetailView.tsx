@@ -43,9 +43,7 @@ export const FamilyDetailView: React.FC<{ familyId: string }> = ({ familyId }) =
             </p>
           </div>
         </div>
-        <p className="text-sm text-ceci-secondary leading-relaxed pt-1">
-          {family.description}
-        </p>
+        <p className="text-sm text-ceci-secondary leading-relaxed pt-1">{family.description}</p>
       </div>
 
       {/* Cards das abordagens */}

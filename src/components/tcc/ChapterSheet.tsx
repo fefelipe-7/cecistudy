@@ -57,18 +57,21 @@ const parseCount = (raw: string): number | undefined => {
 };
 
 export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onClose }) => {
-  const { thesisChapters, thesisReferences, readings, setThesisChapters, setThesisReferences, showToast } =
-    useMobileApp();
+  const {
+    thesisChapters,
+    thesisReferences,
+    readings,
+    setThesisChapters,
+    setThesisReferences,
+    showToast,
+  } = useMobileApp();
   const { openTccSheet } = useNavValue();
 
   const live = chapterId === 'new' ? undefined : thesisChapters.find((c) => c.id === chapterId);
 
   /** Referências vinculadas a este capítulo — somente leitura (T4.2/D10). */
   const vinculadas = useMemo(
-    () =>
-      live
-        ? thesisReferences.filter((r) => (r.chapterIds ?? []).includes(live.id))
-        : [],
+    () => (live ? thesisReferences.filter((r) => (r.chapterIds ?? []).includes(live.id)) : []),
     [thesisReferences, live],
   );
 
@@ -174,7 +177,9 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
         </h3>
 
         <div>
-          <label htmlFor="cap-titulo" className={labelClass}>título</label>
+          <label htmlFor="cap-titulo" className={labelClass}>
+            título
+          </label>
           <input
             id="cap-titulo"
             type="text"
@@ -198,7 +203,9 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
             />
           </div>
           <div>
-            <label htmlFor="cap-prazo" className={labelClass}>prazo</label>
+            <label htmlFor="cap-prazo" className={labelClass}>
+              prazo
+            </label>
             <input
               id="cap-prazo"
               type="date"
@@ -211,7 +218,9 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
 
         {kind === 'secao' && (
           <div>
-            <label htmlFor="cap-dentro" className={labelClass}>dentro de</label>
+            <label htmlFor="cap-dentro" className={labelClass}>
+              dentro de
+            </label>
             <select
               id="cap-dentro"
               value={parentId}
@@ -220,7 +229,9 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
             >
               <option value="">— escolha o capítulo —</option>
               {parents.map((c) => (
-                <option key={c.id} value={c.id}>{c.title}</option>
+                <option key={c.id} value={c.id}>
+                  {c.title}
+                </option>
               ))}
             </select>
           </div>
@@ -255,7 +266,9 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label htmlFor="cap-meta" className={labelClass}>meta de palavras</label>
+            <label htmlFor="cap-meta" className={labelClass}>
+              meta de palavras
+            </label>
             <input
               id="cap-meta"
               type="number"
@@ -269,7 +282,9 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
             />
           </div>
           <div>
-            <label htmlFor="cap-atual" className={labelClass}>palavras até aqui</label>
+            <label htmlFor="cap-atual" className={labelClass}>
+              palavras até aqui
+            </label>
             <input
               id="cap-atual"
               type="number"
@@ -285,7 +300,9 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
         </div>
 
         <div>
-          <label htmlFor="cap-nota" className={labelClass}>nota</label>
+          <label htmlFor="cap-nota" className={labelClass}>
+            nota
+          </label>
           <textarea
             id="cap-nota"
             rows={2}
@@ -386,8 +403,8 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
             remover “{live?.title}”?
           </h3>
           <p className="text-xs text-ceci-secondary leading-relaxed">
-            as referências que apontam pra cá continuam salvas — só perdem o
-            vínculo com este capítulo.
+            as referências que apontam pra cá continuam salvas — só perdem o vínculo com este
+            capítulo.
           </p>
           <div className="flex items-center justify-end gap-2">
             <button

@@ -16,6 +16,6 @@ export const FixedBottomBar: React.FC<React.PropsWithChildren> = ({ children }) 
     <div className="fixed bottom-0 inset-x-0 z-[45] bg-canvas/95 backdrop-blur-md border-t border-ceci-border-subtle shadow-[0_-8px_24px_rgba(var(--shadow-rgb),0.06)]">
       {children}
     </div>,
-    document.body
+    document.body,
   );
 };

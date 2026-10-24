@@ -7,10 +7,7 @@
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { storage } from '../../storage.ts';
-import {
-  bootstrapCatalogDbForTests,
-  resetCatalogDbCache,
-} from '../catalogDb.ts';
+import { bootstrapCatalogDbForTests, resetCatalogDbCache } from '../catalogDb.ts';
 
 const mockIsDBExists = vi.fn();
 const mockCopyFromAssets = vi.fn();

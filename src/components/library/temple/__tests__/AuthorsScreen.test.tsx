@@ -79,7 +79,9 @@ describe('AuthorsScreen', () => {
     await screen.findByText('Sigmund Freud');
     fireEvent.click(screen.getByText('Sigmund Freud'));
 
-    expect(await screen.findByRole('button', { name: 'voltar para a lista de autores' })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', { name: 'voltar para a lista de autores' }),
+    ).toBeInTheDocument();
     expect(screen.getByText('Psicanalítica e Psicodinâmica')).toBeInTheDocument();
     expect(screen.getByText('1856 – 1939')).toBeInTheDocument();
     expect(screen.getByText(/A interpretação dos sonhos \(1900\)/)).toBeInTheDocument();
@@ -97,7 +99,9 @@ describe('AuthorsScreen', () => {
   it('mostra estado vazio quando nada casa com a busca', async () => {
     render(<AuthorsScreen />);
     await screen.findByText('Sigmund Freud');
-    fireEvent.change(screen.getByLabelText('procurar autor'), { target: { value: 'zzz-inexistente' } });
+    fireEvent.change(screen.getByLabelText('procurar autor'), {
+      target: { value: 'zzz-inexistente' },
+    });
     expect(await screen.findByText('nenhum autor com esse nome ♡')).toBeInTheDocument();
   });
 });

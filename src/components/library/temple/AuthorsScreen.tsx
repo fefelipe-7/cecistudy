@@ -53,7 +53,7 @@ export const AuthorsScreen: React.FC = () => {
         (a) =>
           a.name.toLowerCase().includes(q) ||
           (a.fullName ?? '').toLowerCase().includes(q) ||
-          (a.aliases ?? []).some((al) => al.toLowerCase().includes(q))
+          (a.aliases ?? []).some((al) => al.toLowerCase().includes(q)),
       );
     if (sortMode === 'az') return [...base].sort((a, b) => a.name.localeCompare(b.name));
     return base; // ordem canônica do acervo
@@ -126,7 +126,9 @@ export const AuthorsScreen: React.FC = () => {
                   <dt className="text-[10px] uppercase tracking-wider font-bold text-ceci-secondary">
                     obra principal sugerida
                   </dt>
-                  <dd className="text-xs text-ceci-primary mt-0.5 leading-relaxed">{selected.mainWork}</dd>
+                  <dd className="text-xs text-ceci-primary mt-0.5 leading-relaxed">
+                    {selected.mainWork}
+                  </dd>
                 </div>
               )}
               {selected.origin && (
@@ -134,7 +136,9 @@ export const AuthorsScreen: React.FC = () => {
                   <dt className="text-[10px] uppercase tracking-wider font-bold text-ceci-secondary">
                     origem
                   </dt>
-                  <dd className="text-xs text-ceci-primary mt-0.5 leading-relaxed line-clamp-3">{selected.origin}</dd>
+                  <dd className="text-xs text-ceci-primary mt-0.5 leading-relaxed line-clamp-3">
+                    {selected.origin}
+                  </dd>
                 </div>
               )}
             </dl>
@@ -168,7 +172,12 @@ export const AuthorsScreen: React.FC = () => {
         subtitle="quem é quem na história da psicologia"
       />
 
-      <TempleSearchInput value={query} onChange={setQuery} label="procurar autor" placeholder="procurar autor…" />
+      <TempleSearchInput
+        value={query}
+        onChange={setQuery}
+        label="procurar autor"
+        placeholder="procurar autor…"
+      />
 
       {/* Filtro por família */}
       {!loading && families.length > 0 && (
@@ -177,7 +186,11 @@ export const AuthorsScreen: React.FC = () => {
           role="group"
           aria-label="filtrar por família teórica"
         >
-          <TempleChip label="todas as famílias" active={family === null} onClick={() => setFamily(null)} />
+          <TempleChip
+            label="todas as famílias"
+            active={family === null}
+            onClick={() => setFamily(null)}
+          />
           {families.map((f) => (
             <TempleChip
               key={f}

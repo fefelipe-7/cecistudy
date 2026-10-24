@@ -41,7 +41,10 @@ export const SegmentedControl = <T extends string>({
     <div
       role="radiogroup"
       aria-label={ariaLabel}
-      className={cn('inline-flex items-center gap-1 p-1 rounded-full bg-surface-muted border border-ceci-border-default', className)}
+      className={cn(
+        'inline-flex items-center gap-1 p-1 rounded-full bg-surface-muted border border-ceci-border-default',
+        className,
+      )}
     >
       {options.map((o) => {
         const active = o.value === value;
@@ -54,7 +57,9 @@ export const SegmentedControl = <T extends string>({
             onClick={() => onChange(o.value)}
             className={cn(
               'relative px-3.5 py-1.5 rounded-full text-xs font-semibold capitalize whitespace-nowrap tap-interactive cursor-pointer transition-colors',
-              active ? o.activeClassName ?? VARIANT_CLASSES[variant] : 'text-ceci-secondary hover:text-ceci-primary'
+              active
+                ? (o.activeClassName ?? VARIANT_CLASSES[variant])
+                : 'text-ceci-secondary hover:text-ceci-primary',
             )}
           >
             {active && (
@@ -62,7 +67,7 @@ export const SegmentedControl = <T extends string>({
                 layoutId={layoutId}
                 className={cn(
                   'absolute inset-0 rounded-full',
-                  active ? o.activeClassName ?? VARIANT_CLASSES[variant] : ''
+                  active ? (o.activeClassName ?? VARIANT_CLASSES[variant]) : '',
                 )}
                 transition={{ type: 'spring', stiffness: 380, damping: 32 }}
               />

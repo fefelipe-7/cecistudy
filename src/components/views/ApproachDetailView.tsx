@@ -77,25 +77,65 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
   // Bloco 1 — visão geral
   const overview = [
     { title: 'o que é?', key: 'definicao' as PsicoterapiaFieldKey, icon: BookOpen, lead: true },
-    { title: 'como entende a pessoa?', key: 'visao_ser_humano' as PsicoterapiaFieldKey, icon: UserCheck },
-    { title: 'como entende o sofrimento?', key: 'visao_sofrimento' as PsicoterapiaFieldKey, icon: AlertCircle },
-    { title: 'como entende a psique?', key: 'visao_psique' as PsicoterapiaFieldKey, icon: BrainCircuit },
-    { title: 'como vê o desenvolvimento?', key: 'visao_desenvolvimento' as PsicoterapiaFieldKey, icon: TrendingUp },
+    {
+      title: 'como entende a pessoa?',
+      key: 'visao_ser_humano' as PsicoterapiaFieldKey,
+      icon: UserCheck,
+    },
+    {
+      title: 'como entende o sofrimento?',
+      key: 'visao_sofrimento' as PsicoterapiaFieldKey,
+      icon: AlertCircle,
+    },
+    {
+      title: 'como entende a psique?',
+      key: 'visao_psique' as PsicoterapiaFieldKey,
+      icon: BrainCircuit,
+    },
+    {
+      title: 'como vê o desenvolvimento?',
+      key: 'visao_desenvolvimento' as PsicoterapiaFieldKey,
+      icon: TrendingUp,
+    },
   ].filter((s) => d[s.key]);
 
   // Bloco 2 — na prática
   const practice = [
-    { title: 'como acontece a mudança?', key: 'teoria_da_mudanca' as PsicoterapiaFieldKey, icon: Sparkles },
-    { title: 'como se apresenta na prática?', key: 'apresentacao_pratica' as PsicoterapiaFieldKey, icon: Layers },
-    { title: 'o que o terapeuta observa?', key: 'papel_terapeuta' as PsicoterapiaFieldKey, icon: Eye },
-    { title: 'papel da pessoa na terapia', key: 'papel_paciente' as PsicoterapiaFieldKey, icon: User },
-    { title: 'a relação terapêutica', key: 'relacao_terapeutica' as PsicoterapiaFieldKey, icon: HeartHandshake },
+    {
+      title: 'como acontece a mudança?',
+      key: 'teoria_da_mudanca' as PsicoterapiaFieldKey,
+      icon: Sparkles,
+    },
+    {
+      title: 'como se apresenta na prática?',
+      key: 'apresentacao_pratica' as PsicoterapiaFieldKey,
+      icon: Layers,
+    },
+    {
+      title: 'o que o terapeuta observa?',
+      key: 'papel_terapeuta' as PsicoterapiaFieldKey,
+      icon: Eye,
+    },
+    {
+      title: 'papel da pessoa na terapia',
+      key: 'papel_paciente' as PsicoterapiaFieldKey,
+      icon: User,
+    },
+    {
+      title: 'a relação terapêutica',
+      key: 'relacao_terapeutica' as PsicoterapiaFieldKey,
+      icon: HeartHandshake,
+    },
     { title: 'foco clínico', key: 'foco_clinico' as PsicoterapiaFieldKey, icon: Compass },
   ].filter((s) => d[s.key]);
 
   // Bloco 4 — visão acadêmica
   const academic = [
-    { title: 'posição histórica', key: 'contexto_historico' as PsicoterapiaFieldKey, icon: Landmark },
+    {
+      title: 'posição histórica',
+      key: 'contexto_historico' as PsicoterapiaFieldKey,
+      icon: Landmark,
+    },
     { title: 'estado atual', key: 'perspectiva_academica' as PsicoterapiaFieldKey, icon: Compass },
     { title: 'evidências', key: 'evidencias' as PsicoterapiaFieldKey, icon: CheckCircle2 },
     { title: 'debates', key: 'debates' as PsicoterapiaFieldKey, icon: GitCompare },
@@ -146,12 +186,20 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
       {/* Bloco 1 — visão geral */}
       {overview.length > 0 && (
         <section className="space-y-5 px-1">
-          <BlockLabel index={1} title="visão geral" hint="o ponto de partida para entender a abordagem" />
+          <BlockLabel
+            index={1}
+            title="visão geral"
+            hint="o ponto de partida para entender a abordagem"
+          />
           <div className="space-y-5">
             {d.ideia_central && (
               <div className="bg-surface-rose/40 border-l-4 border-ceci-border-brand pl-4 py-3">
-                <h3 className="font-display font-bold text-sm text-ceci-brand-strong mb-1.5">ideia central</h3>
-                <p className="text-ceci-secondary leading-relaxed whitespace-pre-line">{d.ideia_central}</p>
+                <h3 className="font-display font-bold text-sm text-ceci-brand-strong mb-1.5">
+                  ideia central
+                </h3>
+                <p className="text-ceci-secondary leading-relaxed whitespace-pre-line">
+                  {d.ideia_central}
+                </p>
               </div>
             )}
             {overview.map((s) => (
@@ -180,7 +228,11 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
       {/* Bloco 3 — conhecimento */}
       {hasAuthors && (
         <section className="space-y-5 px-1">
-          <BlockLabel index={3} title="conhecimento" hint="quem criou e o que sustenta esta visão" />
+          <BlockLabel
+            index={3}
+            title="conhecimento"
+            hint="quem criou e o que sustenta esta visão"
+          />
           <div className="space-y-3">
             <h2 className="font-display font-bold text-sm text-ceci-primary flex items-center gap-2">
               <Lightbulb className="w-4 h-4 text-ceci-brand-strong" />
@@ -205,7 +257,11 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
       {/* Bloco 4 — visão acadêmica */}
       {academic.length > 0 && (
         <section className="space-y-5 px-1">
-          <BlockLabel index={4} title="visão acadêmica" hint="como a pesquisa e a universidade enxergam" />
+          <BlockLabel
+            index={4}
+            title="visão acadêmica"
+            hint="como a pesquisa e a universidade enxergam"
+          />
           <div className="space-y-5">
             {academic.map((s) => (
               <Section key={s.key} icon={s.icon} title={s.title}>
@@ -219,7 +275,11 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
       {/* Bloco 5 — aprofundamento */}
       {(hasReading || hasRelated) && (
         <section className="space-y-5 px-1">
-          <BlockLabel index={5} title="aprofundamento" hint="por onde continuar e com quem conversar" />
+          <BlockLabel
+            index={5}
+            title="aprofundamento"
+            hint="por onde continuar e com quem conversar"
+          />
           <div className="space-y-5">
             {d.leituras_fundamentais && (
               <div className="space-y-2">
@@ -227,7 +287,9 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
                   <Wrench className="w-4 h-4 text-ceci-academic-strong" />
                   <span>leituras fundamentais</span>
                 </h2>
-                <p className="text-ceci-secondary leading-relaxed whitespace-pre-line">{d.leituras_fundamentais}</p>
+                <p className="text-ceci-secondary leading-relaxed whitespace-pre-line">
+                  {d.leituras_fundamentais}
+                </p>
               </div>
             )}
             {hasRelated && (
@@ -243,7 +305,9 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
                       onClick={() => openApproach(rel.id)}
                       className="w-full text-left bg-surface-default rounded-2xl p-3.5 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
                     >
-                      <span className="text-sm font-semibold text-ceci-primary pr-1">{rel.name}</span>
+                      <span className="text-sm font-semibold text-ceci-primary pr-1">
+                        {rel.name}
+                      </span>
                       <ChevronRight className="w-4 h-4 text-ceci-tertiary shrink-0 group-hover:text-ceci-brand-strong" />
                     </button>
                   ))}

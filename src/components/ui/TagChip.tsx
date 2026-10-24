@@ -41,7 +41,7 @@ export const TagChip: React.FC<TagChipProps> = ({
       'inline-flex items-center gap-1 rounded-full font-semibold',
       SIZES[size],
       VARIANT_CLASSES[variant],
-      className
+      className,
     )}
   >
     {icon}

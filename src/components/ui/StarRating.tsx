@@ -44,7 +44,7 @@ export const StarRating: React.FC<StarRatingProps> = ({
               starClass,
               n <= value
                 ? 'text-status-warning-strong fill-status-warning-strong'
-                : 'text-ceci-border-strong'
+                : 'text-ceci-border-strong',
             )}
           />
         );

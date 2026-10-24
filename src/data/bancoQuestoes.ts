@@ -65,4 +65,6 @@ function mapToStudyQuestion(raw: BancoQuestaoRaw): StudyQuestion {
   };
 }
 
-export const BANCO_QUESTOES: StudyQuestion[] = (questoesJson as BancoQuestaoRaw[]).map(mapToStudyQuestion);
+export const BANCO_QUESTOES: StudyQuestion[] = (questoesJson as BancoQuestaoRaw[]).map(
+  mapToStudyQuestion,
+);

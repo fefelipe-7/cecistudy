@@ -29,7 +29,7 @@ const tsSchemaVersion = schemaTs.match(/SCHEMA_VERSION = (\d+)/)?.[1];
 const sqlHeaderVersion = sql.match(/SCHEMA_VERSION\s*=\s*(\d+)/)?.[1];
 if (!tsSchemaVersion || sqlHeaderVersion !== tsSchemaVersion) {
   console.error(
-    `✗ versão divergente: schema.sql="${sqlHeaderVersion}" vs packages/data/src/schema.ts="${tsSchemaVersion}"`
+    `✗ versão divergente: schema.sql="${sqlHeaderVersion}" vs packages/data/src/schema.ts="${tsSchemaVersion}"`,
   );
   process.exit(1);
 }
@@ -51,26 +51,65 @@ const allTables = new Set(
   db
     .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")
     .all()
-    .map((r) => r.name)
+    .map((r) => r.name),
 );
 
 /** Tabelas esperadas do banco da usuária (spelhadas de `src/lib/db/migrations/user.ts`). */
 const USER_TABLES = [
-  'profile', 'course', 'course_schedule', 'class_note', 'class_note_link',
-  'task', 'task_link', 'assessment', 'assessment_topic', 'study_session',
-  'flashcard', 'reading', 'reading_highlight', 'reading_progress', 'author',
-  'concept', 'concept_course', 'concept_author', 'material', 'technique',
-  'note', 'note_link', 'internship', 'internship_concept', 'internship_topic',
-  'supervision_notebook', 'thesis_project', 'thesis_chapter', 'thesis_reference',
-  'achievement', 'quiz_session', 'quiz_answer', 'saved_catalog_item', 'streak',
-  'activity_event', 'legacy_import_map',
+  'profile',
+  'course',
+  'course_schedule',
+  'class_note',
+  'class_note_link',
+  'task',
+  'task_link',
+  'assessment',
+  'assessment_topic',
+  'study_session',
+  'flashcard',
+  'reading',
+  'reading_highlight',
+  'reading_progress',
+  'author',
+  'concept',
+  'concept_course',
+  'concept_author',
+  'material',
+  'technique',
+  'note',
+  'note_link',
+  'internship',
+  'internship_concept',
+  'internship_topic',
+  'supervision_notebook',
+  'thesis_project',
+  'thesis_chapter',
+  'thesis_reference',
+  'achievement',
+  'quiz_session',
+  'quiz_answer',
+  'saved_catalog_item',
+  'streak',
+  'activity_event',
+  'legacy_import_map',
 ];
 
 /** Tabelas esperadas do catálogo (espelhadas de `src/lib/db/catalogSchema.ts`). */
 const CATALOG_TABLES = [
-  'catalog_release', 'area', 'approach_family', 'approach', 'question', 'work',
-  'concept_domain', 'concept', 'catalog_author', 'technique_category', 'technique',
-  'comparison', 'question_category', 'topic',
+  'catalog_release',
+  'area',
+  'approach_family',
+  'approach',
+  'question',
+  'work',
+  'concept_domain',
+  'concept',
+  'catalog_author',
+  'technique_category',
+  'technique',
+  'comparison',
+  'question_category',
+  'topic',
 ];
 
 const missing = [...USER_TABLES, ...CATALOG_TABLES].filter((t) => !allTables.has(t));
@@ -79,5 +118,7 @@ if (missing.length) {
   process.exit(1);
 }
 
-console.log(`✓ schema.sql válido (SCHEMA_VERSION=${tsSchemaVersion}); ${allTables.size} tabelas criadas.`);
+console.log(
+  `✓ schema.sql válido (SCHEMA_VERSION=${tsSchemaVersion}); ${allTables.size} tabelas criadas.`,
+);
 db.close();

@@ -128,16 +128,16 @@ export function generalTitle(level: number): string {
 }
 
 /** XP por categoria com fallback para perfis salvos antes dos níveis. */
-export function categoryXpOrDefault(
-  profile: { categoryXp?: Partial<Record<Sticker['category'], number>> }
-): Record<Sticker['category'], number> {
+export function categoryXpOrDefault(profile: {
+  categoryXp?: Partial<Record<Sticker['category'], number>>;
+}): Record<Sticker['category'], number> {
   return { faculdade: 0, estudo: 0, leituras: 0, jornada: 0, ...(profile.categoryXp ?? {}) };
 }
 
 /** XP total (soma das categorias) para o nível geral. */
-export function totalXp(
-  profile: { categoryXp?: Partial<Record<Sticker['category'], number>> }
-): number {
+export function totalXp(profile: {
+  categoryXp?: Partial<Record<Sticker['category'], number>>;
+}): number {
   const xp = categoryXpOrDefault(profile);
   return xp.faculdade + xp.estudo + xp.leituras + xp.jornada;
 }

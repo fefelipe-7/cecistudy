@@ -38,7 +38,9 @@ function setVisibility(value: DocumentVisibilityState) {
 let rafSpy: ReturnType<typeof vi.fn> | undefined;
 
 beforeEach(() => {
-  vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'requestAnimationFrame', 'cancelAnimationFrame'] });
+  vi.useFakeTimers({
+    toFake: ['setTimeout', 'clearTimeout', 'requestAnimationFrame', 'cancelAnimationFrame'],
+  });
   drawImpl = () => false;
   lastFrameStats = null;
   externalSchedule = null;

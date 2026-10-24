@@ -266,15 +266,30 @@ export const MIGRATIONS: Record<number, Migration> = {
   // um `workspaceId` já presente.
   12: (data) => {
     const collections = [
-      'courses', 'classes', 'tasks', 'exams', 'authors', 'concepts',
-      'readings', 'flashcards', 'materials', 'internshipLogs', 'supervision',
-      'stickers', 'sessions', 'techniques', 'quizSessions', 'looseNotes',
+      'courses',
+      'classes',
+      'tasks',
+      'exams',
+      'authors',
+      'concepts',
+      'readings',
+      'flashcards',
+      'materials',
+      'internshipLogs',
+      'supervision',
+      'stickers',
+      'sessions',
+      'techniques',
+      'quizSessions',
+      'looseNotes',
     ];
     const next: Record<string, unknown> = { ...data };
     for (const key of collections) {
       const arr = (data[key] ?? []) as Record<string, unknown>[];
       next[key] = arr.map((item) =>
-        'workspaceId' in item && item.workspaceId ? item : { ...item, workspaceId: DEFAULT_WORKSPACE_ID }
+        'workspaceId' in item && item.workspaceId
+          ? item
+          : { ...item, workspaceId: DEFAULT_WORKSPACE_ID },
       );
     }
     for (const key of ['profile', 'tcc']) {
@@ -318,11 +333,7 @@ export const MIGRATIONS: Record<number, Migration> = {
     const courses = (data.courses ?? []) as Record<string, unknown>[];
     const normalized = courses.map((c) => {
       const att = c.attendance;
-      if (
-        att &&
-        typeof att === 'object' &&
-        ('attended' in att || !('records' in att))
-      ) {
+      if (att && typeof att === 'object' && ('attended' in att || !('records' in att))) {
         const next = { ...c };
         next.attendance = migrateLegacyAttendance(att as { attended?: number; total?: number });
         return next;
@@ -350,7 +361,7 @@ export const MIGRATIONS: Record<number, Migration> = {
       // `state: 'new'` e o app o trata como "para hoje". Reescrever para uma data
       // fixa exigiria inventar um passado que não está no backup — e um campo
       // `createdAt`, quando existir, é a data honesta.
-      const due = lastReviewed ?? ((f.createdAt as string | undefined) ?? undefined);
+      const due = lastReviewed ?? (f.createdAt as string | undefined) ?? undefined;
       return {
         ...f,
         deckId: undefined,
@@ -377,10 +388,19 @@ export const MIGRATIONS: Record<number, Migration> = {
     const courses = (data.courses ?? []) as Record<string, unknown>[];
     const normalized = courses.map((c) => {
       const att = c.attendance;
-      if (!att || typeof att !== 'object' || typeof (att as { total?: unknown }).total !== 'number') {
+      if (
+        !att ||
+        typeof att !== 'object' ||
+        typeof (att as { total?: unknown }).total !== 'number'
+      ) {
         return c;
       }
-      const a = att as { total: number; baseAttended?: number; totalHours?: number; baseHoursDone?: number };
+      const a = att as {
+        total: number;
+        baseAttended?: number;
+        totalHours?: number;
+        baseHoursDone?: number;
+      };
       const schedule = Array.isArray(c.schedule)
         ? (c.schedule as { day: number; start: string; end?: string }[])
         : undefined;
@@ -406,7 +426,7 @@ export const MIGRATIONS: Record<number, Migration> = {
   // - **idempotente**: re-aplicar não duplica o período nem sobrescreve
   //   `termId`/`status` que já existem.
   18: (data) => {
-    const profile = { ...(data.profile as Record<string, unknown> ?? {}) };
+    const profile = { ...((data.profile as Record<string, unknown>) ?? {}) };
 
     // `profile.semester` vira o `ordinal` do período ativo (tolera o formato
     // string dos backups antigos — ver `createBootstrapTerm`).
@@ -450,7 +470,7 @@ export const MIGRATIONS: Record<number, Migration> = {
   // reassinar o total depois (clamp `1..12`), então o custo de errar aqui é
   // baixo e o custo de não corrigir era um progresso de;formatura sempre furado.
   19: (data) => {
-    const profile = { ...(data.profile as Record<string, unknown> ?? {}) };
+    const profile = { ...((data.profile as Record<string, unknown>) ?? {}) };
     if (profile.totalSemesters === DEFAULT_TOTAL_SEMESTERS_LEGACY) {
       profile.totalSemesters = DEFAULT_TOTAL_SEMESTERS;
     }
@@ -524,8 +544,8 @@ export const MIGRATIONS: Record<number, Migration> = {
         const ids = [
           ...new Set(
             ((l.discussedLogIds as string[] | undefined) ?? []).filter(
-              (id) => id !== l.id && byId.get(id)?.type === 'atendimento_clinico'
-            )
+              (id) => id !== l.id && byId.get(id)?.type === 'atendimento_clinico',
+            ),
           ),
         ];
         if (ids.length) l.discussedLogIds = ids;
@@ -652,7 +672,7 @@ export const MIGRATIONS: Record<number, Migration> = {
       .filter(({ rec }) => str(rec.dueDate) !== '' && !DATE_KEY.test(str(rec.dueDate)))
       .map(
         ({ rec, i }) =>
-          `migracao-22: prazo do capítulo ${i + 1} (${str(rec.dueDate)}) fora de YYYY-MM-DD — descartado`
+          `migracao-22: prazo do capítulo ${i + 1} (${str(rec.dueDate)}) fora de YYYY-MM-DD — descartado`,
       );
 
     return {
@@ -682,7 +702,7 @@ export const MIGRATIONS: Record<number, Migration> = {
  */
 export function migrateDatabase(
   fromVersion: number,
-  data: Record<string, unknown>
+  data: Record<string, unknown>,
 ): Record<string, unknown> | null {
   if (fromVersion > SCHEMA_VERSION) return null;
   if (fromVersion < 1) return null;
@@ -699,7 +719,7 @@ export function migrateDatabase(
   if (missing.length) {
     throw new Error(
       `migrateDatabase: MIGRATIONS está com buraco na versão ${missing.join(', ')}. ` +
-        `A cadeia não pode pular versão — import recusado para não gravar dado incompleto.`
+        `A cadeia não pode pular versão — import recusado para não gravar dado incompleto.`,
     );
   }
   return next;

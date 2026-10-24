@@ -28,7 +28,9 @@ export const usePrefersReducedMotion = (): boolean => {
   const [reduce, setReduce] = useState(() => prefersReducedMotion());
   useEffect(() => {
     const mql =
-      typeof window !== 'undefined' ? window.matchMedia?.('(prefers-reduced-motion: reduce)') : null;
+      typeof window !== 'undefined'
+        ? window.matchMedia?.('(prefers-reduced-motion: reduce)')
+        : null;
     if (!mql || typeof mql.addEventListener !== 'function') return;
     const onChange = () => setReduce(mql.matches);
     mql.addEventListener('change', onChange);

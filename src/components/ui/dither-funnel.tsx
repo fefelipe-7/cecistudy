@@ -70,73 +70,72 @@ export const DitherFunnelChart: React.FC<DitherFunnelChartProps> = ({
     morphStartTimeRef.current > 0 &&
     performance.now() - morphStartTimeRef.current < 500;
 
-  const { scheduleFrame } = useDitherLoop(
-    () => {
-      const canvas = canvasRef.current;
-      if (!canvas) return false;
-      const ctx = ctxRef.current ?? (ctxRef.current = canvas.getContext('2d'));
-      if (!ctx) return false;
+  const { scheduleFrame } = useDitherLoop(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return false;
+    const ctx = ctxRef.current ?? (ctxRef.current = canvas.getContext('2d'));
+    if (!ctx) return false;
 
-      const { width: w, height: h } = rect.current;
-      if (w === 0 || h === 0) return true; // aguardando o ResizeObserver medir
+    const { width: w, height: h } = rect.current;
+    if (w === 0 || h === 0) return true; // aguardando o ResizeObserver medir
 
-      timeRef.current += reducedMotion ? 0 : 0.02;
-      const time = timeRef.current;
+    timeRef.current += reducedMotion ? 0 : 0.02;
+    const time = timeRef.current;
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    ctx.save();
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, w, h);
+
+    const prog = reducedMotion
+      ? 1
+      : Math.min(1, (performance.now() - morphStartTimeRef.current) / 500);
+    const e = 1 - Math.pow(2, -10 * prog);
+
+    const count = stages.length;
+    const rowH = (h - (count - 1) * 6) / count;
+    const cell = Math.max(2, Math.round(w / 200));
+    const t2 = time;
+
+    for (let i = 0; i < count; i++) {
+      const target = targetDataRef.current[i];
+      const from = fromDataRef.current[i];
+      const val = from.value + (target.value - from.value) * e;
+
+      const stageW = (val / (stages[0]?.value || 1)) * w;
+      const yTop = i * (rowH + 6);
+
       ctx.save();
-      ctx.scale(dpr, dpr);
-      ctx.clearRect(0, 0, w, h);
+      ctx.beginPath();
+      ctx.rect(0, yTop, stageW, rowH);
+      ctx.clip();
 
-      const prog = reducedMotion ? 1 : Math.min(1, (performance.now() - morphStartTimeRef.current) / 500);
-      const e = 1 - Math.pow(2, -10 * prog);
+      ctx.globalAlpha = 0.85;
+      ctx.fillStyle = target.color as string;
 
-      const count = stages.length;
-      const rowH = (h - (count - 1) * 6) / count;
-      const cell = Math.max(2, Math.round(w / 200));
-      const t2 = time;
+      for (let bx = 0; bx <= Math.ceil(stageW); bx += cell) {
+        for (let by = Math.floor(yTop); by <= Math.ceil(yTop + rowH); by += cell) {
+          const jx = bx + cell / 2;
+          const jy = by + cell / 2;
+          const jit = hash(jx, jy);
 
-      for (let i = 0; i < count; i++) {
-        const target = targetDataRef.current[i];
-        const from = fromDataRef.current[i];
-        const val = from.value + (target.value - from.value) * e;
+          const waveRaw = reducedMotion
+            ? 0
+            : Math.sin(jx * 0.05 + t2) + Math.sin(jy * 0.05 + t2 * 0.7);
+          const mod = smoothstep(-1.5, 1.5, waveRaw);
 
-        const stageW = (val / (stages[0]?.value || 1)) * w;
-        const yTop = i * (rowH + 6);
-
-        ctx.save();
-        ctx.beginPath();
-        ctx.rect(0, yTop, stageW, rowH);
-        ctx.clip();
-
-        ctx.globalAlpha = 0.85;
-        ctx.fillStyle = target.color as string;
-
-        for (let bx = 0; bx <= Math.ceil(stageW); bx += cell) {
-          for (let by = Math.floor(yTop); by <= Math.ceil(yTop + rowH); by += cell) {
-            const jx = bx + cell / 2;
-            const jy = by + cell / 2;
-            const jit = hash(jx, jy);
-
-            const waveRaw = reducedMotion
-              ? 0
-              : Math.sin(jx * 0.05 + t2) + Math.sin(jy * 0.05 + t2 * 0.7);
-            const mod = smoothstep(-1.5, 1.5, waveRaw);
-
-            const sz = cell * (0.35 + 0.35 * mod) * (0.8 + 0.4 * jit);
-            ctx.fillRect(bx + (cell - sz) / 2, by + (cell - sz) / 2, sz, sz);
-          }
+          const sz = cell * (0.35 + 0.35 * mod) * (0.8 + 0.4 * jit);
+          ctx.fillRect(bx + (cell - sz) / 2, by + (cell - sz) / 2, sz, sz);
         }
-        ctx.restore();
       }
-
       ctx.restore();
-      // needsAnimation (spec §5.2): só o morph — dado estável congela o shimmer.
-      // O throttle de ~30fps saiu: a política de loop é ÚNICA (spec §5.4).
-      return morphActive();
-    },
-    setup,
-  );
+    }
+
+    ctx.restore();
+    // needsAnimation (spec §5.2): só o morph — dado estável congela o shimmer.
+    // O throttle de ~30fps saiu: a política de loop é ÚNICA (spec §5.4).
+    return morphActive();
+  }, setup);
 
   useEffect(() => {
     fromDataRef.current = targetDataRef.current;
@@ -167,7 +166,7 @@ export const DitherFunnelChart: React.FC<DitherFunnelChartProps> = ({
       className={cn(
         'relative w-full rounded-2xl p-5 border shadow-sm transition-colors',
         'bg-surface-default border-ceci-border-default text-ceci-primary',
-        className
+        className,
       )}
     >
       {/* Header */}
@@ -176,7 +175,7 @@ export const DitherFunnelChart: React.FC<DitherFunnelChartProps> = ({
           <div
             className={cn(
               'p-2 rounded-xl',
-              'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand'
+              'bg-surface-rose text-ceci-brand-strong border border-ceci-border-brand',
             )}
           >
             {icon}
@@ -191,7 +190,7 @@ export const DitherFunnelChart: React.FC<DitherFunnelChartProps> = ({
           <div
             className={cn(
               'flex items-center p-1 rounded-full border text-xs font-medium',
-              'bg-surface-subtle border-ceci-border-default'
+              'bg-surface-subtle border-ceci-border-default',
             )}
           >
             {(variants ?? DEMO_FUNNEL_VARIANTS).map((v, idx) => (
@@ -202,7 +201,7 @@ export const DitherFunnelChart: React.FC<DitherFunnelChartProps> = ({
                   'px-2.5 py-1 rounded-full transition cursor-pointer',
                   variantIndex === idx
                     ? 'bg-ceci-primary text-ceci-on-primary'
-                    : 'text-ceci-secondary hover:text-ceci-primary'
+                    : 'text-ceci-secondary hover:text-ceci-primary',
                 )}
               >
                 {v.label}
@@ -214,10 +213,7 @@ export const DitherFunnelChart: React.FC<DitherFunnelChartProps> = ({
 
       {/* Funil */}
       <div
-        className={cn(
-          'relative w-full h-[140px] rounded-xl overflow-hidden',
-          'bg-surface-muted'
-        )}
+        className={cn('relative w-full h-[140px] rounded-xl overflow-hidden', 'bg-surface-muted')}
       >
         <canvas ref={canvasRef} className="w-full h-full pointer-events-none" />
       </div>
@@ -227,7 +223,8 @@ export const DitherFunnelChart: React.FC<DitherFunnelChartProps> = ({
         {stages.map((stage, idx) => {
           const pct = Math.round((stage.value / firstValue) * 100);
           const prev = stages[idx - 1];
-          const dropPct = prev && prev.value > 0 ? Math.round((1 - stage.value / prev.value) * 100) : 0;
+          const dropPct =
+            prev && prev.value > 0 ? Math.round((1 - stage.value / prev.value) * 100) : 0;
           const isBiggestDrop = idx === biggestDropIdx;
 
           return (
@@ -235,9 +232,7 @@ export const DitherFunnelChart: React.FC<DitherFunnelChartProps> = ({
               key={stage.label}
               className={cn(
                 'flex items-center gap-2.5 p-2 rounded-xl border transition-colors',
-                isBiggestDrop
-                  ? 'bg-surface-rose border-ceci-border-brand'
-                  : 'border-transparent'
+                isBiggestDrop ? 'bg-surface-rose border-ceci-border-brand' : 'border-transparent',
               )}
             >
               <span
@@ -251,7 +246,7 @@ export const DitherFunnelChart: React.FC<DitherFunnelChartProps> = ({
                     <span
                       className={cn(
                         'text-[9px] font-bold px-1.5 py-0.5 rounded-full shrink-0 border',
-                        'text-ceci-brand-strong bg-surface-default border-ceci-border-brand'
+                        'text-ceci-brand-strong bg-surface-default border-ceci-border-brand',
                       )}
                     >
                       maior queda
@@ -265,12 +260,7 @@ export const DitherFunnelChart: React.FC<DitherFunnelChartProps> = ({
                 )}
               </div>
               <span className="text-xs font-semibold tabular-nums">{formatValue(stage.value)}</span>
-              <span
-                className={cn(
-                  'text-[10px] w-9 text-right font-mono',
-                  'text-ceci-muted'
-                )}
-              >
+              <span className={cn('text-[10px] w-9 text-right font-mono', 'text-ceci-muted')}>
                 {pct}%
               </span>
             </div>
