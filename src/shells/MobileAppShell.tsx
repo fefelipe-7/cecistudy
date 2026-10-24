@@ -11,7 +11,7 @@ import { cancelQueuedPrefetches } from '../lib/performance/screenPrefetch';
 import { EASE, overlayVariants, resolveProfile, screenAnnouncement } from '../lib/motion';
 import { erro } from '../lib/voice';
 import { nativeNavigation } from '../navigation/native-navigation';
-import { routeFromNotificationExtra } from '../../packages/domain/src/core/domain/thesis';
+import { resolveNotificationRoute } from '../lib/notificationRoutes';
 
 import { HeaderNav } from '../components/HeaderNav';
 import { BottomNav } from '../components/BottomNav';
@@ -159,18 +159,22 @@ const MobileAppShellInner: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Toque na notificação do TCC → aba certa (SPEC-012 §6.5, Q10). Registrado
-  // cedo no bootstrap: em partida a frio o iOS entrega o evento após o
+  // Toque na notificação → tela da família (SPEC-M-025 D8). Registrado cedo
+  // no bootstrap: em partida a frio o iOS entrega o evento após o
   // `addListener` — e a navegação não depende de dado hidratado (o `focusId`
-  // de item removido degrada na própria tela). `routeFromNotificationExtra`
-  // é puro e defensivo: `extra` inválido simplesmente não navega.
+  // de item removido degrada na própria tela). O resolvedor é puro e
+  // defensivo: `extra` inválido simplesmente não navega.
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
     const handler = LocalNotifications.addListener('localNotificationActionPerformed', (event) => {
-      const route = routeFromNotificationExtra(
+      const route = resolveNotificationRoute(
         (event.notification as { extra?: unknown }).extra,
       );
-      if (route) app.openTccScreen(route.tab, route.focusId);
+      if (!route) return;
+      if (route.kind === 'tcc') app.openTccScreen(route.tab, route.focusId);
+      else if (route.kind === 'calendar') app.openCalendar(route.day);
+      else if (route.kind === 'internship') app.openInternshipDiary();
+      else handleNavigate(route.tab);
     });
     return () => {
       void handler.then((h) => h.remove());

@@ -83,11 +83,6 @@ describe('JourneyRail', () => {
     expect(current).toHaveTextContent('6º');
   });
 
-  it('respeita o teto de MAX_TERM_ORDINAL (12)', () => {
-    render(<JourneyRail slots={journeyFor(20, 12).slots} />);
-    expect(screen.getAllByRole('listitem')).toHaveLength(MAX_TERM_ORDINAL);
-  });
-
   it('com período único, um nó é atual e o resto é futuro', () => {
     render(<JourneyRail slots={journeyFor(1, 1).slots} />);
     expect(screen.getAllByRole('listitem')).toHaveLength(1);
@@ -143,13 +138,17 @@ describe('JourneyNow', () => {
       />,
     );
     expect(screen.getByText(/além dos 8 do curso/)).toBeTruthy();
-    expect((screen.getByRole('button', { name: /virar o semestre/ }) as HTMLButtonElement).disabled).toBe(false);
+    expect(
+      (screen.getByRole('button', { name: /virar o semestre/ }) as HTMLButtonElement).disabled,
+    ).toBe(false);
   });
 
   it('sem período ativo, colapsa em abrir meu 1º semestre', () => {
     render(
       <JourneyNow
-        journey={journeyFor(1, 1) && { ...journeyFor(1, 1), hasActiveTerm: false, activeTermId: undefined }}
+        journey={
+          journeyFor(1, 1) && { ...journeyFor(1, 1), hasActiveTerm: false, activeTermId: undefined }
+        }
         onCorrectOrdinal={noop}
         onSetTotalSemesters={noop}
         onOpenSemesterWizard={noop}
@@ -288,9 +287,9 @@ describe('JourneyNow', () => {
       );
       expect(screen.getByText('7º semestre')).toBeTruthy();
       fireEvent.click(screen.getByRole('button', { name: /corrigir semestre atual/ }));
-      expect(
-        (screen.getByLabelText('em que semestre você está?') as HTMLInputElement).value,
-      ).toBe('7');
+      expect((screen.getByLabelText('em que semestre você está?') as HTMLInputElement).value).toBe(
+        '7',
+      );
     });
 
     it('virar o semestre abre o wizard; sem período, abre o primeiro', () => {

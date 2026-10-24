@@ -1,12 +1,14 @@
 import React, { useMemo, useState } from 'react';
 import { Reorder, useDragControls } from 'framer-motion';
 import {
+  Bell,
   CalendarClock,
   ListChecks,
   BookOpen,
   Users,
   PenLine,
   GripVertical,
+  Minus,
   Plus,
   Copy,
   ExternalLink,
@@ -23,6 +25,7 @@ import { StatusChip } from '../ui/StatusChip';
 import { SectionTitle } from '../ui/SectionTitle';
 import { TagChip } from '../ui/TagChip';
 import { PillGroup } from '../ui/PillGroup';
+import { ToggleRow } from '../ui/ToggleRow';
 import {
   dateKeyOrdinal,
   daysBetween,
@@ -34,9 +37,11 @@ import {
 import { computeStreak } from '../../lib/streak';
 import { hapticSuccess, hapticTap } from '../../lib/haptics';
 import { copyToClipboard } from '../../lib/utils';
+import { isReminderSupported } from '../../lib/notifications';
 import {
   abntDataFromReading,
   commitFlatOrder,
+  emptyThesisReminderPrefs,
   formatAbnt,
   isChapterDone,
   nextThesisDeadline,
@@ -51,6 +56,7 @@ import {
   type ThesisChapter,
   type ThesisPace,
   type ThesisReference,
+  type ThesisReminderPrefs,
 } from '../../types';
 import { ChapterSheet } from '../tcc/ChapterSheet';
 import { WritingLogSheet } from '../tcc/WritingLogSheet';
@@ -125,6 +131,56 @@ const TAB_LABEL: Record<ThesisTab, string> = Object.fromEntries(
   TABS.map((t) => [t.id, t.label]),
 ) as Record<ThesisTab, string>;
 
+/**
+ * Lista de valores em chips (SPEC-024 D17): cada valor tem o próprio "−" e o
+ * "+" acrescenta o próximo preset que ainda não está na lista. Sem campo livre
+ * não existe entrada inválida, e a lista vazia é escolha válida (desliga o
+ * gatilho daquele tipo de aviso).
+ */
+const DayChips: React.FC<{
+  label: string;
+  unit: 'dia' | 'minuto';
+  value: number[];
+  presets: number[];
+  onChange: (next: number[]) => void;
+}> = ({ label, unit, value, presets, onChange }) => {
+  const proximo = presets.find((p) => !value.includes(p));
+  const texto = (n: number) => `${n} ${unit}${n === 1 ? '' : 's'}`;
+  return (
+    <div className="space-y-1.5">
+      <p className="text-[11px] font-semibold text-ceci-secondary">{label}</p>
+      <div className="flex flex-wrap items-center gap-1.5">
+        {value.map((n) => (
+          <span
+            key={n}
+            className="inline-flex items-center rounded-full border border-ceci-border-brand bg-surface-rose text-[11px] font-semibold text-ceci-brand-strong"
+          >
+            <span className="pl-2.5">{texto(n)}</span>
+            <button
+              type="button"
+              onClick={() => onChange(value.filter((v) => v !== n))}
+              aria-label={`remover ${texto(n)}`}
+              className="w-6 h-6 ml-0.5 flex items-center justify-center rounded-full cursor-pointer tap-interactive"
+            >
+              <Minus className="w-3 h-3" aria-hidden="true" />
+            </button>
+          </span>
+        ))}
+        {proximo !== undefined && (
+          <button
+            type="button"
+            onClick={() => onChange([...value, proximo].sort((a, b) => b - a))}
+            aria-label={`adicionar ${texto(proximo)}`}
+            className="h-6 px-2.5 rounded-full border border-dashed border-ceci-border-brand text-[11px] font-semibold text-ceci-brand-strong cursor-pointer tap-interactive"
+          >
+            + {proximo}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+
 export const TccView: React.FC = () => {
   const {
     tcc,
@@ -136,6 +192,7 @@ export const TccView: React.FC = () => {
     readings,
     setThesisChapters,
     setThesisTasks,
+    handleUpdateTcc,
     thesisTab,
     openTccScreen,
     openWizard,
@@ -144,6 +201,13 @@ export const TccView: React.FC = () => {
 
   const hasTcc = tcc.title.trim().length > 0;
   const tab = thesisTab ?? 'visao';
+
+  // SPEC-024 D14/D16: os campos que o motor de notificação já lê
+  // (`planThesisReminders`) e que nenhuma tela editava. O on/off continua
+  // único, no perfil (`categories.thesis`) — aqui não nasce segundo portão.
+  const reminderPrefs = tcc.reminderPrefs ?? emptyThesisReminderPrefs();
+  const updateReminders = (patch: Partial<ThesisReminderPrefs>) =>
+    handleUpdateTcc({ ...tcc, reminderPrefs: { ...reminderPrefs, ...patch } });
 
   const chaptersDone = thesisChapters.filter(isChapterDone).length;
   const chaptersTotal = thesisChapters.length;
@@ -481,6 +545,62 @@ export const TccView: React.FC = () => {
           )}
         </div>
       )}
+
+      {/* lembretes do tcc (SPEC-024 D14/D16): só os campos, sem interruptor —
+          o on/off é o do perfil. No navegador nada toca, então a dica aparece
+          em vez de esconder o card. */}
+      <div className="rounded-2xl p-4 bg-surface-default border border-ceci-border-default shadow-sm space-y-3">
+        <div className="flex items-center gap-2">
+          <Bell className="w-4 h-4 text-ceci-brand-strong" aria-hidden="true" />
+          <p className="text-[11px] font-semibold text-ceci-secondary">lembretes do tcc</p>
+        </div>
+
+        {!isReminderSupported() && (
+          <p className="text-[11px] text-ceci-tertiary leading-relaxed">
+            {frase(VAZIO, 'lembreteSoNoApp')}
+          </p>
+        )}
+
+        <label className="block space-y-1">
+          <span className="text-[11px] font-semibold text-ceci-secondary">horário do aviso</span>
+          <input
+            type="time"
+            value={reminderPrefs.time}
+            onChange={(e) => {
+              if (e.target.value) updateReminders({ time: e.target.value });
+            }}
+            className="block px-3 py-2 rounded-xl border border-ceci-border-default bg-surface-default text-sm text-ceci-primary outline-none focus:border-ceci-border-brand"
+          />
+        </label>
+
+        <DayChips
+          label="dias antes do capítulo"
+          unit="dia"
+          value={reminderPrefs.chapterDaysBefore}
+          presets={[7, 3, 1, 0]}
+          onChange={(next) => updateReminders({ chapterDaysBefore: next })}
+        />
+        <DayChips
+          label="dias antes da entrega e da banca"
+          unit="dia"
+          value={reminderPrefs.milestoneDaysBefore}
+          presets={[30, 14, 7, 3, 1, 0]}
+          onChange={(next) => updateReminders({ milestoneDaysBefore: next })}
+        />
+        <DayChips
+          label="minutos antes da reunião com hora"
+          unit="minuto"
+          value={reminderPrefs.meetingMinutesBefore}
+          presets={[60, 30, 15, 5]}
+          onChange={(next) => updateReminders({ meetingMinutesBefore: next })}
+        />
+
+        <ToggleRow
+          label="avisar na véspera da reunião"
+          checked={reminderPrefs.meetingEve}
+          onChange={() => updateReminders({ meetingEve: !reminderPrefs.meetingEve })}
+        />
+      </div>
     </div>
   );
 

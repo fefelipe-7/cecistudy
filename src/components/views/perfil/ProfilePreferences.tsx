@@ -4,11 +4,24 @@
 // formulário de identidade no fim) vira um bloco de rows leves. A edição de
 // identidade migrou para o `ProfileHero`/`ProfileEditSheet` (D5); o tema abre em
 // sheet reaproveitando `ThemePickerCard` (D6, consequência aceita).
-import React, { useState } from 'react';
-import { Bell, CalendarDays, Palette, Settings } from 'lucide-react';
-import type { ReminderSettings } from '../../../context/DataClientProvider';
+import React, { useEffect, useState } from 'react';
+import {
+  Bell,
+  BookOpen,
+  Briefcase,
+  CalendarCheck,
+  CalendarDays,
+  ClipboardCheck,
+  GraduationCap,
+  Palette,
+  PenLine,
+  Settings,
+} from 'lucide-react';
+import type { ReminderCategories, ReminderSettings } from '../../../context/DataClientProvider';
 import type { ThemeId } from '../../../lib/themes';
 import type { ProfilePreferences as ProfilePreferencesVm } from '../../../lib/profileViewModel';
+import { checkExactAlarmStatus, openExactAlarmSettings, supportsExactAlarmPrompt } from '../../../lib/notifications';
+import { NOTIFICACAO, frase } from '../../../lib/voice';
 import { Modal } from '../../ui/Modal';
 import PreferenceRow from './PreferenceRow';
 import ThemePickerCard from './ThemePickerCard';
@@ -22,6 +35,15 @@ interface ProfilePreferencesProps {
   onThemeSelect: (id: ThemeId) => void;
 }
 
+const CATEGORIAS: { key: keyof ReminderCategories; label: string; icon: React.ReactNode }[] = [
+  { key: 'class', label: 'aulas', icon: <BookOpen className="w-4 h-4" /> },
+  { key: 'exam', label: 'provas', icon: <GraduationCap className="w-4 h-4" /> },
+  { key: 'task', label: 'tarefas e prazos', icon: <ClipboardCheck className="w-4 h-4" /> },
+  { key: 'thesis', label: 'tcc', icon: <PenLine className="w-4 h-4" /> },
+  { key: 'internship', label: 'estágio', icon: <Briefcase className="w-4 h-4" /> },
+  { key: 'summary', label: 'resumo do dia', icon: <CalendarCheck className="w-4 h-4" /> },
+];
+
 const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
   preferences,
   themePref,
@@ -30,12 +52,71 @@ const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
   onThemeSelect,
 }) => {
   const [themeSheetOpen, setThemeSheetOpen] = useState(false);
+  const [pendingReminder, setPendingReminder] = useState<ReminderSettings | null>(null);
+  const [alarmDenied, setAlarmDenied] = useState(false);
+
+  // T5.5: o estado `denied` aparece no texto, mas nada abre sozinho (D9).
+  useEffect(() => {
+    if (!preferences.reminderSupported || !preferences.reminderEnabled) {
+      setAlarmDenied(false);
+      return;
+    }
+    let alive = true;
+    void checkExactAlarmStatus().then((status) => {
+      if (alive) setAlarmDenied(status === 'denied');
+    });
+    return () => {
+      alive = false;
+    };
+  }, [preferences.reminderSupported, preferences.reminderEnabled]);
 
   const reminderDescription = preferences.reminderSupported
     ? preferences.reminderEnabled
-      ? `todos os dias às ${preferences.reminderTime}.`
+      ? alarmDenied
+        ? `todos os dias às ${preferences.reminderTime}. o android pode atrasar o aviso até você liberar alarmes.`
+        : `todos os dias às ${preferences.reminderTime}.`
       : 'um carinho do cecistudy na hora de estudar.'
     : 'ativável no aplicativo nativo (android/ios).';
+
+  /**
+   * D9: ao ligar o master ou uma categoria, pergunta antes de abrir a tela do
+   * sistema. "Agora não" mantém o lembrete ligado; só não abre nada.
+   */
+  const requestChange = (patch: Partial<ReminderSettings>) => {
+    const next: ReminderSettings = {
+      enabled: patch.enabled ?? preferences.reminderEnabled,
+      time: patch.time ?? preferences.reminderTime,
+      categories: patch.categories ?? preferences.reminderCategories,
+    };
+    const turningOn =
+      (next.enabled && !preferences.reminderEnabled) ||
+      (Object.keys(next.categories) as (keyof ReminderCategories)[]).some(
+        (key) => next.categories[key] && !preferences.reminderCategories[key]
+      );
+
+    const apply = (settings: ReminderSettings) => onUpdateReminder(settings);
+    if (!turningOn || !supportsExactAlarmPrompt()) {
+      apply(next);
+      return;
+    }
+    void (async () => {
+      const status = await checkExactAlarmStatus();
+      if (status === 'denied') setPendingReminder(next);
+      else apply(next);
+    })();
+  };
+
+  const updateCategories = (key: keyof ReminderCategories) =>
+    requestChange({
+      categories: { ...preferences.reminderCategories, [key]: !preferences.reminderCategories[key] },
+    });
+
+  /** "Agora não" (e fechar o modal) mantém o lembrete ligado; só não abre nada. */
+  const dismissPending = () => {
+    if (pendingReminder) onUpdateReminder(pendingReminder);
+    setAlarmDenied(true);
+    setPendingReminder(null);
+  };
 
   return (
     <section
@@ -63,33 +144,48 @@ const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
       <div className="space-y-1">
         <PreferenceRow
           icon={<Bell className="w-4 h-4" />}
-          label="lembrete diário de estudo ♡"
+          label="lembretes ♡"
           description={reminderDescription}
-          ariaLabel={`lembrete diário de estudo, ${
-            preferences.reminderEnabled ? 'ligado' : 'desligado'
-          }${preferences.reminderSupported ? ` às ${preferences.reminderTime}` : ''}`}
+          ariaLabel={`lembretes, ${preferences.reminderEnabled ? 'ligados' : 'desligados'}${
+            preferences.reminderSupported ? ` às ${preferences.reminderTime}` : ''
+          }`}
           toggle={{
             checked: preferences.reminderEnabled,
             disabled: !preferences.reminderSupported,
-            onChange: () => onUpdateReminder({ enabled: !preferences.reminderEnabled, time: preferences.reminderTime }),
+            onChange: () => requestChange({ enabled: !preferences.reminderEnabled }),
           }}
         />
 
         {preferences.reminderSupported && preferences.reminderEnabled ? (
-          <div className="flex items-center gap-2 pl-16 pr-3 pb-1">
-            <label htmlFor="perfil-lembrete-horario" className="text-[11px] text-ceci-secondary">
-              horário:
-            </label>
-            <input
-              id="perfil-lembrete-horario"
-              type="time"
-              value={preferences.reminderTime}
-              onChange={(e) =>
-                onUpdateReminder({ enabled: preferences.reminderEnabled, time: e.target.value })
-              }
-              className="bg-surface-default border border-ceci-border-default focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 focus:border-ceci-brand rounded-xl px-2.5 py-1 text-sm text-ceci-primary"
-            />
-            <span className="text-[11px] text-ceci-tertiary">todas as noites</span>
+          <div className="space-y-1 pt-1">
+            <div className="flex items-center gap-2 pl-16 pr-3 pb-1">
+              <label htmlFor="perfil-lembrete-horario" className="text-[11px] text-ceci-secondary">
+                horário:
+              </label>
+              <input
+                id="perfil-lembrete-horario"
+                type="time"
+                value={preferences.reminderTime}
+                onChange={(e) => requestChange({ time: e.target.value })}
+                className="bg-surface-default border border-ceci-border-default focus:outline-none focus:ring-2 focus:ring-ceci-brand/30 focus:border-ceci-brand rounded-xl px-2.5 py-1 text-sm text-ceci-primary"
+              />
+              <span className="text-[11px] text-ceci-tertiary">no horário local</span>
+            </div>
+
+            {CATEGORIAS.map(({ key, label, icon }) => (
+              <PreferenceRow
+                key={key}
+                icon={icon}
+                label={label}
+                ariaLabel={`lembrete de ${label}, ${
+                  preferences.reminderCategories[key] ? 'ligado' : 'desligado'
+                }`}
+                toggle={{
+                  checked: preferences.reminderCategories[key],
+                  onChange: () => updateCategories(key),
+                }}
+              />
+            ))}
           </div>
         ) : null}
       </div>
@@ -131,6 +227,44 @@ const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
           >
             prontinho ♡
           </button>
+        </div>
+      </Modal>
+
+      <Modal
+        open={pendingReminder !== null}
+        onClose={dismissPending}
+        position="center"
+        labelledBy="perfil-alarme-titulo"
+      >
+        <div className="w-full max-w-sm bg-surface-default rounded-3xl shadow-floating p-6 space-y-4">
+          <h2
+            id="perfil-alarme-titulo"
+            className="font-display font-bold text-lg text-ceci-primary"
+          >
+            {frase(NOTIFICACAO, 'alarmeTitulo')}
+          </h2>
+          <p className="text-sm text-ceci-secondary">{frase(NOTIFICACAO, 'alarmeCorpo')}</p>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={dismissPending}
+              className="flex-1 py-3 rounded-2xl text-sm font-semibold text-ceci-secondary bg-surface-muted hover:bg-surface-rose cursor-pointer"
+            >
+              {frase(NOTIFICACAO, 'alarmeDepois')}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                const settings = pendingReminder;
+                setPendingReminder(null);
+                if (settings) onUpdateReminder(settings);
+                void openExactAlarmSettings().then((opened) => setAlarmDenied(!opened));
+              }}
+              className="flex-1 py-3 rounded-2xl text-sm font-semibold text-ceci-on-primary bg-ceci-primary hover:bg-ceci-primary-hover cursor-pointer"
+            >
+              {frase(NOTIFICACAO, 'alarmeAbrir')}
+            </button>
+          </div>
         </div>
       </Modal>
     </section>

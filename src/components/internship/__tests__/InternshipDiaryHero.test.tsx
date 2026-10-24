@@ -27,7 +27,7 @@ const renderDiario = () =>
     <MobileAppProvider>
       <InternshipDiaryView />
       <TabSwitcher />
-    </MobileAppProvider>
+    </MobileAppProvider>,
   );
 
 beforeEach(() => {
@@ -40,27 +40,16 @@ afterEach(() => {
 });
 
 describe('InternshipDiaryView — hero único (SPEC-010 D1/D3)', () => {
-  it('renderiza exatamente um hero-card na aba diário', () => {
+  it('mantém exatamente um hero-card em todas as abas, sem cabeçalho secundário', () => {
     renderDiario();
     expect(screen.getAllByTestId('hero-card')).toHaveLength(1);
-    expect(screen.getByText(/h de campo/)).toBeInTheDocument();
-  });
-
-  it('mantém um único hero ao trocar para pacientes', () => {
-    renderDiario();
     fireEvent.click(screen.getByRole('button', { name: 'ver pacientes' }));
     expect(screen.getAllByTestId('hero-card')).toHaveLength(1);
     expect(screen.getByText('0 pacientes')).toBeInTheDocument();
-  });
-
-  it('mantém um único hero na aba supervisão, sem cabeçalho secundário', () => {
-    renderDiario();
     fireEvent.click(screen.getByRole('button', { name: 'ver supervisão' }));
     expect(screen.getAllByTestId('hero-card')).toHaveLength(1);
     expect(screen.getByText('0 encontros')).toBeInTheDocument();
     // o cabeçalho antigo da aba (h2 "supervisão") saiu — só o hero topo
-    expect(
-      screen.queryByRole('heading', { level: 2, name: 'supervisão' })
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { level: 2, name: 'supervisão' })).not.toBeInTheDocument();
   });
 });

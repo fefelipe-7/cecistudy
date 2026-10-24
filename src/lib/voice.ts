@@ -208,6 +208,8 @@ export const VAZIO: Catalogo = {
     'comece pelo que dá identidade ao trabalho: um título, quem orienta e a pergunta que ele quer responder. o resto você preenche no caminho ♡',
   tccLembretes:
     'o app avisa de capítulos, reuniões, entrega e banca — no ritmo que você escolher depois',
+  /** Lembrete só toca no app instalado (SPEC-024 D18): no navegador é config sem efeito. */
+  lembreteSoNoApp: 'no navegador os lembretes não tocam — só no app instalado ♡',
   /** Ajuda de campo de formulário — é dica de uso, não rótulo. */
   campoOpcional: 'não precisa preencher tudo, pode deixar vazio ♡',
   campoOpcionalCurto: 'não precisa preencher tudo ♡',
@@ -613,6 +615,48 @@ export const NOTIFICACAO: Catalogo = {
   /** O corpo do lembrete de aula: quando começa e onde. */
   aulaHorario: (p) =>
     `começa às ${p.inicio}${p.fim ? `–${p.fim}` : ''}${p.sala ? ` • ${p.sala}` : ''}`,
+
+  // --- Provas (D4), estágio (D5), tarefas (D10) e resumo (D11)
+  provaTitulo: 'cecistudy ♡ prova',
+  provaPrazo: (p) =>
+    Number(p.dias) === 0
+      ? `prova de ${p.referencia} é hoje`
+      : `${prazoDe(Number(p.dias))} para a prova de ${p.referencia}`,
+  estagioTitulo: 'cecistudy ♡ estágio',
+  estagioRegistrar: 'registra as horas do dia no diário de estágio ♡',
+  tarefaTitulo: 'cecistudy ♡ prazo',
+  tarefaVesperaTitulo: 'cecistudy ♡ prazo amanhã',
+  tarefaPrazo: (p) =>
+    Number(p.dias) === 0
+      ? `hoje é o prazo de ${p.referencia}`
+      : `amanhã é o prazo de ${p.referencia}`,
+  resumoTitulo: 'cecistudy ♡ seu dia',
+  resumoAula: (p) => `aula de ${p.nome} às ${p.inicio}`,
+  resumoProva: (p) => `prova: ${p.titulo}`,
+  resumoTarefa: (p) => `prazo: ${p.titulo}`,
+  resumoTcc: (p) => `tcc: ${p.titulo}`,
+  /**
+   * O corpo do resumo: as linhas do dia já vêm prontas do adaptador (cada uma
+   * pela chave acima). Dia vazio cai na frase genérica do lembrete diário.
+   */
+  resumoCorpo: (p) => {
+    const linhas = Array.isArray(p.linhas) ? p.linhas : [];
+    if (!linhas.length) {
+      return p.turno === 'manha'
+        ? 'uma pausinha para revisar o dia? com leveza e foco! ♡'
+        : 'hora de fechar o dia com uma sessão leve de estudos ♡';
+    }
+    const resto = Number(p.restantes) > 0 ? ` • e mais ${p.restantes}` : '';
+    return linhas.join(' • ') + resto;
+  },
+
+  // --- Confirmação do alarme exato no Android (D9). A tela do sistema só
+  // abre com ação explícita; o copy diz o efeito, não vende a permissão.
+  alarmeTitulo: 'deixar o lembrete na hora?',
+  alarmeCorpo:
+    'no android, o sistema precisa liberar alarmes e lembretes para o aviso não atrasar. quer abrir essa configuração agora?',
+  alarmeAbrir: 'abrir agora',
+  alarmeDepois: 'agora não',
 };
 export const ONBOARDING: Catalogo = {
   /**

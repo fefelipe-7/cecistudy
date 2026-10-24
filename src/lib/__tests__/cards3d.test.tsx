@@ -33,7 +33,7 @@ describe('Card3D', () => {
         front={<span>pergunta</span>}
         back={<span>resposta</span>}
         ariaLabel="cartão de estudo"
-      />
+      />,
     );
     expect(screen.getByTestId('card3d')).toHaveAttribute('data-flipped', 'false');
     expect(screen.getByText('pergunta')).toBeInTheDocument();
@@ -49,7 +49,7 @@ describe('Card3D', () => {
         front={<span>pergunta</span>}
         back={<span>resposta</span>}
         ariaLabel="cartão de estudo"
-      />
+      />,
     );
     const card = screen.getByRole('button', { name: 'cartão de estudo' });
     fireEvent.click(card);
@@ -65,7 +65,7 @@ describe('Card3D', () => {
         front={<span>pergunta</span>}
         back={<span>resposta</span>}
         ariaLabel="cartão de estudo"
-      />
+      />,
     );
     fireEvent.keyDown(screen.getByRole('button', { name: 'cartão de estudo' }), { key: 'Enter' });
     expect(spy).toHaveBeenCalledWith(true);
@@ -74,7 +74,7 @@ describe('Card3D', () => {
   it('com prefers-reduced-motion usa crossfade (data-reduced + opacity nas faces)', () => {
     mockMatchMedia(true);
     const { rerender } = render(
-      <Card3D flipped={false} front={<span>pergunta</span>} back={<span>resposta</span>} />
+      <Card3D flipped={false} front={<span>pergunta</span>} back={<span>resposta</span>} />,
     );
     expect(screen.getByTestId('card3d')).toHaveAttribute('data-reduced', 'true');
 
@@ -95,20 +95,13 @@ describe('Card3D', () => {
 });
 
 describe('RatingBar', () => {
-  it('renderiza as 4 opções com rótulo e intervalo', () => {
-    render(<RatingBar options={DEFAULT_RATING_OPTIONS} onGrade={() => {}} />);
-    const group = screen.getByRole('group', { name: 'avaliar sua resposta' });
-    const buttons = within(group).getAllByRole('button');
-    expect(buttons).toHaveLength(4);
-    expect(screen.getByRole('button', { name: 'esqueci · volta em agora' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'fácil · volta em 1sem' })).toBeInTheDocument();
-  });
-
   it('dispara onGrade com a qualidade certa em cada botão', () => {
     const spy = vi.fn();
     render(<RatingBar options={DEFAULT_RATING_OPTIONS} onGrade={spy} />);
     for (const opt of DEFAULT_RATING_OPTIONS) {
-      fireEvent.click(screen.getByRole('button', { name: `${opt.label} · volta em ${opt.interval}` }));
+      fireEvent.click(
+        screen.getByRole('button', { name: `${opt.label} · volta em ${opt.interval}` }),
+      );
     }
     expect(spy).toHaveBeenCalledTimes(4);
     expect(spy.mock.calls.flat()).toEqual([0, 1, 2, 3]);

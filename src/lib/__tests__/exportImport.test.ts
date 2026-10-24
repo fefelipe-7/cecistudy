@@ -10,6 +10,7 @@ import {
 import { emptyDatabase } from '../../data/empty';
 import { readDatabaseFromState, buildBackupData, PersistedStateSnapshot } from '../persistentData';
 import { USER_SCHEMA_VERSION } from '../../data/schema';
+import { DEFAULT_REMINDER_CATEGORIES } from '../reminderSettings';
 
 /** Snapshot mínimo mas representativo do estado do contexto. */
 function makeSnapshot(overrides: Partial<PersistedStateSnapshot> = {}): PersistedStateSnapshot {
@@ -41,17 +42,39 @@ function makeSnapshot(overrides: Partial<PersistedStateSnapshot> = {}): Persiste
       },
     ],
     classes: [
-      { id: 'cl-1', courseId: 'c1', title: 'aula 1', number: 1, date: '2026-08-01', summary: 'resumo' },
+      {
+        id: 'cl-1',
+        courseId: 'c1',
+        title: 'aula 1',
+        number: 1,
+        date: '2026-08-01',
+        summary: 'resumo',
+      },
     ],
     tasks: [
       { id: 't1', title: 'ler cap 2', completed: false, priority: 'media', category: 'leitura' },
     ],
     exams: [
-      { id: 'e1', courseId: 'c1', title: 'p1', date: '2026-09-01', weight: '40%', topics: ['x'], completed: false },
+      {
+        id: 'e1',
+        courseId: 'c1',
+        title: 'p1',
+        date: '2026-09-01',
+        weight: '40%',
+        topics: ['x'],
+        completed: false,
+      },
     ],
     authors: [{ id: 'aut-1', name: 'Freud', bio: 'bio', keyConcepts: [], majorWorks: [] }],
     concepts: [
-      { id: 'con-1', name: 'recalque', definition: 'def', authorIds: ['aut-1'], courseIds: ['c1'], tags: ['x'] },
+      {
+        id: 'con-1',
+        name: 'recalque',
+        definition: 'def',
+        authorIds: ['aut-1'],
+        courseIds: ['c1'],
+        tags: ['x'],
+      },
     ],
     approaches: [],
     readings: [],
@@ -89,7 +112,7 @@ function makeSnapshot(overrides: Partial<PersistedStateSnapshot> = {}): Persiste
     stickers: [],
     sessions: [],
     streakData: { activeDays: ['2026-08-01'] },
-    reminder: { enabled: true, time: '19:00' },
+    reminder: { enabled: true, time: '19:00', categories: DEFAULT_REMINDER_CATEGORIES },
     looseNotes: [],
     savedBookIds: ['bk-1'],
     bookmarkedCourseIds: ['c1'],
@@ -299,7 +322,9 @@ describe('validação de backup v2 (P2-1)', () => {
       exportedAt: '',
     };
     expect(await importAppDatabase(JSON.stringify({ ...base, payload: undefined }))).toBeNull();
-    expect(await importAppDatabase(JSON.stringify({ ...base, payload: 'não é objeto' }))).toBeNull();
+    expect(
+      await importAppDatabase(JSON.stringify({ ...base, payload: 'não é objeto' })),
+    ).toBeNull();
   });
 
   it('rejeita coleção com shape inválido (courses não-array)', async () => {
@@ -326,7 +351,14 @@ describe('validação de backup v2 (P2-1)', () => {
   it('aceita backup válido e preserva campos legados (passthrough)', async () => {
     const payload = await buildBackupPayload(makeSnapshot());
     (payload.payload as Record<string, unknown>).approaches = [
-      { id: 'psic-01-01', name: 'x', shortName: 'x', description: 'x', foundingAuthors: [], color: '#fff' },
+      {
+        id: 'psic-01-01',
+        name: 'x',
+        shortName: 'x',
+        description: 'x',
+        foundingAuthors: [],
+        color: '#fff',
+      },
     ];
     const restored = await importAppDatabase(JSON.stringify(payload));
     expect(restored).not.toBeNull();
@@ -380,20 +412,59 @@ function makeLegacyBackupV5() {
         progressOverride: 60,
       },
     ],
-    classes: [{ id: 'cl-1', courseId: 'c1', title: 'aula 1', number: 1, date: '2026-08-01', summary: 'resumo' }],
-    tasks: [{ id: 't1', title: 'ler cap 2', completed: false, priority: 'media', category: 'leitura' }],
-    exams: [{ id: 'e1', courseId: 'c1', title: 'p1', date: '2026-09-01', weight: '40%', topics: ['x'], completed: false }],
+    classes: [
+      {
+        id: 'cl-1',
+        courseId: 'c1',
+        title: 'aula 1',
+        number: 1,
+        date: '2026-08-01',
+        summary: 'resumo',
+      },
+    ],
+    tasks: [
+      { id: 't1', title: 'ler cap 2', completed: false, priority: 'media', category: 'leitura' },
+    ],
+    exams: [
+      {
+        id: 'e1',
+        courseId: 'c1',
+        title: 'p1',
+        date: '2026-09-01',
+        weight: '40%',
+        topics: ['x'],
+        completed: false,
+      },
+    ],
     authors: [{ id: 'aut-1', name: 'Freud', bio: 'bio' }],
-    concepts: [{ id: 'con-1', name: 'recalque', definition: 'def', authorIds: ['aut-1'], courseIds: ['c1'], tags: ['x'] }],
+    concepts: [
+      {
+        id: 'con-1',
+        name: 'recalque',
+        definition: 'def',
+        authorIds: ['aut-1'],
+        courseIds: ['c1'],
+        tags: ['x'],
+      },
+    ],
     readings: [],
     flashcards: [],
     materials: [],
     internshipLogs: [],
-    tcc: { title: '', advisor: '', field: '', problemStatement: '', objectives: [], status: 'em_andamento', chapters: [], references: [] },
+    tcc: {
+      title: '',
+      advisor: '',
+      field: '',
+      problemStatement: '',
+      objectives: [],
+      status: 'em_andamento',
+      chapters: [],
+      references: [],
+    },
     stickers: [],
     sessions: [],
     streakData: { activeDays: ['2026-08-01'] },
-    reminder: { enabled: true, time: '19:00' },
+    reminder: { enabled: true, time: '19:00', categories: DEFAULT_REMINDER_CATEGORIES },
     looseNotes: [],
     savedBookIds: ['bk-1'],
     bookmarkedCourseIds: ['c1'],
@@ -427,7 +498,9 @@ describe('migração de backups antigos (Fase 0)', () => {
     // Mood removido pelas migrações 6 (campos de mood do backup) — não vaza para o banco.
     expect(restored).not.toHaveProperty('currentMood');
     expect(restored).not.toHaveProperty('moodHistory');
-    expect((restored!.profile as unknown as Record<string, unknown>)).not.toHaveProperty('avatarMood');
+    expect(restored!.profile as unknown as Record<string, unknown>).not.toHaveProperty(
+      'avatarMood',
+    );
     // progress removido pela migração 11.
     const course = restored!.courses[0] as unknown as Record<string, unknown>;
     expect(course).not.toHaveProperty('progress');
@@ -436,8 +509,8 @@ describe('migração de backups antigos (Fase 0)', () => {
     expect(Array.isArray(course.schedule)).toBe(true);
     expect((course.schedule as unknown[]).length).toBeGreaterThan(0);
     // coleções adicionadas por migrações intermediárias ganham defaults.
-expect(restored!.quizSessions).toEqual([]);
-     expect(restored!.syncIndex).toEqual({ stamps: {}, records: {}, tombstones: {} });
+    expect(restored!.quizSessions).toEqual([]);
+    expect(restored!.syncIndex).toEqual({ stamps: {}, records: {}, tombstones: {} });
     // dados do usuário preservados.
     expect(restored!.savedBookIds).toEqual(['bk-1']);
     expect(restored!.readingProgress).toEqual({ 'bk-1': 30 });
@@ -446,7 +519,10 @@ expect(restored!.quizSessions).toEqual([]);
 
   it('migra backup v8 (sem syncIndex/quizSessions já presentes) sem duplicar', async () => {
     const snapshot = makeSnapshot();
-    const payload = { ...snapshot, syncIndex: undefined, quizSessions: undefined } as Record<string, unknown>;
+    const payload = { ...snapshot, syncIndex: undefined, quizSessions: undefined } as Record<
+      string,
+      unknown
+    >;
     const envelope = {
       format: BACKUP_FORMAT,
       formatVersion: BACKUP_FORMAT_VERSION,
