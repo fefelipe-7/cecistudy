@@ -1,0 +1,61 @@
+name: sync-main-back
+
+# O release-please escreve `package.json`, `.release-please-manifest.json` e
+# `CHANGELOG.md` só na `main`. Sem devolver isso para a `dev`, a próxima
+# promoção conflita nesses três arquivos. Este workflow abre (e mergeia sozinho)
+# um PR `main -> dev` — a `dev` tem ruleset, então não dá para empurrar direto.
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-main-back
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+
+      - name: abre e mergeia o PR main -> dev
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+        run: |
+          set -euo pipefail
+          # Promoção comum não muda esses arquivos; só o release-please muda.
+          if git diff --quiet origin/main origin/dev -- \
+               package.json .release-please-manifest.json CHANGELOG.md; then
+            echo "versão já igual entre main e dev"
+            exit 0
+          fi
+
+          branch=sync/main-into-dev
+          git checkout -B "$branch" origin/dev
+          if ! git merge --no-edit origin/main; then
+            echo "::warning::conflito ao trazer main para dev — resolva à mão"
+            exit 0
+          fi
+          git push origin "$branch" --force
+
+          pr=$(gh pr list --head "$branch" --base dev --state open \
+                 --json number --jq '.[0].number')
+          if [ -z "$pr" ]; then
+            gh pr create --base dev --head "$branch" \
+              --title "merge: traz a versão da main de volta para dev" \
+              --body "Sincronização automática do que o release-please escreve na \`main\` (versão, CHANGELOG, manifest).
+
+Aberto por \`.github/workflows/sync-main-back.yml\`." >/dev/null
+            pr=$(gh pr list --head "$branch" --base dev --state open \
+                   --json number --jq '.[0].number')
+          fi
+          gh pr merge "$pr" --auto --squash

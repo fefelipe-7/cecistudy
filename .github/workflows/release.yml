@@ -98,6 +98,11 @@ jobs:
         run: |
           if [ "$EVENT" = "release" ]; then TAG="$RELEASE_TAG"; else TAG="$INPUT_TAG"; fi
           if [ -z "$TAG" ]; then echo "::error::tag ausente"; exit 1; fi
+          # O OTA deriva a versão do tag: `cecistudy-v1.1.0` viraria
+          # `cecistudy-cecistudy-v1.1.0` e o app nunca veria a atualização.
+          if ! echo "$TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+'; then
+            echo "::error::tag fora do padrão vX.Y.Z: $TAG"; exit 1
+          fi
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
 
