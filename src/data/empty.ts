@@ -7,6 +7,8 @@
  * partir do acervo (`lib/bootPreload.ts` / `templeData.ts`).
  */
 import { lockedStickerCatalog } from './stickerCatalog';
+import { DEFAULT_REMINDER } from '../lib/reminderSettings';
+import type { ReminderSettings } from '../lib/reminderSettings';
 import {
   Course,
   ClassNote,
@@ -66,7 +68,7 @@ export const emptyTcc: ThesisProject = emptyThesis();
 
 export const emptyStreakData: StreakData = { activeDays: [] };
 
-export const emptyReminder = { enabled: false, time: '19:00' as string };
+export const emptyReminder = DEFAULT_REMINDER;
 
 export const emptyOnboarding: OnboardingState = { completed: false };
 
@@ -88,7 +90,7 @@ export interface EmptyDatabase {
     stickers: Sticker[];
    sessions: StudySession[];
    streakData: StreakData;
-   reminder: { enabled: boolean; time: string };
+   reminder: ReminderSettings;
    looseNotes: unknown[];
    savedBookIds: string[];
    bookmarkedCourseIds: string[];

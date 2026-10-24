@@ -63,6 +63,7 @@ export interface ToastOptions {
 import { useSqliteState } from '../lib/useSqliteState';
 import { useStampedState } from '../lib/useStampedState';
 import { usePersistentState } from '../lib/usePersistentState';
+import type { ReminderSettings } from '../lib/reminderSettings';
 import { traceAsync } from '../lib/performance/perfMarks';
 import { erroDeSync, CELEBRACAO, frase } from '../lib/voice';
 import { invalidatePendingWrites } from '../lib/db/writeQueue';
@@ -95,10 +96,7 @@ import type { ThemeId } from '../lib/themes';
 import { DEFAULT_THEME_ID, applyTheme, getThemeById } from '../lib/themes';
 import { applyThemeColorChrome } from '../lib/themeChrome';
 
-export interface ReminderSettings {
-  enabled: boolean;
-  time: string; // "HH:MM"
-}
+export type { ReminderSettings, ReminderCategories } from '../lib/reminderSettings';
 
 /**
  * Fatias coarse do cliente de dados (PERF-001 A.3): vistas por domínio que

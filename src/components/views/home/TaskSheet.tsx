@@ -23,6 +23,8 @@ interface TaskSheetValues {
 interface TaskSheetProps {
   open: boolean;
   onClose: () => void;
+  /** Dia do `+` no calendário (SPEC-024 D20): o formulário já nasce com a data. */
+  defaultDate?: string;
 }
 
 const EMPTY_VALUES: TaskSheetValues = {
@@ -33,7 +35,7 @@ const EMPTY_VALUES: TaskSheetValues = {
   courseId: '',
 };
 
-export const TaskSheet: React.FC<TaskSheetProps> = ({ open, onClose }) => {
+export const TaskSheet: React.FC<TaskSheetProps> = ({ open, onClose, defaultDate }) => {
   const { courses, handleAddTask, showToast } = useMobileApp();
   const [step, setStep] = useState(0);
   const [busy, setBusy] = useState(false);
@@ -41,13 +43,17 @@ export const TaskSheet: React.FC<TaskSheetProps> = ({ open, onClose }) => {
 
   const [values, setValues] = useState<TaskSheetValues>(EMPTY_VALUES);
 
-  // Reabrir começa do zero — sem o passo e o título do registro anterior.
+  // Reabrir começa do zero — sem o passo e o título do registro anterior. O dia
+  // do `+` do calendário (SPEC-024 D20) entra como prazo inicial.
   useEffect(() => {
     if (!open) {
       setStep(0);
       setTriedNext(false);
       setValues(EMPTY_VALUES);
+      return;
     }
+    setValues({ ...EMPTY_VALUES, taskDueDate: defaultDate ?? '' });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   const patch = useCallback((p: Partial<TaskSheetValues>) => {

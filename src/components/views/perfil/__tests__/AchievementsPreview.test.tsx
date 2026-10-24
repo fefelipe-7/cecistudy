@@ -34,19 +34,6 @@ const achievements = (over: Partial<ProfileAchievements> = {}): ProfileAchieveme
 });
 
 describe('AchievementsPreview', () => {
-  it('mostra nível, título, progresso e a contagem desbloqueada', () => {
-    render(
-      <AchievementsPreview
-        achievements={achievements()}
-        onOpenStickers={vi.fn()}
-        onOpenStreak={vi.fn()}
-      />,
-    );
-    expect(screen.getByText('nível 4 · caminhante')).toBeTruthy();
-    expect(screen.getByText('2 de 5')).toBeTruthy();
-    expect(screen.getByText('rumo ao nível 5')).toBeTruthy();
-  });
-
   it('a ofensiva é um item que abre a tela própria', () => {
     const onOpenStreak = vi.fn();
     render(

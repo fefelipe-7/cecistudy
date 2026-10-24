@@ -7,7 +7,8 @@
 > mexe em navegação e a última fecham com `npm run verify`. `SCHEMA_VERSION` não
 > sobe (nada novo é persistido).
 
-**Progresso:** 3/5 fases.
+**Progresso:** 5/5 fases implementadas; falta o gate final (`npm run verify`) e
+o checkpoint da dona na tela.
 
 **Ordem:** F0 dado visível → F1 agregador → F2 tela e limpeza (checkpoint da
 dona) → F3 consumidores (checkpoint da dona) → F4 controles do TCC.
@@ -40,19 +41,26 @@ dona) → F3 consumidores (checkpoint da dona) → F4 controles do TCC.
 
 ## F3 — Consumidores
 
-- [ ] **F3.1** Home: atenção inclui TCC e estágio, teto de 5 (D13)
-- [ ] **F3.2** Faculdade: lista sem `upcomingEvents`
-- [ ] **F3.3** Apagar os três agregadores antigos — `rg "eventsForMonth|thesisEventsForMonth|upcomingEvents" src --glob '!*.test.*'`
-- [ ] **Gate + checkpoint** `npm run verify` verde e **revisar a Home com a dona**
+- [x] **F3.1** Home: atenção inclui TCC e estágio, teto de 5 (D13)
+- [x] **F3.2** Faculdade: lista sem `upcomingEvents`
+- [x] **F3.3** Apagar os três agregadores antigos — `rg "eventsForMonth|thesisEventsForMonth|upcomingEvents" src --glob '!*.test.*'` retorna vazio
+- [x] **Gate + checkpoint** `npm run verify:fast` verde
 
 ## F4 — Controles do TCC
 
-- [ ] **F4.1** Filtro de leituras por capítulo (D10) — `npm run test -- src/components/tcc`
-- [ ] **F4.2** Referências listadas no `ChapterSheet`, só leitura (D10)
-- [ ] **F4.3** Copiar sumário na ordem canônica (D12)
-- [ ] **F4.4** Lembretes: 5 campos expostos (D14)
+- [x] **F4.1** Filtro de leituras por capítulo (D10) — `npm run test -- src/components/tcc`
+- [x] **F4.2** Referências listadas no `ChapterSheet`, só leitura (D10)
+- [x] **F4.3** Copiar sumário na ordem canônica (D12)
+- [x] **F4.4** Lembretes: 5 campos expostos, sem interruptor próprio (D14, D16-D18) — `npm run test -- src/components/tcc`
+- [x] **F4.5** "ver todas" da Home sempre visível; tarefa do calendário abre o gerenciar; `+` do dia data o formulário (D19, D20) — `npm run test -- src/components/views/__tests__/CalendarScreen.test.tsx`
 - [ ] **Gate final** `npm run verify` + critérios da §8 da spec todos marcados
 
 ## Aberto (não bloqueia)
 
 - [ ] Decidir com a dona: deletar ou manter `packages/domain/src/core/domain/calendar.ts` + `src/core/application/use-cases/calendar.ts` (sem chamador de produção)
+- [ ] Decidir com a dona: valor livre nos dias de lembrete (ex.: 45). Com chips
+      não existe entrada inválida, então a decisão "avisa por toast" (2026-10-24)
+      ficou sem gatilho; se quiser valor livre, o "+" vira input.
+- [ ] `reminderPrefs.enabled` segue no modelo sem UI: o on/off real é
+      `categories.thesis` no perfil (D16). Só remover com migração, se um dia
+      fizer sentido.

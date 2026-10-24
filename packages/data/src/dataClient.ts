@@ -46,20 +46,14 @@ import type {
   ReadingHighlight,
   ReadingBookmark,
 } from '@/types';
-import {
-  emptyDatabase,
-} from '@/data/empty';
+import { emptyDatabase } from '@/data/empty';
 import {
   PersistedDatabase,
   PersistedStateSnapshot,
   resetDatabase,
   STATIC_BANKS,
 } from './persistentData';
-import {
-  buildBackupPayload,
-  importAppDatabase,
-  BackupV2,
-} from './exportImport';
+import { buildBackupPayload, importAppDatabase, BackupV2 } from './exportImport';
 
 export type { PersistedDatabase, PersistedStateSnapshot, BackupV2 };
 export { resetDatabase, STATIC_BANKS, buildBackupPayload, importAppDatabase };
@@ -111,8 +105,7 @@ export interface Repository<T extends { id: string }> {
 /** Cria um repositório tipado para a coleção `key`. */
 export function createRepository<K extends ArrayCollectionKey>(key: K) {
   type T = ElementOf<K> & { id: string };
-  const getAll = (db: PersistedStateSnapshot): T[] =>
-    db[key] as unknown as T[];
+  const getAll = (db: PersistedStateSnapshot): T[] => db[key] as unknown as T[];
   return {
     getAll,
     getById(db: PersistedStateSnapshot, id: string): T | undefined {
@@ -171,8 +164,8 @@ export interface DataClientSetters {
   readings: (v: ReadingItem[]) => void;
   flashcards: (v: Flashcard[]) => void;
   materials: (v: MaterialItem[]) => void;
-   internshipLogs: (v: InternshipLog[]) => void;
-   stickers: (v: Sticker[]) => void;
+  internshipLogs: (v: InternshipLog[]) => void;
+  stickers: (v: Sticker[]) => void;
   sessions: (v: StudySession[]) => void;
   techniques: (v: Technique[]) => void;
   quizSessions: (v: QuizSession[]) => void;
@@ -186,14 +179,14 @@ export interface DataClientSetters {
   thesisTasks: (v: ThesisTask[]) => void;
   thesisWritingLogs: (v: ThesisWritingLog[]) => void;
   streakData: (v: StreakData) => void;
-  reminder: (v: { enabled: boolean; time: string }) => void;
+  reminder: (v: PersistedStateSnapshot['reminder']) => void;
   looseNotes: (v: LooseNote[]) => void;
   savedBookIds: (v: string[]) => void;
   readingProgress: (v: Record<string, number>) => void;
-bookmarkedCourseIds: (v: string[]) => void;
-    tcc: (v: ThesisProject) => void;
-   onboarding: (v: OnboardingState) => void;
-   syncIndex: (v: SyncIndex) => void;
+  bookmarkedCourseIds: (v: string[]) => void;
+  tcc: (v: ThesisProject) => void;
+  onboarding: (v: OnboardingState) => void;
+  syncIndex: (v: SyncIndex) => void;
 }
 
 export interface ApplyDatabaseOptions {

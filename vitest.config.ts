@@ -25,6 +25,8 @@ export default defineConfig({
       'packages/**/*.test.{ts,tsx}',
     ],
     css: false,
-    testTimeout: 5000,
+    // 15 s: esta máquina (3,6 GB) derrubou rodadas por timeout de animação sob
+    // carga. Não enfraquece asserção — só evita vermelho que não é do código.
+    testTimeout: 15_000,
   },
 });

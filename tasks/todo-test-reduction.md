@@ -7,7 +7,7 @@
 
 - [x] **T0.1** `docs/estandares-testes.md` com classificação e regra de corte (status aceita)
 - [x] **T0.2** seção obrigatória em `AGENTS.md` do app + referência no `AGENTS.md` da raiz
-- [x] **T0.3** scripts `test:domain`/`test:ui` corrigidos: `--include` não existe no Vitest, trocado por `--exclude`; `test:apps` removido (não há teste em `apps/` e o script saía 1)
+- [x] **T0.3** scripts `test:domain`/`test:ui` corrigidos: `--include` não existe no Vitest, trocado por `--exclude`; `test:apps` mantido com `--passWithNoTests` (não há teste em `apps/`)
 
 ## Fase 1 – Auditoria [concluída]
 
@@ -28,7 +28,7 @@
 - [x] **T2.8** FSRS/spaced repetition revisado: `fsrs`, `reviewMeta` e `reviewSession` cobrem camadas distintas; sem duplicata para mesclar
 - [x] **T2.9** Calendar aggregation revisado: `calendarAggregator` e `schedule` cobrem agregação vs parsing; sem sobreposição
 - [x] **T2.10** Bibliography revisado: `courseRepertorio` e `repertorioOptions` cobrem resolução vs ordenação; sem sobreposição
-- [ ] **T2.11** Verificar verde: `npm run test:ui` — bloqueado neste checkout (sem `node_modules`); rodar `npm ci` antes
+- [x] **T2.11** Verificar verde: `npm run test:ui` — 134 files / 1284 tests, 128s (2026-10-23)
 
 ## Fase 3 – Migração de domínio [concluída]
 
@@ -47,6 +47,18 @@
 
 - [x] **T4.1** Todos os testes críticos removidos ou parametrizados
 - [x] **T4.2** Gates verdes verificados
+
+## Rodada 2 – apresentação pura [concluída]
+
+Corte de teste que só afirmava classe CSS, sem comportamento:
+
+- **Removidos (5)**: HeroCard (molde serifa/raio e gradiente), InternshipCaseHero (accent blue), UnderlineTabBar (classe customizada), InternshipCaseCard (geometria do tile).
+- **Asserções de classe removidas sem perder o teste (3)**: `aspect-[3/4]` (paper3dCard), `inline-flex` (CourseIcon), `p-4` (InternshipCaseCard).
+- **Revisados e mantidos**: `ProfileHero`, `ProgressPulse`, `JourneyRail` e `TccView` — são comportamento (h1, navegação, aria, escrita), não render puro.
+- **Sem merge**: FSRS/review, calendarAggregator/schedule e courseRepertorio/repertorioOptions cobrem camadas distintas.
+- `test:apps` mantido com `--passWithNoTests`: `apps/` não tem teste e o script saía 1.
+
+Contagens: `test:ui` = 134 files / 1284 tests (era 1289); `test:domain` = 17 files / 434 tests. `test:ui`, `test:domain`, `test:apps`, `check:boundaries`, `test:voz` e `verify:contract` verdes. `verify:fast` para no `typecheck` por erro em `src/lib/notifications.ts` / `ReminderSettings` — trabalho de SPEC-025 em andamento, fora desta rodada.
 
 ## Checklist final
 
@@ -72,7 +84,7 @@ Contagens após a rodada: `src/` = 152 files / 1731 tests; `packages/` = 14 file
 
 ## Próxima rodada
 
-1. `npm ci` e rodar `test:domain` e `test:ui` — fecha T2.11.
+1. ~~`npm ci` e rodar `test:domain`, `test:ui` e `test:apps`~~ — T2.11 fechado. Falta `verify:fast` quando o trabalho de SPEC-025 fechar o `typecheck`.
 2. Desacoplar `collections`, `dataClient` e `exportImport` de `src/` (`@/data/empty`, `persistentData`) e mover para o package dono — fecha T3.10.
 3. Revisar os candidatos por comportamento, não por arquivo: `ProfileHero`, `ProgressPulse`, `JourneyRail`, `TccView`. A inspeção de 2026-10-23 não achou render puro dominante; cortar só o `it` que passa com o comportamento quebrado.
 4. FSRS/review, calendarAggregator/schedule e courseRepertorio/repertorioOptions cobrem comportamentos distintos; não mesclar sem sobreposição provada.

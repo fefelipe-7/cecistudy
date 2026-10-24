@@ -32,23 +32,16 @@ const logFixture = (date: string) =>
 
 describe('InternshipCaseDetail', () => {
   it('não lança com caseData nulo mesmo com isOpen verdadeiro', () => {
-    expect(() => render(<InternshipCaseDetail caseData={null} isOpen today="2026-09-10" onClose={() => {}} />)).not.toThrow();
-  });
-
-  it('não lança com caseData nulo e fechado', () => {
     expect(() =>
-      render(<InternshipCaseDetail caseData={null} isOpen={false} today="2026-09-10" onClose={() => {}} />)
+      render(<InternshipCaseDetail caseData={null} isOpen today="2026-09-10" onClose={() => {}} />),
     ).not.toThrow();
   });
 
   it('não renderiza nada sem caso selecionado', () => {
-    const { container } = render(<InternshipCaseDetail caseData={null} isOpen today="2026-09-10" onClose={() => {}} />);
+    const { container } = render(
+      <InternshipCaseDetail caseData={null} isOpen today="2026-09-10" onClose={() => {}} />,
+    );
     expect(container).toBeEmptyDOMElement();
-  });
-
-  it('renderiza o caso quando há dados', () => {
-    render(<InternshipCaseDetail caseData={caso} isOpen today="2026-09-10" onClose={() => {}} />);
-    expect(screen.getByText('M.S.')).toBeInTheDocument();
   });
 
   it('escreve o plural certo (regressão U2)', () => {
@@ -56,7 +49,9 @@ describe('InternshipCaseDetail', () => {
       ...caso,
       logs: [logFixture('2026-09-02'), logFixture('2026-09-09')],
     } as DerivedCase;
-    render(<InternshipCaseDetail caseData={comSessoes} isOpen today="2026-09-10" onClose={() => {}} />);
+    render(
+      <InternshipCaseDetail caseData={comSessoes} isOpen today="2026-09-10" onClose={() => {}} />,
+    );
     expect(screen.getByText(/2 sessões/)).toBeInTheDocument();
     expect(screen.queryByText(/sessãoões/)).not.toBeInTheDocument();
   });

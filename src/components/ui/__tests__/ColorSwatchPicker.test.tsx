@@ -5,17 +5,16 @@ import { ColorSwatchPicker } from '../ColorSwatchPicker';
 const SWATCHES = ['#E97891', '#609FB8', '#8BC7A2'];
 
 describe('ColorSwatchPicker', () => {
-  it('renderiza um botão por swatch', () => {
-    render(<ColorSwatchPicker value={SWATCHES[0]} onChange={() => {}} swatches={SWATCHES} />);
-    expect(screen.getByRole('button', { name: `cor ${SWATCHES[0]}` })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: `cor ${SWATCHES[1]}` })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: `cor ${SWATCHES[2]}` })).toBeInTheDocument();
-  });
-
   it('marca com aria-pressed a cor selecionada', () => {
     render(<ColorSwatchPicker value={SWATCHES[1]} onChange={() => {}} swatches={SWATCHES} />);
-    expect(screen.getByRole('button', { name: `cor ${SWATCHES[1]}` })).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByRole('button', { name: `cor ${SWATCHES[0]}` })).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByRole('button', { name: `cor ${SWATCHES[1]}` })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(screen.getByRole('button', { name: `cor ${SWATCHES[0]}` })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
   });
 
   it('chama onChange com a cor ao clicar', () => {

@@ -16,6 +16,7 @@ import type { BackupV2 } from '../../../packages/data/src/exportImport';
 import { SCHEMA_VERSION } from '../../../packages/data/src/schema';
 import type { LooseNote } from '../../../src/types';
 import { emptyDatabase } from '../empty';
+import { DEFAULT_REMINDER_CATEGORIES } from '../../lib/reminderSettings';
 
 /** exportedAt fixo → o envelope é determinístico (mesmos bytes nos dois lados). */
 export const GOLDEN_EXPORTED_AT = '2026-09-10T12:00:00.000Z';
@@ -426,7 +427,7 @@ export function sampleSnapshot(): PersistedStateSnapshot {
       },
     ],
     streakData: { activeDays: ['2026-09-08', '2026-09-09', '2026-09-10'] },
-    reminder: { enabled: true, time: '20:30' },
+    reminder: { enabled: true, time: '20:30', categories: DEFAULT_REMINDER_CATEGORIES },
     looseNotes: [
       {
         id: 'ln-1',

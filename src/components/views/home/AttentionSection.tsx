@@ -34,15 +34,13 @@ const AttentionSection: React.FC<AttentionSectionProps> = ({ items, remainingCou
       <SectionTitle
         icon={<Sparkles className="w-4 h-4 text-ceci-brand-strong" />}
         action={
-          remainingCount > 0 ? (
-            <button
-              onClick={() => nav.openCalendar()}
-              className="text-xs font-bold text-ceci-brand-strong hover:underline cursor-pointer flex items-center gap-1"
-            >
-              <span>ver todas</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          ) : undefined
+          <button
+            onClick={() => nav.openCalendar()}
+            className="text-xs font-bold text-ceci-brand-strong hover:underline cursor-pointer flex items-center gap-1"
+          >
+            <span>ver todas</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
         }
       >
         sua atenção hoje
@@ -59,7 +57,6 @@ const AttentionSection: React.FC<AttentionSectionProps> = ({ items, remainingCou
                     entry={item.entry}
                     nav={nav}
                     exams={exams}
-                    tasks={tasks}
                     showDate
                   />
                 );

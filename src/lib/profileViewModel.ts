@@ -41,6 +41,10 @@ import {
 import { formatStudyTime } from './profileMeta';
 import { generalTitle, levelFor, totalXp, xpToNextLevel } from './levels';
 import { THEMES, type ThemeId } from './themes';
+import {
+  normalizeReminderSettings,
+  type ReminderCategories,
+} from './reminderSettings';
 
 /* -------------------------------------------------------------------------- */
 /* Contrato                                                                    */
@@ -111,6 +115,7 @@ export interface ProfilePreferences {
   reminderSupported: boolean;
   reminderEnabled: boolean;
   reminderTime: string;
+  reminderCategories: ReminderCategories;
   calendarConfigured: boolean;
   calendarEnabled: boolean;
   themeLabel: string;
@@ -144,7 +149,7 @@ export interface ProfileViewModelInput {
   stickers: Sticker[];
   streak: StreakStats;
   themePref: ThemeId;
-  reminderSettings: { enabled: boolean; time: string };
+  reminderSettings: { enabled: boolean; time: string; categories?: ReminderCategories };
   reminderSupported: boolean;
   gcalConfigured: boolean;
   gcalEnabled: boolean;
@@ -297,6 +302,7 @@ export function deriveProfileViewModel(input: ProfileViewModelInput): ProfileVie
       reminderSupported,
       reminderEnabled: reminderSettings.enabled,
       reminderTime: reminderSettings.time,
+      reminderCategories: normalizeReminderSettings(reminderSettings).categories,
       calendarConfigured: gcalConfigured,
       calendarEnabled: gcalEnabled,
       themeLabel: THEMES[themePref].label,

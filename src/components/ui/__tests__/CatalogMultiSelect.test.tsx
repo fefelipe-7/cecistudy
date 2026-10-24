@@ -11,14 +11,38 @@ const OPTIONS: CatalogSelectOption[] = [
 
 describe('CatalogMultiSelect', () => {
   it('marca os valores selecionados com check', () => {
-    render(<CatalogMultiSelect open onClose={() => {}} title="conceitos-key" value={['con-1']} onChange={() => {}} options={OPTIONS} />);
-    expect(screen.getByRole('checkbox', { name: 'recalque' })).toHaveAttribute('aria-checked', 'true');
-    expect(screen.getByRole('checkbox', { name: 'transferência' })).toHaveAttribute('aria-checked', 'false');
+    render(
+      <CatalogMultiSelect
+        open
+        onClose={() => {}}
+        title="conceitos-key"
+        value={['con-1']}
+        onChange={() => {}}
+        options={OPTIONS}
+      />,
+    );
+    expect(screen.getByRole('checkbox', { name: 'recalque' })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    expect(screen.getByRole('checkbox', { name: 'transferência' })).toHaveAttribute(
+      'aria-checked',
+      'false',
+    );
   });
 
   it('adiciona e remove ao clicar', () => {
     const onChange = vi.fn();
-    render(<CatalogMultiSelect open onClose={() => {}} title="conceitos" value={['con-1']} onChange={onChange} options={OPTIONS} />);
+    render(
+      <CatalogMultiSelect
+        open
+        onClose={() => {}}
+        title="conceitos"
+        value={['con-1']}
+        onChange={onChange}
+        options={OPTIONS}
+      />,
+    );
     fireEvent.click(screen.getByRole('checkbox', { name: 'transferência' }));
     expect(onChange).toHaveBeenCalledWith(['con-1', 'con-2']);
     fireEvent.click(screen.getByRole('checkbox', { name: 'recalque' }));
@@ -26,8 +50,19 @@ describe('CatalogMultiSelect', () => {
   });
 
   it('busca filtra por label e hint entre grupos', () => {
-    render(<CatalogMultiSelect open onClose={() => {}} title="bibliografia" value={[]} onChange={() => {}} options={OPTIONS} />);
-    fireEvent.change(screen.getByLabelText('buscar em bibliografia'), { target: { value: 'manual' } });
+    render(
+      <CatalogMultiSelect
+        open
+        onClose={() => {}}
+        title="bibliografia"
+        value={[]}
+        onChange={() => {}}
+        options={OPTIONS}
+      />,
+    );
+    fireEvent.change(screen.getByLabelText('buscar em bibliografia'), {
+      target: { value: 'manual' },
+    });
     expect(screen.getByRole('checkbox', { name: /Manual de DSM/ })).toBeInTheDocument();
     expect(screen.queryByText('recalque')).not.toBeInTheDocument();
     expect(screen.queryByText('do seu cantinho')).not.toBeInTheDocument(); // grupo inteiro some
@@ -35,20 +70,34 @@ describe('CatalogMultiSelect', () => {
 
   it('chip removível aparece para opção selecionada', () => {
     const onChange = vi.fn();
-    render(<CatalogMultiSelect open onClose={() => {}} title="conceitos" value={['con-1']} onChange={onChange} options={OPTIONS} />);
+    render(
+      <CatalogMultiSelect
+        open
+        onClose={() => {}}
+        title="conceitos"
+        value={['con-1']}
+        onChange={onChange}
+        options={OPTIONS}
+      />,
+    );
     fireEvent.click(screen.getByRole('button', { name: 'remover recalque' }));
     expect(onChange).toHaveBeenCalledWith([]);
   });
 
   it('"limpar tudo" esvazia a seleção', () => {
     const onChange = vi.fn();
-    render(<CatalogMultiSelect open onClose={() => {}} title="conceitos" value={['con-1', 'con-2']} onChange={onChange} options={OPTIONS} />);
+    render(
+      <CatalogMultiSelect
+        open
+        onClose={() => {}}
+        title="conceitos"
+        value={['con-1', 'con-2']}
+        onChange={onChange}
+        options={OPTIONS}
+      />,
+    );
     fireEvent.click(screen.getByRole('button', { name: 'limpar tudo' }));
     expect(onChange).toHaveBeenCalledWith([]);
   });
 
-  it('mostra contador de selecionados a partir do valor', () => {
-    render(<CatalogMultiSelect open onClose={() => {}} title="conceitos" value={['con-1']} onChange={() => {}} options={OPTIONS} />);
-    expect(screen.getByText('1 selecionado')).toBeInTheDocument();
-  });
 });

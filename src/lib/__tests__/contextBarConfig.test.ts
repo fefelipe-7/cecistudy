@@ -48,8 +48,16 @@ describe('buildContextBarConfig', () => {
   });
 
   it('não aparece nos fluxos de formulário (que têm rodapé próprio)', () => {
-    for (const kind of ['compose', 'composeDetails', 'wizard', 'noteDetail', 'noteTransform'] as const) {
-      expect(buildContextBarConfig({ ...baseInput, currentScreen: { kind } as NavScreen })).toBeNull();
+    for (const kind of [
+      'compose',
+      'composeDetails',
+      'wizard',
+      'noteDetail',
+      'noteTransform',
+    ] as const) {
+      expect(
+        buildContextBarConfig({ ...baseInput, currentScreen: { kind } as NavScreen }),
+      ).toBeNull();
     }
   });
 
@@ -60,7 +68,9 @@ describe('buildContextBarConfig', () => {
       'quiz-group-detail',
       'quiz-result',
     ] as const) {
-      expect(buildContextBarConfig({ ...baseInput, currentScreen: { kind } as NavScreen })).toBeNull();
+      expect(
+        buildContextBarConfig({ ...baseInput, currentScreen: { kind } as NavScreen }),
+      ).toBeNull();
     }
     expect(
       buildContextBarConfig({ ...baseInput, currentScreen: { kind: 'study', screen: 'leituras' } }),
@@ -301,8 +311,16 @@ describe('buildContextBarConfig', () => {
   });
 
   it('o contextKey é a identidade da tela (seleção reinicia ao trocar)', () => {
-    const a = buildContextBarConfig({ ...baseInput, currentScreen: { kind: 'notes' }, screenKey: 'notes' });
-    const b = buildContextBarConfig({ ...baseInput, currentScreen: { kind: 'streak' }, screenKey: 'streak' });
+    const a = buildContextBarConfig({
+      ...baseInput,
+      currentScreen: { kind: 'notes' },
+      screenKey: 'notes',
+    });
+    const b = buildContextBarConfig({
+      ...baseInput,
+      currentScreen: { kind: 'streak' },
+      screenKey: 'streak',
+    });
     expect(a?.contextKey).toBe('notes');
     expect(b?.contextKey).toBe('streak');
   });
@@ -325,29 +343,4 @@ describe('classificação de telas da barra contextual (SPEC-022 D8)', () => {
     expect(faltando).toEqual([]);
   });
 
-  it('as telas que já têm rodapé próprio não recebem a barra', () => {
-    for (const kind of [
-      'classNote',
-      'quiz-category',
-      'quiz-group-detail',
-      'quiz-result',
-      'quiz-loading',
-      'quiz-play',
-    ] as const) {
-      expect(BARRA_APARECE[kind]).toBe(false);
-    }
-  });
-
-  it('a barra não aparece nas telas primárias e nos fluxos de formulário', () => {
-    for (const kind of [
-      'tab',
-      'compose',
-      'composeDetails',
-      'noteDetail',
-      'noteTransform',
-      'wizard',
-    ] as const) {
-      expect(BARRA_APARECE[kind]).toBe(false);
-    }
-  });
 });

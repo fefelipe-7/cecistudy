@@ -1,14 +1,13 @@
 import React, { useMemo, useState } from 'react';
-import { Bell, GraduationCap, Lightbulb, Plus, Trash2 } from 'lucide-react';
+import { GraduationCap, Lightbulb, Plus, Trash2 } from 'lucide-react';
 import { Modal } from '../ui/Modal';
 import { ChoiceCardGrid } from '../ui/ChoiceCardGrid';
 import { StatusChip, type StatusTone } from '../ui/StatusChip';
-import { ToggleRow } from '../ui/ToggleRow';
 import { emptyThesisReminderPrefs, type ThesisChapter, type ThesisProject } from '../../types';
 import { useMobileApp } from '../../context/mobileApp';
 import { useWizardForm } from '../../lib/useWizardForm';
 import { formatDateBR } from '../../lib/dateBR';
-import { CELEBRACAO, VAZIO, frase } from '../../lib/voice';
+import { CELEBRACAO, frase } from '../../lib/voice';
 import { WizardScaffold, type WizardStep } from './WizardScaffold';
 import { DeadlineField, Field, FieldHint, FieldLabel, NumberInput, ReviewCard, TextArea, TextInput } from './wizardFields';
 
@@ -33,7 +32,6 @@ interface TccFormValues {
   defenseDate: string;
   wordGoalTotal: string;
   weeklyWordGoal: string;
-  remindersEnabled: boolean;
 }
 
 const STATUS_OPTIONS: { value: ThesisProject['status']; label: string; emoji: string; caption: string }[] = [
@@ -72,7 +70,6 @@ const seedFromTcc = (tcc: ThesisProject): TccFormValues => ({
   defenseDate: tcc.defenseDate ?? '',
   wordGoalTotal: tcc.wordGoalTotal != null ? String(tcc.wordGoalTotal) : '',
   weeklyWordGoal: tcc.weeklyWordGoal != null ? String(tcc.weeklyWordGoal) : '',
-  remindersEnabled: tcc.reminderPrefs?.enabled ?? false,
 });
 
 /**
@@ -130,9 +127,9 @@ export const TccWizard: React.FC = () => {
     defenseDate: values.defenseDate || undefined,
     wordGoalTotal: parseGoal(values.wordGoalTotal),
     weeklyWordGoal: parseGoal(values.weeklyWordGoal),
-    // O interruptor viaja com as preferências (§6.4); o resto dos defaults
-    // (dias de antecedência, horário) continua vindo do domínio.
-    reminderPrefs: { ...(tcc.reminderPrefs ?? emptyThesisReminderPrefs()), enabled: values.remindersEnabled },
+    // O liga/desliga agora é a categoria `tcc` em `reminder` (SPEC-M-025 D12);
+    // aqui viajam só os ajustes finos (dias de antecedência, horário).
+    reminderPrefs: tcc.reminderPrefs ?? emptyThesisReminderPrefs(),
   });
 
   const doSave = () => {
@@ -290,19 +287,6 @@ export const TccWizard: React.FC = () => {
               {weekEcho && <FieldHint>{weekEcho}</FieldHint>}
             </Field>
           </div>
-
-          {/* F4.6: o interruptor dos lembretes (§6.4). Desligado é o default —
-              ligar pede permissão na hora de agendar (`ensureNotificationPermission`,
-              o adaptador cuida; recusa não é erro). */}
-          <ToggleRow
-            label="lembretes de prazo"
-            description={frase(VAZIO, 'tccLembretes')}
-            icon={<Bell className="w-4 h-4" />}
-            iconClassName="bg-surface-rose border border-ceci-border-brand text-ceci-brand-strong"
-            checked={values.remindersEnabled}
-            onChange={() => patch({ remindersEnabled: !values.remindersEnabled })}
-            className="rounded-2xl border border-ceci-border-default bg-surface-default p-4"
-          />
         </div>
       ),
     },
