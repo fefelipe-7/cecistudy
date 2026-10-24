@@ -115,6 +115,8 @@ export default function ToggleSwitch({
   const [sweepDirection, setSweepDirection] = useState<'left' | 'right'>('right');
   const trackRef = useRef<HTMLDivElement | null>(null);
   const velocityRef = useRef(0);
+  /** O sweep é um timer de 150 ms: sem isso ele dispara depois do unmount. */
+  const sweepTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const shouldReduceMotion = useReducedMotion();
 
@@ -146,6 +148,13 @@ export default function ToggleSwitch({
     motionX.set(newX);
   }, [initialIsActive]);
 
+  useEffect(
+    () => () => {
+      if (sweepTimerRef.current) clearTimeout(sweepTimerRef.current);
+    },
+    [],
+  );
+
   function getBackgroundColor() {
     const theme = colorThemes[colorTheme];
     const mode = darkMode ? theme.dark : theme.light;
@@ -156,7 +165,8 @@ export default function ToggleSwitch({
     if (shouldReduceMotion) return;
     setSweepDirection(direction);
     setShowSweep(true);
-    setTimeout(() => setShowSweep(false), 150);
+    if (sweepTimerRef.current) clearTimeout(sweepTimerRef.current);
+    sweepTimerRef.current = setTimeout(() => setShowSweep(false), 150);
   }
 
   // Pointer events para toque + mouse
