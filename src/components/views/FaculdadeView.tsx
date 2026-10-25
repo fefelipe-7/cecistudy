@@ -98,24 +98,10 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
     return list;
   }, [internshipLogs]);
 
-  // If a course detail is active, render CourseDetailView
-  if (course) {
-    return <CourseDetailView course={course} />;
-  }
-
-  // ---- dados reais derivados do estado ----
-  // Provas/tarefas herdam o período pelo `courseId` da disciplina (§D3).
-  const pendingExams = exams.filter(
-    (e) => !e.completed && (!e.courseId || activeIds.has(e.courseId)),
-  );
-  const pendingTasks = tasks.filter(
-    (t) => !t.completed && (!t.disciplineId || activeIds.has(t.disciplineId)),
-  );
-
-  const todaySchedule = getTodaySchedule(grade, now);
-
-  // Próximos compromissos da semana acadêmica — do agregador único (SPEC-024
-  // D4/D13). Só o que tem hora marcada/entrega: aula e estudo ficam na grade.
+  // Rules of Hooks: nenhum hook pode ficar depois do early return de
+  // `course` abaixo. O `weekEntries` morava no corpo da grade e subiu para
+  // cá — quando o `LayoutGroup` re-renderiza a tela em saída com `course`
+  // já definido, o hook a menos derrubava a árvore inteira.
   const weekEntries = useMemo(
     () =>
       buildCalendarEntries({
@@ -148,6 +134,22 @@ export const FaculdadeView: React.FC<FaculdadeViewProps> = ({ course }) => {
       sessions,
     ],
   );
+
+  // If a course detail is active, render CourseDetailView
+  if (course) {
+    return <CourseDetailView course={course} />;
+  }
+
+  // ---- dados reais derivados do estado ----
+  // Provas/tarefas herdam o período pelo `courseId` da disciplina (§D3).
+  const pendingExams = exams.filter(
+    (e) => !e.completed && (!e.courseId || activeIds.has(e.courseId)),
+  );
+  const pendingTasks = tasks.filter(
+    (t) => !t.completed && (!t.disciplineId || activeIds.has(t.disciplineId)),
+  );
+
+  const todaySchedule = getTodaySchedule(grade, now);
 
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-6 pb-1">
