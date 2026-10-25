@@ -1,7 +1,10 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { MobileAppProvider } from '../../../apps/mobile/src/MobileAppProvider';
 import { useMobileApp } from '../../context/mobileApp';
+import { Modal } from '../../components/ui/Modal';
+import { resetOverlayStackForTests } from '../overlayStack';
 
 const NavigationProbe = () => {
   const {
@@ -39,8 +42,33 @@ const NavigationProbe = () => {
   );
 };
 
+/**
+ * Sonda do back do sistema com um overlay real na pilha (SPEC-M-027 I7).
+ * O overlay é um `Modal`, não um dos cinco estados nomeados do engine: o que
+ * está sob teste é justamente o overlay que a lista por nome não conhecia.
+ */
+const OverlayBackProbe = () => {
+  const { handleSystemBack } = useMobileApp();
+  const [open, setOpen] = useState(false);
+  return (
+    <div>
+      <output data-testid="overlay">{open ? 'aberto' : 'fechado'}</output>
+      <button type="button" onClick={() => setOpen(true)}>
+        abrir overlay
+      </button>
+      <button type="button" onClick={() => handleSystemBack()}>
+        voltar do sistema
+      </button>
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <p>conteúdo do overlay</p>
+      </Modal>
+    </div>
+  );
+};
+
 afterEach(() => {
   cleanup();
+  resetOverlayStackForTests();
   localStorage.clear();
 });
 
@@ -122,5 +150,19 @@ describe('regressão da navegação entre abas', () => {
     // de revisão — a tela aparecia sem transição nenhuma.
     expect(historyKey).not.toBe(beforeKey);
     expect(historyKey).toContain('termHistory');
+  });
+
+  it('back do sistema fecha o overlay do topo (SPEC-M-027 I7)', () => {
+    render(
+      <MobileAppProvider>
+        <OverlayBackProbe />
+      </MobileAppProvider>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'abrir overlay' }));
+    expect(screen.getByTestId('overlay')).toHaveTextContent('aberto');
+
+    fireEvent.click(screen.getByRole('button', { name: 'voltar do sistema' }));
+    expect(screen.getByTestId('overlay')).toHaveTextContent('fechado');
   });
 });

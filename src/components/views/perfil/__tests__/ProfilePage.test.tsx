@@ -76,6 +76,7 @@ const renderPage = (input: Partial<ProfileViewModelInput> = {}) => {
     onUpdateReminder: vi.fn(),
     onSetGcalEnabled: vi.fn(),
     onThemeSelect: vi.fn(),
+    onMotionPrefSelect: vi.fn(),
     onOpenSync: vi.fn(),
     onExport: vi.fn(),
     onImport: vi.fn(),
@@ -92,6 +93,7 @@ const renderPage = (input: Partial<ProfileViewModelInput> = {}) => {
       <ProfilePage
         vm={value}
         themePref="rosa-claro"
+        motionPref="sistema"
         editInitial={{
           name: rawProfile.name,
           university: rawProfile.university,

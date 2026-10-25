@@ -14,6 +14,7 @@ import { ChevronRight, Sparkles } from 'lucide-react';
 import type { ProfileViewModel } from '../../../lib/profileViewModel';
 import type { ReminderSettings } from '../../../context/DataClientProvider';
 import type { ThemeId } from '../../../lib/themes';
+import type { MotionPref } from '../../../lib/motion';
 import type { ProfileEditValues } from './ProfileEditSheet';
 import ProfileEditSheet from './ProfileEditSheet';
 import ProfileHero from './ProfileHero';
@@ -28,6 +29,8 @@ export interface ProfilePageProps {
   vm: ProfileViewModel;
   /** Id do tema atual — o seletor em sheet escolhe por id. */
   themePref: ThemeId;
+  /** Preferência de movimento (SPEC-M-027 D9). */
+  motionPref: MotionPref;
   /** Valores atuais de identidade para o rascunho do sheet. */
   editInitial: ProfileEditValues;
   editOpen: boolean;
@@ -50,6 +53,7 @@ export interface ProfilePageProps {
   onUpdateReminder: (settings: ReminderSettings) => void;
   onSetGcalEnabled: (enabled: boolean) => void;
   onThemeSelect: (id: ThemeId) => void;
+  onMotionPrefSelect: (pref: MotionPref) => void;
   onOpenSync: () => void;
   onExport: () => void;
   onImport: (json: string) => void;
@@ -59,6 +63,7 @@ export interface ProfilePageProps {
 const ProfilePage: React.FC<ProfilePageProps> = ({
   vm,
   themePref,
+  motionPref,
   editInitial,
   editOpen,
   onEditOpen,
@@ -80,6 +85,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
   onUpdateReminder,
   onSetGcalEnabled,
   onThemeSelect,
+  onMotionPrefSelect,
   onOpenSync,
   onExport,
   onImport,
@@ -126,9 +132,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
         <ProfilePreferences
           preferences={vm.preferences}
           themePref={themePref}
+          motionPref={motionPref}
           onUpdateReminder={onUpdateReminder}
           onSetGcalEnabled={onSetGcalEnabled}
           onThemeSelect={onThemeSelect}
+          onMotionPrefSelect={onMotionPrefSelect}
         />
 
         <ProfileDataMaintenance

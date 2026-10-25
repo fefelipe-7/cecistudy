@@ -1,6 +1,16 @@
-import { describe, expect, it, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { Modal } from '../Modal';
+import { resetOverlayStackForTests } from '@/lib/overlayStack';
+
+beforeEach(() => {
+  resetOverlayStackForTests();
+});
+
+afterEach(() => {
+  cleanup();
+  resetOverlayStackForTests();
+});
 
 describe('Modal', () => {
   it('não renderiza quando fechado', () => {
@@ -110,5 +120,140 @@ describe('Modal', () => {
     first.focus();
     fireEvent.keyDown(document, { key: 'Tab', shiftKey: true });
     expect(document.activeElement).toBe(last);
+  });
+
+  // SPEC-M-027 D8 · I5
+  it('trava o scroll do documento enquanto aberto e devolve ao fechar', () => {
+    const { rerender } = render(
+      <Modal open={false} onClose={() => {}}>
+        <p>conteúdo</p>
+      </Modal>,
+    );
+    expect(document.body.style.overflow).toBe('');
+
+    rerender(
+      <Modal open onClose={() => {}}>
+        <p>conteúdo</p>
+      </Modal>,
+    );
+    expect(document.body.style.overflow).toBe('hidden');
+
+    rerender(
+      <Modal open={false} onClose={() => {}}>
+        <p>conteúdo</p>
+      </Modal>,
+    );
+    expect(document.body.style.overflow).toBe('');
+  });
+
+  // SPEC-M-027 D8 · I5 — dois abertos: fechar um não pode destravar o outro.
+  it('mantém o scroll travado enquanto houver qualquer overlay aberto', () => {
+    const Dois = ({ primeiro, segundo }: { primeiro: boolean; segundo: boolean }) => (
+      <>
+        <Modal open={primeiro} onClose={() => {}}>
+          <p>um</p>
+        </Modal>
+        <Modal open={segundo} onClose={() => {}}>
+          <p>dois</p>
+        </Modal>
+      </>
+    );
+    const { rerender } = render(<Dois primeiro segundo />);
+    expect(document.body.style.overflow).toBe('hidden');
+
+    rerender(<Dois primeiro={false} segundo />);
+    expect(document.body.style.overflow).toBe('hidden');
+
+    rerender(<Dois primeiro={false} segundo={false} />);
+    expect(document.body.style.overflow).toBe('');
+  });
+
+  // SPEC-M-027 D8 · I5 — a trava não reposiciona o documento.
+  it('não chama window.scrollTo ao travar nem ao destravar', () => {
+    const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    const { rerender } = render(
+      <Modal open onClose={() => {}}>
+        <p>conteúdo</p>
+      </Modal>,
+    );
+    rerender(
+      <Modal open={false} onClose={() => {}}>
+        <p>conteúdo</p>
+      </Modal>,
+    );
+    expect(scrollTo).not.toHaveBeenCalled();
+    scrollTo.mockRestore();
+  });
+
+  // SPEC-M-027 D8 · I6 — antes cada Modal escutava o próprio Esc e os dois fechavam.
+  it('Esc fecha só o overlay do topo', () => {
+    const fecharPrimeiro = vi.fn();
+    const fecharSegundo = vi.fn();
+    render(
+      <>
+        <Modal open onClose={fecharPrimeiro}>
+          <p>um</p>
+        </Modal>
+        <Modal open onClose={fecharSegundo}>
+          <p>dois</p>
+        </Modal>
+      </>,
+    );
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(fecharSegundo).toHaveBeenCalledTimes(1);
+    expect(fecharPrimeiro).not.toHaveBeenCalled();
+  });
+
+  // SPEC-M-027 D8 — `inert` no conteúdo de trás (o portal fica fora do `#root`).
+  it('aplica inert no conteúdo de trás e devolve ao fechar', () => {
+    const root = document.createElement('div');
+    root.id = 'root';
+    document.body.appendChild(root);
+
+    const { rerender } = render(
+      <Modal open={false} onClose={() => {}}>
+        <p>conteúdo</p>
+      </Modal>,
+    );
+    expect(root.hasAttribute('inert')).toBe(false);
+
+    rerender(
+      <Modal open onClose={() => {}}>
+        <p>conteúdo</p>
+      </Modal>,
+    );
+    expect(root.hasAttribute('inert')).toBe(true);
+
+    rerender(
+      <Modal open={false} onClose={() => {}}>
+        <p>conteúdo</p>
+      </Modal>,
+    );
+    expect(root.hasAttribute('inert')).toBe(false);
+
+    root.remove();
+  });
+
+  // SPEC-M-027 D7/D8 — o overlay que fecha fica montado ~0.18 s para animar a
+  // saída; nesse intervalo ele não pode ser focalizável.
+  it('marca o overlay como inert enquanto ele sai', () => {
+    const { rerender } = render(
+      <Modal open onClose={() => {}}>
+        <p>conteúdo</p>
+      </Modal>,
+    );
+    expect(document.querySelector('[role="dialog"]')).not.toHaveAttribute('inert');
+
+    rerender(
+      <Modal open={false} onClose={() => {}}>
+        <p>conteúdo</p>
+      </Modal>,
+    );
+
+    // `aria-hidden` tira o diálogo da árvore de acessibilidade: busca por atributo.
+    const saindo = document.querySelector('[role="dialog"]');
+    expect(saindo).not.toBeNull();
+    expect(saindo).toHaveAttribute('inert');
+    expect(saindo).toHaveAttribute('aria-hidden', 'true');
   });
 });

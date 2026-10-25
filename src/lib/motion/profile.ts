@@ -18,7 +18,15 @@
  */
 
 import type { Transition } from 'framer-motion';
-import { BASE_D, BASE_T, type Durations } from './tokens';
+import {
+  BASE_D,
+  BASE_T,
+  TOKENS,
+  buildTokens,
+  type Durations,
+  type MotionTokens,
+  type SpringTokens,
+} from './tokens';
 
 /** Escala do perfil reduzido: 0.26s → ~0.20s. Curto o bastante para não esperar,
  *  longo o bastante para ainda ler como "mudou de lugar". */
@@ -39,7 +47,9 @@ export interface MotionProfile {
   /** Durações (segundos) — já escalonadas se reduzido. */
   readonly d: Durations;
   /** Transições de gesto/chrome — colapsam em tweens curtos se reduzido. */
-  readonly t: Record<string, Transition>;
+  readonly t: SpringTokens;
+  /** As seis famílias (SPEC-M-027 D2), com as durações já escalonadas. */
+  readonly tokens: MotionTokens;
   /** Gestos baseados em arrasto desligados? Sob `reduced`, sim (WCAG 2.3.3:
    *  movimento disparado por interação). O botão de voltar é o equivalente
    *  single-pointer exigido por WCAG 2.5.7. */
@@ -51,7 +61,17 @@ export const FULL_PROFILE: MotionProfile = {
   reduced: false,
   d: BASE_D,
   t: { ...BASE_T },
+  tokens: TOKENS,
   gesturesEnabled: true,
+};
+
+const REDUCED_D = scaledDurations();
+
+const REDUCED_T: SpringTokens = {
+  gesture: { duration: 0.12, ease: 'easeOut' },
+  navBar: { duration: 0.12, ease: 'easeOut' },
+  fab: { duration: 0.12, ease: 'easeOut' },
+  sheet: { duration: 0.16, ease: 'easeOut' },
 };
 
 /**
@@ -60,13 +80,9 @@ export const FULL_PROFILE: MotionProfile = {
  */
 export const REDUCED_PROFILE: MotionProfile = {
   reduced: true,
-  d: scaledDurations(),
-  t: {
-    gesture: { duration: 0.12, ease: 'easeOut' },
-    navBar: { duration: 0.12, ease: 'easeOut' },
-    fab: { duration: 0.12, ease: 'easeOut' },
-    sheet: { duration: 0.16, ease: 'easeOut' },
-  },
+  d: REDUCED_D,
+  t: REDUCED_T,
+  tokens: buildTokens(REDUCED_D, REDUCED_T),
   gesturesEnabled: false,
 };
 

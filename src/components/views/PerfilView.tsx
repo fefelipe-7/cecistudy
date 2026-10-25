@@ -61,6 +61,8 @@ const PerfilProfileRoute: React.FC = () => {
     importData,
     themePref,
     setThemePref,
+    motionPref,
+    setMotionPref,
     academicTerms,
   } = useDataClientApp();
   // Períodos letivos (SPEC-005) — a fonte de verdade do "em que semestre estou".
@@ -143,6 +145,7 @@ const PerfilProfileRoute: React.FC = () => {
     <ProfilePage
       vm={vm}
       themePref={themePref}
+      motionPref={motionPref}
       editInitial={{
         name: profile.name,
         university: profile.university,
@@ -169,6 +172,7 @@ const PerfilProfileRoute: React.FC = () => {
       onUpdateReminder={updateReminder}
       onSetGcalEnabled={(enabled) => void setGcalEnabled(enabled)}
       onThemeSelect={setThemePref}
+      onMotionPrefSelect={setMotionPref}
       onOpenSync={openSyncScreen}
       onExport={() => exportData()}
       onImport={(json) => importData(json)}

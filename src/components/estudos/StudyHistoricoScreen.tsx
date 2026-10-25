@@ -8,6 +8,7 @@ import { DitherDonutChart } from '../ui/dither-donut';
 import { RevenueLineChart } from '../ui/dither-revenue';
 import { formatCount } from '../../lib/ditherChart';
 import { isDarkTheme } from '../../lib/themes';
+import { Reveal } from '@/lib/motion';
 
 const toISODate = (d: Date) => d.toISOString().split('T')[0];
 const formatPct = (n: number) => `${Math.round(n)}%`;
@@ -209,9 +210,9 @@ export const StudyHistoricoScreen: React.FC = () => {
               <p className="text-xs text-ceci-tertiary font-semibold tracking-wide lowercase px-1 pt-1">
                 sessões de foco
               </p>
-              {sortedSessions.map((s) => (
+              {sortedSessions.map((s, index) => (
+                <Reveal key={s.id} index={index}>
                 <ManageSurface
-                  key={s.id}
                   kind="session"
                   id={s.id}
                   className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm flex items-center justify-between gap-3"
@@ -226,6 +227,7 @@ export const StudyHistoricoScreen: React.FC = () => {
                     {s.durationMinutes} min
                   </span>
                 </ManageSurface>
+                </Reveal>
               ))}
             </div>
           )}
@@ -241,9 +243,9 @@ export const StudyHistoricoScreen: React.FC = () => {
                   média {avgQuizScore}%
                 </span>
               </div>
-              {sortedQuizzes.map((q) => (
+              {sortedQuizzes.map((q, index) => (
+                <Reveal key={q.id} index={index}>
                 <ManageSurface
-                  key={q.id}
                   kind="quizSession"
                   id={q.id}
                   className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm flex items-center justify-between gap-3"
@@ -265,6 +267,7 @@ export const StudyHistoricoScreen: React.FC = () => {
                     {formatPct(q.scorePct)}
                   </span>
                 </ManageSurface>
+                </Reveal>
               ))}
             </div>
           )}

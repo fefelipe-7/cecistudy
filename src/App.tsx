@@ -5,6 +5,7 @@ import { BootSplash } from './components/ui/BootSplash';
 
 import { MobileAppShell } from './shells/MobileAppShell';
 import { MobileOverlays } from './overlays/MobileOverlays';
+import { MotionPreferenceGate } from './components/motion/MotionPreferenceGate';
 import { MobileAppProvider } from '../apps/mobile/src/MobileAppProvider';
 
 /**
@@ -20,9 +21,11 @@ export default function App() {
     <MotionConfig reducedMotion="user">
       <ErrorBoundary>
         <MobileAppProvider>
-          <BootSplash />
-          <MobileAppShell />
-          <MobileOverlays />
+          <MotionPreferenceGate>
+            <BootSplash />
+            <MobileAppShell />
+            <MobileOverlays />
+          </MotionPreferenceGate>
         </MobileAppProvider>
       </ErrorBoundary>
     </MotionConfig>

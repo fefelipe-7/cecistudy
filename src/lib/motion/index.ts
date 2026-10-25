@@ -31,6 +31,15 @@ export {
   DEFAULT_FALLBACK_REDUCED,
 } from './profile';
 
+// Preferência explícita da usuária (SPEC-M-027 D9). Dado do aparelho.
+export type { MotionPref } from './preference';
+export {
+  MOTION_PREF_DEFAULT,
+  MOTION_PREF_OPTIONS,
+  motionPrefOverride,
+  motionPrefLabel,
+} from './preference';
+
 // Sinal de reduz-motion (reativo, para o provider e para as variantes locais).
 export { prefersReducedMotion, usePrefersReducedMotion, getTransition } from './reduced';
 
@@ -44,8 +53,10 @@ export {
   IOS_EASE,
   IOS_EASE_OUT,
   OVERLAY_FADE,
+  TOKENS,
+  buildTokens,
 } from './tokens';
-export type { Durations, DurationKey } from './tokens';
+export type { Durations, DurationKey, MotionTokens, SpringTokens } from './tokens';
 
 export type { ScreenTargets } from './variants';
 export {
@@ -60,11 +71,16 @@ export {
   chromeFade,
   toastVariants,
   listItemVariants,
+  revealVariants,
   staggerFor,
   SHADE_OPACITY,
 } from './variants';
 
 export { TAB_LABELS, tabLabel, screenAnnouncement } from './screenAnnounce';
+
+export { SharedElement, sharedNoteId, sharedCourseId } from './SharedElement';
+export { Reveal, RevealContext } from './Reveal';
+export type { RevealContextValue } from './Reveal';
 
 // `fadeSlide`, `screenVariants`, `iOS_SPRING`, `PUSH_DURATION`,
 // `PUSH_EXIT_DURATION`, `TAB_DURATION` e `setNavMotionContext` foram removidos
