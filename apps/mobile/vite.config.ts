@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import { defineConfig } from 'vite';
 import { stripLegacyFontFormats } from '../../scripts/vite-plugin-strip-woff.mjs';
+import { manualChunks } from '../../scripts/vite-manual-chunks.mjs';
 
 /**
  * Build próprio do cliente mobile (Fase 5 da separação interface).
@@ -25,5 +26,10 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks,
+      },
+    },
   },
 });

@@ -27,7 +27,7 @@ import { PSICOTERAPIA_FAMILIES } from '../data/psicoterapiaFamilies';
 import { getCatalogQuestions } from '../lib/db/catalogDb';
 import { isNativePlatform } from '../lib/storage';
 import { hapticSuccess } from '../lib/haptics';
-import { scrollToTop } from '../lib/scroll';
+import { planScroll, scrollToTop } from '../lib/scroll';
 import {
   deriveIntent,
   IDLE_INTENT,
@@ -37,6 +37,7 @@ import {
   type NavIntent,
 } from '../lib/motion';
 import { overlayKeyOf, slideBaseKeyOf, slideLayerChanged, slideTopOf } from './slideKeys';
+import { closeTopOverlay } from '../lib/overlayStack';
 import { parseRoute, routeToStack, stackToHash } from '../lib/routing';
 import {
   stackAfterOpenQuizCategory,
@@ -406,6 +407,15 @@ export function useNavigationEngine(
     const pendingGesture = peekMotionIntent().fromGesture;
 
     const intent = pendingGesture ? peekMotionIntent() : deriveIntent(prev, next, { reduced });
+
+    // F6.1 (D5): a camada que sai guarda onde estava. `pop` e troca de overlay
+    // devolvem a posição da tela de baixo; push/tab começam no topo. O valor é
+    // aplicado pelo `scrollToTop()` que toda ação de navegação já chama.
+    planScroll(
+      slideBaseKeyOf(slideTopOf(prev), prev[0]),
+      slideBaseKeyOf(slideTopOf(next), next[0]),
+      intent.kind === 'pop' || !slideChanged,
+    );
 
     setMotionIntent(intent);
     // O `intent` também vai para o estado: a instância **presente** consegue ler
@@ -779,6 +789,11 @@ export function useNavigationEngine(
   const canGoBack = navigationStack.length > 1;
 
   const handleSystemBack = useCallback((): boolean => {
+    // F2.5 (SPEC-M-027 D8): o overlay do topo fecha antes de qualquer pop, para
+    // **todos** os overlays — a pilha do `Modal` é a fonte, não uma lista de
+    // nomes. Os casos abaixo continuam como fallback: um overlay recém-aberto
+    // cujo chunk lazy ainda não montou o `Modal` ainda não está na pilha.
+    if (closeTopOverlay()) return true;
     // A folha do TCC fecha **antes** de sair da tela (SPEC-022 D13): ela é
     // sobreposição, não tela — e o que a usuária digitou nela não pode sumir
     // junto com a volta.

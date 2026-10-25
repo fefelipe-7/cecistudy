@@ -1,5 +1,12 @@
 # Spec: Sistema unificado de transições e montagem de telas
 
+> **Substituída pela [`SPEC-M-027`](../../../docs/specs/mobile/SPEC-M-027-sistema-de-motion-design-contextual.md) (2026-10-24).**
+> Não implemente a partir desta spec: a taxonomia de cinco presets (D6), a
+> proibição de scroll-reveal (§8.7), o fechamento instantâneo de overlay (§8.11),
+> o não-objetivo de shared element (§14) e o Slice G foram **substituídos**. A
+> reconciliação item a item mora na §12 da SPEC-M-027. O corpo abaixo fica como
+> registro de por que o sistema atual é assim.
+>
 > Unificar toda a animação de entrada/saída e a montagem de telas do cecistudy em
 > **um único sistema**, dirigido por um contrato de "intenção de navegação"
 > (`NavIntent`) e por tokens de movimento — cobrindo as 5 abas principais, todas as
@@ -10,7 +17,8 @@
 > os `motion.*`/`AnimatePresence` do app) cruzada com pesquisa de padrões atuais de
 > transição em framer-motion 13 / WebView iOS.
 >
-> **Status: Slices A–E implementadas. Slice F pendente.**
+> **Status: substituída pela SPEC-M-027 em 2026-10-24.** Quando este texto foi
+> escrito: Slices A–E implementadas, Slice F pendente.
 > Slice D (tokens) e Slice E (acessibilidade) fechadas em 2026-10-16, com o plano
 > externo de motion (`capacitor-mobile-motion-system`) como **auditoria de entrada** —
 > reconciliado em §17, não copiado.

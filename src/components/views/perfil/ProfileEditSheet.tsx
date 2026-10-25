@@ -82,7 +82,7 @@ const ProfileEditSheet: React.FC<ProfileEditSheetProps> = ({ open, onClose, init
       showGrabber
       labelledBy="perfil-edit-titulo"
     >
-      <div className="w-full bg-surface-default rounded-t-3xl sm:rounded-3xl shadow-floating p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] space-y-4">
+      <div className="w-full bg-surface-default rounded-t-3xl sm:rounded-3xl shadow-floating p-6 space-y-4">
         <h2 id="perfil-edit-titulo" className="font-display font-bold text-lg text-ceci-primary">
           editar perfil
         </h2>

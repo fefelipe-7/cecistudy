@@ -4,6 +4,7 @@ import React from 'react';
 import { Plus, ChevronRight } from 'lucide-react';
 import type { Course, ClassNote, Exam } from '../../../types';
 import { ManageSurface } from '../../ui/ManageSurface';
+import { SharedElement, sharedCourseId } from '@/lib/motion';
 import { CourseIcon } from '../../ui/CourseIcon';
 import { formatCourseSchedule, formatShortDate } from '../../../lib/schedule';
 import { attendanceStats } from '../../../lib/attendance';
@@ -63,14 +64,17 @@ const DisciplinasGrid: React.FC<DisciplinasGridProps> = ({
               : 'bg-status-warning-surface text-status-warning-strong border-status-warning-border';
 
           return (
-            <ManageSurface
-              key={c.id}
-              kind="course"
-              id={c.id}
-              onTap={() => onOpenCourse(c.id)}
-              className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default cursor-pointer hover:border-ceci-border-brand card-lift press-card space-y-3 shadow-sm group"
-              style={{ borderLeftWidth: '4px', borderLeftColor: c.color || '#B94862' }}
-            >
+            // O par de shared element mora no wrapper, não no card: `card-lift`
+            // e `press-card` escrevem `transform` no próprio card e brigariam
+            // com o `transform` que o Motion escreve durante o morph.
+            <SharedElement key={c.id} id={sharedCourseId(c.id)}>
+              <ManageSurface
+                kind="course"
+                id={c.id}
+                onTap={() => onOpenCourse(c.id)}
+                className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default cursor-pointer hover:border-ceci-border-brand card-lift press-card space-y-3 shadow-sm group"
+                style={{ borderLeftWidth: '4px', borderLeftColor: c.color || '#B94862' }}
+              >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
                   <span
@@ -129,6 +133,7 @@ const DisciplinasGrid: React.FC<DisciplinasGridProps> = ({
                 </span>
               </div>
             </ManageSurface>
+            </SharedElement>
           );
         })}
       </div>

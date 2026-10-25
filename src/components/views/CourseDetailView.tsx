@@ -10,6 +10,7 @@ import { CourseCreateMenu } from '../courses/detail/CourseCreateMenu';
 import { CourseInfoContent } from '../courses/detail/CourseInfoContent';
 import { CourseAulasContent } from '../courses/detail/CourseAulasContent';
 import { CourseRepertorioContent } from '../courses/detail/CourseRepertorioContent';
+import { SharedElement, sharedCourseId } from '@/lib/motion';
 
 interface CourseDetailViewProps {
   course: Course;
@@ -75,11 +76,12 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-4 pb-24 relative">
       {/* Capinha da disciplina — canto afetuoso com a cor da matéria */}
       <div className="px-1 pt-1">
-        {/* Sem `layoutId`: não há elemento de origem no grid da faculdade, então
-            a "magic motion" card → detalhe nunca rodava — só custava o registro
-            de projection node a cada render (SPEC-007 bug B3). Se a usuária
-            quiser shared-element de verdade, é um Slice próprio, com origem. */}
-        <div
+        {/* Par com o card do grid (`DisciplinasGrid`): os dois chamam
+            `sharedCourseId`. A tela de origem fica montada durante a transição
+            (o `AnimatePresence` do shell só remove a que sai no fim do `exit`),
+            então o morph tem de onde partir e para onde voltar. */}
+        <SharedElement
+          id={sharedCourseId(course.id)}
           className="rounded-[26px] border border-ceci-border-subtle shadow-sm p-4 relative overflow-hidden"
           style={{
             background: `linear-gradient(135deg, var(--color-surface-default) 0%, ${courseColor}1A 100%)`,
@@ -132,7 +134,7 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
             className="absolute bottom-0 left-5 right-5 h-[3px] rounded-full"
             style={{ background: courseColor }}
           />
-        </div>
+        </SharedElement>
       </div>
 
       {/* Sub-tabs + conteúdo deslizável */}

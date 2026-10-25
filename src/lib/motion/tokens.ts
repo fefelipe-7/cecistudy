@@ -101,6 +101,9 @@ export const BASE_D = {
   contextMenuClose: 0.18,
   /** Passo de stagger entre itens do menu (o teto é `listStaggerCap`). */
   contextStagger: 0.03,
+  /** Ciclo de um movimento decorativo (respiração, deriva). Não é transição:
+   *  não tem entrada nem saída. F8 ajusta em aparelho antes de aumentar. */
+  ambient: 12,
 } as const;
 
 /** Nomes das durações. */
@@ -153,3 +156,63 @@ export const STUCK_EPSILON_PX = 1;
  * ainda no TDZ no primeiro import.
  */
 export const OVERLAY_FADE: Transition = { duration: BASE_D.overlay, ease: EASE.standard };
+
+/** Os quatro springs de física — o que o perfil troca por tween quando reduzido. */
+export type SpringTokens = {
+  gesture: Transition;
+  navBar: Transition;
+  fab: Transition;
+  sheet: Transition;
+};
+
+/**
+ * As seis famílias de movimento (SPEC-M-027 D2).
+ *
+ * Construtor **único**: `TOKENS` é o perfil completo e `resolveProfile` monta a
+ * versão reduzida com as durações já escalonadas. Um mapeamento, duas saídas —
+ * nenhuma família tem número próprio.
+ *
+ * - `micro` responde a um toque (toggle, press) — curto, sem deslocamento;
+ * - `enterExit` é algo aparecendo/sumindo, com entrada e saída espelhadas;
+ * - `navigation` é mudança de contexto: aba, passo, overlay, lista;
+ * - `sharedElement` é o mesmo objeto viajando entre duas telas;
+ * - `spring` é física que herda a velocidade do gesto — só onde há dedo;
+ * - `ambient` é movimento decorativo, sem começo nem fim percebido.
+ *
+ * ⚠️ `duration` aqui é a **do perfil**. Componente não lê `BASE_D` para animar:
+ * `BASE_D` é o valor do perfil completo e não escala.
+ */
+export const buildTokens = (d: Durations, t: SpringTokens) => ({
+  micro: { duration: d.micro, ease: EASE.standard },
+  enterExit: {
+    enter: d.screenEnter,
+    exit: d.screenExit,
+    rest: d.screenRest,
+    shade: d.shade,
+    easeEnter: EASE.enter,
+    easeExit: EASE.exit,
+    parallax: PARALLAX,
+    shadeMaxOpacity: SHADE_MAX_OPACITY,
+  },
+  navigation: {
+    tab: d.tab,
+    replace: d.replace,
+    step: d.step,
+    stepExit: d.stepExit,
+    overlay: d.overlay,
+    sheet: d.sheet,
+    toast: d.toast,
+    listItem: d.listItem,
+    listStagger: d.listStagger,
+    listStaggerCap: d.listStaggerCap,
+    ease: EASE.standard,
+  },
+  sharedElement: { duration: d.screenRest, ease: EASE.emphasized },
+  spring: { gesture: t.gesture, navBar: t.navBar, fab: t.fab, sheet: t.sheet },
+  ambient: { duration: d.ambient, ease: 'linear' as const },
+});
+
+export type MotionTokens = ReturnType<typeof buildTokens>;
+
+/** Taxonomia do perfil completo. O reduzido vem de `resolveProfile(true)`. */
+export const TOKENS: MotionTokens = buildTokens(BASE_D, BASE_T);

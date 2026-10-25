@@ -6,12 +6,13 @@ import {
 } from '@/context/DataClientProvider';
 import { useNavValue, useStudyActions } from '@/context/shellNavContexts';
 import { ATTENTION_LIMIT } from '../../lib/homeMeta';
-import { resumoDoDia, saudacao, dica } from '../../lib/voice';
+import { resumoDoDia, saudacao, saudacaoTurno, dica } from '../../lib/voice';
 import { daysUntil } from '../../lib/diasAte';
 import { buildCalendarEntries, getTodaySchedule } from '../../lib/schedule';
 import { addDaysKey, todayKeyLocal } from '../../lib/dateBR';
 import { isCardDue } from '../../lib/fsrs';
 import HeroSection from './home/HeroSection';
+import { heroMascote } from './home/heroMascote';
 import TodayClasses from './home/TodayClasses';
 import AttentionSection, { type AttentionItem } from './home/AttentionSection';
 import WeekRhythmCard from './home/WeekRhythmCard';
@@ -26,9 +27,12 @@ export const HomeView: React.FC = () => {
   const { streakStats, currentWeekProgress } = useStudyActions();
   const { handleNavigate, openStreak, openStudy } = useNavValue();
 
-  const greeting = saudacao();
+  // Um relógio só: saudação, data e arte do hero saem do mesmo instante.
+  const agora = new Date();
+  const greeting = saudacao(agora);
+  const mascote = heroMascote(saudacaoTurno(agora), agora.getDate());
 
-  const formattedDate = new Date()
+  const formattedDate = agora
     .toLocaleDateString('pt-BR', {
       weekday: 'long',
       day: 'numeric',
@@ -137,6 +141,7 @@ export const HomeView: React.FC = () => {
         greeting={greeting}
         name={profile.name}
         dayMessage={dayMessage}
+        mascote={mascote}
       />
 
       {/* Desktop (≥ lg): grade de 2 colunas — esquerda: facul/atenção · direita: ritmo/ações/dica */}

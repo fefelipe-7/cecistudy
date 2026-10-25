@@ -16,13 +16,21 @@ import {
   Palette,
   PenLine,
   Settings,
+  Sparkles,
 } from 'lucide-react';
 import type { ReminderCategories, ReminderSettings } from '../../../context/DataClientProvider';
 import type { ThemeId } from '../../../lib/themes';
+import {
+  MOTION_PREF_OPTIONS,
+  motionPrefLabel,
+  Reveal,
+  type MotionPref,
+} from '../../../lib/motion';
 import type { ProfilePreferences as ProfilePreferencesVm } from '../../../lib/profileViewModel';
 import { checkExactAlarmStatus, openExactAlarmSettings, supportsExactAlarmPrompt } from '../../../lib/notifications';
-import { NOTIFICACAO, frase } from '../../../lib/voice';
+import { NOTIFICACAO, VAZIO, frase } from '../../../lib/voice';
 import { Modal } from '../../ui/Modal';
+import { SegmentedControl } from '../../ui/SegmentedControl';
 import PreferenceRow from './PreferenceRow';
 import ThemePickerCard from './ThemePickerCard';
 
@@ -30,9 +38,12 @@ interface ProfilePreferencesProps {
   preferences: ProfilePreferencesVm;
   /** Id do tema atual — o `ThemePickerCard` seleciona por id. */
   themePref: ThemeId;
+  /** Preferência de movimento (SPEC-M-027 D9). */
+  motionPref: MotionPref;
   onUpdateReminder: (settings: ReminderSettings) => void;
   onSetGcalEnabled: (enabled: boolean) => void;
   onThemeSelect: (id: ThemeId) => void;
+  onMotionPrefSelect: (pref: MotionPref) => void;
 }
 
 const CATEGORIAS: { key: keyof ReminderCategories; label: string; icon: React.ReactNode }[] = [
@@ -47,11 +58,14 @@ const CATEGORIAS: { key: keyof ReminderCategories; label: string; icon: React.Re
 const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
   preferences,
   themePref,
+  motionPref,
   onUpdateReminder,
   onSetGcalEnabled,
   onThemeSelect,
+  onMotionPrefSelect,
 }) => {
   const [themeSheetOpen, setThemeSheetOpen] = useState(false);
+  const [motionSheetOpen, setMotionSheetOpen] = useState(false);
   const [pendingReminder, setPendingReminder] = useState<ReminderSettings | null>(null);
   const [alarmDenied, setAlarmDenied] = useState(false);
 
@@ -141,6 +155,15 @@ const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
         onClick={() => setThemeSheetOpen(true)}
       />
 
+      <PreferenceRow
+        icon={<Sparkles className="w-4 h-4" />}
+        label="movimento ♡"
+        description={frase(VAZIO, 'rowMovimento')}
+        value={motionPrefLabel(motionPref)}
+        ariaLabel={`movimento, atual: ${motionPrefLabel(motionPref)}. abrir opções de movimento.`}
+        onClick={() => setMotionSheetOpen(true)}
+      />
+
       <div className="space-y-1">
         <PreferenceRow
           icon={<Bell className="w-4 h-4" />}
@@ -172,9 +195,9 @@ const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
               <span className="text-[11px] text-ceci-tertiary">no horário local</span>
             </div>
 
-            {CATEGORIAS.map(({ key, label, icon }) => (
+            {CATEGORIAS.map(({ key, label, icon }, index) => (
+              <Reveal key={key} index={index}>
               <PreferenceRow
-                key={key}
                 icon={icon}
                 label={label}
                 ariaLabel={`lembrete de ${label}, ${
@@ -185,6 +208,7 @@ const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
                   onChange: () => updateCategories(key),
                 }}
               />
+              </Reveal>
             ))}
           </div>
         ) : null}
@@ -209,13 +233,47 @@ const ProfilePreferences: React.FC<ProfilePreferencesProps> = ({
       />
 
       <Modal
+        open={motionSheetOpen}
+        onClose={() => setMotionSheetOpen(false)}
+        position="bottom"
+        showGrabber
+        labelledBy="perfil-movimento-titulo"
+      >
+        <div className="w-full bg-surface-default rounded-t-3xl sm:rounded-3xl shadow-floating p-6 space-y-4">
+          <h2
+            id="perfil-movimento-titulo"
+            className="font-display font-bold text-lg text-ceci-primary"
+          >
+            movimento
+          </h2>
+          <p className="text-sm text-ceci-secondary">
+            'aparelho' segue a configuração do sistema. 'menos' tira o deslocamento; 'completo'
+            ignora o sistema.
+          </p>
+          <SegmentedControl
+            options={MOTION_PREF_OPTIONS}
+            value={motionPref}
+            onChange={onMotionPrefSelect}
+            ariaLabel="quanto o app se mexe"
+          />
+          <button
+            type="button"
+            onClick={() => setMotionSheetOpen(false)}
+            className="w-full py-3 rounded-2xl text-sm font-semibold text-ceci-on-primary bg-ceci-primary hover:bg-ceci-primary-hover cursor-pointer active:scale-95 transition-transform"
+          >
+            prontinho ♡
+          </button>
+        </div>
+      </Modal>
+
+      <Modal
         open={themeSheetOpen}
         onClose={() => setThemeSheetOpen(false)}
         position="bottom"
         showGrabber
         labelledBy="perfil-tema-titulo"
       >
-        <div className="w-full bg-surface-default rounded-t-3xl sm:rounded-3xl shadow-floating p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] space-y-4">
+        <div className="w-full bg-surface-default rounded-t-3xl sm:rounded-3xl shadow-floating p-6 space-y-4">
           <h2 id="perfil-tema-titulo" className="sr-only">
             trocar tema
           </h2>
