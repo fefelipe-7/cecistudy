@@ -14,7 +14,8 @@ import {
   READING_TABLES_SQL,
   THESIS_TABLES_SQL,
 } from './migrations/user.ts';
-import type { SqlDriver } from './driver.ts';
+import type { SqlDriver, SqlRow } from './driver.ts';
+import { isNativePlatform } from '../storage.ts';
 
 export { USER_SCHEMA_VERSION, USER_DB_NAME } from './migrations/user.ts';
 
@@ -47,24 +48,78 @@ export async function getAppliedVersion(driver: SqlDriver): Promise<number> {
   }
 }
 
+/** Snapshot lógico do banco antes de migrar (SPEC-M-026 D2). */
+export type SnapshotFn = (driver: SqlDriver, de: number, para: number) => Promise<void>;
+
+/**
+ * Grava todas as tabelas como JSON em `Directory.Data/backups/pre-migracao.json`.
+ *
+ * Um passo que "dá certo" e apaga dado não é desfeito pela transação — só uma
+ * cópia desfaz. Sobrescreve a cópia anterior de propósito: o que importa é a
+ * versão de onde a base saiu agora, e um arquivo só não cresce sem limite.
+ */
+export async function snapshotUserDb(
+  driver: SqlDriver,
+  de: number,
+  para: number,
+): Promise<void> {
+  if (!isNativePlatform) return;
+  const tabelas = await driver.query(
+    "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' AND name <> 'schema_migrations'",
+  );
+  const dump: Record<string, SqlRow[]> = {};
+  for (const t of tabelas) {
+    const nome = String(t.name);
+    dump[nome] = await driver.query(`SELECT * FROM "${nome}"`);
+  }
+  const { Filesystem, Directory, Encoding } = await import('@capacitor/filesystem');
+  await Filesystem.writeFile({
+    path: 'backups/pre-migracao.json',
+    data: JSON.stringify({ de, para, criadoEm: new Date().toISOString(), dump }),
+    directory: Directory.Data,
+    encoding: Encoding.UTF8,
+    recursive: true,
+  });
+}
+
 /**
  * Aplica os passos pendentes. Idempotente: pode ser chamada em todo boot.
  * Retorna a versão corrente do banco após a execução.
+ *
+ * Cada passo roda numa transação (SPEC-M-026 D2): queda no meio não deixa
+ * tabela pela metade nem versão registrada sem o passo aplicado. Antes da
+ * primeira escrita, o snapshot é obrigatório — sem cópia, o passo não roda.
  */
-export async function runUserMigrations(driver: SqlDriver): Promise<number> {
+export async function runUserMigrations(
+  driver: SqlDriver,
+  snapshot: SnapshotFn = snapshotUserDb,
+): Promise<number> {
   await driver.exec(`CREATE TABLE IF NOT EXISTS schema_migrations (
     version INTEGER PRIMARY KEY,
     applied_at TEXT NOT NULL
   )`);
 
   const current = await getAppliedVersion(driver);
-  for (const step of MIGRATIONS) {
-    if (step.version <= current) continue;
-    await driver.exec(step.up);
-    await driver.run('INSERT INTO schema_migrations (version, applied_at) VALUES (?, ?)', [
-      step.version,
-      new Date().toISOString(),
-    ]);
+  const pendentes = MIGRATIONS.filter((step) => step.version > current);
+  if (!pendentes.length) return Math.max(current, LATEST_USER_VERSION);
+
+  await snapshot(driver, current, pendentes[pendentes.length - 1].version);
+
+  for (const step of pendentes) {
+    await driver.exec('BEGIN IMMEDIATE');
+    try {
+      await driver.exec(step.up);
+      await driver.run('INSERT INTO schema_migrations (version, applied_at) VALUES (?, ?)', [
+        step.version,
+        new Date().toISOString(),
+      ]);
+      await driver.exec('COMMIT');
+    } catch (e) {
+      await driver.exec('ROLLBACK').catch(() => {
+        /* o erro original é o que importa */
+      });
+      throw e;
+    }
   }
   return Math.max(current, LATEST_USER_VERSION);
 }
