@@ -30,6 +30,14 @@ jobs:
           # obrigatório: a branch padrão é `dev`, mas o release nasce da `main`.
           target-branch: main
 
+      # O `gh pr merge` abaixo precisa do repositório clonado (detecta o `.git`
+      # para saber em qual repo operar). Sem o checkout, falha com
+      # `fatal: not a git repository`.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+
       # O PR de versão segue a mesma regra dos de promoção: quem decide é o
       # gate. Sem isto a `main` promoveria e pararia, esperando alguém mergear.
       - name: liga o auto-merge no PR de versão
