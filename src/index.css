@@ -375,6 +375,34 @@
   transform: scale(0.96);
 }
 
+/* ============================================================ */
+/* MOVIMENTO AMBIENTE (SPEC-M-027 D13)                          */
+/* Deriva lenta de elemento pequeno, só transform. CSS puro:     */
+/* roda no compositor, sem rAF e sem JS por frame. A duração vem */
+/* do token (`TOKENS.ambient.duration`, via style inline);       */
+/* pausar usa `animation-play-state`, que NÃO reinicia a fase.   */
+/* ============================================================ */
+@keyframes ambient-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -4px, 0) rotate(-1.5deg);
+  }
+}
+
+.ambient {
+  animation-name: ambient-float;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.ambient-paused {
+  animation-play-state: paused;
+}
+
+
 /* Lift de cards/capas apenas com mouse — evita sticky-hover e animação no toque */
 @media (hover: hover) and (pointer: fine) {
   .hover-lift,

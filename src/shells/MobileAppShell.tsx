@@ -2,13 +2,14 @@ import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { App as CapacitorApp } from '@capacitor/app';
 import { LocalNotifications } from '@capacitor/local-notifications';
-import { AnimatePresence, motion, useMotionValue, useTransform } from 'framer-motion';
+import { AnimatePresence, LayoutGroup, motion, useMotionValue, useTransform } from 'framer-motion';
 import { useMobileApp } from '@/context/mobileApp';
 import { useNavValue } from '@/context/shellNavContexts';
 import { setupNativeShell } from '../lib/native';
 import { mark } from '../lib/performance/perfMarks';
 import { cancelQueuedPrefetches } from '../lib/performance/screenPrefetch';
-import { EASE, overlayVariants, resolveProfile, screenAnnouncement } from '../lib/motion';
+import { EASE, overlayVariants, resolveProfile, screenAnnouncement, sharedNoteId } from '../lib/motion';
+import { RevealProvider } from '../components/motion/RevealProvider';
 import { erro } from '../lib/voice';
 import { nativeNavigation } from '../navigation/native-navigation';
 import { resolveNotificationRoute } from '../lib/notificationRoutes';
@@ -21,7 +22,7 @@ import { OnboardingScreen } from '../components/views/OnboardingScreen';
 
 import { SlideScreen } from './SlideScreen';
 import { CaptureHost } from './CaptureHost';
-import { MotionProfileProvider, useMotionProfile } from '../components/motion/MotionProfileProvider';
+import { useMotionProfile } from '../components/motion/MotionProfileProvider';
 import { SlideContent, OverlayContent } from './SharedScreenLayers';
 import { focusController } from '../lib/focusController';
 import {
@@ -39,13 +40,10 @@ const BottomNavMemo = memo(BottomNav);
  * horizontal e overlays em tela cheia. Efeitos nativos (Capacitor) vivem aqui.
  */
 export const MobileAppShell: React.FC = () => (
-  // O perfil de movimento envolve **tudo**, inclusive o onboarding (que anima os
-  // passos) — e fica aqui, dentro do shell, para que os dois clientes (web e
-  // `apps/mobile`) o ganhem sem mexer nos entrypoints. Ele não ramifica por
-  // plataforma: lê só o `prefers-reduced-motion` do sistema.
-  <MotionProfileProvider>
-    <MobileAppShellInner />
-  </MotionProfileProvider>
+  // O perfil de movimento vem do `MotionPreferenceGate` nos entrypoints
+  // (SPEC-M-027 D9): ele precisa envolver também os overlays, que são irmãos
+  // do shell. Aqui só se consome `useMotionProfile()`.
+  <MobileAppShellInner />
 );
 
 const MobileAppShellInner: React.FC = () => {
@@ -146,6 +144,13 @@ const MobileAppShellInner: React.FC = () => {
   const peekX = useTransform(swipeX, (v) => -v * 0.16);
   const shadowAlpha = useTransform(swipeX, [0, 120], [0, 0.14]);
 
+  // G3 (SPEC-M-027): qualquer navegação zera o deslocamento do gesto. Sem
+  // isso, um drag interrompido (hash, notificação, back do sistema) deixa a
+  // tela nova deslocada até o próximo gesto.
+  useEffect(() => {
+    swipeX.set(0);
+  }, [app.slideKey, swipeX]);
+
   // Android back button: foco imersivo → pop de modais/telas → na raiz,
   // 1º back mostra toast de aviso e o 2º (na janela) fecha o app.
   useEffect(() => {
@@ -217,6 +222,11 @@ const MobileAppShellInner: React.FC = () => {
     app.isNoteDetailOpen ||
     app.isNoteTransformOpen;
 
+  // F3 (SPEC-M-027 D4/D21): o card da nota (`NotesScreen`) é a origem e a página
+  // do detalhe é o destino. Sem `focusedNote` não há par — cai no fade+scale.
+  const noteSharedId =
+    app.isNoteDetailOpen && app.focusedNote ? sharedNoteId(app.focusedNote.id) : undefined;
+
   // Primeiro acesso → onboarding em tela cheia (sem header/nav)
   if (!app.onboarding.completed) {
     return <OnboardingScreen />;
@@ -269,6 +279,11 @@ const MobileAppShellInner: React.FC = () => {
               : 'pb-6'
         }`}
       >
+        {/* Origem e destino do shared element precisam do mesmo grupo
+            (SPEC-M-027 D21): o card vive na camada 1, a página na camada 2. */}
+        <LayoutGroup>
+        {/* F5 (SPEC-M-027 D6): um IntersectionObserver para as duas camadas. */}
+        <RevealProvider>
         {/* === Camada 0 (só web): peek do gesto de borda ===
             Durante o drag, a tela de cima desliza p/ a direita e este fundo
             parallax (canvas) é revelado por baixo —
@@ -293,7 +308,10 @@ const MobileAppShellInner: React.FC = () => {
             A tela que sai congela onde está (SlideScreen vira fixed) e esvanece
             por baixo — o reset de scroll do handler não a arrasta mais. */}
         <motion.div
-          style={{ x: Capacitor.isNativePlatform() ? swipeX : 0 }}
+          // G1 (SPEC-M-027): no nativo quem move a webView é o plugin Swift;
+          // no web o deslocamento é este `swipeX`. A versão anterior fixava `0`
+          // no web e o gesto de borda não movia nada.
+          style={{ x: Capacitor.isNativePlatform() ? 0 : swipeX }}
           className="relative z-10"
         >
           <AnimatePresence initial={false} custom={app.navIntent}>
@@ -308,10 +326,14 @@ const MobileAppShellInner: React.FC = () => {
           {app.overlayKey && (
             <motion.div
               key={app.overlayKey}
-              variants={overlayVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
+              // F3 (SPEC-M-027 D4/D21): o card da nota é a origem e esta página é
+              // o destino. Com par montado, o morph é o movimento; sem par, o
+              // fade+scale de sempre.
+              layoutId={noteSharedId}
+              variants={noteSharedId ? undefined : overlayVariants}
+              initial={noteSharedId ? { opacity: 0 } : 'initial'}
+              animate={noteSharedId ? { opacity: 1 } : 'animate'}
+              exit={noteSharedId ? { opacity: 0 } : 'exit'}
               className="fixed inset-0 z-40 overflow-y-auto px-3.5 py-4 sm:px-5 bg-canvas"
             >
               {/* Desktop (≥ lg): formulários centrados numa coluna em vez de tela cheia */}
@@ -321,6 +343,8 @@ const MobileAppShellInner: React.FC = () => {
             </motion.div>
           )}
         </AnimatePresence>
+        </RevealProvider>
+        </LayoutGroup>
       </main>
 
       {/* Captura de link (F8.4/F8.5): deep link iOS e share Android caem aqui,

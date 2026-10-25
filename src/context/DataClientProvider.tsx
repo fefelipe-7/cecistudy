@@ -93,6 +93,7 @@ import {
 import type { SyncManifest } from '../lib/sync/provider';
 import { getUserDb, clearUserData } from '../lib/db/userDb';
 import type { ThemeId } from '../lib/themes';
+import { MOTION_PREF_DEFAULT, type MotionPref } from '../lib/motion';
 import { DEFAULT_THEME_ID, applyTheme, getThemeById } from '../lib/themes';
 import { applyThemeColorChrome } from '../lib/themeChrome';
 
@@ -226,6 +227,9 @@ export interface DataClientAppSlice {
   setGcalMap: React.Dispatch<React.SetStateAction<Record<string, string>>>;
   themePref: ThemeId;
   setThemePref: React.Dispatch<React.SetStateAction<ThemeId>>;
+  /** Preferência de movimento (SPEC-M-027 D9). Dado do aparelho, fora do backup. */
+  motionPref: MotionPref;
+  setMotionPref: React.Dispatch<React.SetStateAction<MotionPref>>;
   onboarding: import('../types').OnboardingState;
   setOnboarding: React.Dispatch<React.SetStateAction<import('../types').OnboardingState>>;
   workspaces: Workspace[];
@@ -390,6 +394,9 @@ questions: StudyQuestion[];
     setGcalMap: React.Dispatch<React.SetStateAction<Record<string, string>>>;
     themePref: ThemeId;
     setThemePref: React.Dispatch<React.SetStateAction<ThemeId>>;
+    /** Preferência de movimento (SPEC-M-027 D9). Dado do aparelho, fora do backup. */
+    motionPref: MotionPref;
+    setMotionPref: React.Dispatch<React.SetStateAction<MotionPref>>;
     onboarding: import('../types').OnboardingState;
     setOnboarding: React.Dispatch<React.SetStateAction<import('../types').OnboardingState>>;
     workspaces: Workspace[];
@@ -710,6 +717,12 @@ export function useDataClient(): DataClientValue {
   // assíncrona nativa e as trocas feitas pelo picker (com transição suave,
   // exceto no primeiro apply pós-montagem para não piscar o tema default).
   const [themePref, setThemePref] = usePersistentState<ThemeId>('themePref', DEFAULT_THEME_ID);
+
+  // Preferência de movimento (SPEC-M-027 D9) — dado do aparelho, fora do backup.
+  const [motionPref, setMotionPref] = usePersistentState<MotionPref>(
+    'motionPref',
+    MOTION_PREF_DEFAULT,
+  );
   const skipThemeTransitionRef = useRef(true);
   useEffect(() => {
     const theme = getThemeById(themePref);
@@ -1260,6 +1273,8 @@ export function useDataClient(): DataClientValue {
       setGcalMap,
       themePref,
       setThemePref,
+      motionPref,
+      setMotionPref,
       onboarding,
       setOnboarding,
       workspaces,
@@ -1315,7 +1330,7 @@ export function useDataClient(): DataClientValue {
       stickers, setStickers, setStickersRaw,
       reminderSettings, setReminderSettings,
       gcalEnabled, setGcalEnabledState, gcalMap, setGcalMap,
-      themePref, setThemePref,
+      themePref, setThemePref, motionPref, setMotionPref,
       onboarding, setOnboarding,
       workspaces, setWorkspaces,
       relations, setRelations,
@@ -1434,6 +1449,8 @@ questions,
       setGcalMap,
       themePref,
       setThemePref,
+      motionPref,
+      setMotionPref,
       onboarding,
       setOnboarding,
       workspaces,

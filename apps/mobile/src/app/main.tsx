@@ -17,6 +17,7 @@ import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { BootSplash } from '@/components/ui/BootSplash';
 import { MobileAppShell } from '@/shells/MobileAppShell';
 import { MobileOverlays } from '@/overlays/MobileOverlays';
+import { MotionPreferenceGate } from '@/components/motion/MotionPreferenceGate';
 import { MobileAppProvider } from '../MobileAppProvider';
 import { mark } from '@/lib/performance/perfMarks';
 import '@/index.css';
@@ -35,9 +36,11 @@ createRoot(document.getElementById('root')!).render(
     <MotionConfig reducedMotion="user">
       <ErrorBoundary>
         <MobileAppProvider>
-          <BootSplash />
-          <MobileAppShell />
-          <MobileOverlays />
+          <MotionPreferenceGate>
+            <BootSplash />
+            <MobileAppShell />
+            <MobileOverlays />
+          </MotionPreferenceGate>
         </MobileAppProvider>
       </ErrorBoundary>
     </MotionConfig>

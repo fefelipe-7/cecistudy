@@ -23,6 +23,7 @@ import { toDateKey } from '../../lib/streak';
 import { WEEK_CELL_STYLE } from '../../lib/homeMeta';
 import { dica } from '../../lib/voice';
 import { Mascote } from '../ui/Mascote';
+import { Ambient } from '../motion/Ambient';
 import { SectionTitle } from '../ui/SectionTitle';
 
 export const EstudosView: React.FC = () => {
@@ -106,11 +107,13 @@ export const EstudosView: React.FC = () => {
             <>nada pendente por aqui hoje — dia perfeito pra uma sessão de foco leve ♡</>
           )}
         </p>
-        <Mascote
-          expression="focus-ready"
-          className="w-16 h-16 absolute -bottom-2 -right-2 opacity-95 pointer-events-none"
-          decorative
-        />
+        <Ambient className="absolute -bottom-2 -right-2">
+          <Mascote
+            expression="focus-ready"
+            className="w-16 h-16 opacity-95 pointer-events-none"
+            decorative
+          />
+        </Ambient>
       </section>
 
       {/* Desktop (≥ lg): grade 12 colunas — esquerda: agora/leitura · direita: ritmo/portais/dica */}

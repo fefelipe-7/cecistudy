@@ -198,6 +198,8 @@ describe('contrato do banco persistido (backup v2)', () => {
     expect(payload.payload).not.toHaveProperty('sidebarCollapsed');
     expect(payload.payload).not.toHaveProperty('canvasClarity');
     expect(payload.payload).not.toHaveProperty('density');
+    // SPEC-M-027 D9: preferência de movimento é dado do aparelho, não da usuária.
+    expect(payload.payload).not.toHaveProperty('motionPref');
   });
 
   it('backup NÃO exporta o estado de navegação (pilha/sub-tabs — dono do motor por casca)', async () => {

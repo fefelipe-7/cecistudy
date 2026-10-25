@@ -29,17 +29,24 @@ const preferences = (over: Partial<ProfilePreferencesVm> = {}): ProfilePreferenc
 
 const renderPreferences = (vm: ProfilePreferencesVm) => {
   const onUpdateReminder = vi.fn();
+  const onMotionPrefSelect = vi.fn();
   const ui = (p: ProfilePreferencesVm) => (
     <ProfilePreferences
       preferences={p}
       themePref="campinho"
+      motionPref="sistema"
       onUpdateReminder={onUpdateReminder}
       onSetGcalEnabled={() => {}}
       onThemeSelect={() => {}}
+      onMotionPrefSelect={onMotionPrefSelect}
     />
   );
   const view = render(ui(vm));
-  return { onUpdateReminder, rerender: (p: ProfilePreferencesVm) => view.rerender(ui(p)) };
+  return {
+    onUpdateReminder,
+    onMotionPrefSelect,
+    rerender: (p: ProfilePreferencesVm) => view.rerender(ui(p)),
+  };
 };
 
 beforeEach(() => {

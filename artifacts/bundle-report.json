@@ -1,15 +1,15 @@
 {
   "version": 2,
-  "generatedAt": "2026-10-24T05:06:03.726Z",
+  "generatedAt": "2026-10-25T03:42:34.344Z",
   "generator": "scripts/bundle-report.mjs (npm run bundle:report)",
   "totals": {
     "js": {
       "files": 123,
-      "bytes": 17402802
+      "bytes": 17407916
     },
     "css": {
       "files": 2,
-      "bytes": 174222
+      "bytes": 173741
     },
     "fonts": {
       "files": 51,
@@ -19,10 +19,10 @@
   "critical": {
     "chunks": [
       {
-        "file": "assets/index-CLcA0Szt.js",
+        "file": "assets/index-2ad5XlJW.js",
         "base": "index.js",
-        "bytes": 419549,
-        "gzip": 127823,
+        "bytes": 422151,
+        "gzip": 128794,
         "classification": "critical"
       },
       {
@@ -40,10 +40,10 @@
         "classification": "critical"
       },
       {
-        "file": "assets/index-BiT4GpnI.css",
+        "file": "assets/index-D0MUI6XY.css",
         "base": "index.css",
-        "bytes": 144320,
-        "gzip": 30741,
+        "bytes": 143839,
+        "gzip": 30615,
         "classification": "critical"
       },
       {
@@ -54,8 +54,8 @@
         "classification": "critical"
       }
     ],
-    "totalBytesEntry": 994403,
-    "totalGzipEntry": 289490
+    "totalBytesEntry": 996524,
+    "totalGzipEntry": 290335
   },
   "chunks": [
     {
@@ -115,10 +115,10 @@
       "classification": "deferred"
     },
     {
-      "file": "assets/index-CLcA0Szt.js",
+      "file": "assets/index-2ad5XlJW.js",
       "base": "index.js",
-      "bytes": 419549,
-      "gzip": 127823,
+      "bytes": 422151,
+      "gzip": 128794,
       "classification": "critical"
     },
     {
@@ -199,18 +199,18 @@
       "classification": "deferred"
     },
     {
-      "file": "assets/index-BiT4GpnI.css",
-      "base": "index.css",
-      "bytes": 144320,
-      "gzip": 30741,
-      "classification": "critical"
+      "file": "assets/SyncScreen-C3a8vNq3.js",
+      "base": "SyncScreen.js",
+      "bytes": 144160,
+      "gzip": 51058,
+      "classification": "route"
     },
     {
-      "file": "assets/SyncScreen-B-hqGK15.js",
-      "base": "SyncScreen-B-hqGK15.js",
-      "bytes": 144160,
-      "gzip": 51052,
-      "classification": "route"
+      "file": "assets/index-D0MUI6XY.css",
+      "base": "index.css",
+      "bytes": 143839,
+      "gzip": 30615,
+      "classification": "critical"
     },
     {
       "file": "assets/domain-04-personalidade-self-e-identidade-zkwHns6I.js",
@@ -241,38 +241,38 @@
       "classification": "route"
     },
     {
-      "file": "assets/WizardRouter-3GKh8f5U.js",
+      "file": "assets/WizardRouter-Dvfw6iVA.js",
       "base": "WizardRouter.js",
       "bytes": 92857,
-      "gzip": 25600,
+      "gzip": 25604,
       "classification": "route"
     },
     {
-      "file": "assets/BibliotecaView-CwgmU2PD.js",
+      "file": "assets/BibliotecaView-BrZdIeX7.js",
       "base": "BibliotecaView.js",
       "bytes": 78169,
-      "gzip": 19443,
+      "gzip": 19432,
       "classification": "route"
     },
     {
-      "file": "assets/TccView-D24wYSYF.js",
+      "file": "assets/TccView-pw7lb0Ta.js",
       "base": "TccView.js",
       "bytes": 63292,
-      "gzip": 14223,
+      "gzip": 14228,
       "classification": "route"
     },
     {
-      "file": "assets/FaculdadeView-COtqcAMy.js",
+      "file": "assets/FaculdadeView-BO4PBRfM.js",
       "base": "FaculdadeView.js",
       "bytes": 58426,
-      "gzip": 13950,
+      "gzip": 13949,
       "classification": "route"
     },
     {
-      "file": "assets/PerfilView-DTIEg0-u.js",
-      "base": "PerfilView-DTIEg0-u.js",
-      "bytes": 56365,
-      "gzip": 13760,
+      "file": "assets/PerfilView-CMrMoqlu.js",
+      "base": "PerfilView.js",
+      "bytes": 57548,
+      "gzip": 13961,
       "classification": "route"
     },
     {
@@ -297,10 +297,10 @@
       "classification": "route"
     },
     {
-      "file": "assets/ComparisonRouteView-D7nH7wDd.js",
+      "file": "assets/ComparisonRouteView-BcL9j5cu.js",
       "base": "ComparisonRouteView.js",
       "bytes": 24601,
-      "gzip": 6734,
+      "gzip": 6732,
       "classification": "route"
     },
     {
@@ -311,101 +311,101 @@
       "classification": "route"
     },
     {
-      "file": "assets/NoteTransformWizard-AI1FL0VK.js",
+      "file": "assets/NoteTransformWizard-DHS7w_2G.js",
       "base": "NoteTransformWizard.js",
       "bytes": 23638,
-      "gzip": 6541,
+      "gzip": 6537,
       "classification": "route"
     },
     {
-      "file": "assets/StudyHistoricoScreen-C_MvEoYk.js",
+      "file": "assets/StudyHistoricoScreen-D_MWtIYM.js",
       "base": "StudyHistoricoScreen.js",
       "bytes": 21603,
       "gzip": 6634,
       "classification": "route"
     },
     {
-      "file": "assets/InternshipLogCard-D6DMdyQ4.js",
+      "file": "assets/InternshipLogCard-DRUoxBLc.js",
       "base": "InternshipLogCard.js",
       "bytes": 20572,
-      "gzip": 6380,
+      "gzip": 6378,
       "classification": "route"
     },
     {
-      "file": "assets/ManageDataModal-CcgEHyn4.js",
+      "file": "assets/ManageDataModal-ccIk4_so.js",
       "base": "ManageDataModal.js",
       "bytes": 19818,
-      "gzip": 5753,
+      "gzip": 5754,
       "classification": "route"
     },
     {
-      "file": "assets/HomeView-DfWnBVhi.js",
+      "file": "assets/HomeView-Bh9pi0p_.js",
       "base": "HomeView.js",
-      "bytes": 18485,
-      "gzip": 5882,
+      "bytes": 19416,
+      "gzip": 6301,
       "classification": "route"
     },
     {
-      "file": "assets/StudyLeiturasScreen-DTQ9A8lK.js",
-      "base": "StudyLeiturasScreen.js",
+      "file": "assets/StudyLeiturasScreen-CvSe_-uy.js",
+      "base": "StudyLeiturasScreen-CvSe_-uy.js",
       "bytes": 17033,
-      "gzip": 4633,
+      "gzip": 4631,
       "classification": "route"
     },
     {
-      "file": "assets/InternshipDiaryView-BGo0xLz9.js",
+      "file": "assets/InternshipDiaryView-UcdT7ipD.js",
       "base": "InternshipDiaryView.js",
       "bytes": 15398,
       "gzip": 4466,
       "classification": "route"
     },
     {
-      "file": "assets/index-IcxTHYf4.js",
+      "file": "assets/index-CP2ifH74.js",
       "base": "index.js",
       "bytes": 14201,
-      "gzip": 2804,
+      "gzip": 2807,
       "classification": "route"
     },
     {
-      "file": "assets/GlobalSearchModal-D9Or1sTk.js",
-      "base": "GlobalSearchModal.js",
+      "file": "assets/GlobalSearchModal-BMwO-Gu3.js",
+      "base": "GlobalSearchModal-BMwO-Gu3.js",
       "bytes": 13483,
-      "gzip": 5005,
+      "gzip": 5007,
       "classification": "route"
     },
     {
-      "file": "assets/ComposeNoteView-Cax-3mfC.js",
-      "base": "ComposeNoteView-Cax-3mfC.js",
+      "file": "assets/ComposeNoteView-BSESJTvO.js",
+      "base": "ComposeNoteView.js",
       "bytes": 11871,
-      "gzip": 4029,
+      "gzip": 4031,
       "classification": "route"
     },
     {
-      "file": "assets/dither-growth-BPnIwslP.js",
+      "file": "assets/dither-growth-DQut8Xis.js",
       "base": "dither-growth.js",
       "bytes": 11682,
-      "gzip": 4715,
+      "gzip": 4716,
       "classification": "route"
     },
     {
-      "file": "assets/PillGroupMulti-C-pOvuEX.js",
-      "base": "PillGroupMulti-C-pOvuEX.js",
+      "file": "assets/PillGroupMulti-rMdEAHQl.js",
+      "base": "PillGroupMulti.js",
       "bytes": 11206,
-      "gzip": 3692,
+      "gzip": 3691,
       "classification": "route"
     },
     {
-      "file": "assets/StudyFocusScreen-CWA_A-eG.js",
-      "base": "StudyFocusScreen-CWA_A-eG.js",
+      "file": "assets/StudyFocusScreen-Tnw8TSgS.js",
+      "base": "StudyFocusScreen.js",
       "bytes": 11044,
-      "gzip": 3508,
+      "gzip": 3506,
       "classification": "route"
     },
     {
-      "file": "assets/StudyRevisarScreen-BxwUjOTn.js",
+      "file": "assets/StudyRevisarScreen-BUOVm4gM.js",
       "base": "StudyRevisarScreen.js",
       "bytes": 10807,
-      "gzip": 3402,
+      "gzip": 3401,
       "classification": "route"
     },
     {
@@ -416,38 +416,38 @@
       "classification": "route"
     },
     {
-      "file": "assets/NotesScreen-DM40c7Z_.js",
+      "file": "assets/NotesScreen-Hnif6koD.js",
       "base": "NotesScreen.js",
       "bytes": 10533,
-      "gzip": 3044,
+      "gzip": 3043,
       "classification": "route"
     },
     {
-      "file": "assets/EstudosView-D9D0W_Jq.js",
+      "file": "assets/EstudosView-BEOmtxHN.js",
       "base": "EstudosView.js",
       "bytes": 10318,
-      "gzip": 3119,
+      "gzip": 3118,
       "classification": "route"
     },
     {
-      "file": "assets/EditCourseModal-BhfRDZze.js",
+      "file": "assets/EditCourseModal-CA7pKYrD.js",
       "base": "EditCourseModal.js",
       "bytes": 9759,
-      "gzip": 3070,
+      "gzip": 3071,
       "classification": "route"
     },
     {
-      "file": "assets/web-CI0d9gXv.js",
+      "file": "assets/web-3fDwkb7M.js",
       "base": "web.js",
       "bytes": 9731,
-      "gzip": 1375,
+      "gzip": 1377,
       "classification": "route"
     },
     {
-      "file": "assets/MeetingSheet-CS_6-Y83.js",
-      "base": "MeetingSheet-CS_6-Y83.js",
+      "file": "assets/MeetingSheet-S3Xn-2KJ.js",
+      "base": "MeetingSheet-S3Xn-2KJ.js",
       "bytes": 9518,
-      "gzip": 2823,
+      "gzip": 2825,
       "classification": "route"
     },
     {
@@ -458,192 +458,192 @@
       "classification": "route"
     },
     {
-      "file": "assets/web-CdKwonZl.js",
+      "file": "assets/web-CpOn9frq.js",
       "base": "web.js",
       "bytes": 8880,
-      "gzip": 3040,
+      "gzip": 3041,
       "classification": "route"
     },
     {
-      "file": "assets/InternshipCaseView-iuTPgKOj.js",
-      "base": "InternshipCaseView.js",
+      "file": "assets/InternshipCaseView-DQIgY2-x.js",
+      "base": "InternshipCaseView-DQIgY2-x.js",
       "bytes": 8873,
       "gzip": 2781,
       "classification": "route"
     },
     {
-      "file": "assets/QuizResultScreen-DvsSnGyP.js",
+      "file": "assets/QuizResultScreen-DTZExGlI.js",
       "base": "QuizResultScreen.js",
       "bytes": 8732,
       "gzip": 2403,
       "classification": "route"
     },
     {
-      "file": "assets/RepertorioItemDetailScreen-DcyCN62v.js",
+      "file": "assets/RepertorioItemDetailScreen-BROOePvD.js",
       "base": "RepertorioItemDetailScreen.js",
       "bytes": 8549,
-      "gzip": 2747,
+      "gzip": 2748,
       "classification": "route"
     },
     {
-      "file": "assets/ApproachDetailView-B3XfruLs.js",
+      "file": "assets/ApproachDetailView-DgAvUsm1.js",
       "base": "ApproachDetailView.js",
       "bytes": 8216,
       "gzip": 2358,
       "classification": "route"
     },
     {
-      "file": "assets/ClassNoteDetailScreen-C2L-EdeO.js",
-      "base": "ClassNoteDetailScreen-C2L-EdeO.js",
+      "file": "assets/ClassNoteDetailScreen-iuJxvVuk.js",
+      "base": "ClassNoteDetailScreen.js",
       "bytes": 7123,
-      "gzip": 2220,
+      "gzip": 2221,
       "classification": "route"
     },
     {
-      "file": "assets/StreakView-CRA1W1Jb.js",
+      "file": "assets/StreakView-B4jNj7f5.js",
       "base": "StreakView.js",
       "bytes": 7110,
-      "gzip": 2146,
+      "gzip": 2147,
       "classification": "route"
     },
     {
-      "file": "assets/CalendarScreen-DpfJ895P.js",
+      "file": "assets/CalendarScreen-II6D_BXP.js",
       "base": "CalendarScreen.js",
       "bytes": 6924,
-      "gzip": 2418,
+      "gzip": 2417,
       "classification": "route"
     },
     {
-      "file": "assets/templeData-DX_DIYPL.js",
+      "file": "assets/templeData-B6kYLi1S.js",
       "base": "templeData.js",
       "bytes": 6759,
-      "gzip": 1713,
+      "gzip": 1716,
       "classification": "route"
     },
     {
-      "file": "assets/QuizGroupSelector-DoSQMrAR.js",
+      "file": "assets/QuizGroupSelector-DCL2uFgh.js",
       "base": "QuizGroupSelector.js",
       "bytes": 6612,
-      "gzip": 2742,
+      "gzip": 2743,
       "classification": "route"
     },
     {
-      "file": "assets/AuthorsScreen-CNHD90sY.js",
-      "base": "AuthorsScreen.js",
+      "file": "assets/AuthorsScreen-BZs-dp3f.js",
+      "base": "AuthorsScreen-BZs-dp3f.js",
       "bytes": 6285,
       "gzip": 2385,
       "classification": "route"
     },
     {
-      "file": "assets/web-CC0M5e0u.js",
+      "file": "assets/web-Dp4ruhg6.js",
       "base": "web.js",
       "bytes": 5452,
-      "gzip": 1466,
+      "gzip": 1469,
       "classification": "route"
     },
     {
-      "file": "assets/NoteDetailWizard-BCylaSuB.js",
+      "file": "assets/NoteDetailWizard-rthK5fo0.js",
       "base": "NoteDetailWizard.js",
       "bytes": 5248,
-      "gzip": 2197,
+      "gzip": 2196,
       "classification": "route"
     },
     {
-      "file": "assets/Picker-Dv2bZPyC.js",
+      "file": "assets/Picker-CJ4MbQUk.js",
       "base": "Picker.js",
-      "bytes": 5103,
-      "gzip": 1835,
+      "bytes": 5098,
+      "gzip": 1833,
       "classification": "route"
     },
     {
-      "file": "assets/ReaderModeModal-C2tv5hhm.js",
+      "file": "assets/ReaderModeModal-B1le766g.js",
       "base": "ReaderModeModal.js",
       "bytes": 5048,
-      "gzip": 1739,
+      "gzip": 1740,
       "classification": "route"
     },
     {
-      "file": "assets/QuizPlayer-DBKMRm4P.js",
+      "file": "assets/QuizPlayer-Ebxzej3r.js",
       "base": "QuizPlayer.js",
       "bytes": 4989,
       "gzip": 1944,
       "classification": "route"
     },
     {
-      "file": "assets/TechniquesScreen-BUXF9zmO.js",
+      "file": "assets/TechniquesScreen-V0k8TEQX.js",
       "base": "TechniquesScreen.js",
       "bytes": 4846,
-      "gzip": 2082,
+      "gzip": 2079,
       "classification": "route"
     },
     {
-      "file": "assets/web-qSkJ93Ke.js",
+      "file": "assets/web-BRgznGuD.js",
       "base": "web.js",
       "bytes": 4697,
-      "gzip": 1413,
+      "gzip": 1415,
       "classification": "route"
     },
     {
-      "file": "assets/CourseIconPicker-CZZUO5Td.js",
+      "file": "assets/CourseIconPicker-D9vljDj_.js",
       "base": "CourseIconPicker.js",
       "bytes": 4640,
-      "gzip": 1481,
+      "gzip": 1482,
       "classification": "route"
     },
     {
-      "file": "assets/ClassNoteDetailWizard-Bn0l4d_9.js",
+      "file": "assets/ClassNoteDetailWizard-BNtLdKxv.js",
       "base": "ClassNoteDetailWizard.js",
       "bytes": 4449,
-      "gzip": 2024,
+      "gzip": 2021,
       "classification": "route"
     },
     {
-      "file": "assets/ConceptsScreen-xQSzTQRJ.js",
+      "file": "assets/ConceptsScreen-BBpm7bYN.js",
       "base": "ConceptsScreen.js",
       "bytes": 4357,
-      "gzip": 1985,
+      "gzip": 1982,
       "classification": "route"
     },
     {
-      "file": "assets/wizardFields-XcyKzw8G.js",
+      "file": "assets/TaskSheet-C6QjnZio.js",
+      "base": "TaskSheet.js",
+      "bytes": 4317,
+      "gzip": 1873,
+      "classification": "route"
+    },
+    {
+      "file": "assets/wizardFields-BpuNuuJi.js",
       "base": "wizardFields.js",
       "bytes": 4286,
-      "gzip": 1382,
+      "gzip": 1383,
       "classification": "route"
     },
     {
-      "file": "assets/TempleScreen-DOKhmjuh.js",
+      "file": "assets/TempleScreen-BekyobyX.js",
       "base": "TempleScreen.js",
       "bytes": 4013,
       "gzip": 1359,
       "classification": "route"
     },
     {
-      "file": "assets/CatalogMultiSelect-IuyAyY3T.js",
+      "file": "assets/CatalogMultiSelect-BO_SzkpX.js",
       "base": "CatalogMultiSelect.js",
       "bytes": 3988,
-      "gzip": 1554,
+      "gzip": 1552,
       "classification": "route"
     },
     {
-      "file": "assets/QuizGroupDetail-TMvU0aD3.js",
+      "file": "assets/QuizGroupDetail-CFbFrFWy.js",
       "base": "QuizGroupDetail.js",
       "bytes": 3983,
-      "gzip": 1481,
+      "gzip": 1482,
       "classification": "route"
     },
     {
-      "file": "assets/TaskSheet-BQDtd8iD.js",
-      "base": "TaskSheet.js",
-      "bytes": 3914,
-      "gzip": 1767,
-      "classification": "route"
-    },
-    {
-      "file": "assets/TermHistoryScreen-CpQZYMLU.js",
+      "file": "assets/TermHistoryScreen-BeFt3Fxv.js",
       "base": "TermHistoryScreen.js",
       "bytes": 3861,
-      "gzip": 1505,
+      "gzip": 1504,
       "classification": "route"
     },
     {
@@ -654,24 +654,24 @@
       "classification": "route"
     },
     {
-      "file": "assets/FamiliesView-CsDPsxww.js",
+      "file": "assets/FamiliesView-Bsn7lyP8.js",
       "base": "FamiliesView.js",
       "bytes": 3332,
-      "gzip": 1290,
+      "gzip": 1289,
       "classification": "route"
     },
     {
-      "file": "assets/QuickAddModal-D9-6fhAZ.js",
-      "base": "QuickAddModal-D9-6fhAZ.js",
+      "file": "assets/QuickAddModal-DuOeCLMA.js",
+      "base": "QuickAddModal.js",
       "bytes": 3241,
-      "gzip": 1209,
+      "gzip": 1210,
       "classification": "route"
     },
     {
-      "file": "assets/FamilyDetailView-DeIgYaRk.js",
+      "file": "assets/FamilyDetailView-Bn37Ruae.js",
       "base": "FamilyDetailView.js",
       "bytes": 2826,
-      "gzip": 1110,
+      "gzip": 1109,
       "classification": "route"
     },
     {
@@ -682,45 +682,45 @@
       "classification": "route"
     },
     {
-      "file": "assets/TagField-r7WY4Jby.js",
-      "base": "TagField.js",
+      "file": "assets/TagField--4zfp8ht.js",
+      "base": "TagField--4zfp8ht.js",
       "bytes": 2423,
       "gzip": 1274,
       "classification": "route"
     },
     {
-      "file": "assets/useCourseRepertorio-bPoA4TjZ.js",
-      "base": "useCourseRepertorio.js",
+      "file": "assets/useCourseRepertorio-B-7Iat34.js",
+      "base": "useCourseRepertorio-B-7Iat34.js",
       "bytes": 2338,
-      "gzip": 1025,
+      "gzip": 1026,
       "classification": "route"
     },
     {
-      "file": "assets/SwipeableTabPanel-59HhHFWx.js",
-      "base": "SwipeableTabPanel.js",
+      "file": "assets/SwipeableTabPanel-B1k83eQ-.js",
+      "base": "SwipeableTabPanel-B1k83eQ-.js",
       "bytes": 2256,
       "gzip": 1193,
       "classification": "route"
     },
     {
-      "file": "assets/CalendarEntryRow-B_MGDLOo.js",
+      "file": "assets/CalendarEntryRow-D0ZLTG32.js",
       "base": "CalendarEntryRow.js",
       "bytes": 1913,
-      "gzip": 891,
+      "gzip": 892,
       "classification": "route"
     },
     {
-      "file": "assets/QuizLoadingScreen-D0tGboKA.js",
-      "base": "QuizLoadingScreen.js",
+      "file": "assets/QuizLoadingScreen-DIlM7-7v.js",
+      "base": "QuizLoadingScreen-DIlM7-7v.js",
       "bytes": 1804,
-      "gzip": 973,
+      "gzip": 976,
       "classification": "route"
     },
     {
-      "file": "assets/OtaUpdateModal-BaO37BkD.js",
-      "base": "OtaUpdateModal.js",
+      "file": "assets/OtaUpdateModal-B-VcOlRL.js",
+      "base": "OtaUpdateModal-B-VcOlRL.js",
       "bytes": 1744,
-      "gzip": 802,
+      "gzip": 801,
       "classification": "route"
     },
     {
@@ -731,52 +731,52 @@
       "classification": "route"
     },
     {
-      "file": "assets/HeroCard-C9lkicrk.js",
+      "file": "assets/HeroCard-KMpmOCA7.js",
       "base": "HeroCard.js",
       "bytes": 1635,
-      "gzip": 821,
+      "gzip": 820,
       "classification": "route"
     },
     {
-      "file": "assets/index-DVQ9Or_g.js",
+      "file": "assets/index-BZyj8Gvo.js",
       "base": "index.js",
       "bytes": 1624,
-      "gzip": 804,
+      "gzip": 805,
       "classification": "route"
     },
     {
-      "file": "assets/ChoiceCardGrid-CKCHE_AT.js",
-      "base": "ChoiceCardGrid.js",
+      "file": "assets/ChoiceCardGrid-DWY3Jb-h.js",
+      "base": "ChoiceCardGrid-DWY3Jb-h.js",
       "bytes": 1535,
       "gzip": 668,
       "classification": "route"
     },
     {
-      "file": "assets/useAcervoTheory-DK5sgXYl.js",
+      "file": "assets/useAcervoTheory-DMimQBQ2.js",
       "base": "useAcervoTheory.js",
       "bytes": 1500,
-      "gzip": 786,
+      "gzip": 787,
       "classification": "route"
     },
     {
-      "file": "assets/web-BoVCA159.js",
+      "file": "assets/web-OZKaVjuJ.js",
       "base": "web.js",
       "bytes": 1351,
-      "gzip": 638,
+      "gzip": 639,
       "classification": "route"
     },
     {
-      "file": "assets/StatusChip-D8lV9KhY.js",
+      "file": "assets/StatusChip-hqXc6Ojd.js",
       "base": "StatusChip.js",
       "bytes": 1292,
-      "gzip": 640,
+      "gzip": 639,
       "classification": "route"
     },
     {
-      "file": "assets/EmptyState-B4mRn-J5.js",
-      "base": "EmptyState-B4mRn-J5.js",
+      "file": "assets/EmptyState-BrjjDqb9.js",
+      "base": "EmptyState.js",
       "bytes": 1267,
-      "gzip": 569,
+      "gzip": 571,
       "classification": "route"
     },
     {
@@ -801,80 +801,80 @@
       "classification": "route"
     },
     {
-      "file": "assets/web-DpWFyMQC.js",
+      "file": "assets/web-DzqBChN2.js",
       "base": "web.js",
       "bytes": 1048,
-      "gzip": 516,
+      "gzip": 518,
       "classification": "route"
     },
     {
-      "file": "assets/web-d7Gibwm7.js",
+      "file": "assets/web-LIY7MkVH.js",
       "base": "web.js",
       "bytes": 1025,
-      "gzip": 282,
+      "gzip": 283,
       "classification": "route"
     },
     {
-      "file": "assets/StarRating-CRfp3pD0.js",
+      "file": "assets/StarRating-tic0ypNO.js",
       "base": "StarRating.js",
       "bytes": 1007,
-      "gzip": 623,
+      "gzip": 625,
       "classification": "route"
     },
     {
-      "file": "assets/TagChip-9a7OnTrI.js",
+      "file": "assets/TagChip-Cq2bgyuM.js",
       "base": "TagChip.js",
       "bytes": 1004,
-      "gzip": 538,
+      "gzip": 539,
       "classification": "route"
     },
     {
-      "file": "assets/web-CwdxyLJ8.js",
+      "file": "assets/web-5I9_ysD7.js",
       "base": "web.js",
       "bytes": 948,
-      "gzip": 446,
+      "gzip": 449,
       "classification": "route"
     },
     {
-      "file": "assets/CompletionToggle-CJF3Qxcd.js",
+      "file": "assets/CompletionToggle-BF3C9k17.js",
       "base": "CompletionToggle.js",
       "bytes": 781,
-      "gzip": 481,
+      "gzip": 482,
       "classification": "route"
     },
     {
-      "file": "assets/CecinhoTip-Dospf5o8.js",
+      "file": "assets/CecinhoTip-B533Qtrr.js",
       "base": "CecinhoTip.js",
       "bytes": 763,
-      "gzip": 438,
+      "gzip": 439,
       "classification": "route"
     },
     {
-      "file": "assets/CourseSelect-LyerfmRh.js",
+      "file": "assets/CourseSelect-CsXooQN4.js",
       "base": "CourseSelect.js",
       "bytes": 603,
-      "gzip": 404,
+      "gzip": 408,
       "classification": "route"
     },
     {
-      "file": "assets/index-mIdrQ2sG.js",
+      "file": "assets/index-dVjBcQD2.js",
       "base": "index.js",
       "bytes": 554,
       "gzip": 308,
       "classification": "route"
     },
     {
-      "file": "assets/catalogLibrary-DGzMUjay.js",
+      "file": "assets/catalogLibrary-TZPJLEpK.js",
       "base": "catalogLibrary.js",
       "bytes": 517,
-      "gzip": 322,
+      "gzip": 323,
       "classification": "route"
     },
     {
-      "file": "assets/TagList-Ujdwf6V3.js",
+      "file": "assets/TagList-DXPHmd8R.js",
       "base": "TagList.js",
       "bytes": 501,
-      "gzip": 346,
+      "gzip": 348,
       "classification": "route"
     },
     {
@@ -885,10 +885,10 @@
       "classification": "route"
     },
     {
-      "file": "assets/web-B9MQzBhc.js",
+      "file": "assets/web-wWFa5__K.js",
       "base": "web.js",
       "bytes": 467,
-      "gzip": 299,
+      "gzip": 301,
       "classification": "route"
     },
     {
@@ -913,17 +913,17 @@
       "classification": "route"
     },
     {
-      "file": "assets/ManageSurface-Xu-lB2ZS.js",
-      "base": "ManageSurface-Xu-lB2ZS.js",
+      "file": "assets/ManageSurface-DWef7hYe.js",
+      "base": "ManageSurface.js",
       "bytes": 312,
-      "gzip": 241,
+      "gzip": 242,
       "classification": "route"
     },
     {
-      "file": "assets/web-q79NPHjb.js",
+      "file": "assets/web-quH23WXi.js",
       "base": "web.js",
       "bytes": 225,
-      "gzip": 176,
+      "gzip": 177,
       "classification": "route"
     },
     {
