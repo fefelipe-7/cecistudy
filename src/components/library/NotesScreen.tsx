@@ -18,7 +18,7 @@ import { PillGroup } from '../ui/PillGroup';
 import { ManageSurface } from '../ui/ManageSurface';
 import { copyToClipboard } from '../../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getTransition } from '@/lib/motion';
+import { getTransition, Reveal, sharedNoteId, SharedElement } from '@/lib/motion';
 import type { LooseNote, Course, PsychologyConcept, PsychologyAuthor } from '../../types';
 
 interface NotesScreenProps {
@@ -222,17 +222,21 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
 
       {/* List of Notes */}
       <div className="space-y-3">
-        {filteredNotes.map((note) => {
+        {filteredNotes.map((note, index) => {
           const cName = courseName(note.courseId);
           const cons = conceptNames(note.conceptIds);
           const auths = authorNames(note.authorIds);
           const hasLinks = Boolean(cName) || cons.length > 0 || auths.length > 0;
           return (
+            <Reveal key={note.id} index={index}>
+            <SharedElement
+              id={sharedNoteId(note.id)}
+              className="bg-surface-default rounded-xl border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs overflow-hidden"
+            >
             <ManageSurface
-              key={note.id}
               kind="looseNote"
               id={note.id}
-              className="bg-surface-default rounded-xl p-4 border border-ceci-border-default hover:border-ceci-border-brand tap-interactive space-y-2.5 shadow-2xs flex flex-col justify-between group"
+              className="p-4 space-y-2.5 flex flex-col justify-between group tap-interactive"
             >
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-2 border-b border-ceci-border-subtle pb-2">
@@ -348,6 +352,8 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
                 </div>
               </div>
             </ManageSurface>
+            </SharedElement>
+            </Reveal>
           );
         })}
 

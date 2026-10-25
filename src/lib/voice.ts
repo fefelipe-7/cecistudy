@@ -232,6 +232,7 @@ export const VAZIO: Catalogo = {
   rowSync: 'enviar e puxar alterações com o repositório github.',
   rowBackup: 'guardar um arquivo com tudo do cantinho.',
   rowRestaurar: 'restaurar de um arquivo exportado.',
+  rowMovimento: 'o quanto o app se mexe — "aparelho" segue o sistema.',
 
   // --- Estudos / leitura
   leitorSemRegistro:
@@ -466,13 +467,24 @@ export function resumoDoDia(contexto: DicaContexto, agora: Date = new Date()): s
   return fraseDa('resumo', contexto);
 }
 
+export type SaudacaoTurno = 'madrugada' | 'manha' | 'tarde' | 'noite';
+
+/**
+ * O turno do dia. `agora` é obrigatório de propósito: quem lê o relógio é
+ * `saudacao` (o `I10` conta as leituras do arquivo). O turno também escolhe a
+ * arte do hero da Home.
+ */
+export function saudacaoTurno(agora: Date): SaudacaoTurno {
+  const hora = agora.getHours();
+  if (hora < 5) return 'madrugada';
+  if (hora < 12) return 'manha';
+  if (hora < 18) return 'tarde';
+  return 'noite';
+}
+
 /** Saudação por turno do dia — também é do motor (`D7`), não de `homeMeta`. */
 export function saudacao(agora: Date = new Date()): string {
-  const hora = agora.getHours();
-  if (hora < 5) return resolver(DICA.madrugada, {}, SEM_NOME);
-  if (hora < 12) return resolver(DICA.manha, {}, SEM_NOME);
-  if (hora < 18) return resolver(DICA.tarde, {}, SEM_NOME);
-  return resolver(DICA.noite, {}, SEM_NOME);
+  return resolver(DICA[saudacaoTurno(agora)], {}, SEM_NOME);
 }
 export const CONFIRMACAO: Catalogo = {
   /** A zona de cuidado do Perfil (`SPEC-013 D6`). */

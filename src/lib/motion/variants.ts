@@ -251,6 +251,28 @@ export const staggerFor = (index: number): { delayChildren: number } => ({
   delayChildren: Math.min(index, BASE_D.listStaggerCap) * BASE_D.listStagger,
 });
 
+/**
+ * `reveal` — item que entra quando cruza o viewport (SPEC-M-027 D6).
+ *
+ * Mesmo alvo do `listItem`, com o atraso do índice capado em `listStaggerCap`.
+ * O atraso é **por item**, não por container: cada item entra no seu próprio
+ * momento de scroll, então não existe um `animate` de lista para pendurar
+ * `delayChildren`. `custom` carrega o índice.
+ */
+export const revealVariants: Variants = {
+  initial: listItemVariants.initial,
+  animate: (index: number) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: BASE_D.listItem,
+      ease: EASE.standard,
+      delay: Math.min(index, BASE_D.listStaggerCap) * BASE_D.listStagger,
+    },
+  }),
+};
+
 /** Opacidade do dim sobre a camada coberta (orçamento de contraste WCAG 1.4.3). */
 export const SHADE_OPACITY = SHADE_MAX_OPACITY;
 

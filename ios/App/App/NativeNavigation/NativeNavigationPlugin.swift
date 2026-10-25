@@ -95,9 +95,15 @@ public class NativeNavigationPlugin: CAPPlugin, CAPBridgedPlugin {
             
         case .ended, .cancelled:
             isGestureActive = false
-            
-            let shouldCommit = (progress >= 0.5) || (velocity.x > 500) // threshold 50% OR high velocity
-            
+
+            // G2 (SPEC-M-027): gesto **cancelado** nunca navega. A versão
+            // anterior tratava `.ended` e `.cancelled` no mesmo ramo e calculava
+            // o commit pela distância — um cancelamento do sistema (chamada,
+            // outro recognizer, app indo para segundo plano) com o dedo já
+            // passado da metade fazia o pop acontecer.
+            let wasCancelled = gesture.state == .cancelled
+            let shouldCommit = !wasCancelled && ((progress >= 0.5) || (velocity.x > 500)) // threshold 50% OR high velocity
+
             if shouldCommit {
                 // Commit: slide out then let JS handle navigation
                 UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
