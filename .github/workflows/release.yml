@@ -64,12 +64,12 @@ jobs:
       sha: ${{ steps.checksum.outputs.sha }}
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -117,14 +117,14 @@ jobs:
           echo "sha=$(sha256sum "$OTA_DIR/bundles/cecistudy-${{ steps.version.outputs.version }}.zip" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
 
       - name: upload dist (para sync nativo)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: web-dist
           path: dist
           if-no-files-found: error
 
       - name: upload ota bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ota-bundle
           path: ${{ env.OTA_DIR }}/bundles/cecistudy-${{ steps.version.outputs.version }}.zip
@@ -144,18 +144,18 @@ jobs:
       ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
 
       - name: setup java (temurin 21)
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '21'
@@ -178,7 +178,7 @@ jobs:
         run: npm ci
 
       - name: download dist
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: web-dist
           path: dist
@@ -209,7 +209,7 @@ jobs:
           fi
 
       - name: upload apk
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: android-apk
           path: android/app/build/outputs/apk/**/*.apk
@@ -226,12 +226,12 @@ jobs:
       IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -240,7 +240,7 @@ jobs:
         run: npm ci
 
       - name: download dist
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: web-dist
           path: dist
@@ -337,7 +337,7 @@ jobs:
           echo "→ ipa unsigned p/ sideload: true" >> "$GITHUB_STEP_SUMMARY"
 
       - name: upload ipa
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ios-ipa
           path: ios/App/build/**/*.ipa
@@ -358,12 +358,12 @@ jobs:
       TAG: ${{ needs.prepare.outputs.tag }}
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -372,19 +372,19 @@ jobs:
         run: npm ci
 
       - name: download apk
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: android-apk
           path: release-assets
 
       - name: download ipa
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: ios-ipa
           path: release-assets
 
       - name: download ota bundle
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: ota-bundle
           path: ota-bundle
@@ -422,12 +422,12 @@ jobs:
           node .github/scripts/ota-manifest.mjs
 
       - name: setup pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: upload pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: ${{ env.OTA_DIR }}
 
       - name: deploy to pages
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
