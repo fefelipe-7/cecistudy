@@ -82,7 +82,7 @@
     "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "framer-motion": "^13.0.0",
+    "framer-motion": "^14.6.0",
     "lucide-react": "^0.546.0",
     "qrcode": "^1.5.4",
     "react": "^19.0.1",
