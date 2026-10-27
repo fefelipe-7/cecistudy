@@ -350,7 +350,7 @@ export const MorphLayer: React.FC<MorphLayerProps> = ({ profile }) => {
         else clearMorph();
         return;
       }
-      timer = setTimeout(look, 16);
+      timer = setTimeout(look, 32);
     };
     look();
 
@@ -399,7 +399,7 @@ export const MorphLayer: React.FC<MorphLayerProps> = ({ profile }) => {
     <motion.div
       aria-hidden
       data-morph-clone={morph.id}
-      className="pointer-events-none fixed z-[55] overflow-hidden"
+      className="pointer-events-none fixed z-[55] overflow-hidden [contain:paint] [will-change:transform]"
       style={{
         left: rect.left,
         top: rect.top,
