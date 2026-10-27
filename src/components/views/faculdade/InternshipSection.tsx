@@ -7,6 +7,7 @@ import { SectionTitle } from '../../ui/SectionTitle';
 import { formatShortDate } from '../../../lib/schedule';
 import { localDateKey } from '../../../lib/dateBR';
 import { selectDiaryPreview } from '../../../lib/internshipPreview';
+import { Reveal } from '@/lib/motion';
 
 export interface InternshipRecordPreview {
   id: string;
@@ -39,26 +40,27 @@ const InternshipSection: React.FC<InternshipSectionProps> = ({ records, now, onO
             5,
           );
           return preview.length > 0 ? (
-            preview.map((log) => (
-              <button
-                key={log.id}
-                onClick={onOpenDiary}
-                className="w-full py-2.5 flex items-center justify-between gap-3 text-left cursor-pointer group"
-              >
-                <div className="min-w-0">
-                  <h3 className="font-bold text-xs text-ceci-primary line-clamp-1">
-                    {log.activity}
-                  </h3>
-                  <p className="text-[11px] text-ceci-secondary mt-0.5">
-                    {log.hours ? `${log.hours}h` : ''}
-                    {log.date >= todayKey ? ' · agendado' : ''}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-xs text-ceci-tertiary">{formatShortDate(log.date)}</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-ceci-faded shrink-0" />
-                </div>
-              </button>
+            preview.map((log, i) => (
+              <Reveal key={log.id} index={i}>
+                <button
+                  onClick={onOpenDiary}
+                  className="w-full py-2.5 flex items-center justify-between gap-3 text-left cursor-pointer group"
+                >
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-xs text-ceci-primary line-clamp-1">
+                      {log.activity}
+                    </h3>
+                    <p className="text-[11px] text-ceci-secondary mt-0.5">
+                      {log.hours ? `${log.hours}h` : ''}
+                      {log.date >= todayKey ? ' · agendado' : ''}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-xs text-ceci-tertiary">{formatShortDate(log.date)}</span>
+                    <ChevronRight className="w-3.5 h-3.5 text-ceci-faded shrink-0" />
+                  </div>
+                </button>
+              </Reveal>
             ))
           ) : (
             <div className="bg-surface-muted border border-ceci-border-subtle rounded-2xl p-5 text-center space-y-2">

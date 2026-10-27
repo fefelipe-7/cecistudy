@@ -6,6 +6,7 @@ import { Modal } from '../ui/Modal';
 import { BookmarkToggle } from '../ui/BookmarkToggle';
 import { copyToClipboard } from '../../lib/utils';
 import { useMobileApp } from '@/context/mobileApp';
+import { sharedBookId } from '@/lib/motion';
 
 interface ArticleDetailModalProps {
   article: Article;
@@ -37,6 +38,7 @@ export const ArticleDetailModal: React.FC<ArticleDetailModalProps> = ({
       open
       onClose={onClose}
       className="w-full max-w-sm bg-surface-default rounded-[28px] border border-ceci-border-default shadow-2xl overflow-hidden text-ceci-primary flex flex-col max-h-[85dvh]"
+      morphId={sharedBookId(article.id)}
     >
       {/* Hero da família */}
       <div

@@ -10,10 +10,11 @@ import {
 } from '../../lib/bootPreload';
 import { mark, recordEvent, flushDevMetrics } from '../../lib/performance/perfMarks';
 import { prefersReducedMotion } from '../../lib/motion';
+import { BASE_D } from '../../lib/motion/tokens';
 
 const MIN_DISPLAY_MS = 1600;
 const MAX_DISPLAY_MS = 7000;
-const FADE_MS = 450;
+const FADE_MS = BASE_D.overlay * 1000;
 const PHRASE_INTERVAL_MS = 2200;
 const TICK_MS = 120;
 

@@ -19,6 +19,7 @@ import { ManageSurface } from '../../ui/ManageSurface';
 import { InlineCollectionBlock } from '../../library/InlineCollectionBlock';
 import { MixedCollectionBlock } from '../../library/MixedCollectionBlock';
 import { ArticleCard } from '../../library/ArticleCard';
+import { MorphSource, Reveal, sharedBookId } from '@/lib/motion';
 import type { LibraryFilterResult } from './useLibraryFilters';
 import ExploreSection from './ExploreSection';
 
@@ -79,20 +80,21 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
           </p>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 pt-1">
-            {filteredTrendingBooks.map((book) => {
+            {filteredTrendingBooks.map((book, i) => {
               const isSaved = savedBookIds.has(book.id);
               return (
-                <ManageSurface
-                  key={book.id}
-                  kind="catalogBook"
-                  id={book.id}
-                  onTap={() => onSelectBook(book)}
-                  className="contents"
-                >
+                <Reveal key={book.id} index={i}>
+                  <ManageSurface
+                    kind="catalogBook"
+                    id={book.id}
+                    onTap={() => onSelectBook(book)}
+                    className="contents"
+                  >
                   <button
                     aria-label={`abrir ${book.title}`}
                     className="w-full cursor-pointer group space-y-2 text-left"
                   >
+                    <MorphSource id={sharedBookId(book.id)}>
                     <div
                       className="w-full h-[145px] sm:h-[155px] rounded-2xl p-3 flex flex-col justify-between relative overflow-hidden shadow-xs border border-black/5 card-lift"
                       style={{ backgroundColor: book.coverColor }}
@@ -120,6 +122,7 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
                         </p>
                       </div>
                     </div>
+                    </MorphSource>
 
                     <div className="space-y-0.5">
                       <p className="font-display font-bold text-xs text-ceci-primary line-clamp-1 group-hover:text-ceci-brand-strong transition-colors">
@@ -128,7 +131,8 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
                       <p className="text-[10px] text-ceci-tertiary line-clamp-1">{book.author}</p>
                     </div>
                   </button>
-                </ManageSurface>
+                  </ManageSurface>
+                </Reveal>
               );
             })}
           </div>
@@ -383,13 +387,14 @@ export const ExploreShelves: React.FC<ExploreShelvesProps> = ({
                   </span>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-                  {group.articles.map((article) => (
-                    <ArticleCard
-                      key={article.id}
-                      article={article}
-                      isSaved={savedBookIds.has(article.id)}
-                      onSelect={() => onSelectArticle(article)}
-                    />
+                  {group.articles.map((article, i) => (
+                    <Reveal key={article.id} index={i}>
+                      <ArticleCard
+                        article={article}
+                        isSaved={savedBookIds.has(article.id)}
+                        onSelect={() => onSelectArticle(article)}
+                      />
+                    </Reveal>
                   ))}
                 </div>
               </div>

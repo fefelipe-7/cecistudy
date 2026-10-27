@@ -4,6 +4,7 @@
 import React from 'react';
 import { cn } from '../../lib/utils';
 import { Mascote, type MascoteExpression } from './Mascote';
+import { MorphTarget } from '@/lib/motion';
 
 export interface HeroCardProps {
   /** eyebrow em minúsculas: "estágio", "paciente". */
@@ -19,6 +20,8 @@ export interface HeroCardProps {
   expression?: MascoteExpression;
   accent?: 'rose' | 'blue';
   testId?: string;
+  /** Alvo do container transform (SPEC-M-028 D38). */
+  morphId?: string;
 }
 
 const ACCENTS = {
@@ -35,7 +38,9 @@ export const HeroCard: React.FC<HeroCardProps> = ({
   expression = 'field-prepare',
   accent = 'rose',
   testId = 'hero-card',
+  morphId,
 }) => (
+  <MorphTarget id={morphId ?? null}>
   <section
     data-testid={testId}
     className={cn(
@@ -73,6 +78,7 @@ export const HeroCard: React.FC<HeroCardProps> = ({
       decorative
     />
   </section>
+  </MorphTarget>
 );
 
 export default HeroCard;

@@ -6,6 +6,7 @@ import React from 'react';
 import { BookOpen, Bookmark, FileText, ChevronRight } from 'lucide-react';
 import { CollectionBook } from '../../../data/libraryData';
 import { ManageSurface } from '../../ui/ManageSurface';
+import { Reveal } from '@/lib/motion';
 
 /** Card compacto de livro para as prateleiras de "meus materiais". */
 const MiniBookCard: React.FC<{
@@ -101,16 +102,17 @@ export const MyMaterialsSection: React.FC<MyMaterialsSectionProps> = ({
           </span>
         </div>
         <div className="flex flex-wrap gap-3">
-          {readingBooks.map((book) => {
+          {readingBooks.map((book, i) => {
             const total = book.totalPages;
             const read = readingProgress[book.id] ?? 0;
             return (
-              <MiniBookCard
-                key={book.id}
-                book={book}
-                progressPct={total ? Math.round((read / total) * 100) : undefined}
-                onSelect={() => onSelectBook(book)}
-              />
+              <Reveal key={book.id} index={i}>
+                <MiniBookCard
+                  book={book}
+                  progressPct={total ? Math.round((read / total) * 100) : undefined}
+                  onSelect={() => onSelectBook(book)}
+                />
+              </Reveal>
             );
           })}
         </div>
@@ -128,8 +130,10 @@ export const MyMaterialsSection: React.FC<MyMaterialsSectionProps> = ({
           </span>
         </div>
         <div className="flex flex-wrap gap-3">
-          {savedBooks.map((book) => (
-            <MiniBookCard key={book.id} book={book} onSelect={() => onSelectBook(book)} />
+          {savedBooks.map((book, i) => (
+            <Reveal key={book.id} index={i}>
+              <MiniBookCard book={book} onSelect={() => onSelectBook(book)} />
+            </Reveal>
           ))}
         </div>
       </div>

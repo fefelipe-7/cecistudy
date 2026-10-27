@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowLeft, ChevronRight, Loader2, Search } from 'lucide-react';
+import { MorphTarget } from '@/lib/motion';
 
 /** Identidade cromática por tela do templo: azul acadêmico · verde clínico · rosa da marca. */
 export type TempleAccent = 'academic' | 'success' | 'brand';
@@ -64,7 +65,10 @@ export const TempleIntroCard: React.FC<{
   icon: React.ReactNode;
   title: string;
   subtitle: string;
-}> = ({ accent, icon, title, subtitle }) => (
+  /** Alvo do container transform (SPEC-M-028 D38): o card do templo vira isto. */
+  morphId?: string;
+}> = ({ accent, icon, title, subtitle, morphId }) => (
+  <MorphTarget id={morphId ?? null}>
   <div className="bg-surface-default rounded-2xl p-5 border border-ceci-border-default shadow-2xs">
     <div className="flex items-center gap-2.5">
       <div
@@ -80,6 +84,7 @@ export const TempleIntroCard: React.FC<{
       </div>
     </div>
   </div>
+  </MorphTarget>
 );
 
 export const TempleSearchInput: React.FC<{

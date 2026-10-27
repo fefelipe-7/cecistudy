@@ -62,6 +62,7 @@ import { ChapterSheet } from '../tcc/ChapterSheet';
 import { WritingLogSheet } from '../tcc/WritingLogSheet';
 import { TaskSheet } from '../tcc/TaskSheet';
 import { MeetingSheet } from '../tcc/MeetingSheet';
+import { MorphSource, Reveal, sharedChapterId } from '@/lib/motion';
 import { ReferenceSheet } from '../tcc/ReferenceSheet';
 import { CaptureLinkSheet } from '../capture/CaptureLinkSheet';
 import { CELEBRACAO, VAZIO, erro, frase } from '../../lib/voice';
@@ -655,7 +656,7 @@ export const TccView: React.FC = () => {
           onReorder={setDragOrder}
           className="space-y-2 list-none"
         >
-          {(dragOrder ?? ordered).map((ch) => {
+          {(dragOrder ?? ordered).map((ch, i) => {
             const done = isChapterDone(ch);
             return (
               <Reorder.Item
@@ -666,6 +667,8 @@ export const TccView: React.FC = () => {
                 onDragEnd={commitDrag}
                 className="list-none"
               >
+                <Reveal key={ch.id} index={i}>
+                <MorphSource id={sharedChapterId(ch.id)}>
                 <div
                   onClick={() => openTccSheet({ type: 'chapter', id: ch.id })}
                   className={`flex items-center gap-2 p-3 rounded-2xl border cursor-pointer tap-interactive ${
@@ -718,6 +721,8 @@ export const TccView: React.FC = () => {
                     <GripVertical className="w-4 h-4" />
                   </button>
                 </div>
+                </MorphSource>
+                </Reveal>
               </Reorder.Item>
             );
           })}
@@ -889,7 +894,7 @@ export const TccView: React.FC = () => {
             </div>
           ) : (
             <ul className="space-y-2">
-              {filtradas.map(({ ref, reading, data, citation }) => {
+              {filtradas.map(({ ref, reading, data, citation }, i) => {
                 const first = data.authors[0];
                 const headline = first
                   ? `${first.family.toUpperCase()}, ${first.given ? `${first.given[0]}.` : ''}`
@@ -901,6 +906,7 @@ export const TccView: React.FC = () => {
                       .map((m) => m.label);
                 return (
                   <li key={ref.id}>
+                    <Reveal key={ref.id} index={i}>
                     <div
                       role="button"
                       tabIndex={0}
@@ -977,6 +983,7 @@ export const TccView: React.FC = () => {
                         )
                       )}
                     </div>
+                    </Reveal>
                   </li>
                 );
               })}
@@ -1206,8 +1213,12 @@ export const TccView: React.FC = () => {
             </p>
           ) : (
             <div className="space-y-2">
-              {openTasks.map(renderTaskRow)}
-              {closedTasks.map(renderTaskRow)}
+              {openTasks.map((t, i) => (
+                <Reveal key={t.id} index={i}>{renderTaskRow(t)}</Reveal>
+              ))}
+              {closedTasks.map((t, i) => (
+                <Reveal key={t.id} index={i}>{renderTaskRow(t)}</Reveal>
+              ))}
             </div>
           )}
         </section>

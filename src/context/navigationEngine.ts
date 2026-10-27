@@ -29,8 +29,10 @@ import { isNativePlatform } from '../lib/storage';
 import { hapticSuccess } from '../lib/haptics';
 import { planScroll, scrollToTop } from '../lib/scroll';
 import {
+  activateMorphForNavigation,
   deriveIntent,
   IDLE_INTENT,
+  peekMorph,
   peekMotionIntent,
   prefersReducedMotion,
   setMotionIntent,
@@ -406,7 +408,15 @@ export function useNavigationEngine(
     const reduced = prefersReducedMotion();
     const pendingGesture = peekMotionIntent().fromGesture;
 
-    const intent = pendingGesture ? peekMotionIntent() : deriveIntent(prev, next, { reduced });
+    const base = pendingGesture
+      ? peekMotionIntent()
+      : deriveIntent(prev, next, { reduced, morph: peekMorph() !== null });
+    // Container transform (SPEC-M-028 D24): promove o retrato do card (push) ou
+    // monta o caminho inverso a partir do alvo registrado (pop). Devolve se há
+    // animação — e, se houver, a intenção passa a dizer que há morph, para a
+    // tela não deslizar.
+    const morph = !pendingGesture && activateMorphForNavigation(base);
+    const intent = morph && !base.morph ? { ...base, morph: true } : base;
 
     // F6.1 (D5): a camada que sai guarda onde estava. `pop` e troca de overlay
     // devolvem a posição da tela de baixo; push/tab começam no topo. O valor é

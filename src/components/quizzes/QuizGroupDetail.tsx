@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, BookOpen, Users, FlaskConical, Brain, BarChart3 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { FixedBottomBar } from '../ui/FixedBottomBar';
+import { MorphTarget, sharedQuizGroupId } from '@/lib/motion';
 import type { QuestionGroup } from '../../types';
 
 interface QuizGroupDetailProps {
@@ -58,6 +59,7 @@ export const QuizGroupDetail: React.FC<QuizGroupDetailProps> = ({ group, onBack,
           </button>
 
           {/* Hero card */}
+          <MorphTarget id={sharedQuizGroupId(group.id)}>
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -80,6 +82,7 @@ export const QuizGroupDetail: React.FC<QuizGroupDetailProps> = ({ group, onBack,
               </span>
             </div>
           </motion.div>
+          </MorphTarget>
 
           {/* Estatísticas */}
           <motion.div

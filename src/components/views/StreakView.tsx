@@ -5,6 +5,7 @@ import { useMobileApp } from '@/context/mobileApp';
 import { AnimatedNumber } from '../ui/AnimatedNumber';
 import { Mascote } from '../ui/Mascote';
 import { addDays, getRecentWeeks, toDateKey } from '../../lib/streak';
+import { Reveal } from '@/lib/motion';
 
 const fmtShort = (key: string): string => {
   const d = new Date(`${key}T00:00:00`);
@@ -163,25 +164,27 @@ export const StreakView: React.FC = () => {
       <div className="rounded-2xl p-5 bg-surface-default border border-ceci-border-default shadow-sm space-y-3.5">
         <h2 className="font-display font-bold text-base text-ceci-primary">últimas semanas</h2>
         <div className="space-y-2.5">
-          {recentWeeks.map((week) => (
-            <div key={week.weekStart} className="flex items-center gap-3">
-              <span className="w-14 text-[10px] font-semibold text-ceci-tertiary shrink-0">
-                {fmtShort(week.weekStart)}–{fmtShort(addDays(week.weekStart, 4))}
-              </span>
-              <div className="flex-1 flex gap-1.5">
-                {week.days.map((d) => (
-                  <div
-                    key={d.dateKey}
-                    title={d.active ? `${d.label} ativo` : d.label}
-                    className={`flex-1 h-7 rounded-lg ${
-                      d.active
-                        ? 'bg-ceci-brand shadow-2xs'
-                        : 'bg-surface-muted border border-ceci-border-subtle'
-                    }`}
-                  />
-                ))}
+          {recentWeeks.map((week, i) => (
+            <Reveal key={week.weekStart} index={i}>
+              <div className="flex items-center gap-3">
+                <span className="w-14 text-[10px] font-semibold text-ceci-tertiary shrink-0">
+                  {fmtShort(week.weekStart)}–{fmtShort(addDays(week.weekStart, 4))}
+                </span>
+                <div className="flex-1 flex gap-1.5">
+                  {week.days.map((d) => (
+                    <div
+                      key={d.dateKey}
+                      title={d.active ? `${d.label} ativo` : d.label}
+                      className={`flex-1 h-7 rounded-lg ${
+                        d.active
+                          ? 'bg-ceci-brand shadow-2xs'
+                          : 'bg-surface-muted border border-ceci-border-subtle'
+                      }`}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>

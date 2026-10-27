@@ -12,6 +12,7 @@ import {
   IDLE_INTENT,
   consumeMotionIntent,
   deriveIntent,
+  gesturePopIntent,
   peekMotionIntent,
   screenIdentity,
   setMotionIntent,
@@ -128,6 +129,17 @@ describe('deriveIntent — opcoes', () => {
     expect(i.gestureX).toBe(0);
     expect(i.fromGesture).toBe(false);
     expect(i.reduced).toBe(false);
+    expect(i.morph).toBe(false);
+  });
+
+  it('morph é copiado da opção (SPEC-M-028 D24)', () => {
+    expect(deriveIntent([FAC], [FAC, c1], { morph: true }).morph).toBe(true);
+    expect(deriveIntent([FAC, c1], [FAC], { morph: true }).morph).toBe(true);
+  });
+
+  it('IDLE_INTENT e gesturePopIntent nunca declaram morph', () => {
+    expect(IDLE_INTENT.morph).toBe(false);
+    expect(gesturePopIntent(120).morph).toBe(false);
   });
 
   it('tolera pilha vazia', () => {

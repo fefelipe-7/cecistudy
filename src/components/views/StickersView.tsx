@@ -5,6 +5,7 @@ import { countUnlocked, currentValueFor } from '../../lib/stickers';
 import { stickerConditionFor } from '../../data/stickerCatalog';
 import { categoryXpOrDefault, levelFor, levelTitle, xpToNextLevel } from '../../lib/levels';
 import { ProgressBar } from '../ui/ProgressBar';
+import { Reveal } from '@/lib/motion';
 import type { Sticker, StickerCondition } from '../../types';
 
 const CATEGORY_LABELS: Record<Sticker['category'], string> = {
@@ -92,11 +93,11 @@ export const StickersView: React.FC = () => {
             )}
 
             <div className="grid grid-cols-2 gap-3">
-              {group.map((st) => {
+              {group.map((st, i) => {
                 const progress = progressFor(st);
                 return (
+                  <Reveal key={st.id} index={i}>
                   <div
-                    key={st.id}
                     className={`p-3.5 rounded-2xl border text-center transition-colors ${
                       st.unlocked
                         ? 'bg-surface-default border-ceci-border-brand shadow-2xs'
@@ -146,6 +147,7 @@ export const StickersView: React.FC = () => {
                       </div>
                     )}
                   </div>
+                  </Reveal>
                 );
               })}
             </div>

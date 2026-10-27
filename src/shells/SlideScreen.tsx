@@ -2,7 +2,7 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 're
 import { motion, usePresence } from 'framer-motion';
 import { createScreenVariants, type NavIntent } from '../lib/motion';
 import { useMotionProfile } from '../components/motion/MotionProfileProvider';
-import { getFrozenExitScrollY } from '../lib/scroll';
+import { getFrozenExitScrollY, frozenTop } from '../lib/scroll';
 
 /** Largura de referência quando não há viewport (SSR/jsdom): o `main` é `max-w-md`. */
 const FALLBACK_WIDTH = 390;
@@ -66,7 +66,7 @@ export const SlideScreen: React.FC<SlideScreenProps> = ({ intent, children }) =>
   // Topo do wrapper congelado em coordenadas de viewport — normalmente
   // NEGATIVO (páginas roladas), para o conteúdo aparecer exatamente nos
   // pixels em que a usuária o via. overflow-hidden corta o resto.
-  const frozenTop = docTopRef.current - getFrozenExitScrollY();
+  const frozenTopPx = frozenTop(docTopRef.current, getFrozenExitScrollY());
 
   // Foco na troca de tela (SPEC-007 §E). Sem isto, quem navega por leitor de
   // tela fica com o foco na posição antiga — frequentemente num elemento que a
@@ -110,7 +110,7 @@ export const SlideScreen: React.FC<SlideScreenProps> = ({ intent, children }) =>
             'relative focus:outline-none'
           : 'fixed inset-x-0 bottom-0 z-0 overflow-hidden pointer-events-none lg:pl-60'
       }
-      style={isPresent ? undefined : { top: frozenTop }}
+      style={isPresent ? undefined : { top: frozenTopPx }}
     >
       <div
         aria-hidden={!isPresent}

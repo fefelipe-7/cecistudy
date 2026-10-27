@@ -3,6 +3,7 @@ import { Network, Search, ChevronRight, Landmark } from 'lucide-react';
 import { PSICOTERAPIA_FAMILIES } from '../../data/psicoterapiaFamilies';
 import { useMobileApp } from '@/context/mobileApp';
 import { Mascote } from '../ui/Mascote';
+import { MorphSource, MorphTarget, Reveal, sharedFamilyId, sharedTempleId } from '@/lib/motion';
 
 export const FamiliesView: React.FC = () => {
   const { openFamily } = useMobileApp();
@@ -16,6 +17,7 @@ export const FamiliesView: React.FC = () => {
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-5 pb-1 relative">
       {/* Intro */}
+      <MorphTarget id={sharedTempleId('familias')}>
       <div className="bg-surface-default rounded-2xl p-5 border border-ceci-border-default space-y-1.5 shadow-2xs">
         <div className="flex items-center gap-2.5">
           <div className="w-10 h-10 rounded-2xl bg-surface-rose border border-ceci-border-brand flex items-center justify-center text-ceci-brand-strong shrink-0">
@@ -31,6 +33,7 @@ export const FamiliesView: React.FC = () => {
           </div>
         </div>
       </div>
+      </MorphTarget>
 
       {/* Busca */}
       <div className="relative px-1">
@@ -52,9 +55,10 @@ export const FamiliesView: React.FC = () => {
             <p className="text-sm text-ceci-secondary">nada por aqui com esse nome ♡</p>
           </div>
         )}
-        {families.map((family) => (
+        {families.map((family, i) => (
+          <Reveal key={family.id} index={i}>
+          <MorphSource id={sharedFamilyId(family.id)}>
           <button
-            key={family.id}
             onClick={() => openFamily(family.id)}
             className="w-full text-left bg-surface-default rounded-xl p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
           >
@@ -87,6 +91,8 @@ export const FamiliesView: React.FC = () => {
             </div>
             <ChevronRight className="w-5 h-5 text-ceci-brand-strong group-hover:translate-x-1 transition-transform shrink-0" />
           </button>
+          </MorphSource>
+          </Reveal>
         ))}
       </div>
     </div>

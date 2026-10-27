@@ -7,6 +7,7 @@ import React from 'react';
 import { ArrowRight, Flame, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { ProfileAchievements } from '../../../lib/profileViewModel';
+import { Reveal } from '@/lib/motion';
 
 interface AchievementsPreviewProps {
   achievements: ProfileAchievements;
@@ -81,7 +82,8 @@ const AchievementsPreview: React.FC<AchievementsPreviewProps> = ({
 
       {sample.length > 0 ? (
         <ul className="flex items-center gap-2">
-          {sample.map((sticker) => (
+          {sample.map((sticker, i) => (
+            <Reveal key={sticker.id} index={i}>
             <li
               key={sticker.id}
               title={sticker.unlocked ? sticker.name : 'ainda bloqueado'}
@@ -99,6 +101,7 @@ const AchievementsPreview: React.FC<AchievementsPreviewProps> = ({
                 {sticker.unlocked ? `${sticker.name}, desbloqueado` : `${sticker.name}, bloqueado`}
               </span>
             </li>
+            </Reveal>
           ))}
         </ul>
       ) : null}

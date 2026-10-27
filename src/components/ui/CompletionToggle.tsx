@@ -1,6 +1,7 @@
 import React from 'react';
 import { Check } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { hapticTap } from '../../lib/haptics';
 
 interface CompletionToggleProps {
   checked: boolean;
@@ -28,6 +29,7 @@ export const CompletionToggle: React.FC<CompletionToggleProps> = ({
       aria-label={label}
       onClick={(e) => {
         e.stopPropagation();
+        hapticTap();
         onChange?.();
       }}
       className={cn(

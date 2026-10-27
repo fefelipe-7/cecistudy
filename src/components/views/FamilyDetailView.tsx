@@ -3,6 +3,7 @@ import { ChevronRight } from 'lucide-react';
 import { PSICOTERAPIA_FAMILIES } from '../../data/psicoterapiaFamilies';
 import { useMobileApp } from '@/context/mobileApp';
 import { ListSkeleton } from '../ui/Skeleton';
+import { MorphSource, MorphTarget, Reveal, sharedApproachId, sharedFamilyId } from '@/lib/motion';
 
 export const FamilyDetailView: React.FC<{ familyId: string }> = ({ familyId }) => {
   const { openApproach, approaches } = useMobileApp();
@@ -23,6 +24,7 @@ export const FamilyDetailView: React.FC<{ familyId: string }> = ({ familyId }) =
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-5 pb-1 relative">
       {/* Título da família */}
+      <MorphTarget id={sharedFamilyId(family.id)}>
       <div
         className="bg-surface-default rounded-2xl p-5 border space-y-1.5 shadow-2xs"
         style={{ borderColor: `${family.color}66` }}
@@ -45,6 +47,7 @@ export const FamilyDetailView: React.FC<{ familyId: string }> = ({ familyId }) =
         </div>
         <p className="text-sm text-ceci-secondary leading-relaxed pt-1">{family.description}</p>
       </div>
+      </MorphTarget>
 
       {/* Cards das abordagens */}
       {loadingApproaches ? (
@@ -56,8 +59,9 @@ export const FamilyDetailView: React.FC<{ familyId: string }> = ({ familyId }) =
           return (
             <div className="space-y-3 px-1">
               {visible.map((approach, idx) => (
+                <Reveal key={approach.id} index={idx}>
+                <MorphSource id={sharedApproachId(approach.id)}>
                 <button
-                  key={approach.id}
                   onClick={() => openApproach(approach.id)}
                   className="w-full text-left bg-surface-default rounded-xl p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
                 >
@@ -81,6 +85,8 @@ export const FamilyDetailView: React.FC<{ familyId: string }> = ({ familyId }) =
                   </div>
                   <ChevronRight className="w-5 h-5 text-ceci-brand-strong group-hover:translate-x-1 transition-transform shrink-0" />
                 </button>
+                </MorphSource>
+                </Reveal>
               ))}
 
               {!showAll && familyApproaches.length > 10 && (

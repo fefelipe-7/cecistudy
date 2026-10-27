@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, ChevronRight, Loader2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Mascote } from '../ui/Mascote';
 import { FixedBottomBar } from '../ui/FixedBottomBar';
 import { buildQuizGroups } from '../../data/quizGroups';
+import { MorphSource, Reveal, sharedQuizGroupId } from '@/lib/motion';
 import type { QuestionGroup } from '../../types';
 
 interface QuizGroupSelectorProps {
@@ -82,15 +82,12 @@ export const QuizGroupSelector: React.FC<QuizGroupSelectorProps> = ({ onSelectGr
 
           {/* Lista compacta de cards */}
           <div className="space-y-2">
-            <AnimatePresence>
               {sorted.map((group, i) => {
                 const isGeral = group.id === 'all';
                 return (
-                  <motion.button
-                    key={group.id}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.03, duration: 0.2 }}
+                  <Reveal key={group.id} index={i}>
+                  <MorphSource id={sharedQuizGroupId(group.id)}>
+                  <button
                     onClick={() => handleClick(group)}
                     disabled={group.questionCount === 0}
                     className={cn(
@@ -122,10 +119,11 @@ export const QuizGroupSelector: React.FC<QuizGroupSelectorProps> = ({ onSelectGr
                     {group.questionCount > 0 && (
                       <ChevronRight className="w-4 h-4 text-ceci-muted flex-shrink-0" />
                     )}
-                  </motion.button>
+                  </button>
+                  </MorphSource>
+                  </Reveal>
                 );
               })}
-            </AnimatePresence>
           </div>
         </div>
       </div>
