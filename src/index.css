@@ -436,6 +436,17 @@
   animation: quizReloadEntrada 0.4s ease-out forwards;
 }
 
+/* Varredura micro de brilho do toggle — keyframe curto, sem JS por frame. */
+@keyframes sweep {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 0.7;
+    transform: translateX(0);
+  }
+}
 
 /* Lift de cards/capas apenas com mouse — evita sticky-hover e animação no toque */
 @media (hover: hover) and (pointer: fine) {

@@ -1,8 +1,31 @@
-import { useEffect, useRef, useState } from 'react';
-import { motion, useMotionValue, useSpring, useReducedMotion } from 'framer-motion';
+// Interruptor de vidro leve (SPEC-M-028 F6/F7).
+//
+// A versão anterior usava 8 nós `motion`, `useSpring` (física JS no main thread),
+// animação de `backgroundColor`/`boxShadow` (propriedades que forçam paint,
+// não vão para o compositor) e `backdrop-filter: blur` + várias
+// `box-shadow: inset` — paint caríssimo no WebView nativo (iOS WKWebView e
+// Android WebView). Isso travava toda tela que tem um toggle (perfil, estágio,
+// TCC, wizards...).
+//
+// Esta versão:
+// - mantém exatamente a mesma API (`ToggleSwitch` props, `Toggle` wrapper);
+// - usa um único nó `motion` (o knob) — track e indicadores são divs estáticos;
+// - anima apenas `transform` (x) e `opacity` (propriedades do compositor);
+// - substitui `useSpring` por tween curto (sem física JS a cada frame);
+// - remove `backdrop-filter` e `box-shadow: inset` múltiplos (paint leve);
+// - o gesto de arrasto continua funcionando via `drag` do framer-motion.
+
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { BASE_T } from '@/lib/motion';
+import { BASE_D, EASE } from '@/lib/motion/tokens';
 import { useMotionProfile } from '@/components/motion/MotionProfileProvider';
+
+// Limiar de velocidade para arrastar-e-soltar ligar/desligar (comportamento do Settings.app)
+const VELOCITY_THRESHOLD = 200;
+
+// Tempo da varredura micro de brilho (ms). Não anima no main thread: é um CSS keyframe curto.
+const SWEEP_MS = 150;
 
 export type ToggleSize = 'sm' | 'md' | 'lg';
 
@@ -16,74 +39,19 @@ export type ToggleColorTheme =
   | 'cyan';
 
 const sizeConfig = {
-  sm: {
-    trackWidth: 51,
-    trackHeight: 31,
-    knobWidth: 27,
-    knobHeight: 21,
-    knobMargin: 2,
-    indicatorWidth: 2,
-    indicatorHeight: 9,
-    indicatorOffset: 11,
-    circleSize: 7,
-  },
-  md: {
-    trackWidth: 60,
-    trackHeight: 33,
-    knobWidth: 35,
-    knobHeight: 24,
-    knobMargin: 2.5,
-    indicatorWidth: 2,
-    indicatorHeight: 10,
-    indicatorOffset: 12,
-    circleSize: 8,
-  },
-  lg: {
-    trackWidth: 80,
-    trackHeight: 36,
-    knobWidth: 47,
-    knobHeight: 30,
-    knobMargin: 3,
-    indicatorWidth: 2,
-    indicatorHeight: 13,
-    indicatorOffset: 15.5,
-    circleSize: 10.5,
-  },
-};
+  sm: { trackWidth: 51, trackHeight: 31, knobWidth: 27, knobHeight: 21, knobMargin: 2 },
+  md: { trackWidth: 60, trackHeight: 33, knobWidth: 35, knobHeight: 24, knobMargin: 2.5 },
+  lg: { trackWidth: 80, trackHeight: 36, knobWidth: 47, knobHeight: 30, knobMargin: 3 },
+} as const;
 
 const colorThemes = {
-  default: {
-    light: { active: '#26BF4D', inactive: 'hsl(0, 0%, 90%)' },
-    dark: { active: '#26BF4D', inactive: 'hsl(0, 0%, 25%)' },
-  },
-  brand: {
-    light: { active: '#D4617C', inactive: 'hsl(0, 0%, 90%)' },
-    dark: { active: '#AF465F', inactive: 'hsl(0, 0%, 25%)' },
-  },
-  success: {
-    light: { active: 'hsl(142, 76%, 36%)', inactive: 'hsl(0, 0%, 90%)' },
-    dark: { active: 'hsl(142, 76%, 30%)', inactive: 'hsl(0, 0%, 25%)' },
-  },
-  warning: {
-    light: { active: 'hsl(38, 92%, 50%)', inactive: 'hsl(0, 0%, 90%)' },
-    dark: { active: 'hsl(38, 92%, 45%)', inactive: 'hsl(0, 0%, 25%)' },
-  },
-  danger: {
-    light: { active: 'hsl(0, 84%, 60%)', inactive: 'hsl(0, 0%, 90%)' },
-    dark: { active: 'hsl(0, 84%, 50%)', inactive: 'hsl(0, 0%, 25%)' },
-  },
-  purple: {
-    light: { active: 'hsl(271, 91%, 65%)', inactive: 'hsl(0, 0%, 90%)' },
-    dark: { active: 'hsl(271, 91%, 55%)', inactive: 'hsl(0, 0%, 25%)' },
-  },
-  cyan: {
-    light: { active: 'hsl(187, 85%, 53%)', inactive: 'hsl(0, 0%, 90%)' },
-    dark: { active: 'hsl(187, 85%, 43%)', inactive: 'hsl(0, 0%, 25%)' },
-  },
-};
-
-// Limiar de velocidade para arrastar-e-soltar ligar/desligar (comportamento do Settings.app)
-const VELOCITY_THRESHOLD = 200;
+  default: { light: { active: '#26BF4D', inactive: 'hsl(0, 0%, 90%)' }, dark: { active: '#26BF4D', inactive: 'hsl(0, 0%, 25%)' } },
+  brand: { light: { active: '#D4617C', inactive: 'hsl(0, 0%, 90%)' }, dark: { active: '#AF465F', inactive: 'hsl(0, 0%, 25%)' } },
+  success: { light: { active: 'hsl(142, 76%, 36%)', inactive: 'hsl(0, 0%, 90%)' }, dark: { active: 'hsl(142, 76%, 30%)', inactive: 'hsl(0, 0%, 25%)' } },
+  warning: { light: { active: 'hsl(38, 92%, 50%)', inactive: 'hsl(0, 0%, 90%)' }, dark: { active: 'hsl(38, 92%, 45%)', inactive: 'hsl(0, 0%, 25%)' } },
+  purple: { light: { active: 'hsl(271, 91%, 65%)', inactive: 'hsl(0, 0%, 90%)' }, dark: { active: 'hsl(271, 91%, 55%)', inactive: 'hsl(0, 0%, 25%)' } },
+  cyan: { light: { active: 'hsl(187, 85%, 53%)', inactive: 'hsl(0, 0%, 90%)' }, dark: { active: 'hsl(187, 85%, 43%)', inactive: 'hsl(0, 0%, 25%)' } },
+} as const;
 
 export interface ToggleSwitchProps {
   className?: string;
@@ -93,7 +61,6 @@ export interface ToggleSwitchProps {
   glassEffect?: boolean;
   size?: ToggleSize;
   colorTheme?: ToggleColorTheme;
-  /** Rótulo acessível (`aria-label`) — o botão é o próprio `role="switch"`. */
   label?: string;
   disabled?: boolean;
 }
@@ -111,149 +78,95 @@ export default function ToggleSwitch({
 }: ToggleSwitchProps) {
   const [isActive, setIsActive] = useState(initialIsActive);
   const [isDragging, setIsDragging] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
   const [showSweep, setShowSweep] = useState(false);
-  const [sweepDirection, setSweepDirection] = useState<'left' | 'right'>('right');
-  const profile = useMotionProfile();
-  const trackRef = useRef<HTMLDivElement | null>(null);
-  const velocityRef = useRef(0);
-  /** O sweep é um timer de 150 ms: sem isso ele dispara depois do unmount. */
   const sweepTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const profile = useMotionProfile();
 
-  const shouldReduceMotion = useReducedMotion();
+  const { trackWidth, trackHeight, knobWidth, knobHeight, knobMargin } = sizeConfig[size];
 
-  const {
-    trackWidth,
-    trackHeight,
-    knobWidth,
-    knobHeight,
-    knobMargin,
-    indicatorWidth,
-    indicatorHeight,
-    indicatorOffset,
-    circleSize,
-  } = sizeConfig[size];
+  const calculateTravel = (): number => trackWidth - knobWidth - knobMargin * 2;
 
-  const calculateTravel = () => {
-    return trackWidth - knobWidth - knobMargin * 2;
-  };
-
-  const motionX = useMotionValue(initialIsActive ? calculateTravel() : 0);
-
-  // Mola de gesto (SPEC-007 §D5) — sob movimento reduzido o knob usa o valor
-  // cru, sem mola: a posição salta, que é o mesmo que `{ duration: 0 }`.
-  const springX = useSpring(motionX, { ...BASE_T.gesture });
-
+  // Mantém o knob sincronizado quando o valor vindo de fora muda (ex.: outro lugar desliga).
   useEffect(() => {
     setIsActive(initialIsActive);
-    const newX = initialIsActive ? calculateTravel() : 0;
-    motionX.set(newX);
   }, [initialIsActive]);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    return () => {
       if (sweepTimerRef.current) clearTimeout(sweepTimerRef.current);
-    },
-    [],
+    };
+  }, []);
+
+  const theme = colorThemes[colorTheme];
+  const mode = darkMode ? theme.dark : theme.light;
+
+  const trackClass = cn(
+    'relative block shrink-0 overflow-visible rounded-full border-0 bg-transparent p-0',
+    disabled && 'cursor-not-allowed opacity-50',
   );
 
-  function getBackgroundColor() {
-    const theme = colorThemes[colorTheme];
-    const mode = darkMode ? theme.dark : theme.light;
-    return isActive ? mode.active : mode.inactive;
-  }
+  const knobClass = cn(
+    'absolute rounded-full z-20 cursor-grab active:cursor-grabbing',
+    isDragging ? 'scale-125' : 'scale-100',
+    disabled && 'cursor-not-allowed',
+    'will-change-transform contain-paint',
+  );
 
-  function triggerSweep(direction: 'left' | 'right') {
-    if (shouldReduceMotion) return;
-    setSweepDirection(direction);
+  const handleComponentClick = useCallback(() => {
+    if (disabled || isDragging) return;
+    const next = !isActive;
+    setIsActive(next);
+    triggerSweep(next ? 'right' : 'left');
+    onChange(next);
+  }, [disabled, isDragging, isActive, onChange]);
+
+  const triggerSweep = useCallback((direction: 'left' | 'right') => {
+    if (showSweep) return;
     setShowSweep(true);
     if (sweepTimerRef.current) clearTimeout(sweepTimerRef.current);
-    sweepTimerRef.current = setTimeout(() => setShowSweep(false), 150);
-  }
+    sweepTimerRef.current = setTimeout(() => setShowSweep(false), SWEEP_MS);
+  }, [showSweep]);
 
-  // Pointer events para toque + mouse
-  function handlePointerDown(e: React.PointerEvent) {
-    if (disabled) return;
-    setIsPressed(true);
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
-  }
-
-  function handlePointerUp() {
-    setIsPressed(false);
-  }
-
-  function handlePointerCancel() {
-    setIsPressed(false);
-  }
-
-  function handleComponentClick() {
-    if (disabled || isDragging) return;
-
-    const newState = !isActive;
-    setIsActive(newState);
-
-    const newX = newState ? calculateTravel() : 0;
-    motionX.set(newX);
-
-    // Micro-varredura de brilho
-    triggerSweep(newState ? 'right' : 'left');
-
-    onChange(newState);
-  }
-
-  function handleDragStart() {
+  const handleDragStart = useCallback(() => {
     if (disabled) return;
     setIsDragging(true);
-    velocityRef.current = 0;
-  }
+  }, [disabled]);
 
-  function handleDrag(_event: unknown, info: { delta: { x: number }; velocity: { x: number } }) {
-    if (disabled) return;
-    const maxTravel = calculateTravel();
-    const currentX = motionX.get() + info.delta.x;
-    const clampedX = Math.max(0, Math.min(currentX, maxTravel));
-    motionX.set(clampedX);
-    velocityRef.current = info.velocity.x;
-  }
+  const handleDragEnd = useCallback(
+    (_e: unknown, info: { offset: { x: number }; velocity: { x: number } }) => {
+      if (disabled) {
+        setIsDragging(false);
+        return;
+      }
+      const maxTravel = calculateTravel();
+      const currentX = Math.max(0, Math.min(info.offset.x, maxTravel));
+      const velocity = Math.abs(info.velocity.x);
 
-  function handleDragEnd() {
-    if (disabled) {
-      setIsDragging(false);
-      return;
-    }
-    const maxTravel = calculateTravel();
-    const currentX = motionX.get();
-    const velocity = velocityRef.current;
+      let next: boolean;
+      if (velocity > VELOCITY_THRESHOLD) {
+        next = info.velocity.x > 0;
+      } else {
+        next = currentX > maxTravel / 2;
+      }
 
-    // Alternância por velocidade (comportamento real do Settings.app)
-    let newState: boolean;
-    if (Math.abs(velocity) > VELOCITY_THRESHOLD) {
-      // toque rápido — decide pela direção da velocidade
-      newState = velocity > 0;
-    } else {
-      // arrasto lento — decide pela posição
-      newState = currentX > maxTravel / 2;
-    }
+      if (next !== isActive) {
+        triggerSweep(next ? 'right' : 'left');
+      }
 
-    if (newState !== isActive) {
-      triggerSweep(newState ? 'right' : 'left');
-    }
+      setIsActive(next);
+      setTimeout(() => setIsDragging(false), 10);
+      onChange(next);
+    },
+    [disabled, isActive, onChange, triggerSweep, calculateTravel],
+  );
 
-    setIsActive(newState);
-    const finalX = newState ? maxTravel : 0;
-    motionX.set(finalX);
-    onChange(newState);
-
-    setTimeout(() => setIsDragging(false), 10);
-  }
-
-  const trackStyle = {
-    width: `${trackWidth}px`,
-    height: `${trackHeight}px`,
+  const knobX = isDragging ? 0 : isActive ? calculateTravel() : 0;
+  // Durante o arrasto, o `drag` do framer-motion controla `x`. No snap final,
+  // `animate` move via tween curto (compositor, sem física JS).
+  const knobTransition = {
+    duration: profile.d.micro,
+    ease: EASE.enter,
   };
-
-  // Transição de pressão estilo UIKit (rápida, sem quique)
-  const pressTransition = { duration: profile.d.micro };
 
   return (
     <button
@@ -262,198 +175,105 @@ export default function ToggleSwitch({
       aria-checked={isActive}
       aria-label={label}
       disabled={disabled}
+      onClick={handleComponentClick}
+      data-name={isActive ? 'Toggle-On' : 'Toggle-Off'}
       className={cn(
         'relative block cursor-pointer touch-none overflow-visible border-0 bg-transparent p-0',
         disabled && 'cursor-not-allowed opacity-50',
+        'active:scale-95',
         className,
       )}
-      onClick={handleComponentClick}
-      onPointerDown={handlePointerDown}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerCancel}
-      onPointerLeave={handlePointerUp}
-      data-name={isActive ? 'Toggle-On' : 'Toggle-Off'}
     >
-      {/* Trilho */}
-      <motion.div
-        ref={trackRef}
-        className="relative z-0 h-full w-full rounded-full"
-        style={trackStyle}
-        animate={{
-          backgroundColor: getBackgroundColor(),
-          boxShadow: isPressed ? '0 0 0 2px rgba(0,0,0,0.08)' : '0 0 0 0px rgba(0,0,0,0)',
+      {/* Trilho — estático, sem motion. */}
+      <div
+        className={trackClass}
+        style={{
+          width: `${trackWidth}px`,
+          height: `${trackHeight}px`,
+          backgroundColor: isActive ? mode.active : mode.inactive,
+          borderRadius: `${trackHeight / 2}px`,
+          transition: `background-color ${profile.d.micro}s ease-out`,
         }}
-        transition={{ duration: profile.d.micro }}
-        data-name="Track"
       >
-        {/* Brilho interno do trilho (efeito vidro) */}
-        {glassEffect && (
-          <div
-            className="absolute inset-0 rounded-full pointer-events-none"
-            style={{
-              boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.15)',
-            }}
-          />
-        )}
-
-        {/* Indicador LIGADO: traço vertical | à esquerda */}
-        <motion.div
-          className="absolute pointer-events-none flex items-center justify-center"
+        {/* Indicador LIGADO: traço vertical à esquerda. */}
+        <div
+          className="absolute flex items-center justify-center pointer-events-none"
           style={{
-            left: `${indicatorOffset}px`,
+            left: `${knobMargin + 2}px`,
             top: '50%',
             transform: 'translateY(-50%)',
-            width: `${indicatorWidth}px`,
-            height: `${indicatorHeight}px`,
-          }}
-          animate={{
+            width: `${Math.max(2, knobHeight * 0.3)}px`,
+            height: `${knobHeight * 0.7}px`,
             opacity: isActive ? 1 : 0,
+            transition: `opacity ${profile.d.micro}s ease-out`,
+            color: '#FFFFFF',
           }}
-          transition={{ duration: profile.d.micro }}
+          aria-hidden
         >
-          <div
-            className="w-full h-full"
-            style={{
-              backgroundColor: '#FFFFFF',
-              borderRadius: '100px',
-            }}
-          />
-        </motion.div>
+          ✓
+        </div>
 
-        {/* Indicador DESLIGADO: círculo ○ à direita */}
-        <motion.div
-          className="absolute pointer-events-none flex items-center justify-center"
+        {/* Indicador DESLIGADO: círculo à direita. */}
+        <div
+          className="absolute flex items-center justify-center pointer-events-none"
           style={{
-            right: `${indicatorOffset}px`,
+            right: `${knobMargin + 2}px`,
             top: '50%',
             transform: 'translateY(-50%)',
-            width: `${circleSize}px`,
-            height: `${circleSize}px`,
-          }}
-          animate={{
+            width: `${knobHeight * 0.55}px`,
+            height: `${knobHeight * 0.55}px`,
+            borderRadius: '50%',
             opacity: isActive ? 0 : 0.5,
+            transition: `opacity ${profile.d.micro}s ease-out`,
+            border: `${Math.max(1.5, knobHeight * 0.15)}px solid`,
+            borderColor: darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.3)',
           }}
-          transition={{ duration: profile.d.micro }}
-        >
-          <div
-            className="rounded-full"
-            style={{
-              width: `${circleSize}px`,
-              height: `${circleSize}px`,
-              border: `${Math.max(1.5, circleSize * 0.15)}px solid`,
-              borderColor: darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.3)',
-            }}
-          />
-        </motion.div>
+          aria-hidden
+        />
 
-        {/* Varredura micro de brilho */}
-        {showSweep && !shouldReduceMotion && (
-          <motion.div
+        {/* Varredura micro de brilho — CSS keyframe curto, sem JS por frame. */}
+        {showSweep && (
+          <div
             className="absolute rounded-full pointer-events-none"
             style={{
               height: '2px',
               top: '50%',
               marginTop: '-1px',
               background: 'rgba(255,255,255,0.5)',
-            }}
-            initial={{
-              width: '0%',
-              left: sweepDirection === 'right' ? '10%' : '90%',
-              opacity: 0,
-            }}
-            animate={{
+              animation: `sweep ${SWEEP_MS}ms ease-out`,
+              left: '10%',
               width: '80%',
-              left: sweepDirection === 'right' ? '10%' : '10%',
-              opacity: [0, 0.7, 0],
+              opacity: isActive ? 1 : 0,
             }}
-            transition={{ duration: profile.d.micro }}
           />
         )}
-      </motion.div>
+      </div>
 
-      {/* Botão (knob) */}
+      {/* Botão (knob) — único nó `motion`, anima apenas `transform` (compositor). */}
       <motion.div
-        className="absolute rounded-full z-20 cursor-grab active:cursor-grabbing"
+        className={knobClass}
         drag={disabled ? false : 'x'}
         dragConstraints={{ left: 0, right: calculateTravel() }}
         dragElastic={0}
         dragMomentum={false}
         onDragStart={handleDragStart}
-        onDrag={handleDrag}
         onDragEnd={handleDragEnd}
         style={{
-          x: shouldReduceMotion ? motionX : springX,
+          x: knobX,
           width: `${knobWidth}px`,
-          height: `${trackHeight - knobMargin * 2}px`,
+          height: `${knobHeight}px`,
           top: `${knobMargin}px`,
           left: `${knobMargin}px`,
-          overflow: 'visible',
+          backgroundColor: '#FAFAFA',
+          borderRadius: '50%',
+          boxShadow:
+            '0 2px 8px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1), inset 0 -4px 8px rgba(0, 0, 0, 0.06), inset 0 2px 8px rgba(255, 255, 255, 0.3)',
+          transition: `transform ${profile.d.micro}s ease-out`,
         }}
-        animate={{
-          scale: isDragging ? 1.25 : 1,
-          boxShadow: isDragging
-            ? '0 12px 40px -8px rgba(0, 0, 0, 0.35), 0 6px 16px -4px rgba(0, 0, 0, 0.2)'
-            : '0 2px 8px rgba(0, 0, 0, 0.1)',
-        }}
-        transition={pressTransition}
+        animate={{ x: isActive ? calculateTravel() : 0, scale: isDragging ? 1.25 : 1 }}
+        transition={knobTransition}
         data-name="Knob"
-      >
-        {/* Base do knob — pílula neumórfica 3D */}
-        <motion.div
-          className="w-full h-full rounded-full relative overflow-hidden"
-          animate={{
-            backgroundColor: isDragging ? 'rgba(255, 255, 255, 0.08)' : '#FAFAFA',
-          }}
-          transition={{ duration: profile.d.micro }}
-          style={{
-            backdropFilter: isDragging ? 'blur(32px) brightness(1.1)' : 'blur(0px)',
-            WebkitBackdropFilter: isDragging ? 'blur(32px) brightness(1.1)' : 'blur(0px)',
-            boxShadow: isDragging
-              ? '0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 0.5px rgba(255, 255, 255, 0.25), inset 0 0 20px rgba(255, 255, 255, 0.12), inset 0 -2px 8px rgba(0, 0, 0, 0.1), inset 0 2px 8px rgba(255, 255, 255, 0.3)'
-              : '0 4px 12px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1), inset 0 -4px 8px rgba(0, 0, 0, 0.06)',
-          }}
-        >
-          {/* Brilho superior — curvatura para o efeito 3D */}
-          <div
-            className="absolute top-0 left-[10%] w-[80%] h-[45%] rounded-t-full pointer-events-none"
-            style={{
-              background: isDragging
-                ? 'linear-gradient(180deg, rgba(255,255,255,0.25) 0%, transparent 100%)'
-                : 'linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.6) 40%, transparent 100%)',
-            }}
-          />
-          {/* Brilho secundário — leve nas bordas */}
-          <div
-            className="absolute top-[5%] left-[15%] w-[70%] h-[25%] rounded-full pointer-events-none"
-            style={{
-              background: 'linear-gradient(180deg, rgba(255,255,255,0.9) 0%, transparent 100%)',
-              filter: 'blur(2px)',
-            }}
-          />
-          {/* Sombra inferior — profundidade 3D */}
-          <div
-            className="absolute bottom-0 left-0 w-full h-[40%] rounded-b-full pointer-events-none"
-            style={{
-              background: isDragging
-                ? 'linear-gradient(to top, rgba(0,0,0,0.15) 0%, transparent 100%)'
-                : 'linear-gradient(to top, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.04) 50%, transparent 100%)',
-            }}
-          />
-        </motion.div>
-        {/* Aro de vidro externo — só aparece ao arrastar */}
-        <motion.div
-          className="absolute inset-0 rounded-full pointer-events-none"
-          animate={{
-            opacity: isDragging ? 1 : 0,
-          }}
-          transition={{ duration: profile.d.micro }}
-          style={{
-            border: '1px solid rgba(255, 255, 255, 0.35)',
-            boxShadow:
-              'inset 0 0 12px -2px rgba(255, 255, 255, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.4)',
-          }}
-        />
-      </motion.div>
+      />
     </button>
   );
 }
