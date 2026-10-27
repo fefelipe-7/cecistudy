@@ -1,4 +1,4 @@
-﻿import React, { useMemo } from 'react';
+﻿import React, { useMemo, useState, useEffect } from 'react';
 import {
   useDataClientApp,
   useDataClientCourses,
@@ -31,6 +31,14 @@ export const HomeView: React.FC = () => {
   const agora = new Date();
   const greeting = saudacao(agora);
   const mascote = heroMascote(saudacaoTurno(agora), agora.getDate());
+
+  /**
+   * Coreografia de abertura da Home (SPEC-M-028 D27): na primeira montagem da
+   * aba, hero e até os itens de atenção entram uma vez. Nas voltas, nada acima
+   * da dobra anima. Usa estado (não `useRef`) para não reanimar a cada volta.
+   */
+  const [abertura, setAbertura] = useState(true);
+  useEffect(() => setAbertura(false), []);
 
   const formattedDate = agora
     .toLocaleDateString('pt-BR', {
@@ -137,6 +145,7 @@ export const HomeView: React.FC = () => {
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-6 pb-1">
       {/* 1. HERO — saudação + data + frase do dia */}
       <HeroSection
+        entrada={abertura}
         formattedDate={formattedDate}
         greeting={greeting}
         name={profile.name}

@@ -2,14 +2,17 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { Modal } from '../Modal';
 import { resetOverlayStackForTests } from '@/lib/overlayStack';
+import { resetMorphForTests } from '@/lib/motion';
 
 beforeEach(() => {
   resetOverlayStackForTests();
+  resetMorphForTests();
 });
 
 afterEach(() => {
   cleanup();
   resetOverlayStackForTests();
+  resetMorphForTests();
 });
 
 describe('Modal', () => {
@@ -255,5 +258,20 @@ describe('Modal', () => {
     expect(saindo).not.toBeNull();
     expect(saindo).toHaveAttribute('inert');
     expect(saindo).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  it('morphId: o painel vira o alvo do clone e não roda a entrada do sheet (I19)', () => {
+    render(
+      <Modal open onClose={() => {}} morphId="chapter-card-ch1" position="bottom">
+        <p>conteúdo</p>
+      </Modal>,
+    );
+    const painel = document.querySelector('[data-morph-target="chapter-card-ch1"]');
+    expect(painel).not.toBeNull();
+    // É o próprio painel (o que recebe foco), não um wrapper novo.
+    expect(painel).toHaveAttribute('tabindex', '-1');
+    // Sem `initial="initial"` do `sheetVariants`: quem entra é o clone, e o
+    // painel já nasce na posição final.
+    expect(painel?.getAttribute('style') ?? '').not.toContain('translateY');
   });
 });

@@ -41,3 +41,11 @@ export function scrollToTop(): void {
 export function getFrozenExitScrollY(): number {
   return frozenExitScrollY;
 }
+
+/** Posição de congelamento da tela que está saindo, em coordenadas de viewport.
+   Pura: recebe o topo medido do elemento no documento e o scroll capturado no
+   handler de troca de tela, e devolve o `top` onde o wrapper congelado deve
+   ficar para o conteúdo continuar exatamente onde a usuária o via. */
+export function frozenTop(docTop: number, scrollY: number): number {
+  return docTop - scrollY;
+}

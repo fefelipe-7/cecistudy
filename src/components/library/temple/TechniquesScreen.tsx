@@ -13,6 +13,7 @@ import {
   TempleSearchInput,
   TempleSectionCard,
 } from './TempleShared';
+import { Reveal, sharedTempleId } from '@/lib/motion';
 
 /** Blocos do detalhe da técnica (ordem de exibição). */
 const DETAIL_FIELDS: Array<[keyof TempleTechnique, string]> = [
@@ -155,6 +156,7 @@ export const TechniquesScreen: React.FC = () => {
         icon={<Wrench />}
         title={loading ? 'técnicas' : `${techniques.length} técnicas clínicas`}
         subtitle={`instrumentos da prática em ${categories.length} categorias`}
+        morphId={sharedTempleId('tecnicas')}
       />
 
       <TempleSearchInput
@@ -188,9 +190,9 @@ export const TechniquesScreen: React.FC = () => {
                 />
                 {isOpen && (
                   <div className="border-t border-ceci-border-subtle divide-y divide-ceci-border-subtle">
-                    {list.map((tech) => (
+                    {list.map((tech, i) => (
+                      <Reveal key={tech.id} index={i}>
                       <button
-                        key={tech.id}
                         onClick={() => setSelected(tech)}
                         className="w-full text-left px-4 py-3 hover:bg-status-success-surface transition-colors cursor-pointer group"
                       >
@@ -203,6 +205,7 @@ export const TechniquesScreen: React.FC = () => {
                           </p>
                         )}
                       </button>
+                      </Reveal>
                     ))}
                   </div>
                 )}

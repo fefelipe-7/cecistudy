@@ -1,11 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp, Check, Target, Filter, Sparkles } from 'lucide-react';
 import { Mascote } from '../ui/Mascote';
 import { PillGroup } from '../ui/PillGroup';
 import { FixedBottomBar } from '../ui/FixedBottomBar';
 import { cn } from '../../lib/utils';
 import { filterQuestionPool } from '../../lib/quizLogic';
+import { Reveal } from '@/lib/motion';
 import type { QuizConfig, StudyQuestion } from '../../types';
 
 interface QuizCategorySelectorProps {
@@ -90,37 +90,36 @@ function FilterSection({
         </span>
       </button>
 
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            key="open"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-            className="border-t border-ceci-border-default p-3 space-y-2 max-h-48 overflow-y-auto"
-          >
-            {options.map((opt) => {
-              const isSel = selected.includes(opt);
-              return (
-                <button
-                  key={opt}
-                  onClick={() => onToggle(opt)}
-                  className={cn(
-                    'w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-xs transition',
-                    isSel
-                      ? 'bg-ceci-brand-strong text-ceci-on-brand'
-                      : 'bg-surface-muted text-ceci-primary hover:bg-surface-rose',
-                  )}
-                >
-                  <span className="truncate">{opt}</span>
-                  {isSel && <Check className="w-4 h-4 flex-shrink-0" />}
-                </button>
-              );
-            })}
-          </motion.div>
+      <div
+        className={cn(
+          'border-t border-ceci-border-default p-3 space-y-2 overflow-y-auto transition-all duration-250',
+          isOpen
+            ? 'max-h-48 opacity-100'
+            : 'max-h-0 opacity-0 pointer-events-none',
         )}
-      </AnimatePresence>
+        aria-hidden={!isOpen}
+      >
+        {options.map((opt, i) => {
+          const isSel = selected.includes(opt);
+          return (
+            <Reveal key={opt} index={i}>
+            <button
+              key={opt}
+              onClick={() => onToggle(opt)}
+              className={cn(
+                'w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-xs transition',
+                isSel
+                  ? 'bg-ceci-brand-strong text-ceci-on-brand'
+                  : 'bg-surface-muted text-ceci-primary hover:bg-surface-rose',
+              )}
+            >
+              <span className="truncate">{opt}</span>
+              {isSel && <Check className="w-4 h-4 flex-shrink-0" />}
+            </button>
+          </Reveal>
+            );
+          })}
+      </div>
     </div>
   );
 }
@@ -235,10 +234,8 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
   return (
     <div className="min-h-[70vh] flex flex-col pb-44">
       {isReloading && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col items-center justify-center gap-3 py-16 text-center"
+        <div
+          className="flex flex-col items-center justify-center gap-3 py-16 text-center quiz-reload-entrada"
         >
           <Mascote expression="loading-patient" className="w-14 h-14" decorative />
           <div>
@@ -251,7 +248,7 @@ export const QuizCategorySelector: React.FC<QuizCategorySelectorProps> = ({
                 : 'só um minutinho...'}
             </p>
           </div>
-        </motion.div>
+        </div>
       )}
       {!isReloading && (
         <>

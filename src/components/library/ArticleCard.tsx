@@ -2,6 +2,7 @@ import React from 'react';
 import { Bookmark } from 'lucide-react';
 import { Article } from '../../data/books';
 import { PSYCHOTHERAPY_FAMILIES } from '../../data/books/families';
+import { MorphSource, sharedBookId } from '@/lib/motion';
 
 interface ArticleCardProps {
   article: Article;
@@ -16,6 +17,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSaved, onSe
   const accent = familia?.accent ?? '#6D6366';
 
   return (
+    <MorphSource id={sharedBookId(article.id)}>
     <button
       onClick={onSelect}
       className="card-lift relative w-full h-[150px] sm:h-[160px] rounded-2xl p-3 flex flex-col justify-between shadow-xs cursor-pointer overflow-hidden border border-black/5 select-none text-left"
@@ -59,5 +61,6 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article, isSaved, onSe
         </p>
       </div>
     </button>
+    </MorphSource>
   );
 };

@@ -21,7 +21,6 @@ const ROOTS = ['src', 'apps'];
 /** Quem dona a presença/transição pode falar com o runtime. */
 const ALLOWED_DIRS = ['src/lib/motion/', 'src/shells/'];
 const ALLOWED_FILES = [
-  'src/lib/motion.ts', // shim legado: só re-exporta
   'src/App.tsx', // monta `MotionConfig`
   'apps/mobile/src/app/main.tsx', // monta `MotionConfig`
   'src/components/motion/MotionProfileProvider.tsx', // é o provider
@@ -35,10 +34,7 @@ const KNOWN = [
   'src/components/HeaderNav.tsx',
   'src/components/internship/CompleteLogModal.tsx',
   'src/components/library/NotesScreen.tsx',
-  'src/components/quizzes/QuizCategorySelector.tsx',
-  'src/components/quizzes/QuizExplanationOverlay.tsx',
   'src/components/quizzes/QuizGroupDetail.tsx',
-  'src/components/quizzes/QuizGroupSelector.tsx',
   'src/components/quizzes/QuizLoadingScreen.tsx',
   'src/components/quizzes/QuizPlayer.tsx',
   'src/components/quizzes/QuizResultScreen.tsx',

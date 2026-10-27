@@ -2,9 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion, useDragControls, useIsPresent } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { sheetVariants, OVERLAY_FADE } from '@/lib/motion';
-import { isTopOverlay, pushOverlay, removeOverlay } from '@/lib/overlayStack';
-
+import { sheetVariants, OVERLAY_FADE, MorphTarget } from '@/lib/motion';
+import { pushOverlay, removeOverlay } from '@/lib/overlayStack';
 interface ModalProps {
   open: boolean;
   onClose: () => void;
@@ -16,6 +15,11 @@ interface ModalProps {
   showGrabber?: boolean;
   /** id do elemento que rotula o diálogo (replicado em `aria-labelledby`). */
   labelledBy?: string;
+  /**
+   * Par do container transform (SPEC-M-028 D26): o painel vira o alvo do clone
+   * do card e a entrada por `sheetVariants` é suprimida — quem entra é o clone.
+   */
+  morphId?: string;
 }
 
 const POSITION_CLASSES = {
@@ -80,6 +84,7 @@ export const Modal: React.FC<ModalProps> = ({
   closeOnBackdrop = true,
   showGrabber,
   labelledBy,
+  morphId,
 }) => {
   const dragControls = useDragControls();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -117,15 +122,8 @@ export const Modal: React.FC<ModalProps> = ({
   useEffect(() => {
     if (!open) return;
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        // Só o topo fecha (SPEC-M-027 I6). Com dois modais abertos, cada um tem
-        // o próprio listener — sem o teste de topo, os dois fechavam juntos.
-        if (overlayIdRef.current !== null && isTopOverlay(overlayIdRef.current)) {
-          onClose();
-        }
-        return;
-      }
-      // Focus trap — o foco não escapa do diálogo (§2.2).
+      // `Esc` é tratado globalmente pela `overlayStack` (fecha o topo da pilha,
+      // qualquer `kind`); aqui fica apenas a armadilha de foco (§2.2).
       if (e.key !== 'Tab') return;
       const panel = panelRef.current;
       if (!panel) return;
@@ -149,6 +147,52 @@ export const Modal: React.FC<ModalProps> = ({
     return () => document.removeEventListener('keydown', handleKey);
   }, [open, onClose]);
 
+  // O painel é o alvo do container transform quando `morphId` existe. Nesse
+  // caso `sheetVariants` não roda: quem entra é o clone do card (SPEC-M-028
+  // D26/I19). A saída continua sendo a do overlay.
+  const panel = (
+    <motion.div
+      key="modal-panel"
+      ref={panelRef}
+      tabIndex={-1}
+      variants={morphId ? undefined : sheetVariants[position]}
+      initial={morphId ? false : 'initial'}
+      animate={morphId ? undefined : 'animate'}
+      exit={morphId ? undefined : 'exit'}
+      drag={isBottom ? 'y' : false}
+      dragListener={false}
+      dragControls={isBottom ? dragControls : undefined}
+      dragConstraints={{ top: 0, bottom: 0 }}
+      dragElastic={{ top: 0, bottom: 0.5 }}
+      onDragEnd={(_, info) => {
+        if (
+          isBottom &&
+          (info.offset.y > HANDLE_DRAG_THRESHOLD || info.velocity.y > HANDLE_VELOCITY_THRESHOLD)
+        ) {
+          onClose();
+        }
+      }}
+      className={cn(
+        'relative outline-none',
+        PANEL_SCROLL_CLASSES,
+        isBottom && 'w-full sm:w-auto',
+        className,
+      )}
+      onClick={(e) => e.stopPropagation()}
+    >
+      {withGrabber && (
+        <div
+          onPointerDown={(e) => dragControls.start(e)}
+          className="flex items-center justify-center py-2.5 -mb-1 cursor-grab active:cursor-grabbing touch-none sticky top-0 z-10"
+          aria-hidden
+        >
+          <span className="w-10 h-1.5 rounded-full bg-ceci-border-strong" />
+        </div>
+      )}
+      {children}
+    </motion.div>
+  );
+
   return createPortal(
     <AnimatePresence>
       {open && (
@@ -160,47 +204,7 @@ export const Modal: React.FC<ModalProps> = ({
           onClick={closeOnBackdrop ? onClose : undefined}
           labelledBy={labelledBy}
         >
-          <motion.div
-            key="modal-panel"
-            ref={panelRef}
-            tabIndex={-1}
-            variants={sheetVariants[position]}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            drag={isBottom ? 'y' : false}
-            dragListener={false}
-            dragControls={isBottom ? dragControls : undefined}
-            dragConstraints={{ top: 0, bottom: 0 }}
-            dragElastic={{ top: 0, bottom: 0.5 }}
-            onDragEnd={(_, info) => {
-              if (
-                isBottom &&
-                (info.offset.y > HANDLE_DRAG_THRESHOLD ||
-                  info.velocity.y > HANDLE_VELOCITY_THRESHOLD)
-              ) {
-                onClose();
-              }
-            }}
-            className={cn(
-              'relative outline-none',
-              PANEL_SCROLL_CLASSES,
-              isBottom && 'w-full sm:w-auto',
-              className,
-            )}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {withGrabber && (
-              <div
-                onPointerDown={(e) => dragControls.start(e)}
-                className="flex items-center justify-center py-2.5 -mb-1 cursor-grab active:cursor-grabbing touch-none sticky top-0 z-10"
-                aria-hidden
-              >
-                <span className="w-10 h-1.5 rounded-full bg-ceci-border-strong" />
-              </div>
-            )}
-            {children}
-          </motion.div>
+          {morphId ? <MorphTarget id={morphId}>{panel}</MorphTarget> : panel}
         </ModalOverlay>
       )}
     </AnimatePresence>,

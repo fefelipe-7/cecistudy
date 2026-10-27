@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { IOS_EASE } from '@/lib/motion';
+import { pushOverlay, removeOverlay } from '@/lib/overlayStack';
 import { Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePressGesture } from '@/lib/usePressGesture';
@@ -39,6 +40,19 @@ const FloatingActionMenu = ({ options, className, onLongPress }: FloatingActionM
       onLongPress?.();
     },
   });
+
+  // Registra no overlayStack como popover: o `Esc`/back fecha o topo da pilha
+  // (SPEC-M-028 F5.4/F5.5). O menu não tem listener próprio.
+  const overlayIdRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (!isOpen) return;
+    const id = pushOverlay(() => setIsOpen(false), 'popover');
+    overlayIdRef.current = id;
+    return () => {
+      removeOverlay(id);
+      overlayIdRef.current = null;
+    };
+  }, [isOpen]);
 
   return (
     <div className={cn('fixed bottom-8 right-8 z-50', className)}>

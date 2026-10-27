@@ -17,6 +17,7 @@ import {
   TempleSearchInput,
   TempleSectionCard,
 } from './TempleShared';
+import { Reveal, sharedTempleId } from '@/lib/motion';
 
 /** Rótulos pt-BR das seções do detalhe (ordem de exibição). */
 const SECTION_LABELS: Array<[string, string]> = [
@@ -140,6 +141,7 @@ export const ConceptsScreen: React.FC = () => {
         icon={<Lightbulb />}
         title={loading ? 'conceitos' : `${index.length} conceitos`}
         subtitle={`ideias-chave da psicologia em ${domains.length} domínios`}
+        morphId={sharedTempleId('conceitos')}
       />
 
       <TempleSearchInput
@@ -172,9 +174,9 @@ export const ConceptsScreen: React.FC = () => {
                 />
                 {isOpen && (
                   <div className="border-t border-ceci-border-subtle divide-y divide-ceci-border-subtle">
-                    {entries.map((entry) => (
+                    {entries.map((entry, i) => (
+                      <Reveal key={entry.id} index={i}>
                       <button
-                        key={entry.id}
                         onClick={() => void openConcept(entry)}
                         disabled={loadingDetail}
                         className="w-full text-left px-4 py-3 hover:bg-surface-blue transition-colors cursor-pointer group disabled:opacity-60"
@@ -188,6 +190,7 @@ export const ConceptsScreen: React.FC = () => {
                           </p>
                         )}
                       </button>
+                      </Reveal>
                     ))}
                   </div>
                 )}

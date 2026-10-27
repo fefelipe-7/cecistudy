@@ -11,6 +11,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import type { ProfileJourneySlot } from '../../../lib/profileViewModel';
+import { Reveal } from '@/lib/motion';
 
 interface JourneyRailProps {
   slots: ProfileJourneySlot[];
@@ -43,6 +44,7 @@ const JourneyRail: React.FC<JourneyRailProps> = ({ slots }) => {
     <div className="rounded-2xl bg-surface-muted border border-ceci-border-subtle px-3 py-4">
       <ol className="flex items-center" aria-label={`trilho da formação: ${summary}`}>
         {slots.map((slot, index) => (
+          <Reveal key={slot.ordinal} index={index}>
           <li
             key={slot.ordinal}
             aria-current={slot.status === 'current' ? 'step' : undefined}
@@ -74,6 +76,7 @@ const JourneyRail: React.FC<JourneyRailProps> = ({ slots }) => {
             </span>
             <span className="sr-only">{`${slot.ordinal}º semestre, ${STATUS_TEXT[slot.status]}`}</span>
           </li>
+          </Reveal>
         ))}
       </ol>
     </div>

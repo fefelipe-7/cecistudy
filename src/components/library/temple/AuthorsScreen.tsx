@@ -14,6 +14,7 @@ import {
   TempleSearchInput,
   TempleSectionCard,
 } from './TempleShared';
+import { Reveal, sharedTempleId } from '@/lib/motion';
 
 type SortMode = 'acervo' | 'az';
 
@@ -170,6 +171,7 @@ export const AuthorsScreen: React.FC = () => {
         icon={<User />}
         title={loading ? 'autores' : `${authors.length} autores do acervo`}
         subtitle="quem é quem na história da psicologia"
+        morphId={sharedTempleId('autores')}
       />
 
       <TempleSearchInput
@@ -232,8 +234,10 @@ export const AuthorsScreen: React.FC = () => {
       {/* Lista */}
       {!loading && sortMode === 'acervo' && (
         <div className="space-y-2.5 px-1">
-          {filtered.map((author) => (
-            <AuthorRow key={author.id} author={author} onOpen={() => setSelected(author)} />
+          {filtered.map((author, i) => (
+            <Reveal key={author.id} index={i}>
+              <AuthorRow author={author} onOpen={() => setSelected(author)} />
+            </Reveal>
           ))}
         </div>
       )}
@@ -246,8 +250,10 @@ export const AuthorsScreen: React.FC = () => {
                 {letter}
               </h2>
               <div className="space-y-2.5">
-                {list.map((author) => (
-                  <AuthorRow key={author.id} author={author} onOpen={() => setSelected(author)} />
+                {list.map((author, i) => (
+                  <Reveal key={author.id} index={i}>
+                    <AuthorRow author={author} onOpen={() => setSelected(author)} />
+                  </Reveal>
                 ))}
               </div>
             </div>

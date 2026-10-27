@@ -25,7 +25,8 @@
 import React, { useCallback, useState } from 'react';
 import { AnimatePresence, motion, useDragControls } from 'framer-motion';
 import { prefersReducedMotion, stepVariants } from '@/lib/motion';
-import { BASE_D, BASE_T, EASE } from '@/lib/motion/tokens';
+import { BASE_T } from '@/lib/motion/tokens';
+import { useMotionProfile } from '@/components/motion/MotionProfileProvider';
 import { canStartTabSwipe, shouldIgnorePanTarget, swipeTabDelta } from '@/lib/swipe';
 
 /** Abstração da mola de volta do arrasto: casa com o dedo e não arremessa. */
@@ -36,9 +37,6 @@ const ELASTICIDADE = 0.18;
  * `mass: 0.8`): o arrasto de aba é o mesmo gesto — segue o dedo, assenta curto.
  */
 const MOLA_PAINEL = BASE_T.gesture;
-
-/** Perfil reduzido: crossfade curtíssimo em vez de slide + mola. */
-const TRANSIÇÃO_REDUZIDA = { duration: BASE_D.micro, ease: EASE.standard };
 
 export interface TabPager<T extends string> {
   /** `+1` quando a troca foi para a frente, `-1` para trás — manda no slide. */
@@ -137,8 +135,10 @@ export const SwipeableTabPanel: React.FC<SwipeableTabPanelProps> = ({
   pager,
   label,
   children,
-}) => (
-  <motion.div onPointerDownCapture={pager.onPointerDownCapture} style={{ touchAction: 'pan-y' }}>
+}) => {
+  const profile = useMotionProfile();
+  return (
+    <motion.div onPointerDownCapture={pager.onPointerDownCapture} style={{ touchAction: 'pan-y' }}>
     <AnimatePresence mode="popLayout" custom={pager.direction} initial={false}>
       <motion.div
         key={active}
@@ -147,7 +147,7 @@ export const SwipeableTabPanel: React.FC<SwipeableTabPanelProps> = ({
         initial="initial"
         animate="animate"
         exit="exit"
-        transition={pager.draggable ? MOLA_PAINEL : TRANSIÇÃO_REDUZIDA}
+        transition={pager.draggable ? MOLA_PAINEL : { duration: profile.d.micro }}
         drag={pager.draggable ? 'x' : false}
         dragListener={false}
         dragControls={pager.dragControls}
@@ -166,5 +166,6 @@ export const SwipeableTabPanel: React.FC<SwipeableTabPanelProps> = ({
     </AnimatePresence>
   </motion.div>
 );
+}
 
 export default SwipeableTabPanel;

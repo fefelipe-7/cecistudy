@@ -6,6 +6,7 @@ import type { CalendarEntry } from '../../../lib/schedule';
 import type { Exam } from '../../../types';
 import { SectionTitle } from '../../ui/SectionTitle';
 import { CalendarEntryRow, type EntryNav } from '../CalendarEntryRow';
+import { Reveal } from '@/lib/motion';
 
 interface WeekEventsListProps {
   entries: CalendarEntry[];
@@ -31,14 +32,10 @@ const WeekEventsList: React.FC<WeekEventsListProps> = ({ entries, nav, exams }) 
         </div>
       )}
 
-      {entries.map((entry) => (
-        <CalendarEntryRow
-          key={entry.id}
-          entry={entry}
-          nav={nav}
-          exams={exams}
-          showDate
-        />
+      {entries.map((entry, i) => (
+        <Reveal key={entry.id} index={i}>
+          <CalendarEntryRow entry={entry} nav={nav} exams={exams} showDate />
+        </Reveal>
       ))}
     </div>
   </section>

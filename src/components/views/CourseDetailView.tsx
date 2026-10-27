@@ -10,7 +10,7 @@ import { CourseCreateMenu } from '../courses/detail/CourseCreateMenu';
 import { CourseInfoContent } from '../courses/detail/CourseInfoContent';
 import { CourseAulasContent } from '../courses/detail/CourseAulasContent';
 import { CourseRepertorioContent } from '../courses/detail/CourseRepertorioContent';
-import { SharedElement, sharedCourseId } from '@/lib/motion';
+import { MorphTarget, sharedCourseId } from '@/lib/motion';
 
 interface CourseDetailViewProps {
   course: Course;
@@ -77,11 +77,13 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
       {/* Capinha da disciplina — canto afetuoso com a cor da matéria */}
       <div className="px-1 pt-1">
         {/* Par com o card do grid (`DisciplinasGrid`): os dois chamam
-            `sharedCourseId`. A tela de origem fica montada durante a transição
-            (o `AnimatePresence` do shell só remove a que sai no fim do `exit`),
-            então o morph tem de onde partir e para onde voltar. */}
-        <SharedElement
-          id={sharedCourseId(course.id)}
+            `sharedCourseId`. O destino **não** depende de a origem continuar
+            montada — o clone foi fotografado no `pointerdown` e quem viaja é ele
+            (SPEC-M-028 D25). No pop é o contrário: este retângulo é a origem e o
+            card é achado no destino; se ele não estiver lá, a camada faz
+            crossfade. */}
+        <MorphTarget id={sharedCourseId(course.id)}>
+        <div
           className="rounded-[26px] border border-ceci-border-subtle shadow-sm p-4 relative overflow-hidden"
           style={{
             background: `linear-gradient(135deg, var(--color-surface-default) 0%, ${courseColor}1A 100%)`,
@@ -134,7 +136,8 @@ export const CourseDetailView: React.FC<CourseDetailViewProps> = ({ course }) =>
             className="absolute bottom-0 left-5 right-5 h-[3px] rounded-full"
             style={{ background: courseColor }}
           />
-        </SharedElement>
+        </div>
+        </MorphTarget>
       </div>
 
       {/* Sub-tabs + conteúdo deslizável */}

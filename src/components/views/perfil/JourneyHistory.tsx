@@ -7,6 +7,7 @@
 import React from 'react';
 import { ArrowRight, CalendarDays } from 'lucide-react';
 import type { ProfileJourney } from '../../../lib/profileViewModel';
+import { Reveal } from '@/lib/motion';
 
 interface JourneyHistoryProps {
   journey: ProfileJourney;
@@ -52,24 +53,26 @@ const JourneyHistory: React.FC<JourneyHistoryProps> = ({ journey, onOpenTermHist
         </p>
       ) : (
         <ul className="space-y-2.5">
-          {previous.map((term) => (
-            <li
-              key={term.ordinal}
-              className="rounded-2xl bg-surface-muted border border-ceci-border-subtle px-3.5 py-3 space-y-1"
-            >
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-display text-sm font-bold text-ceci-primary">
-                  {term.label}
-                </span>
-                <span className="text-[11px] text-ceci-tertiary">
-                  {term.courses} {term.courses === 1 ? 'disciplina' : 'disciplinas'}
-                </span>
-              </div>
-              {term.highlights.length > 0 ? (
-                <p className="text-[11px] text-ceci-secondary leading-relaxed">
-                  {term.highlights[0]}
-                </p>
-              ) : null}
+          {previous.map((term, i) => (
+            <li key={term.ordinal}>
+              <Reveal
+                index={i}
+                className="block rounded-2xl bg-surface-muted border border-ceci-border-subtle px-3.5 py-3 space-y-1"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-display text-sm font-bold text-ceci-primary">
+                    {term.label}
+                  </span>
+                  <span className="text-[11px] text-ceci-tertiary">
+                    {term.courses} {term.courses === 1 ? 'disciplina' : 'disciplinas'}
+                  </span>
+                </div>
+                {term.highlights.length > 0 ? (
+                  <p className="text-[11px] text-ceci-secondary leading-relaxed">
+                    {term.highlights[0]}
+                  </p>
+                ) : null}
+              </Reveal>
             </li>
           ))}
         </ul>

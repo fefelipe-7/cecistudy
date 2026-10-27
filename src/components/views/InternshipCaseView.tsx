@@ -12,6 +12,7 @@ import { formatHours } from '../../lib/formatHours';
 import { pluralPt } from '../../lib/pluralPt';
 import { VAZIO, frase } from '../../lib/voice';
 import { deriveCases, normalizePatientKey, nextSessionNumber } from '../../lib/internshipCases';
+import { sharedCaseId } from '@/lib/motion';
 
 type FiltroCaso = 'todas' | 'sem reflexao' | 'sem supervisao';
 
@@ -112,6 +113,7 @@ export const InternshipCaseView: React.FC = () => {
         title={label}
         summary={resumo.length ? resumo.join(' · ') : 'nenhuma sessão ainda ♡'}
         expression="connection-link"
+        morphId={sharedCaseId(patientKey)}
       />
 
       {caso && (
