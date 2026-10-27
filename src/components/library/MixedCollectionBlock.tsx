@@ -15,6 +15,7 @@ import { Article, MixedCollection } from '../../data/books';
 import { CollectionBook } from '../../data/libraryData';
 import { ArticleCard } from './ArticleCard';
 import { ManageSurface } from '../ui/ManageSurface';
+import { Reveal } from '@/lib/motion';
 
 const ICON_MAP: Record<string, LucideIcon> = {
   brain: Brain,
@@ -71,7 +72,7 @@ export const MixedCollectionBlock: React.FC<MixedCollectionBlockProps> = ({
 
       {/* Grade mista expandida: livros + artigos */}
       <div className="grid grid-cols-3 gap-x-3 gap-y-4 overflow-y-auto">
-        {collection.books.map((book) => {
+        {collection.books.map((book, i) => {
           const isSaved = savedBookIds.has(book.id);
           const readPages = readProgress?.[book.id];
           const isReading = (readPages ?? 0) > 0;
@@ -79,8 +80,8 @@ export const MixedCollectionBlock: React.FC<MixedCollectionBlockProps> = ({
             book.totalPages && readPages ? Math.round((readPages / book.totalPages) * 100) : 0;
 
           return (
+            <Reveal key={book.id} index={i}>
             <ManageSurface
-              key={book.id}
               kind="catalogBook"
               id={book.id}
               onTap={() => onSelectBook(book)}
@@ -133,16 +134,18 @@ export const MixedCollectionBlock: React.FC<MixedCollectionBlockProps> = ({
                 <p className="text-[10px] text-ceci-tertiary line-clamp-1">{book.author}</p>
               </div>
             </ManageSurface>
+            </Reveal>
           );
         })}
 
-        {collection.articles.map((article) => (
-          <ArticleCard
-            key={article.id}
-            article={article}
-            isSaved={savedBookIds.has(article.id)}
-            onSelect={() => onSelectArticle(article)}
-          />
+        {collection.articles.map((article, i) => (
+          <Reveal key={article.id} index={i}>
+            <ArticleCard
+              article={article}
+              isSaved={savedBookIds.has(article.id)}
+              onSelect={() => onSelectArticle(article)}
+            />
+          </Reveal>
         ))}
       </div>
     </div>

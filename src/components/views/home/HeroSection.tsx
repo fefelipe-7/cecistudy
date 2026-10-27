@@ -5,6 +5,8 @@ import { Ambient } from '../../motion/Ambient';
 import { HERO_MASCOTES, type HeroMascoteExpression } from './heroMascote';
 
 interface HeroSectionProps {
+  /** Na primeira montagem da aba, o hero entra com uma coreografia curta (D27). */
+  entrada?: boolean;
   formattedDate: string;
   greeting: string;
   name: string;
@@ -14,13 +16,16 @@ interface HeroSectionProps {
 }
 
 const HeroSection: React.FC<HeroSectionProps> = ({
+  entrada = false,
   formattedDate,
   greeting,
   name,
   dayMessage,
   mascote,
 }) => (
-  <section className="rounded-[26px] bg-gradient-to-br from-surface-default to-surface-rose border border-ceci-border-subtle shadow-sm p-5 relative overflow-hidden">
+  <section
+    className={`rounded-[26px] bg-gradient-to-br from-surface-default to-surface-rose border border-ceci-border-subtle shadow-sm p-5 relative overflow-hidden ${entrada ? 'home-hero-entrada' : ''}`}
+  >
     <div className="flex items-start justify-between gap-3">
       <div className="min-w-0">
         <div className="flex items-center gap-1.5">

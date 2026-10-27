@@ -72,13 +72,38 @@ export {
   toastVariants,
   listItemVariants,
   revealVariants,
-  staggerFor,
   SHADE_OPACITY,
 } from './variants';
 
 export { TAB_LABELS, tabLabel, screenAnnouncement } from './screenAnnounce';
 
-export { SharedElement, sharedNoteId, sharedCourseId } from './SharedElement';
+// Container transform (SPEC-M-028 D25/D26). Substitui `SharedElement`/`layoutId`:
+// a origem pode desmontar, então o par é uma camada de clone, não um par vivo.
+export {
+  MorphLayer,
+  MorphSource,
+  MorphTarget,
+  activateMorphForNavigation,
+  beginMorph,
+  clearMorph,
+  peekActiveMorph,
+  peekMorph,
+  peekMorphTarget,
+  registerMorphTarget,
+  resetMorphForTests,
+  sharedApproachId,
+  sharedBookId,
+  sharedCaseId,
+  sharedChapterId,
+  sharedCourseId,
+  sharedEntryId,
+  sharedFamilyId,
+  sharedNoteId,
+  sharedQuizGroupId,
+  sharedTempleId,
+} from './Morph';
+export type { MorphDirection, MorphPayload, MorphRect } from './Morph';
+
 export { Reveal, RevealContext } from './Reveal';
 export type { RevealContextValue } from './Reveal';
 

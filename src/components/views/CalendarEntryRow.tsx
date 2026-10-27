@@ -2,8 +2,9 @@
 // calendário e pela "atenção de hoje" da Home. O toque abre a entidade real.
 import React from 'react';
 import type { CalendarEntry, CalendarLayer } from '../../lib/schedule';
-import { destinationForEntry } from '../../lib/calendarDestination';
+import { destinationForEntry, morphIdForEntry } from '../../lib/calendarDestination';
 import { formatShortDate } from '../../lib/schedule';
+import { MorphSource } from '../../lib/motion';
 import type { Exam } from '../../types';
 import type { NavigationValue } from '../../context/navigationEngine';
 
@@ -43,9 +44,10 @@ export const CalendarEntryRow: React.FC<CalendarEntryRowProps> = ({
   showDate = false,
 }) => {
   const go = destinationForEntry(entry, nav, exams);
+  const morphId = morphIdForEntry(entry, exams);
   const when = entry.start ? `${entry.start}${entry.end ? `–${entry.end}` : ''}` : null;
 
-  return (
+  const row = (
     <button
       type="button"
       onClick={go ?? undefined}
@@ -72,4 +74,8 @@ export const CalendarEntryRow: React.FC<CalendarEntryRowProps> = ({
       </span>
     </button>
   );
+
+  // Sem destino com alvo (a maioria dos nove tipos) a linha não captura: fica
+  // exatamente como era.
+  return morphId ? <MorphSource id={morphId}>{row}</MorphSource> : row;
 };

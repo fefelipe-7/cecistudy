@@ -368,11 +368,12 @@
   transform: scale(0.97);
 }
 
-.press-btn {
-  transition: transform 0.15s ease;
-}
-.press-btn:active {
-  transform: scale(0.96);
+/* Movimento reduzido: mata as transições CSS desses elementos quando o perfil
+   está reduzido. O wrapper `data-motion` vem do `MotionProfileProvider`. */
+[data-motion='reduced'] .press-card,
+[data-motion='reduced'] .tap-interactive,
+[data-motion='reduced'] .card-lift {
+  transition: none !important;
 }
 
 /* ============================================================ */
@@ -400,6 +401,39 @@
 
 .ambient-paused {
   animation-play-state: paused;
+}
+
+/* Coreografia de abertura da Home (SPEC-M-028 D27): roda uma vez, só na
+   primeira montagem da aba. Aplica via classe `home-hero-entrada`. */
+@keyframes homeHeroEntrada {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.home-hero-entrada {
+  animation: homeHeroEntrada 0.6s ease-out forwards;
+}
+
+/* Entrada do estado de recarga do seletor de quiz (sem framer-motion). */
+@keyframes quizReloadEntrada {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.quiz-reload-entrada {
+  animation: quizReloadEntrada 0.4s ease-out forwards;
 }
 
 

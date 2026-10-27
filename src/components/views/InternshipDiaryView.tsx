@@ -24,6 +24,7 @@ import { todayKeyLocal } from '../../lib/dateBR';
 import { formatHours } from '../../lib/formatHours';
 import { pluralPt } from '../../lib/pluralPt';
 import { isDarkTheme } from '../../lib/themes';
+import { Reveal } from '@/lib/motion';
 import type { InternshipLog } from '../../types';
 import type { LogGroupId } from '../../types';
 
@@ -227,12 +228,13 @@ export const InternshipDiaryView: React.FC = () => {
               />
             ) : (
               <div className="space-y-3">
-                {cases.map((c) => (
-                  <InternshipCaseCard
-                    key={c.patientKey}
-                    caseData={c}
-                    onPress={() => openInternshipCase(c.patientKey)}
-                  />
+                {cases.map((c, i) => (
+                  <Reveal key={c.patientKey} index={i}>
+                    <InternshipCaseCard
+                      caseData={c}
+                      onPress={() => openInternshipCase(c.patientKey)}
+                    />
+                  </Reveal>
                 ))}
                 {orphans.length > 0 && (
                   <button
@@ -405,13 +407,10 @@ export const InternshipDiaryView: React.FC = () => {
                       )}
                     </div>
                     <div className="space-y-3">
-                      {g.logs.map((log) => (
-                        <InternshipLogCard
-                          key={log.id}
-                          log={log}
-                          today={today}
-                          allLogs={internshipLogs}
-                        />
+                      {g.logs.map((log, i) => (
+                        <Reveal key={log.id} index={i}>
+                          <InternshipLogCard log={log} today={today} allLogs={internshipLogs} />
+                        </Reveal>
                       ))}
                     </div>
                   </section>

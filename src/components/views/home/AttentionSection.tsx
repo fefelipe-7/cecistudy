@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, ArrowRight, Plus } from 'lucide-react';
 import { useDataClientCourses } from '@/context/DataClientProvider';
 import { useNavValue } from '@/context/shellNavContexts';
+import { useMotionProfile } from '@/components/motion/MotionProfileProvider';
 import type { CalendarEntry } from '../../../lib/schedule';
 import { SectionTitle } from '../../ui/SectionTitle';
 import { TaskRow } from './rows';
@@ -22,12 +23,19 @@ export type AttentionItem =
 interface AttentionSectionProps {
   items: AttentionItem[];
   remainingCount: number;
+  /** Na primeira montagem da aba, a lista entra com uma coreografia curta (D27). */
+  entrada?: boolean;
 }
 
-const AttentionSection: React.FC<AttentionSectionProps> = ({ items, remainingCount }) => {
+const AttentionSection: React.FC<AttentionSectionProps> = ({
+  items,
+  remainingCount,
+  entrada = false,
+}) => {
   const { tasks, exams } = useDataClientCourses();
   const nav = useNavValue();
   const [openTaskSheet, setOpenTaskSheet] = useState(false);
+  const profile = useMotionProfile();
 
   return (
     <section className="space-y-3 px-0.5">
@@ -47,18 +55,27 @@ const AttentionSection: React.FC<AttentionSectionProps> = ({ items, remainingCou
       </SectionTitle>
 
       {items.length > 0 ? (
-        <div className="space-y-2.5">
+        <motion.div
+          className="space-y-2.5"
+          initial={entrada ? { opacity: 0 } : { opacity: 1 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: profile.d.micro }}
+        >
           <AnimatePresence mode="popLayout">
             {items.map((item) => {
               if (item.kind === 'calendar') {
+                // `popLayout` exige filho `motion` direto (SPEC-M-028 D27) e a
+                // linha do calendário não pode importar o runtime (ratchet I1):
+                // quem dona a presença envolve aqui.
                 return (
-                  <CalendarEntryRow
+                  <motion.div
                     key={item.entry.id}
-                    entry={item.entry}
-                    nav={nav}
-                    exams={exams}
-                    showDate
-                  />
+                    layout
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: profile.d.micro }}
+                  >
+                    <CalendarEntryRow entry={item.entry} nav={nav} exams={exams} showDate />
+                  </motion.div>
                 );
               }
               return <TaskRow key={item.id} task={tasks.find((t) => t.id === item.id)!} />;
@@ -70,7 +87,7 @@ const AttentionSection: React.FC<AttentionSectionProps> = ({ items, remainingCou
               aguardando por você ♡
             </p>
           )}
-        </div>
+        </motion.div>
       ) : (
         <div className="p-5 rounded-xl bg-surface-default border border-ceci-border-subtle shadow-sm text-center space-y-1">
           <p className="text-sm font-display font-semibold text-ceci-primary">

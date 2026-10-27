@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { MoreHorizontal } from 'lucide-react';
 import { HeaderAction } from '../../types';
+import { pushOverlay, removeOverlay } from '@/lib/overlayStack';
 
 interface HeaderActionMenuProps {
   actions: HeaderAction[];
@@ -9,20 +10,27 @@ interface HeaderActionMenuProps {
 export const HeaderActionMenu: React.FC<HeaderActionMenuProps> = ({ actions }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const overlayIdRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!open) return;
+    const id = pushOverlay(() => setOpen(false), 'popover');
+    overlayIdRef.current = id;
     const handleClick = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        removeOverlay(id);
+        setOpen(false);
+      }
     };
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
-    };
+    // `Esc` fecha o topo da pilha via handler global da `overlayStack`;
+    // o menu não tem listener próprio (SPEC-M-028 F5.4/F5.5).
     document.addEventListener('mousedown', handleClick);
-    document.addEventListener('keydown', handleKey);
     return () => {
       document.removeEventListener('mousedown', handleClick);
-      document.removeEventListener('keydown', handleKey);
+      if (overlayIdRef.current !== null) {
+        removeOverlay(overlayIdRef.current);
+        overlayIdRef.current = null;
+      }
     };
   }, [open]);
 

@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
 import { Modal } from '../ui/Modal';
+import { MorphTarget, Reveal, sharedApproachId } from '@/lib/motion';
 import { PsicoterapiaFieldKey } from '../../types';
 
 interface SectionProps {
@@ -157,6 +158,7 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
   return (
     <div className="max-w-md sm:max-w-xl lg:max-w-none mx-auto space-y-8 pb-1 relative">
       {/* Intro */}
+      <MorphTarget id={sharedApproachId(approach.id)}>
       <div className="space-y-3 px-1">
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-ceci-primary leading-tight">
           {approach.name}
@@ -182,6 +184,7 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
           <p className="text-sm text-ceci-secondary leading-relaxed">{approach.summary}</p>
         )}
       </div>
+      </MorphTarget>
 
       {/* Bloco 1 — visão geral */}
       {overview.length > 0 && (
@@ -239,15 +242,16 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
               <span>autores e referências</span>
             </h2>
             <div className="grid grid-cols-2 gap-2.5">
-              {authors.map((author) => (
-                <button
-                  key={author}
-                  onClick={() => setSelectedAuthor(author)}
-                  className="text-left bg-surface-default rounded-2xl p-3 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
-                >
-                  <span className="text-sm font-semibold text-ceci-primary pr-1">{author}</span>
-                  <ChevronRight className="w-4 h-4 text-ceci-tertiary shrink-0 group-hover:text-ceci-brand-strong" />
-                </button>
+              {authors.map((author, i) => (
+                <Reveal key={author} index={i}>
+                  <button
+                    onClick={() => setSelectedAuthor(author)}
+                    className="w-full text-left bg-surface-default rounded-2xl p-3 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
+                  >
+                    <span className="text-sm font-semibold text-ceci-primary pr-1">{author}</span>
+                    <ChevronRight className="w-4 h-4 text-ceci-tertiary shrink-0 group-hover:text-ceci-brand-strong" />
+                  </button>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -299,17 +303,18 @@ export const ApproachDetailView: React.FC<{ approachId: string }> = ({ approachI
                   <span>conversando com outras abordagens</span>
                 </h2>
                 <div className="space-y-2.5">
-                  {related.map((rel) => (
-                    <button
-                      key={rel.id}
-                      onClick={() => openApproach(rel.id)}
-                      className="w-full text-left bg-surface-default rounded-2xl p-3.5 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
-                    >
-                      <span className="text-sm font-semibold text-ceci-primary pr-1">
-                        {rel.name}
-                      </span>
-                      <ChevronRight className="w-4 h-4 text-ceci-tertiary shrink-0 group-hover:text-ceci-brand-strong" />
-                    </button>
+                  {related.map((rel, i) => (
+                    <Reveal key={rel.id} index={i}>
+                      <button
+                        onClick={() => openApproach(rel.id)}
+                        className="w-full text-left bg-surface-default rounded-2xl p-3.5 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
+                      >
+                        <span className="text-sm font-semibold text-ceci-primary pr-1">
+                          {rel.name}
+                        </span>
+                        <ChevronRight className="w-4 h-4 text-ceci-tertiary shrink-0 group-hover:text-ceci-brand-strong" />
+                      </button>
+                    </Reveal>
                   ))}
                 </div>
               </div>

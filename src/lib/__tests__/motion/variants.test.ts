@@ -171,3 +171,36 @@ describe('createScreenVariants (API de rotulos, para o wrapper declarativo)', ()
     }
   });
 });
+
+describe('container transform: a tela não desliza (SPEC-M-028 I15)', () => {
+  it('enter, animate e exit ficam em x=0 nos dois perfis', () => {
+    for (const profile of [FULL_PROFILE, REDUCED_PROFILE]) {
+      const targets = createScreenTargets(W, profile);
+      const variants = createScreenVariants(W, profile);
+      for (const kind of ['push', 'pop'] as const) {
+        const i = intent({ kind, dir: kind === 'push' ? 1 : -1, morph: true });
+        expect(targets.enter(i).x, `enter.${kind}`).toBe(0);
+        expect(targets.exit(i).x, `exit.${kind}`).toBe(0);
+        expect((variants.animate as (x: NavIntent) => { x?: number })(i).x).toBe(0);
+      }
+    }
+  });
+
+  it('sem morph, o push continua deslizando (o caminho antigo não muda)', () => {
+    const targets = createScreenTargets(W, FULL_PROFILE);
+    expect(targets.enter(intent({ kind: 'push', dir: 1 })).x).toBe(W);
+    expect(targets.exit(intent({ kind: 'push', dir: 1 })).x).toBe(-W);
+  });
+
+  it('o destino materializa (opacity 0 → 1) e o shade não aparece', () => {
+    const targets = createScreenTargets(W, FULL_PROFILE);
+    const i = intent({ kind: 'push', dir: 1, morph: true });
+    expect(targets.enter(i).opacity).toBe(0);
+    expect(targets.shade(i).opacity).toBe(0);
+    const animate = createScreenVariants(W, FULL_PROFILE).animate as (
+      x: NavIntent,
+    ) => { opacity?: number; transition?: { duration?: number } };
+    expect(animate(i).opacity).toBe(1);
+    expect(animate(i).transition?.duration).toBe(FULL_PROFILE.d.morph);
+  });
+});

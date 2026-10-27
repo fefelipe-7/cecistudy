@@ -10,6 +10,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
+import { MorphSource, Reveal, sharedTempleId } from '@/lib/motion';
 import type { TempleSection } from '../../types';
 
 interface TempleCard {
@@ -116,9 +117,10 @@ export const TempleScreen: React.FC = () => {
 
       {/* Temple Cards */}
       <div className="space-y-3 px-1">
-        {TEMPLE_CARDS.map((card) => (
+        {TEMPLE_CARDS.map((card, i) => (
+          <Reveal key={card.id} index={i}>
+          <MorphSource id={sharedTempleId(card.id)}>
           <button
-            key={card.id}
             onClick={() => handleCardClick(card)}
             className="w-full text-left bg-surface-default rounded-xl p-4 border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs card-lift press-card cursor-pointer group flex items-center justify-between"
           >
@@ -141,6 +143,8 @@ export const TempleScreen: React.FC = () => {
               className={`w-5 h-5 ${card.chevron} group-hover:translate-x-1 transition-transform shrink-0`}
             />
           </button>
+          </MorphSource>
+          </Reveal>
         ))}
       </div>
     </div>

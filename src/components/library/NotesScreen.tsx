@@ -18,7 +18,7 @@ import { PillGroup } from '../ui/PillGroup';
 import { ManageSurface } from '../ui/ManageSurface';
 import { copyToClipboard } from '../../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getTransition, Reveal, sharedNoteId, SharedElement } from '@/lib/motion';
+import { getTransition, MorphSource, Reveal, sharedNoteId } from '@/lib/motion';
 import type { LooseNote, Course, PsychologyConcept, PsychologyAuthor } from '../../types';
 
 interface NotesScreenProps {
@@ -229,10 +229,8 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
           const hasLinks = Boolean(cName) || cons.length > 0 || auths.length > 0;
           return (
             <Reveal key={note.id} index={index}>
-            <SharedElement
-              id={sharedNoteId(note.id)}
-              className="bg-surface-default rounded-xl border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs overflow-hidden"
-            >
+            <MorphSource id={sharedNoteId(note.id)}>
+            <div className="bg-surface-default rounded-xl border border-ceci-border-default hover:border-ceci-border-brand shadow-2xs overflow-hidden">
             <ManageSurface
               kind="looseNote"
               id={note.id}
@@ -352,7 +350,8 @@ export const NotesScreen: React.FC<NotesScreenProps> = ({
                 </div>
               </div>
             </ManageSurface>
-            </SharedElement>
+            </div>
+            </MorphSource>
             </Reveal>
           );
         })}

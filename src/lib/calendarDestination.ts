@@ -3,6 +3,7 @@
 import type { CalendarEntry } from './schedule';
 import type { Exam } from '../types';
 import type { NavigationValue } from '../context/navigationEngine';
+import { sharedCourseId } from './motion';
 
 type EntryNav = Pick<
   NavigationValue,
@@ -38,4 +39,25 @@ export const destinationForEntry = (
     case 'session':
       return () => nav.openStudy('historico');
   }
+};
+
+/**
+ * O par do container transform desta linha (SPEC-M-028 F3).
+ *
+ * A linha do calendário abre nove destinos e **um** deles tem `MorphTarget`:
+ * o hero da disciplina. Por isso o id sai daqui, junto do destino, e não de um
+ * literal na linha — mesma fonte para os dois lados (I16).
+ *
+ * Sem id, a linha não captura nada. É de propósito: os outros destinos (sheet de
+ * tarefa, tela do TCC, diário do estágio) não têm alvo, e a alternativa seria
+ * esticar uma linha de 34 px por 844 px de tela.
+ */
+export const morphIdForEntry = (entry: CalendarEntry, exams: Exam[]): string | null => {
+  const { ref } = entry;
+  if (ref.kind === 'class') return sharedCourseId(ref.id);
+  if (ref.kind === 'exam') {
+    const courseId = exams.find((e) => e.id === ref.id)?.courseId;
+    return courseId ? sharedCourseId(courseId) : null;
+  }
+  return null;
 };

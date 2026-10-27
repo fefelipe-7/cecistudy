@@ -5,6 +5,7 @@ import { Modal } from '../ui/Modal';
 import { Mascote } from '../ui/Mascote';
 import { BookmarkToggle } from '../ui/BookmarkToggle';
 import { cn } from '../../lib/utils';
+import { sharedBookId } from '@/lib/motion';
 
 interface BookDetailModalProps {
   book: CollectionBook;
@@ -43,6 +44,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({
       open
       onClose={onClose}
       className="w-full max-w-sm bg-surface-default rounded-[28px] border border-ceci-border-default shadow-2xl overflow-hidden text-ceci-primary flex flex-col max-h-[85dvh]"
+      morphId={sharedBookId(book.id)}
     >
       {/* Hero da capa */}
       <div
