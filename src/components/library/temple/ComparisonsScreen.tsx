@@ -10,6 +10,7 @@ import {
   TempleLoading,
   TempleSearchInput,
 } from './TempleShared';
+import { Reveal, sharedTempleId } from '@/lib/motion';
 
 export type ComparisonEntityFilter =
   | 'todos'
@@ -165,6 +166,7 @@ export const ComparisonsScreen: React.FC<{ onOpen: (slug: string) => void }> = (
         icon={<GitCompare />}
         title={loading ? 'comparações' : `${comparisons.length} comparações`}
         subtitle="entenda diferenças, pontes e perspectivas na psicologia"
+        morphId={sharedTempleId('comparacoes')}
       />
 
       <div className="px-1 space-y-3">
@@ -238,12 +240,13 @@ export const ComparisonsScreen: React.FC<{ onOpen: (slug: string) => void }> = (
             </div>
             {rest.length > 0 ? (
               <div className="grid gap-3 sm:grid-cols-2">
-                {rest.map((comparison) => (
-                  <ComparisonCard
-                    key={comparison.id}
-                    comparison={comparison}
-                    onOpen={() => onOpen(comparison.slug)}
-                  />
+                {rest.map((comparison, i) => (
+                  <Reveal key={comparison.id} index={i}>
+                    <ComparisonCard
+                      comparison={comparison}
+                      onOpen={() => onOpen(comparison.slug)}
+                    />
+                  </Reveal>
                 ))}
               </div>
             ) : (

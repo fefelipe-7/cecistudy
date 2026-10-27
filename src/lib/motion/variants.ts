@@ -93,15 +93,22 @@ export function createScreenTargets(width: number, profile: MotionProfile): Scre
     // `opacity: 1` explícito: um push **não pode fazer fade**. Sumir enquanto
     // desliza é o maior sinal de "web app fingindo ser nativo".
     enter: (intent: NavIntent) =>
-      intent.kind === 'push' || intent.kind === 'pop'
-        ? {
-            x: intent.dir * width,
-            opacity: 1,
-            transition: { duration: d.screenEnter, ease: EASE.enter },
-          }
-        : { x: 0, opacity: 0, transition: { duration: d.replace, ease: EASE.standard } },
+      // Container transform (SPEC-M-028 D24/D46): a tela não desliza e o destino
+      // materializa por baixo do clone do card. Quem conta a história é a camada.
+      intent.morph
+        ? { x: 0, opacity: 0 }
+        : intent.kind === 'push' || intent.kind === 'pop'
+          ? {
+              x: intent.dir * width,
+              opacity: 1,
+              transition: { duration: d.screenEnter, ease: EASE.enter },
+            }
+          : { x: 0, opacity: 0, transition: { duration: d.replace, ease: EASE.standard } },
 
     exit: (intent: NavIntent) => {
+      if (intent.morph) {
+        return { x: 0, opacity: 0, transition: { duration: d.screenExit, ease: EASE.exit } };
+      }
       // Pop vindo do gesto de borda: parte do ponto onde o dedo soltou.
       if (intent.kind === 'pop' && intent.fromGesture) {
         return {
@@ -121,9 +128,11 @@ export function createScreenTargets(width: number, profile: MotionProfile): Scre
     },
 
     shade: (intent: NavIntent) =>
-      intent.kind === 'push' || intent.kind === 'pop'
-        ? { opacity: 1, transition: { duration: d.shade, ease: EASE.standard } }
-        : { opacity: 0, transition: { duration: d.replace, ease: EASE.standard } },
+      intent.morph
+        ? { opacity: 0, transition: { duration: 0 } }
+        : intent.kind === 'push' || intent.kind === 'pop'
+          ? { opacity: 1, transition: { duration: d.shade, ease: EASE.standard } }
+          : { opacity: 0, transition: { duration: d.replace, ease: EASE.standard } },
   };
 }
 
@@ -140,14 +149,18 @@ export function createScreenVariants(width: number, profile: MotionProfile): Var
   return {
     initial: (intent: NavIntent) => targets.enter(intent),
     animate: (intent: NavIntent) =>
-      intent.kind === 'push' || intent.kind === 'pop'
-        ? // `behind()` pode virar `front` e `front()` pode virar `behind()` na mesma
-          // camada (a tela-base troca de papel em push e pop). Se qualquer um dos dois
-          // dissesse `opacity`, a troca de papel devolveria a camada para o valor herdado
-          // do papel anterior — e o sintoma seria "depois de navegar, some tudo". Por isso
-          // o par é reescrito, e não só `front`: os dois alvos declaram `opacity`.
-          { ...targets.front, transition: { duration: profile.d.screenRest, ease: EASE.standard } }
-        : { ...targets.front },
+      intent.morph
+        ? // O destino materializa na mesma duração do clone: no fim do morph a
+          // página está inteira e o clone já saiu.
+          { x: 0, opacity: 1, transition: { duration: profile.d.morph, ease: EASE.enter } }
+        : intent.kind === 'push' || intent.kind === 'pop'
+          ? // `behind()` pode virar `front` e `front()` pode virar `behind()` na mesma
+            // camada (a tela-base troca de papel em push e pop). Se qualquer um dos dois
+            // dissesse `opacity`, a troca de papel devolveria a camada para o valor herdado
+            // do papel anterior — e o sintoma seria "depois de navegar, some tudo". Por isso
+            // o par é reescrito, e não só `front`: os dois alvos declaram `opacity`.
+            { ...targets.front, transition: { duration: profile.d.screenRest, ease: EASE.standard } }
+          : { ...targets.front },
     exit: () => targets.exit(consumeMotionIntent()),
   };
 }
@@ -241,15 +254,6 @@ export const listItemVariants: Variants = {
     transition: { duration: BASE_D.listItem, ease: EASE.exit },
   },
 };
-
-/**
- * Delay de entrada de um item de lista, com o **stagger capado**.
- * `0.03 × 20 itens` = 600ms de cauda, que é exatamente o "esperar uma animação"
- * que a HIG da Apple desaconselha. Acima do teto, tudo entra junto.
- */
-export const staggerFor = (index: number): { delayChildren: number } => ({
-  delayChildren: Math.min(index, BASE_D.listStaggerCap) * BASE_D.listStagger,
-});
 
 /**
  * `reveal` — item que entra quando cruza o viewport (SPEC-M-027 D6).

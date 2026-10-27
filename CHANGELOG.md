@@ -8,6 +8,61 @@ releases do GitHub. Deste ponto em diante o `release-please` cuida da versão e
 do tag, e este arquivo é escrito à mão — por isso ele está no `skip-changelog`
 do `release-please-config.json` e nenhuma automação reescreve o texto abaixo.
 
+## 1.1.1 — 2026-10-27 (em desenvolvimento)
+
+Movimento em todo o app: o card vira a tela (container transform) ao abrir
+disciplina, família, abordagem, Templo, grupo de quiz, caso de estágio, capítulo
+do TCC, artigo/livro e evento do calendário — com camada de clone que não exige
+a origem montada. Toda lista se revela ao ser lida, a Home abre com uma
+coreografia curta na primeira montagem, overlays entram na pilha (Esc/back fecha
+só o topo), o QuizExplanation vira bottom sheet, menus viram popover, o toast
+fica acima do modal, o háptico toca ao concluir, o BootSplash sai com fade e o
+perfil de movimento reduzido mata as transições CSS. Build e bundle sem
+regressão.
+
+### Container transform (card → tela)
+
+- Camada de clone `MorphSource`/`MorphTarget`/`MorphLayer` em `src/lib/motion/`,
+  substituindo o `SharedElement` que exigia a origem montada.
+- Dez pares de card → detalhe usam o mesmo helper dos dois lados: nota, disciplina,
+  família, abordagem, Templo (×4), quiz, caso de estágio, capítulo do TCC,
+  artigo/livro e calendário. A linha do calendário abre nove destinos; só o hero
+  da disciplina tem alvo (`morphIdForEntry`).
+- Morph de 320 ms; push sem alvo usa o retângulo da tela; origem ausente vira
+  crossfade; clique em elemento interativo interno cancela o morph.
+
+### Listas e Home
+
+- `Reveal` com `index` em todas as listas (até 6 itens com stagger, capado).
+- Home: hero e lista de atenção entram uma só vez, na primeira montagem da aba
+  (estado, não `useRef`); nas voltas nada acima da dobra anima.
+
+### Overlays e pilha
+
+- `overlayStack` ganha `kind` ('modal' | 'popover' | 'fullscreen'); `inert` e
+  trava de scroll só para `modal`.
+- `Esc` fecha o topo de qualquer superfície (handler global); `handleSystemBack`
+  fecha o menu antes de sair da tela.
+- `QuizExplanationOverlay` vira `Modal position="bottom"`.
+- `CourseCreateMenu`, `HeaderActionMenu` e `floating-action-menu` viram popover
+  na pilha, sem `Esc` próprio.
+
+### Micro, reduzido e háptico
+
+- `[data-motion='reduced']` mata transições de `press-card`, `card-lift` e
+  `tap-interactive` quando o perfil está reduzido.
+- `BASE_D.micro` migrou para `profile.d.micro` (10 leituras); `press-btn` órfão
+  removido.
+- `hapticTap` no `CompletionToggle` (todos os toggles de concluir).
+- `BootSplash` sai com fade na duração do token `BASE_D.overlay`.
+
+### Qualidade
+
+- `verify:fast` verde: 171 arquivos, 1763 testes, boundaries OK, voz OK,
+  contrato OK (SCHEMA_VERSION=22).
+- `build:web` + `bundle:report` sem regressão (§10).
+- Zero U+FFFD nos arquivos tocados.
+
 ## 1.0.99 — 2026-10-24
 
 A maior parte desta versão não aparece na tela. O app ganhou notificações de

@@ -18,6 +18,7 @@ import CalendarMonth, { dateKeyOf } from './faculdade/CalendarMonth';
 import { CalendarEntryRow } from './CalendarEntryRow';
 import { TaskSheet } from './home/TaskSheet';
 import { MeetingSheet } from '../tcc/MeetingSheet';
+import { Reveal } from '@/lib/motion';
 
 type Door = 'task' | 'exam' | 'meeting';
 
@@ -117,8 +118,10 @@ export const CalendarScreen: React.FC = () => {
     setSelected(today);
   };
 
-  const renderEntry = (entry: CalendarEntry) => (
-    <CalendarEntryRow key={entry.id} entry={entry} nav={nav} exams={exams} />
+  const renderEntry = (entry: CalendarEntry, i: number) => (
+    <Reveal key={entry.id} index={i}>
+      <CalendarEntryRow entry={entry} nav={nav} exams={exams} />
+    </Reveal>
   );
 
   const hasTcc = tcc.title.trim().length > 0;

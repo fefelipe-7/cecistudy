@@ -6,6 +6,7 @@ import { formatHours } from '../../lib/formatHours';
 import { pluralPt } from '../../lib/pluralPt';
 import { ProgressBar } from '../ui/ProgressBar';
 import { StatusChip } from './StatusChip';
+import { MorphSource, sharedCaseId } from '@/lib/motion';
 
 /**
  * Card do paciente — v2 (`SPEC-009 §9.5`).
@@ -40,6 +41,7 @@ export const InternshipCaseCard: React.FC<{
   const tile = patientLabel.length <= 6 ? patientLabel : '?';
 
   return (
+    <MorphSource id={sharedCaseId(caseData.patientKey)}>
     <button
       onClick={onPress}
       className="w-full text-left p-4 rounded-2xl bg-surface-default border border-ceci-border-default shadow-sm hover:shadow-md transition-shadow cursor-pointer tap-interactive"
@@ -116,6 +118,7 @@ export const InternshipCaseCard: React.FC<{
         </p>
       )}
     </button>
+    </MorphSource>
   );
 };
 

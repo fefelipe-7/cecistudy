@@ -2,13 +2,21 @@ import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { App as CapacitorApp } from '@capacitor/app';
 import { LocalNotifications } from '@capacitor/local-notifications';
-import { AnimatePresence, LayoutGroup, motion, useMotionValue, useTransform } from 'framer-motion';
+import { AnimatePresence, motion, useMotionValue, useTransform } from 'framer-motion';
 import { useMobileApp } from '@/context/mobileApp';
 import { useNavValue } from '@/context/shellNavContexts';
 import { setupNativeShell } from '../lib/native';
 import { mark } from '../lib/performance/perfMarks';
 import { cancelQueuedPrefetches } from '../lib/performance/screenPrefetch';
-import { EASE, overlayVariants, resolveProfile, screenAnnouncement, sharedNoteId } from '../lib/motion';
+import {
+  EASE,
+  MorphLayer,
+  MorphTarget,
+  overlayVariants,
+  resolveProfile,
+  screenAnnouncement,
+  sharedNoteId,
+} from '../lib/motion';
 import { RevealProvider } from '../components/motion/RevealProvider';
 import { erro } from '../lib/voice';
 import { nativeNavigation } from '../navigation/native-navigation';
@@ -222,10 +230,11 @@ const MobileAppShellInner: React.FC = () => {
     app.isNoteDetailOpen ||
     app.isNoteTransformOpen;
 
-  // F3 (SPEC-M-027 D4/D21): o card da nota (`NotesScreen`) é a origem e a página
-  // do detalhe é o destino. Sem `focusedNote` não há par — cai no fade+scale.
-  const noteSharedId =
-    app.isNoteDetailOpen && app.focusedNote ? sharedNoteId(app.focusedNote.id) : undefined;
+  // Container transform (SPEC-M-028 D26): o card da nota (`NotesScreen`) é a
+  // origem e a página do detalhe é o alvo. Sem `focusedNote` não há par — o
+  // overlay cai no fade+scale de sempre.
+  const noteMorphId =
+    app.isNoteDetailOpen && app.focusedNote ? sharedNoteId(app.focusedNote.id) : null;
 
   // Primeiro acesso → onboarding em tela cheia (sem header/nav)
   if (!app.onboarding.completed) {
@@ -279,9 +288,6 @@ const MobileAppShellInner: React.FC = () => {
               : 'pb-6'
         }`}
       >
-        {/* Origem e destino do shared element precisam do mesmo grupo
-            (SPEC-M-027 D21): o card vive na camada 1, a página na camada 2. */}
-        <LayoutGroup>
         {/* F5 (SPEC-M-027 D6): um IntersectionObserver para as duas camadas. */}
         <RevealProvider>
         {/* === Camada 0 (só web): peek do gesto de borda ===
@@ -324,27 +330,23 @@ const MobileAppShellInner: React.FC = () => {
         {/* === Camada 2: overlay (fade+scale) — compose/wizard não disputam o slide === */}
         <AnimatePresence initial={false}>
           {app.overlayKey && (
-            <motion.div
-              key={app.overlayKey}
-              // F3 (SPEC-M-027 D4/D21): o card da nota é a origem e esta página é
-              // o destino. Com par montado, o morph é o movimento; sem par, o
-              // fade+scale de sempre.
-              layoutId={noteSharedId}
-              variants={noteSharedId ? undefined : overlayVariants}
-              initial={noteSharedId ? { opacity: 0 } : 'initial'}
-              animate={noteSharedId ? { opacity: 1 } : 'animate'}
-              exit={noteSharedId ? { opacity: 0 } : 'exit'}
-              className="fixed inset-0 z-40 overflow-y-auto px-3.5 py-4 sm:px-5 bg-canvas"
-            >
-              {/* Desktop (≥ lg): formulários centrados numa coluna em vez de tela cheia */}
-              <div className="w-full max-w-md sm:max-w-xl lg:max-w-3xl mx-auto">
-                <OverlayContent />
-              </div>
-            </motion.div>
+            <MorphTarget key={app.overlayKey} id={noteMorphId}>
+              <motion.div
+                variants={overlayVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="fixed inset-0 z-40 overflow-y-auto px-3.5 py-4 sm:px-5 bg-canvas"
+              >
+                {/* Desktop (≥ lg): formulários centrados numa coluna em vez de tela cheia */}
+                <div className="w-full max-w-md sm:max-w-xl lg:max-w-3xl mx-auto">
+                  <OverlayContent />
+                </div>
+              </motion.div>
+            </MorphTarget>
           )}
         </AnimatePresence>
         </RevealProvider>
-        </LayoutGroup>
       </main>
 
       {/* Captura de link (F8.4/F8.5): deep link iOS e share Android caem aqui,
@@ -400,6 +402,10 @@ const MobileAppShellInner: React.FC = () => {
 
       {/* Modais/toasts globais */}
 
+      {/* Container transform (SPEC-M-028 D25): a camada do clone mora no shell,
+          acima das duas telas, `pointer-events-none` e `z-[55]` — acima do modal
+          (z-50) e abaixo do toast (z-60). Sem morph ativo ela não renderiza nada. */}
+      <MorphLayer profile={chrome} />
 
     </div>
   );

@@ -11,12 +11,7 @@ import { describe, expect, it } from 'vitest';
 
 const SRC = 'src';
 /** Só os tokens de movimento decidem transição — o resto fica de fora. */
-const EXEMPT_FILES = [
-  // O próprio módulo de tokens. `src/lib/motion/` é a fonte; este é o shim legado
-  // (que ainda define `IOS_EASE`/`iOS_SPRING`/`sheetVariants` e é re-exportado).
-  // Migrado no Slice D; até lá, contar as definições dele aqui seria ruído.
-  'src/lib/motion.ts',
-];
+const EXEMPT_FILES: string[] = [];
 const EXEMPT_DIRS = ['src/lib/motion/'];
 
 /**
@@ -32,16 +27,18 @@ const KNOWN_INLINE: Record<string, number[]> = {
   // Long-press no FAB (2026-10): prop `onLongPress`, `usePressGesture` e
   // `data-phase` entraram acima dos literais — os números de linha do
   // ratchet acompanham (os literais em si não mudaram; o gate é o mesmo).
-  'src/components/ui/floating-action-menu.tsx': [57, 58, 60, 61, 74, 85],
+  'src/components/ui/floating-action-menu.tsx': [71, 72, 74, 75, 88, 99],
   // A curva do `ease` foi tokenizada (`IOS_EASE`): o `duration` continua
   // literal porque 0.18s não é `BASE_D.navBar` (0.24) nem `BASE_D.micro`
   // (0.12) — trocar de token aqui mudaria a entrada da barra sem medição.
   'src/components/ui/bottom-nav-bar.tsx': [32, 64, 87, 88],
-  'src/components/courses/detail/CourseCreateMenu.tsx': [71, 110],
+  'src/components/courses/detail/CourseCreateMenu.tsx': [78, 117],
   'src/components/flashcards/Card3D.tsx': [8, 102],
   'src/components/flashcards/CardBaúEnvelope.tsx': [34, 52],
-  'src/components/quizzes/QuizExplanationOverlay.tsx': [23, 32],
-  'src/components/quizzes/QuizGroupDetail.tsx': [64, 88],
+  // SPEC-M-028 F3: o par do container transform entrou em volta do hero e do
+  // card do grupo, e os literais deslocaram — os números do ratchet acompanham
+  // (os literais em si não mudaram; o gate é o mesmo).
+  'src/components/quizzes/QuizGroupDetail.tsx': [66, 91],
   // spec-performance F4: os componentes migraram para o loop controlado
   // (useDitherLoop) e os literais deslocaram — os números de linha do ratchet
   // acompanham (os literais em si não mudaram; o gate é o mesmo).
@@ -54,19 +51,19 @@ const KNOWN_INLINE: Record<string, number[]> = {
   // os tokens do sistema — as duas entradas do `CourseDetailView` saíram do
   // ratchet porque o literal deixou de existir lá (ratchet só encolhe).
   'src/components/views/home/rows.tsx': [31],
-  'src/components/views/StreakView.tsx': [36, 128],
-  'src/components/quizzes/QuizCategorySelector.tsx': [100],
-  'src/components/quizzes/QuizGroupSelector.tsx': [93],
+  'src/components/views/StreakView.tsx': [37, 129],
+  // SPEC-M-028 F4: o seletor de grupos passou a usar `Reveal` e perdeu o
+  // `motion.button` de entrada — o literal saiu junto (ratchet só encolhe).
   // SPEC-018 F5: os imports da voz entraram no topo do arquivo e os literais
   // deslocaram uma linha — os números do ratchet acompanham (os literais em si
   // não mudaram; o gate é o mesmo).
   'src/components/quizzes/QuizLoadingScreen.tsx': [77],
   'src/components/quizzes/QuizResultScreen.tsx': [73],
   'src/components/ui/AnimatedNumber.tsx': [12],
-  // spec-performance F2: o BootSplash foi reestruturado (saída por
-  // criticalReady) e o literal moveu para :148 — o número de linha do
-  // ratchet acompanha (o literal em si não mudou; o gate é o mesmo).
-  'src/components/ui/BootSplash.tsx': [144],
+  // F7.3: a saída da splash usa `BASE_D.overlay * 1000` (token). O `duration: 2.2`
+  // da flutuação contínua da mascote é dívida pré-existente, deslocada uma linha
+  // pelo `import` do token.
+  'src/components/ui/BootSplash.tsx': [145],
   // SPEC-012 F3.5: `aria-valuetext` entrou acima do literal — o número de linha
   // do ratchet acompanha (o literal em si não mudou; o gate é o mesmo).
   'src/components/ui/ProgressBar.tsx': [36],

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useMotionValue, useSpring, useReducedMotion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { BASE_D, BASE_T, EASE, getTransition } from '@/lib/motion';
+import { BASE_T } from '@/lib/motion';
+import { useMotionProfile } from '@/components/motion/MotionProfileProvider';
 
 export type ToggleSize = 'sm' | 'md' | 'lg';
 
@@ -113,6 +114,7 @@ export default function ToggleSwitch({
   const [isPressed, setIsPressed] = useState(false);
   const [showSweep, setShowSweep] = useState(false);
   const [sweepDirection, setSweepDirection] = useState<'left' | 'right'>('right');
+  const profile = useMotionProfile();
   const trackRef = useRef<HTMLDivElement | null>(null);
   const velocityRef = useRef(0);
   /** O sweep é um timer de 150 ms: sem isso ele dispara depois do unmount. */
@@ -251,7 +253,7 @@ export default function ToggleSwitch({
   };
 
   // Transição de pressão estilo UIKit (rápida, sem quique)
-  const pressTransition = getTransition({ duration: BASE_D.micro, ease: EASE.standard });
+  const pressTransition = { duration: profile.d.micro };
 
   return (
     <button
@@ -281,7 +283,7 @@ export default function ToggleSwitch({
           backgroundColor: getBackgroundColor(),
           boxShadow: isPressed ? '0 0 0 2px rgba(0,0,0,0.08)' : '0 0 0 0px rgba(0,0,0,0)',
         }}
-        transition={getTransition({ duration: BASE_D.micro, ease: EASE.standard })}
+        transition={{ duration: profile.d.micro }}
         data-name="Track"
       >
         {/* Brilho interno do trilho (efeito vidro) */}
@@ -307,7 +309,7 @@ export default function ToggleSwitch({
           animate={{
             opacity: isActive ? 1 : 0,
           }}
-          transition={{ duration: BASE_D.micro }}
+          transition={{ duration: profile.d.micro }}
         >
           <div
             className="w-full h-full"
@@ -331,7 +333,7 @@ export default function ToggleSwitch({
           animate={{
             opacity: isActive ? 0 : 0.5,
           }}
-          transition={{ duration: BASE_D.micro }}
+          transition={{ duration: profile.d.micro }}
         >
           <div
             className="rounded-full"
@@ -364,7 +366,7 @@ export default function ToggleSwitch({
               left: sweepDirection === 'right' ? '10%' : '10%',
               opacity: [0, 0.7, 0],
             }}
-            transition={{ duration: BASE_D.micro, ease: EASE.standard }}
+            transition={{ duration: profile.d.micro }}
           />
         )}
       </motion.div>
@@ -402,7 +404,7 @@ export default function ToggleSwitch({
           animate={{
             backgroundColor: isDragging ? 'rgba(255, 255, 255, 0.08)' : '#FAFAFA',
           }}
-          transition={{ duration: BASE_D.micro, ease: EASE.standard }}
+          transition={{ duration: profile.d.micro }}
           style={{
             backdropFilter: isDragging ? 'blur(32px) brightness(1.1)' : 'blur(0px)',
             WebkitBackdropFilter: isDragging ? 'blur(32px) brightness(1.1)' : 'blur(0px)',
@@ -444,7 +446,7 @@ export default function ToggleSwitch({
           animate={{
             opacity: isDragging ? 1 : 0,
           }}
-          transition={{ duration: BASE_D.micro }}
+          transition={{ duration: profile.d.micro }}
           style={{
             border: '1px solid rgba(255, 255, 255, 0.35)',
             boxShadow:

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, ClipboardList, FileText, Plus, Timer } from 'lucide-react';
 import { useMobileApp } from '@/context/mobileApp';
+import { pushOverlay, removeOverlay } from '@/lib/overlayStack';
 import { WizardFlow } from '../../../types';
 
 interface CourseCreateMenuProps {
@@ -32,21 +33,27 @@ export const CourseCreateMenu: React.FC<CourseCreateMenuProps> = ({
   const { openWizard, openCompose } = useMobileApp();
   const rootRef = useRef<HTMLDivElement>(null);
 
+  const overlayIdRef = useRef<number | null>(null);
+
   useEffect(() => {
     if (!isOpen) return;
+    const id = pushOverlay(() => setIsOpen(false), 'popover');
+    overlayIdRef.current = id;
     const handlePointerDown = (e: PointerEvent) => {
       if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
+        removeOverlay(id);
         setIsOpen(false);
       }
     };
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsOpen(false);
-    };
+    // `Esc` fecha o topo da pilha via handler global da `overlayStack`;
+    // o menu não tem listener próprio (SPEC-M-028 F5.4/F5.5).
     window.addEventListener('pointerdown', handlePointerDown);
-    window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('pointerdown', handlePointerDown);
-      window.removeEventListener('keydown', handleKeyDown);
+      if (overlayIdRef.current !== null) {
+        removeOverlay(overlayIdRef.current);
+        overlayIdRef.current = null;
+      }
     };
   }, [isOpen]);
 

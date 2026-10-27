@@ -55,6 +55,9 @@ export const BASE_D = {
   screenExit: 0.18,
   /** Assentando no parallax frente/trás. */
   screenRest: 0.3,
+  /** Container transform: o card virando a tela (SPEC-M-028 D46). Um valor só
+   *  para os dez pares — o ritmo é a assinatura do gesto. */
+  morph: 0.32,
   /** Dim subindo/descendo sobre a camada coberta. */
   shade: 0.26,
   /** Troca no mesmo nível (curso → outro curso) ou passo curto. */
@@ -70,7 +73,7 @@ export const BASE_D = {
   stepExit: 0.16,
   /** Item de lista entrando/saindo. */
   listItem: 0.18,
-  /** Passo do stagger de lista (ver `staggerFor` — o stagger é capado). */
+  /** Passo do stagger de lista (ver `revealVariants` — o stagger é capado). */
   listStagger: 0.03,
   /** Teto do índice que ainda recebe delay no stagger. Acima disso entra tudo junto. */
   listStaggerCap: 6,
@@ -207,7 +210,7 @@ export const buildTokens = (d: Durations, t: SpringTokens) => ({
     listStaggerCap: d.listStaggerCap,
     ease: EASE.standard,
   },
-  sharedElement: { duration: d.screenRest, ease: EASE.emphasized },
+  sharedElement: { duration: d.morph, ease: EASE.emphasized },
   spring: { gesture: t.gesture, navBar: t.navBar, fab: t.fab, sheet: t.sheet },
   ambient: { duration: d.ambient, ease: 'linear' as const },
 });

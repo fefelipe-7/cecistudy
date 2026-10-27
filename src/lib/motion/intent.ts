@@ -40,6 +40,12 @@ export interface NavIntent {
   readonly fromGesture: boolean;
   /** Perfil de movimento reduzido está ativo. */
   readonly reduced: boolean;
+  /**
+   * Há um container transform nesta navegação (SPEC-M-028 D24): o card vira a
+   * tela por uma camada de clone. A tela **não desliza** — entra e sai por
+   * opacidade, e quem conta a história é o clone.
+   */
+  readonly morph: boolean;
 }
 
 export const IDLE_INTENT: NavIntent = Object.freeze({
@@ -50,6 +56,7 @@ export const IDLE_INTENT: NavIntent = Object.freeze({
   gestureX: 0,
   fromGesture: false,
   reduced: false,
+  morph: false,
 });
 
 /**
@@ -120,6 +127,8 @@ export interface DeriveIntentOptions {
   fromGesture?: boolean;
   /** Perfil reduzido ativo. */
   reduced?: boolean;
+  /** Há container transform nesta navegação (SPEC-M-028 D24). */
+  morph?: boolean;
 }
 
 /**
@@ -149,6 +158,7 @@ export function deriveIntent(
     gestureX: opts.gestureX ?? 0,
     fromGesture: opts.fromGesture ?? false,
     reduced: opts.reduced ?? false,
+    morph: opts.morph ?? false,
   };
 
   const common = commonPrefix(prev, next);
@@ -220,4 +230,5 @@ export const gesturePopIntent = (gestureX: number, reduced = false): NavIntent =
   gestureX,
   fromGesture: true,
   reduced,
+  morph: false,
 });

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, X, Clock } from 'lucide-react';
 import { QuizExplanationOverlay } from './QuizExplanationOverlay';
@@ -201,16 +200,13 @@ export const QuizPlayer: React.FC<QuizPlayerProps> = ({ state, onAnswer, onAdvan
         </div>
       </div>
 
-      {/* Tela da Explicação — portal direto no body (escapa de overflow/transform de ancestrais) */}
-      {showExplanation &&
-        createPortal(
-          <QuizExplanationOverlay
-            explanation={current.explanation ?? 'sem explicação disponível'}
-            isCorrect={selectedOption === correctLetter}
-            onClose={handleNext}
-          />,
-          document.body,
-        )}
+      {/* Tela da Explicação — bottom sheet na pilha de overlays (SPEC-M-028 F5.6). */}
+      <QuizExplanationOverlay
+        open={showExplanation}
+        explanation={current.explanation ?? 'sem explicação disponível'}
+        isCorrect={selectedOption === correctLetter}
+        onClose={handleNext}
+      />
     </div>
   );
 };

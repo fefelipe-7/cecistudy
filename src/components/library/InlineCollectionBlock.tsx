@@ -2,6 +2,7 @@
 import { Bookmark } from 'lucide-react';
 import { ContextCollection, CollectionBook } from '../../data/libraryData';
 import { ManageSurface } from '../ui/ManageSurface';
+import { MorphSource, Reveal, sharedBookId } from '@/lib/motion';
 
 interface InlineCollectionBlockProps {
   collection: ContextCollection;
@@ -37,7 +38,7 @@ export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = ({
 
       {/* Grade expandida de livros */}
       <div className="grid grid-cols-3 gap-x-3 gap-y-4 overflow-y-auto">
-        {collection.books.map((book) => {
+        {collection.books.map((book, i) => {
           const isSaved = savedBookIds.has(book.id);
           const readPages = readProgress?.[book.id];
           const isReading = (readPages ?? 0) > 0;
@@ -45,14 +46,15 @@ export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = ({
             book.totalPages && readPages ? Math.round((readPages / book.totalPages) * 100) : 0;
 
           return (
+            <Reveal key={book.id} index={i}>
             <ManageSurface
-              key={book.id}
               kind="catalogBook"
               id={book.id}
               onTap={() => onSelectBook(book)}
               className="group/book cursor-pointer select-none space-y-1.5"
             >
               {/* Capa grande */}
+              <MorphSource id={sharedBookId(book.id)}>
               <div
                 className="w-full h-[150px] sm:h-[165px] rounded-2xl p-3 flex flex-col justify-between relative overflow-hidden shadow-xs border border-black/5 card-lift"
                 style={{
@@ -90,6 +92,7 @@ export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = ({
                   )}
                 </div>
               </div>
+              </MorphSource>
 
               {/* Título/autor expandidos sob a capa */}
               <div className="px-0.5 space-y-0.5">
@@ -99,6 +102,7 @@ export const InlineCollectionBlock: React.FC<InlineCollectionBlockProps> = ({
                 <p className="text-[10px] text-ceci-tertiary line-clamp-1">{book.author}</p>
               </div>
             </ManageSurface>
+            </Reveal>
           );
         })}
       </div>

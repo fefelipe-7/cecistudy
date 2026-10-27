@@ -4,7 +4,7 @@ import React from 'react';
 import { Plus, ChevronRight } from 'lucide-react';
 import type { Course, ClassNote, Exam } from '../../../types';
 import { ManageSurface } from '../../ui/ManageSurface';
-import { SharedElement, sharedCourseId } from '@/lib/motion';
+import { MorphSource, Reveal, sharedCourseId } from '@/lib/motion';
 import { CourseIcon } from '../../ui/CourseIcon';
 import { formatCourseSchedule, formatShortDate } from '../../../lib/schedule';
 import { attendanceStats } from '../../../lib/attendance';
@@ -53,7 +53,7 @@ const DisciplinasGrid: React.FC<DisciplinasGridProps> = ({
       </div>
     ) : (
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-        {courses.map((c) => {
+        {courses.map((c, i) => {
           const courseClassCount = classes.filter((cl) => cl.courseId === c.id).length;
           const nextExam = exams.find((e) => e.courseId === c.id && !e.completed);
           const freqStats = attendanceStats(c.attendance);
@@ -64,10 +64,12 @@ const DisciplinasGrid: React.FC<DisciplinasGridProps> = ({
               : 'bg-status-warning-surface text-status-warning-strong border-status-warning-border';
 
           return (
-            // O par de shared element mora no wrapper, não no card: `card-lift`
-            // e `press-card` escrevem `transform` no próprio card e brigariam
-            // com o `transform` que o Motion escreve durante o morph.
-            <SharedElement key={c.id} id={sharedCourseId(c.id)}>
+            <Reveal key={c.id} index={i}>
+            {/* O par do container transform mora num wrapper: o card em si tem
+                `card-lift`/`press-card` e o clone é fotografado no `pointerdown`,
+                antes de qualquer `transform` de hover/press existir. */}
+            <MorphSource id={sharedCourseId(c.id)}>
+              <div>
               <ManageSurface
                 kind="course"
                 id={c.id}
@@ -133,7 +135,9 @@ const DisciplinasGrid: React.FC<DisciplinasGridProps> = ({
                 </span>
               </div>
             </ManageSurface>
-            </SharedElement>
+              </div>
+            </MorphSource>
+            </Reveal>
           );
         })}
       </div>

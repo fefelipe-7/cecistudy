@@ -15,6 +15,7 @@ import {
 import { Modal } from '../ui/Modal';
 import { SegmentedControl } from '../ui/SegmentedControl';
 import { hapticTap, hapticWarning } from '../../lib/haptics';
+import { sharedChapterId } from '@/lib/motion';
 
 /**
  * Sheet do capítulo (SPEC-012 D5/F4.3) — uma entidade, uma escrita por ação.
@@ -170,7 +171,13 @@ export const ChapterSheet: React.FC<ChapterSheetProps> = ({ open, chapterId, onC
   };
 
   return (
-    <Modal open={open} onClose={onClose} position="bottom" className="w-full max-w-lg">
+    <Modal
+      open={open}
+      onClose={onClose}
+      position="bottom"
+      className="w-full max-w-lg"
+      morphId={chapterId === 'new' ? undefined : sharedChapterId(chapterId)}
+    >
       <div className="w-full bg-canvas rounded-t-[28px] sm:rounded-2xl border border-ceci-border-default shadow-xl overflow-hidden p-5 sm:p-6 text-ceci-primary space-y-4">
         <h3 className="font-display font-bold text-base text-ceci-primary">
           {chapterId === 'new' ? 'novo capítulo' : 'editar capítulo'}
